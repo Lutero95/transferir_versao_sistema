@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="img_adefal" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pts" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT  empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca, p.id, pa.nome,  p.data, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.cod_grupo, g.descgrupo, p.cod_programa, pr.descprograma, 
+(SELECT extract(year from age(pa.dtanascimento))) AS idade,
+'' as logomarca
+FROM hosp.pts p 
+join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
+JOIN hosp.pacientes pa ON (p.cod_paciente = pa.id_paciente) 
+JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo)
+JOIN hosp.programa pr ON (p.cod_programa = pr.id_programa)
+where 1=1
+and ((   $P{codprograma}   is not null and p.cod_programa=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and p.cod_grupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+
+and ((  $P{pts}  is not null and p.id= $P{pts}) or (($P{pts} =0 ) OR ($P{pts} is null )))
+order by p.id
+]]>
+	</queryString>
+	<field name="nomeinstituicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="nome_fantasia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_fantasia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="cnes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="logomarca" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="capacidades_funcionais" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="capacidades_funcionais"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="objetivos_familiar_paciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="objetivos_familiar_paciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="cod_grupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="cod_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pts"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="idade" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="idade"/>
+	</field>
+	<field name="COLUMN_15" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
+	</field>
+	<group name="grppts" isStartNewPage="true" isResetPageNumber="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+		<groupHeader>
+			<band height="297">
+				<staticText>
+					<reportElement x="5" y="25" width="548" height="25" uuid="ce3b8c9d-1dfa-4210-8d50-ec4950aeb9a1"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PROJETO TERAPÊUTICO SINGULAR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" x="283" y="268" width="242" height="13" uuid="65207d33-764c-47c1-bcc1-3f1ba348b20a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[FAMÍLIA E/OU RESPONSÁVEL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="282" width="190" height="13" uuid="70810b92-aff1-4616-8cf8-aec3d6b4a0b6">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[3 - VISÃO MULTIDISCIPLINAR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="78" width="190" height="13" uuid="f0699f81-a2cc-4664-b800-17e3ebaf47bc">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[1 - DADOS GERAIS DO PACIENTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="95" width="95" height="15" uuid="cc4857d3-8010-4548-8af8-45a7fd3ee5a3"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nome do Paciente:]]></text>
+				</staticText>
+				<textField pattern="#,##0.###;(#,##0.###-)">
+					<reportElement x="522" y="111" width="31" height="18" uuid="5cf93941-dbd6-46da-82f2-11299598b5bc">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{idade}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="5" y="111" width="30" height="18" uuid="7098c758-08e3-45d1-89c4-c5c06ba39bb3">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data:]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="38" y="111" width="70" height="18" uuid="253698da-5ece-4007-a639-a82428252d40"/>
+					<textElement textAlignment="Left"/>
+					<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="114" y="111" width="68" height="18" uuid="7e9e4df7-b753-47dc-b66b-aca9d2469da6"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Reabilitação:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="187" y="111" width="290" height="18" uuid="b84fc2b5-2d1f-4cf0-bf74-1443cffb7d5e"/>
+					<textFieldExpression><![CDATA[$F{descprograma} + "/" + $F{descgrupo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="5" y="139" width="190" height="13" uuid="6ac07bb6-1f7a-4152-b479-74beb02ff49e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[2 - VISÃO GERAL DO PACIENTE]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="5" y="153" width="547" height="18" uuid="41c3758c-357e-42ba-9c73-66567f99e66d"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["a) Diagnóstico funcional (capacidades, objetivos alcançados, vulnerabilidades, dificuldades): "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="5" y="169" width="548" height="18" uuid="b82c2695-c196-4c55-a170-046c9728fcc5"/>
+					<textFieldExpression><![CDATA[$F{capacidades_funcionais}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement positionType="Float" x="5" y="192" width="548" height="18" uuid="00eef34c-7d9a-49b8-9cfb-9eef4b094e1c"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["b) Necessidades e desejos do paciente e/ou família: "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="5" y="212" width="547" height="15" uuid="7a6bda74-f822-4d84-bec5-00c739df1cbc"/>
+					<textFieldExpression><![CDATA[$F{objetivos_familiar_paciente}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="100" y="95" width="452" height="15" uuid="e271e4fb-4ec6-4cb1-85d6-6c402d7eafee"/>
+					<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="Float" x="261" y="266" width="291" height="1" uuid="75cc93b8-8c2b-4ed4-b1fb-2fb3b78aaf95"/>
+				</line>
+				<image>
+					<reportElement x="0" y="0" width="80" height="74" uuid="3809eaca-586c-47bc-bcaf-81b83b149d8a"/>
+					<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="487" y="111" width="31" height="18" uuid="38b062aa-8883-430f-9801-3cb03ac61264"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Idade:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="5" y="2" width="547" height="20" uuid="4069d7ee-b5a0-4a7b-9288-d4be92838927"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="24">
+			<subreport>
+				<reportElement x="0" y="0" width="200" height="20" uuid="69a26b03-a912-413c-ab20-5f40e602d986"/>
+				<subreportParameter name="pts">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "pts_area_apae_maceio.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="410" y="0" width="100" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["PÁGINA "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="512" y="0" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="150" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

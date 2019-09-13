@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<parameter name="pts" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT p.objetivo_curto, p.objetivo_medio, p.objetivo_longo, 
+p.plano_curto, p.plano_medio, p.plano_longo, e.descespecialidade
+FROM hosp.pts_area p 
+JOIN hosp.especialidade e ON (p.id_area = e.id_especialidade)
+WHERE p.id_pts =  $P{pts}]]>
+	</queryString>
+	<field name="objetivo_curto" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="objetivo_curto"/>
+	</field>
+	<field name="objetivo_medio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="objetivo_medio"/>
+	</field>
+	<field name="objetivo_longo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="objetivo_longo"/>
+	</field>
+	<field name="plano_curto" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="plano_curto"/>
+	</field>
+	<field name="plano_medio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="plano_medio"/>
+	</field>
+	<field name="plano_longo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="plano_longo"/>
+	</field>
+	<field name="descespecialidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
+	</field>
+	<group name="GroupArea" keepTogether="true">
+		<groupExpression><![CDATA[$F{descespecialidade}]]></groupExpression>
+		<groupHeader>
+			<band height="18"/>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<detail>
+		<band height="102">
+			<staticText>
+				<reportElement x="20" y="-16" width="30" height="15" uuid="505da25e-7f72-4557-b4e3-4e91a7136eda"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Área: ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="55" y="-16" width="415" height="13" uuid="7a6bda74-f822-4d84-bec5-00c739df1cbc"/>
+				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="20" y="17" width="280" height="17" uuid="9a5794ef-1a4f-4743-9cb5-d5dd0b469b94"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>Prazo Curto: <b/>"+$F{objetivo_curto}+"<br/>"+
+"<b>Prazo Médio: <b/>"+$F{objetivo_medio}+"<br/>"+
+"<b>Prazo Longo: <b/>"+$F{objetivo_longo}+"<br/>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="0" width="120" height="15" uuid="ee68fc46-9864-44de-8d3d-5c19e697da79"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plano de Intervenção]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="1" y="90" width="594" height="1" uuid="57507679-d53a-42cb-bbf7-09aa957a2c89">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="192" y="77" width="242" height="13" uuid="0f87c3f6-0f21-47ee-bcd1-6cf467a12d8f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Assinatura e Carimbo do Profissional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="0" width="120" height="15" uuid="57fac1a1-2b17-4cef-8ed5-ced6899ae799"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Objetivo]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" stretchType="ElementGroupHeight" x="310" y="17" width="250" height="17" uuid="4b82d604-8bc4-4c60-ab50-b1b2255c9715"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>Prazo Curto: <b/>"+$F{plano_curto}+"<br/>"+
+"<b>Prazo Médio: <b/>"+$F{plano_medio}+"<br/>"+
+"<b>Prazo Longo: <b/>"+$F{plano_longo}+"<br/>"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="160" y="72" width="311" height="1" uuid="2117b7eb-90f6-44d8-b38e-d06357fb0645">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
