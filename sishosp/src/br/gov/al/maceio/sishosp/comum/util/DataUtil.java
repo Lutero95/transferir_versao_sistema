@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class DataUtil {
 
@@ -135,6 +136,40 @@ public final class DataUtil {
 
         return data;
     }
+    
+    public static int calculaQuantidadeDiasEntreDuasDatas(long timestamp1, long timestamp2) {
+        final int SECONDS = 60;
+        final int MINUTES = 60;
+        final int HOURS = 24;
+        final int MILLIES = 1000;
+        long temp;
+        if (timestamp1 < timestamp2) {
+            temp = timestamp1;
+            timestamp1 = timestamp2;
+            timestamp2 = temp;
+        }
+        Calendar startDate = Calendar.getInstance(TimeZone.getDefault());
+        Calendar endDate = Calendar.getInstance(TimeZone.getDefault());
+        endDate.setTimeInMillis(timestamp1);
+        startDate.setTimeInMillis(timestamp2);
+        if ((timestamp1 - timestamp2) < 1 * HOURS * MINUTES * SECONDS * MILLIES) {
+            int day1 = endDate.get(Calendar.DAY_OF_MONTH);
+            int day2 = startDate.get(Calendar.DAY_OF_MONTH);
+            if (day1 == day2) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        int diffDays = 0;
+        startDate.add(Calendar.DAY_OF_MONTH, diffDays);
+        while (startDate.before(endDate)) {
+            startDate.add(Calendar.DAY_OF_MONTH, 1);
+            diffDays++;
+        }
+        return diffDays;
+    }
+    
 
     public static Long calcularQuantidadeDeDiasDeUmaData(Date data){
         final Long VALOR_DIA_EM_LONG =  86400000L;

@@ -5,10 +5,13 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,6 +20,8 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
+
+import org.joda.time.Days;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -591,6 +596,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
     
+
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
     	System.out.println("insercao gerarListaAgendamentosEquipe");
 
@@ -600,28 +606,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
         Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
+        
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d2.getTime() , d1.getTime());
 
-        dt = (dt / 86400000L);
+      
+
+       
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
-
+        
         for (int i = 0; i <= dt; i++) {
 
             if (i > 0) {
                 c.add(Calendar.DAY_OF_MONTH, 1);
             }
-
-            for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
-            	System.out.println("loop profissional "+listaProfissionaisAdicionados.get(j).getNome());
-                for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListDiasSemana().size(); h++) {
-                	System.out.println("loop dias "+listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h));
-                	
-                }
-            	
-            }
-            
 
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
