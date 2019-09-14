@@ -107,8 +107,8 @@
                                     <b:label for="prog" value="Programa Atual:" id="progAtual" class="fire-label"
                                              severity="info"/>
 
-                                    <p:outputLabel
-                                            value="#{TransferenciaPacienteController.insercao.programa.descPrograma}"/>
+                                    <p:outputLabel class="fire-label" style="margin-top: 5px;"
+                                            value="#{TransferenciaPacienteController.insercao.programaAtual.descPrograma}"/>
 
                                 </b:column>
                             </p:outputPanel>
@@ -125,8 +125,8 @@
                                     <b:label for="prog" value="Grupo Atual:" id="grupoAtual" class="fire-label"
                                              severity="info"/>
 
-                                    <p:outputLabel
-                                            value="#{TransferenciaPacienteController.insercao.grupo.descGrupo}"></p:outputLabel>
+                                    <p:outputLabel class="fire-label" style="margin-top: 5px;"
+                                            value="#{TransferenciaPacienteController.insercao.grupoAtual.descGrupo}"></p:outputLabel>
 
                                 </b:column>
 
@@ -144,8 +144,8 @@
                                     <b:label for="equipe" value="Equipe Atual:" id="equipeAtual" class="fire-label"
                                              rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-                                    <p:outputLabel
-                                            value="#{TransferenciaPacienteController.insercao.equipe.descEquipe}"></p:outputLabel>
+                                    <p:outputLabel class="fire-label" style="margin-top: 5px;"
+                                            value="#{TransferenciaPacienteController.insercao.equipeAtual.descEquipe}"></p:outputLabel>
 
                                 </b:column>
 

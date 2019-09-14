@@ -15,6 +15,11 @@ public class InsercaoPacienteBean implements Serializable {
     private GrupoBean grupo;
     private ProgramaBean programa;
     private EquipeBean equipe;
+    
+    private GrupoBean grupoAtual;
+    private ProgramaBean programaAtual;
+    private EquipeBean equipeAtual;
+    
     private String observacao;
     private FuncionarioBean funcionario;
     private AgendaBean agenda;
@@ -29,6 +34,9 @@ public class InsercaoPacienteBean implements Serializable {
         grupo = new GrupoBean();
         programa = new ProgramaBean();
         equipe = new EquipeBean();
+        grupoAtual = new GrupoBean();
+        programaAtual = new ProgramaBean();
+        equipeAtual = new EquipeBean();
         funcionario = new FuncionarioBean();
         agenda = new AgendaBean();
         horarioAtendimento = new HorarioAtendimento();
@@ -139,4 +147,28 @@ public class InsercaoPacienteBean implements Serializable {
     public void setListaHorarioAtendimento(List<HorarioAtendimento> listaHorarioAtendimento) {
         this.listaHorarioAtendimento = listaHorarioAtendimento;
     }
+
+	public GrupoBean getGrupoAtual() {
+		return grupoAtual;
+	}
+
+	public ProgramaBean getProgramaAtual() {
+		return programaAtual;
+	}
+
+	public EquipeBean getEquipeAtual() {
+		return equipeAtual;
+	}
+
+	public void setGrupoAtual(GrupoBean grupoAtual) {
+		this.grupoAtual = grupoAtual;
+	}
+
+	public void setProgramaAtual(ProgramaBean programaAtual) {
+		this.programaAtual = programaAtual;
+	}
+
+	public void setEquipeAtual(EquipeBean equipeAtual) {
+		this.equipeAtual = equipeAtual;
+	}
 }

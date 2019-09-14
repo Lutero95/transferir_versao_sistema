@@ -52,8 +52,12 @@ public class TransferenciaPacienteDAO {
 				ip.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				// ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-				// ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				ip.getProgramaAtual().setIdPrograma(rs.getInt("codprograma"));
+				ip.getProgramaAtual().setDescPrograma(rs.getString("descprograma"));
+				ip.getGrupoAtual().setIdGrupo(rs.getInt("codgrupo"));
+				ip.getGrupoAtual().setDescGrupo(rs.getString("descgrupo"));
+				ip.getEquipeAtual().setCodEquipe(rs.getInt("codequipe"));
+				ip.getEquipeAtual().setDescEquipe(rs.getString("descequipe"));
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
@@ -376,19 +380,16 @@ public class TransferenciaPacienteDAO {
 				ps3.setLong(1, lista.get(i));
 				ps3.execute();
 			}
+			
+			for (int i = 0; i < lista.size(); i++) {
+				String sql4 = "delete from hosp.atendimentos where id_atendimento = ?";
 
-			String sql4 = "delete from hosp.atendimentos where id_atendimento in (SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 "
-					+ "                    LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
-					+ "                    WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  "
-					+ "                    (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = "
-					+ "                    (SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) "
-					+ "                    ORDER BY a1.id_atendimento)";
+				PreparedStatement ps4 = null;
+				ps4 = conexao.prepareStatement(sql4);
+				ps4.setLong(1, lista.get(i));
+				ps4.execute();
+			}
 
-			PreparedStatement ps4 = null;
-			ps4 = conexao.prepareStatement(sql4);
-			ps4.setLong(1, id_paciente);
-			ps4.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
-			ps4.execute();
 
 			String sql5 = "update hosp.paciente_instituicao set status='CR' where id = ?";
 
