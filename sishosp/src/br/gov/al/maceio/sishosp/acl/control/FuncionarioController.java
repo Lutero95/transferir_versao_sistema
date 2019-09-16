@@ -615,13 +615,12 @@ public class FuncionarioController implements Serializable {
 			List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 
 			for (Menu mp : menusPerfil) {
-				for (Menu mf : listaFiltrada) {
+				for (Menu mf : listaFiltradaaux) {
 					if (mp.getCodigo().equals(mf.getCodigo())) {
-						listaFiltradaaux.remove(mf);
+						listaFiltrada.remove(mf);
 					}
 				}
 			}
-			listaFiltrada = listaFiltradaaux;
 
 			PermissaoDAO pmdao = new PermissaoDAO();
 			for (Menu m : listaFiltrada) {
