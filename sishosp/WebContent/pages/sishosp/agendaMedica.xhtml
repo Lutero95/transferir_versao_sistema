@@ -683,9 +683,10 @@
 
 						<p:outputPanel id="btnOcupados">
 							<b:commandButton value="Visualizar Ocupados"
-								class="btn-acao-table"
+								style="margin-top:5px;margin-left:25px"
+								icon="glyphicon glyphicon-list-alt"
+								class="btn-acao-table acao-agend"
 								rendered="#{AgendaController.temLotado == true}"
-								style="margin-top:5px;" icon="glyphicon-remove-sign"
 								actionListener="#{AgendaController.carregarListaOcupados()}"
 								update=":frmOcupados" />
 						</p:outputPanel>

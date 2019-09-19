@@ -12,17 +12,18 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-	
+
 	<ui:insert name="title">
 		<title>EHosp</title>
 	</ui:insert>
-	
+
 	<link rel="shortcut icon" href="../../imgs/favicon.png" />
 
 	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
-	<link rel="styleSheet" type="text/css" href="../../css/font-awesome.css"/>
-	
-	
+	<link rel="styleSheet" type="text/css"
+		href="../../css/font-awesome.css" />
+
+
 	<script type="text/javascript">
 		PrimeFaces.locales['pt'] = {
 			closeText : 'Fechar',
@@ -55,10 +56,10 @@
 			allDayText : 'Todo o Dia'
 		};
 	</script>
-	
+
 </h:head>
 
-<h:body> 
+<h:body>
 
 
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
@@ -71,32 +72,28 @@
 			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
 		</center>
 	</p:dialog>
-	
+
 	<div id="header">
-    <ui:insert name="header">
+		<ui:insert name="header">
 			<ui:include src="/pages/comum/newMenu.xhtml" />
-	</ui:insert>
+		</ui:insert>
 	</div>
 
 	<div id="container" class="clearfix">
-		<div id="content">
-			<p:messages for="home-msg" globalOnly="true" />
-				<ui:insert name="content" />
-		</div>
+		<p:messages for="home-msg" globalOnly="true" />
+		<ui:insert name="content" />
 	</div>
-	
+
 	<div id="foot">
-        <div class="connect">
-        	<a href="#"
-               target="_blank"> <img src="../../imgs/facebook.png" /></a> 
-               <a href="#" target="_blank"> <img src="../../imgs/twitter.png"/></a>
-        </div>
-        <div class="foot-text">
-        	<p>© 2019 EHosp. Todos os direitos
-			reservados.</p>
+		<div class="connect">
+			<a href="#" target="_blank"> <img src="../../imgs/facebook1.png" /></a>
+			<a href="#" target="_blank"> <img src="../../imgs/twitter1.png" /></a>
+		</div>
+		<div class="foot-text">
+			<p>© 2019 EHosp. Todos os direitos reservados.</p>
 			<p>Versão: 1.1.1</p>
 		</div>
-    </div>
+	</div>
 
 </h:body>
 </html>

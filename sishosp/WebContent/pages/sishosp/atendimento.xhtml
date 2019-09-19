@@ -64,101 +64,93 @@
 									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
 							</b:column>
 
-<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Programa" severity="info" />
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Programa" severity="info" />
 
-							<p:outputPanel id="outProg">
-								<p:autoComplete 
-									
-									value="#{AtendimentoController.atendimento.programa}" size="31"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
+								<p:outputPanel id="outProg">
+									<p:autoComplete
+										value="#{AtendimentoController.atendimento.programa}"
+										size="31" converter="conPrograma" class="select-agendaEquipe4"
+										completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descPrograma}">
+										<p:ajax event="itemSelect"
+											update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
 							:formConsAge:btBusGr, :formConsAge:outGrupo" />
 
-								</p:autoComplete>
+									</p:autoComplete>
 
-								<p:commandButton id="btBusPr" icon="ui-icon-search"
-									process="@this"
-									action="#{ProgramaController.carregaListaProgramasUsuario()}"
-									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
-							</p:outputPanel>
-						</b:column>
+									<p:commandButton id="btBusPr" icon="ui-icon-search"
+										process="@this"
+										action="#{ProgramaController.carregaListaProgramasUsuario()}"
+										update=":formConsuProg"
+										oncomplete="PF('dlgConsuProg').show();" />
+								</p:outputPanel>
+							</b:column>
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Grupo" severity="info" />
 
-							<p:outputPanel id="outGrupo">
-								<p:autoComplete
-									value="#{AtendimentoController.atendimento.grupo}" size="31"
-									converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
-									completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect" update=":formConsAge:outGrupo" />
+								<p:outputPanel id="outGrupo">
+									<p:autoComplete
+										value="#{AtendimentoController.atendimento.grupo}" size="31"
+										converter="conGrupo" class="select-agendaEquipe4"
+										disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+										completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descGrupo}">
+										<p:ajax event="itemSelect" update=":formConsAge:outGrupo" />
 
-								</p:autoComplete>
+									</p:autoComplete>
 
-								<p:commandButton id="btBusGr" icon="ui-icon-search"
-									process="@this"
-									action="#{AtendimentoController.listarGruposPorProgramas()}"
-									disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
-									update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
-							</p:outputPanel>
-						</b:column>
-							
+									<p:commandButton id="btBusGr" icon="ui-icon-search"
+										process="@this"
+										action="#{AtendimentoController.listarGruposPorProgramas()}"
+										disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+										update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
+								</p:outputPanel>
+							</b:column>
+
 						</p:outputPanel>
 
 					</b:row>
 
-					<b:row>
+					<b:row class="row-table">
 
-						
-
-					</b:row>
-
-					<b:row>
-<b:column span="2">
-			
-						<p:panelGrid columns="2">
-
-							<p:selectOneMenu value="#{AtendimentoController.tipoBusca}"
-								style="margin-top: -13px">
+						<b:column span="2" class="col-row-tabel">
+							<b:selectOneMenu size="10"
+								value="#{AtendimentoController.tipoBusca}">
 								<f:selectItem itemLabel="Nome" itemValue="nome" />
 								<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
 								<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
 								<f:selectItem itemLabel="CPF" itemValue="cpf" />
 								<f:selectItem itemLabel="CNS" itemValue="cns" />
-							</p:selectOneMenu>
-
-							<p:inputText value="#{AtendimentoController.campoBusca}"
-								placeholder="Digite aqui a busca" style="margin-left: 10px;" />
-
-
-						</p:panelGrid>
+							</b:selectOneMenu>
 						</b:column>
-<b:column span="1">
-								<b:commandButton value="Buscar" icon="glyphicon-search"
-								style="margin-left:20px;margin-top:5px"
-									class="btn-acao-table acao-buscar"
-									action="#{AtendimentoController.consultarAtendimentos()}"
-									update="dtAtendimentos, msgPagina">
-								</b:commandButton>
-							</b:column>
+
+						<b:column span="2" class="col-row-tabel">
+							<b:inputText value="#{AtendimentoController.campoBusca}"
+								placeholder="Digite aqui a busca" />
+						</b:column>
+
+						<b:column span="2">
+							<b:commandButton value="Buscar" icon="glyphicon-search"
+								class="btn-acao-table acao-buscar"
+								action="#{AtendimentoController.consultarAtendimentos()}"
+								update="dtAtendimentos, msgPagina">
+							</b:commandButton>
+						</b:column>
+
 					</b:row>
-					<p:dataTable 
-						id="dtAtendimentos"
-						emptyMessage="Nenhum Registro" paginator="true"
-						rows="15" var="atendimento" 
-						value="#{AtendimentoController.listAtendimentos}">
+
+					<p:dataTable id="dtAtendimentos" emptyMessage="Nenhum Registro"
+						reflow="true" paginator="true" rows="15" var="atendimento"
+						value="#{AtendimentoController.listAtendimentos}"
+						styleClass="table table-hover" paginatorPosition="bottom">
 
 						<p:column>
 							<f:facet name="header">
@@ -239,20 +231,17 @@
 							<f:facet name="header">
                         Atendimento
                     </f:facet>
-							<b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
-								size="sm" class="btn-acao-table acao-editar"
-								action="#{AtendimentoController.redirectAtendimento()}">
-								<f:setPropertyActionListener value="#{atendimento}"
-									target="#{AtendimentoController.atendimento}" />
-							</b:commandButton>
+							<div align="center">
+								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-edit"
+									size="sm" class="btn-acao-table acao-editar"
+									action="#{AtendimentoController.redirectAtendimento()}">
+									<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+								</p:commandButton>
+							</div>
 						</p:column>
 
 					</p:dataTable>
-
-
-
-
-
 
 				</h:form>
 			</div>
@@ -260,7 +249,9 @@
 
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			modal="true">
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
 			<h:form id="formConsuProg">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
@@ -292,7 +283,10 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true">
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
+			
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{AtendimentoController.listaGrupos}" id="dtGrupo"

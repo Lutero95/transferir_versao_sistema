@@ -8,25 +8,20 @@
 
 	<ui:define name="content">
 
-		<div class="sistemas">
-
+		<h:form id="formSIS">
 			<div class="row row-sistema">
+				<p:outputPanel autoUpdate="true">
+					<ui:repeat var="sis"
+						value="#{MBFuncionarios.sistemasUsuarioLogado}" varStatus="status">
 
-				<h:form id="formSIS">
-					<p:outputPanel autoUpdate="true">
-						<ui:repeat var="sis"
-							value="#{MBFuncionarios.sistemasUsuarioLogado}"
-							varStatus="status">
-
-						<div class="especial">
-							<b:column colXs="4" colSm="4" colMd="4" colLg="3"
-								class="col img-sistemas">
+							<b:column colSm="3" colMd="3" colLg="3"
+								class="col img-sistemas ui-grid-col-4 no-float">
 
 								<div class="thumbnail sistemas-opc fade">
 									<h:commandLink
 										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
 										action="#{MBFuncionarios.redirecionar(sis.url)}">
-										<p:graphicImage value="#{sis.imagem}" />
+										<p:graphicImage value="#{sis.imagem}" class="img-selsist"/>
 									</h:commandLink>
 									<div class="panel-body">
 										<center>
@@ -41,13 +36,9 @@
 								</div>
 
 							</b:column>
-						</div>
-						
-						</ui:repeat>
-					</p:outputPanel>
-				</h:form>
-
+					</ui:repeat>
+				</p:outputPanel>
 			</div>
-		</div>
+		</h:form>
 	</ui:define>
 </ui:composition>
