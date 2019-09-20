@@ -714,7 +714,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 			<textField isBlankWhenNull="true">
 				<reportElement x="327" y="29" width="59" height="14" uuid="4bec89ed-b5dc-4f88-8a71-bf7a011de3f4"/>
 				<textElement>
-					<font size="9"/>
+					<font size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
 			</textField>

@@ -391,7 +391,7 @@ public class TransferenciaPacienteDAO {
 			}
 
 
-			String sql5 = "update hosp.paciente_instituicao set status='CR' where id = ?";
+			String sql5 = "update hosp.paciente_instituicao set status='CT' where id = ?";
 
 			PreparedStatement ps5 = null;
 			ps5 = conexao.prepareStatement(sql5);
@@ -411,8 +411,8 @@ public class TransferenciaPacienteDAO {
 
 			ps6.executeUpdate();
 
-			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade) "
-					+ " values (?, ?, ?, ?,  ?, ?, ?) RETURNING id;";
+			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
+					+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
 
 			ps = conexao.prepareStatement(sql7);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
@@ -422,6 +422,7 @@ public class TransferenciaPacienteDAO {
 			ps.setInt(5, insercao.getLaudo().getId());
 			ps.setString(6, insercao.getObservacao());
 			ps.setInt(7, user_session.getUnidade().getId());
+			ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 
 			rs = ps.executeQuery();
 			int idPacienteInstituicaoNovo = 0;
@@ -524,7 +525,7 @@ public class TransferenciaPacienteDAO {
 
 			}
 
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "IT",
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicaoNovo, insercao.getObservacao(), "IT",
 					conexao)) {
 				conexao.commit();
 

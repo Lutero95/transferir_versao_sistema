@@ -525,7 +525,8 @@
 		<p:dialog header="Consultar Procedimento Primário"
 			widgetVar="dlgConsulProcPrimario" modal="true">
 			<h:form id="formConsulProcPrimario">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -558,7 +559,8 @@
 		<p:dialog header="Consultar Procedimento Secundário 1"
 			widgetVar="dlgConsulProcSecundario1" modal="true">
 			<h:form id="formConsulProcSecundario1">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -589,7 +591,8 @@
 		<p:dialog header="Consultar Procedimento Secundário 2"
 			widgetVar="dlgConsulProcSecundario2" modal="true">
 			<h:form id="formConsulProcSecundario2">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -620,7 +623,8 @@
 		<p:dialog header="Consultar Procedimento Secundário 3"
 			widgetVar="dlgConsulProcSecundario3" modal="true">
 			<h:form id="formConsulProcSecundario3">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -651,7 +655,8 @@
 		<p:dialog header="Consultar Procedimento Secundário 4"
 			widgetVar="dlgConsulProcSecundario4" modal="true">
 			<h:form id="formConsulProcSecundario4">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -682,7 +687,8 @@
 		<p:dialog header="Consultar Procedimento Secundário 5"
 			widgetVar="dlgConsulProcSecundario5" modal="true">
 			<h:form id="formConsulProcSecundario5">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -873,7 +879,8 @@
 					</p:panelGrid>
 
 				</p:row>
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
 						paginator="true" id="tabelacid3" style="width:500px"
 						value="#{LaudoController.listaCids}" var="tab">

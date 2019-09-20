@@ -29,7 +29,7 @@ public class ProgramaController implements Serializable {
     private Integer tipo;
     private String cabecalho;
     private ProgramaDAO pDao = new ProgramaDAO();
-    private List<ProgramaBean> listaProgramasUsuario;
+    private List<ProgramaBean> listaProgramasUsuario, listaFiltradaProgramasusuario;
     private GrupoDAO gDao = new GrupoDAO();
 
     //CONSTANTES
@@ -44,6 +44,7 @@ public class ProgramaController implements Serializable {
         this.listaProgramas = new ArrayList<ProgramaBean>();;
         buscalistaProgramas = new ArrayList<>();
         listaProgramasUsuario = new ArrayList<ProgramaBean>();
+        listaFiltradaProgramasusuario = new ArrayList<ProgramaBean>();
         buscalistaProgramas = null;
     }
 
@@ -196,6 +197,14 @@ public class ProgramaController implements Serializable {
 
 	public void setListaProgramasUsuario(List<ProgramaBean> listaProgramasUsuario) {
 		this.listaProgramasUsuario = listaProgramasUsuario;
+	}
+
+	public List<ProgramaBean> getListaFiltradaProgramasusuario() {
+		return listaFiltradaProgramasusuario;
+	}
+
+	public void setListaFiltradaProgramasusuario(List<ProgramaBean> listaFiltradaProgramasusuario) {
+		this.listaFiltradaProgramasusuario = listaFiltradaProgramasusuario;
 	}
 
 }

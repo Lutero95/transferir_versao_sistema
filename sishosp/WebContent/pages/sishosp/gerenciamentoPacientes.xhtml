@@ -203,12 +203,12 @@
 							</b:column>
 
 							<b:column span="2" class="new-span2">
-								<b:commandButton value="Desligar" style="margin-top:5px;"
+								<p:commandButton value="Desligar" style="margin-top:5px;padding: 4px 12px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnDesligar" immediate="true"
 									class="btn-acao-table acao-desligar btn-new-padding2"
-									update=":formGerenPaci, :frmEquipamentos:msgPagina, :formDeslPac"
-									icon="glyphicon glyphicon-remove"
+									update=":formGerenPaci, :msgPagina, :formDeslPac"
+									icon="ui-icon-close"
 									action="#{GerenciarPacienteController.inicioDesligar()}" />
 							</b:column>
 
@@ -429,7 +429,7 @@
 						<p:calendar
 							value="#{GerenciarPacienteController.gerenciarpaciente.dataDesligamento}"
 							id="dtagen" locale="pt" navigator="true" mask="true"
-							required="false"
+							required="true"
 							requiredMessage="Data de Desligamento: Campo obrigatório!"
 							class="select-agendaEquipe2" showOn="button" pattern="dd/MM/yyyy"
 							size="15">

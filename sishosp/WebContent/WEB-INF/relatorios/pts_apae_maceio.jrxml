@@ -26,7 +26,7 @@
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[SELECT  empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca, p.id, pa.nome,  p.data, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.cod_grupo, g.descgrupo, p.cod_programa, pr.descprograma, 
+		<![CDATA[SELECT distinct  empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca, p.id, pa.nome,  p.data, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.cod_grupo, g.descgrupo, p.cod_programa, pr.descprograma, 
 (SELECT extract(year from age(pa.dtanascimento))) AS idade,
 '' as logomarca
 FROM hosp.pts p 
@@ -35,13 +35,12 @@ join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 JOIN hosp.pacientes pa ON (p.cod_paciente = pa.id_paciente) 
 JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo)
 JOIN hosp.programa pr ON (p.cod_programa = pr.id_programa)
-where 1=1
+where 1=1 and p.status='A'
 and ((   $P{codprograma}   is not null and p.cod_programa=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and p.cod_grupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 
 and ((  $P{pts}  is not null and p.id= $P{pts}) or (($P{pts} =0 ) OR ($P{pts} is null )))
-order by p.id
-]]>
+order by p.id]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
@@ -101,7 +100,7 @@ order by p.id
 	<field name="COLUMN_15" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
 	</field>
-	<group name="grppts" isStartNewPage="true" isResetPageNumber="true" keepTogether="true">
+	<group name="grppts" isStartNewPage="true" isResetPageNumber="true">
 		<groupExpression><![CDATA[$F{id}]]></groupExpression>
 		<groupHeader>
 			<band height="297">
@@ -253,16 +252,7 @@ order by p.id
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="30" splitType="Stretch">
-			<textField>
-				<reportElement x="410" y="0" width="100" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["PÁGINA "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="512" y="0" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
+		<band height="22" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="0" y="0" width="150" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
 				<textElement textAlignment="Left"/>

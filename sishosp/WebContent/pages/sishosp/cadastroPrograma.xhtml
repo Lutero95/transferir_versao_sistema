@@ -140,7 +140,8 @@
         </div>
 
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" resizable="false" 
+                  draggable="false" responsive="true">
             <h:form id="formConsuGrop">
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -181,8 +182,9 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Procedimento"
-                  widgetVar="dlgConsulProc" modal="true">
+        <p:dialog header="Consultar Procedimento" styleClass="topDialog"
+                  widgetVar="dlgConsulProc" modal="true" resizable="false" 
+                  draggable="false" responsive="true">
             <h:form id="formConsulProc">
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"

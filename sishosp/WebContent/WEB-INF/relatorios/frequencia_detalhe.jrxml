@@ -21,19 +21,19 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="26" y="0" width="100" height="18" uuid="bf775bd8-0455-4031-89c4-f49a9edb2ed9">
+				<reportElement x="40" y="0" width="50" height="18" uuid="bf775bd8-0455-4031-89c4-f49a9edb2ed9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[              /      /]]></text>
+				<text><![CDATA[ /      /]]></text>
 			</staticText>
 			<line>
-				<reportElement x="130" y="0" width="1" height="18" uuid="2b09dd0c-2b1d-48cc-bfb7-604acf3d4b51">
+				<reportElement x="90" y="0" width="1" height="18" uuid="2b09dd0c-2b1d-48cc-bfb7-604acf3d4b51">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>
 			<line>
-				<reportElement x="364" y="1" width="1" height="18" uuid="9550a00f-86ac-423d-bb4c-98996da30df9">
+				<reportElement x="244" y="1" width="1" height="18" uuid="9550a00f-86ac-423d-bb4c-98996da30df9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>

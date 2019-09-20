@@ -1,648 +1,714 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
-        <f:metadata>
-            <f:viewAction
-                    action="#{AtendimentoController.getCarregaAtendimentoEquipe()}"/>
-        </f:metadata>
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction
+				action="#{AtendimentoController.getCarregaAtendimentoEquipe()}" />
+		</f:metadata>
 
-        <div class="panel panel-primary top-primary">
-            <div class="panel-heading top-heading">
-                <h4 class="panel-title">Atendimento Equipe</h4>
-            </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Atendimento Equipe</h4>
+			</div>
 
-            <div class="panel-body table-body">
+			<div class="panel-body table-body">
 
-                <h:form id="frmInicial">
+				<h:form id="frmInicial">
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Número Laudo:" class="fire-label" severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Número Laudo:" class="fire-label" severity="info" />
 
-                            <h:outputLabel
-                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.id}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<h:outputLabel
+								value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.id}"
+								class="campo-laudoDig3" />
+						</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Inicial:" class="fire-label"
-                                     severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Vigência Inicial:" class="fire-label"
+								severity="info" />
 
-                            <h:outputLabel
-                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaInicial}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
+							<h:outputLabel
+								value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaInicial}"
+								class="campo-laudoDig3">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Final" class="fire-label"
-                                     severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Vigência Final" class="fire-label"
+								severity="info" />
 
-                            <h:outputLabel
-                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaFinal}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
+							<h:outputLabel
+								value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaFinal}"
+								class="campo-laudoDig3">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</b:column>
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Grupo Avaliação" severity="info" />
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Grupo Avaliação" severity="info" />
 
-                            <p:outputPanel id="outGrupo">
-                                <p:autoComplete value="#{AtendimentoController.atendimento.grupoAvaliacao}"
-                                                size="31" converter="conGrupo" required="true"
-                                                requiredMessage="Grupo: Campo obrigatório!"
-                                                class="select-agendaEquipe4"
-                                                completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descGrupo}">
-                                    <p:ajax event="itemSelect" update="" />
+							<p:outputPanel id="outGrupo">
+								<p:autoComplete
+									value="#{AtendimentoController.atendimento.grupoAvaliacao}"
+									size="31" converter="conGrupo" required="true"
+									requiredMessage="Grupo: Campo obrigatório!"
+									class="select-agendaEquipe4"
+									completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descGrupo}">
+									<p:ajax event="itemSelect" update="" />
 
-                                </p:autoComplete>
+								</p:autoComplete>
 
-                                <p:commandButton id="btBusGr" immediate="true"
-                                                 icon="ui-icon-search"
-                                                 action="#{AtendimentoController.listarGruposPorProgramas()}"
-                                                 update=":formConsuGrop"
-                                                 onclick="PF('dlgConsuGrop').show();" />
-                            </p:outputPanel>
-                        </b:column>
+								<p:commandButton id="btBusGr" immediate="true"
+									icon="ui-icon-search"
+									action="#{AtendimentoController.listarGruposPorProgramas()}"
+									update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
+							</p:outputPanel>
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <b:row>
-                        <div align="center">
-                            <b:row>
-                                <p:commandButton value="Consultar Evolucao" look="success" size="sm"
-                                                 icon="ui-icon-search" immediate="true" update=":frmPrincipal"
-                                                 action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
-                                                 oncomplete="PF('dlgConsultaEvolucoes').show();"/>
+					<b:row class="row-table">
+						<div align="center">
 
-                                <p:commandButton value="Consultar PTS" look="success" size="sm"
-                                                 style="margin-left: 10px"
-                                                 icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
-                                                 action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
-                                                 oncomplete="PF('dlgConsultaPTS').show();"/>
-                            </b:row>
-                        </div>
-                    </b:row>
+							<p:commandButton value="Consultar Evolucao"
+								icon="fa fa-fw fa-file-text"
+								class="btn-prime btn-acao-table acao-agend" immediate="true"
+								update=":frmPrincipal"
+								action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+								oncomplete="PF('dlgConsultaEvolucoes').show();" />
 
-                </h:form>
+							<p:commandButton value="Consultar PTS" style="margin-left:25px"
+								icon="fa fa-fw fa-file-text"
+								class="btn-prime btn-acao-table acao-agend" immediate="true"
+								update=":frmPrincipalPts"
+								action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+								oncomplete="PF('dlgConsultaPTS').show();" />
 
-                <h:form id="formConsAge">
+						</div>
+					</b:row>
 
-                    <p:outputPanel>
-                        <p:dataTable
-                                value="#{AtendimentoController.listAtendimentosEquipe}"
-                                id="dtAtendimentos" var="atendimento" editable="true"
-                                editMode="cell" emptyMessage="Sem registros.">
+				</h:form>
 
-                            <p:ajax event="cellEdit"
-                                    listener="#{AtendimentoController.onCellEdit}"/>
+				<h:form id="formConsAge">
 
-                            <p:column headerText="CNS" width="10%">
-                                <h:outputText value="#{atendimento.funcionario.cns}"
-                                              style="font-weight:bold;"></h:outputText>
-                            </p:column>
+					<p:outputPanel>
+						<p:dataTable
+							value="#{AtendimentoController.listAtendimentosEquipe}"
+							id="dtAtendimentos" var="atendimento" editable="true"
+							editMode="cell" emptyMessage="Sem registros."
+							styleClass="table table-hover" reflow="true">
 
-                            <p:column headerText="Profissional" width="25%">
-                                <p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
-                                                 style="margin-right: 10px;"
-                                                 action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
-                                                 oncomplete="PF('dlgConsultProfi').show()" update=":formConsultProf">
-                                    <f:setPropertyActionListener value="#{atendimento}"
-                                                                 target="#{AtendimentoController.atendimentoLista}"/>
-                                </p:commandButton>
-                                <h:outputText value="#{atendimento.funcionario.nome}"
-                                              style="font-weight:bold;"></h:outputText>
-                            </p:column>
+							<p:ajax event="cellEdit"
+								listener="#{AtendimentoController.onCellEdit}" />
 
-                            <p:column headerText="CBO" width="20%">
-                                <h:outputText value="#{atendimento.cbo.descCbo}"
-                                              style="font-weight:bold;"></h:outputText>
-                            </p:column>
+							<p:column headerText="CNS" width="10%">
+								<h:outputText value="#{atendimento.funcionario.cns}"
+									style="font-weight:bold;"></h:outputText>
+							</p:column>
 
-                            <p:column headerText="Procedimento" width="20%">
-                                <p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
-                                                 action="#{AtendimentoController.listarProcedimentos()}"
-                                                 oncomplete="PF('dlgConsulProc1').show()" update=":formConsulProc1">
-                                    <f:setPropertyActionListener value="#{atendimento}"
-                                                                 target="#{AtendimentoController.atendimentoLista}"/>
-                                </p:commandButton>
-                                <h:outputText value="#{atendimento.procedimento.nomeProc}"
-                                              style="font-weight:bold;"></h:outputText>
-                            </p:column>
+							<p:column headerText="Profissional" width="25%">
+								<p:commandButton icon="ui-icon-search"
+									class="btn-acao-table acao-editar" style="margin-right: 10px;"
+									action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+									oncomplete="PF('dlgConsultProfi').show()"
+									update=":formConsultProf">
+									<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimentoLista}" />
+								</p:commandButton>
+								<h:outputText value="#{atendimento.funcionario.nome}"
+									style="font-weight:bold;"></h:outputText>
+							</p:column>
 
-                            <p:column headerText="Status" width="15%"
-                                      rendered="#{AtendimentoController.atendimento.avaliacao != true}">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputLabel value="Atendido"
-                                                       rendered="#{atendimento.status == 'A'}"/>
-                                        <h:outputLabel value="Profissional Faltou"
-                                                       rendered="#{atendimento.status == 'PF'}"/>
-                                        <h:outputLabel value="Selecione"
-                                                       rendered="#{atendimento.status == ''}"/>
+							<p:column headerText="CBO" width="20%">
+								<h:outputText value="#{atendimento.cbo.descCbo}"
+									style="font-weight:bold;"></h:outputText>
+							</p:column>
 
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:selectOneMenu value="#{atendimento.status}"
-                                                         style="width:150px;">
-                                            <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                            <f:selectItem itemLabel="Atendido" itemValue="A"/>
-                                            <f:selectItem itemLabel="Profissional Faltou" itemValue="PF"/>
-                                            <p:ajax
-                                                    listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-                                                    update=":formConsAge"></p:ajax>
-                                        </p:selectOneMenu>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
+							<p:column headerText="Procedimento" width="20%">
+								<p:commandButton icon="ui-icon-search"
+									class="btn-acao-table acao-editar"
+									action="#{AtendimentoController.listarProcedimentos()}"
+									oncomplete="PF('dlgConsulProc1').show()"
+									update=":formConsulProc1">
+									<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimentoLista}" />
+								</p:commandButton>
+								<h:outputText value="#{atendimento.procedimento.nomeProc}"
+									style="font-weight:bold;"></h:outputText>
+							</p:column>
 
-                            <p:column headerText="Perfil Avaliação" width="15%"
-                                      rendered="#{AtendimentoController.atendimento.avaliacao == true}">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputLabel value="Tem Perfil"
-                                                       rendered="#{atendimento.perfil == 'S'}"/>
-                                        <h:outputLabel value="Não tem Perfil"
-                                                       rendered="#{atendimento.perfil == 'N'}"/>
-                                        <h:outputLabel value="Selecione"
-                                                       rendered="#{atendimento.perfil == ''}"/>
+							<p:column headerText="Status" width="15%"
+								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputLabel value="Atendido"
+											rendered="#{atendimento.status == 'A'}" />
+										<h:outputLabel value="Profissional Faltou"
+											rendered="#{atendimento.status == 'PF'}" />
+										<h:outputLabel value="Selecione"
+											rendered="#{atendimento.status == ''}" />
 
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:selectOneMenu value="#{atendimento.perfil}"
-                                                         style="width:150px;">
-                                            <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                            <f:selectItem itemLabel="Tem Perfil" itemValue="S"/>
-                                            <f:selectItem itemLabel="Não tem Perfil" itemValue="N"/>
-                                        </p:selectOneMenu>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{atendimento.status}"
+											style="width:150px;">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItem itemLabel="Atendido" itemValue="A" />
+											<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
+											<p:ajax
+												listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+												update=":formConsAge"></p:ajax>
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
 
-                            <p:column headerText="Evolução" width="10%">
-                                <div align="center">
-                                    <p:commandButton icon="ui-icon-document" size="sm"
-                                                     class="btn-acao-table acao-editar"
-                                                     action="#{AtendimentoController.abrirDialogAtendimentoPorEquipe()}">
-                                        <f:setPropertyActionListener value="#{atendimento.id1}"
-                                                                     target="#{AtendimentoController.idAtendimento1}"/>
-                                    </p:commandButton>
-                                </div>
-                            </p:column>
+							<p:column headerText="Perfil Avaliação" width="15%"
+								rendered="#{AtendimentoController.atendimento.avaliacao == true}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputLabel value="Tem Perfil"
+											rendered="#{atendimento.perfil == 'S'}" />
+										<h:outputLabel value="Não tem Perfil"
+											rendered="#{atendimento.perfil == 'N'}" />
+										<h:outputLabel value="Selecione"
+											rendered="#{atendimento.perfil == ''}" />
 
-                        </p:dataTable>
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{atendimento.perfil}"
+											style="width:150px;">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItem itemLabel="Tem Perfil" itemValue="S" />
+											<f:selectItem itemLabel="Não tem Perfil" itemValue="N" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
 
-                    </p:outputPanel>
+							<p:column headerText="Evolução" width="10%">
+								<div align="center">
+									<p:commandButton icon="fa fa-fw fa-edit" size="sm"
+										class="btn-acao-table acao-editar"
+										action="#{AtendimentoController.abrirDialogAtendimentoPorEquipe()}">
+										<f:setPropertyActionListener value="#{atendimento.id1}"
+											target="#{AtendimentoController.idAtendimento1}" />
+									</p:commandButton>
+								</div>
+							</p:column>
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
+							<f:facet name="footer">
+								<h:outputText value=" " styleClass="padding-footer-datatble" />
+							</f:facet>
 
-                    <br></br>
+						</p:dataTable>
 
-                    <div align="center">
+					</p:outputPanel>
 
-                        <b:commandButton
-                                action="#{AtendimentoController.realizarAtendimentoEquipe()}"
-                                icon="glyphicon-ok" size="sm" look="success" value="Gravar"
-                                update="msgPagina" class="btn-incluir" style="float:left"/>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                         size="sm" immediate="true" look="info" update=":formConsAge"
-                                         style="float:right" class="btn-voltar"
-                                         action="/pages/sishosp/atendimento.faces?faces-redirect=true">
-                        </b:commandButton>
+					<br></br>
 
-                    </div>
+					<div align="center">
 
-                </h:form>
-            </div>
-        </div>
+						<b:commandButton
+							action="#{AtendimentoController.realizarAtendimentoEquipe()}"
+							icon="glyphicon-ok" size="sm" look="success" value="Gravar"
+							update="msgPagina" class="btn-incluir" style="float:left" />
 
+<<<<<<< HEAD
         <p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formConsultProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{MBFuncionarios.listaProfissional}"
                              id="dtTipoAt" var="profi">
+=======
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" update=":formConsAge"
+							style="float:right" class="btn-voltar"
+							action="/pages/sishosp/atendimento.faces?faces-redirect=true">
+						</b:commandButton>
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-                    <h:column>
-                        <f:facet name="header">
+					</div>
+
+				</h:form>
+			</div>
+		</div>
+
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true">
+
+			<h:form id="formConsultProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{MBFuncionarios.listaProfissional}" id="dtTipoAt"
+					var="profi">
+
+					<h:column>
+						<f:facet name="header">
                             Profissional
                         </f:facet>
-                        <p:outputLabel value="#{profi.nome}"/>
-                    </h:column>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Especialidade
                         </f:facet>
-                        <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
-                    </h:column>
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formConsAge" icon="ui-icon-check"
-                                         action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-                                         title="Selecionar" class="new-btn-acao-table acao-editar">
-                            <f:setPropertyActionListener value="#{profi}"
-                                                         target="#{AtendimentoController.funcionario}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":formConsAge" icon="ui-icon-check"
+							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+							title="Selecionar" class="new-btn-acao-table acao-editar">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{AtendimentoController.funcionario}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
+<<<<<<< HEAD
         <p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formConsulProc1">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{AtendimentoController.listaProcedimentos}" var="proc"
                              display="Nenhum Procedimento">
+=======
+		<p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true">
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-                    <h:column>
-                        <f:facet name="header">
+			<h:form id="formConsulProc1">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AtendimentoController.listaProcedimentos}" var="proc"
+					display="Nenhum Procedimento">
+
+					<h:column>
+						<f:facet name="header">
                             Descrição
                         </f:facet>
-                        <p:outputLabel value="#{proc.nomeProc}"/>
-                    </h:column>
+						<p:outputLabel value="#{proc.nomeProc}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formConsAge" icon="ui-icon-check"
-                                         action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-                                         title="Selecionar" class="new-btn-acao-table acao-editar">
-                            <f:setPropertyActionListener value="#{proc}"
-                                                         target="#{AtendimentoController.procedimento}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":formConsAge" icon="ui-icon-check"
+							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+							title="Selecionar" class="new-btn-acao-table acao-editar">
+							<f:setPropertyActionListener value="#{proc}"
+								target="#{AtendimentoController.procedimento}" />
+						</p:commandButton>
+					</h:column>
 
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
+<<<<<<< HEAD
         <p:dialog header="Digite a evolução" widgetVar="dlgEvolucao" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formEvolucao">
                 <p:editor widgetVar="editor2"
                           value="#{AtendimentoController.atendimento.evolucao}"
                           required="true" requiredMessage="Evolução: Campo obrigatório!">
+=======
+		<p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"
+			draggable="false" resizable="false" closable="true" modal="true"
+			showEffect="fade" hideEffect="clip"
+			styleClass="sm-size-dlg topDialog2" responsive="true">
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-                </p:editor>
+			<h:form id="formEvolucao">
+				<p:editor widgetVar="editor2"
+					value="#{AtendimentoController.atendimento.evolucao}"
+					required="true" requiredMessage="Evolução: Campo obrigatório!">
+				</p:editor>
 
-                <br></br>
+				<div align="center">
+					<p:commandButton
+						action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
+						icon="ui-icon-disk" class="btn-acao-table acao-confirmar"
+						value="Gravar Evolução" style="float:left; margin-top:15px;" />
+				</div>
+			</h:form>
+		</p:dialog>
 
-                <div align="center">
-                    <p:commandButton
-                            action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
-                            icon="ui-icon-disk" class="btn-acao-table acao-confirmar"
-                            value="Gravar Evolução" style="float:left"/>
-                </div>
-            </h:form>
-        </p:dialog>
+		<p:dialog header="Consultar Evoluções"
+			widgetVar="dlgConsultaEvolucoes" draggable="false" resizable="false"
+			closable="true" modal="true" showEffect="fade" hideEffect="clip"
+			styleClass="md-size-dlg topDialog" responsive="true">
 
+<<<<<<< HEAD
         <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="500px"
         dynamic="true"
                   styleClass="topDialog">
+=======
+			<h:form id="frmPrincipal">
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-            <h:form id="frmPrincipal">
+				<p:outputPanel id="outDtEvolucoes">
 
-                <p:outputPanel id="outDtEvolucoes">
+					<ui:repeat var="evo"
+						value="#{AtendimentoController.listaEvolucoes}" varStatus="status">
 
-                    <b:row>
-                        <b:column span="12">
-                            <ui:repeat var="evo"
-                                       value="#{AtendimentoController.listaEvolucoes}"
-                                       varStatus="status">
+						<p:panel styleClass="panel-border-color">
+							<p:panelGrid columns="1">
 
-                                <p:panelGrid columns="2" styleClass="semBorda2">
+								<p:row>
+									<p:column colspan="2">
+										<h:outputLabel styleClass="title-bold"
+											value="Data Atendimento:" />
+										<h:outputLabel value="#{evo.dataAtendimentoInicio}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputLabel>
+									</p:column>
+								</p:row>
 
-                                    <h:outputLabel value="Data Atendimento:"/>
-                                    <h:outputLabel value="#{evo.dataAtendimentoInicio}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                    </h:outputLabel>
+								<p:row>
+									<p:column colspan="2">
+										<h:outputLabel styleClass="title-bold" value="Profissional:" />
+										<h:outputLabel value="#{evo.funcionario.nome}" />
+									</p:column>
+								</p:row>
 
-                                    <h:outputLabel value="Profissional:"/>
-                                    <h:outputLabel value="#{evo.funcionario.nome}"/>
+								<p:row>
+									<p:column colspan="2">
+										<h:outputLabel styleClass="title-bold" value="Evolução:" />
+										<h:outputLabel value="#{evo.evolucao}" />
+									</p:column>
+								</p:row>
 
-                                    <h:outputLabel value="Evolução:"/>
-                                    <h:outputLabel value="#{evo.evolucao}"/>
+							</p:panelGrid>
 
-                                    <hr></hr>
-                                </p:panelGrid>
+						</p:panel>
 
-                            </ui:repeat>
+					</ui:repeat>
 
-                        </b:column>
-                    </b:row>
-                </p:outputPanel>
+				</p:outputPanel>
+			</h:form>
 
+		</p:dialog>
 
-            </h:form>
+		<p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS"
+			draggable="false" resizable="false" closable="true" modal="true"
+			showEffect="fade" hideEffect="clip"
+			styleClass="lg-size-dlg topDialog" responsive="true">
 
-        </p:dialog>
+			<h:form id="frmPrincipalPts">
 
+<<<<<<< HEAD
         <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px"
         dynamic="true"
                   styleClass="topDialog">
+=======
+				<div class="panel panel-primary">
+					<div class="panel-heading top-heading" style="margin-bottom: 15px;">
+						<h4 class="label-table-title">VISÃO GERAL DO PACIENTE</h4>
+					</div>
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-            <h:form id="frmPrincipalPts">
-                <b:row>
+					<b:row>
 
-                    <h1>VISÃO GERAL DO PACIENTE</h1>
+						<b:column span="5" class="label-position">
 
-                </b:row>
+							<b:label value="Incapacidades Funcionais:"
+								styleClass="label-position-zero" id="incapacidadesFuncionais"
+								severity="info" />
 
-                <br></br>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
+								value="#{AtendimentoController.pts.incapacidadesFuncionais}"></h:inputTextarea>
 
-                <b:row>
+						</b:column>
 
-                    <b:column span="5" class="label-position data-size">
+						<b:column span="5" class="label-position">
 
-                        <b:label value="Incapacidades Funcionais:" id="incapacidadesFuncionais"
-                                 severity="info" class="fire-label"/>
+							<b:label value="Capacidades Funcionais:"
+								styleClass="label-position-zero" id="capacidadesFuncionais"
+								severity="info" />
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.incapacidadesFuncionais}"></h:inputTextarea>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Capacidades Funcionais: Campo obrigatório!"
+								value="#{AtendimentoController.pts.capacidadesFuncionais}"></h:inputTextarea>
 
-                    </b:column>
+						</b:column>
 
-                    <b:column span="2"></b:column>
+						<b:column span="5" class="label-position">
 
-                    <b:column span="5" class="label-position data-size">
+							<b:label value="Objetivos Familia/Paciente:"
+								styleClass="label-position-zero" id="objetivosFamiliarPaciente"
+								severity="info" />
 
-                        <b:label value="Capacidades Funcionais:" id="capacidadesFuncionais"
-                                 severity="info" class="fire-label"/>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+								value="#{AtendimentoController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Capacidades Funcionais: Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.capacidadesFuncionais}"></h:inputTextarea>
+						</b:column>
 
-                    </b:column>
+						<b:column span="5" class="label-position">
 
-                </b:row>
+							<b:label value="Objetivos Gerais/Multidisciplinar:"
+								id="objetivosGeraisMultidisciplinar" severity="info"
+								styleClass="label-position-zero" />
 
-                <br></br>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
+								value="#{AtendimentoController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
 
-                <b:row>
+						</b:column>
 
-                    <b:column span="5" class="label-position data-size">
+						<b:column span="5" class="label-position ">
 
-                        <b:label value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
-                                 severity="info" class="fire-label"/>
+							<b:label value="Objetivos Gerias (Curto Prazo):"
+								id="objetivosGeraisCurtoPrazo" severity="info"
+								styleClass="label-position-zero" />
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+								value="#{AtendimentoController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
 
-                    </b:column>
+						</b:column>
 
-                    <b:column span="2"></b:column>
+						<b:column span="5" class="label-position ">
 
-                    <b:column span="5" class="label-position data-size">
+							<b:label value="Objetivos Gerais (Médio Prazo):"
+								id="objetivosGeraisMedioPrazo" severity="info"
+								styleClass="label-position-zero" />
 
-                        <b:label value="Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
-                                 severity="info" class="fire-label"/>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
+								value="#{AtendimentoController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
+						</b:column>
 
-                    </b:column>
+						<b:column span="5" class="label-position ">
 
-                </b:row>
+							<b:label value="Objetivos Gerais (Longo Prazo):"
+								id="objetivosGeraisLongoPrazo" severity="info"
+								styleClass="label-position-zero" />
 
-                <br></br>
+							<h:inputTextarea styleClass="txarea-style" scrollHeight="100"
+								required="true" rows="20"
+								requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
+								value="#{AtendimentoController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
 
-                <b:row>
+						</b:column>
 
-                    <b:column span="4" class="label-position data-size">
+					</b:row>
+				</div>
 
-                        <b:label value="Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
-                                 severity="info" class="fire-label"/>
+				<br></br>
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-                    </b:column>
+				<div class="panel panel-primary">
+					<div class="panel-heading top-heading" style="margin-bottom: 15px;">
+						<h4 class="label-table-title">VISÃO MULTIDISCIPLINAR</h4>
+					</div>
 
-                    <b:column span="4" class="label-position data-size">
+					<p:dataTable id="dtPtsAdicionados" resizableColumns="true"
+						value="#{AtendimentoController.pts.listaPtsArea}" var="pts"
+						emptyMessage="Sem registros." style="margin: 10px;"
+						reflow="true">
 
-                        <b:label value="Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
-                                 severity="info" class="fire-label"/>
+						<p:column headerText="Cód Especialidade" width="0%"
+							rendered="false">
+							<h:outputLabel value="#{pts.area.codEspecialidade}">
+							</h:outputLabel>
+						</p:column>
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
+						<p:column headerText="Especialidade" width="13%">
+							<h:outputLabel value="#{pts.area.descEspecialidade}">
+							</h:outputLabel>
+						</p:column>
 
-                    </b:column>
+						<p:column headerText="Objetivo Curto" width="13%">
+							<h:outputLabel value="#{pts.objetivoCurto}" />
+						</p:column>
 
-                    <b:column span="4" class="label-position data-size">
+						<p:column headerText="Objetivo Médio" width="13%">
+							<h:outputLabel value="#{pts.objetivoMedio}" />
+						</p:column>
 
-                        <b:label value="Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
-                                 severity="info" class="fire-label"/>
+						<p:column headerText="Objetivo Longo" width="13%">
+							<h:outputLabel value="#{pts.objetivoLongo}" />
+						</p:column>
 
-                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                         required="true" rows="20" cols="89"
-                                         requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
-                                         value="#{AtendimentoController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
+						<p:column headerText="Plano Curto" width="13%">
+							<h:outputLabel value="#{pts.planoDeIntervencoesCurto}" />
+						</p:column>
 
-                    </b:column>
+						<p:column headerText="Plano Médio" width="13%">
+							<h:outputLabel value="#{pts.planoDeIntervencoesMedio}" />
+						</p:column>
 
-                </b:row>
+						<p:column headerText="Plano Longo" width="13%">
+							<h:outputLabel value="#{pts.planoDeIntervencoesLongo}" />
+						</p:column>
 
-                <br></br>
+						<f:facet name="footer">
+							<h:outputText value=" " styleClass="padding-footer-datatble" />
+						</f:facet>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+					</p:dataTable>
 
-                <b:row>
+				</div>
+			</h:form>
 
-                    <h1>VISÃO MULTIDISCIPLINAR</h1>
+		</p:dialog>
 
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <p:dataTable id="dtPtsAdicionados" resizableColumns="true"
-                                 value="#{AtendimentoController.pts.listaPtsArea}"
-                                 var="pts" emptyMessage="Sem registros.">
-
-                        <p:column headerText="Cód Especialidade" width="0%" rendered="false">
-                            <h:outputLabel value="#{pts.area.codEspecialidade}">
-                            </h:outputLabel>
-                        </p:column>
-
-                        <p:column headerText="Especialidade" width="13%">
-                            <h:outputLabel value="#{pts.area.descEspecialidade}">
-                            </h:outputLabel>
-                        </p:column>
-
-                        <p:column headerText="Objetivo Curto" width="13%">
-                            <h:outputLabel value="#{pts.objetivoCurto}"/>
-                        </p:column>
-
-                        <p:column headerText="Objetivo Médio" width="13%">
-                            <h:outputLabel value="#{pts.objetivoMedio}"/>
-                        </p:column>
-
-                        <p:column headerText="Objetivo Longo" width="13%">
-                            <h:outputLabel value="#{pts.objetivoLongo}"/>
-                        </p:column>
-
-                        <p:column headerText="Plano Curto" width="13%">
-                            <h:outputLabel value="#{pts.planoDeIntervencoesCurto}"/>
-                        </p:column>
-
-                        <p:column headerText="Plano Médio" width="13%">
-                            <h:outputLabel value="#{pts.planoDeIntervencoesMedio}"/>
-                        </p:column>
-
-                        <p:column headerText="Plano Longo" width="13%">
-                            <h:outputLabel value="#{pts.planoDeIntervencoesLongo}"/>
-                        </p:column>
-
-                    </p:dataTable>
-
-                </b:row>
-
-            </h:form>
-
-        </p:dialog>
-
+<<<<<<< HEAD
         <p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo" closable="false" draggable="false"
                   visible="#{AtendimentoController.renderizarDialogLaudo == true}" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formEscolherLaudo">
+=======
+		<p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo"
+			closable="false" draggable="false"
+			visible="#{AtendimentoController.renderizarDialogLaudo == true}"
+			modal="true" width="750px" styleClass="topDialog">
+			<h:form id="formEscolherLaudo">
+>>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
-                <div align="center">
+				<div align="center">
 
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" page-length="5"
-                                 page-length-menu="5,10,20"
-                                 value="#{AtendimentoController.listaLaudosVigentes}" id="dtLaudo"
-                                 var="insercao" display="Nenhum Laudo">
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						page-length="5" page-length-menu="5,10,20"
+						value="#{AtendimentoController.listaLaudosVigentes}" id="dtLaudo"
+						var="insercao" display="Nenhum Laudo">
 
-                        <h:column>
-                            <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                                 Paciente
                             </f:facet>
-                            <p:outputLabel value="#{insercao.laudo.paciente.nome}"/>
-                        </h:column>
+							<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
+						</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                                 CNS
                             </f:facet>
-                            <p:outputLabel value="#{insercao.laudo.paciente.cns}"/>
-                        </h:column>
+							<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
+						</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                                 Vigência Inicial
                             </f:facet>
-                            <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </p:outputLabel>
-                        </h:column>
+							<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                                 Vigência Final
                             </f:facet>
-                            <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </p:outputLabel>
-                        </h:column>
+							<p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton icon="ui-icon-check" title="Selecionar" update=":frmInicial"
-                                             oncomplete="PF('dlgEscolherLaudo').hide();"
-                                             class="new-btn-acao-table acao-editar">
-                                <f:setPropertyActionListener value="#{insercao}"
-                                                             target="#{AtendimentoController.atendimento.insercaoPacienteBean}"/>
-                            </p:commandButton>
-                        </h:column>
+							<p:commandButton icon="ui-icon-check" title="Selecionar"
+								update=":frmInicial" oncomplete="PF('dlgEscolherLaudo').hide();"
+								class="new-btn-acao-table acao-editar">
+								<f:setPropertyActionListener value="#{insercao}"
+									target="#{AtendimentoController.atendimento.insercaoPacienteBean}" />
+							</p:commandButton>
+						</h:column>
 
-                    </b:dataTable>
+					</b:dataTable>
 
-                </div>
+				</div>
 
-            </h:form>
-        </p:dialog>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-                  modal="true" styleClass="topDialog" dynamic="true">
-            <h:form id="formConsuGrop">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
-                             responsive="true" save-state="false" saveState="false"
-                             value="#{AtendimentoController.listaGrupos}" id="dtGrupo"
-                             var="grupo" display="Nenhum Grupo">
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true" dynamic="true">
 
-                    <h:column>
-                        <f:facet name="header">
+			<h:form id="formConsuGrop">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+					responsive="true" save-state="false" saveState="false"
+					value="#{AtendimentoController.listaGrupos}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
                             Grupo
                         </f:facet>
-                        <p:outputLabel value="#{grupo.descGrupo}" />
-                    </h:column>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Quantidade Frequência
                         </f:facet>
-                        <p:outputLabel value="#{grupo.qtdFrequencia}" />
-                    </h:column>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":frmInicial:outGrupo"
-                                icon="ui-icon-check" title="Selecionar"
-                                class="new-btn-acao-table acao-editar"
-                                onclick="PF('dlgConsuGrop').hide();">
-                            <f:setPropertyActionListener value="#{grupo}"
-                                                         target="#{AtendimentoController.atendimento.grupoAvaliacao}" />
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":frmInicial:outGrupo"
+							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AtendimentoController.atendimento.grupoAvaliacao}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 
 </ui:composition>
