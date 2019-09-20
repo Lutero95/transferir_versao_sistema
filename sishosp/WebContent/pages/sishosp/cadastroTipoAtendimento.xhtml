@@ -209,7 +209,7 @@
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupo"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuGrop">
-                <p:outputPanel autoUpdate="true">
+                <p:outputPanel>
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{GrupoController.listaGrupos}" id="dtGrupo"
                                  display="Nenhum Grupo" var="grupo">

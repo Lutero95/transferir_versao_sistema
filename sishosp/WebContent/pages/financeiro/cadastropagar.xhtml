@@ -36,8 +36,9 @@
 			 <h:form id="formInsert">
 
 				<p:growl id="msg" />
-				<p:outputPanel autoUpdate="false">
+				<p:outputPanel>
 				<p:tabView id="tbview">
+				
 
 					<p:tab title="Documento">
 
@@ -417,7 +418,8 @@
 		</p:dialog>
 	    <p:dialog responsive="true"    header="Dados" widgetVar="dlgDesistencia" width="800" position="top">
 	    		<h:form id="formDesistencia">
-	    			<p:outputPanel id="dadosvendainc" autoUpdate="true">
+	    			<p:outputPanel id="dadosvendainc">
+	    			<p:autoUpdate/>
 
                         <p:panelGrid columns="8" id="pnlVenda" styleClass="semBorda">
 
@@ -436,7 +438,8 @@
 
                     </p:outputPanel>
 	    
-	   			<p:outputPanel autoUpdate="true">
+	   			<p:outputPanel>
+	   			<p:autoUpdate/>
 	   			
 							<p:commandButton icon="ui-icon-search" value="Buscar"			
 									onclick="PF('dlgDesistencia').show();" action="#{tituloPagarController.listTodosCreditoDesistencia()}"></p:commandButton>
@@ -493,7 +496,8 @@
 
 	<h:form>
 			
-				<p:outputPanel autoUpdate="true">				
+				<p:outputPanel >	
+				<p:autoUpdate/>			
 					<h:outputLabel value="Deseja pagar em: #{tituloPagarController.tituloPagarBean.parcela} parcelas?" style="font-size:20px;"/>					
 					<hr/>
 				</p:outputPanel>

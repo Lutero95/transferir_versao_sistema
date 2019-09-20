@@ -125,8 +125,8 @@
 
 </p:panelGrid>
                 <br />
-                <p:outputPanel autoUpdate="true" id="out2">
-                    
+                <p:outputPanel  id="out2">
+                    <p:autoUpdate/>
                     <hr />
 
                     <center>
@@ -149,7 +149,8 @@
                     <hr />
                     <center>
 
-                       <p:outputPanel autoUpdate="true">
+                       <p:outputPanel>
+                       <p:autoUpdate/>
                         <p:commandButton value="Gerar Relatório f" icon="ui-icon-print"
                                          ajax="false"
                                          rendered="#{reportController.agruparReceber == 'C'}"

@@ -284,7 +284,8 @@
                                           class="label-position new-data-size new-comple1">
                                     <b:label value="Tipo de Atendimento:" severity="info"/>
 
-                                    <p:outputPanel id="outTipoAt" autoUpdate="true">
+                                    <p:outputPanel id="outTipoAt">
+                                    <p:autoUpdate/>
                                         <p:autoComplete
                                                 value="#{ConfigAgendaController.confParte2.tipoAt}" size="31"
                                                 converter="conTipoAtendimento" class="select-agendaEquipe4"

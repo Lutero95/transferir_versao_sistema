@@ -10,7 +10,8 @@
 
 		<h:form id="formSIS">
 			<div class="row row-sistema">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<ui:repeat var="sis"
 						value="#{MBFuncionarios.sistemasUsuarioLogado}" varStatus="status">
 

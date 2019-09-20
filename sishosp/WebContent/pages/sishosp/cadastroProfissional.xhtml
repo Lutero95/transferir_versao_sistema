@@ -174,7 +174,8 @@
 
 						<b:row>
 							<b:column span="9">
-								<p:outputPanel autoUpdate="true">
+								<p:outputPanel>
+								<p:autoUpdate/>
 									<p:dataTable emptyMessage="Nenhuma unidade adicionada"
 										styleClass="table table-hover" id="tabelaunidades"
 										value="#{MBFuncionarios.profissional.listaUnidades}"
@@ -564,7 +565,8 @@
 		<p:dialog header="Consultar Especialidade" modal="true"
 			widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
 			<h:form id="formConsulEspec">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{EspecialidadeController.listaEspecialidade}"
 						page-length="5" page-length-menu="5,10,20" var="espec"
@@ -627,7 +629,8 @@
 		<p:dialog header="Consultar Procedimento 1" widgetVar="dlgConsulProc1"
 			modal="true" styleClass="topDialog2">
 			<h:form id="formConsulProc1">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -659,7 +662,8 @@
 		<p:dialog header="Consultar Procedimento 2" widgetVar="dlgConsulProc2"
 			modal="true" styleClass="topDialog">
 			<h:form id="formConsulProc2">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
@@ -691,7 +695,8 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
 			modal="true" styleClass="topDialog">
 			<h:form id="formConsuGrops">
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
 						var="programa">

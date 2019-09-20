@@ -19,7 +19,8 @@
                     <p:growl id="grwgeral" showDetail="false" />
                         <center>
                             <div style="background-color:white;height:100%">
-                            <p:outputPanel autoUpdate="true" id="pnlTabelaGeral">
+                            <p:outputPanel  id="pnlTabelaGeral">
+                            <p:autoUpdate/>
                                 <p:dataTable emptyMessage="Nenhum Banco" id="tabela" 
                                              value="#{tesourariaController.listabancos}" var="m"
                                              scrollable="true" style="width:99%" scrollRows="8"
@@ -79,7 +80,8 @@
                     <h:form id="frmmov">
                         <p:tabView id="tabmov">
                             <p:tab title="Movimentação" >
-                            	<p:outputPanel id="pnlMovimentacao" autoUpdate="true">
+                            	<p:outputPanel id="pnlMovimentacao" >
+                            	<p:autoUpdate/>
                                     <b:dataTable emptyMessage="Nenhuma Movimentação"  paginated="false" searching="false"
                                                  value="#{tesourariaController.listamovimentacao}" var="m"
                                                  style="width:99%" scrollRows="8"
@@ -152,7 +154,8 @@
                             </p:tab>
 
                             <p:tab title="cheques Emitidos" id="tabchq">	
-                                <p:outputPanel autoUpdate="true" id="outchqemit">
+                                <p:outputPanel  id="outchqemit">
+                                <p:autoUpdate/>
                                 
                               	    <p:panelGrid columns="4" styleClass="semBorda" id="busca">
                                 	  <h:outputText value="Vencimento:"  style="font-weight:bold;"/>
@@ -265,7 +268,8 @@
                                     </p:dataTable>
                                 </p:outputPanel>
 
-                                <p:outputPanel autoUpdate="true">
+                                <p:outputPanel >
+                                <p:autoUpdate/>
                                 <p:commandButton value="Compensar" oncomplete="PF('dlgcomp').show()" style="width:100px" 
                                 	disabled="#{tesourariaController.idSelecionado == 0 or tesourariaController.rowCheque.compensado == 'S' 
                                 			or tesourariaController.rowCheque.status == 'CA'
@@ -284,7 +288,8 @@
                             </p:tab>
 
                             <p:tab title="Cheques Recebidos" disabled="true">
- <p:outputPanel autoUpdate="true" id="outchqreceb">
+ <p:outputPanel  id="outchqreceb">
+ <p:autoUpdate/>
                                 
                               	    <p:panelGrid columns="4" styleClass="semBorda">
                                 	  <h:outputText value="Vencimento:"  style="font-weight:bold;"/>
@@ -382,7 +387,8 @@
                                     </p:dataTable>
                                 </p:outputPanel>
 
-                                <p:outputPanel autoUpdate="true">
+                                <p:outputPanel >
+                                <p:autoUpdate/>
                                 <p:commandButton value="Compensar"  oncomplete="PF('dlgcompreceb').show()" style="width:100px" 
                                 	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
                                 			or tesourariaController.rowChequeRecebido.status == 'CA'
@@ -421,7 +427,8 @@
 
                         </p:tabView>
 
-                        <p:outputPanel autoUpdate="true">
+                        <p:outputPanel >
+                        <p:autoUpdate/>
                             <div style="background-color:snow;width:100%;height:275px;margin-top:0px">
                                 <div style="background-color:snow;width:15%;float:left;margin-top:0px">
                                     <center>
@@ -465,7 +472,8 @@
                                 </div>
                                 
                                 <div style="background-color: snow;width:85%;float:right;margin-top:0px;height:142px">
-                                <p:outputPanel autoUpdate="true" rendered="#{tesourariaController.banco.id>0}">
+                                <p:outputPanel  rendered="#{tesourariaController.banco.id>0}">
+                                <p:autoUpdate/>
                               		<p:panelGrid columns="2">
                               		<p:panelGrid columns="2">
                               		<h:outputText value="Conta:"  style="font-size:16px;font-weight:bold"/>
@@ -573,7 +581,8 @@
             <p:dialog responsive="true"    widgetVar="dlgchqemi" header="Dados do Cheque Emitido" resizable="false"
                       height="400px" width="800px" modal="true">
                 <h:form id="frmemitechq">
-                    <p:outputPanel autoUpdate="true" >
+                    <p:outputPanel  >
+                    <p:autoUpdate/>
                         <p:panelGrid style="width:400px; border:none !important" styleClass="semBorda" >
                             <p:row>
                                 <p:column>
@@ -610,7 +619,8 @@
                            
                         </p:panelGrid>
                         <center><h:outputText value="Títulos Selecionados"/></center>
-                        <p:outputPanel autoUpdate="true">
+                        <p:outputPanel >
+                        <p:autoUpdate/>
                         <p:dataTable emptyMessage="Nenhum Título" style="font-size: 11px;" 
                                      value="#{tesourariaController.listatitulosbaixar}"
                                      var="tit" id="tabtit" paginator="true" rows="5" 
@@ -721,7 +731,8 @@
                     <h:outputText value="Pesquisa títulos" />
                 </f:facet>
                 <h:form id="frmbuscatit">
-                    <p:outputPanel id="outtit" autoUpdate="true">
+                    <p:outputPanel id="outtit" >
+                    <p:autoUpdate/>
                         <p:panelGrid style="padding:0px !important">
                             <p:row>
                                 <p:column>
@@ -968,7 +979,8 @@
                     <h:outputText value="Dados do título" />
                 </f:facet>
                 <h:form id="frmtitchq">
-                    <p:outputPanel id="outtit" autoUpdate="true">
+                    <p:outputPanel id="outtit" >
+                    <p:autoUpdate/>
                         <p:panelGrid styleClass="semBorda">
                             <p:row>
                                 <p:column>
@@ -1223,7 +1235,8 @@
             <p:dialog responsive="true"    widgetVar="dlgacerto" header="Acerto" resizable="false"
                       height="350px" width="500px" modal="true">
                 <h:form id="frmacerto">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel >
+					<p:autoUpdate/>
 					<h:outputText value="Banco: " />
 					<h:outputText value="#{tesourariaController.banco.banco}" style="font-weight:bold"/>
 					<br/>

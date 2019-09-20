@@ -128,7 +128,8 @@
 				<p:outputLabel for="escola" value="Descrição da escola" />
 				<p:inputText id="escola"
 					value="#{EscolaController.escola.descescola}" style="width: 300px" />
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<p:outputLabel for="tipoE" value="Tipo" />
 					<p:outputPanel>
 						<p:inputText id="tipoE"
@@ -272,7 +273,8 @@
 			<p:panelGrid columns="1">
 
 				<p:outputLabel for="cidadeDesc" value="Cidade" />
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<p:inputText id="cidadeCod"
 						value="#{EnderecoController.endereco.codmunicipio}"
 						style="width: 50px" readonly="true" pt:placeholder="COD" />
@@ -285,7 +287,8 @@
 				</p:outputPanel>
 
 				<p:outputLabel for="bairroL" value="Bairro" />
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 					<p:inputText id="bairroCod"
 						value="#{EnderecoController.endereco.codbairro}"
 						style="width: 50px" readonly="true" pt:placeholder="COD" />

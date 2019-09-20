@@ -143,7 +143,8 @@
                   modal="true" styleClass="topDialog" resizable="false" 
                   draggable="false" responsive="true">
             <h:form id="formConsuGrop">
-                <p:outputPanel autoUpdate="true">
+                <p:outputPanel>
+                <p:autoUpdate/>
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{GrupoController.listaGrupos}" id="dtGrupo"
                                  display="Nenhum Grupo" var="grupo">
@@ -186,7 +187,8 @@
                   widgetVar="dlgConsulProc" modal="true" resizable="false" 
                   draggable="false" responsive="true">
             <h:form id="formConsulProc">
-                <p:outputPanel autoUpdate="true">
+                <p:outputPanel >
+                <p:autoUpdate/>
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 

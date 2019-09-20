@@ -47,7 +47,7 @@
 				<p:toolbarGroup>
 
 					<h:panelGrid columns="4">
-						<p:outputPanel autoUpdate="true">
+						<p:outputPanel>
 							<p:commandButton value="Abrir Caixa" icon="ui-icon-cart"
 								update="btnCaixa"
 								rendered="#{caixaController.validacaoCaixa() == false}"
@@ -97,7 +97,7 @@
 
 			</p:toolbar>
 
-			<p:outputPanel style="margin-top:10px;" autoUpdate="true">
+			<p:outputPanel style="margin-top:10px;">
 				<p:panelGrid columns="3">
 					<p:dataTable var="caixa" id="tabela" scrollable="true"
 						scrollHeight="280" value="#{caixaController.lstCreditos()}"
@@ -249,8 +249,7 @@
 
 		<h:form id="dtDebito">
 
-			<p:outputPanel id="out" autoUpdate="true">
-			</p:outputPanel>
+
 		</h:form>
 
 		<p:dialog responsive="true" widgetVar="dlgAlteraPagamento"
@@ -275,7 +274,8 @@
 				</center>
 				<br></br>
 				<center>
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel>
+					<p:autoUpdate/>
 						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
 							styleClass="semBorda"
 							rendered="#{caixaController.tipoPagamento=='CT'}">
@@ -388,8 +388,8 @@
 
 				<p:growl id="msg" />
 
-				<p:outputPanel autoUpdate="true">
-
+				<p:outputPanel>
+<p:autoUpdate/>
 					<h:panelGrid columns="2">
 
 						<h:outputText value="Valor"></h:outputText>
@@ -883,8 +883,8 @@
 
 			<h:form id="formPag">
 
-				<p:outputPanel id="outpagto" autoUpdate="true">
-
+				<p:outputPanel id="outpagto">
+<p:autoUpdate/>
 					<h:panelGrid columns="2" style="margin-left:3px;">
 
 						<h:outputText value="Valor Total: "
@@ -1254,7 +1254,8 @@
 				<br />
 
 				<center>
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel>
+					<p:autoUpdate/>
 						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
 							styleClass="semBorda"
 							rendered="#{caixaController.tipoPagamento=='CT'}">

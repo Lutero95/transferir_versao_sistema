@@ -126,7 +126,8 @@
 			<p:panelGrid columns="6" styleClass="semBorda"
 				style="margin-left:8px;">
 
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel >
+				<p:autoUpdate/>
 					<!-- <p:commandButton value="Novo" icon="ui-icon-plus"
                             onclick="PF('dlgNovo').show();" 
                             actionListener="#{financeiroController.limparDados()}" 
@@ -574,9 +575,10 @@
 
 				<hr />
 
-				<p:outputPanel autoUpdate="true" id="outPanel"
+				<p:outputPanel  id="outPanel"
 					style="margin-top:10px !important;">
 					<p:panelGrid columns="2" styleClass="semBorda" id="panelVlr">
+					<p:autoUpdate/>
 						<h:outputText value="Total Principal "
 							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
 						<h:outputText value="R$ #{financeiroController.valorTotal()}"
@@ -586,7 +588,8 @@
 				</p:outputPanel>
 
 				<center>
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel>
+					<p:autoUpdate/>
 						<p:commandButton value="Confirmar" icon="ui-icon-check"
 							onclick="PF('dlgDadosAntecipacao').show();"
 							action="#{financeiroController.valorAntecipado()}"
@@ -937,7 +940,8 @@
 
 			<h:form id="formTitulo2">
 
-				<p:outputPanel autoUpdate="true">
+				<p:outputPanel>
+				<p:autoUpdate/>
 				<p:dataTable value="#{financeiroController.lstReceberPorCliente2}"
 					var="x" paginatorAlwaysVisible="true" paginator="true"
 					id="dtTituloge2" paginatorPosition="bottom" rows="3"
@@ -1229,9 +1233,10 @@
 
 				</p:dataTable>
 
-				<p:outputPanel autoUpdate="true" id="outPanel"
+				<p:outputPanel  id="outPanel"
 					style="margin-top:10px !important;">
 					<p:panelGrid columns="4" styleClass="semBorda" id="panelVlr">
+					<p:autoUpdate/>
 						<h:outputText value="Total Principal "
 							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
 						<h:outputText value="R$ #{financeiroController.valorTotal()}"
@@ -1412,8 +1417,8 @@
 				<p:commandButton value="Incluir" style="margin-top:10px;"
 					icon="ui-icon-plus" onclick="PF('dlgLiquidacao2').show();"></p:commandButton>
 
-				<p:outputPanel autoUpdate="true">
-
+				<p:outputPanel >
+<p:autoUpdate/>
 				<p:dataTable value="#{financeiroController.lstLiquidacao}" var="x"
 					paginatorAlwaysVisible="true" paginator="true" id="dtLiquidacao"
 					emptyMessage="Sem dados no momento"
@@ -1467,8 +1472,9 @@
 				</p:dataTable>
 				</p:outputPanel>
 				
-				<p:outputPanel autoUpdate="true" id="outPanel2"
+				<p:outputPanel  id="outPanel2"
 					style="margin-top:10px !important;">
+					<p:autoUpdate/>
 					<p:panelGrid columns="4" styleClass="semBorda" id="panelVlr2">
 						<h:outputText value="Total Principal "
 							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
@@ -1665,7 +1671,8 @@
 
 						<p:panel id="pnlLiquida">
 
-							<p:outputPanel autoUpdate="true">
+							<p:outputPanel>
+							<p:autoUpdate/>
 								<p:panelGrid columns="4" styleClass="semBorda">
 
 
@@ -1686,7 +1693,8 @@
 
 									<h:outputText value="Juros" style="font-weight:bold;" />
 
-									<p:outputPanel autoUpdate="true">
+									<p:outputPanel>
+									<p:autoUpdate/>
 										<pe:inputNumber decimalPlaces="2" symbol="R$ "
 											thousandSeparator="." decimalSeparator=","
 											value="#{financeiroController.baixaReceber.juros}">
@@ -1871,7 +1879,8 @@
 
 								<h:outputText value="Cliente" />
 
-								<p:outputPanel id="outcaus" autoUpdate="true">
+								<p:outputPanel id="outcaus" >
+								<p:autoUpdate/>
 									<p:commandButton icon="ui-icon-search" process="@this"
 										style="margin-right:3px;" onclick="PF('dlg').show();" />
 
