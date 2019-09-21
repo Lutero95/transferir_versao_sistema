@@ -115,8 +115,7 @@
 								listener="#{AtendimentoController.onCellEdit}" />
 
 							<p:column headerText="CNS" width="10%">
-								<h:outputText value="#{atendimento.funcionario.cns}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.funcionario.cns}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Profissional" width="25%">
@@ -128,13 +127,11 @@
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
-								<h:outputText value="#{atendimento.funcionario.nome}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.funcionario.nome}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="CBO" width="20%">
-								<h:outputText value="#{atendimento.cbo.descCbo}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.cbo.descCbo}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Procedimento" width="20%">
@@ -146,8 +143,7 @@
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
-								<h:outputText value="#{atendimento.procedimento.nomeProc}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.procedimento.nomeProc}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Status" width="15%"
@@ -164,7 +160,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:selectOneMenu value="#{atendimento.status}"
-											style="width:150px;">
+											style="width:100%;">
 											<f:selectItem itemLabel="Selecione" itemValue="" />
 											<f:selectItem itemLabel="Atendido" itemValue="A" />
 											<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
@@ -331,7 +327,7 @@
 				<div align="center">
 					<p:commandButton
 						action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
-						icon="ui-icon-disk" class="btn-acao-table acao-confirmar"
+						icon="fa fa-fw fa-save" class="btn-prime btn-acao-table acao-confirmar"
 						value="Gravar Evolução" style="float:left; margin-top:15px;" />
 				</div>
 			</h:form>
