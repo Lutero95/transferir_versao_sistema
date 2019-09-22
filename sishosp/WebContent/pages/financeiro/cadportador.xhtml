@@ -77,7 +77,7 @@
 
 					<p:commandButton value="Sim" update=":formUsuarios:dataTable"
 						actionListener="#{portadorController.excluirPortador()}"
-						icon="ui-icon-check" style="font-size:14px;">
+						icon="fa fa-fw fa-check" style="font-size:14px;">
 					</p:commandButton>
 
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
@@ -112,7 +112,7 @@
 
 						<center>
 
-							<p:commandButton value="Salvar" icon="ui-icon-check"
+							<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 								action="#{portadorController.gravar()}"
 								update="msg,:formUsuarios:dataTable"></p:commandButton>
 							<p:commandButton value="Cancelar" style="margin-left:5px;"

@@ -286,7 +286,7 @@
 
 									<p:column headerText="Adicionar">
 										<div align="center">
-											<p:commandButton icon="ui-icon-check" immediate="true"
+											<p:commandButton icon="fa fa-fw fa-check" immediate="true"
 															 title="Selecionar" class="new-btn-acao-table acao-editar"
 															 actionListener="#{RenovarPacienteController.abrirDialog}"
 															 update=":formDiasAtendimento">
@@ -476,7 +476,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo" icon="ui-icon-check"
+						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo" icon="fa fa-fw fa-check"
 							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar"
 							action="#{RenovarPacienteController.carregarLaudoPaciente()}">

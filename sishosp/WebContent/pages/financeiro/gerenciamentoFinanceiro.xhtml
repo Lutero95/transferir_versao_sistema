@@ -587,7 +587,7 @@
 
 				<center>
 					<p:outputPanel autoUpdate="true">
-						<p:commandButton value="Confirmar" icon="ui-icon-check"
+						<p:commandButton value="Confirmar" icon="fa fa-fw fa-check"
 							onclick="PF('dlgDadosAntecipacao').show();"
 							action="#{financeiroController.valorAntecipado()}"
 							update=":formDadosAntecipacao"
@@ -725,7 +725,7 @@
 
 					<br />
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update=":formPrincipal:growl, :formPrincipal:dt"
 						action="#{financeiroController.salvarAntecipacao()}"
 						style="margin-right:3px;" />
@@ -806,7 +806,7 @@
 
 								<p:commandButton style="font-size: 12px;" value="Confirmar"
 									update=":formDadosAntecipacao"
-									oncomplete="PF('dlgFBusca').hide();" icon="ui-icon-check">
+									oncomplete="PF('dlgFBusca').hide();" icon="fa fa-fw fa-check">
 
 									<f:setPropertyActionListener value="#{cliente.codforn}"
 										target="#{financeiroController.antecipaBean.fornecedor.codforn}"></f:setPropertyActionListener>
@@ -1252,7 +1252,7 @@
 				<p:growl id="msgNego"></p:growl>
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update="msgNego"
 						action="#{financeiroController.salvarNegociacao()}"></p:commandButton>
 					<p:commandButton value="Cancelar"
@@ -1490,7 +1490,7 @@
 				<p:growl id="msgNego2"></p:growl>
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update="msgNego2"
 						action="#{financeiroController.salvarNegociacao()}"></p:commandButton>
 					<p:commandButton value="Cancelar"
@@ -1546,7 +1546,7 @@
 
 				<hr />
 				<center>
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update=":formNego:dtLiquidacao,msg"
 						action="#{financeiroController.addListaLiquidacao()}"></p:commandButton>
 					<p:commandButton value="Cancelar" style="margin-left:5px;"
@@ -1604,7 +1604,7 @@
 
 				<hr />
 				<center>
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update=":formNego2:msg2"
 						action="#{financeiroController.addListaLiquidacao2()}"></p:commandButton>
 					<p:commandButton value="Cancelar" style="margin-left:5px;"
@@ -1841,7 +1841,7 @@
 				<center>
 
 					<br />
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						update=":formPrincipal:growl, :formPrincipal:dt"
 						action="#{financeiroController.salvarBaixa()}"
 						style="margin-right:3px;" />
@@ -2086,7 +2086,7 @@
 
 				<center>
 					<p:commandButton value="Salvar"
-						action="#{financeiroController.salvar()}" icon="ui-icon-check"
+						action="#{financeiroController.salvar()}" icon="fa fa-fw fa-check"
 						update="msg,:formPrincipal:dt" />
 
 					<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
@@ -2320,7 +2320,7 @@
 
 				<center>
 					<p:commandButton value="Salvar"
-						action="#{financeiroController.editar()}" icon="ui-icon-check"
+						action="#{financeiroController.editar()}" icon="fa fa-fw fa-check"
 						update="msg,:formPrincipal:dt" />
 
 					<p:commandButton value="Cancelar" onclick="PF('dlgEdit').hide();"
@@ -2379,13 +2379,13 @@
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton value="OK" icon="ui-icon-check"
+							<p:commandButton value="OK" icon="fa fa-fw fa-check"
 								style="width:100px;"
 								action="#{financeiroController.adicionarRetencao(1)}"
 								update=":formInsert:tbview:tabelaCadImp, :formPrincipal:growl"
 								rendered="#{financeiroController.opCadastro == 1}" />
 
-							<p:commandButton value="OK" icon="ui-icon-check"
+							<p:commandButton value="OK" icon="fa fa-fw fa-check"
 								style="width:100px;"
 								action="#{financeiroController.adicionarRetencao(2)}"
 								update=":formEdit:tbViewEdit:tabelaAltImp, :formPrincipal:growl"
@@ -2450,13 +2450,13 @@
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton value="OK" icon="ui-icon-check"
+							<p:commandButton value="OK" icon="fa fa-fw fa-check"
 								style="width:100px;"
 								action="#{financeiroController.alterarRetencao(1)}"
 								update=":formInsert:tbview:tabelaCadImp, :formPrincipal:growl"
 								rendered="#{financeiroController.opCadastro == 1}" />
 
-							<p:commandButton value="OK" icon="ui-icon-check"
+							<p:commandButton value="OK" icon="fa fa-fw fa-check"
 								style="width:100px;"
 								action="#{financeiroController.alterarRetencao(2)}"
 								update=":formEdit:tbViewEdit:tabelaAltImp, :formPrincipal:growl"

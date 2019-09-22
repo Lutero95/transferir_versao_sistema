@@ -224,7 +224,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":frm:outProg, :frm:outGrupo"
-                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
                                 title="Selecionar"
                                 action="#{RelatoriosController.atualizaListaGrupos(RelatoriosController.programa)}"
                                 oncomplete="PF('dlgConsuProg').hide();">
@@ -268,7 +268,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":frm:outGrupo, :frm:outTipoAt"
-                                icon="ui-icon-check" title="Selecionar"
+                                icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 oncomplete="PF('dlgConsuGrop').hide();"
                                 action="#{RelatoriosController.atualizaListaTipos(RelatoriosController.grupo)}">
@@ -301,7 +301,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":frm:outTipoAt, :frm:outEquipe"
-                                icon="ui-icon-check" title="Selecionar"
+                                icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuTipoAt').hide();">
                             <f:setPropertyActionListener value="#{tipo}"
@@ -332,7 +332,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":frm:outTipoAt, :frm:outEquipe" icon="ui-icon-check"
+                                update=":frm:outTipoAt, :frm:outEquipe" icon="fa fa-fw fa-check"
                                 title="Selecionar" class="new-btn-acao-table acao-editar"
                                 oncomplete="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
