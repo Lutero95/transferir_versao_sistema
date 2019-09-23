@@ -61,29 +61,31 @@
 
 </h:head>
 <h:body>
-	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha" style="z-index: 1080;"
-		modal="true" styleClass="topDialog" dynamic="true">
+	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
+		style="z-index: 1080;" draggable="false" resizable="false"
+		closable="true" modal="true" styleClass="sml-size-dlg topDialog2"
+		showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
+
 		<h:form id="frmAlterarSenha">
 			<p:growl id="msgAlterarSenha"></p:growl>
+
 			<h:panelGrid columns="1" cellpadding="3">
-				<b:label value="Senha Atual" severity="info"
-					style="margin-left:5px;" />
-				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+				<b:label class="label-agendaEquipe" value="Senha Atual" severity="info" />
+				<b:inputSecret class="select-agendaEquipe" required="true"
 					placeholder="Senha Atual"
 					requiredMessage="Antiga Senha: Campo obrigatório"
 					value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
 				<b:message for="@previous" />
 				<br />
-				<b:label value="Nova Senha" severity="info" style="margin-left:5px;" />
-				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+				<b:label class="label-agendaEquipe" value="Nova Senha" severity="info" />
+				<b:inputSecret class="select-agendaEquipe" required="true"
 					placeholder="Senha Nova"
 					requiredMessage="Nova Senha: Campo obrigatório"
 					value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
 				<b:message for="@previous" />
 				<br />
-				<b:label value="Confirmação de Nova Senha" severity="info"
-					style="margin-left:5px;" />
-				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+				<b:label class="label-agendaEquipe" value="Confirmação de Nova Senha" severity="info" />
+				<b:inputSecret class="select-agendaEquipe" required="true"
 					placeholder="Confirmação Senha Nova"
 					requiredMessage="Confirmação Nova Senha: Campo obrigatório"
 					value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
@@ -91,26 +93,26 @@
 
 			</h:panelGrid>
 
+			<p:separator />
+
 			<div align="center">
 
-				<br />
-				<b:commandButton value="Alterar Senha" class="btn-sim"
-					update=":frmAlterarSenha:msgAlterarSenha"
+				<p:commandButton value="Alterar Senha" icon="fa fa-fw fa-check"
+					class="btn-cad-gravar" update=":frmAlterarSenha:msgAlterarSenha"
 					action="#{MBFuncionarios.alterarSenhaFuncionario()}" ajax="true" />
 
-				<b:commandButton value="Fechar" class="btn-nao"
-					style="margin-left:20px;margin-top:-14px;"
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close" class="btn-cad-cancel"
 					oncomplete="PF('dlgAlterarSenha').hide();" ajax="true" />
 			</div>
 
 		</h:form>
 	</p:dialog>
-   
+
 	<p:growl id="msgPagina" />
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
 	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
-		showHeader="true" header="Processando..." 
+		showHeader="true" header="Processando..."
 		style="width:40px; height:20px; border:0;" resizable="false"
 		widgetVar="statusDialog" draggable="false" closable="false">
 		<center>
@@ -121,20 +123,20 @@
 	<div id="header">
 		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 			<h:form id="mainFormtempSist">
-			<p:row>
-				<p:column>
-					<h:outputText
-						style="position:absolute;z-index:1000;margin-top:20px;margin-left:-110px;color:white;font-weight:bold"
-						value="#{MBFuncionarios.usuarioLogado.nome}"
-						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
-				</p:column>
-				<p:column>
+				<p:row>
+					<p:column>
+						<h:outputText
+							style="position:absolute;z-index:1000;margin-top:20px;margin-left:-110px;color:white;font-weight:bold"
+							value="#{MBFuncionarios.usuarioLogado.nome}"
+							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+					</p:column>
+					<p:column>
 
-					<h:outputText
-						style="position:absolute;z-index:1000;margin-top:35px;margin-left:-110px;color:white;position:absolute; font-weight:bold"
-						value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
-						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
-				</p:column>
+						<h:outputText
+							style="position:absolute;z-index:1000;margin-top:35px;margin-left:-110px;color:white;position:absolute; font-weight:bold"
+							value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
+							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+					</p:column>
 				</p:row>
 				<p:commandLink styleClass="editUSer"
 					oncomplete="PF('dlguser').show()"
@@ -151,8 +153,8 @@
 	</div>
 
 	<div id="container" class="clearfix">
-			<p:messages for="home-msg" globalOnly="true" />
-			<ui:insert name="content" />
+		<p:messages for="home-msg" globalOnly="true" />
+		<ui:insert name="content" />
 	</div>
 
 	<div id="foot">
