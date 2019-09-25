@@ -16,7 +16,7 @@ public class ConnectionFactoryPublico {
 
         String url = "jdbc:postgresql://localhost:5432/publico";
         String usuario = "postgres";
-        String senha  = "engetron";
+        String senha  = "post";
         //String senha  = "engetron";
 /*
         //PRODUÇÃO

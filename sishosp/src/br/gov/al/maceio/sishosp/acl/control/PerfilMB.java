@@ -480,7 +480,7 @@ public class PerfilMB implements Serializable {
 		if (listaMenusSourceEdit == null) {
 			MenuDAO mdao = new MenuDAO();
 			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(Long
-					.parseLong(perfilSelecionado));
+					.parseLong(perfilSelecionado), 1l);
 		}
 		return listaMenusSourceEdit;
 	}
@@ -493,8 +493,7 @@ public class PerfilMB implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(Long
-					.parseLong(perfilSelecionado));
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(1L);
 		}
 		return listaMenusTargetEdit;
 	}

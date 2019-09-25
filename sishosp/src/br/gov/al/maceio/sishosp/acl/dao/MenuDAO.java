@@ -1,10 +1,12 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 
+import javax.faces.context.FacesContext;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -474,7 +476,7 @@ public class MenuDAO {
 		return lista;
 	}
 
-	public ArrayList<Menu> listarMenuItemSourcerEdit(Long idPerfil)
+	public ArrayList<Menu> listarMenuItemSourcerEdit(Long idPerfil, Long idUsuario)
 			throws ProjetoException {
 
 		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
@@ -491,7 +493,8 @@ public class MenuDAO {
 				+ "join acl.menu me on me.id = pg.id_menu "
 				+ "join acl.menu_sistema ms on ms.id_menu = me.id "
 				+ "join acl.sistema si on si.id = ms.id_sistema "
-				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') and pf.id = ?) "
+				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') and pf.id = ?) " +
+				" AND pm.id NOT IN (SELECT pu.id_permissao FROM acl.perm_usuario pu WHERE pu.id_usuario = ?)"
 				+ "and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') order by me.descricao";
 
 		ArrayList<Menu> lista = new ArrayList();
@@ -499,6 +502,7 @@ public class MenuDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setLong(1, idPerfil);
+			stmt.setLong(2, idUsuario);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -540,26 +544,26 @@ public class MenuDAO {
 	}
 
 	// LISTA OK
-	public ArrayList<Menu> listarMenuItemTargetEdit(Long idPerfil)
+	public ArrayList<Menu> listarMenuItemTargetEdit(Long idUsuario)
 			throws ProjetoException {
 
-		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-				+ "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
-				+ "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
-				+ "join acl.perm_geral pg on pg.id_menu = me.id "
-				+ "join acl.permissao pm on pm.id = pg.id_permissao "
-				+ "join acl.menu_sistema ms on ms.id_menu = me.id "
-				+ "join acl.sistema si on si.id = ms.id_sistema "
-				+ "join acl.perm_perfil pp on pp.id_permissao = pg.id_permissao "
-				+ "join acl.perfil pf on pf.id = pp.id_perfil "
-				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') "
-				+ "and pf.id = ? order by me.descricao;";
+		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, " +
+				"me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, " +
+				"si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me " +
+				"join acl.perm_geral pg on pg.id_menu = me.id " +
+				"join acl.permissao pm on pm.id = pg.id_permissao " +
+				"JOIN acl.perm_usuario pu ON pg.id_permissao = pu.id_permissao " +
+				"join acl.menu_sistema ms on ms.id_menu = me.id   " +
+				"join acl.sistema si on si.id = ms.id_sistema " +
+				"where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') " +
+				"AND pu.id_usuario = ? " +
+				"order by me.descricao;";
 
 		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setLong(1, idPerfil);
+			stmt.setLong(1, idUsuario);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
