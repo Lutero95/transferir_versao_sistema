@@ -160,11 +160,48 @@ body {
     border-color: #ffffff;
 }
 
+.name-user-nav {
+	position:absolute;
+	z-index:1000;
+	margin-top:14px;
+	margin-left:-110px;
+	color:white;
+	font-weight:bold
+}
+
+.sub-name-user-nav {
+	position:absolute;
+	z-index:1000;
+	margin-top:30px;
+	margin-left:-110px;
+	color:white;
+	position:absolute;
+	font-weight:bold
+}
+
 /* Media Queries */
 @media ( min-width :768px) {
 	.menu-usuario {
 		float: right;
 		margin: 0;
+	}
+}
+
+@media (max-width: 767px) {
+	.menu-sair, .menu-sair:hover {
+	    margin: 5px 16px 10px 16px;
+	}
+	.name-user-nav {
+		margin-top:20px;
+		margin-left:70px;
+	}
+	
+	.sub-name-user-nav {
+		margin-top:36px;
+		margin-left:70px;
+	}
+	.user-nav {
+		height: 50px;
 	}
 }
 
@@ -222,6 +259,9 @@ body {
 	
 	.edit-opc-user {
 		top: 103px !important;
+	}
+	.ui-menu .ui-menu-parent .ui-menu-child {
+    	max-height: 465px !important;
 	}
 }
 
@@ -678,8 +718,13 @@ body {
 	float: right;
 }
 
-.new-menu-usuario {
-	margin-left: 45px;
+.img-user-nav {
+	width: 45px !important;
+    margin-top: 5px !important;
+    margin-left: -272px !important;
+    position: fixed !important;
+    z-index: 1000 !important;
+    filter: invert(1) !important;
 }
 
 .edit-opc-user {
@@ -738,8 +783,7 @@ body {
 	*border: 0 !important;
 }
 
-
-@media ( max-width : 1150px) {
+/*@media ( max-width : 1150px) {
 	.new-menu-usuario {
 		margin-right: 0px;
 	}
@@ -749,64 +793,76 @@ body {
 	.new-menu-usuario {
 		float: right;
 	}
+}*/
+
+@media (max-width: 1036px) and (min-width: 803px) {
+	.img-user-nav {
+		width: 42px !important;
+	    margin-left: -263px !important;
+	}
 }
 
 @media (max-width: 802px) and (min-width: 768px) {
 	.menu-sistema {
 	    font-size: 0.7em;
 	}
-	
 	.ui-menu.ui-widget .ui-menuitem-link .ui-menuitem-text {
 	    margin-left: 0.4em;
 	}
-	
-	.ui-menu.ui-widget li>.ui-menuitem-link {
-	    font-size: 1.3em;
+	.ui-menu.ui-widget li>.ui-menuitem-link,
+	.menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text,
+	.menu-sistema>.ui-menu-list>.ui-menuitem>a:hover,
+	.menu-sistema>.ui-menu-list>.ui-menuitem>a:focus {
+	    font-size: 1.3em !important;
+	}
+	.img-user-nav {
+		width: 42px !important;
+	    margin-left: -262px !important;
 	}
 }
 
 @media ( max-width : 767px) {
 	.menu-sistema {
-		width: auto;
-		float: left;
+		width: auto !important;
+		float: left !important;
 	}
-	.ui-menu .ui-menuitem {
-		float: none;
+	.ui-menu .ui-menu-parent .ui-menu-child {
+		width: 310px !important;
+		max-height: 250px !important;
+		float: none !important;
+		margin-top: 0 !important;
+	}
+	.ui-menu .ui-menuitem,
+	.ui-menu .ui-menuitem-link {
+		float: none !important;
 	}
 	.ui-menu.ui-widget li>.ui-menuitem-link {
-		padding: 1.5em 1em;
+		padding: 1.5em 1em !important;
 	}
 	.navbar-collapse {
-		padding-left: 0px;
-	}
-	.ui-menu .ui-menuitem-link {
-		float: none;
+		padding-left: 0px !important;
 	}
 	.ui-menu.ui-menubar {
-		width: 100%;
+		width: 100% !important;
+		padding-bottom: 10px !important;
 	}
 	.ui-widget .ui-widget {
 		font-size: 1em;
 	}
-	.ui-menu.ui-menubar .ui-menu-parent .ui-menu-child {
-		padding: 0 0 5px 0;
+	.navbar-fixed-top .navbar-collapse, 
+	.navbar-fixed-bottom .navbar-collapse {
+	    max-height: 360px;
 	}
-	.navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse
-		{
-		max-height: 100%;
+	.img-user-nav {
+	    width: 45px !important;
+	    margin-top: 5px !important;
+    	margin-left: 22px !important;
+	    position: fixed !important;
+	    z-index: 1000 !important;
+	    filter: invert(1) !important;
 	}
-	.ui-menu.ui-menubar .ui-menu-parent 
-    .ui-menu-child {
-		left: 0 !important;
-	}
-	.ui-menu .ui-menu-parent .ui-menu-child {
-		width: 310px;
-		position: static;
-		float: none;
-		margin-top: 0;
-	}
-	.new-menu-usuario {
-		margin-left: 0px;
+	.texto-descr {
+		font-size: 24px !important;
 	}
 }
 

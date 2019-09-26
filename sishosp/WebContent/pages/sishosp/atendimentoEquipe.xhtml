@@ -300,12 +300,12 @@
 					required="true" requiredMessage="Evolução: Campo obrigatório!">
 				</p:editor>
 
-				<div align="center">
+				<div align="left">
 					<p:commandButton
 						action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
 						icon="fa fa-fw fa-save"
 						class="btn-prime btn-acao-table acao-confirmar"
-						value="Gravar Evolução" style="float:left; margin-top:15px;" />
+						value="Gravar Evolução" style="margin-top:15px;" />
 				</div>
 			</h:form>
 		</p:dialog>
@@ -345,7 +345,7 @@
 								<p:row>
 									<p:column colspan="2">
 										<h:outputLabel styleClass="title-bold" value="Evolução:" />
-										<h:outputLabel value="#{evo.evolucao}" />
+										<h:outputLabel value="#{evo.evolucao}" escape="false"/>
 									</p:column>
 								</p:row>
 

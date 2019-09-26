@@ -122,31 +122,35 @@
 
 	<div id="header">
 		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
-			<h:form id="mainFormtempSist">
+			
+			<h:form id="mainFormtempSist" styleClass="user-nav">
+				
 				<p:row>
 					<p:column>
 						<h:outputText
-							style="position:absolute;z-index:1000;margin-top:20px;margin-left:-110px;color:white;font-weight:bold"
+							styleClass="name-user-nav"
 							value="#{MBFuncionarios.usuarioLogado.nome}"
 							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
 					</p:column>
+					
 					<p:column>
-
 						<h:outputText
-							style="position:absolute;z-index:1000;margin-top:35px;margin-left:-110px;color:white;position:absolute; font-weight:bold"
+							styleClass="sub-name-user-nav"
 							value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
 							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
 					</p:column>
 				</p:row>
+				
 				<p:commandLink styleClass="editUSer"
 					oncomplete="PF('dlguser').show()"
 					style="position:absolute;z-index:1000" id="linkuser"
 					title="Opções para o usuário">
-					<h:graphicImage value="../../imgs/edit-user.png"
-						style="width:35px;margin-top:10px;margin-left:-258px;position:absolute;z-index:1000"></h:graphicImage>
-
+					<h:graphicImage value="../../imgs/user-nav-icon1.png"
+						styleClass="img-user-nav"></h:graphicImage>
 				</p:commandLink>
-
+				
+			</h:form>
+			<h:form>
 				<ui:include src="/pages/comum/menu.xhtml" />
 			</h:form>
 		</b:navBar>
