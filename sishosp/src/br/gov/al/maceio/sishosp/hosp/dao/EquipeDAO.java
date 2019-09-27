@@ -476,7 +476,7 @@ public class EquipeDAO {
 			sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
 					+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
 					+ "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
-					+ " where cod_unidade = ? order by f.descfuncionario ";
+					+ " where codunidade = ? order by f.descfuncionario ";
 		} else {
 			sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
 					+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "

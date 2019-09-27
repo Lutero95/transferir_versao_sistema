@@ -1422,7 +1422,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
-		String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descfuncionario, "
+		String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, "
 				+ " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
 				+ " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca " + " FROM  hosp.atendimentos a "
 				+ " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
@@ -1487,6 +1487,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				AgendaBean agenda = new AgendaBean();
 				agenda.setIdAgenda(rs.getInt("id_atendimento"));
 				agenda.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				agenda.getPaciente().setMatricula(rs.getString("matricula"));
 				agenda.getPaciente().setNome(rs.getString("nome"));
 				agenda.getPaciente().setCns(rs.getString("cns"));
 				agenda.getProfissional().setId(rs.getLong("codmedico"));
