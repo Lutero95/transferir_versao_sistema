@@ -120,6 +120,7 @@ public class FuncionarioController implements Serializable {
 		listaMenusTarget = new ArrayList<>();
 
 		listaMenusDualEdit = null;
+		listaMenusDualEdit = new DualListModel<>();
 		listaMenusSourceEdit = new ArrayList<>();
 		listaMenusTargetEdit = new ArrayList<>();
 
@@ -624,7 +625,9 @@ public class FuncionarioController implements Serializable {
 
 			PermissaoDAO pmdao = new PermissaoDAO();
 			for (Menu m : listaFiltrada) {
-				permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+				if(!permissoes.contains(pmdao.recIdPermissoesMenu(m.getId()))) {
+					permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+				}
 			}
 
 			for (Sistema s : listaSistemasDual.getTarget()) {
@@ -993,14 +996,14 @@ public class FuncionarioController implements Serializable {
 
 	public DualListModel<Menu> getListaMenusDualEdit()
 			throws NumberFormatException, ProjetoException {
-		if (listaMenusDualEdit == null) {
+		//if (listaMenusDualEdit == null) {
 			listaMenusSourceEdit = null;
 			listaMenusTargetEdit = null;
 			getListaMenusSourceEdit();
 			getListaMenusTargetEdit();
 			listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit,
 					listaMenusTargetEdit);
-		}
+		//}
 		return listaMenusDualEdit;
 	}
 
@@ -1046,7 +1049,7 @@ public class FuncionarioController implements Serializable {
 			ProjetoException {
 		if (listaMenusSourceEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(profissional.getPerfil().getId());
+			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(profissional.getPerfil().getId(), profissional.getId());
 		}
 		return listaMenusSourceEdit;
 	}
@@ -1059,7 +1062,7 @@ public class FuncionarioController implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getPerfil().getId());
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getId());
 		}
 		return listaMenusTargetEdit;
 	}
