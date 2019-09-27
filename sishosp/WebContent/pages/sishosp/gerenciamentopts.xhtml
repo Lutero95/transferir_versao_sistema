@@ -297,7 +297,7 @@
                         <p:commandButton
                                 update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
 							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"
-                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
                                 title="Selecionar" onclick="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
                                                          target="#{PtsController.pts.programa}"/>
@@ -334,7 +334,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton update=":formGerenPaci:outGrupo"
-                                         icon="ui-icon-check" title="Selecionar"
+                                         icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuGrop').hide();">
                             <f:setPropertyActionListener value="#{grupo}"

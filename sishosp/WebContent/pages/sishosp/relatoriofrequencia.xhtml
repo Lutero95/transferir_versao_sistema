@@ -184,7 +184,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frm:outProg, :frm:outGrupo"
-							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
 							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
 							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
@@ -225,7 +225,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frm:outProg, :frm:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
@@ -337,7 +337,7 @@
 						<f:facet name="header">
                             Selecionar
                         </f:facet>
-						<p:commandButton update=":frm" icon="ui-icon-check"
+						<p:commandButton update=":frm" icon="fa fa-fw fa-check"
 							title="Selecionar" class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie.laudo.paciente}"

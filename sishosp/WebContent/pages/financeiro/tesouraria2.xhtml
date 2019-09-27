@@ -459,7 +459,7 @@
                                     <p:commandButton style="font-size: 11px;" value="Remover" 
                                      actionListener="#{tesourariaController.removerTitulo()}"
                                      update="frmemitechq:tabtit"
-                                     icon="ui-icon-check" process="@this">
+                                     icon="fa fa-fw fa-check" process="@this">
                                     <f:setPropertyActionListener value="#{tit}"
                                        target="#{tesourariaController.tituloselecionado}" />                                    
                                     </p:commandButton>
@@ -473,7 +473,7 @@
                         </p:outputPanel>
 
                         <center>
-                            <p:commandButton icon="ui-icon-check" value="Confirmar" style="margin-left:10px"
+                            <p:commandButton icon="fa fa-fw fa-check" value="Confirmar" style="margin-left:10px"
                                              action="#{tesourariaController.compensaTitulosPagar()}" update=":grwgeral, :frmbanco:tabela, :frmmov:tabmov:tabelaMov"
                                               />
                                              <p:commandButton icon="ui-icon-close" value="Desistir" style="margin-left:10px"
@@ -603,7 +603,7 @@
                                           oncomplete="PF('dlgbuscatit').hide();PF('dlgliqtitchq').show()" 
                                           action="#{tesourariaController.calcularValorAberto()}"
                                           process="@this"
-                                          update=":frmtitchq:outtit" icon="ui-icon-check" >
+                                          update=":frmtitchq:outtit" icon="fa fa-fw fa-check" >
 
 	                                     <f:setPropertyActionListener value="#{tit}" 
 	                                     	target="#{tesourariaController.tituloselecionado}" />
@@ -688,7 +688,7 @@
                                 <center>
                                     <p:commandButton style="font-size: 12px;"
                                                      value="Confirmar"
-                                                     oncomplete="PF('dlgbuscaforn').hide();"  update=":frmbuscatit:outtit" icon="ui-icon-check">
+                                                     oncomplete="PF('dlgbuscaforn').hide();"  update=":frmbuscatit:outtit" icon="fa fa-fw fa-check">
 
                                         <f:setPropertyActionListener value="#{forn}"
                                                                      target="#{tesourariaController.forn}"></f:setPropertyActionListener>
@@ -819,7 +819,7 @@
 	                        <p:commandButton style="font-size: 11px;"
 	                          value="Selecionar"
 	                          action="#{tesourariaController.addTituloBaixar()}"
-	                          update=":frmtitchq:outtit, grwgeral" icon="ui-icon-check" />
+	                          update=":frmtitchq:outtit, grwgeral" icon="fa fa-fw fa-check" />
 	                          
 	                           <p:commandButton style="font-size: 11px;"
 	                      	    value="Cancelar" icon="ui-icon-close" onclick="PF('dlgliqtitchq').hide();"

@@ -21,7 +21,7 @@
 		
 
 
-	<div class="panel panel-primary new-top-primary">
+	<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
 					<h:outputText value="Gerenciamento de Títulos a Pagar"
 						class="panel-title"></h:outputText>
@@ -402,7 +402,7 @@
 
 					<center>
 
-						<p:commandButton value="Salvar" icon="ui-icon-check"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 							oncomplete="PF('dlgNovoImposto').hide();"
 							action="#{tituloPagarController.alterarRetencao()}"
 							update="idRetencao, :formInsert:tbview:dtImposto"></p:commandButton>
@@ -478,7 +478,7 @@
 								<center>
 									  <p:commandButton style="font-size: 12px;"  update="formInsert"
                                                     value="Confirmar" oncomplete="PF('dlgDesistencia').hide();" 
-                                                    icon="ui-icon-check">
+                                                    icon="fa fa-fw fa-check">
                                                     <f:setPropertyActionListener value="#{x}"
                                                         target="#{tituloPagarController.pagamentoDesi}"></f:setPropertyActionListener>						     
 										</p:commandButton>
@@ -547,7 +547,7 @@
 
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						oncomplete="PF('dlgNovoImposto').hide();"
 						action="#{tituloPagarController.addNaListImpostos()}"
 						update="formNovoImposto, :grwgeral"></p:commandButton>
@@ -778,7 +778,7 @@
                         </p:tab>
 					</p:tabView>
 					<center>
-						<p:commandButton value="Salvar" icon="ui-icon-check" style="margin-top:50px"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check" style="margin-top:50px"
 							update=":grwgeral" actionListener="#{tituloPagarController.editar()}"/>
 	
 						<p:commandButton value="Cancelar" onclick="PF('dlgEditRet').hide();"
@@ -822,7 +822,7 @@
 
 					<center>
 
-						<p:commandButton value="Salvar" icon="ui-icon-check"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 							action="#{tituloPagarController.alterarRetencaoAlt()}" 
 							update=":formEdit:tbViewEdit:tabRetAlt, formAltRet"/>
 
@@ -864,7 +864,7 @@
 
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						oncomplete="PF('dlgNovaRetencaoAlt').hide();"
 						action="#{tituloPagarController.addNaListImpostosAlt()}"
 						update=":formEdit, :formRetencaoAlt" />
@@ -944,7 +944,7 @@
 
 						<p:commandButton style="font-size: 12px;"
 							 value="Confirmar"
-							oncomplete="PF('dlgFBusca').hide();" icon="ui-icon-check" update=":formInsert:msg">
+							oncomplete="PF('dlgFBusca').hide();" icon="fa fa-fw fa-check" update=":formInsert:msg">
 
 							<f:setPropertyActionListener value="#{cliente}"
 								target="#{tituloPagarController.buscaPagar.fornecedor}"></f:setPropertyActionListener>
@@ -1187,7 +1187,7 @@
                         </p:tab>
 					</p:tabView>
 					<center>
-						<p:commandButton value="Salvar" icon="ui-icon-check" style="margin-top:50px"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check" style="margin-top:50px"
 							update=":grwgeral, formRep"  actionListener="#{tituloPagarController.replicarDocumentoPagar()}"/>
 	
 						<p:commandButton value="Cancelar" onclick="PF('dlgRepetir').hide();"

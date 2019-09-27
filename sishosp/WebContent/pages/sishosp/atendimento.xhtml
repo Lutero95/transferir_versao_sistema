@@ -141,11 +141,11 @@
 						</b:column>
 
 						<b:column span="2">
-							<b:commandButton value="Buscar" icon="glyphicon-search"
-								class="btn-acao-table acao-buscar"
+							<p:commandButton value="Buscar" icon="fa fa-fw fa-search"
+								class="btn-prime btn-acao-table acao-buscar"
 								action="#{AtendimentoController.consultarAtendimentos()}"
 								update="dtAtendimentos, msgPagina">
-							</b:commandButton>
+							</p:commandButton>
 						</b:column>
 
 					</b:row>
@@ -235,7 +235,7 @@
                         Atendimento
                     </f:facet>
 							<div align="center">
-								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-edit"
+								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-pencil-square-o"
 									size="sm" class="btn-acao-table acao-editar"
 									action="#{AtendimentoController.redirectAtendimento()}">
 									<f:setPropertyActionListener value="#{atendimento}"
@@ -274,7 +274,7 @@
 						<p:commandButton
 							update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
 							:formConsAge:btBusGr, :formConsAge:outGrupo"
-							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{AtendimentoController.atendimento.programa}" />
@@ -314,7 +314,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":formConsAge:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"

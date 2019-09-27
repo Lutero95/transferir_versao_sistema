@@ -115,88 +115,60 @@
 								listener="#{AtendimentoController.onCellEdit}" />
 
 							<p:column headerText="CNS" width="10%">
-								<h:outputText value="#{atendimento.funcionario.cns}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.funcionario.cns}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Profissional" width="25%">
-								<p:commandButton icon="ui-icon-search"
-									class="btn-acao-table acao-editar" style="margin-right: 10px;"
+								<p:commandButton icon="fa fa-fw fa-search"
+									class="btn-acao-table btn-icon-lupa"
 									action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 									oncomplete="PF('dlgConsultProfi').show()"
 									update=":formConsultProf">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
-								<h:outputText value="#{atendimento.funcionario.nome}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.funcionario.nome}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="CBO" width="20%">
-								<h:outputText value="#{atendimento.cbo.descCbo}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.cbo.descCbo}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Procedimento" width="20%">
-								<p:commandButton icon="ui-icon-search"
-									class="btn-acao-table acao-editar"
+								<p:commandButton icon="fa fa-fw fa-search"
+									class="btn-acao-table btn-icon-lupa"
 									action="#{AtendimentoController.listarProcedimentos()}"
 									oncomplete="PF('dlgConsulProc1').show()"
 									update=":formConsulProc1">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
-								<h:outputText value="#{atendimento.procedimento.nomeProc}"
-									style="font-weight:bold;"></h:outputText>
+								<h:outputText value="#{atendimento.procedimento.nomeProc}"></h:outputText>
 							</p:column>
 
 							<p:column headerText="Status" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputLabel value="Atendido"
-											rendered="#{atendimento.status == 'A'}" />
-										<h:outputLabel value="Profissional Faltou"
-											rendered="#{atendimento.status == 'PF'}" />
-										<h:outputLabel value="Selecione"
-											rendered="#{atendimento.status == ''}" />
 
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{atendimento.status}"
-											style="width:150px;">
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItem itemLabel="Atendido" itemValue="A" />
-											<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
-											<p:ajax
-												listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-												update=":formConsAge"></p:ajax>
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
+								<b:selectOneMenu value="#{atendimento.status}"
+									style="color: #1d5987 !important;">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Atendido" itemValue="A" />
+									<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
+									<p:ajax
+										listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+										update=":formConsAge"></p:ajax>
+								</b:selectOneMenu>
 							</p:column>
 
 							<p:column headerText="Perfil Avaliação" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao == true}">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputLabel value="Tem Perfil"
-											rendered="#{atendimento.perfil == 'S'}" />
-										<h:outputLabel value="Não tem Perfil"
-											rendered="#{atendimento.perfil == 'N'}" />
-										<h:outputLabel value="Selecione"
-											rendered="#{atendimento.perfil == ''}" />
 
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{atendimento.perfil}"
-											style="width:150px;">
+										<b:selectOneMenu value="#{atendimento.perfil}"
+											style="color: #1d5987 !important;">
 											<f:selectItem itemLabel="Selecione" itemValue="" />
 											<f:selectItem itemLabel="Tem Perfil" itemValue="S" />
 											<f:selectItem itemLabel="Não tem Perfil" itemValue="N" />
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
+										</b:selectOneMenu>
 							</p:column>
 
 							<p:column headerText="Evolução" width="10%">
@@ -280,7 +252,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formConsAge" icon="ui-icon-check"
+						<p:commandButton update=":formConsAge" icon="fa fa-fw fa-check"
 							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
 							title="Selecionar" class="new-btn-acao-table acao-editar">
 							<f:setPropertyActionListener value="#{profi}"
@@ -322,7 +294,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formConsAge" icon="ui-icon-check"
+						<p:commandButton update=":formConsAge" icon="fa fa-fw fa-check"
 							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
 							title="Selecionar" class="new-btn-acao-table acao-editar">
 							<f:setPropertyActionListener value="#{proc}"
@@ -355,11 +327,12 @@
 					required="true" requiredMessage="Evolução: Campo obrigatório!">
 				</p:editor>
 
-				<div align="center">
+				<div align="left">
 					<p:commandButton
 						action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
-						icon="ui-icon-disk" class="btn-acao-table acao-confirmar"
-						value="Gravar Evolução" style="float:left; margin-top:15px;" />
+						icon="fa fa-fw fa-save"
+						class="btn-prime btn-acao-table acao-confirmar"
+						value="Gravar Evolução" style="margin-top:15px;" />
 				</div>
 			</h:form>
 		</p:dialog>
@@ -405,7 +378,7 @@
 								<p:row>
 									<p:column colspan="2">
 										<h:outputLabel styleClass="title-bold" value="Evolução:" />
-										<h:outputLabel value="#{evo.evolucao}" />
+										<h:outputLabel value="#{evo.evolucao}" escape="false"/>
 									</p:column>
 								</p:row>
 
@@ -547,8 +520,7 @@
 
 					<p:dataTable id="dtPtsAdicionados" resizableColumns="true"
 						value="#{AtendimentoController.pts.listaPtsArea}" var="pts"
-						emptyMessage="Sem registros." style="margin: 10px;"
-						reflow="true">
+						emptyMessage="Sem registros." style="margin: 10px;" reflow="true">
 
 						<p:column headerText="Cód Especialidade" width="0%"
 							rendered="false">
@@ -603,9 +575,11 @@
             <h:form id="formEscolherLaudo">
 =======
 		<p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo"
-			closable="false" draggable="false"
-			visible="#{AtendimentoController.renderizarDialogLaudo == true}"
-			modal="true" width="750px" styleClass="topDialog">
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true"
+			visible="#{AtendimentoController.renderizarDialogLaudo == true}">
+
 			<h:form id="formEscolherLaudo">
 >>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
@@ -652,7 +626,7 @@
 							<f:facet name="header">
                                 Adicionar
                             </f:facet>
-							<p:commandButton icon="ui-icon-check" title="Selecionar"
+							<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
 								update=":frmInicial" oncomplete="PF('dlgEscolherLaudo').hide();"
 								class="new-btn-acao-table acao-editar">
 								<f:setPropertyActionListener value="#{insercao}"
@@ -697,7 +671,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frmInicial:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"

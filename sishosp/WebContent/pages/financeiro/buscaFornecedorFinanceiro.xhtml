@@ -78,7 +78,7 @@ and open the template in the editor.
 
 						<p:commandButton style="font-size: 12px;"
 							update=":formInsert:tbview, :formInsert:msg" value="Confirmar"
-							oncomplete="PF('dlgF').hide();" icon="ui-icon-check">
+							oncomplete="PF('dlgF').hide();" icon="fa fa-fw fa-check">
 
 							<f:setPropertyActionListener value="#{cliente}"
 								target="#{tituloPagarController.fornecedorBean}"></f:setPropertyActionListener>
@@ -169,7 +169,7 @@ and open the template in the editor.
 
 						<p:commandButton style="font-size: 12px;"
 							update=":formEdit:tbViewEdit" value="Confirmar"
-							oncomplete="PF('dlgFA').hide();" icon="ui-icon-check">
+							oncomplete="PF('dlgFA').hide();" icon="fa fa-fw fa-check">
 
 							<f:setPropertyActionListener value="#{clientealt}"
 								target="#{tituloPagarController.rowBean.forn}"></f:setPropertyActionListener>

@@ -322,7 +322,7 @@
 				<center>
 
 					<p:commandButton value="Sim"
-						action="#{caixaController.alterarPagamento}" icon="ui-icon-check"
+						action="#{caixaController.alterarPagamento}" icon="fa fa-fw fa-check"
 						update="msgAlteraPagamento"></p:commandButton>
 
 					<p:commandButton style="margin-left:10px" value="não"
@@ -369,7 +369,7 @@
 
 					<p:commandButton value="Abrir"
 						action="#{caixaController.venda.abrirCaixa()}"
-						icon="ui-icon-check" update="msg5, infoCaixa" />
+						icon="fa fa-fw fa-check" update="msg5, infoCaixa" />
 
 					<p:commandButton value="Fechar" style="margin-left:10px"
 						onclick="PF('dlgCaixa').hide()" icon="ui-icon-closethick" />
@@ -440,7 +440,7 @@
 
 					<p:commandButton value="Sim"
 						action="#{caixaController.venda.fecharCaixa()}"
-						icon="ui-icon-check" update="msg5, :infoCaixa"></p:commandButton>
+						icon="fa fa-fw fa-check" update="msg5, :infoCaixa"></p:commandButton>
 
 					<p:commandButton style="margin-left:10px" value="não"
 						onclick="PF('dlgFecCaixa').hide()" icon="ui-icon-closethick">
@@ -465,7 +465,7 @@
 
 					<p:commandButton value="Sim"
 						action="#{caixaController.estornarRecebimentoCaixa()}"
-						icon="ui-icon-check" update="grwgeral" />
+						icon="fa fa-fw fa-check" update="grwgeral" />
 
 					<p:commandButton value="Não" style="margin-left:10px"
 						onclick="PF('dlgestcred').hide()" icon="ui-icon-closethick" />
@@ -660,7 +660,7 @@
 
 						<p:commandButton value="Gravar"
 							action="#{caixaController.inserirVenda2Promissoria()}"
-							icon="ui-icon-check" update=":form1:tabela" />
+							icon="fa fa-fw fa-check" update=":form1:tabela" />
 
 						<p:commandButton value="Cancelar" icon="ui-icon-closethick"
 							onclick="PF('dlgnegpromis').hide();" style="margin-left:5px;" />
@@ -736,7 +736,7 @@
 								<p:commandButton style="font-size:12px;" value="Confirmar"
 									update=":formNegProm:inputNomeAnti :formNegProm:out"
 									oncomplete="PF('dlgBuscaClienteAnti').hide();"
-									icon="ui-icon-check">
+									icon="fa fa-fw fa-check">
 
 									<f:setPropertyActionListener value="#{cliente}"
 										target="#{caixaController.antecipaBean.cliente}"></f:setPropertyActionListener>
@@ -950,7 +950,7 @@
 								<f:convertNumber type="number" />
 							</p:inputText>
 
-							<p:commandButton value="Adicionar" icon="ui-icon-check"
+							<p:commandButton value="Adicionar" icon="fa fa-fw fa-check"
 								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
 								action="#{caixaController.venda.inserirNaListDinheiro()}" />
 						</p:panelGrid>
@@ -982,7 +982,7 @@
 							<h:outputText value=""></h:outputText>
 
 							<h:outputText value=""></h:outputText>
-							<p:commandButton value="Adicionar" icon="ui-icon-check"
+							<p:commandButton value="Adicionar" icon="fa fa-fw fa-check"
 								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
 								action="#{caixaController.venda.inserirNaListaCheque()}"></p:commandButton>
 
@@ -1014,7 +1014,7 @@
 							<h:outputText value=""></h:outputText>
 
 							<h:outputText value=""></h:outputText>
-							<p:commandButton value="Adicionar" icon="ui-icon-check"
+							<p:commandButton value="Adicionar" icon="fa fa-fw fa-check"
 								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
 								action="#{caixaController.venda.inserirNaListaCartao()}"></p:commandButton>
 						</p:panelGrid>
@@ -1079,7 +1079,7 @@
 				<hr />
 				<center>
 
-					<p:commandButton value="Pagar" icon="ui-icon-check" id="btnPaga"
+					<p:commandButton value="Pagar" icon="fa fa-fw fa-check" id="btnPaga"
 						disabled="#{caixaController.venda.lstPagamento.size() == 0}"
 						action="#{caixaController.insereRecebPromissoria()}"
 						update=":formNegProm:out :grwgeral :formPag:outpagto"
@@ -1184,7 +1184,7 @@
 						<p:column headerText="Pagar" width="8%">
 							<center>
 								<p:commandButton rendered="#{x.situacao=='Aberto'}"
-									icon="ui-icon-check" onclick="PF('dlgPagamento').show();">
+									icon="fa fa-fw fa-check" onclick="PF('dlgPagamento').show();">
 									<f:setPropertyActionListener
 										target="#{caixaController.rowBeanProm}" value="#{x}"></f:setPropertyActionListener>
 								</p:commandButton>
@@ -1304,7 +1304,7 @@
 
 				<center>
 					<p:commandButton value="Pagar" onclick="PF('dlgconfirmar').show()"
-						icon="ui-icon-check" />
+						icon="fa fa-fw fa-check" />
 
 					<p:commandButton style="margin-left:10px" value="Cancelar"
 						actionListener="#{caixaController.limparPagamento()}"
@@ -1326,7 +1326,7 @@
 					</p:outputPanel>
 					<hr />
 					<p:commandButton value="Sim"
-						action="#{caixaController.pagarPromissoria}" icon="ui-icon-check"
+						action="#{caixaController.pagarPromissoria}" icon="fa fa-fw fa-check"
 						update=":formPagamento:msgPagamento, :formPagaProm" />
 
 					<p:commandButton style="margin-left:10px" value="Não"
@@ -1347,7 +1347,7 @@
 					<br /> <br /> <br />
 					<p:commandButton value="Sim"
 						action="#{caixaController.venda.fecharCaixaAgenda()}"
-						icon="ui-icon-check" update="msg5"></p:commandButton>
+						icon="fa fa-fw fa-check" update="msg5"></p:commandButton>
 
 					<p:commandButton style="margin-left:10px" value="Não"
 						onclick="PF('dlgFecharCaixaAgendaConfirmacao').hide()"
@@ -1382,7 +1382,7 @@
 				<center>
 					<p:commandButton value="Abrir"
 						action="#{caixaController.venda.abrirCaixaAgenda()}"
-						icon="ui-icon-check"
+						icon="fa fa-fw fa-check"
 						onclick="PF('dlgAberturaCaixaAgenda').hide();" update="msg5" />
 
 					<p:commandButton value="Fechar" style="margin-left:10px"

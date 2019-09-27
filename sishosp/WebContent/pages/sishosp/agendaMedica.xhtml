@@ -827,7 +827,7 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
@@ -861,7 +861,7 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
-							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
 							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
@@ -895,7 +895,7 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outProg2, :formAgendaMedica:outTip2 :msgPagina :formAgendaMedica:outEquipeAvaliacaoRow"
-							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
 							action="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao()}"
 							oncomplete="PF('dlgConsuProg2').hide();">
@@ -937,7 +937,7 @@
 						<p:commandButton
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
 							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();"
 							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
@@ -970,7 +970,7 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
-							icon="ui-icon-check" title="Selecionar"
+							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
@@ -1002,7 +1002,7 @@
                         </f:facet>
 						<p:commandButton
 							action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
-							update=":formAgendaMedica" icon="ui-icon-check"
+							update=":formAgendaMedica" icon="fa fa-fw fa-check"
 							title="Selecionar" class="new-btn-acao-table acao-editar"
 							oncomplete="PF('dlgConsuEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
@@ -1032,7 +1032,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
+						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar" update=":formAgendaMedica"
 							action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
 							oncomplete="PF('dlgConsuProf').hide();">
@@ -1134,7 +1134,7 @@
 
 				<div align="center">
 					<p:commandButton value="Liberar" look="success" size="sm" id="b1"
-						style="margin-top:10px" icon="ui-icon-check"
+						style="margin-top:10px" icon="fa fa-fw fa-check"
 						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
 						action="#{AgendaController.validarSenhaLiberacao()}" />
 				</div>
@@ -1164,7 +1164,7 @@
 
 				<div align="center">
 					<p:commandButton value="Liberar" look="success" size="sm"
-						style="margin-top:10px" icon="ui-icon-check"
+						style="margin-top:10px" icon="fa fa-fw fa-check"
 						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
 						action="#{AgendaController.validarSenhaEncaixe()}" />
 				</div>

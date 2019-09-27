@@ -429,7 +429,7 @@
 				<hr />
 				<center>
 
-					<p:commandButton value="Sim" icon="ui-icon-check"
+					<p:commandButton value="Sim" icon="fa fa-fw fa-check"
 						action="#{tituloPagarController.excluirDocumentoPagar()}" update=":formData:dt, :grwgeral"/>
 
 					<p:commandButton value="Não" icon="ui-icon-closethick"
@@ -480,7 +480,7 @@
 
 					<center>
 
-						<p:commandButton value="Salvar" icon="ui-icon-check"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 							oncomplete="PF('dlgNovoImposto').hide();"
 							action="#{tituloPagarController.alterarRetencao()}"
 							update="idRetencao"></p:commandButton>
@@ -563,7 +563,7 @@
 
 						<p:commandButton style="font-size: 12px;"
 							 value="Confirmar"
-							oncomplete="PF('dlgFBusca').hide();" icon="ui-icon-check" update=":formData:outbusca">
+							oncomplete="PF('dlgFBusca').hide();" icon="fa fa-fw fa-check" update=":formData:outbusca">
 
 							<f:setPropertyActionListener value="#{cliente}"
 								target="#{tituloPagarController.buscaPagar.fornecedor}"></f:setPropertyActionListener>
@@ -806,7 +806,7 @@
                         </p:tab>
 					</p:tabView>
 					<center>
-						<p:commandButton value="Salvar" icon="ui-icon-check" style="margin-top:50px"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check" style="margin-top:50px"
 							update=":grwgeral,:formData:dt, formRep"  actionListener="#{tituloPagarController.replicarDocumentoPagar()}"/>
 	
 						<p:commandButton value="Cancelar" onclick="PF('dlgRepetir').hide();"

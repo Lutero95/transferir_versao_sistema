@@ -290,7 +290,7 @@
 				<hr />
 				<center>
 
-					<p:commandButton value="Sim" icon="ui-icon-check"
+					<p:commandButton value="Sim" icon="fa fa-fw fa-check"
 						action="#{tituloPagarController.excluirDocumentoPagar()}"
 						update=":formData:dt, :formData:msg" />
 
@@ -404,7 +404,7 @@
 				</p:outputPanel>
 				<center>
 					<hr />
-					<p:commandButton value="Estornar" icon="ui-icon-check"
+					<p:commandButton value="Estornar" icon="fa fa-fw fa-check"
 						update="msgBaixa :formData2:outbaixas"
 						action="#{financeiroController.estornarTitReceber()}"
 						style="margin-right:3px;"></p:commandButton>
@@ -454,7 +454,7 @@
 
 					<center>
 
-						<p:commandButton value="Salvar" icon="ui-icon-check"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 							oncomplete="PF('dlgNovoImposto').hide();"
 							action="#{tituloPagarController.alterarRetencao()}"
 							update="idRetencao, :formInsert:tbview:dtImposto"></p:commandButton>
@@ -762,7 +762,7 @@
 
 					<p:commandButton value="Salvar"
 						actionListener="#{tituloPagarController.salvarDocumentoPagar()}"
-						icon="ui-icon-check" update="msg,:formData:dt, formInsert"></p:commandButton>
+						icon="fa fa-fw fa-check" update="msg,:formData:dt, formInsert"></p:commandButton>
 
 					<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
 						style="margin-left:5px;" icon="ui-icon-closethick"></p:commandButton>
@@ -806,7 +806,7 @@
 
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						oncomplete="PF('dlgNovoImposto').hide();"
 						action="#{tituloPagarController.addNaListImpostos()}"
 						update="formNovoImposto, :formInsert:msg"></p:commandButton>
@@ -1066,7 +1066,7 @@
 					</p:tab>
 				</p:tabView>
 				<center>
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						style="margin-top:50px" update="formEdit:msgEdit,:formData:dt"
 						actionListener="#{tituloPagarController.editar()}" />
 
@@ -1112,7 +1112,7 @@
 
 					<center>
 
-						<p:commandButton value="Salvar" icon="ui-icon-check"
+						<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 							action="#{tituloPagarController.alterarRetencaoAlt()}"
 							update=":formEdit:tbViewEdit:tabRetAlt, formAltRet" />
 
@@ -1156,7 +1156,7 @@
 
 				<center>
 
-					<p:commandButton value="Salvar" icon="ui-icon-check"
+					<p:commandButton value="Salvar" icon="fa fa-fw fa-check"
 						oncomplete="PF('dlgNovaRetencaoAlt').hide();"
 						action="#{tituloPagarController.addNaListImpostosAlt()}"
 						update=":formEdit, :formRetencaoAlt" />

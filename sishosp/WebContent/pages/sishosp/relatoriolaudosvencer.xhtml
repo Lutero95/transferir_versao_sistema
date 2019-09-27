@@ -146,7 +146,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":frm:outProg, :frm:outGrupo"
-                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
                                 title="Selecionar"
                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
                                 actionListener="#{AgendaController.limparNaBuscaPrograma()}"
@@ -191,7 +191,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":frm:outGrupo"
-                                icon="ui-icon-check" title="Selecionar"
+                                icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();"
                                 action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
