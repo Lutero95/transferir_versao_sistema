@@ -130,14 +130,14 @@
 						<h:outputText
 							styleClass="name-user-nav"
 							value="#{MBFuncionarios.usuarioLogado.nome}"
-							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
 					</p:column>
 					
 					<p:column>
 						<h:outputText
 							styleClass="sub-name-user-nav"
 							value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
-							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
 					</p:column>
 				</p:row>
 				
