@@ -6,6 +6,8 @@
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="img_adefal" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -18,7 +20,7 @@
 	<parameter name="cod_tipo_atend" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="cod_empresa" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="cod_profissional" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select
@@ -33,15 +35,18 @@ t.id as cod_tipo_atend,
 t.desctipoatendimento as nome_tipo_atend,
 at.dtaatende as dt_atend
 from hosp.atendimentos at
-join hosp.empresa on empresa.cod_empresa = $P{cod_empresa} 
+join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 join hosp.programa  on programa.id_programa = at.codprograma
 left join hosp.grupo g on g.id_grupo = at.codgrupo
-inner join acl.funcionarios m on (at.codmedico = m.id_funcionario)
-inner join hosp.especialidade e on (m.codespecialidade = e.id_especialidade)
-inner join hosp.pacientes p on (at.codpaciente = p.id_paciente)
-inner join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
+left  join acl.funcionarios m on (at.codmedico = m.id_funcionario)
+left  join hosp.especialidade e on (m.codespecialidade = e.id_especialidade)
+left  join hosp.pacientes p on (at.codpaciente = p.id_paciente)
+left  join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
 where at.dtaatende between $P{dt_inicial} and $P{dt_final}
-and t.id = $P{cod_tipo_atend}
+and ((   $P{codprograma}   is not null and at.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and at.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{cod_tipo_atend}   is not null and  t.id = $P{cod_tipo_atend}) or (( $P{cod_tipo_atend} =0 ) OR ( $P{cod_tipo_atend} is null )))
 and at.codmedico is not null and at.codmedico <>0
 and(  ($P{cod_profissional} is not null and at.codmedico = $P{cod_profissional})
 or   ($P{cod_profissional} is null and at.codmedico > 0))
@@ -65,7 +70,7 @@ order by programa.descprograma, g.descgrupo,m.id_funcionario, dt_atend, p.nome]]
 	</field>
 	<field name="id_grupo" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="id_grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
 	</field>
 	<field name="descgrupo" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>

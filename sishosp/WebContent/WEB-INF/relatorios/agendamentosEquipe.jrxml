@@ -18,7 +18,9 @@
 	<parameter name="cod_tipo_atend" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="cod_empresa" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="cod_equipe" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select  empresa.nome_principal nomeinstituicao,empresa.logomarca,programa.id_programa,programa.descprograma,  
@@ -33,7 +35,8 @@ t.id as cod_tipo_atend,
 t.desctipoatendimento as nome_tipo_atend,
 at.dtaatende as dt_atend
 from hosp.atendimentos at
-join hosp.empresa on empresa.cod_empresa = $P{cod_empresa} 
+join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 join hosp.programa  on programa.id_programa = at.codprograma
 left join hosp.grupo g on g.id_grupo = at.codgrupo
 join hosp.equipe e on e.id_equipe = at.codequipe	
@@ -42,6 +45,9 @@ inner join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
 where at.dtaatende between $P{dt_inicial} and $P{dt_final}
 and(  ($P{cod_equipe} is not null and at.codequipe=$P{cod_equipe})
 or   ($P{cod_equipe} is null ))
+and ((   $P{codprograma}   is not null and at.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and at.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{cod_tipo_atend}   is not null and  t.id = $P{cod_tipo_atend}) or (( $P{cod_tipo_atend} =0 ) OR ( $P{cod_tipo_atend} is null )))
 order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
