@@ -128,7 +128,7 @@ public class AtendimentoController implements Serializable {
     }
 
     private void verificarSeRenderizaDialogDeLaudo() throws ProjetoException {
-        if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getAvaliacao()))){
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && (atendimento.getAvaliacao()==true)){
             renderizarDialogLaudo = true;
             listarLaudosVigentesPaciente();
         }
@@ -304,6 +304,17 @@ public class AtendimentoController implements Serializable {
 
         return retorno;
     }
+    
+
+    private Boolean validarSeEhNecessarioInformarLaudo(){
+        Boolean retorno = false;
+
+        if(atendimento.getAvaliacao() && validarDadosDoAtendimentoForamInformados() && VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId())){
+            retorno = true;
+        }
+
+        return retorno;
+    }    
 
     private Boolean validarDadosDoAtendimentoForamInformados() {
 
@@ -327,6 +338,7 @@ public class AtendimentoController implements Serializable {
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
         if(!validarSeEhNecessarioInformarGrupo()) {
+        	if(!validarSeEhNecessarioInformarLaudo()) {
             boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
             if (verificou) {
@@ -340,6 +352,10 @@ public class AtendimentoController implements Serializable {
             } else {
                 String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
                 JSFUtil.adicionarMensagemErro(mensagem, "Erro");
+            }
+        	}
+            else{
+                JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
             }
         }
         else{

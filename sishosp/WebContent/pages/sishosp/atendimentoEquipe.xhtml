@@ -203,6 +203,17 @@
 							icon="glyphicon-ok" size="sm" look="success" value="Gravar"
 							update="msgPagina" class="btn-incluir" style="float:left" />
 
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" update=":formConsAge"
+							style="float:right" class="btn-voltar"
+							action="/pages/sishosp/atendimento.faces?faces-redirect=true">
+						</b:commandButton>
+
+					</div>
+
+				</h:form>
+			</div>
+		</div>
 
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
 			draggable="false" resizable="false" closable="true" modal="true"
@@ -244,19 +255,10 @@
 			</h:form>
 		</p:dialog>
 
-
-        <p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1" dynamic="true"
-                  modal="true" width="750px" styleClass="topDialog">
-            <h:form id="formConsulProc1">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{AtendimentoController.listaProcedimentos}" var="proc"
-                             display="Nenhum Procedimento">
-=======
 		<p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1"
 			draggable="false" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true">
->>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
 			<h:form id="formConsulProc1">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -287,19 +289,10 @@
 			</h:form>
 		</p:dialog>
 
-<<<<<<< HEAD
-        <p:dialog header="Digite a evolução" widgetVar="dlgEvolucao" dynamic="true"
-                  modal="true" width="750px" styleClass="topDialog">
-            <h:form id="formEvolucao">
-                <p:editor widgetVar="editor2"
-                          value="#{AtendimentoController.atendimento.evolucao}"
-                          required="true" requiredMessage="Evolução: Campo obrigatório!">
-=======
 		<p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"
 			draggable="false" resizable="false" closable="true" modal="true"
 			showEffect="fade" hideEffect="clip"
 			styleClass="sm-size-dlg topDialog2" responsive="true">
->>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
 			<h:form id="formEvolucao">
 				<p:editor widgetVar="editor2"
@@ -322,13 +315,7 @@
 			closable="true" modal="true" showEffect="fade" hideEffect="clip"
 			styleClass="md-size-dlg topDialog" responsive="true">
 
-<<<<<<< HEAD
-        <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="500px"
-        dynamic="true"
-                  styleClass="topDialog">
-=======
 			<h:form id="frmPrincipal">
->>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
 				<p:outputPanel id="outDtEvolucoes">
 
@@ -380,16 +367,10 @@
 
 			<h:form id="frmPrincipalPts">
 
-<<<<<<< HEAD
-        <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px"
-        dynamic="true"
-                  styleClass="topDialog">
-=======
 				<div class="panel panel-primary">
 					<div class="panel-heading top-heading" style="margin-bottom: 15px;">
 						<h4 class="label-table-title">VISÃO GERAL DO PACIENTE</h4>
 					</div>
->>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
 					<b:row>
 
@@ -548,12 +529,6 @@
 
 		</p:dialog>
 
-<<<<<<< HEAD
-        <p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo" closable="false" draggable="false"
-                  visible="#{AtendimentoController.renderizarDialogLaudo == true}" dynamic="true"
-                  modal="true" width="750px" styleClass="topDialog">
-            <h:form id="formEscolherLaudo">
-=======
 		<p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo"
 			draggable="false" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
@@ -561,7 +536,6 @@
 			visible="#{AtendimentoController.renderizarDialogLaudo == true}">
 
 			<h:form id="formEscolherLaudo">
->>>>>>> refs/remotes/origin/ajustes_css_dylnara
 
 				<div align="center">
 
