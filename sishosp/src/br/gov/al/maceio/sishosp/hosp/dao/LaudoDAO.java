@@ -376,8 +376,9 @@ public class LaudoDAO {
 				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
 			}
 			
+			
 			if ( ((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
-				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
+				stm.setString(3, campoBusca.toUpperCase());
 			}
 
 			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
