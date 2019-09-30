@@ -37,7 +37,7 @@ at.dtaatende as dt_atend
 from hosp.atendimentos at
 join hosp.unidade u on u.id =  $P{codunidade} 
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
-join hosp.programa  on programa.id_programa = at.codprograma
+left join hosp.programa  on programa.id_programa = at.codprograma
 left join hosp.grupo g on g.id_grupo = at.codgrupo
 join hosp.equipe e on e.id_equipe = at.codequipe	
 join hosp.pacientes p on (at.codpaciente = p.id_paciente)

@@ -390,13 +390,13 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<text><![CDATA[JUSTIFICATIVA DO(S) PROCEDIMENTO(S) SOLICITADO(S)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="351" y="361" width="1" height="24" uuid="449ce982-a5c8-4f6f-9804-6ba7fa21f94d"/>
+				<reportElement x="385" y="361" width="1" height="24" uuid="449ce982-a5c8-4f6f-9804-6ba7fa21f94d"/>
 			</line>
 			<line>
-				<reportElement x="425" y="361" width="1" height="24" uuid="cde3fe6c-1b15-491f-9e37-c9bf1e380207"/>
+				<reportElement x="443" y="361" width="1" height="24" uuid="cde3fe6c-1b15-491f-9e37-c9bf1e380207"/>
 			</line>
 			<line>
-				<reportElement x="499" y="362" width="1" height="24" uuid="1e55a69a-786e-4205-ae9a-e34be3d793dd"/>
+				<reportElement x="509" y="362" width="1" height="24" uuid="1e55a69a-786e-4205-ae9a-e34be3d793dd"/>
 			</line>
 			<rectangle>
 				<reportElement x="0" y="466" width="320" height="25" uuid="2c19c118-3444-497c-a6d4-55d32d56ee95"/>
@@ -567,17 +567,17 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<text><![CDATA[CONTATO 3]]></text>
 			</staticText>
 			<line>
-				<reportElement x="110" y="186" width="1" height="24" uuid="530c7f91-7533-4f7b-bbc0-7347a8c2dcb4"/>
+				<reportElement x="81" y="186" width="1" height="24" uuid="530c7f91-7533-4f7b-bbc0-7347a8c2dcb4"/>
 			</line>
 			<staticText>
-				<reportElement x="2" y="186" width="104" height="17" uuid="d9f6e95b-8936-446f-ba79-ac9531cc7122"/>
+				<reportElement x="2" y="186" width="78" height="17" uuid="d9f6e95b-8936-446f-ba79-ac9531cc7122"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[CÓD. PROCEDIMENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="111" y="186" width="104" height="17" uuid="f66e6ef3-7533-4a33-8cc5-81b1cce156d3"/>
+				<reportElement x="83" y="186" width="104" height="17" uuid="f66e6ef3-7533-4a33-8cc5-81b1cce156d3"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
@@ -591,21 +591,23 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<text><![CDATA[DESCRIÇÃO DO DIAGNÓSTICO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="353" y="362" width="74" height="17" uuid="8567d788-552b-4231-bf12-b0186cb82904"/>
+				<reportElement x="387" y="362" width="52" height="17" uuid="8567d788-552b-4231-bf12-b0186cb82904"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[CID PRINCIPAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="427" y="361" width="104" height="17" uuid="2018d5b7-69f6-45ba-90eb-083b79b1f79e"/>
+				<reportElement x="446" y="361" width="63" height="17" uuid="2018d5b7-69f6-45ba-90eb-083b79b1f79e"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[CID SECUNDÁRIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="501" y="361" width="70" height="17" uuid="7f450346-1b72-41cc-bc26-465bce3a1318"/>
+				<reportElement x="514" y="361" width="53" height="17" uuid="7f450346-1b72-41cc-bc26-465bce3a1318">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement>
 					<font size="7"/>
 				</textElement>
@@ -711,140 +713,126 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="29" width="322" height="14" uuid="4a3e4001-031c-4be5-b0a8-398ba69d6506"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="327" y="29" width="59" height="14" uuid="4bec89ed-b5dc-4f88-8a71-bf7a011de3f4"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="52" width="202" height="14" uuid="e8250164-22a4-40ef-80d2-b6725e5e601d"/>
+				<reportElement x="2" y="52" width="202" height="16" uuid="e8250164-22a4-40ef-80d2-b6725e5e601d"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="13" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="205" y="53" width="121" height="14" uuid="a105d85d-825f-43c8-940e-51517f3146c1"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dtanascimento}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="76" width="296" height="14" uuid="2ff69dd9-8642-4975-9a80-461f0b769a21"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{mae}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="298" y="77" width="273" height="14" uuid="4411de97-ed9a-4a64-bdcc-bf7757d77cca"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeresp}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="1" y="101" width="574" height="14" uuid="3243499b-7f3a-45da-b5ac-7e6828231dfa"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{endereco}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="126" width="196" height="14" uuid="80879a2b-4c6e-42a2-9a77-326e41867916"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descbairro}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="202" y="126" width="175" height="14" uuid="cba8c424-c107-4d34-93d7-56b8abdce221"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descmunicipio}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="465" y="127" width="101" height="13" uuid="6f6178a6-ffff-4082-8649-774eeb5cad64"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="391" y="29" width="108" height="14" uuid="baebfae5-0e9c-43c3-a53a-daaf5ec4cc0d"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{id_paciente}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="150" width="121" height="14" uuid="3038b566-dadd-4b16-88ba-ae6cba7f911f"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tel1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="199" y="150" width="121" height="14" uuid="a8a766f0-a42d-418b-aca8-b9936d0a4a5c"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tel2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="377" y="150" width="121" height="14" uuid="40b632a8-f0d0-4f55-b812-b1837ef9acdd"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tel3}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="197" width="108" height="14" uuid="1954f693-586c-43a2-863e-7de8283f4bd5"/>
+				<reportElement x="2" y="197" width="78" height="14" uuid="1954f693-586c-43a2-863e-7de8283f4bd5"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codproc1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="111" y="197" width="451" height="14" uuid="fdd2da39-601b-4439-8c75-187fff81259a"/>
+				<reportElement x="83" y="197" width="485" height="14" uuid="fdd2da39-601b-4439-8c75-187fff81259a"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="456" y="53" width="66" height="14" uuid="397ce51b-d205-4653-83e5-1c123b7fc344"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codraca}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="3" y="476" width="230" height="15" uuid="353a8a0c-8290-40fe-8836-e6d3bf4b4150"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomemedico}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="233" y="480" width="87" height="14" uuid="909659f0-6ac9-490f-958e-46026c56d4c3"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{data_solicitacao}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="233" width="451" height="14" uuid="06222a66-68e4-487a-9435-ef517b2af051"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario1}]]></textFieldExpression>
 			</textField>
@@ -861,121 +849,104 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="254" width="451" height="14" uuid="b698cab2-582d-4429-be31-101b871f6d9d"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="275" width="451" height="14" uuid="1d928284-df9d-460f-8f88-fdb9e7b49ead"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario3}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="294" width="451" height="14" uuid="14f33469-b1d4-4dcd-96b5-bfcc6d0f8e7b"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario4}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="316" width="451" height="14" uuid="4ddf4dfa-1a69-4e2f-91b5-80db556b9bde"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario5}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="3" y="371" width="342" height="14" uuid="c80aa50c-cc6c-4126-8112-d5a8260723bb"/>
+				<reportElement x="3" y="371" width="379" height="14" uuid="c80aa50c-cc6c-4126-8112-d5a8260723bb"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="353" y="371" width="72" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
+				<reportElement x="387" y="371" width="41" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="427" y="371" width="72" height="14" uuid="d86b4927-9325-47fb-bf3c-4f29265d6117"/>
+				<reportElement x="446" y="371" width="41" height="14" uuid="d86b4927-9325-47fb-bf3c-4f29265d6117">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cid2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="501" y="371" width="72" height="14" uuid="fc7e3d98-15ac-4b65-8a92-f95c3e03d833"/>
+				<reportElement x="514" y="371" width="41" height="14" uuid="fc7e3d98-15ac-4b65-8a92-f95c3e03d833">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cid3}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="3" y="400" width="559" height="40" uuid="fdb5a917-e0e2-40f4-accd-e92836875bbe"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{obs}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="502" width="230" height="14" uuid="5d9fd478-282a-4e76-b040-96430e1f96b8"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cns_medico}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="234" width="92" height="14" uuid="5035854f-c97d-4353-b4a6-654f9da7c9c5"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codprocedimento_secundario1}==null?null:1)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="254" width="92" height="14" uuid="253832fc-12f6-453f-919a-f152c6a5e5fb"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codproc2}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="275" width="92" height="14" uuid="b33a5d8a-17d6-4415-89b1-eb393560efa3"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codproc3}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="294" width="92" height="14" uuid="83835be4-838a-4864-aea8-46396dd9dcda"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codproc4}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="316" width="92" height="14" uuid="44eb7e77-51d6-438d-8249-9abdd75b2eef"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codproc5}==null?"":"1")]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="544" width="229" height="14" uuid="8c9e89fb-e68f-4413-8a8a-11a647dc46a0"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomemedico}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="571" width="230" height="14" uuid="9f13b863-67eb-4401-bcf2-9d1c555246d2"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cns_medico}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="453" y="44" width="1" height="22" uuid="1a4f7edf-1b14-4e49-a7a1-62aa3cf7ddff"/>
@@ -990,14 +961,14 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 			<textField isBlankWhenNull="true">
 				<reportElement x="330" y="53" width="123" height="14" uuid="d33a50fd-0ab4-4d89-a2c6-b97f9bfd7d48"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cpf}.substring(0, 3) + "." + $F{cpf}.substring(3, 6) + "." + $F{cpf}.substring(6, 9) + "-" + $F{cpf}.substring(9, 11)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="385" y="126" width="77" height="14" uuid="373c5f98-cdad-4cd5-9594-a8f9cee9d08a"/>
 				<textElement>
-					<font size="9"/>
+					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codibgemun}]]></textFieldExpression>
 			</textField>
