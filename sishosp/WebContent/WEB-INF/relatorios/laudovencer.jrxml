@@ -55,14 +55,17 @@ select
 	(select t1.id from hosp.telefone_paciente t1
 	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomemedico,
-p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
+p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome,p.matricula, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codproc1, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2, prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
-prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5
+prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
+programa.descprograma, grupo.descgrupo
 FROM hosp.paciente_instituicao pi 
 join hosp.laudo l on pi.codlaudo = l.id_laudo
+join hosp.programa on programa.id_programa = pi.codprograma
+join hosp.grupo on grupo.id_grupo = pi.codgrupo
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
 LEFT JOIN hosp.proc prs1 ON prs1.id = l.codprocedimento_secundario1
@@ -140,6 +143,10 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	</field>
 	<field name="nome" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="matricula" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="matricula"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
 	<field name="cpf" class="java.lang.String">
@@ -257,6 +264,14 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario5"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
 	<field name="tel_id2" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
 	</field>
@@ -276,21 +291,39 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
 	<pageHeader>
-		<band height="37">
+		<band height="69">
 			<textField>
-				<reportElement x="4" y="-5" width="591" height="20" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
+				<reportElement x="4" y="-16" width="591" height="18" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="4" y="15" width="591" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
+				<reportElement x="4" y="1" width="591" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[LAUDO PARA SOLICITAÇÃO/AUTORIZAÇÃO DE PROCEDIMENTO AMBULATORIAL]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="80" y="32" width="400" height="16" uuid="e0fb34ec-3a8f-4473-9228-6abc98db091f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="82" y="48" width="400" height="16" uuid="055259d9-29a3-4fde-a5ef-903018cc4b7e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matricula}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -873,45 +906,6 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario5}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="3" y="371" width="379" height="14" uuid="c80aa50c-cc6c-4126-8112-d5a8260723bb"/>
-				<textElement>
-					<font fontName="SansSerif" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="387" y="371" width="41" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
-				<textElement>
-					<font fontName="DejaVu Sans" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="446" y="371" width="41" height="14" uuid="d86b4927-9325-47fb-bf3c-4f29265d6117">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Sans" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cid2}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="514" y="371" width="41" height="14" uuid="fc7e3d98-15ac-4b65-8a92-f95c3e03d833">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="DejaVu Sans" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cid3}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="3" y="400" width="559" height="40" uuid="fdb5a917-e0e2-40f4-accd-e92836875bbe"/>
-				<textElement>
-					<font fontName="DejaVu Sans" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{obs}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="234" width="92" height="14" uuid="5035854f-c97d-4353-b4a6-654f9da7c9c5"/>

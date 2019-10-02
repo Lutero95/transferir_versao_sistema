@@ -666,7 +666,7 @@ public class AgendaController implements Serializable {
             zerarValoresAgendaMaximoIhQuantidade();
         }
 
-        if (agenda.getEquipe().getCodEquipe() != null) {
+        if ((agenda.getEquipe().getCodEquipe() != null) &&  (agenda.getAvaliacao()==false)) {
 
             if (pacienteAtivo) {
                 gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);

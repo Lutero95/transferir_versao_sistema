@@ -429,7 +429,9 @@ public class LaudoDAO {
 				+ " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
 				+ " l.codprocedimento_secundario4, ps4.nome as nome4, "
 				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, "
-				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao , func.id_funcionario, func.descfuncionario "
+				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao , func.id_funcionario, func.descfuncionario,  "
+				+ " to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio, " + 
+				"	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal"
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
 				+ " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -458,6 +460,8 @@ public class LaudoDAO {
 				l.setMesFinal(rs.getInt("mes_final"));
 				l.setAnoFinal(rs.getInt("ano_final"));
 				l.setPeriodo(rs.getInt("periodo"));
+				l.setVigenciaInicial(rs.getDate("datainicio"));
+				l.setVigenciaFinal(rs.getDate("datafinal"));
 				l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
 				l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
 				l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));

@@ -141,7 +141,7 @@ public class AtendimentoController implements Serializable {
     private void carregarDadosLaudo() throws ProjetoException {
 
     	LaudoDAO laudoDAO = new LaudoDAO();
-        atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.listarLaudosVigentesPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
+        atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.buscarLaudosPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
     }
 
     public void realizarAtendimentoProfissional() throws ProjetoException {

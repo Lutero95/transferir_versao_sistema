@@ -629,7 +629,10 @@ public class PtsDAO {
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
                 "novas_estrategias_tratamento, condulta_alta " +
                 "FROM hosp.pts p " +
-                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
+                "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
+                "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
+                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
+                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa) " +
                 "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "WHERE laudo.codpaciente = ?";
 
@@ -663,7 +666,7 @@ public class PtsDAO {
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
                 pts.setCondultaAlta(rs.getString("condulta_alta"));
-                pts.setListaPtsArea(carregarAreasPts(pts.getGerenciarPaciente().getId(), conexao));
+                pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao));
 
             }
 
