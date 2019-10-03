@@ -141,7 +141,7 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}  order b
 		<groupHeader>
 			<band height="118">
 				<staticText>
-					<reportElement x="80" y="2" width="640" height="13" uuid="54f7e873-301c-49c0-b5d7-1ae49837a1b2"/>
+					<reportElement x="80" y="1" width="640" height="13" uuid="54f7e873-301c-49c0-b5d7-1ae49837a1b2"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
