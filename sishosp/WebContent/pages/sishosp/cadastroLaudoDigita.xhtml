@@ -391,7 +391,6 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBusCid2" icon="ui-icon-search"
-									action="#{LaudoController.listarCids()}"
 									update="formConsulCid2" process="@this"
 									oncomplete="PF('dlgConsulCid2').show();" />
 							</p:outputPanel>
@@ -411,7 +410,6 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBusCid3" icon="ui-icon-search"
-									action="#{LaudoController.listarCids()}"
 									update="formConsulCid3" process="@this"
 									oncomplete="PF('dlgConsulCid3').show();" />
 							</p:outputPanel>
@@ -717,7 +715,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar CID 1" widgetVar="dlgConsulCid1"
-			responsive="true" height="550" modal="true">
+			responsive="true" height="350" modal="true" dynamic="true">
 			<h:form id="formConsulCid1">
 				<p:outputPanel id="outcid1">
 					<p:row>
@@ -786,7 +784,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar CID 2" widgetVar="dlgConsulCid2"
-			responsive="true" height="550" modal="true">
+			responsive="true" height="350" modal="true" dynamic="true">
 			<h:form id="formConsulCid2">
 				<p:outputPanel id="outcid2">
 					<p:row>
@@ -855,7 +853,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar CID 3" widgetVar="dlgConsulCid3"
-			responsive="true" height="550" modal="true">
+			responsive="true" height="350" modal="true" dynamic="true">
 			<h:form id="formConsulCid3">
 				<p:row>
 

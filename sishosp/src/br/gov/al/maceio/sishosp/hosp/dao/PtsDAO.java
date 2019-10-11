@@ -533,11 +533,10 @@ public class PtsDAO {
     }
 
     public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
-                                              Integer filtroMesVencimento, Integer filtroAnoVencimento)
+                                              Integer filtroMesVencimento, Integer filtroAnoVencimento, String campoBusca, String tipoBusca)
             throws ProjetoException {
 
         //Inicia com 2, pois é o número mínimo de parametros.
-        Integer contadorParametros = 2;
 
         String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
                 "pi.codgrupo, pi.codprograma, laudo.codpaciente, pa.cpf, pa.cns, " +
@@ -551,6 +550,19 @@ public class PtsDAO {
                 "LEFT JOIN hosp.pts p ON " +
                 "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = laudo.codpaciente) " +
                 "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ?  AND coalesce(p.status,'') <> 'I' ";
+        
+		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.nome ilike ?";
+		}
+
+		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.matricula = ?";
+		}
+		
+		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.id_paciente = ?";
+		}
+		
 
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
             sql = sql + " AND p.data_vencimento >= current_date";
@@ -561,13 +573,11 @@ public class PtsDAO {
         }
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
-            sql = sql + " AND EXTRACT(month FROM p.data) = ? ";
-            contadorParametros++;
+            sql = sql + " AND EXTRACT(month FROM p.data_vencimento) = ? ";
         }
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
-            sql = sql + " AND EXTRACT(year FROM p.data) = ? ";
-            contadorParametros++;
+            sql = sql + " AND EXTRACT(year FROM p.data_vencimento) = ? ";
         }
 
         sql = sql + " ORDER BY p.data ";
@@ -579,13 +589,32 @@ public class PtsDAO {
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, codGrupo);
             stmt.setInt(2, codPrograma);
+            int i = 3;
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
-                stmt.setInt(contadorParametros, filtroMesVencimento);
+                stmt.setInt(i, filtroMesVencimento);
+                i++;
             }
 
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
-                stmt.setInt(contadorParametros, filtroAnoVencimento);
+                stmt.setInt(i, filtroAnoVencimento);
+                i++;
             }
+            
+			if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
+				i++;;
+			}
+			
+			
+			if ( ((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
+				stmt.setString(i, campoBusca.toUpperCase());
+				i++;
+			}
+
+			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stmt.setInt(i, Integer.valueOf(campoBusca));
+				i++;
+			}
 
             ResultSet rs = stmt.executeQuery();
 

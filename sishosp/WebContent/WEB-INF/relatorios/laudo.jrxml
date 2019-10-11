@@ -55,7 +55,7 @@ select
 	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomemedico,
 p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
- p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
+p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')   AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.nome AS nomeprocedimento_secundario1,
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
@@ -772,7 +772,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5, 8) ]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="391" y="29" width="108" height="14" uuid="baebfae5-0e9c-43c3-a53a-daaf5ec4cc0d"/>

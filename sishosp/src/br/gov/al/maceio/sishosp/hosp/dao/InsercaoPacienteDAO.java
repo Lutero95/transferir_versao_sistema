@@ -778,11 +778,14 @@ public class InsercaoPacienteDAO {
 		return lista;
 	}
 
-	public Boolean verificarSeExisteLaudoAtivoParaProgramaIhGrupo(int codPrograma, int codGrupo) {
+	public Boolean verificarSeExisteLaudoAtivoParaProgramaIhGrupo(int codPrograma, int codGrupo, int codPaciente) {
 
 		Boolean retorno = false;
 
-		String sql = "SELECT * FROM hosp.paciente_instituicao WHERE status = 'A' AND codprograma = ? AND codgrupo = ?;";
+		String sql = "SELECT pi.codprograma FROM hosp.paciente_instituicao pi " + 
+				" join hosp.laudo l on l.id_laudo = pi.codlaudo " + 
+				" WHERE pi.status = 'A' AND pi.codprograma = ? AND pi.codgrupo = ? " + 
+				" and l.codpaciente=?";
 
 		try {
 
@@ -791,6 +794,7 @@ public class InsercaoPacienteDAO {
 
 			stm.setInt(1, codPrograma);
 			stm.setInt(2, codGrupo);
+			stm.setInt(3, codPaciente);
 
 			ResultSet rs = stm.executeQuery();
 

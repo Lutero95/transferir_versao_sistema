@@ -705,7 +705,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
      //   insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
-        if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo())){
+        if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())){
             JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo",
                     "Erro");
         }

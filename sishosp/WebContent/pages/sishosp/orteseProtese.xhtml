@@ -58,7 +58,7 @@
                                              class="new-btn-acao-table acao-editar" icon="ui-icon-search"
                                              update=":formConsuLaudo" immediate="true"
                                              onclick="PF('dlgConsuLaudo').show();"
-                                             action="#{InsercaoController.listarLaudosVigentes}"/>
+                                             action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"/>
                         </b:column>
 
                     </b:row>

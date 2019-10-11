@@ -157,6 +157,138 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			return retorno;
 		}
 	}
+	
+	
+	public boolean gravarAgendaAvulsa(AgendaBean agenda, List<AgendaBean> listaNovosAgendamentos,
+			Integer funcionarioLiberacao) {
+
+		Boolean retorno = false;
+		int idAtendimento = 0;
+
+		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
+				+ " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
+				+ " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao)"
+				+ " VALUES " + "(?, ?, ?, ?, ?," + " ?, ?, ?, ?, ?,"
+				+ " ?, ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
+		try {
+			con = ConnectionFactory.getConnection();
+
+			for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
+				ps = con.prepareStatement(sql);
+
+				ps.setInt(1, agenda.getPaciente().getId_paciente());
+				if (agenda.getProfissional().getId() != null) {
+					ps.setLong(2, agenda.getProfissional().getId());
+				} else {
+					ps.setNull(2, Types.NULL);
+				}
+				if (agenda.getAvaliacao()) {
+					ps.setInt(3, agenda.getProgramaAvaliacao().getIdPrograma());
+				} else {
+					ps.setInt(3, agenda.getPrograma().getIdPrograma());
+				}
+				ps.setDate(4, new java.sql.Date(listaNovosAgendamentos.get(i).getDataAtendimento().getTime()));
+				ps.setString(5, "A");
+				ps.setDate(6, new java.sql.Date(new Date().getTime()));
+				ps.setInt(7, agenda.getTipoAt().getIdTipo());
+
+				if (agenda.getTurno() != null) {
+					ps.setString(8, agenda.getTurno().toUpperCase());
+				} else {
+					ps.setNull(8, Types.NULL);
+				}
+
+				if (agenda.getEquipe().getCodEquipe() != null) {
+					ps.setInt(9, agenda.getEquipe().getCodEquipe());
+				} else {
+					ps.setNull(9, Types.NULL);
+				}
+				ps.setString(10, agenda.getObservacao().toUpperCase());
+				ps.setString(11, "S");
+				ps.setInt(12, agenda.getUnidade().getId());
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
+					ps.setInt(13, agenda.getGrupo().getIdGrupo());
+				} else {
+					ps.setNull(13, Types.NULL);
+				}
+
+				ps.setBoolean(14, agenda.getEncaixe());
+				if (funcionarioLiberacao > 0) {
+					ps.setLong(15, funcionarioLiberacao);
+				} else {
+					ps.setNull(15, Types.NULL);
+				}
+
+				if (agenda.getHorario() != null) {
+					ps.setTime(16, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+				} else {
+					ps.setNull(16, Types.NULL);
+				}
+
+				ps.setBoolean(17, agenda.getAvaliacao());
+
+				ResultSet rs = ps.executeQuery();
+
+				if (rs.next()) {
+					idAtendimento = rs.getInt("id_atendimento");
+				}
+
+				for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
+					String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
+							+ " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+					ps = con.prepareStatement(sql2);
+					if (agenda.getProfissional().getId() != null) {
+						ps.setLong(1, agenda.getProfissional().getId());
+						ps.setInt(2, idAtendimento);
+						ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+						if (agenda.getAvaliacao()) {
+							ps.setInt(4, agenda.getProgramaAvaliacao().getProcedimento().getIdProc());
+						} else {
+							ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
+						}
+						ps.executeUpdate();
+					} else if (agenda.getEquipe().getCodEquipe() != null) {
+						for (FuncionarioBean prof : agenda.getEquipe().getProfissionais()) {
+							ps.setLong(1, prof.getId());
+							ps.setInt(2, idAtendimento);
+							if (prof.getCbo().getCodCbo() != null)
+								ps.setInt(3, prof.getCbo().getCodCbo());
+							else
+								ps.setNull(3, Types.NULL);
+							if (agenda.getAvaliacao()) {
+								if (agenda.getProgramaAvaliacao().getProcedimento().getIdProc() != null)
+									ps.setInt(4, agenda.getProgramaAvaliacao().getProcedimento().getIdProc());
+								else
+									ps.setNull(4, Types.NULL);
+							} else {
+								if (agenda.getPrograma().getProcedimento().getIdProc() != null)
+									ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
+								else
+									ps.setNull(4, Types.NULL);
+							}
+							ps.executeUpdate();
+						}
+					}
+
+				}
+			}
+			con.commit();
+
+			retorno = true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+	
 
 	public boolean excluirAgendamento(AgendaBean agenda) {
 		Boolean retorno = false;

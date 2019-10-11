@@ -64,11 +64,11 @@ public class GerenciarPacienteDAO {
 		}
 		
 
-        if (gerenciar.getStatus().equals("A")) {
+        if ((gerenciar.getStatus()!=null ) && (gerenciar.getStatus().equals("A"))) {
             sql = sql + " and status = 'A'";
         }
 
-        if (gerenciar.getStatus().equals("D")) {
+        if ((gerenciar.getStatus()!=null ) && (gerenciar.getStatus().equals("D"))) {
             sql = sql + " and status = 'D'";
         }
         sql = sql + " order by pa.nome";

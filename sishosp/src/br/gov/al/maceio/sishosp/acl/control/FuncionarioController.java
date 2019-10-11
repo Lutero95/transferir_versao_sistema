@@ -523,11 +523,13 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void gravarProfissional() throws ProjetoException {
-
+/*
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
-		} else if (listaSistemasDual.getTarget().size() == 0) {
+		} else 
+			*/
+			if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
 			List<Integer> listaSis = new ArrayList<>();
@@ -540,9 +542,9 @@ public class FuncionarioController implements Serializable {
 
 			MenuMB mmb = new MenuMB();
 			List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
-
+			List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 			for (Menu mp : menusPerfil) {
-				for (Menu mf : listaFiltrada) {
+				for (Menu mf : listaFiltradaaux) {
 					if (mp.getCodigo().equals(mf.getCodigo())) {
 						listaFiltrada.remove(mf);
 					}

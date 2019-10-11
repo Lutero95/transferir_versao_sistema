@@ -56,7 +56,7 @@ select
 	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomemedico,
 p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome,p.matricula, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
- p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
+p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codproc1, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2, prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
@@ -74,7 +74,7 @@ LEFT JOIN hosp.proc prs3 ON prs3.id = l.codprocedimento_secundario3
 LEFT JOIN hosp.proc prs4 ON prs4.id = l.codprocedimento_secundario4
 LEFT JOIN hosp.proc prs5 ON prs5.id = l.codprocedimento_secundario5
 LEFT JOIN acl.funcionarios f ON f.id_funcionario = l.cod_profissional
-join hosp.empresa on empresa.cod_empresa = $P{codempresa} 
+join hosp.empresa on empresa.cod_empresa = 1
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
@@ -92,7 +92,8 @@ and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as v
 )v
 left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
 left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
-left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
+left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
+limit 1]]>
 	</queryString>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
@@ -293,14 +294,14 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<pageHeader>
 		<band height="69">
 			<textField>
-				<reportElement x="4" y="-16" width="591" height="18" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
+				<reportElement x="4" y="-4" width="591" height="18" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="4" y="1" width="591" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
+				<reportElement x="4" y="13" width="591" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="false"/>
 				</textElement>
@@ -807,11 +808,13 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textFieldExpression><![CDATA[$F{descmunicipio}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="465" y="127" width="101" height="13" uuid="6f6178a6-ffff-4082-8649-774eeb5cad64"/>
+				<reportElement x="465" y="126" width="101" height="14" uuid="6f6178a6-ffff-4082-8649-774eeb5cad64">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Sans" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5, 8)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="391" y="29" width="108" height="14" uuid="baebfae5-0e9c-43c3-a53a-daaf5ec4cc0d"/>

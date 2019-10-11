@@ -907,7 +907,7 @@ public class FuncionarioDAO {
 			}
 
 			for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-				String sql2 = "INSERT INTO hosp.funcionario_unidades (codunidade, cod_funcionario) VALUES (?, ?);";
+				String sql2 = "INSERT INTO hosp.funcionario_unidades (cod_unidade, cod_funcionario) VALUES (?, ?);";
 				ps = con.prepareStatement(sql2);
 
 				ps.setInt(1, profissional.getListaUnidades().get(i).getId());

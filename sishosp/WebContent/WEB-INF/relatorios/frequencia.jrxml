@@ -78,7 +78,7 @@ select
 	 pi.id codpacienteinstituicao,lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca,empresa.logomarca2, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
 p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
- p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
+p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
@@ -582,7 +582,7 @@ order by codpacienteinstituicao, nome]]>
 					<textElement>
 						<font fontName="DejaVu Sans" size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5, 8) ]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="391" y="64" width="92" height="16" uuid="baebfae5-0e9c-43c3-a53a-daaf5ec4cc0d">
