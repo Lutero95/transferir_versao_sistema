@@ -9,9 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
@@ -20,6 +19,9 @@ import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
+
+import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 @ManagedBean(name = "GerenciarPacienteController")
 @ViewScoped
@@ -65,12 +67,31 @@ public class GerenciarPacienteController implements Serializable {
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
     }
 
+    public void carregarBuscaGerenciamentoPaciente(){
+        BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+            if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla())) {
+                gerenciarpaciente.setGrupo(buscaSessaoDTO.getGrupoBean());
+                gerenciarpaciente.setPrograma(buscaSessaoDTO.getProgramaBean());
+            }
+        }
+
+    }
+
     public void buscarPacientesInstituicao() throws ProjetoException {
     	System.out.println("gerpaciente buscarPacientesInstituicao");
         busca = "S";
+        adicionarBuscaGerenciamentoPacienteNaSessao();
         carregarPacientesInstituicao();
         apenasLeitura = true;
 
+    }
+
+    public void adicionarBuscaGerenciamentoPacienteNaSessao(){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(),
+                null, null, TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
+
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
     public void limparBusca() throws ProjetoException {

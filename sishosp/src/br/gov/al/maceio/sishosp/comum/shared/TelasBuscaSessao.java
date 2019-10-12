@@ -4,7 +4,8 @@ public enum TelasBuscaSessao {
 
     PTS("pts"),
     CONSULTAR_AGENDAMENTO ("consultarAgendamento"),
-    GERENCIAR_ATENDIMENTO ("gerenciarAtendimento");
+    GERENCIAR_ATENDIMENTO ("gerenciarAtendimento"),
+    GERENCIAMENTO_PACIENTES ("gerenciamentoPaciente");
 
     private String sigla;
 
