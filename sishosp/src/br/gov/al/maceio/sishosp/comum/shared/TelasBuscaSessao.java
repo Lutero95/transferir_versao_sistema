@@ -2,7 +2,8 @@ package br.gov.al.maceio.sishosp.comum.shared;
 
 public enum TelasBuscaSessao {
 
-    PTS("pts");
+    PTS("pts"),
+    CONSULTAR_AGENDAMENTO ("consultarAgendamento");
 
     private String sigla;
 

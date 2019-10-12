@@ -12,6 +12,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DualListModel;
 
@@ -43,6 +45,8 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+
+import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 @ManagedBean(name = "AgendaController")
 @ViewScoped
@@ -803,8 +807,14 @@ public class AgendaController implements Serializable {
 		limparDados();
 	}
 
-	public void consultarAgenda(String situacao) throws ProjetoException {
+	public void adicionarBuscaConsultarAgendamentoNaSessao(){
+		BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(null, null, dataAtendimentoC, dataAtendimentoFinalC, TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
 
+		SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
+	}
+
+	public void consultarAgenda(String situacao) throws ProjetoException {
+		adicionarBuscaConsultarAgendamentoNaSessao();
 		/*
 		 * if (this.dataAtendimentoC == null) {
 		 * JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
@@ -814,9 +824,24 @@ public class AgendaController implements Serializable {
 				agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
 	}
 
+	public void carregarBuscaConsultaAgendamento(){
+		BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+		if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+			if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla())) {
+				dataAtendimentoC = buscaSessaoDTO.getPeriodoInicial();
+				dataAtendimentoFinalC = buscaSessaoDTO.getPeriodoFinal();
+			}
+		}
+
+	}
+
 	public void resetaParametrosConsultaAgenda() {
 		agenda.setPresenca("T");
+	}
 
+	public void iniciarPaginaConsultarAgendamentos(){
+		carregarBuscaConsultaAgendamento();
+		resetaParametrosConsultaAgenda();
 	}
 
 	// SEM USO NO MOMENTO
