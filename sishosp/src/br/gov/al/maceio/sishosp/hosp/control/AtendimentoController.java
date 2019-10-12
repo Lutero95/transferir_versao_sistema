@@ -96,15 +96,9 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
             return;
         }
-        adicionarBuscaGerenciarAtendimentosNaSessao();
-        listarAtendimentos(campoBusca, tipoBusca);
-    }
-
-    public void adicionarBuscaGerenciarAtendimentosNaSessao(){
-        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(atendimento.getPrograma(), atendimento.getGrupo(),
+        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
-
-        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
+        listarAtendimentos(campoBusca, tipoBusca);
     }
 
     public String redirectAtendimento() {

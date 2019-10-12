@@ -19,7 +19,6 @@ import org.primefaces.model.DualListModel;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
@@ -807,14 +806,9 @@ public class AgendaController implements Serializable {
 		limparDados();
 	}
 
-	public void adicionarBuscaConsultarAgendamentoNaSessao(){
-		BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(null, null, dataAtendimentoC, dataAtendimentoFinalC, TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
-
-		SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
-	}
-
 	public void consultarAgenda(String situacao) throws ProjetoException {
-		adicionarBuscaConsultarAgendamentoNaSessao();
+		SessionUtil.adicionarBuscaPtsNaSessao(null, null, dataAtendimentoC,
+				dataAtendimentoFinalC, TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
 		/*
 		 * if (this.dataAtendimentoC == null) {
 		 * JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");

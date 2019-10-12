@@ -121,14 +121,8 @@ public class PtsController implements Serializable {
     }
 
     public void buscarPtsPacientesAtivos() throws ProjetoException {
-        adicionarBuscaPtsNaSessao();
+        SessionUtil.adicionarBuscaPtsNaSessao(pts.getPrograma(), pts.getGrupo(), null, null, TelasBuscaSessao.PTS.getSigla());
         listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,campoBusca, tipoBusca);
-    }
-
-    public void adicionarBuscaPtsNaSessao(){
-        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(pts.getPrograma(), pts.getGrupo(), null, null, TelasBuscaSessao.PTS.getSigla());
-
-        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
     public void limparBusca() {

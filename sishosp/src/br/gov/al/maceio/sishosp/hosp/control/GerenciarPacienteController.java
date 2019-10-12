@@ -81,17 +81,11 @@ public class GerenciarPacienteController implements Serializable {
     public void buscarPacientesInstituicao() throws ProjetoException {
     	System.out.println("gerpaciente buscarPacientesInstituicao");
         busca = "S";
-        adicionarBuscaGerenciamentoPacienteNaSessao();
+        SessionUtil.adicionarBuscaPtsNaSessao(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(),
+                null, null, TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
         carregarPacientesInstituicao();
         apenasLeitura = true;
 
-    }
-
-    public void adicionarBuscaGerenciamentoPacienteNaSessao(){
-        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(),
-                null, null, TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
-
-        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
     public void limparBusca() throws ProjetoException {

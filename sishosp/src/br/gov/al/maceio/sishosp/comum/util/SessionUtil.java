@@ -1,10 +1,17 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+
+import java.util.Date;
+
+import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 public class SessionUtil {
 
@@ -31,5 +38,11 @@ public class SessionUtil {
                 .getSessionMap().get(nomeObjetoSessao);
 
         return objeto;
+    }
+
+    public static void adicionarBuscaPtsNaSessao(ProgramaBean programa, GrupoBean grupo, Date periodoInicial, Date periodoFinal, String tela){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(programa, grupo, periodoInicial, periodoFinal, tela);
+
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 }
