@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
-	version="2.2">
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+              version="2.2">
 
-	<validator>
-		<validator-id>CaractereEmBrancoValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CaractereEmBrancoValidator</validator-class>
-	</validator>
+    <validator>
+        <validator-id>CaractereEmBrancoValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CaractereEmBrancoValidator</validator-class>
+    </validator>
 
-	<validator>
-		<validator-id>CNSValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CNSValidator</validator-class>
-	</validator>
+    <validator>
+        <validator-id>CNSValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CNSValidator</validator-class>
+    </validator>
 
-	<validator>
-		<validator-id>CPFValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFValidator</validator-class>
-	</validator>
-	
-	<validator>
-		<validator-id>CNPJValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CNPJValidator</validator-class>
-	</validator>	
+    <validator>
+        <validator-id>CPFValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFValidator</validator-class>
+    </validator>
 
-	<validator>
-		<validator-id>PISValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.PISValidator</validator-class>
-	</validator>	
-	
-	
-	<validator>
-		<validator-id>CPFPacienteValidator</validator-id>
-		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFPacienteValidator</validator-class>
-	</validator>
-	<!-- 
-		<lifecycle>
-		<phase-listener>br.gov.al.maceio.sishosp.comum.util.AuthorizationListener</phase-listener>
-	</lifecycle>
+    <validator>
+        <validator-id>CNPJValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CNPJValidator</validator-class>
+    </validator>
 
- -->
+    <validator>
+        <validator-id>PISValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.PISValidator</validator-class>
+    </validator>
+
+    <validator>
+        <validator-id>CPFPacienteValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFPacienteValidator</validator-class>
+    </validator>
+
+    <lifecycle>
+        <phase-listener>br.gov.al.maceio.sishosp.comum.util.AuthorizationListener</phase-listener>
+    </lifecycle>
+
 </faces-config>
