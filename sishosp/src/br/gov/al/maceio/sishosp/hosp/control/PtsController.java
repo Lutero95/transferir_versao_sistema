@@ -2,18 +2,22 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.*;
+
+import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.*;
 
 @ManagedBean(name = "PtsController")
 @ViewScoped
@@ -79,6 +83,17 @@ public class PtsController implements Serializable {
         }
     }
 
+    public void carregarBuscaPts(){
+        BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+            if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.PTS.getSigla())) {
+                pts.setGrupo(buscaSessaoDTO.getGrupoBean());
+                pts.setPrograma(buscaSessaoDTO.getProgramaBean());
+            }
+        }
+
+    }
+
     public void carregarPtsRenovacao() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
@@ -106,7 +121,14 @@ public class PtsController implements Serializable {
     }
 
     public void buscarPtsPacientesAtivos() throws ProjetoException {
+        adicionarBuscaPtsNaSessao();
         listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,campoBusca, tipoBusca);
+    }
+
+    public void adicionarBuscaPtsNaSessao(){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(pts.getPrograma(), pts.getGrupo(), null, null, TelasBuscaSessao.PTS.getSigla());
+
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
     public void limparBusca() {
