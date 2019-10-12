@@ -9,17 +9,18 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import org.primefaces.event.CellEditEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+
+import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 @ManagedBean(name = "AtendimentoController")
 @ViewScoped
@@ -76,6 +77,18 @@ public class AtendimentoController implements Serializable {
         listaGrupos = new ArrayList<>();
     }
 
+    public void carregarGerenciamentoAtendimento(){
+        BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+            if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla())) {
+                atendimento.setGrupo(buscaSessaoDTO.getGrupoBean());
+                atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
+                atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
+                atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
+            }
+        }
+
+    }
 
     public void consultarAtendimentos() throws ProjetoException {
         if (this.atendimento.getDataAtendimentoInicio() == null
@@ -83,7 +96,15 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
             return;
         }
+        adicionarBuscaGerenciarAtendimentosNaSessao();
         listarAtendimentos(campoBusca, tipoBusca);
+    }
+
+    public void adicionarBuscaGerenciarAtendimentosNaSessao(){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(atendimento.getPrograma(), atendimento.getGrupo(),
+                atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
+
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
     public String redirectAtendimento() {
