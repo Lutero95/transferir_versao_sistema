@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
@@ -20,6 +23,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
@@ -27,6 +31,8 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+
+import static br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil.gerarHorariosAtendimento;
 
 @ManagedBean(name = "ConfigAgendaController")
 @ViewScoped
@@ -39,6 +45,7 @@ public class ConfigAgendaController implements Serializable {
     private FuncionarioBean prof;
     private EquipeBean equipe;
     private int tipo;
+    private String opcaoAtendimento;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
     private List<ConfigAgendaParte1Bean> listaHorariosProfissional;
@@ -52,6 +59,7 @@ public class ConfigAgendaController implements Serializable {
     private List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoEspecifica;
     private List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoGeral;
     private List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoEspecifica;
+    private ArrayList<String> listaHorarios;
 
     private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
     private FuncionarioDAO fDao = new FuncionarioDAO();
@@ -79,6 +87,7 @@ public class ConfigAgendaController implements Serializable {
         this.listaProfissionalConfiguracaoEspecifica = new ArrayList<>();
         this.listaEquipeConfiguracaoGeral = new ArrayList<>();
         this.listaEquipeConfiguracaoEspecifica = new ArrayList<>();
+        this.listaHorarios = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -117,10 +126,11 @@ public class ConfigAgendaController implements Serializable {
         carregarListaConfiguracaoEquipeEspecificaa();
     }
 
-    public void getEditAgendaProfissional() throws ProjetoException {
+    public void getEditAgendaProfissional() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        carregarHorarioOuTurno();
         if (params.get("codconfigagenda") != null) {
             Integer id = Integer.parseInt(params.get("codconfigagenda"));
             tipo = Integer.parseInt(params.get("tipo"));
@@ -137,6 +147,20 @@ public class ConfigAgendaController implements Serializable {
 
         }
 
+    }
+
+    private void carregarHorarioOuTurno() throws ProjetoException, ParseException {
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
+
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())
+                || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
+            gerarHorariosAtendimento();
+        }
+
+    }
+
+    private void gerarHorariosAtendimento() throws ParseException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
     public void getEditAgendaEquipe() throws ProjetoException {
@@ -353,6 +377,14 @@ public class ConfigAgendaController implements Serializable {
                 && this.confParte1.getDiasSemana().size() == 0) {
             JSFUtil.adicionarMensagemErro("Escolha no mínimo um dia da semana!", "Erro");
             return;
+        }
+
+        if(DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).after
+                (DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))
+                ||
+                DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).equals(DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))) {
+            JSFUtil.adicionarMensagemErro("Horário final precisa ser maior que horário inicial!", "Erro");
+            return ;
         }
 
         if  ((confParte1.getTipo().equals("E"))  && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
@@ -696,5 +728,21 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaEquipeConfiguracaoEspecifica(List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoEspecifica) {
         this.listaEquipeConfiguracaoEspecifica = listaEquipeConfiguracaoEspecifica;
+    }
+
+    public String getOpcaoAtendimento() {
+        return opcaoAtendimento;
+    }
+
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        this.opcaoAtendimento = opcaoAtendimento;
+    }
+
+    public ArrayList<String> getListaHorarios() {
+        return listaHorarios;
+    }
+
+    public void setListaHorarios(ArrayList<String> listaHorarios) {
+        this.listaHorarios = listaHorarios;
     }
 }

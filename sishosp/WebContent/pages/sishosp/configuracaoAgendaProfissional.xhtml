@@ -193,7 +193,7 @@
 
 						<br></br>
 
-						<b:row>
+						<b:row rendered="#{ConfigAgendaController.opcaoAtendimento == 'T'}">
 							<b:column span="3" class="label-position">
 								<b:label value="Turno:" severity="info" />
 
@@ -205,6 +205,37 @@
 								</b:selectOneMenu>
 							</b:column>
 
+						</b:row>
+
+							<b:row rendered="#{ConfigAgendaController.opcaoAtendimento == 'H'}">
+								<p:outputPanel>
+									<b:column span="3" class="label-position">
+										<b:label value="Horário Início:" severity="info" class="fire-label" />
+
+										<b:selectOneMenu class="select-agendaEquipe2" required="true"
+														 requiredMessage="Horário: Campo obrigatório!"
+														 value="#{ConfigAgendaController.confParte1.horarioInicio}">
+											<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+											<f:selectItems value="#{ConfigAgendaController.listaHorarios}" />
+										</b:selectOneMenu>
+									</b:column>
+								</p:outputPanel>
+
+								<p:outputPanel>
+									<b:column span="3" class="label-position">
+										<b:label value="Horário Final:" severity="info" class="fire-label" />
+
+										<b:selectOneMenu class="select-agendaEquipe2" required="true"
+														 requiredMessage="Horário: Campo obrigatório!"
+														 value="#{ConfigAgendaController.confParte1.horarioFinal}">
+											<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+											<f:selectItems value="#{ConfigAgendaController.listaHorarios}" />
+										</b:selectOneMenu>
+									</b:column>
+								</p:outputPanel>
+							</b:row>
+
+						<b:row>
 							<b:column span="3" class="label-position">
 								<b:label value="Quantidade Máxima:" severity="info" />
 
@@ -216,7 +247,7 @@
 						</b:row>
 
 					</p:tab>
-					<p:tab title="Tipo de Atendimento">
+					<p:tab title="Tipo de Atendimento" rendered="#{ConfigAgendaController.opcaoAtendimento eq 'T'}">
 
 						<b:row>
 

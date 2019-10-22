@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConfiguracaoAgendaDiasUtil;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
@@ -184,8 +185,9 @@ public class ConfigAgendaDAO {
 		Boolean retorno = false;
 
 		try {
-			String sql2 = "INSERT INTO hosp.config_agenda_profissional_dias (dia, data_especifica, turno, id_config_agenda_profissional) "
-					+ " VALUES (?, ?, ?, ?);";
+			String sql2 = "INSERT INTO hosp.config_agenda_profissional_dias (dia, data_especifica, turno, id_config_agenda_profissional, " +
+					"horario_inicio, horario_final) "
+					+ " VALUES (?, ?, ?, ?, ?, ?);";
 
 			PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
 
@@ -207,6 +209,10 @@ public class ConfigAgendaDAO {
 
 				ps2.setInt(4, idConfigAgenda);
 
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
+
 				ps2.execute();
 
 				ps2 = con.prepareStatement(sql2);
@@ -227,6 +233,10 @@ public class ConfigAgendaDAO {
 
 				ps2.setInt(4, idConfigAgenda);
 
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
+
 				ps2.execute();
 
 				// SE FOR AMBOS OS TURNOS - FINAL
@@ -245,9 +255,18 @@ public class ConfigAgendaDAO {
 
 				}
 
-				ps2.setString(3, confParte1.getTurno());
+				if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(confParte1.getTurno())) {
+					ps2.setString(3, confParte1.getTurno());
+				}
+				else{
+					ps2.setNull(3, Types.CHAR);
+				}
 
 				ps2.setInt(4, idConfigAgenda);
+
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
 
 				ps2.execute();
 
