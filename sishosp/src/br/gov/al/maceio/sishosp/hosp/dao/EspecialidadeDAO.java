@@ -183,7 +183,7 @@ public class EspecialidadeDAO {
 
         List<EspecialidadeBean> lista = new ArrayList<>();
 
-        String sql = "SELECT es.id_especialidade, es.descespecialidade " +
+        String sql = "SELECT distinct es.id_especialidade, es.descespecialidade " +
                 "FROM hosp.equipe e " +
                 "LEFT JOIN hosp.equipe_medico em ON (em.equipe = e.id_equipe) " +
                 "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = em.medico) " +

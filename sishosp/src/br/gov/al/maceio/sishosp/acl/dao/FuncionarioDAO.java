@@ -1891,11 +1891,11 @@ public class FuncionarioDAO {
         }
     }
 
-	public Integer validarCpfIhSenha(String cpf, String senha, String tipoValidacao) throws ProjetoException {
+	public FuncionarioBean validarCpfIhSenha(String cpf, String senha, String tipoValidacao) throws ProjetoException {
 
-		Integer idFuncionario = 0;
+		FuncionarioBean func = null;
 
-		String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
+		String sql = "SELECT id_funcionario, descfuncionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
 		if (tipoValidacao.equals(ValidacaoSenha.LIBERACAO.getSigla())) {
 			sql = sql + " AND permite_liberacao IS TRUE;";
@@ -1914,7 +1914,9 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				idFuncionario = rs.getInt("id_funcionario");
+				func = new FuncionarioBean();
+				func.setId(rs.getLong("id_funcionario"));
+				func.setNome(rs.getString("descfuncionario"));
 			}
 
 		} catch (Exception ex) {
@@ -1927,7 +1929,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
-		return idFuncionario;
+		return func;
 	}
 
 	public Integer validarIdIhSenha(String senha) {
