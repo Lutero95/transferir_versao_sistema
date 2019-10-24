@@ -7,30 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
-import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
-import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ConfiguracaoAgendaEquipeEspecialidadeDTO;
 
 import static br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil.gerarHorariosAtendimento;
 
@@ -46,12 +37,15 @@ public class ConfigAgendaController implements Serializable {
     private EquipeBean equipe;
     private int tipo;
     private String opcaoAtendimento;
+    private ConfiguracaoAgendaEquipeEspecialidadeDTO configuracaoAgendaEquipeEspecialidadeDTO;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
     private List<ConfigAgendaParte1Bean> listaHorariosProfissional;
     private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
     private List<FuncionarioBean> listaProfissionais;
     private List<EquipeBean> listaEquipes;
+    private List<EspecialidadeBean> listaEspecialidades;
+    private List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfiguracaoAgendaEquipeEspecialidade;
 
     private List<GrupoBean> listaGruposProgramas;
     private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
@@ -88,6 +82,9 @@ public class ConfigAgendaController implements Serializable {
         this.listaEquipeConfiguracaoGeral = new ArrayList<>();
         this.listaEquipeConfiguracaoEspecifica = new ArrayList<>();
         this.listaHorarios = new ArrayList<>();
+        this.listaEspecialidades = new ArrayList<>();
+        this.listaConfiguracaoAgendaEquipeEspecialidade = new ArrayList<>();
+        this.configuracaoAgendaEquipeEspecialidadeDTO = new ConfiguracaoAgendaEquipeEspecialidadeDTO();
     }
 
     public void limparDados() {
@@ -98,6 +95,8 @@ public class ConfigAgendaController implements Serializable {
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
         this.listaEquipes = null;
+        this.configuracaoAgendaEquipeEspecialidadeDTO = new ConfiguracaoAgendaEquipeEspecialidadeDTO();
+        this.listaConfiguracaoAgendaEquipeEspecialidade = new ArrayList<>();
     }
 
     public String redirectEditProfissional() {
@@ -116,12 +115,12 @@ public class ConfigAgendaController implements Serializable {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
-    public void inicializarConfiguracaoAgendaProfissional(){
+    public void inicializarConfiguracaoAgendaProfissional() {
         carregarListaConfiguracaoProfissionalGeral();
         carregarListaConfiguracaoProfissionalEspecifica();
     }
 
-    public void inicializarConfiguracaoAgendaEquipe(){
+    public void inicializarConfiguracaoAgendaEquipe() {
         carregarListaConfiguracaoEquipeGeral();
         carregarListaConfiguracaoEquipeEspecificaa();
     }
@@ -163,7 +162,63 @@ public class ConfigAgendaController implements Serializable {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
-    public void getEditAgendaEquipe() throws ProjetoException {
+    public void carregarEspecialidadesEquipe() throws ProjetoException {
+        EspecialidadeDAO eDao = new EspecialidadeDAO();
+        listaEspecialidades = eDao.listarEspecialidadesPorEquipe(confParte1.getEquipe().getCodEquipe());
+    }
+
+    private void adicionarEspecialidadeComQuantidade() throws ProjetoException {
+        EspecialidadeDAO especialidadeDAO = new EspecialidadeDAO();
+        configuracaoAgendaEquipeEspecialidadeDTO.setEspecialidade(especialidadeDAO.listarEspecialidadePorId(configuracaoAgendaEquipeEspecialidadeDTO.getEspecialidade().getCodEspecialidade()));
+        listaConfiguracaoAgendaEquipeEspecialidade.add(configuracaoAgendaEquipeEspecialidadeDTO);
+        configuracaoAgendaEquipeEspecialidadeDTO = new ConfiguracaoAgendaEquipeEspecialidadeDTO();
+    }
+
+    public Boolean valdiarEspecialidadeIhQuantidade() {
+        Boolean retorno = true;
+        if (VerificadorUtil.verificarSeObjetoNulo(configuracaoAgendaEquipeEspecialidadeDTO.getEspecialidade().getCodEspecialidade()) ||
+        VerificadorUtil.verificarSeObjetoNuloOuZero(configuracaoAgendaEquipeEspecialidadeDTO.getQuantidade())){
+            retorno = false;
+        }
+        return retorno;
+    }
+
+    public void validarAdicionarEspecialidadeComQuantidade() throws ProjetoException {
+
+        if(!valdiarEspecialidadeIhQuantidade()){
+            return;
+        }
+
+        boolean existe = false;
+        if (listaConfiguracaoAgendaEquipeEspecialidade.size() == 0) {
+            adicionarEspecialidadeComQuantidade();
+        } else {
+
+            for (int i = 0; i < listaConfiguracaoAgendaEquipeEspecialidade.size(); i++) {
+                if (listaConfiguracaoAgendaEquipeEspecialidade.get(i).getEspecialidade().getCodEspecialidade() == configuracaoAgendaEquipeEspecialidadeDTO.getEspecialidade().getCodEspecialidade()) {
+                    existe = true;
+                }
+            }
+            if (existe == false) {
+                adicionarEspecialidadeComQuantidade();
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Essa especialidade já foi adicionada!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+
+        }
+
+    }
+
+    public void removerEspecialidadeComQuantidade(ConfiguracaoAgendaEquipeEspecialidadeDTO configuracaoAgendaEquipeEspecialidadeDTO){
+        listaConfiguracaoAgendaEquipeEspecialidade.remove(configuracaoAgendaEquipeEspecialidadeDTO);
+    }
+
+    public void getEditAgendaEquipe() throws ProjetoException, ParseException {
+
+        carregarHorarioOuTurno();
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -173,7 +228,7 @@ public class ConfigAgendaController implements Serializable {
 
             this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
             this.confParte2 = cDao.listarHorariosPorIDEquipeEditParte2(id);
-            listaTipos	 = cDao.listarTipoAtendimentoConfiguracaoAgendaEquipe(id);
+            listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgendaEquipe(id);
 
             if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 confParte1.setDiasSemana(cDao.listarDiasAtendimentoEquipePorId(id));
@@ -186,16 +241,17 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    
+
     public List<TipoAtendimentoBean> selectTipoAtendimento(String tipoAtendimento)
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
-                    .getGrupo().getIdGrupo(),tipoAtendimento);
+                    .getGrupo().getIdGrupo(), tipoAtendimento);
         }
         return listaTipoAtendimentosGrupo;
     }
+
     public void addNaListaConfigProfissional() {
         if (confParte2.getQtd() == null) {
             JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
@@ -208,10 +264,10 @@ public class ConfigAgendaController implements Serializable {
         }
         this.confParte2 = new ConfigAgendaParte2Bean();
     }
-    
+
     public void addNaListaConfigEquipe() {
-    	ProgramaBean programaSelecionado = new ProgramaBean();
-    	GrupoBean grupoSelecionado = new GrupoBean();
+        ProgramaBean programaSelecionado = new ProgramaBean();
+        GrupoBean grupoSelecionado = new GrupoBean();
         if (confParte2.getQtd() == null) {
             JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
         } else if (confParte2.getPrograma() == null) {
@@ -219,14 +275,14 @@ public class ConfigAgendaController implements Serializable {
         } else if (confParte2.getGrupo() == null) {
             JSFUtil.adicionarMensagemErro("Insira o grupo!", "Erro");
         } else {
-        	programaSelecionado = confParte2.getPrograma();
-        	grupoSelecionado = confParte2.getGrupo();
+            programaSelecionado = confParte2.getPrograma();
+            grupoSelecionado = confParte2.getGrupo();
             this.listaTipos.add(confParte2);
         }
         this.confParte2 = new ConfigAgendaParte2Bean();
         confParte2.setPrograma(programaSelecionado);
         confParte2.setGrupo(grupoSelecionado);
-    }    
+    }
 
     public void removeNaLista() {
         this.listaTipos.remove(confParte2);
@@ -269,7 +325,7 @@ public class ConfigAgendaController implements Serializable {
             return null;
         }
     }
-    
+
     public List<TipoAtendimentoBean> listaTipoAtEquipeAutoComplete(String query)
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
@@ -278,8 +334,8 @@ public class ConfigAgendaController implements Serializable {
         } else {
             return null;
         }
-    }    
-    
+    }
+
     public List<TipoAtendimentoBean> listaTipoAtProfissionalAutoComplete(String query)
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
@@ -288,7 +344,7 @@ public class ConfigAgendaController implements Serializable {
         } else {
             return null;
         }
-    }        
+    }
 
     public void carregaListaTipoAtendimento(String tipo)
             throws ProjetoException {
@@ -298,13 +354,13 @@ public class ConfigAgendaController implements Serializable {
                     .getGrupo().getIdGrupo(), tipo);
         }
     }
-    
+
     public void carregaListaTipoAtendimentoPorProgramaEGrupo(String tipo)
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             listaTipoAtendimentosGrupo = tDao.listarTipoAtPorProgramaEGrupo(confParte2
-                    .getPrograma().getIdPrograma(),confParte2
+                    .getPrograma().getIdPrograma(), confParte2
                     .getGrupo().getIdGrupo(), tipo);
         }
     }
@@ -348,7 +404,6 @@ public class ConfigAgendaController implements Serializable {
                     .getIdGrupo());
         }
 
-       
 
     }
 
@@ -379,15 +434,15 @@ public class ConfigAgendaController implements Serializable {
             return;
         }
 
-        if(DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).after
+        if (DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).after
                 (DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))
                 ||
                 DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).equals(DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))) {
             JSFUtil.adicionarMensagemErro("Horário final precisa ser maior que horário inicial!", "Erro");
-            return ;
+            return;
         }
 
-        if  ((confParte1.getTipo().equals("E"))  && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
+        if ((confParte1.getTipo().equals("E")) && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
             JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
             return;
         } else {
@@ -454,26 +509,32 @@ public class ConfigAgendaController implements Serializable {
             return;
         }
 
-        if  ((confParte1.getTipo().equals("E"))  && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
+        if (DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).after
+                (DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))
+                ||
+                DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()).equals(DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()))) {
+            JSFUtil.adicionarMensagemErro("Horário final precisa ser maior que horário inicial!", "Erro");
+            return;
+        }
+
+        if ((confParte1.getTipo().equals("E")) && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
             JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
             return;
         } else {
             if (tipo == 1) {
-            	gravarConfigAgendaEquipe();
+                gravarConfigAgendaEquipe();
             } else {
-            	alterarConfigAgendaEquipe();
+                alterarConfigAgendaEquipe();
             }
-        }    	
-    	
-    	
-    	
-       
+        }
+
+
     }
 
     public void gravarConfigAgendaEquipe() throws ProjetoException, SQLException {
         boolean gravou = false;
 
-        gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos);
+        gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos, listaConfiguracaoAgendaEquipeEspecialidade);
 
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -488,7 +549,7 @@ public class ConfigAgendaController implements Serializable {
             ProjetoException {
         boolean alterou = false;
 
-        alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos);
+        alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos, listaConfiguracaoAgendaEquipeEspecialidade);
 
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -638,31 +699,31 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void carregaListaEquipes() throws ProjetoException {
-            this.listaEquipes = eDao.listarEquipe();
+        this.listaEquipes = eDao.listarEquipe();
 
     }
 
-    private void carregarListaConfiguracaoProfissionalGeral(){
+    private void carregarListaConfiguracaoProfissionalGeral() {
         listaProfissionalConfiguracaoGeral = cDao.listarHorariosPorProfissionalGeral();
     }
 
-    private void carregarListaConfiguracaoProfissionalEspecifica(){
+    private void carregarListaConfiguracaoProfissionalEspecifica() {
         listaProfissionalConfiguracaoEspecifica = cDao.listarHorariosPorProfissionalEspecifica();
     }
 
-    private void carregarListaConfiguracaoEquipeGeral(){
+    private void carregarListaConfiguracaoEquipeGeral() {
         listaEquipeConfiguracaoGeral = cDao.listarHorariosPorEquipeGeral();
     }
 
-    private void carregarListaConfiguracaoEquipeEspecificaa(){
+    private void carregarListaConfiguracaoEquipeEspecificaa() {
         listaEquipeConfiguracaoEspecifica = cDao.listarHorariosPorEquipeEspecifica();
     }
 
     public List<EquipeBean> getListaEquipes() {
-		return listaEquipes;
-	}
+        return listaEquipes;
+    }
 
-	public void setListaEquipes(List<EquipeBean> listaEquipes) {
+    public void setListaEquipes(List<EquipeBean> listaEquipes) {
         this.listaEquipes = listaEquipes;
     }
 
@@ -744,5 +805,29 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaHorarios(ArrayList<String> listaHorarios) {
         this.listaHorarios = listaHorarios;
+    }
+
+    public List<EspecialidadeBean> getListaEspecialidades() {
+        return listaEspecialidades;
+    }
+
+    public void setListaEspecialidades(List<EspecialidadeBean> listaEspecialidades) {
+        this.listaEspecialidades = listaEspecialidades;
+    }
+
+    public List<ConfiguracaoAgendaEquipeEspecialidadeDTO> getListaConfiguracaoAgendaEquipeEspecialidade() {
+        return listaConfiguracaoAgendaEquipeEspecialidade;
+    }
+
+    public void setListaConfiguracaoAgendaEquipeEspecialidade(List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfiguracaoAgendaEquipeEspecialidade) {
+        this.listaConfiguracaoAgendaEquipeEspecialidade = listaConfiguracaoAgendaEquipeEspecialidade;
+    }
+
+    public ConfiguracaoAgendaEquipeEspecialidadeDTO getConfiguracaoAgendaEquipeEspecialidadeDTO() {
+        return configuracaoAgendaEquipeEspecialidadeDTO;
+    }
+
+    public void setConfiguracaoAgendaEquipeEspecialidadeDTO(ConfiguracaoAgendaEquipeEspecialidadeDTO configuracaoAgendaEquipeEspecialidadeDTO) {
+        this.configuracaoAgendaEquipeEspecialidadeDTO = configuracaoAgendaEquipeEspecialidadeDTO;
     }
 }
