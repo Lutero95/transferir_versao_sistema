@@ -139,11 +139,12 @@
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 itemLabel="#{theme.descEquipe}">
                                             <p:ajax event="itemSelect"
-                                                    update=":formConfiAgendaEquipe:tbview:outEquipe"/>
+                                                    listener="#{ConfigAgendaController.carregarEspecialidadesEquipe()}"
+                                                    update=":formConfiAgendaEquipe:tbview:outEquipe, rowEspecialidade"/>
                                         </p:autoComplete>
 
                                         <p:commandButton icon="ui-icon-search" id="btBusEq"
-                                                         update=":formConsuEquipe"
+                                                         update=":formConsuEquipe" immediate="true"
                                                          action="#{ConfigAgendaController.selectEquipeInsercao()}"
                                                          disabled="#{ConfigAgendaController.confParte2.grupo==null}"
                                                          oncomplete="PF('dlgConsultEquipe').show();"/>
@@ -246,8 +247,35 @@
 
                             </p:outputLabel>
 
+                            <b:row rendered="#{ConfigAgendaController.opcaoAtendimento == 'H'}">
+                                <p:outputPanel>
+                                    <b:column span="3" class="label-position">
+                                        <b:label value="Horário Início:" severity="info" class="fire-label"/>
 
-                            <b:row>
+                                        <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                         requiredMessage="Horário: Campo obrigatório!"
+                                                         value="#{ConfigAgendaController.confParte1.horarioInicio}">
+                                            <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                            <f:selectItems value="#{ConfigAgendaController.listaHorarios}"/>
+                                        </b:selectOneMenu>
+                                    </b:column>
+                                </p:outputPanel>
+
+                                <p:outputPanel>
+                                    <b:column span="3" class="label-position">
+                                        <b:label value="Horário Final:" severity="info" class="fire-label"/>
+
+                                        <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                         requiredMessage="Horário: Campo obrigatório!"
+                                                         value="#{ConfigAgendaController.confParte1.horarioFinal}">
+                                            <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                            <f:selectItems value="#{ConfigAgendaController.listaHorarios}"/>
+                                        </b:selectOneMenu>
+                                    </b:column>
+                                </p:outputPanel>
+                            </b:row>
+
+                            <b:row rendered="#{ConfigAgendaController.opcaoAtendimento == 'T'}">
 
                                 <b:column span="3" class="label-position">
                                     <b:label value="Turno:" severity="info"/>
@@ -275,7 +303,99 @@
                             <br></br>
 
                         </p:tab>
-                        <p:tab title="Tipo de Atendimento" id="tabtipat">
+
+                        <p:tab title="Atendimentos por Especialidade" id="tabespecialidadeqtd"
+                               rendered="#{ConfigAgendaController.opcaoAtendimento == 'H'}">
+
+                            <p:growl id="msgEspecialidade"/>
+
+                            <p:outputPanel id="rowEspecialidade">
+                            <b:row>
+
+                                <b:column span="12" class="label-position data-size">
+
+                                    <b:label value="Área" id="idArea" severity="info"
+                                             class="fire-label"/>
+
+                                    <b:selectOneMenu class="select-agendaEquipe2" required="false"
+                                                     style="width: 250px" requiredMessage="Área: Campo obrigatório!"
+                                                     value="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO.especialidade.codEspecialidade}">
+                                        <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                        <f:selectItems value="#{ConfigAgendaController.listaEspecialidades}"
+                                                       var="especialidade"
+                                                       itemLabel="#{especialidade.descEspecialidade}"
+                                                       itemValue="#{especialidade.codEspecialidade}"/>
+
+                                    </b:selectOneMenu>
+
+                                </b:column>
+
+                            </b:row>
+
+                            </p:outputPanel>
+
+                            <p:outputPanel id="rowQuantidade">
+                            <b:row>
+
+                                <b:column span="2" class="label-position">
+                                    <b:label value="Quantidade:" severity="info"/>
+
+                                    <b:inputText class="select-agendaEquipe2"
+                                                 value="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO.quantidade}" id="idQtdEsp"
+                                                 required="false" requiredMessage="Informe a Quantidade"/>
+                                </b:column>
+
+                            </b:row>
+                            </p:outputPanel>
+
+                            <b:row>
+
+                                <p:commandButton icon="ui-icon-plus"
+                                                 style="margin-top: 10px;margin-left: 10px" value="Adicionar"
+                                                 update="dtEspecialidadeComQuantidade, rowEspecialidade, rowQuantidade, msgEspecialidade"
+                                                 class="btn-acao-table acao-confirmar"
+                                                 action="#{ConfigAgendaController.validarAdicionarEspecialidadeComQuantidade}"/>
+
+                            </b:row>
+
+                            <br></br>
+
+                            <b:row>
+
+                                <p:dataTable id="dtEspecialidadeComQuantidade"
+                                             value="#{ConfigAgendaController.listaConfiguracaoAgendaEquipeEspecialidade}" var="var"
+                                             emptyMessage="Sem registros.">
+
+                                    <p:column headerText="Especialidade" width="150">
+                                        <h:outputLabel value="#{var.especialidade.descEspecialidade}">
+                                        </h:outputLabel>
+                                    </p:column>
+
+                                    <p:column headerText="Quantidade" width="10%">
+                                        <h:outputLabel value="#{var.quantidade}" />
+                                    </p:column>
+
+                                    <p:column headerText="Ação" width="9%">
+                                        <div align="center">
+                                            <p:commandButton process="@this"
+                                                             class="new-btn-acao-table acao-excluir"
+                                                             action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
+                                                             icon="ui-icon-trash" update="dtEspecialidadeComQuantidade">
+                                                <f:setPropertyActionListener value="#{var}"
+                                                                             target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
+
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+
+                                </p:dataTable>
+
+                            </b:row>
+
+                        </p:tab>
+
+                        <p:tab title="Tipo de Atendimento" id="tabtipat"
+                               rendered="#{ConfigAgendaController.opcaoAtendimento == 'T'}">
 
 
                             <b:row>
@@ -285,7 +405,7 @@
                                     <b:label value="Tipo de Atendimento:" severity="info"/>
 
                                     <p:outputPanel id="outTipoAt">
-                                    <p:autoUpdate/>
+                                        <p:autoUpdate/>
                                         <p:autoComplete
                                                 value="#{ConfigAgendaController.confParte2.tipoAt}" size="31"
                                                 converter="conTipoAtendimento" class="select-agendaEquipe4"
@@ -479,7 +599,8 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formConfiAgendaEquipe:tbview:outEquipe"
+                        <p:commandButton update=":formConfiAgendaEquipe:tbview:outEquipe, :formConfiAgendaEquipe:tbview:rowEspecialidade"
+                                         action="#{ConfigAgendaController.carregarEspecialidadesEquipe()}"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsultEquipe').hide();">

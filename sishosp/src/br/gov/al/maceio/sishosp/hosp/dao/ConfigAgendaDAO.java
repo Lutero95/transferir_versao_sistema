@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ConfiguracaoAgendaEquipeEspecialidadeDTO;
 
 import javax.faces.context.FacesContext;
 
@@ -288,7 +289,7 @@ public class ConfigAgendaDAO {
 	}
 
 	public Boolean gravarConfiguracaoAgendaEquipeInicio(ConfigAgendaParte1Bean confParte1,
-			ConfigAgendaParte2Bean confParte2, List<ConfigAgendaParte2Bean> listaTipos)
+			ConfigAgendaParte2Bean confParte2, List<ConfigAgendaParte2Bean> listaTipos, List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfig)
 			throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
@@ -303,7 +304,7 @@ public class ConfigAgendaDAO {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
 						retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
-								idConfiguracaoAgenda);
+								idConfiguracaoAgenda, listaConfig);
 
 						if (!retorno) {
 							return false;
@@ -312,7 +313,7 @@ public class ConfigAgendaDAO {
 				}
 
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, idConfiguracaoAgenda);
+					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, idConfiguracaoAgenda, listaConfig);
 				}
 
 				if (retorno) {
@@ -351,7 +352,12 @@ public class ConfigAgendaDAO {
 
 			ps.setInt(1, confParte1.getEquipe().getCodEquipe());
 
-			ps.setInt(2, confParte1.getQtdMax());
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(confParte1.getQtdMax())) {
+				ps.setInt(2, confParte1.getQtdMax());
+			}
+			else{
+				ps.setNull(2, Types.NULL);
+			}
 
 			if (confParte1.getMes() != null) {
 				ps.setInt(3, confParte1.getMes());
@@ -395,13 +401,13 @@ public class ConfigAgendaDAO {
 	}
 
 	public Boolean gravaConfiguracaoAgendaEquipeDias(ConfigAgendaParte1Bean confParte1, String dia,
-			Connection conAuxiliar, Integer idConfigAgenda) {
+			Connection conAuxiliar, Integer idConfigAgenda, List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfig) {
 
 		Boolean retorno = false;
 
 		try {
-			String sql2 = "INSERT INTO hosp.config_agenda_equipe_dias (dia, data_especifica, turno, id_config_agenda_equipe) "
-					+ " VALUES (?, ?, ?, ?);";
+			String sql2 = "INSERT INTO hosp.config_agenda_equipe_dias (dia, data_especifica, turno, id_config_agenda_equipe, horario_inicio, horario_final) "
+					+ " VALUES (?, ?, ?, ?, ?, ?);";
 
 			PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
 
@@ -423,6 +429,10 @@ public class ConfigAgendaDAO {
 
 				ps2.setInt(4, idConfigAgenda);
 
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
+
 				ps2.execute();
 
 				ps2 = con.prepareStatement(sql2);
@@ -443,6 +453,10 @@ public class ConfigAgendaDAO {
 
 				ps2.setInt(4, idConfigAgenda);
 
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
+
 				ps2.execute();
 
 				// SE FOR AMBOS OS TURNOS - FINAL
@@ -461,14 +475,25 @@ public class ConfigAgendaDAO {
 
 				}
 
-				ps2.setString(3, confParte1.getTurno());
+				if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(confParte1.getTurno())) {
+					ps2.setString(3, confParte1.getTurno());
+				}
+				else{
+					ps2.setNull(3, Types.CHAR);
+				}
 
 				ps2.setInt(4, idConfigAgenda);
+
+				ps2.setTime(5, DataUtil.retornarHorarioEmTime(confParte1.getHorarioInicio()));
+
+				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
 
 				ps2.execute();
 
 			}
 			// SE FOR TURNO ÚNICO - FINAL
+
+			gravaConfiguracaoAgendaProfissional(listaConfig, idConfigAgenda, conAuxiliar);
 
 			retorno = true;
 
@@ -480,6 +505,42 @@ public class ConfigAgendaDAO {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
+			return retorno;
+		}
+	}
+
+	public Boolean gravaConfiguracaoAgendaProfissional(List<ConfiguracaoAgendaEquipeEspecialidadeDTO> lista, Integer idConfigAgenda, Connection conAuxiliar) {
+
+		Boolean retorno = false;
+
+		try {
+			String sql = "INSERT INTO hosp.config_agenda_equipe_qtd_especialidades (id_config_agenda_equipe, id_especialidade, qtd) "
+					+ " VALUES (?, ?, ?);";
+
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+
+
+			for (int i=0; i<lista.size(); i++) {
+
+				ps.setInt(1, idConfigAgenda);
+
+				ps.setInt(2, lista.get(i).getEspecialidade().getCodEspecialidade());
+
+				ps.setInt(3, lista.get(i).getQuantidade());
+
+				ps.execute();
+			}
+
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
 			return retorno;
 		}
 	}
@@ -1204,7 +1265,7 @@ public class ConfigAgendaDAO {
 	}
 
 	public Boolean alterarConfiguracaoAgendaEquipeInicio(ConfigAgendaParte1Bean confParte1,
-			ConfigAgendaParte2Bean confParte2, List<ConfigAgendaParte2Bean> listaTipos)
+			ConfigAgendaParte2Bean confParte2, List<ConfigAgendaParte2Bean> listaTipos, List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfig)
 			throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
@@ -1218,7 +1279,7 @@ public class ConfigAgendaDAO {
 				excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con);
 				for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
 					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
-							confParte1.getIdConfiAgenda());
+							confParte1.getIdConfiAgenda(), listaConfig);
 
 					if (!retorno) {
 						return false;
@@ -1227,7 +1288,7 @@ public class ConfigAgendaDAO {
 			}
 
 			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-				retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda());
+				retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda(), listaConfig);
 			}
 
 			if (retorno) {
