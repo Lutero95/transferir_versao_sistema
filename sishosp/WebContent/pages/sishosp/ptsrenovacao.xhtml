@@ -72,6 +72,7 @@
 								class="fire-label" />
 
 							<p:calendar value="#{PtsController.pts.data}" id="dtagen"
+							disabled="#{PtsController.existePts}"
 								locale="pt" navigator="true" mask="true" required="true"
 								requiredMessage="Data do PTS: Campo obrigatório!"
 								class="select-agendaEquipe2" showOn="button"
@@ -142,51 +143,7 @@
 
 					<br></br>
 
-					<b:row>
-
-						<b:column span="4">
-
-							<b:label value="Novos Objetivos (Curto Prazo):"
-								id="objetivosGeraisCurtoPrazo" severity="info"
-								class="fire-label" />
-
-							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
-								scrollHeight="100" required="true" rows="20" cols="89"
-								requiredMessage="Novos Objetivos (Curto Prazo): Campo obrigatório!"
-								value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
-
-						</b:column>
-
-						<b:column span="4">
-
-							<b:label value="Novos Objetivos (Médio Prazo):"
-								id="objetivosGeraisMedioPrazo" severity="info"
-								class="fire-label" />
-
-							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
-								scrollHeight="100" required="true" rows="20" cols="89"
-								requiredMessage="Novos Objetivos (Médio Prazo): Campo obrigatório!"
-								value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
-
-						</b:column>
-
-						<b:column span="4">
-
-							<b:label value="Novos Objetivos (Longo Prazo):"
-								id="objetivosGeraisLongoPrazo" severity="info"
-								class="fire-label" />
-
-							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
-								scrollHeight="100" required="true" rows="20" cols="89"
-								requiredMessage="Novos Objetivos (Longo Prazo): Campo obrigatório!"
-								value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
-
-						</b:column>
-
-					</b:row>
-
-					<br></br>
-
+					
 					<b:row>
 
 						<b:column span="12" class="label-position">
@@ -232,6 +189,11 @@
 
 							<p:column headerText="Especialidade" width="150">
 								<h:outputLabel value="#{pts.area.descEspecialidade}">
+								</h:outputLabel>
+							</p:column>
+
+							<p:column headerText="Profissional" width="150">
+								<h:outputLabel value="#{pts.funcionario.nome}">
 								</h:outputLabel>
 							</p:column>
 

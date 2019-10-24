@@ -63,7 +63,7 @@ public class RelatoriosController implements Serializable {
     private UnidadeBean unidade;
     private List<GrupoBean> listaGruposProgramas;
     private List<EquipeBean> listaEquipePorTipoAtendimento;
-
+    private AgendaController agendaController;
     private Date dataInicial;
     private Date dataFinal;
 
@@ -86,6 +86,7 @@ public class RelatoriosController implements Serializable {
 
     public RelatoriosController() {
         this.programa = new ProgramaBean();
+        agendaController =  new AgendaController();
         this.grupo = new GrupoBean();
         this.tipo = new TipoAtendimentoBean();
         this.prof = new FuncionarioBean();
@@ -138,11 +139,25 @@ public class RelatoriosController implements Serializable {
 
     public void preparaRelLaudosVencer() {
         atributoGenerico1 = "N";
+        atributoGenerico2 = "P";
     }
 
     public void preparaRelFrequencia() {
         atributoGenerico1 = "P";
     }
+    
+    public void setaOpcaoRelLaudoVencer() {
+        atributoGenerico2 = "P";
+        resetaTipoGeracaoLaudos();
+    }
+    
+    public void resetaTipoGeracaoLaudos() {
+        agendaController.getAgenda().setPrograma(null);
+        agendaController.getAgenda().setGrupo(null);
+        agendaController.getAgenda().setPaciente(null);
+    }
+    
+    
 
     public void preparaRelPacientesPorModalidade() {
         atributoGenerico1 = "I";
@@ -211,7 +226,7 @@ public class RelatoriosController implements Serializable {
         return result;
     }
 
-    public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo)
+    public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
             throws IOException, ParseException, ProjetoException {
 
         if (atributoGenerico1.equals(null)) {
@@ -232,6 +247,9 @@ public class RelatoriosController implements Serializable {
 
             if (grupo != null)
                 map.put("codgrupo", grupo.getIdGrupo());
+            
+            if (paciente != null)
+                map.put("codpaciente", paciente.getId_paciente());
             map.put("cod_laudo", null);
             this.executeReport(relatorio, map, "relatorio.pdf");
             // this.executeReportNewTab(relatorio, "laudovencer.pdf",
@@ -1035,4 +1053,12 @@ public class RelatoriosController implements Serializable {
     public void setIdadeMaxima(Integer idadeMaxima) {
         this.idadeMaxima = idadeMaxima;
     }
+
+	public AgendaController getAgendaController() {
+		return agendaController;
+	}
+
+	public void setAgendaController(AgendaController agendaController) {
+		this.agendaController = agendaController;
+	}
 }

@@ -37,6 +37,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<parameter name="codpaciente" class="java.lang.Integer"/>
 	<parameter name="cod_laudo" class="java.lang.Integer"/>
 	<parameter name="codempresa" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
@@ -74,7 +75,7 @@ LEFT JOIN hosp.proc prs3 ON prs3.id = l.codprocedimento_secundario3
 LEFT JOIN hosp.proc prs4 ON prs4.id = l.codprocedimento_secundario4
 LEFT JOIN hosp.proc prs5 ON prs5.id = l.codprocedimento_secundario5
 LEFT JOIN acl.funcionarios f ON f.id_funcionario = l.cod_profissional
-join hosp.empresa on empresa.cod_empresa = 1
+join hosp.empresa on empresa.cod_empresa =  $P{codempresa} 
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
@@ -86,14 +87,14 @@ WHERE l.cod_unidade=$P{codunidade}
 and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_laudo} =0 ) OR ($P{cod_laudo} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{codpaciente}   is not null and l.codpaciente=  $P{codpaciente}) or (( $P{codpaciente} =0 ) OR ( $P{codpaciente} is null )))
 and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pi.status='A') or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
 ) t
 )u
 )v
 left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
 left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
-left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
-limit 1]]>
+left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	</queryString>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>

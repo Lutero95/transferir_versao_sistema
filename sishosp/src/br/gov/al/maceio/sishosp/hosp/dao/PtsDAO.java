@@ -203,11 +203,12 @@ public class PtsDAO {
 
     public List<PtsArea> carregarAreasPts(Integer id, Connection conAuxiliar) {
 
-        String sql = "SELECT pa.id, pa.id_area, e.descespecialidade, pa.objetivo_curto, pa.objetivo_medio, pa.objetivo_longo, " +
+        String sql = "SELECT pa.id, pa.id_area, e.descespecialidade, f.descfuncionario, pa.objetivo_curto, pa.objetivo_medio, pa.objetivo_longo, " +
                 "pa.plano_curto, pa.plano_medio, pa.plano_longo, pa.id_funcionario " +
                 "FROM hosp.pts_area pa " +
                 "LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) " +
-                "LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
+                " left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario "+
+                " LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
                 "WHERE p.id = ? ";
 
         List<PtsArea> lista = new ArrayList<>();
@@ -230,6 +231,7 @@ public class PtsDAO {
                 ptsArea.setPlanoDeIntervencoesMedio(rs.getString("plano_medio"));
                 ptsArea.setPlanoDeIntervencoesLongo(rs.getString("plano_longo"));
                 ptsArea.getFuncionario().setId(rs.getLong("id_funcionario"));
+                ptsArea.getFuncionario().setNome(rs.getString("descfuncionario"));
 
                 lista.add(ptsArea);
 
@@ -533,13 +535,13 @@ public class PtsDAO {
     }
 
     public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
-                                              Integer filtroMesVencimento, Integer filtroAnoVencimento, String campoBusca, String tipoBusca)
+                                              Integer filtroMesVencimento, Integer filtroAnoVencimento,Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca)
             throws ProjetoException {
 
         //Inicia com 2, pois é o número mínimo de parametros.
 
         String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
-                "pi.codgrupo, pi.codprograma, laudo.codpaciente, pa.cpf, pa.cns, " +
+                "pi.codgrupo, pi.codprograma, laudo.codpaciente, pa.cpf, pa.cns, pa.matricula, " +
                 "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
                 "WHEN p.status = 'R' THEN 'Renovado' END AS status_por_extenso " +
                 "FROM hosp.paciente_instituicao pi " +
@@ -548,8 +550,16 @@ public class PtsDAO {
                 "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = laudo.codpaciente) " +
                 "LEFT JOIN hosp.pts p ON " +
-                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = laudo.codpaciente) " +
-                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ?  AND coalesce(p.status,'') <> 'I' ";
+                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = laudo.codpaciente) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' " +
+                " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " + 
+                " (select max(id) from hosp.pts p3 " +
+                " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " + 
+                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I' ) ) ptsmax on " + 
+                " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " + 
+                "WHERE pi.status = 'A'  AND pi.codgrupo = ? AND pi.codprograma = ? and (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
+        		if (filtroApenasPacientesSemPTS)
+        			sql = sql + " and not exists (select id from hosp.pts where pts.status='A' and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
+        
         
 		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
 			sql = sql + " and pa.nome ilike ?";
@@ -632,6 +642,7 @@ public class PtsDAO {
                 pts.getPaciente().setNome(rs.getString("nome"));
                 pts.getPaciente().setCns(rs.getString("cns"));
                 pts.getPaciente().setCpf(rs.getString("cpf"));
+                pts.getPaciente().setMatricula(rs.getString("matricula"));
                 pts.setStatus(rs.getString("status"));
                 pts.setStatusPorExtenso(rs.getString("status_por_extenso"));
                 lista.add(pts);

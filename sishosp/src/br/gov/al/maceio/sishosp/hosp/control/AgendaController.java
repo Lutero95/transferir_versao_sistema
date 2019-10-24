@@ -717,6 +717,30 @@ public class AgendaController implements Serializable {
 			gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
 		}
 	}
+	
+	public void preparaGravarAgendaAvulsa() throws ProjetoException {
+		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
+		Boolean pacienteAtivo = gerenciarPacienteDAO
+				.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
+
+		if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
+				&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
+			zerarValoresAgendaMaximoIhQuantidade();
+		}
+
+		if ((agenda.getEquipe().getCodEquipe() != null) && (agenda.getAvaliacao() == false)) {
+
+			if (pacienteAtivo) {
+				gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+			} else {
+				funcionario = new FuncionarioBean();
+				JSFUtil.abrirDialog("dlgSenha");
+			}
+		} else if ((agenda.getProfissional().getId() != null) || (agenda.getAvaliacao() == true)) {
+			gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+		}
+	}	
 
 	public void zerarValoresAgendaMaximoIhQuantidade() {
 		agenda.setQtd(0);
@@ -805,6 +829,45 @@ public class AgendaController implements Serializable {
 		}
 		limparDados();
 	}
+	
+	public void gravarAgendaAvulsa(Integer funcionarioLiberacao) {
+		// verificar se existe algum campo nao preenchido
+		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
+				|| (this.agenda.getTipoAt() == null) 
+				|| this.agenda.getDataAtendimento() == null) {
+			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
+			return;
+		}
+		
+		if (this.listaFuncionariosTarget.size()==0) {
+			JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
+			return;
+		}
+
+		// verificar as quantidades de vagas
+		if ((this.agenda.getMax() <= 0) && (!agenda.getEncaixe())) {
+			JSFUtil.adicionarMensagemErro("Quantidade máxima inválida!", "Erro");
+			return;
+		}
+
+		// verificar a quantidade de agendamentos
+		if (this.agenda.getQtd() >= this.agenda.getMax() && !agenda.getEncaixe()) {
+			JSFUtil.adicionarMensagemErro("Quantidade de agendamentos está no limite!", "Erro");
+			return;
+		}
+
+		boolean cadastrou = false;
+
+		cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, funcionarioLiberacao);
+
+		if (cadastrou) {
+			limparDados();
+			JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+		}
+		limparDados();
+	}	
 
 	public void consultarAgenda(String situacao) throws ProjetoException {
 		SessionUtil.adicionarBuscaPtsNaSessao(null, null, dataAtendimentoC,
