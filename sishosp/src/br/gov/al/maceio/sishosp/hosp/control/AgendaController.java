@@ -750,12 +750,12 @@ public class AgendaController implements Serializable {
 	public void validarSenhaLiberacao() throws ProjetoException {
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-		Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+		FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
 				ValidacaoSenha.LIBERACAO.getSigla());
 
-		if (idFuncionario > 0) {
+		if (func!=null) {
 			JSFUtil.fecharDialog("dlgSenha");
-			gravarAgenda(idFuncionario);
+			gravarAgenda(func.getId().intValue());
 		} else {
 			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
 		}
@@ -764,10 +764,10 @@ public class AgendaController implements Serializable {
 	public void validarSenhaEncaixe() throws ProjetoException {
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-		Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+		FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
 				ValidacaoSenha.ENCAIXE.getSigla());
 
-		if (idFuncionario > 0) {
+		if (func!=null) {
 			JSFUtil.fecharDialog("dlgSenhaEncaixe");
 			preparaConfirmar();
 		} else {

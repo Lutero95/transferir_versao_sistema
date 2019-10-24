@@ -1,24 +1,38 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TransferenciaPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.model.*;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
+import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 @ManagedBean(name = "TransferenciaPacienteController")
 @ViewScoped

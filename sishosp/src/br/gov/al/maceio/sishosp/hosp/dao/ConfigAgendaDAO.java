@@ -192,7 +192,7 @@ public class ConfigAgendaDAO {
 
 			PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
 
-			// SE FOR AMBOS OS TURNOS - INÍCIO
+			// SE FOR AMBOS OS TURNOS - INICIO
 			if (confParte1.getTurno().equals("A")) {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					ps2.setInt(1, Integer.parseInt(dia));
@@ -242,7 +242,7 @@ public class ConfigAgendaDAO {
 
 				// SE FOR AMBOS OS TURNOS - FINAL
 
-				// SE FOR TURNO ÚNICO - INÍCIO
+				// SE FOR TURNO UNICO - INÍCIO
 			} else {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					ps2.setInt(1, Integer.parseInt(dia));
@@ -461,7 +461,7 @@ public class ConfigAgendaDAO {
 
 				// SE FOR AMBOS OS TURNOS - FINAL
 
-				// SE FOR TURNO ÚNICO - INÍCIO
+				// SE FOR TURNO UNICO - INÍCIO
 			} else {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					ps2.setInt(1, Integer.parseInt(dia));
