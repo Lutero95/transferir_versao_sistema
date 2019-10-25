@@ -193,6 +193,7 @@ public class ConfigAgendaDAO {
 			PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
 
 			// SE FOR AMBOS OS TURNOS - INICIO
+			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(confParte1.getTurno())) {
 			if (confParte1.getTurno().equals("A")) {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					ps2.setInt(1, Integer.parseInt(dia));
@@ -239,6 +240,7 @@ public class ConfigAgendaDAO {
 				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
 
 				ps2.execute();
+			}
 
 				// SE FOR AMBOS OS TURNOS - FINAL
 
@@ -412,6 +414,7 @@ public class ConfigAgendaDAO {
 			PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
 
 			// SE FOR AMBOS OS TURNOS - INÍCIO
+			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(confParte1.getTurno())) {
 			if (confParte1.getTurno().equals("A")) {
 				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
 					ps2.setInt(1, Integer.parseInt(dia));
@@ -458,6 +461,7 @@ public class ConfigAgendaDAO {
 				ps2.setTime(6, DataUtil.retornarHorarioEmTime(confParte1.getHorarioFinal()));
 
 				ps2.execute();
+			}
 
 				// SE FOR AMBOS OS TURNOS - FINAL
 
@@ -851,7 +855,7 @@ public class ConfigAgendaDAO {
 
 		ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 
-		String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, c.mes, c.ano, c.opcao, d.data_especifica, "
+		String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, c.mes, c.ano, c.opcao, d.data_especifica, d.horario_inicio, d.horario_final, "
 				+ "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao, " + "CASE WHEN "
 				+ "(SELECT count(DISTINCT turno) FROM hosp.config_agenda_profissional cc "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias dd ON (cc.id_configagenda = dd.id_config_agenda_profissional) "
@@ -879,6 +883,8 @@ public class ConfigAgendaDAO {
 				conf.setMes(rs.getInt("mes"));
 				conf.setAno(rs.getInt("ano"));
 				conf.setOpcao(rs.getString("opcao"));
+				conf.setHorarioInicio(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_inicio")));
+				conf.setHorarioFinal(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_final")));
 
 			}
 		} catch (Exception ex) {
@@ -899,6 +905,7 @@ public class ConfigAgendaDAO {
 		ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 
 		String sql = "SELECT DISTINCT c.id_configagenda, c.tipo, c.codequipe, c.qtdmax, d.data_especifica,  c.mes, c.ano, e.descequipe, c.opcao, "
+				+ "d.horario_inicio, d.horario_final, "
 				+ "CASE WHEN " + "(SELECT count(DISTINCT turno) FROM hosp.config_agenda_equipe cc "
 				+ "LEFT JOIN hosp.config_agenda_equipe_dias dd ON (cc.id_configagenda = dd.id_config_agenda_equipe) "
 				+ "WHERE cc   .id_configagenda = c.id_configagenda) > 1 then 'A' " + "ELSE d.turno END AS turno "
@@ -923,6 +930,8 @@ public class ConfigAgendaDAO {
 				conf.setAno(rs.getInt("ano"));
 				conf.setOpcao(rs.getString("opcao"));
 				conf.setTipo(rs.getString("tipo"));
+				conf.setHorarioInicio(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_inicio")));
+				conf.setHorarioFinal(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_final")));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

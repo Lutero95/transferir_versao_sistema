@@ -240,4 +240,11 @@ public final class DataUtil {
         return mes - 1;
     }
 
+    public static String ajustarHorarioParaHoraIhMinuto(String horarioComSegundos){
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(horarioComSegundos)){
+            return null;
+        }
+        return horarioComSegundos.substring(0, 5);
+    }
+
 }
