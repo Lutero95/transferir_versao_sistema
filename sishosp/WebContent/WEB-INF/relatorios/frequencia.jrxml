@@ -116,7 +116,7 @@ and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{cod
 left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
 left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
 left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
-order by codpacienteinstituicao, nome]]>
+order by  nome]]>
 	</queryString>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
