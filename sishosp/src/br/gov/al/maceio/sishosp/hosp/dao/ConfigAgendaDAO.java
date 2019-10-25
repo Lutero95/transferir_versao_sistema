@@ -1740,4 +1740,39 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
+	public List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listarQuantidadeEspecialidades(Integer idConfigAgenda) {
+		List<ConfiguracaoAgendaEquipeEspecialidadeDTO> lista = new ArrayList<>();
+
+		String sql = "SELECT e.descespecialidade, c.id_especialidade, c.qtd " +
+				"FROM hosp.config_agenda_equipe_qtd_especialidades c " +
+				"JOIN hosp.especialidade e ON (c.id_especialidade = e.id_especialidade) " +
+				"WHERE id_config_agenda_equipe = ? ORDER BY c.id;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idConfigAgenda);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfiguracaoAgendaEquipeEspecialidadeDTO conf = new ConfiguracaoAgendaEquipeEspecialidadeDTO();
+				conf.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
+				conf.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				conf.setQuantidade(rs.getInt("qtd"));
+
+				lista.add(conf);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
 }

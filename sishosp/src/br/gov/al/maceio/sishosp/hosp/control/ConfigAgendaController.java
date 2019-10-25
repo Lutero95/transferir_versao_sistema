@@ -229,6 +229,7 @@ public class ConfigAgendaController implements Serializable {
             this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
             this.confParte2 = cDao.listarHorariosPorIDEquipeEditParte2(id);
             listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgendaEquipe(id);
+            listaConfiguracaoAgendaEquipeEspecialidade = cDao.listarQuantidadeEspecialidades(id);
 
             if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 confParte1.setDiasSemana(cDao.listarDiasAtendimentoEquipePorId(id));
