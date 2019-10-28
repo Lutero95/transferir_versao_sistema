@@ -6,8 +6,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-		xmlns:b="http://bootsfaces.net/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions">
+		xmlns:b="http://bootsfaces.net/ui">
 
 
 
@@ -205,50 +204,50 @@
 
 
 							<h:outputText value="Valor"></h:outputText>
-							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="true"
+							<p:inputNumber decimalPlaces="2" symbol="R$ " required="true"
 								value="#{tituloPagarController.tituloPagarBean.valor}"
                                                                 requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 								<p:ajax update="panelTotal"
 									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</pe:inputNumber>
+								</p:inputNumber>
 							
 
 							<h:outputText value="Desconto"></h:outputText>
 
-                                                        <pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+                                                        <p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
 								value="#{tituloPagarController.tituloPagarBean.desconto}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 								<p:ajax update="panelTotal"
 									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</pe:inputNumber>
+								</p:inputNumber>
 
 							<h:outputText value="Juros"></h:outputText>
 
-							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+							<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
 								value="#{tituloPagarController.tituloPagarBean.juros}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 								<p:ajax update="panelTotal"
 									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</pe:inputNumber>
+								</p:inputNumber>
 							<h:outputText value="Multa"></h:outputText>
 
-							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+							<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
 								value="#{tituloPagarController.tituloPagarBean.multa}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 								<p:ajax update="panelTotal"
 									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</pe:inputNumber>
+								</p:inputNumber>
 
 							
 
 							<h:outputText value="ICMS St."></h:outputText>
 
-							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+							<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
 								value="#{tituloPagarController.tituloPagarBean.icmsst}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 								<p:ajax update="panelTotal"
 									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</pe:inputNumber>
+								</p:inputNumber>
 															
 							
 							<h:outputText value="Total"></h:outputText>
@@ -693,40 +692,40 @@
                         			
                         			
 									<p:outputLabel value="Valor"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
 								value="#{tituloPagarController.rowBean.valor}"
 								 thousandSeparator="." decimalSeparator="," required="true" requiredMessage="Informe o valor.">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal" process="@this"/>
-									</pe:inputNumber>
+									</p:inputNumber>
 									<p:outputLabel value="Desconto"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.desconto}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-										</pe:inputNumber>
+										</p:inputNumber>
 									
 									<p:outputLabel value="Juros"/>
-										<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+										<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.juros}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-</pe:inputNumber>									
+</p:inputNumber>									
 									
 									<p:outputLabel value="Multa"/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.multa}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 <p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
 
-</pe:inputNumber>
+</p:inputNumber>
 									
 									<p:outputLabel value="ICMS St."/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.icmsst}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
-</pe:inputNumber>									
+</p:inputNumber>									
 										
                         			
                         			
@@ -1102,40 +1101,40 @@
                         			
                         			
 									<p:outputLabel value="Valor"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
 								value="#{tituloPagarController.rowBean.valor}"
 								 thousandSeparator="." decimalSeparator="," required="true" requiredMessage="Informe o valor.">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal" process="@this"/>
-									</pe:inputNumber>
+									</p:inputNumber>
 									<p:outputLabel value="Desconto"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.desconto}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-										</pe:inputNumber>
+										</p:inputNumber>
 									
 									<p:outputLabel value="Juros"/>
-										<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+										<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.juros}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-</pe:inputNumber>									
+</p:inputNumber>									
 									
 									<p:outputLabel value="Multa"/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.multa}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 <p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
 
-</pe:inputNumber>
+</p:inputNumber>
 									
 									<p:outputLabel value="ICMS St."/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.icmsst}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
-</pe:inputNumber>									
+</p:inputNumber>									
 										
                         			
                         			

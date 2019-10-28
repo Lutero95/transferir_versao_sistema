@@ -5,8 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions">
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<style>
@@ -194,7 +193,7 @@
 </p:outputPanel>
 			<p:dataTable value="#{tituloPagarController.lstTituloPagarBean()}" var="x"  emptyMessage="Sem documento a pagar"
 				
-				 scrollable="true" scrollHeight="140" id="dt"  selectionMode="single"
+				 scrollable="true" scrollHeight="340" id="dt"  selectionMode="single"
 				selection="#{tituloPagarController.rowBean}"  rowKey="#{x.codigo}"
 				rowStyleClass="#{x.vencido == true and x.pago  == false ? 'rowRed' : null}  #{x.vencer == true and x.pago  == false? 'rowBlue' : null} #{x.pago  == true ? 'rowGreen' : null}">
 				 >
@@ -721,40 +720,40 @@
                         			
                         			
 									<p:outputLabel value="Valor"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
 								value="#{tituloPagarController.rowBean.valor}"
 								 thousandSeparator="." decimalSeparator="," required="true" requiredMessage="Informe o valor.">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal" process="@this"/>
-									</pe:inputNumber>
+									</p:inputNumber>
 									<p:outputLabel value="Desconto"/>
-																			<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+																			<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.desconto}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-										</pe:inputNumber>
+										</p:inputNumber>
 									
 									<p:outputLabel value="Juros"/>
-										<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+										<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.juros}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
 										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
-</pe:inputNumber>									
+</p:inputNumber>									
 									
 									<p:outputLabel value="Multa"/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.multa}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 <p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
 
-</pe:inputNumber>
+</p:inputNumber>
 									
 									<p:outputLabel value="ICMS St."/>
-									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
 								value="#{tituloPagarController.rowBean.icmsst}"
 								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
 
-</pe:inputNumber>									
+</p:inputNumber>									
 										
                         			
                         			
