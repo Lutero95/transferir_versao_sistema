@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts_areas_pendentes" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -22,6 +22,7 @@
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="cod_equipe" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select distinct l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo, e.id_especialidade,
 e.descespecialidade from 
@@ -77,20 +78,8 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="especialidade"/>
 	</field>
-	<group name="grupoEquipe" isStartNewPage="true" isReprintHeaderOnEachPage="true">
-		<groupExpression><![CDATA[$F{codequipe}]]></groupExpression>
-		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
-	<group name="grupoDataAtend" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
-	</group>
-	<group name="grpgrupo">
-		<groupExpression><![CDATA[$F{idgrupo}]]></groupExpression>
-	</group>
-	<group name="grpequipe">
-		<groupExpression><![CDATA[$F{codequipe}]]></groupExpression>
+	<group name="grpprograma">
+		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
 				<textField>
@@ -109,7 +98,6 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["GRUPO:"+$F{grupo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -118,9 +106,8 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 		</groupFooter>
 	</group>
 	<group name="grppaciente">
-		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
 		<groupHeader>
-			<band height="22">
+			<band height="104">
 				<textField pattern="dd/MM/yyyy">
 					<reportElement x="4" y="0" width="787" height="13" uuid="f44d4a37-7088-46e3-bac7-728c51ace0be">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -128,12 +115,20 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="590" height="30" uuid="c69d0ec4-4139-4723-9df6-adf916b56980"/>
+					<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="-10" y="45" width="200" height="45" uuid="947b0e7d-c007-4ad2-a1a0-e532095371b5"/>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"subreport_pts_pendentes_area.jasper"]]></subreportExpression>
+				</subreport>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="23"/>
+			<band height="107"/>
 		</groupFooter>
 	</group>
 	<background>
@@ -149,11 +144,9 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement x="0" y="0" width="100" height="90" uuid="663d055f-51d7-484b-8dc6-ed298dda47ad"/>
-				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="100" y="30" width="577" height="25" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
@@ -170,7 +163,7 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="18"/>
+		<band height="21"/>
 	</detail>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
@@ -191,6 +184,6 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="68" splitType="Stretch"/>
 	</summary>
 </jasperReport>
