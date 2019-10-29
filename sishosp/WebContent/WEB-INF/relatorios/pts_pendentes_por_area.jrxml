@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apaemaceio"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="img_adefal" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_tipo_atend" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="cod_equipe" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select distinct l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo, e.id_especialidade,
+e.descespecialidade from 
+hosp.profissional_dia_atendimento pdt
+join acl.funcionarios f on f.id_funcionario = pdt.id_profissional
+join hosp.especialidade e on e.id_especialidade = f.codespecialidade
+join hosp.paciente_instituicao pi on pi.id = pdt.id_paciente_instituicao
+join hosp.laudo l on l.id_laudo = pi.codlaudo
+join hosp.programa on programa.id_programa = pi.codprograma
+join hosp.grupo on grupo.id_grupo = pi.codgrupo
+join hosp.pacientes on pacientes.id_paciente= l.codpaciente
+join hosp.pts p on  p.cod_programa = pi.codprograma and p.cod_grupo = pi.codgrupo and l.codpaciente = p.cod_paciente
+join hosp.pts_area pa on pa.id_pts = p.id
+where pi.status='A'  and p	.status in ('A', 'R')
+and not exists (
+select p2.id from hosp.pts p2
+join hosp.pts_area pa2 on pa2.id_pts = p2.id
+where p2.cod_programa = pi.codprograma and p2.cod_grupo = pi.codgrupo and l.codpaciente = p2.cod_paciente
+and p2.status in ('A', 'R')
+and pa2.id_area = e.id_especialidade
+)
+order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
+	</queryString>
+	<field name="codpaciente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codpaciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="codprograma" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="paciente_instituicao"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="codgrupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="paciente_instituicao"/>
+	</field>
+	<field name="id_especialidade" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_especialidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="especialidade"/>
+	</field>
+	<field name="descespecialidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="especialidade"/>
+	</field>
+	<group name="grupoEquipe" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{codequipe}]]></groupExpression>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="grupoDataAtend" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
+	</group>
+	<group name="grpgrupo">
+		<groupExpression><![CDATA[$F{idgrupo}]]></groupExpression>
+	</group>
+	<group name="grpequipe">
+		<groupExpression><![CDATA[$F{codequipe}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement x="0" y="-1" width="694" height="13" uuid="f2f04e67-7e71-4468-be60-031a87b31e45">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROGRAMA:"+$F{descprograma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="12" width="694" height="13" uuid="574d71d2-2aa7-4141-bfdf-398d24a14111">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["GRUPO:"+$F{grupo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24"/>
+		</groupFooter>
+	</group>
+	<group name="grppaciente">
+		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="4" y="0" width="787" height="13" uuid="f44d4a37-7088-46e3-bac7-728c51ace0be">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="23"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="99" splitType="Stretch">
+			<textField>
+				<reportElement x="100" y="0" width="577" height="20" uuid="d6536674-de12-488f-ba56-dfbe859f5cf3"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="100" height="90" uuid="663d055f-51d7-484b-8dc6-ed298dda47ad"/>
+				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="100" y="30" width="577" height="25" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PTS - ÁREAS PENDENTES]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18"/>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="671" y="34" width="23" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="694" y="34" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="734" y="34" width="68" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
