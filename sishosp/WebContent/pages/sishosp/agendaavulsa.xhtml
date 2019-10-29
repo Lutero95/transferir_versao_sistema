@@ -240,7 +240,7 @@
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax"></p:ajax>
+											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina"></p:ajax>
 
 									</p:autoComplete>
 
@@ -347,7 +347,7 @@
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax"></p:ajax>
+											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina"></p:ajax>
 
 									</p:autoComplete>
 
@@ -363,16 +363,6 @@
 
 						</b:row>
 					</p:outputPanel>
-
-
-
-
-
-
-
-
-
-
 
 					<b:row>
 
@@ -397,7 +387,7 @@
 								locale="pt">
 								<p:ajax event="dateSelect"
 									listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-									process="@this dtagen" update="msgPagina, outQtdIhMax"></p:ajax>
+									process="@this dtagen" update="msgPagina"></p:ajax>
 							</p:calendar>
 
 						</b:column>
@@ -409,27 +399,9 @@
 								<f:selectItem itemLabel="Tarde" itemValue="T" />
 								<p:ajax process="@this"
 									listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-									update=":formAgendaMedica, msgPagina, outQtdIhMax"></p:ajax>
+									update=":formAgendaMedica, msgPagina"></p:ajax>
 							</p:selectOneRadio>
 
-						</b:column>
-						<b:column span="3">
-						<p:outputPanel id="outQtdIhMax" rendered="#{AgendaController.tipoData == 'U'}">
-								<b:label for="qtd" value="Quantidade" severity="info"
-									rendered="#{AgendaController.tipoData == 'U'}" />
-
-								<b:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
-									class="select-agendaEquipe2"
-									rendered="#{AgendaController.tipoData == 'U'}" readonly="true" />
-						
-								<b:label for="max" value="Máximo" severity="info"
-									rendered="#{AgendaController.tipoData == 'U'}" />
-
-								<b:inputText id="max" value="#{AgendaController.agenda.max}"
-									rendered="#{AgendaController.tipoData == 'U'}"
-									class="select-agendaEquipe2" readonly="true" />
-							
-					 </p:outputPanel>
 						</b:column>
 					
 					</b:row>
@@ -449,23 +421,6 @@
 						</p:outputPanel>
 					</b:row>
 
-					<b:row>
-
-						<b:column span="3" class="label-position">
-
-							<p:outputLabel value="Encaixe:"
-								style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-							<p:selectBooleanCheckbox label="Encaixe"
-								style="margin-left: 10px;margin-top: 5px"
-								value="#{AgendaController.agenda.encaixe}">
-							</p:selectBooleanCheckbox>
-
-						</b:column>
-
-					</b:row>
-
 							<p:panelGrid columns="2" style="border:none">
 								<p:pickList id="pick"
 									value="#{AgendaController.listaFuncionariosDual}" var="sis"
@@ -477,28 +432,24 @@
 									filterMatchMode="contains">
 
 									<f:facet name="sourceCaption">
-										<h:outputText value="Sistemas não associados"
+										<h:outputText value="Funcionários não associados"
 											style="color:black" />
 									</f:facet>
 									<f:facet name="targetCaption">
-										<h:outputText value="Sistemas Associados" style="color:black" />
+										<h:outputText value="Funcionários Associados" style="color:black" />
 									</f:facet>
 
 									<p:ajax event="transfer"
-										listener="#{MBFuncionarios.onTransferSistema}" />
+										listener="#{AgendaController.onTransferFuncionario}" />
 								</p:pickList>
 							</p:panelGrid>
-
-			
-
-
 
 					<div align="center">
 
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="glyphicon-ok"
-							action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
-							update=":formAgendaMedica, :frmSenha"
+							action="#{AgendaController.preparaGravarAgendaAvulsa()}"
+							update=":formAgendaMedica"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -775,69 +726,6 @@
 					</h:column>
 
 				</b:dataTable>
-			</h:form>
-		</p:dialog>
-
-		
-
-		<p:dialog header="Digite a senha" widgetVar="dlgSenha" modal="true"
-			responsive="true" dynamic="true">
-			<h:form id="frmSenha">
-				<div class="alert alert-warning" role="alert">Você está
-					tentando agendar um paciente que ainda não faz parte da equipe!
-					Digite a senha para liberação!</div>
-				<h:panelGrid columns="1" cellpadding="3">
-
-					<b:inputText mask="999-999-999-99" style="padding:10px;"
-						required="true" value="#{AgendaController.funcionario.cpf}"
-						placeholder="Digite o CPF" render-label="true"
-						requiredMessage="CPF obrigatório" />
-					<b:message for="@previous" />
-
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
-						value="#{AgendaController.funcionario.senha}"></b:inputSecret>
-					<b:message for="@previous" />
-
-				</h:panelGrid>
-
-				<div align="center">
-					<p:commandButton value="Liberar" look="success" size="sm" id="b1"
-						style="margin-top:10px" icon="fa fa-fw fa-check"
-						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
-						action="#{AgendaController.validarSenhaLiberacao()}" />
-				</div>
-
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe"
-			modal="true" responsive="true" dynamic="true">
-			<h:form id="frmSenhaEncaixe">
-				<div class="alert alert-warning" role="alert">Para permitir o
-					encaixe do Paciente digite a senha para liberação!</div>
-				<h:panelGrid columns="1" cellpadding="3">
-
-					<b:inputText mask="999-999-999-99" style="padding:10px;"
-						required="true" value="#{AgendaController.funcionario.cpf}"
-						placeholder="Digite o CPF" render-label="true"
-						requiredMessage="CPF obrigatório" />
-					<b:message for="@previous" />
-
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
-						value="#{AgendaController.funcionario.senha}"></b:inputSecret>
-					<b:message for="@previous" />
-
-				</h:panelGrid>
-
-				<div align="center">
-					<p:commandButton value="Liberar" look="success" size="sm"
-						style="margin-top:10px" icon="fa fa-fw fa-check"
-						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
-						action="#{AgendaController.validarSenhaEncaixe()}" />
-				</div>
-
 			</h:form>
 		</p:dialog>
 

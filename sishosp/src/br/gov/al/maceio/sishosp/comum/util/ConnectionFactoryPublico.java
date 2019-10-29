@@ -13,12 +13,12 @@ public class ConnectionFactoryPublico {
     public static Connection getConnection() throws ProjetoException {
 
         //LOCAL
-/*
+
         String url = "jdbc:postgresql://localhost:5432/publico";
         String usuario = "postgres";
-        String senha  = "engetron";
+        String senha  = "post";
         //String senha  = "engetron";
-*/
+
         //PRODUÇÃO
     /*
         String url = "jdbc:postgresql://72.55.172.244:5432/publico";
@@ -29,11 +29,13 @@ public class ConnectionFactoryPublico {
         String url = "jdbc:postgresql://node39025-env-8766995.nordeste-idc.saveincloud.net:11511/publico";
         String usuario = "webadmin";
         String senha = "BVEsvr50661";
-*/
+
     	
     	String url = "jdbc:postgresql://10.101.17.65:5432/publico";
         String usuario = "webadmin";
         String senha = "BVEsvr50661";
+
+    	 */
         try {
             Class.forName("org.postgresql.Driver");
             Connection con;

@@ -158,8 +158,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 		}
 	}
 
-	public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais,
-			Integer funcionarioLiberacao) {
+	public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais) {
 
 		Boolean retorno = false;
 		int idAtendimento = 0;
@@ -180,11 +179,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			} else {
 				ps.setNull(2, Types.NULL);
 			}
-			if (agenda.getAvaliacao()) {
-				ps.setInt(3, agenda.getProgramaAvaliacao().getIdPrograma());
-			} else {
-				ps.setInt(3, agenda.getPrograma().getIdPrograma());
-			}
+
+			ps.setNull(3, Types.NULL);
+
 			ps.setDate(4, new java.sql.Date(agenda.getDataAtendimento().getTime()));
 			ps.setString(5, "A");
 			ps.setDate(6, new java.sql.Date(new Date().getTime()));
@@ -211,12 +208,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				ps.setNull(13, Types.NULL);
 			}
 
-			ps.setBoolean(14, agenda.getEncaixe());
-			if (funcionarioLiberacao > 0) {
-				ps.setLong(15, funcionarioLiberacao);
-			} else {
-				ps.setNull(15, Types.NULL);
-			}
+			ps.setBoolean(14, false);
+
+			ps.setNull(15, Types.NULL);
+
 
 			if (agenda.getHorario() != null) {
 				ps.setTime(16, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
@@ -224,7 +219,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				ps.setNull(16, Types.NULL);
 			}
 
-			ps.setBoolean(17, agenda.getAvaliacao());
+			ps.setBoolean(17, false);
 
 			ResultSet rs = ps.executeQuery();
 
