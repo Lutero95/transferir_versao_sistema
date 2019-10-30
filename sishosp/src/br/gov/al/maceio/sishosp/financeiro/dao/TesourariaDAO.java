@@ -553,7 +553,7 @@ public class TesourariaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			String sql = "select  P.VALOR,p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)\n" + 
-					"  - coalesce((select sum(coalesce(valorpago,0)-coalesce(vlrdesc,0)+coalesce(vlrjuros,0)+coalesce(vlrmulta,0)) from financeiro.pagdupbx\n" + 
+					"  - coalesce((select sum(coalesce(valorpago,0)-(coalesce(vlrdesc,0)+coalesce(vlrjuros,0)+coalesce(vlrmulta,0))) from financeiro.pagdupbx\n" + 
 					" where pagdupbx.codigo=p.codigo),0) valoraberto,"
 					+ " P.IDDESPESA, P.IDCCUSTO, P.CODFORN, P.CODHISTO, P.CODIGO, P.CODPORT,"
 					+ " P.DTEMISSAO, P.DTPREVISAO, P.DTVCTO, P.DUPLICATA, P.HISTORICO, P.PARCELA, P.SITUACAO,"
@@ -1251,28 +1251,11 @@ public class TesourariaDAO {
 			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 					.getSessionMap().get("obj_usuario");
 
-			String sql = "select banco_medico_dinheiro from financeiro.parametros ";
-
-			ps = con.prepareStatement(sql);
-			set = ps.executeQuery();
-
-			Integer codTabelaPreco = 0;
-			while (set.next()) {
-				codTabelaPreco = set.getInt("banco_medico_dinheiro");
-
-			}
-
-			ps.close();
 
 			// insere na tabela caixadiario
-			sql = "insert into financeiro.movtesouraria (	idbanco, tipo, valor, operacao, complemento, obs, seqcaixadiario, dtmovimento, opcad) values (?,?,?,?,?,?,?,?,(select data from financeiro.caixadiario where codfilial=? and status='A'),?) ";
+			String sql = "insert into financeiro.movtesouraria (	idbanco, tipo, valor, operacao, complemento, obs, seqcaixadiario, dtmovimento, opcad) values (?,?,?,?,?,?,?,?,(select data from financeiro.caixadiario where codfilial=? and status='A'),?) ";
 			ps = con.prepareStatement(sql);
-
-			if (lancto2.isMedico() == true) {
-				ps.setInt(1, codTabelaPreco);
-			} else {
-				ps.setInt(1, lancto.getBanco().getId());
-			}
+			ps.setInt(1, lancto.getBanco().getId());
 
 			if (lancto.getOperacao().equals("DESPBANC")) {
 				ps.setString(2, "DB");
