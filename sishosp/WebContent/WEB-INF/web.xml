@@ -50,14 +50,7 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.faces</url-pattern>
     </servlet-mapping>
-    <context-param>
-        <param-name>timezone</param-name>
-        <param-value>America/Sao_Paulo</param-value>
-    </context-param>
-    <context-param>
-        <param-name>timezone3</param-name>
-        <param-value>GMT-3</param-value>
-    </context-param>
+    
     <context-param>
         <param-name>BootsFaces_THEME</param-name>
         <param-value>cerulean</param-value>

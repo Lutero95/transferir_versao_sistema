@@ -24,7 +24,8 @@
 	<parameter name="cod_equipe" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select distinct l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo, e.id_especialidade,
+		<![CDATA[select codpaciente,nome, codprograma,descprograma, descgrupo, codgrupo, id_especialidade,descespecialidade from (
+select distinct l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo, e.id_especialidade,
 e.descespecialidade from 
 hosp.profissional_dia_atendimento pdt
 join acl.funcionarios f on f.id_funcionario = pdt.id_profissional
@@ -34,17 +35,29 @@ join hosp.laudo l on l.id_laudo = pi.codlaudo
 join hosp.programa on programa.id_programa = pi.codprograma
 join hosp.grupo on grupo.id_grupo = pi.codgrupo
 join hosp.pacientes on pacientes.id_paciente= l.codpaciente
-join hosp.pts p on  p.cod_programa = pi.codprograma and p.cod_grupo = pi.codgrupo and l.codpaciente = p.cod_paciente
-join hosp.pts_area pa on pa.id_pts = p.id
-where pi.status='A'  and p	.status in ('A', 'R')
-and not exists (
+where pi.status='A'  
+and pi.codprograma=1 and pi.codgrupo=1
+and exists (
 select p2.id from hosp.pts p2
-join hosp.pts_area pa2 on pa2.id_pts = p2.id
 where p2.cod_programa = pi.codprograma and p2.cod_grupo = pi.codgrupo and l.codpaciente = p2.cod_paciente
 and p2.status in ('A', 'R')
-and pa2.id_area = e.id_especialidade
+and p2.id=(select max(id) from hosp.pts p22 where pi.codprograma = p22.cod_programa and p22.cod_grupo = pi.codgrupo and l.codpaciente = p22.cod_paciente)
 )
-order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
+except
+select distinct l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo, e.id_especialidade,
+e.descespecialidade from 
+hosp.paciente_instituicao pi
+join hosp.laudo l on l.id_laudo = pi.codlaudo
+join hosp.pts p on  p.cod_programa = pi.codprograma and p.cod_grupo = pi.codgrupo and l.codpaciente = p.cod_paciente
+join hosp.pts_area pa on pa.id_pts = p.id
+join hosp.especialidade e on e.id_especialidade = pa.id_area
+join hosp.programa on programa.id_programa = pi.codprograma
+join hosp.grupo on grupo.id_grupo = pi.codgrupo
+join hosp.pacientes on pacientes.id_paciente= l.codpaciente
+where pi.status='A'  and p	.status in ('A', 'R')
+and pi.codprograma=1 and pi.codgrupo=1
+and p.id=(select max(id) from hosp.pts p2 where pi.codprograma = p2.cod_programa and p2.cod_grupo = pi.codgrupo and l.codpaciente = p2.cod_paciente)
+) a order by a.codprograma, a.codgrupo, a.nome]]>
 	</queryString>
 	<field name="codpaciente" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="codpaciente"/>
@@ -116,15 +129,6 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 						<font isBold="false"/>
 					</textElement>
 				</textField>
-				<textField>
-					<reportElement x="0" y="0" width="590" height="30" uuid="c69d0ec4-4139-4723-9df6-adf916b56980"/>
-					<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
-				</textField>
-				<subreport>
-					<reportElement x="-10" y="45" width="200" height="45" uuid="947b0e7d-c007-4ad2-a1a0-e532095371b5"/>
-					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"subreport_pts_pendentes_area.jasper"]]></subreportExpression>
-				</subreport>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -163,7 +167,17 @@ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="21"/>
+		<band height="137">
+			<textField>
+				<reportElement x="0" y="6" width="590" height="30" uuid="c69d0ec4-4139-4723-9df6-adf916b56980"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="36" width="200" height="45" uuid="947b0e7d-c007-4ad2-a1a0-e532095371b5"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"subreport_pts_pendentes_area.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
