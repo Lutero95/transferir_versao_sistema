@@ -64,7 +64,7 @@ public class GerenciarPacienteDAO {
 		}
 		
 
-        if ((gerenciar.getStatus()!=null ) && (gerenciar.getStatus().equals("A"))) {
+		if ((gerenciar.getStatus()!=null ) && (gerenciar.getStatus().equals("A"))) {
             sql = sql + " and status = 'A'";
         }
 

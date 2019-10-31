@@ -6,6 +6,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -115,33 +118,17 @@ public final class DataUtil {
 
     public static Date adicionarMesIhAnoEmDate(Integer mes, Integer ano, Boolean ultimoDiaDoMes){
 
-        int dia = 0;
-        mes = mes - 1;
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, ano);
-        cal.set(Calendar.MONTH, (mes));
-        System.out.println(cal.getTime());
+    	LocalDate dataAtual = LocalDate.now();
         
         
         if(!ultimoDiaDoMes){
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.MONTH, mes);
-            dia = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        	dataAtual = LocalDate.now().withMonth(mes).withYear(ano).with(TemporalAdjusters.lastDayOfMonth());
         }
         else{
-            dia = 1;
+        	dataAtual = LocalDate.now().withMonth(mes).withYear(ano).withDayOfMonth(1);
         }
 
-        cal.set(Calendar.DAY_OF_MONTH, dia);
-        LocalDate futureDate =  LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        
-        System.out.println(futureDate);
-        System.out.println(cal.getTime());
-        Date data = cal.getTime();
-        Locale brasil = new Locale("pt", "BR"); //Retorna do país e a língua
-        DateFormat f2 = DateFormat.getDateInstance(DateFormat.FULL, brasil);
-        System.out.println("Data e hora brasileira: "+f2.format(data));
+        Date data = Date.from(dataAtual.atStartOfDay(ZoneId.systemDefault()).toInstant());
         return data;
     }
     
