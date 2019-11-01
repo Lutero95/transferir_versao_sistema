@@ -40,6 +40,11 @@ public final class HorarioOuTurnoUtil {
 
             GregorianCalendar gc = new GregorianCalendar();
             String timeAux = sdf.format(novahora);
+            
+            horario = DataUtil.retornarHorarioEmString(novahora);
+
+            listaHorarios.add(horario);
+
 
             gc.setTime(sdf.parse(timeAux));
 
@@ -47,9 +52,6 @@ public final class HorarioOuTurnoUtil {
 
             novahora = new java.sql.Time(gc.getTime().getTime());
 
-            horario = DataUtil.retornarHorarioEmString(novahora);
-
-            listaHorarios.add(horario);
 
         }
 
