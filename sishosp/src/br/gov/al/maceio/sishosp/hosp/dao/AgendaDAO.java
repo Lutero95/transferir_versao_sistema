@@ -335,34 +335,47 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         int qtdMax = 0;
         String sqlPro = "select p.qtdmax " + "from hosp.config_agenda_profissional p "
                 + "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) "
-                + "where p.codmedico = ? and d.data_especifica = ? and d.turno = ?;";
+                + "where p.codmedico = ? and d.data_especifica = ? ";
 
         String sqlEqui = "select p.qtdmax " + "from hosp.config_agenda_equipe p "
                 + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) "
-                + "where p.codequipe = ? and d.data_especifica = ? and d.turno = ?;";
+                + "where p.codequipe = ? and d.data_especifica = ? ";
 
-        String sqlEquiAva = " select p.qtdmax from hosp.config_agenda_equipe p \n"
-                + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) \n"
-                + "JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) \n"
-                + "join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento \n"
-                + "where p.codequipe = ? and d.data_especifica = ? and d.turno = ?\n"
+        String sqlEquiAva = " select p.qtdmax from hosp.config_agenda_equipe p "
+                + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) "
+                + "JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) "
+                + "join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento "
+                + "where p.codequipe = ? and d.data_especifica = ? "
                 + "and tipoatendimento.primeiroatendimento is true";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = "AND d.turno = ?";
+
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            stm.setString(3, agenda.getTurno().toUpperCase());
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -402,7 +415,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlComplementoFinal = "";
 
         if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
-            sqlComplementoFinal = "AND d.horario = ?";
+            sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = "AND d.turno = ?";
 
@@ -458,34 +471,48 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_profissional c \n"
                 + "LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n"
                 + "JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n"
-                + "WHERE c.codmedico = ? AND d.turno = ?  and c.tipo='G' and t.codtipoatendimento=?";
+                + "WHERE c.codmedico = ? and c.tipo='G' and t.codtipoatendimento=?";
 
         String sqlEqui = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_equipe c \n"
                 + "LEFT JOIN hosp.config_agenda_equipe_dias d on (c.id_configagenda = d.id_config_agenda_equipe) \n"
                 + "JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_equipe) \n"
-                + "WHERE c.codequipe = ? AND d.turno = ?  and c.tipo='G' and t.codtipoatendimento=?";
+                + "WHERE c.codequipe = ? and c.tipo='G' and t.codtipoatendimento=?";
 
         String sqlEquiAva = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_equipe c \n"
                 + "LEFT JOIN hosp.config_agenda_equipe_dias d on (c.id_configagenda = d.id_config_agenda_equipe) \n"
                 + "JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_equipe) \n"
                 + " join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento "
-                + "WHERE c.codequipe = ? AND d.turno = ?  and c.tipo='G' and t.codtipoatendimento=? and tipoatendimento.primeiroatendimento is true";
+                + "WHERE c.codequipe = ? and c.tipo='G' and t.codtipoatendimento=? and tipoatendimento.primeiroatendimento is true";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
-            stm.setString(2, agenda.getTurno().toUpperCase());
-            stm.setInt(3, agenda.getTipoAt().getIdTipo());
+            stm.setInt(2, agenda.getTipoAt().getIdTipo());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -531,21 +558,36 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + "where p.codequipe = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=?\n"
                 + "and p.tipo='E' and t.codtipoatendimento=?\n" + "and tipoatendimento.primeiroatendimento is true";
 
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+
+        }
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setInt(2, diaSemana);
-            stm.setString(3, agenda.getTurno().toUpperCase());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
+
             stm.setInt(4, mes + 1);
             stm.setInt(5, ano);
             stm.setInt(6, agenda.getTipoAt().getIdTipo());
@@ -590,23 +632,38 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + "where p.codequipe = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E'\n"
                 + "and tipoatendimento.primeiroatendimento is true";
 
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+
+        }
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setInt(2, diaSemana);
-            stm.setString(3, agenda.getTurno().toUpperCase());
-            stm.setInt(4, mes + 1);
-            stm.setInt(5, ano);
+            stm.setInt(3, mes + 1);
+            stm.setInt(4, ano);
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(5, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(5, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -636,38 +693,53 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select distinct t.qtd " + "from hosp.config_agenda_profissional p "
                 + "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) "
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_profissional) "
-                + "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
+                + "where p.codmedico = ? and d.dia = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
 
         String sqlEqui = "select distinct t.qtd " + "from hosp.config_agenda_equipe p "
                 + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) "
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) "
-                + "where p.codequipe = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
+                + "where p.codequipe = ? and d.dia = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
 
         String sqlEquiAva = "select distinct t.qtd from hosp.config_agenda_equipe p \n"
                 + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) \n"
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) \n"
                 + " join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento \n"
-                + "where p.codequipe = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?\n"
+                + "where p.codequipe = ? and d.dia = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?\n"
                 + "and tipoatendimento.primeiroatendimento is true";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setInt(2, diaSemana);
-            stm.setString(3, agenda.getTurno().toUpperCase());
-            stm.setInt(4, mes + 1);
-            stm.setInt(5, ano);
-            stm.setInt(6, agenda.getTipoAt().getIdTipo());
+            stm.setInt(3, mes + 1);
+            stm.setInt(4, ano);
+            stm.setInt(5, agenda.getTipoAt().getIdTipo());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(6, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(6, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -696,30 +768,38 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlPro = "select distinct p.qtdmax " + "from hosp.config_agenda_profissional p "
                 + "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) "
-                + "where p.codmedico = ? and d.dia = ? and d.turno = ?  and p.tipo='G'";
+                + "where p.codmedico = ? and d.dia = ? and p.tipo='G'";
 
         String sqlEqui = "select e.qtdmax " + "from hosp.config_agenda_equipe e "
                 + "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) "
-                + "where e.codequipe = ? and d.dia = ? and d.turno = ?  and e.tipo='G'";
+                + "where e.codequipe = ? and d.dia = ? and e.tipo='G'";
 
-        String sqlEquiAva = "select e.qtdmax " + "from hosp.config_agenda_equipe e "
-                + "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) "
-                + " JOIN hosp.tipo_atend_agenda t ON (e.id_configagenda = t.cod_config_agenda_equipe) "
-                + " join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento "
-                + "where e.codequipe = ? and d.dia = ? and d.turno = ?  and e.tipo='G' and tipoatendimento.primeiroatendimento is true";
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if (agenda.getEquipe().getCodEquipe() != null) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setInt(2, diaSemana);
-            stm.setString(3, agenda.getTurno().toUpperCase());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -749,35 +829,49 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select distinct t.qtd " + "from hosp.config_agenda_profissional p "
                 + "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) "
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_profissional) "
-                + "where p.codmedico = ? and d.dia = ? and d.turno = ?   and p.tipo='G' and t.codtipoatendimento=?";
+                + "where p.codmedico = ? and d.dia = ? and p.tipo='G' and t.codtipoatendimento=?";
 
         String sqlEqui = "select distinct t.qtd " + "from hosp.config_agenda_equipe p "
                 + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) "
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) "
-                + "where p.codequipe = ? and d.dia = ? and d.turno = ?   and p.tipo='G' and t.codtipoatendimento=?";
+                + "where p.codequipe = ? and d.dia = ? and p.tipo='G' and t.codtipoatendimento=?";
 
         String sqlEquiAva = "select distinct t.qtd " + "from hosp.config_agenda_equipe p "
                 + "left join hosp.config_agenda_equipe_dias d on (p.id_configagenda = d.id_config_agenda_equipe) "
                 + " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_equipe) "
                 + " join hosp.tipoatendimento  on tipoatendimento.id = t.codtipoatendimento "
-                + "where p.codequipe = ? and d.dia = ? and d.turno = ?   and p.tipo='G' and t.codtipoatendimento=? and tipoatendimento.primeiroatendimento is true";
+                + "where p.codequipe = ? and d.dia = ? and p.tipo='G' and t.codtipoatendimento=? and tipoatendimento.primeiroatendimento is true";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
+        } else {
+            sqlComplementoFinal = " AND d.turno = ?";
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == false) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             } else if ((agenda.getTipoAt().isPrimeiroAt() == true) && (agenda.getEquipe().getCodEquipe() != null)) {
-                stm = con.prepareStatement(sqlEquiAva);
+                stm = con.prepareStatement(sqlEquiAva+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setInt(2, diaSemana);
-            stm.setString(3, agenda.getTurno().toUpperCase());
-            stm.setInt(4, agenda.getTipoAt().getIdTipo());
+            stm.setInt(3, agenda.getTipoAt().getIdTipo());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(4, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(4, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -798,20 +892,36 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public int verQtdAgendadosData(AgendaBean agenda) throws ProjetoException {
         int qtd = 0;
-        String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
-        String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
+        String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? ";
+        String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? ";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = "AND horario = ?";
+        } else {
+            sqlComplementoFinal = "AND turno = ?";
+
+        }
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if (agenda.getEquipe().getCodEquipe() != null) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            stm.setString(3, agenda.getTurno().toUpperCase());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -849,8 +959,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
-            sqlComplementoFinal = "AND d.horario = ?";
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = "AND d.turno = ?";
 
@@ -872,7 +982,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
 
             if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
-                stm.setString(3, agenda.getHorario());
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(3, agenda.getTurno().toUpperCase());
             }
@@ -1074,7 +1184,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlComplementoFinal = "";
 
         if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
-            sqlComplementoFinal = "AND d.horario = ?";
+            sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = "AND d.turno = ?";
 
@@ -1493,7 +1603,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         sqlProf.append("LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) ");
         sqlProf.append("LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) ");
         sqlProf.append("LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) ");
-        sqlProf.append("WHERE a.dtaatende = ? AND a.codmedico = ? AND a.turno = ?");
+        sqlProf.append("WHERE a.dtaatende = ? AND a.codmedico = ? ");
 
         StringBuilder sqlEqui = new StringBuilder();
 
@@ -1506,22 +1616,37 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         sqlEqui.append("LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) ");
         sqlEqui.append("LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) ");
         sqlEqui.append("LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) ");
-        sqlEqui.append("WHERE dtaatende = ? AND codequipe = ? AND turno = ?");
+        sqlEqui.append("WHERE dtaatende = ? AND codequipe = ? ");
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
+            sqlComplementoFinal = "AND a.horario = ?";
+        } else {
+            sqlComplementoFinal = "AND a.turno = ?";
+
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
 
             if (ag.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlProf.toString());
+                stm = con.prepareStatement(sqlProf.toString()+sqlComplementoFinal);
                 stm.setLong(2, ag.getProfissional().getId());
             } else if (ag.getEquipe().getCodEquipe() != null) {
-                stm = con.prepareStatement(sqlEqui.toString());
+                stm = con.prepareStatement(sqlEqui.toString()+sqlComplementoFinal);
                 stm.setInt(2, ag.getEquipe().getCodEquipe());
             }
 
             stm.setDate(1, new java.sql.Date(ag.getDataAtendimento().getTime()));
-            stm.setString(3, ag.getTurno());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(ag.getHorario()));
+            } else {
+                stm.setString(3, ag.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1744,18 +1869,33 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         int qtd = 0;
         String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
         String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
+
+        String sqlComplementoFinal = "";
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            sqlComplementoFinal = " AND horario = ?";
+        } else {
+            sqlComplementoFinal = " AND turno = ?";
+        }
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             if (agenda.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlPro);
+                stm = con.prepareStatement(sqlPro+sqlComplementoFinal);
                 stm.setLong(1, agenda.getProfissional().getId());
             } else if (agenda.getEquipe().getCodEquipe() != null) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui+sqlComplementoFinal);
                 stm.setInt(1, agenda.getEquipe().getCodEquipe());
             }
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            stm.setString(3, agenda.getTurno().toUpperCase());
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+                stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            } else {
+                stm.setString(3, agenda.getTurno().toUpperCase());
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

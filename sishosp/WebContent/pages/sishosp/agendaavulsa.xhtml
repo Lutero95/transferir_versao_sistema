@@ -375,22 +375,27 @@
 
 					</b:row>
 
-					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
+					<b:row>
 
 						<b:column span="2" class="label-position data-size">
 							<b:label value="Data" severity="info" />
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="7" class="select-agendaEquipe2"
-								required="true" requiredMessage="Data: Campo obrigatório!"
-								rendered="#{AgendaController.tipoData == 'U'}"
-								value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
-								locale="pt">
+										showOn="button" size="7" class="select-agendaEquipe2"
+										required="true" requiredMessage="Data: Campo obrigatório!"
+										rendered="#{AgendaController.tipoData == 'U'}"
+										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+										locale="pt">
 								<p:ajax event="dateSelect"
-									listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-									process="@this dtagen" update="msgPagina"></p:ajax>
+										listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
+										process="@this dtagen" update="msgPagina"></p:ajax>
 							</p:calendar>
 
 						</b:column>
+
+					</b:row>
+
+
+					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 
 						<b:column span="1" class="btn-radio-table">
 							<b:label value="Turno" severity="info" />
