@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apaemaceio"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
@@ -26,6 +26,7 @@ and not exists (
 select p2.id from hosp.pts p2
 where p2.cod_programa = pi.codprograma and p2.cod_grupo = pi.codgrupo and l.codpaciente = p2.cod_paciente
 and p2.status in ('A', 'R')
+AND p2.data_vencimento >= current_date
 and p2.id=(select max(id) from hosp.pts p22 where pi.codprograma = p22.cod_programa and p22.cod_grupo = pi.codgrupo and l.codpaciente = p22.cod_paciente)
 )
  order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
