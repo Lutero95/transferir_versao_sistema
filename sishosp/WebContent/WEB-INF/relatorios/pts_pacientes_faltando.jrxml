@@ -110,7 +110,7 @@ and p2.id=(select max(id) from hosp.pts p22 where pi.codprograma = p22.cod_progr
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO PTS - ESPECIALIDADES PENDENTES]]></text>
+				<text><![CDATA[PACIENTES SEM PTS]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="0" y="0" width="802" height="16" uuid="c063c9bc-f9c7-4d8f-adfe-147e9c8db719"/>
