@@ -544,26 +544,28 @@ public class MenuDAO {
 	}
 
 	// LISTA OK
-	public ArrayList<Menu> listarMenuItemTargetEdit(Long idUsuario)
+	public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil)
 			throws ProjetoException {
 
-		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, " +
-				"me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, " +
-				"si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me " +
-				"join acl.perm_geral pg on pg.id_menu = me.id " +
-				"join acl.permissao pm on pm.id = pg.id_permissao " +
-				"JOIN acl.perm_usuario pu ON pg.id_permissao = pu.id_permissao " +
-				"join acl.menu_sistema ms on ms.id_menu = me.id   " +
-				"join acl.sistema si on si.id = ms.id_sistema " +
-				"where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') " +
-				"AND pu.id_usuario = ? " +
-				"order by me.descricao;";
+		String sql = " select distinct mex.id , me.descricao, me.codigo, me.indice, me.tipo, \n" + 
+				"me.ativo, me.diretorio, me.desc_pagina, me.extensao, si.id as id_sis, \n" + 
+				"si.descricao as desc_sis, si.sigla as sigla_sis, pm.id as id_permissao \n" + 
+				"from acl.menu me \n" + 
+				"join acl.perm_geral pg on pg.id_menu = me.id \n" + 
+				"join acl.menu mex on pg.id_menu = mex.id \n" + 
+				"join acl.permissao pm on pm.id = pg.id_permissao \n" + 
+				"join acl.menu_sistema ms on ms.id_menu = me.id \n" + 
+				"join acl.sistema si on si.id = ms.id_sistema \n" + 
+				"join acl.perm_perfil pp on pp.id_permissao = pg.id_permissao \n" + 
+				"join acl.perfil pf on pf.id = pp.id_perfil \n" + 
+				"where me.ativo = true and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' OR me.tipo = 'rotinaInterna') \n" + 
+				"and pf.id = ? order by me.descricao;";
 
 		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setLong(1, idUsuario);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {

@@ -352,6 +352,50 @@ public class RelatoriosController implements Serializable {
 
         }
     }
+    
+    public void geraPtsPendenciasEspecialidades(ProgramaBean programa, GrupoBean grupo)
+            throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+        {
+            String caminho = "/WEB-INF/relatorios/";
+            String relatorio = "";
+            relatorio = caminho + "pts_pendentes_por_especialidade.jasper";
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("codunidade", user_session.getUnidade().getId());
+            if (programa != null)
+                map.put("codprograma", programa.getIdPrograma());
+
+            if (grupo != null)
+                map.put("codgrupo", grupo.getIdGrupo());
+
+
+
+            this.executeReport(relatorio, map, "Pts_Especialidades_Pendentes.pdf");
+
+
+        }
+    }
+    
+    public void geraPtsPacientesFaltando(ProgramaBean programa, GrupoBean grupo)
+            throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+        {
+            String caminho = "/WEB-INF/relatorios/";
+            String relatorio = "";
+            relatorio = caminho + "pts_pacientes_faltando.jasper";
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("codunidade", user_session.getUnidade().getId());
+            if (programa != null)
+                map.put("codprograma", programa.getIdPrograma());
+
+            if (grupo != null)
+                map.put("codgrupo", grupo.getIdGrupo());
+
+
+
+            this.executeReport(relatorio, map, "Pts_Pacientes_Faltando.pdf");
+
+
+        }
+    }    
 
     public void gerarMapaLaudoOrteseProtese() throws IOException, ParseException, ProjetoException {
 

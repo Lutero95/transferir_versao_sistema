@@ -1064,7 +1064,7 @@ public class FuncionarioController implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getId());
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getId().intValue());
 		}
 		return listaMenusTargetEdit;
 	}

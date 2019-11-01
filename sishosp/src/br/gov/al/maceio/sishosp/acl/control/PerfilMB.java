@@ -491,7 +491,7 @@ public class PerfilMB implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(1L);
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(Integer.parseInt(perfilSelecionado));
 		}
 		return listaMenusTargetEdit;
 	}

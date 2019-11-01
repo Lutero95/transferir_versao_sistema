@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts_areas_pendentes" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select distinct  empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,l.codpaciente,pacientes.nome, pi.codprograma,programa.descprograma, grupo.descgrupo, pi.codgrupo
+ from 
+hosp.paciente_instituicao pi
+join hosp.laudo l on l.id_laudo = pi.codlaudo
+join hosp.programa on programa.id_programa = pi.codprograma
+join hosp.grupo on grupo.id_grupo = pi.codgrupo
+join hosp.pacientes on pacientes.id_paciente= l.codpaciente
+join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
+where pi.status='A'  
+and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and not exists (
+select p2.id from hosp.pts p2
+where p2.cod_programa = pi.codprograma and p2.cod_grupo = pi.codgrupo and l.codpaciente = p2.cod_paciente
+and p2.status in ('A', 'R')
+and p2.id=(select max(id) from hosp.pts p22 where pi.codprograma = p22.cod_programa and p22.cod_grupo = pi.codgrupo and l.codpaciente = p22.cod_paciente)
+)
+ order by pi.codprograma, pi.codgrupo, pacientes.nome]]>
+	</queryString>
+	<field name="nomeinstituicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="nome_fantasia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_fantasia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="cnes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="codpaciente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codpaciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="codprograma" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="paciente_instituicao"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="codgrupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="paciente_instituicao"/>
+	</field>
+	<group name="grpprograma">
+		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
+		<groupHeader>
+			<band height="17"/>
+		</groupHeader>
+	</group>
+	<group name="grpgrupo" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<textField>
+					<reportElement x="0" y="0" width="694" height="16" uuid="f2f04e67-7e71-4468-be60-031a87b31e45"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROGRAMA:"+$F{descprograma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="16" width="694" height="16" uuid="b93c2f75-310c-4294-91e1-4259216ca712"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["GRUPO:"+$F{descgrupo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="20" width="802" height="25" uuid="10a38943-9461-4b86-855f-0c3a871f184f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RELATÓRIO PTS - ESPECIALIDADES PENDENTES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="802" height="16" uuid="c063c9bc-f9c7-4d8f-adfe-147e9c8db719"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<textField>
+				<reportElement x="20" y="0" width="782" height="14" uuid="d3f132e6-54b1-4801-bbf2-d74fca735a3a"/>
+				<textElement>
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="642" y="0" width="64" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="706" y="0" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="750" y="0" width="52" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="68" splitType="Stretch"/>
+	</summary>
+</jasperReport>
