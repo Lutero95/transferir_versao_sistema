@@ -412,6 +412,8 @@ public class ConfigAgendaController implements Serializable {
 
     public void validarConfiguracoesAgendaProfissional() throws ProjetoException, SQLException {
         int somatorio = 0;
+        
+        if (!opcaoAtendimento.equals("H")) {
         for (ConfigAgendaParte2Bean conf : listaTipos) {
             somatorio += conf.getQtd();
         }
@@ -422,7 +424,8 @@ public class ConfigAgendaController implements Serializable {
                 return;
             }
         }
-
+        }
+        
         if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())
                 && this.confParte1.getDataEspecifica() == null) {
             JSFUtil.adicionarMensagemErro("Escolha uma data específica!", "Erro");
@@ -487,6 +490,7 @@ public class ConfigAgendaController implements Serializable {
 
     public void validarGravarConfigAgendaEquipe() throws ProjetoException, SQLException {
         int somatorio = 0;
+        if (!opcaoAtendimento.equals("H")) {
         for (ConfigAgendaParte2Bean conf : listaTipos) {
             somatorio += conf.getQtd();
         }
@@ -497,7 +501,7 @@ public class ConfigAgendaController implements Serializable {
                 return;
             }
         }
-
+        }
         if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())
                 && this.confParte1.getDataEspecifica() == null) {
             JSFUtil.adicionarMensagemErro("Escolha uma data específica!", "Erro");

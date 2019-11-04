@@ -199,8 +199,8 @@
 
         </p:dialog>
 
-        <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="500px"
-                  styleClass="topDialog">
+        <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="400px"
+                  dynamic="true" responsive="true" modal="true">
 
             <h:form id="frmPrincipal">
 
@@ -223,7 +223,7 @@
                                     <h:outputLabel value="#{evo.funcionario.nome}"/>
 
                                     <h:outputLabel value="Evolução:"/>
-                                    <h:outputLabel value="#{evo.evolucao}"/>
+                                    <h:outputLabel value="#{evo.evolucao}" escape="false"/>
 
                                     <hr></hr>
                                 </p:panelGrid>

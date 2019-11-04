@@ -122,6 +122,7 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+            atendimento.setStatus("A");
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
     }
@@ -168,9 +169,9 @@ public class AtendimentoController implements Serializable {
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
 
-        boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
+       //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
-        if (verificou) {
+      //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
 
             boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
                     atendimento);
@@ -180,9 +181,9 @@ public class AtendimentoController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
             }
-        } else {
-            JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
-        }
+          //comentado enquanto nao tiver a integracao com o datasus    } else {
+          //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
+          //comentado enquanto nao tiver a integracao com o datasus   }
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
