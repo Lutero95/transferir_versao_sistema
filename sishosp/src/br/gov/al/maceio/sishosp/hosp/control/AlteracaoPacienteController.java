@@ -287,9 +287,8 @@ public class AlteracaoPacienteController implements Serializable {
         Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
         insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
-        ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                listAgendamentoProfissional, insercao.getAgenda().getTurno());
-
+        ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = new ArrayList<InsercaoPacienteBean>();
+        
         if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
@@ -299,6 +298,9 @@ public class AlteracaoPacienteController implements Serializable {
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
             	gerarListaAgendamentosEquipeDiaHorario();
             }
+            
+            listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
+                    listAgendamentoProfissional, insercao.getAgenda().getTurno());
             
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
             	cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,

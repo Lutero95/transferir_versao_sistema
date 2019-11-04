@@ -208,7 +208,7 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(), conexao)) {
+						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
@@ -355,7 +355,7 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(), conexao)) {
+						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
@@ -614,12 +614,12 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public Boolean verificarSeAtendimentoExistePorEquipe(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data,
+	public Boolean verificarSeAtendimentoExistePorEquipe(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data, Integer codPaciente,
 			Connection conAuxiliar) {
 
 		Boolean retorno = false;
 
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ?;";
+		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ? and codpaciente=?;";
 
 		try {
 			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
@@ -628,6 +628,7 @@ public class AlteracaoPacienteDAO {
 			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
 			stm.setInt(3, insercaoPacienteBean.getEquipe().getCodEquipe());
 			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(data));
+			stm.setInt(5, codPaciente);
 
 			ResultSet rs = stm.executeQuery();
 
