@@ -519,7 +519,7 @@
 
 
         <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-                  modal="true" width="900" styleClass="topDialog" height="400">
+                  modal="true" width="900" responsive="true" height="400">
             <h:form id="formConsuLaudo">
                 <p:row>
 
@@ -546,7 +546,7 @@
                     </p:panelGrid>
 
                 </p:row>
-                <p:dataTable rows="8" paginator="true" style="font-size:13px"
+                <p:dataTable rows="6" paginator="true" style="font-size:13px"
                              value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
                              var="insercao" emptyMessage="Nenhum Laudo">
 

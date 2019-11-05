@@ -352,7 +352,7 @@ public class LaudoDAO {
 
 		
 		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and p.matricula = ?";
+			sql = sql + " and upper(p.matricula) = ?";
 		}
 		
 		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {

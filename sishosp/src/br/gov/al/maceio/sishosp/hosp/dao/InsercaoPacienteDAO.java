@@ -31,13 +31,13 @@ public class InsercaoPacienteDAO {
 				+ " select l.id_laudo, l.codpaciente, p.nome, p.cns,p.matricula,  l.data_solicitacao, l.mes_final, l.ano_final, "
 				+ " pr.codproc, pr.nome as procedimento from hosp.laudo l "
 				+ " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
-				+ " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) " + " where 1=1 ";
+				+ " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) " + " where l.ativo is true ";
 		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
 			sql = sql + " and p.nome ilike ?";
 		}
 
 		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and p.matricula = ?";
+			sql = sql + " and upper(p.matricula) = ?";
 		}
 
 		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
@@ -54,7 +54,7 @@ public class InsercaoPacienteDAO {
 		// 'YYYY-MM-DD'))) "
 		// + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac
 		// WHERE pac.codlaudo = l.id_laudo)"
-		sql = sql + " ) a order by ano_final desc, mes_final desc";
+		sql = sql + " ) a order by to_char(ano_final,'9999')|| to_char(mes_final,'99') desc";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -64,7 +64,7 @@ public class InsercaoPacienteDAO {
 
 			if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null))
 					&& (!campoBusca.equals("")))) {
-				stm.setString(1, campoBusca);
+				stm.setString(1, campoBusca.toUpperCase());
 			}
 
 			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
