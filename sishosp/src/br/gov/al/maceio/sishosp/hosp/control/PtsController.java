@@ -76,14 +76,14 @@ public class PtsController implements Serializable {
             } else {
                 this.pts = pDao.ptsCarregarPacientesInstituicao(id);
             }
-            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(idGerenciamentoPaciente);
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesPacienteEmTerapia(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), pts.getPaciente().getId_paciente());
 
         } else {
             existePts = false;
             pts = (Pts) SessionUtil.resgatarDaSessao("pts");
             Date d = new Date();
             pts.setData(d);
-            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesPacienteEmTerapia(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), pts.getPaciente().getId_paciente());
         }
     }
 

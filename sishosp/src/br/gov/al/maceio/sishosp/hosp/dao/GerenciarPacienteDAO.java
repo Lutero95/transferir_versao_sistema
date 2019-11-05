@@ -56,7 +56,7 @@ public class GerenciarPacienteDAO {
 		}
 		
 		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and pa.matricula = ?";
+			sql = sql + " and upper(pa.matricula) = ?";
 		}
 		
 		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
@@ -93,7 +93,7 @@ public class GerenciarPacienteDAO {
 			}
 
 			if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stmt.setString(i, campoBusca);
+				stmt.setString(i, campoBusca.toUpperCase());
 	            i = i+1;
 			}
 			

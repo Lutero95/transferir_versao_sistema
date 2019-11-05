@@ -256,6 +256,47 @@ public class EspecialidadeDAO {
         return lista;
     }
     
+
+    public List<EspecialidadeBean> listarEspecialidadesPacienteEmTerapia(Integer codPrograma, Integer codGrupo, Integer codPaciente)
+            throws ProjetoException {
+
+        List<EspecialidadeBean> lista = new ArrayList<>();
+
+        String sql = "select pi.codprograma, pi.codgrupo,es.id_especialidade, es.descespecialidade from hosp.paciente_instituicao pi\n" + 
+        		"join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
+        		"join hosp.profissional_dia_atendimento pda on pda.id_paciente_instituicao = pi.id\n" + 
+        		"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = pda.id_profissional) \n" + 
+        		"LEFT JOIN hosp.especialidade es ON (es.id_especialidade = f.codespecialidade) \n" + 
+        		"where pi.codprograma=? and pi.codgrupo=? and codpaciente=? and status='A'";
+
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codPrograma);
+            stm.setInt(2, codGrupo);
+            stm.setInt(3, codPaciente);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EspecialidadeBean esp = new EspecialidadeBean();
+                esp.setCodEspecialidade(rs.getInt("id_especialidade"));
+                esp.setDescEspecialidade(rs.getString("descespecialidade"));
+
+                lista.add(esp);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
     
 
 }
