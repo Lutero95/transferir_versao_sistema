@@ -28,15 +28,15 @@ import org.dom4j.io.SAXReader;
  * 
  * <BR>//caso a busca ocorra bem, imprime os resultados.
  * <BR>if (cep.wasSuccessful()) {
- * <BR>&nbsp; &nbsp; //System.out.println("Cep: "+cep.getCep());
- * <BR>&nbsp; &nbsp; //System.out.println("Logradouro: "+cep.getLogradouroFull());
- * <BR>&nbsp; &nbsp; //System.out.println("Bairro: "+cep.getBairro());
- * <BR>&nbsp; &nbsp; //System.out.println("Cidade: "+
+ * <BR>&nbsp; &nbsp; 
+ * <BR>&nbsp; &nbsp; 
+ * <BR>&nbsp; &nbsp; 
+ * <BR>&nbsp; &nbsp; 
  * 			cep.getCidade()+"/"+ cep.cep());
  * <BR>//caso haja problemas imprime o código e msg de erro.
  * <BR>} else {
- * <BR>&nbsp; &nbsp; //System.out.println("Erro número: " + cep.getResulCode());
- * <BR>&nbsp; &nbsp; //System.out.println("Descrição do erro: " + cep.getResultText());
+ * <BR>&nbsp; &nbsp; 
+ * <BR>&nbsp; &nbsp; 
  * <BR>}
  * <BR></tt>
  * <BR>A resposta do console seria:

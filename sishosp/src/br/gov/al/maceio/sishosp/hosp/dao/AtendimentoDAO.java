@@ -229,7 +229,6 @@ public class AtendimentoDAO {
                     stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
                 }
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
-                System.out.println("lista.get(i).getStatus()"+lista.get(i).getStatus());
                 if ((lista.get(i).getStatus()!=null) &&(!lista.get(i).getStatus().equals(""))  )
                 stmt2.setString(5, lista.get(i).getStatus());
                 else

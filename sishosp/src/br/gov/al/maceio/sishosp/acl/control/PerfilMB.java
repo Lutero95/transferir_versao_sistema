@@ -283,7 +283,6 @@ public class PerfilMB implements Serializable {
 	}
 
 	public void onTransferMenuAlt(TransferEvent event) {
-		System.out.println("onTransferMenuAlt");
 		StringBuilder builder = new StringBuilder();
 
 		for (Object item : event.getItems()) {
@@ -375,7 +374,6 @@ public class PerfilMB implements Serializable {
 
 	public List<Perfil> getListaPerfil() throws ProjetoException {
 		if (listaPerfil == null) {
-			System.out.println("lista getListaPerfil");
 			PerfilDAO pdao = new PerfilDAO();
 			listaPerfil = pdao.listarPerfil();
 		}

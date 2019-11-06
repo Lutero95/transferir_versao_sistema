@@ -39,11 +39,6 @@ public class CidDAO {
 		catch (NullPointerException | SQLException sqle ) {
 			sqle.printStackTrace();
         
-		System.out.println(((SQLException) sqle).getErrorCode());
-		System.out.println(sqle.getLocalizedMessage());
-		System.out.println(((SQLException) sqle).getSQLState());
-		System.out.println(sqle.getCause());
-		System.out.println(sqle.getSuppressed());
 		sqle.printStackTrace();
 		 throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState()));
 	}finally

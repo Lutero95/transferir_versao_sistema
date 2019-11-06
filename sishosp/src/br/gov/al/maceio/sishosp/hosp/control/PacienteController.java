@@ -314,7 +314,6 @@ public class PacienteController implements Serializable {
 	}
 
 	public void verificaGrauParentescoResponsavel() throws Exception {
-		System.out.println("verificaGrauParentescoResponsavel");
 		Parentesco parentesco = new Parentesco();
 		// Integer codParentesco= (Integer) event.getObject();
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()

@@ -69,7 +69,6 @@ public class MotivoDesligamentoController implements Serializable {
     }
 
     public ArrayList<MotivoDesligamentoBean> listarMotivos() throws ProjetoException {
-    	System.out.println("motivodesl listarMotivos");
         if (listaMotivos.size()==0)
         	listaMotivos = pDao.listarMotivos();
         return listaMotivos;

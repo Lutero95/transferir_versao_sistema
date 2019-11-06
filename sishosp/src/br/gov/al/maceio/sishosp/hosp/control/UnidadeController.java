@@ -145,7 +145,6 @@ public class UnidadeController implements Serializable {
     public List<UnidadeBean> listarTodasAsUnidades() throws ProjetoException {
         if (listaUnidades.isEmpty()) {
     	listaUnidades =  eDao.listarUnidade();
-        System.out.println("carrega listarTodasAsUnidades");
         }
         return listaUnidades;
     }

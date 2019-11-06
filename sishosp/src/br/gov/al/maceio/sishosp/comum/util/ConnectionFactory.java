@@ -16,10 +16,11 @@ public class ConnectionFactory {
         String nomeBancoAcesso = (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso");
 
         //LOCAL
-
+/*
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
-        String senha = "post";
+        String senha = "engetron";
+  */    
         //String senha = "engetron";
 
         //PRODUÇÃO
@@ -29,21 +30,20 @@ public class ConnectionFactory {
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
 
-    	
-    	/*
+    	*/
+        
         String url = "jdbc:postgresql://node39025-env-8766995.nordeste-idc.saveincloud.net:11511/";
         String usuario = "webadmin";
         String senha = "BVEsvr50661";
 
-    	
+  
+  /*
     	String url = "jdbc:postgresql://10.101.17.65:5432/";
         String usuario = "webadmin";
         String senha = "BVEsvr50661";
 
-    */
-
+ */
         url = url + nomeBancoAcesso;
-        System.out.println("url conexao "+url);
 
         try {
             Class.forName("org.postgresql.Driver");

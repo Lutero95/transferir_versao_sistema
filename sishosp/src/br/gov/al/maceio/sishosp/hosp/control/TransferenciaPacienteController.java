@@ -93,7 +93,6 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
-    	System.out.println("insercao gerarListaAgendamentosEquipe");
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);

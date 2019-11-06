@@ -69,7 +69,6 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void carregaAlteracao() throws ProjetoException, ParseException {
-    	System.out.println("alteracao carregaAlteracao");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -108,7 +107,6 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
-    	System.out.println("insercao gerarListaAgendamentosEquipe");
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
@@ -525,7 +523,6 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void visualizarHorariosEquipe() {
-    	System.out.println("alteracao visualizarHorariosEquipe");
     	listaHorariosEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
          
     }
