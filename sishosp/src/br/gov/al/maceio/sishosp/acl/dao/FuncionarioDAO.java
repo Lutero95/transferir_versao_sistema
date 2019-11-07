@@ -1873,7 +1873,7 @@ public class FuncionarioDAO {
 
             while (rs.next()) {
                 UnidadeBean UnidadeBean = new UnidadeBean();
-                UnidadeBean.setId(rs.getInt("codunidade"));
+                UnidadeBean.setId(rs.getInt("cod_unidade"));
                 UnidadeBean.setNomeUnidade(rs.getString("nome"));                
                 lista.add(UnidadeBean);
 

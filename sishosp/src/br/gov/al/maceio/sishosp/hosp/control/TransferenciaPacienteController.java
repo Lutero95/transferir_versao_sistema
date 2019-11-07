@@ -207,8 +207,6 @@ public class TransferenciaPacienteController implements Serializable {
 
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
-            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                    listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
             GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
             Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
@@ -221,6 +219,10 @@ public class TransferenciaPacienteController implements Serializable {
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
             	gerarListaAgendamentosEquipeDiaHorario();
             }
+
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
+                    listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
             
         	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
                 cadastrou = aDao.gravarTransferenciaEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaHorarioFinal);

@@ -27,11 +27,11 @@
 							<b:label value="Unidade:" severity="info" />
 
 							<b:selectOneMenu class="select-agendaEquipe2"
-								value="#{AtendimentoController.atendimento.empresa.codEmpresa}">
+								value="#{AtendimentoController.atendimento.unidade.id}">
 								<f:selectItems
 									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
-									var="emp" itemLabel="#{emp.nomeFantasia}"
-									itemValue="#{emp.codEmpresa}" />
+									var="und" itemLabel="#{und.nomeUnidade}"
+									itemValue="#{und.id}" />
 								<p:ajax event="change" process="@this" />
 							</b:selectOneMenu>
 
