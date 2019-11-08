@@ -640,7 +640,7 @@ public class LaudoDAO {
 		return lista;
 	}
 
-	public LaudoBean recuperarPeriodosLaudo(Integer codLaudo) throws ProjetoException {
+	public LaudoBean recuperarPeriodoInicioLaudo(Integer codLaudo) throws ProjetoException {
 
 		LaudoBean laudo = new LaudoBean();
 
@@ -655,6 +655,38 @@ public class LaudoDAO {
 			while (rs.next()) {
 				laudo.setMesInicio(rs.getInt("mes_inicio"));
 				laudo.setAnoInicio(rs.getInt("ano_inicio"));
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return laudo;
+	}
+	
+	public LaudoBean recuperarUltimoLaudoPaciente(Integer codPaciente) throws ProjetoException {
+
+		LaudoBean laudo = new LaudoBean();
+
+		String sql = "SELECT mes_final, ano_final FROM hosp.laudo WHERE id_laudo = " + 
+				"(select id_laudo from hosp.laudo l2 where l2.codpaciente=? " + 
+				"order by to_char(ano_final,'9999')||to_char(mes_final,'99') desc limit 1);";
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, codPaciente);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				laudo.setMesInicio(rs.getInt("mes_final"));
+				laudo.setAnoInicio(rs.getInt("ano_final"));
 			}
 
 		} catch (Exception ex) {

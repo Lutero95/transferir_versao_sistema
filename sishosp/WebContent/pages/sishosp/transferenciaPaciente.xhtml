@@ -142,7 +142,7 @@
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="equipe" value="Equipe Atual:" id="equipeAtual" class="fire-label"
-                                             rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
+                                             severity="info"/>
 
                                     <p:outputLabel class="fire-label" style="margin-top: 5px;"
                                             value="#{TransferenciaPacienteController.insercao.equipeAtual.descEquipe}"></p:outputLabel>
@@ -220,7 +220,7 @@
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
-                                             rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
+                                              severity="info"/>
 
                                     <p:autoComplete
                                             value="#{TransferenciaPacienteController.insercao.equipe}"
@@ -396,13 +396,6 @@
                             <b:column span="3" class="label-position">
                                 <b:label value="Horário:" severity="info" class="fire-label"/>
 
-                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                 requiredMessage="Horário: Campo obrigatório!"
-                                                 value="#{TransferenciaPacienteController.insercao.agenda.horario}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                    <f:selectItems
-                                            value="#{InsercaoController.listaHorarios}"/>
-                                </b:selectOneMenu>
                             </b:column>
                         </p:outputPanel>
                     </b:row>

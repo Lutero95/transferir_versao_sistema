@@ -15,10 +15,11 @@ public class InsercaoPacienteBean implements Serializable {
     private GrupoBean grupo;
     private ProgramaBean programa;
     private EquipeBean equipe;
-    
+    private boolean insercaoPacienteSemLaudo;
     private GrupoBean grupoAtual;
     private ProgramaBean programaAtual;
     private EquipeBean equipeAtual;
+    private PacienteBean paciente;
     
     private String observacao;
     private FuncionarioBean funcionario;
@@ -41,6 +42,7 @@ public class InsercaoPacienteBean implements Serializable {
         agenda = new AgendaBean();
         horarioAtendimento = new HorarioAtendimento();
         listaHorarioAtendimento = new ArrayList<>();
+        paciente = new PacienteBean();
     }
 
     public LaudoBean getLaudo() {
@@ -170,5 +172,21 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setEquipeAtual(EquipeBean equipeAtual) {
 		this.equipeAtual = equipeAtual;
+	}
+
+	public boolean isInsercaoPacienteSemLaudo() {
+		return insercaoPacienteSemLaudo;
+	}
+
+	public void setInsercaoPacienteSemLaudo(boolean insercaoPacienteSemLaudo) {
+		this.insercaoPacienteSemLaudo = insercaoPacienteSemLaudo;
+	}
+
+	public PacienteBean getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(PacienteBean paciente) {
+		this.paciente = paciente;
 	}
 }

@@ -111,7 +111,7 @@ public class RenovacaoPacienteController implements Serializable {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
         Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
@@ -163,7 +163,7 @@ public class RenovacaoPacienteController implements Serializable {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
         Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
@@ -336,7 +336,7 @@ public class RenovacaoPacienteController implements Serializable {
             Boolean cadastrou = null;
 
             GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
+            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
             insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
