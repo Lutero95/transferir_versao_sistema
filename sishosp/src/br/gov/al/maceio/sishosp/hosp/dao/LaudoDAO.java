@@ -670,23 +670,31 @@ public class LaudoDAO {
 		return laudo;
 	}
 	
-	public LaudoBean recuperarUltimoLaudoPaciente(Integer codPaciente) throws ProjetoException {
+	public LaudoBean recuperarUltimoLaudoPaciente(Integer codPaciente, Integer codPrograma, Integer codGrupo) throws ProjetoException {
 
 		LaudoBean laudo = new LaudoBean();
 
-		String sql = "SELECT mes_final, ano_final FROM hosp.laudo WHERE id_laudo = " + 
-				"(select id_laudo from hosp.laudo l2 where l2.codpaciente=? " + 
-				"order by to_char(ano_final,'9999')||to_char(mes_final,'99') desc limit 1);";
+		String sql = "select mes_final, ano_final \n" + 
+				"from hosp.paciente_instituicao pi\n" + 
+				" join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
+				" where codpaciente=? and pi.codprograma=? and pi.codgrupo=? and pi.id= (select max(id) from hosp.paciente_instituicao pi2\n" + 
+				" join hosp.laudo l2 on l2.id_laudo = pi2.codlaudo\n" + 
+				" where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? )";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
+			stm.setInt(2, codPrograma);
+			stm.setInt(3, codGrupo);
+			stm.setInt(4, codPaciente);
+			stm.setInt(5, codPrograma);
+			stm.setInt(6, codGrupo);			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				laudo.setMesInicio(rs.getInt("mes_final"));
-				laudo.setAnoInicio(rs.getInt("ano_final"));
+				laudo.setMesFinal(rs.getInt("mes_final"));
+				laudo.setAnoFinal(rs.getInt("ano_final"));
 			}
 
 		} catch (Exception ex) {

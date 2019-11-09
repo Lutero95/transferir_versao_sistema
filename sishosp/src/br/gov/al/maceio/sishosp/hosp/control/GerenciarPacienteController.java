@@ -161,7 +161,7 @@ public class GerenciarPacienteController implements Serializable {
 
 	}
 
-	public Date ajustarDataDeSolicitacao(Date dataSolicitacao, Integer codLaudo, Integer codPaciente) throws ProjetoException {
+	public Date ajustarDataDeSolicitacao(Date dataSolicitacao, Integer codLaudo, Integer codPaciente, Integer codPrograma, Integer codGrupo) throws ProjetoException {
 		//Caso nao venha o codigo do laudo é porque a renovacao será sem laudo, logo devera buscar o periodo da agenda pelo ultimo laudo do paciente
 		LaudoDAO laudoDAO = new LaudoDAO();
 		Date dataInicioLaudo = null;
@@ -169,10 +169,10 @@ public class GerenciarPacienteController implements Serializable {
 			LaudoBean laudoBean = laudoDAO.recuperarPeriodoInicioLaudo(codLaudo);
 			dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesInicio(), laudoBean.getAnoInicio());
 		} else {
-			LaudoBean laudoBean = laudoDAO.recuperarUltimoLaudoPaciente(codPaciente);
+			LaudoBean laudoBean = laudoDAO.recuperarUltimoLaudoPaciente(codPaciente, codPrograma, codGrupo);
 			dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesFinal(), laudoBean.getAnoFinal());
 			LocalDate dataAtual = LocalDate.now();
-			dataAtual =  LocalDate.now().withMonth(laudoBean.getMesFinal()).withYear(laudoBean.getAnoFinal()).withMonth(1);
+			dataAtual =  LocalDate.now().withDayOfMonth(1).withMonth(laudoBean.getMesFinal()).withYear(laudoBean.getAnoFinal()).plusMonths(1);
 			dataInicioLaudo = Date.from(dataAtual.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		}
 		if ((dataSolicitacao.after(dataInicioLaudo))) {// || (dataSolicitacao.equals(dataInicioLaudo))){

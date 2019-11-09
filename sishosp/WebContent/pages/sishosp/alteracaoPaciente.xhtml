@@ -21,13 +21,33 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
-
-                    <b:row>
+               
+                    <b:row rendered="#{AlteracaoPacienteController.insercao.paciente.id_paciente!=null}">
 
                         <b:column span="2" class="label-position inserPacient">
                             <b:label value="Paciente:" severity="info"/>
 
+                            <h:outputLabel 
+                                    value="#{AlteracaoPacienteController.insercao.paciente.nome}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient" rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+                            <b:label value="Procedimento:" severity="info"/>
+
                             <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                    </b:row>                
+
+                    <b:row rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Paciente:" severity="info"/>
+
+                            <h:outputLabel rendered=""
                                     value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
                                     class="campo-laudoDig3"/>
                         </b:column>
@@ -42,9 +62,9 @@
 
                     </b:row>
 
-                    <b:row>
+                    <b:row rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
 
-                        <b:column span="2" class="label-position inserPacient">
+                        <b:column span="2" class="label-position inserPacient" >
                             <b:label value="CID:" severity="info"/>
 
                             <h:outputLabel

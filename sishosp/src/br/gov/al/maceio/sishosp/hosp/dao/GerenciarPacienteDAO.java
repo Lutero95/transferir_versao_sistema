@@ -30,11 +30,12 @@ public class GerenciarPacienteDAO {
 
         String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
-                + "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal "
+                + "coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))),\n" + 
+                " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.pacientes pa on (l.codpaciente = pa.id_paciente) "
+                + " left join hosp.pacientes pa on (coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
@@ -154,12 +155,12 @@ public class GerenciarPacienteDAO {
 
         
         String sql = "update hosp.paciente_instituicao set status = ? "
-                + " where codlaudo = ?";
+                + " where id = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getLaudo().getPaciente().getId_paciente(), conexao, false)){
+                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getId(), conexao, false)){
 
                         conexao.close();
 
@@ -169,7 +170,7 @@ public class GerenciarPacienteDAO {
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
             stmt.setString(1, DESLIGADO);
-            stmt.setInt(2, gerenciarRow.getLaudo().getId());
+            stmt.setInt(2, gerenciarRow.getId());
             stmt.executeUpdate();
 
             String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao, id_funcionario_gravacao, data_desligamento) "

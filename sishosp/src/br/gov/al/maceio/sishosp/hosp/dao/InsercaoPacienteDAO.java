@@ -589,6 +589,51 @@ public class InsercaoPacienteDAO {
 		}
 		return data;
 	}
+	
+	public Date dataFinalPacienteSemLaudo(InsercaoPacienteBean insercao, Integer codPaciente) throws ProjetoException {
+
+		Date data = null;
+
+		String sql = "select (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) " + 
+				" + INTERVAL '1 DAYS' as datafinal " + 
+				" from hosp.paciente_instituicao pi " + 
+				" join hosp.laudo l on l.id_laudo = pi.codlaudo " + 
+				" where codpaciente=? and pi.codprograma=? and pi.codgrupo=? " + 
+				" and pi.id= (select max(id) from hosp.paciente_instituicao pi2 " + 
+				" join hosp.laudo l2 on l2.id_laudo = pi2.codlaudo " + 
+				"where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? )" ;
+
+		try {
+			con = ConnectionFactory.getConnection();
+
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, codPaciente);
+			stm.setInt(2, insercao.getPrograma().getIdPrograma());
+			stm.setInt(3, insercao.getGrupo().getIdGrupo());
+			stm.setInt(4, codPaciente);
+			stm.setInt(5, insercao.getPrograma().getIdPrograma());
+			stm.setInt(6, insercao.getGrupo().getIdGrupo());
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				data = rs.getDate("datafinal");
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return data;
+	}
+	
 
 	public Boolean verificarSeLaudoConstaNoAtendimento(int codLaudo) throws ProjetoException {
 

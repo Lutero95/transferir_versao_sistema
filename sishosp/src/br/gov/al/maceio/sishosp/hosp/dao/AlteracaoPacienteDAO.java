@@ -28,8 +28,10 @@ public class AlteracaoPacienteDAO {
 		final Integer limitadorHorarioParaStringInicio = 0;
 		final Integer limitadorHorarioParaStringFinal = 5;
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente, "
-				+ " pi.codequipe, e.descequipe, a.turno, a.horario, a.situacao, l.mes_final, l.ano_final,  "
+		String sql = "select distinct pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, "
+				+ " pi.codequipe, e.descequipe, a.turno, a.horario, a.situacao,   "
+				+ "  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n"
+				+ " coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n"
 				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
 				+ " from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
@@ -38,7 +40,9 @@ public class AlteracaoPacienteDAO {
 				+ " left join hosp.atendimentos a on (a.id_paciente_instituicao = pi.id) "
 				+ " left join hosp.tipoatendimento t on (a.codtipoatendimento = t.id) "
 				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) "
-				+ " LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) " + " where pi.id = ?";
+				+ " LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) "
+				+ " LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) "
+				+ " where pi.id = ?";
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
@@ -58,8 +62,16 @@ public class AlteracaoPacienteDAO {
 				ip.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
-				ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				if ((rs.getString("codpaciente_laudo"))!=null) {
+					ip.getLaudo().setId(rs.getInt("codlaudo"));
+					ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
+					ip.getLaudo().getPaciente().setNome(rs.getString("nome"));
+				} else
+				{
+					ip.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
+					ip.getPaciente().setNome(rs.getString("nome"));	
+				}
+					ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
@@ -71,7 +83,7 @@ public class AlteracaoPacienteDAO {
 					ip.getAgenda().setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"),
 							limitadorHorarioParaStringInicio, limitadorHorarioParaStringFinal));
 				ip.getAgenda().setSituacao(rs.getString("situacao"));
-				ip.getLaudo().setId(rs.getInt("codlaudo"));
+				
 				ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 				ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
 				ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
@@ -167,7 +179,7 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
+	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao, 
 			List<InsercaoPacienteBean> listAgendamentoProfissional, Integer id_paciente,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
@@ -204,13 +216,21 @@ public class AlteracaoPacienteDAO {
 
 			PreparedStatement ps7 = null;
 			ps7 = conexao.prepareStatement(sql7);
+			
+	    	Integer codPaciente = null;
+	    	if ((insercao.getLaudo() != null) && (insercao.getLaudo().getId() != null)) 
+	    			codPaciente = insercao.getLaudo().getPaciente().getId_paciente();
+	    	
+	    	if  ((insercao.getPaciente() != null) && (insercao.getPaciente().getId_paciente() != null))
+	    		codPaciente = insercao.getPaciente().getId_paciente();
 
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
+						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),
+						codPaciente, conexao)) {
 
-					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+					ps7.setInt(1, codPaciente);
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
 							listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()));
@@ -314,9 +334,9 @@ public class AlteracaoPacienteDAO {
 		return retorno;
 	}
 
-	public boolean gravarAlteracaoEquipeDiaHorario(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			List<InsercaoPacienteBean> listAgendamentoProfissional, Integer id_paciente,
-			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
+	public boolean gravarAlteracaoEquipeDiaHorario(InsercaoPacienteBean insercao,
+			InsercaoPacienteBean insercaoParaLaudo, List<InsercaoPacienteBean> listAgendamentoProfissional,
+			Integer id_paciente, List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -355,7 +375,8 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
+						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),
+						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
@@ -614,8 +635,8 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public Boolean verificarSeAtendimentoExistePorEquipe(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data, Integer codPaciente,
-			Connection conAuxiliar) {
+	public Boolean verificarSeAtendimentoExistePorEquipe(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data,
+			Integer codPaciente, Connection conAuxiliar) {
 
 		Boolean retorno = false;
 

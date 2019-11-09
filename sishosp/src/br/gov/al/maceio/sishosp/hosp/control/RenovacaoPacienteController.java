@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.faces.bean.ManagedBean;
@@ -65,6 +66,16 @@ public class RenovacaoPacienteController implements Serializable {
         listaHorariosAgenda =  new ArrayList<AgendaBean>();
     }
 
+    public void setaRenovacaoPacienteComOuSemLaudo() {
+    	if (insercaoParaLaudo.isInsercaoPacienteSemLaudo()==true) {
+    		insercaoParaLaudo.setPaciente(insercao.getLaudo().getPaciente());
+    	}
+    	else
+    	{
+    		insercaoParaLaudo.setPaciente(null);
+    	}
+    }
+    
     public void carregaRenovacao() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
@@ -107,13 +118,29 @@ public class RenovacaoPacienteController implements Serializable {
     }
     
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
-
+    	Integer codPaciente = null;
+    	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+    			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+    	
+    	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
+    		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), codPaciente, insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
-        Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
+        Date d2 =null;
+        if ((insercaoParaLaudo.getLaudo().getId()!=null) && (insercaoParaLaudo.getLaudo().getId()!=0))
+         d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
+        else
+        {
+             Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
+             Calendar cal = Calendar.getInstance();
+             cal.setTime(dataFinalSemLaudo);
+             cal.add(Calendar.MONTH, 2);
+             cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+             d2 = cal.getTime();
+        }
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
@@ -159,11 +186,16 @@ public class RenovacaoPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
-
+    	Integer codPaciente = null;
+    	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+    			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+    	
+    	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
+    		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), codPaciente, insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
@@ -328,15 +360,20 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void gravarRenovacaoPaciente() throws ProjetoException {
 
-        if (insercaoParaLaudo.getLaudo().getId() != null) {
-
+        if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
+        	Integer codPaciente = null;
+        	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+        			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+        	
+        	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
+        		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
 
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
             Boolean cadastrou = null;
 
             GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercaoParaLaudo.getPaciente().getId_paciente());
+            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(),codPaciente, insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
             insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
@@ -373,7 +410,7 @@ public class RenovacaoPacienteController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
         } else {
-            JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo primeiro!", "Bloqueio");
+            JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo ou selecione um Paciente!", "Bloqueio");
         }
     }
 
