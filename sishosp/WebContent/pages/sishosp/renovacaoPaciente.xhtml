@@ -126,7 +126,7 @@
 
 						<b:column span="2" class="label-position data-size">
 
-							<b:label value="Data de Solicitação:" id="datasoli"
+							<b:label value="Data de Renovação:" id="datasoli"
 								severity="info" class="fire-label" />
 
 							<p:calendar
@@ -409,7 +409,7 @@
 
 								<b:selectOneMenu class="select-agendaEquipe2" required="true"
 									requiredMessage="Horário: Campo obrigatório!"
-									value="#{RenovarPacienteController.insercao.agenda.horario}">
+									value="#{RenovarPacienteController.insercao.horario}">
 									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
 									<f:selectItems value="#{InsercaoController.listaHorarios}" />
 								</b:selectOneMenu>
@@ -425,7 +425,7 @@
 								<b:label value="Turno:" severity="info" class="fire-label" />
 
 								<b:selectOneMenu class="select-agendaEquipe2"
-									value="#{RenovarPacienteController.insercao.agenda.turno}">
+									value="#{RenovarPacienteController.insercao.turno}">
 									<f:selectItem itemLabel="Manhã" itemValue="M" />
 									<f:selectItem itemLabel="Tarde" itemValue="T" />
 								</b:selectOneMenu>

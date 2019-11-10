@@ -28,17 +28,15 @@ public class AlteracaoPacienteDAO {
 		final Integer limitadorHorarioParaStringInicio = 0;
 		final Integer limitadorHorarioParaStringFinal = 5;
 
-		String sql = "select distinct pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, "
-				+ " pi.codequipe, e.descequipe, a.turno, a.horario, a.situacao,   "
+		String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, "
+				+ " pi.codequipe, e.descequipe, pi.turno, pi.horario, "
 				+ "  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n"
 				+ " coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n"
-				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
+				+ " pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao "
 				+ " from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
 				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
 				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
-				+ " left join hosp.atendimentos a on (a.id_paciente_instituicao = pi.id) "
-				+ " left join hosp.tipoatendimento t on (a.codtipoatendimento = t.id) "
 				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) "
 				+ " LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) "
 				+ " LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) "
@@ -76,14 +74,11 @@ public class AlteracaoPacienteDAO {
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
-				ip.getAgenda().getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
-				ip.getAgenda().getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
-				ip.getAgenda().setTurno(rs.getString("turno"));
+				ip.setTurno(rs.getString("turno"));
 				if (user_session.getUnidade().getParametro().getOpcaoAtendimento().equals("H"))
-					ip.getAgenda().setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"),
+					ip.setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"),
 							limitadorHorarioParaStringInicio, limitadorHorarioParaStringFinal));
-				ip.getAgenda().setSituacao(rs.getString("situacao"));
-				
+			
 				ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 				ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
 				ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
@@ -180,7 +175,7 @@ public class AlteracaoPacienteDAO {
 	}
 
 	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao, 
-			List<InsercaoPacienteBean> listAgendamentoProfissional, Integer id_paciente,
+			List<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		Boolean retorno = false;
@@ -196,6 +191,18 @@ public class AlteracaoPacienteDAO {
 
 				return retorno;
 			}
+			
+			 
+	        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, turno=? "
+	                + " where id = ?";
+	        
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+            stmt.setString(2, insercao.getObservacao());
+            stmt.setString(3, insercao.getTurno());
+            stmt.setInt(4, insercao.getId());
+            stmt.executeUpdate();
 
 			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
 			PreparedStatement ps6 = null;
@@ -227,17 +234,17 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),
+						listAgendamentoProfissional.get(i).getDataMarcacao(),
 						codPaciente, conexao)) {
 
 					ps7.setInt(1, codPaciente);
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
-							listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()));
+							listAgendamentoProfissional.get(i).getDataMarcacao()));
 					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-					if (insercao.getAgenda().getTurno() != null) {
-						ps7.setString(5, insercao.getAgenda().getTurno());
+					if (insercao.getTurno() != null) {
+						ps7.setString(5, insercao.getTurno());
 					} else {
 						ps7.setNull(5, Types.NULL);
 					}
@@ -246,8 +253,8 @@ public class AlteracaoPacienteDAO {
 					ps7.setInt(7, id_paciente);
 					ps7.setInt(8, user_session.getUnidade().getId());
 
-					if (insercao.getAgenda().getHorario() != null) {
-						ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+					if (insercao.getHorario() != null) {
+						ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 					} else {
 						ps7.setNull(9, Types.NULL);
 					}
@@ -284,7 +291,7 @@ public class AlteracaoPacienteDAO {
 						for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) == Integer
+									listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
 											.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -335,7 +342,7 @@ public class AlteracaoPacienteDAO {
 	}
 
 	public boolean gravarAlteracaoEquipeDiaHorario(InsercaoPacienteBean insercao,
-			InsercaoPacienteBean insercaoParaLaudo, List<InsercaoPacienteBean> listAgendamentoProfissional,
+			InsercaoPacienteBean insercaoParaLaudo, List<AgendaBean> listAgendamentoProfissional,
 			Integer id_paciente, List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		Boolean retorno = false;
@@ -375,17 +382,17 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao(),
+						listAgendamentoProfissional.get(i).getDataMarcacao(),
 						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
-							listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()));
+							listAgendamentoProfissional.get(i).getDataMarcacao()));
 					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-					if (insercao.getAgenda().getTurno() != null) {
-						ps7.setString(5, insercao.getAgenda().getTurno());
+					if (insercao.getTurno() != null) {
+						ps7.setString(5, insercao.getTurno());
 					} else {
 						ps7.setNull(5, Types.NULL);
 					}
@@ -394,8 +401,8 @@ public class AlteracaoPacienteDAO {
 					ps7.setInt(7, id_paciente);
 					ps7.setInt(8, user_session.getUnidade().getId());
 
-					if (insercao.getAgenda().getHorario() != null) {
-						ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+					if (insercao.getHorario() != null) {
+						ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 					} else {
 						ps7.setNull(9, Types.NULL);
 					}
@@ -432,7 +439,7 @@ public class AlteracaoPacienteDAO {
 						for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) == Integer
+									listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
 											.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -483,7 +490,7 @@ public class AlteracaoPacienteDAO {
 	}
 
 	public boolean gravarAlteracaoProfissional(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			ArrayList<InsercaoPacienteBean> listaAgendamento, Integer id_paciente) throws ProjetoException {
+			ArrayList<AgendaBean> listaAgendamento, Integer id_paciente) throws ProjetoException {
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -538,8 +545,6 @@ public class AlteracaoPacienteDAO {
 
 			}
 
-			if (!verificarSeAtendimentoExistePorProfissional(insercao, conexao)) {
-
 				String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
 						+ "observacao, ativo, id_paciente_instituicao, cod_unidade)"
 						+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
@@ -551,9 +556,9 @@ public class AlteracaoPacienteDAO {
 
 					ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps6.setLong(2, insercao.getFuncionario().getId());
-					ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i).getAgenda().getDataMarcacao().getTime()));
+					ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
 					ps6.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
-					ps6.setString(5, insercao.getAgenda().getTurno());
+					ps6.setString(5, insercao.getTurno());
 					ps6.setString(6, insercao.getObservacao());
 					ps6.setInt(7, id_paciente);
 					ps6.setInt(8, user_session.getUnidade().getId());
@@ -578,7 +583,7 @@ public class AlteracaoPacienteDAO {
 					ps7.executeUpdate();
 
 				}
-			}
+
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
@@ -669,7 +674,7 @@ public class AlteracaoPacienteDAO {
 		return retorno;
 	}
 
-	public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean,
+	public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean, Date dataMarcacao,
 			Connection conAuxiliar) {
 
 		Boolean retorno = false;
@@ -682,7 +687,7 @@ public class AlteracaoPacienteDAO {
 			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
 			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
 			stm.setLong(3, insercaoPacienteBean.getFuncionario().getId());
-			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(insercaoPacienteBean.getAgenda().getDataMarcacao()));
+			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataMarcacao));
 
 			ResultSet rs = stm.executeQuery();
 

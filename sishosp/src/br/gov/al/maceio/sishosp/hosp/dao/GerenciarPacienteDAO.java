@@ -207,13 +207,13 @@ public class GerenciarPacienteDAO {
         Boolean retorno = false;
 
         String sql = "update hosp.paciente_instituicao set status = 'D', cod_equipamento = ? "
-                + " where codlaudo = ?";
+                + " where id = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
             stmt.setInt(1, gerenciar.getLaudo().getProcedimentoPrimario().getEquipamento().getId_equipamento());
-            stmt.setInt(2, row.getLaudo().getId());
+            stmt.setInt(2, row.getId());
             stmt.executeUpdate();
 
             String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao,id_funcionario_gravacao) "

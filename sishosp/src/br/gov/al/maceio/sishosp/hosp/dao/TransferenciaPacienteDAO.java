@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -61,10 +62,7 @@ public class TransferenciaPacienteDAO {
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
-				ip.getAgenda().getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
-				ip.getAgenda().getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
-				ip.getAgenda().setTurno(rs.getString("turno"));
-				ip.getAgenda().setSituacao(rs.getString("situacao"));
+				ip.setTurno(rs.getString("turno"));
 				ip.getLaudo().setId(rs.getInt("codlaudo"));
 
 			}
@@ -142,7 +140,7 @@ public class TransferenciaPacienteDAO {
 	
 	
 	public boolean gravarTransferenciaEquipeDiaHorario(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			List<InsercaoPacienteBean> listaAgendamento, Integer id_paciente,
+			List<AgendaBean> listaAgendamento, Integer id_paciente,
 			List<HorarioAtendimento> listaHorarioFinal) throws ProjetoException {
 
 		Boolean retorno = false;
@@ -257,11 +255,11 @@ public class TransferenciaPacienteDAO {
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps9.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps9.setDate(2, new Date(listaAgendamento.get(i).getAgenda().getDataMarcacao().getTime()));
+				ps9.setDate(2, new Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
 				ps9.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (insercao.getAgenda().getTurno() != null) {
-					ps9.setString(4, insercao.getAgenda().getTurno());
+				if (insercao.getTurno() != null) {
+					ps9.setString(4, insercao.getTurno());
 				} else {
 					ps9.setNull(4, Types.NULL);
 				}
@@ -270,8 +268,8 @@ public class TransferenciaPacienteDAO {
 				ps9.setInt(6, idPacienteInstituicaoNovo);
 				ps9.setInt(7, user_session.getUnidade().getId());
 
-				if (insercao.getAgenda().getHorario() != null) {
-					ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				if (insercao.getHorario() != null) {
+					ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 				} else {
 					ps9.setNull(8, Types.NULL);
 				}
@@ -294,7 +292,7 @@ public class TransferenciaPacienteDAO {
 				for (int h = 0; h < listaHorarioFinal.size(); h++) {
 					for (int l = 0; l < listaHorarioFinal.get(h).getListaFuncionarios().size(); l++) {
 
-						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda()
+						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataMarcacao()) == listaHorarioFinal.get(h).getDiaSemana()) {
 
 							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -341,7 +339,7 @@ public class TransferenciaPacienteDAO {
 	}
 
 	public boolean gravarTransferenciaEquipeTurno(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			List<InsercaoPacienteBean> listAgendamentoProfissional, Integer id_paciente,
+			List<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		Boolean retorno = false;
@@ -411,8 +409,8 @@ public class TransferenciaPacienteDAO {
 
 			ps6.executeUpdate();
 
-			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-					+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, turno) "
+					+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp, ?) RETURNING id;";
 
 			ps = conexao.prepareStatement(sql7);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
@@ -423,6 +421,7 @@ public class TransferenciaPacienteDAO {
 			ps.setString(6, insercao.getObservacao());
 			ps.setInt(7, user_session.getUnidade().getId());
 			ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+			ps.setString(9, insercao.getTurno());
 
 			rs = ps.executeQuery();
 			int idPacienteInstituicaoNovo = 0;
@@ -453,11 +452,11 @@ public class TransferenciaPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				ps9.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao().getTime()));
+				ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getDataMarcacao().getTime()));
 				ps9.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (insercao.getAgenda().getTurno() != null) {
-					ps9.setString(4, insercao.getAgenda().getTurno());
+				if (insercao.getTurno() != null) {
+					ps9.setString(4, insercao.getTurno());
 				} else {
 					ps9.setNull(4, Types.NULL);
 				}
@@ -466,8 +465,8 @@ public class TransferenciaPacienteDAO {
 				ps9.setInt(6, idPacienteInstituicaoNovo);
 				ps9.setInt(7, user_session.getUnidade().getId());
 
-				if (insercao.getAgenda().getHorario() != null) {
-					ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				if (insercao.getHorario() != null) {
+					ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 				} else {
 					ps9.setNull(8, Types.NULL);
 				}
@@ -492,7 +491,7 @@ public class TransferenciaPacienteDAO {
 					for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
 
 						if (DataUtil.extrairDiaDeData(
-								listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) == Integer
+								listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
 										.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
 							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";

@@ -61,7 +61,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private List<GrupoBean> listaGruposProgramas;
     private String tipo;
     private FuncionarioBean funcionario;
-    private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
+    private ArrayList<AgendaBean> listAgendamentoProfissional;
     private List<EquipeBean> listaEquipePorGrupo;
     private String opcaoAtendimento;
     private ArrayList<String> listaHorarios;
@@ -86,7 +86,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.tipo = TipoAtendimento.EQUIPE.getSigla();
         funcionario = new FuncionarioBean();
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
-        listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
+        listAgendamentoProfissional = new ArrayList<AgendaBean>();
         listaGruposProgramas = new ArrayList<GrupoBean>();
         listaHorarios = new ArrayList<>();
         todosOsProfissionais = false;
@@ -567,14 +567,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     if (diaSemana == Integer.parseInt(insercao.getFuncionario()
                             .getListDiasSemana().get(j))) {
 
-                        InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                        AgendaBean agenda = new AgendaBean();
 
-                        ins.getAgenda().setPaciente(
+                        agenda.setPaciente(
                                 insercao.getLaudo().getPaciente());
 
-                        ins.getAgenda().setDataMarcacao(c.getTime());
+                        agenda.setDataMarcacao(c.getTime());
 
-                        listAgendamentoProfissional.add(ins);
+                        listAgendamentoProfissional.add(agenda);
 
                     }
                 }
@@ -613,16 +613,16 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListDiasSemana().size(); h++) {
                         if (!listaDatasDeAtendimento.contains(c.getTime())) {
                             if (diaSemana == Integer.parseInt(listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h))) {
-                                InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                                AgendaBean agenda = new AgendaBean();
 
-                                ins.getAgenda().setPaciente(
+                                agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                ins.getAgenda().setDataMarcacao(c.getTime());
+                                agenda.setDataMarcacao(c.getTime());
 
-                                ins.getAgenda().setProfissional(listaProfissionaisAdicionados.get(j));
+                                agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
-                                listAgendamentoProfissional.add(ins);
+                                listAgendamentoProfissional.add(agenda);
                                 listaDatasDeAtendimento.add(c.getTime());
 
                             }
@@ -665,14 +665,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     if (!listaDatasDeAtendimento.contains(c.getTime())) {
                         if (diaSemana == listaDias.get(h)) {
 
-                            InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                            AgendaBean agenda = new AgendaBean();
 
-                            ins.getAgenda().setPaciente(
+                            agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            ins.getAgenda().setDataMarcacao(c.getTime());
+                            agenda.setDataMarcacao(c.getTime());
 
-                            listAgendamentoProfissional.add(ins);
+                            listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
 
                         }
@@ -714,11 +714,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
-    public ArrayList<InsercaoPacienteBean> validarDatas(ArrayList<InsercaoPacienteBean> listaAgendamentos, String turno) throws ProjetoException {
-        ArrayList<InsercaoPacienteBean> listaAgendamentosAux = new ArrayList<>();
+    public ArrayList<AgendaBean> validarDatas(ArrayList<AgendaBean> listaAgendamentos, String turno) throws ProjetoException {
+        ArrayList<AgendaBean> listaAgendamentosAux = new ArrayList<>();
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-            if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getAgenda().getDataMarcacao())) {
+            if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getDataMarcacao())) {
                 listaAgendamentosAux.add(listaAgendamentos.get(i));
             }
             //else if (verificarSeTemBloqueioData(listaAgendamentos.get(i), turno)) {
@@ -742,6 +742,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         return retorno;
     }
 
+    /*
     public Boolean verificarSeTemBloqueioData(InsercaoPacienteBean insercaoBean, String turno) throws ProjetoException {
         Boolean retorno = false;
 
@@ -749,7 +750,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 (insercaoBean.getAgenda().getProfissional().getId(), insercaoBean.getAgenda().getDataMarcacao(), turno);
 
         return retorno;
-    }
+    } */
 
     public void gravarInsercaoPaciente() throws ProjetoException {
     	        if (insercao.getLaudo().getId() != null) {
@@ -765,7 +766,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
             
 
-            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 

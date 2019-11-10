@@ -160,7 +160,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoEquipeTurno(InsercaoPacienteBean insercao, List<FuncionarioBean> lista,
-			ArrayList<InsercaoPacienteBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao)
+			ArrayList<AgendaBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao)
 			throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -171,8 +171,8 @@ public class InsercaoPacienteDAO {
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-				+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, turno) "
+				+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp, ?) RETURNING id;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -184,6 +184,7 @@ public class InsercaoPacienteDAO {
 			ps.setString(6, insercao.getObservacao());
 			ps.setInt(7, user_session.getUnidade().getId());
 			ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+			ps.setString(9, insercao.getTurno());
 			ResultSet rs = ps.executeQuery();
 			int id = 0;
 			if (rs.next()) {
@@ -214,11 +215,11 @@ public class InsercaoPacienteDAO {
 				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
 				ps3.setLong(2, insercao.getEquipe().getCodEquipe());
 				ps3.setDate(3,
-						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getAgenda().getDataMarcacao()));
+						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataMarcacao()));
 				ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (insercao.getAgenda().getTurno() != null) {
-					ps3.setString(5, insercao.getAgenda().getTurno());
+				if (insercao.getTurno() != null) {
+					ps3.setString(5, insercao.getTurno());
 				} else {
 					ps3.setNull(5, Types.NULL);
 				}
@@ -227,8 +228,8 @@ public class InsercaoPacienteDAO {
 				ps3.setInt(7, id);
 				ps3.setInt(8, user_session.getUnidade().getId());
 
-				if (insercao.getAgenda().getHorario() != null) {
-					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				if (insercao.getHorario() != null) {
+					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 				} else {
 					ps3.setNull(9, Types.NULL);
 				}
@@ -253,7 +254,7 @@ public class InsercaoPacienteDAO {
 
 					for (int h = 0; h < lista.get(j).getListDiasSemana().size(); h++) {
 
-						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda().getDataMarcacao()) == Integer
+						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataMarcacao()) == Integer
 								.parseInt(lista.get(j).getListDiasSemana().get(h))) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -305,7 +306,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoEquipeDiaHorario(InsercaoPacienteBean insercao,
-			ArrayList<InsercaoPacienteBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao,
+			ArrayList<AgendaBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao,
 			List<HorarioAtendimento> listaHorarioFinal) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -359,11 +360,11 @@ public class InsercaoPacienteDAO {
 				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
 				ps3.setLong(2, insercao.getEquipe().getCodEquipe());
 				ps3.setDate(3,
-						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getAgenda().getDataMarcacao()));
+						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataMarcacao()));
 				ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (insercao.getAgenda().getTurno() != null) {
-					ps3.setString(5, insercao.getAgenda().getTurno());
+				if (insercao.getTurno() != null) {
+					ps3.setString(5, insercao.getTurno());
 				} else {
 					ps3.setNull(5, Types.NULL);
 				}
@@ -372,8 +373,8 @@ public class InsercaoPacienteDAO {
 				ps3.setInt(7, id);
 				ps3.setInt(8, user_session.getUnidade().getId());
 
-				if (insercao.getAgenda().getHorario() != null) {
-					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				if (insercao.getHorario() != null) {
+					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 				} else {
 					ps3.setNull(9, Types.NULL);
 				}
@@ -396,7 +397,7 @@ public class InsercaoPacienteDAO {
 				for (int h = 0; h < listaHorarioFinal.size(); h++) {
 					for (int l = 0; l < listaHorarioFinal.get(h).getListaFuncionarios().size(); l++) {
 
-						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda()
+						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataMarcacao()) == listaHorarioFinal.get(h).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -451,7 +452,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
-			ArrayList<InsercaoPacienteBean> listaAgendamento) {
+			ArrayList<AgendaBean> listaAgendamento) {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -503,14 +504,14 @@ public class InsercaoPacienteDAO {
 				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
 				ps3.setLong(2, insercao.getFuncionario().getId());
 				ps3.setDate(3,
-						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getAgenda().getDataMarcacao()));
+						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataMarcacao()));
 				ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
-				ps3.setString(5, insercao.getAgenda().getTurno());
+				ps3.setString(5, insercao.getTurno());
 				ps3.setString(6, insercao.getObservacao());
 				ps3.setInt(7, id);
 				ps3.setInt(8, user_session.getUnidade().getId());
-				if (insercao.getAgenda().getHorario() != null) {
-					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				if (insercao.getHorario() != null) {
+					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
 				} else {
 					ps3.setNull(9, Types.NULL);
 				}

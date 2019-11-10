@@ -15,7 +15,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Alteração de Pacientes na Instituição</h4>
+                <h4 class="panel-title">Alteração de Pacientes em Terapia</h4>
             </div>
 
             <div class="panel-body table-body sub-table-body">
@@ -28,7 +28,7 @@
                             <b:label value="Paciente:" severity="info"/>
 
                             <h:outputLabel 
-                                    value="#{AlteracaoPacienteController.insercao.paciente.nome}"
+                                    value="w#{AlteracaoPacienteController.insercao.paciente.nome}j"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -47,7 +47,7 @@
                         <b:column span="2" class="label-position inserPacient">
                             <b:label value="Paciente:" severity="info"/>
 
-                            <h:outputLabel rendered=""
+                            <h:outputLabel 
                                     value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
                                     class="campo-laudoDig3"/>
                         </b:column>
@@ -396,7 +396,7 @@
                                 <b:label value="Turno:" severity="info" class="fire-label"/>
 
                                 <b:selectOneMenu class="select-agendaEquipe2"
-                                                 value="#{AlteracaoPacienteController.insercao.agenda.turno}">
+                                                 value="#{AlteracaoPacienteController.insercao.turno}">
                                     <f:selectItem itemLabel="Manhã" itemValue="M"/>
                                     <f:selectItem itemLabel="Tarde" itemValue="T"/>
                                 </b:selectOneMenu>

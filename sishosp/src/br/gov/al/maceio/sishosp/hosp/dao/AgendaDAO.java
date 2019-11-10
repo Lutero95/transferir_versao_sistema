@@ -2245,7 +2245,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         StringBuilder sql = new StringBuilder();
 
-        if (insercao.getAgenda().getHorario() != null) {
+        if (insercao.getHorario() != null) {
             sql.append("SELECT ");
             sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE horario = ? ");
             sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
@@ -2253,7 +2253,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             sql.append("FROM hosp.parametro p WHERE p.codunidade = ?");
         }
 
-        if (insercao.getAgenda().getTurno() != null) {
+        if (insercao.getTurno() != null) {
             sql.append("SELECT ");
             sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE turno = ? ");
             sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
@@ -2265,12 +2265,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
 
-            if (insercao.getAgenda().getHorario() != null) {
-                stm.setTime(1, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+            if (insercao.getHorario() != null) {
+                stm.setTime(1, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
             }
 
-            if (insercao.getAgenda().getTurno() != null) {
-                stm.setString(1, insercao.getAgenda().getTurno());
+            if (insercao.getTurno() != null) {
+                stm.setString(1, insercao.getTurno());
             }
 
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));

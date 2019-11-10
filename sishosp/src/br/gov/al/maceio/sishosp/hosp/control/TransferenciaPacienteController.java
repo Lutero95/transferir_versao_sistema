@@ -34,6 +34,7 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
+
 @ManagedBean(name = "TransferenciaPacienteController")
 @ViewScoped
 public class TransferenciaPacienteController implements Serializable {
@@ -46,7 +47,7 @@ public class TransferenciaPacienteController implements Serializable {
     private InsercaoPacienteDAO iDao;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
-    private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
+    private ArrayList<AgendaBean> listAgendamentoProfissional;
     private Integer id_paciente_insituicao;
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
     private String opcaoAtendimento;
@@ -67,7 +68,7 @@ public class TransferenciaPacienteController implements Serializable {
         tipo = "";
         iDao = new InsercaoPacienteDAO();
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
-        listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
+        listAgendamentoProfissional = new ArrayList<AgendaBean>();
         todosOsProfissionais = false;
         listaHorariosAgenda =  new ArrayList<AgendaBean>();
         listaEquipePorGrupo = new ArrayList<>();
@@ -133,16 +134,16 @@ public class TransferenciaPacienteController implements Serializable {
                         if (!listaDatasDeAtendimento.contains(c.getTime())) {
                             if (diaSemana == Integer.parseInt(listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h))) {
 
-                                InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                                AgendaBean agenda = new AgendaBean();
 
-                                ins.getAgenda().setPaciente(
+                                agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                ins.getAgenda().setDataMarcacao(c.getTime());
+                                agenda.setDataMarcacao(c.getTime());
 
-                                ins.getAgenda().setProfissional(listaProfissionaisAdicionados.get(j));
+                                agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
-                                listAgendamentoProfissional.add(ins);
+                                listAgendamentoProfissional.add(agenda);
                                 listaDatasDeAtendimento.add(c.getTime());
 
                             }
@@ -184,14 +185,14 @@ public class TransferenciaPacienteController implements Serializable {
                     if (!listaDatasDeAtendimento.contains(c.getTime())) {
                         if (diaSemana == listaDias.get(h)) {
 
-                            InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                            AgendaBean agenda = new AgendaBean();
 
-                            ins.getAgenda().setPaciente(
+                            agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            ins.getAgenda().setDataMarcacao(c.getTime());
+                            agenda.setDataMarcacao(c.getTime());
 
-                            listAgendamentoProfissional.add(ins);
+                            listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
 
                         }
@@ -232,8 +233,8 @@ public class TransferenciaPacienteController implements Serializable {
             	gerarListaAgendamentosEquipeDiaHorario();
             }
 
-            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                    listAgendamentoProfissional, insercao.getAgenda().getTurno());
+            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
+                    listAgendamentoProfissional, insercao.getTurno());
 
             
         	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
