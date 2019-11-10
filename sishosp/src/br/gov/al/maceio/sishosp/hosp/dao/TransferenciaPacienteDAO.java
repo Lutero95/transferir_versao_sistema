@@ -25,15 +25,16 @@ public class TransferenciaPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id) throws ProjetoException {
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo,  pi.codequipe, e.descequipe, a.turno, a.situacao, "
-				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
-				+ " from hosp.paciente_instituicao pi "
-				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
-				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
-				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
-				+ " left join hosp.atendimentos a on (a.id_paciente_instituicao = pi.id) "
-				+ " left join hosp.tipoatendimento t on (a.codtipoatendimento = t.id) "
-				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) " + " where pi.id = ?";
+		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo,  pi.codequipe, e.descequipe, pi.turno,  \n" + 
+				" pi.codprofissional, f.descfuncionario, pi.observacao,  pi.codlaudo, pi.data_solicitacao ,\n" + 
+				"  l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome \n" + 
+				" from hosp.paciente_instituicao pi \n" + 
+				" left join hosp.programa p on (p.id_programa = pi.codprograma) \n" + 
+				" left join hosp.grupo g on (pi.codgrupo = g.id_grupo) \n" + 
+				" left join hosp.equipe e on (pi.codequipe = e.id_equipe) \n" + 
+				" left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) \n" + 
+				"  LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) \n" + 
+				"  LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente)" + " where pi.id = ?";
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
@@ -63,7 +64,15 @@ public class TransferenciaPacienteDAO {
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
 				ip.setTurno(rs.getString("turno"));
-				ip.getLaudo().setId(rs.getInt("codlaudo"));
+				if ((rs.getString("codpaciente_laudo"))!=null) {
+					ip.getLaudo().setId(rs.getInt("codlaudo"));
+					ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
+					ip.getLaudo().getPaciente().setNome(rs.getString("nome"));
+				} else
+				{
+					ip.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
+					ip.getPaciente().setNome(rs.getString("nome"));	
+				}
 
 			}
 
@@ -409,19 +418,35 @@ public class TransferenciaPacienteDAO {
 
 			ps6.executeUpdate();
 
-			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, turno) "
-					+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp, ?) RETURNING id;";
+			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, turno, id_paciente) "
+					+ " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id;";
 
 			ps = conexao.prepareStatement(sql7);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
 			ps.setInt(2, insercao.getGrupo().getIdGrupo());
 			ps.setInt(3, insercao.getEquipe().getCodEquipe());
 			ps.setString(4, "A");
-			ps.setInt(5, insercao.getLaudo().getId());
+			if (insercao.getLaudo().getId() != null) {
+				ps.setInt(5, insercao.getLaudo().getId());
+			} else {
+				ps.setNull(5, Types.NULL);
+			}
+			
 			ps.setString(6, insercao.getObservacao());
 			ps.setInt(7, user_session.getUnidade().getId());
 			ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
-			ps.setString(9, insercao.getTurno());
+			if (insercao.getTurno() != null) {
+				ps.setString(9, insercao.getTurno());
+			} else {
+				ps.setNull(9, Types.NULL);
+			}
+			
+			if (insercao.getPaciente().getId_paciente() != null) {
+				ps.setInt(10, insercao.getPaciente().getId_paciente());
+			} else {
+				ps.setNull(10, Types.NULL);
+			}
+			
 
 			rs = ps.executeQuery();
 			int idPacienteInstituicaoNovo = 0;

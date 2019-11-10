@@ -82,6 +82,7 @@ public class TransferenciaPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
+            if (insercao.getLaudo().getId()!=null)
             carregarLaudoPaciente();
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
             opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();

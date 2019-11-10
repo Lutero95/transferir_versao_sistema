@@ -160,7 +160,8 @@ public class GerenciarPacienteDAO {
             conexao = ConnectionFactory.getConnection();
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getId(), conexao, false)){
+            TransferenciaPacienteDAO gerenciarTransferenciaDAO = new TransferenciaPacienteDAO();
+                    if(!gerenciarTransferenciaDAO.apagarAtendimentosNaRenovacao(gerenciarRow.getId(), gerenciar.getDataDesligamento(), conexao)){
 
                         conexao.close();
 
