@@ -287,6 +287,7 @@ public class AgendaController implements Serializable {
                     "Atingiu o limite máximo para esse tipo de atendimento e Profissional/Equipe!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
         } else {
+        	 setarQuantidadeIhMaximoComoNulos();
             verConfigAgenda();
         }
 

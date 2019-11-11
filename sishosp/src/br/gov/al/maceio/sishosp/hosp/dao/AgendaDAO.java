@@ -174,13 +174,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             ps = con.prepareStatement(sql);
 
             ps.setInt(1, agenda.getPaciente().getId_paciente());
-            if (agenda.getProfissional().getId() != null) {
-                ps.setLong(2, agenda.getProfissional().getId());
-            } else {
-                ps.setNull(2, Types.NULL);
-            }
-
-            ps.setNull(3, Types.NULL);
+            ps.setNull(2, Types.NULL);
+            ps.setNull(3, agenda.getPrograma().getIdPrograma());
 
             ps.setDate(4, new java.sql.Date(agenda.getDataAtendimento().getTime()));
             ps.setString(5, "A");
@@ -486,7 +481,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = " AND d.turno = ?";
@@ -507,7 +502,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
             stm.setInt(2, agenda.getTipoAt().getIdTipo());
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
                 stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(3, agenda.getTurno().toUpperCase());
@@ -776,7 +771,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = " AND d.turno = ?";
@@ -794,7 +789,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
             stm.setInt(2, diaSemana);
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
                 stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(3, agenda.getTurno().toUpperCase());
@@ -897,7 +892,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = "AND horario = ?";
         } else {
             sqlComplementoFinal = "AND turno = ?";
@@ -916,7 +911,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
                 stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(3, agenda.getTurno().toUpperCase());
@@ -959,7 +954,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = "AND d.turno = ?";
@@ -981,7 +976,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
             stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
                 stm.setTime(3, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(3, agenda.getTurno().toUpperCase());
@@ -1620,7 +1615,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
             sqlComplementoFinal = "AND a.horario = ?";
         } else {
             sqlComplementoFinal = "AND a.turno = ?";
@@ -1641,7 +1636,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             stm.setDate(1, new java.sql.Date(ag.getDataAtendimento().getTime()));
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(ag.getTurno())) {
                 stm.setTime(3, DataUtil.retornarHorarioEmTime(ag.getHorario()));
             } else {
                 stm.setString(3, ag.getTurno().toUpperCase());

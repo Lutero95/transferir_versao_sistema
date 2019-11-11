@@ -393,6 +393,30 @@
 						</b:column>
 
 					</b:row>
+					
+					
+					<p:outputPanel id="outQtdIhMax">
+						<b:row rendered="#{AgendaController.tipoData == 'U'}">
+							<b:column span="2" class="label-position">
+								<b:label for="qtd" value="Quantidade" severity="info"
+									rendered="#{AgendaController.tipoData == 'U'}" />
+
+								<b:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
+									class="select-agendaEquipe2"
+									rendered="#{AgendaController.tipoData == 'U'}" readonly="true" />
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="max" value="Máximo" severity="info"
+									rendered="#{AgendaController.tipoData == 'U'}" />
+
+								<b:inputText id="max" value="#{AgendaController.agenda.max}"
+									rendered="#{AgendaController.tipoData == 'U'}"
+									class="select-agendaEquipe2" readonly="true" />
+							</b:column>
+
+						</b:row>
+					</p:outputPanel>
 
 
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
@@ -432,7 +456,7 @@
 									itemLabel="#{sis.nome}" itemValue="#{sis}"
 									showCheckbox="true" converter="conFuncionario"
 									required="true"
-									requiredMessage="Informe pelo menos um sistema."
+									requiredMessage="Informe pelo menos um Profissional"
 									showSourceFilter="true" showTargetFilter="true"
 									filterMatchMode="contains">
 
