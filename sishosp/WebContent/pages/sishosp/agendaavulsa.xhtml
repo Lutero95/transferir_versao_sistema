@@ -377,14 +377,14 @@
 
 					<b:row>
 
-						<b:column span="2" class="label-position data-size">
+						<b:column span="3" class="label-position data-size new-comple1">
 							<b:label value="Data" severity="info" />
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-										showOn="button" size="7" class="select-agendaEquipe2"
+										showOn="button" size="5" class="select-agendaEquipe2"
 										required="true" requiredMessage="Data: Campo obrigatório!"
 										rendered="#{AgendaController.tipoData == 'U'}"
 										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
-										locale="pt">
+										locale="pt" style="margin-left:10px;">
 								<p:ajax event="dateSelect"
 										listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
 										process="@this dtagen" update="msgPagina"></p:ajax>

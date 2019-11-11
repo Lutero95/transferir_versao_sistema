@@ -159,6 +159,7 @@ public class AgendaController implements Serializable {
         agenda.getUnidade().setId(SessionUtil.recuperarDadosSessao().getUnidade().getId());
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
+        
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException {
@@ -287,7 +288,8 @@ public class AgendaController implements Serializable {
                     "Atingiu o limite máximo para esse tipo de atendimento e Profissional/Equipe!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
         } else {
-        	 setarQuantidadeIhMaximoComoNulos();
+            agenda.setQtd(0);
+            agenda.setMax(0);
             verConfigAgenda();
         }
 
@@ -824,7 +826,7 @@ public class AgendaController implements Serializable {
         limparDados();
     }
 
-    private void gravarAgendaAvulsa() {
+    private void gravarAgendaAvulsa() throws ProjetoException {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
                 || (this.agenda.getTipoAt() == null)
@@ -844,6 +846,7 @@ public class AgendaController implements Serializable {
 
         if (cadastrou) {
             limparDados();
+            carregaListaFuncionariosDual();
             JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");

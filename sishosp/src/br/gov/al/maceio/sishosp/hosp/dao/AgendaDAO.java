@@ -165,9 +165,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao)"
+                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao, avulso)"
                 + " VALUES " + "(?, ?, ?, ?, ?," + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
+                + " ?, ?, ?, ?, ?, ?, ?, true) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -175,7 +175,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             ps.setInt(1, agenda.getPaciente().getId_paciente());
             ps.setNull(2, Types.NULL);
-            ps.setNull(3, agenda.getPrograma().getIdPrograma());
+            ps.setInt(3, agenda.getPrograma().getIdPrograma());
 
             ps.setDate(4, new java.sql.Date(agenda.getDataAtendimento().getTime()));
             ps.setString(5, "A");
