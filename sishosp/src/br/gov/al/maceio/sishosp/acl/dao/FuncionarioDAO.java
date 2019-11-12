@@ -1967,4 +1967,88 @@ public class FuncionarioDAO {
 		return idFuncionario;
 	}
 
+    public List<UnidadeBean> listarTodasAsUnidadesDoUsuario(Long idUsuario){
+
+        List<UnidadeBean> lista = new ArrayList<UnidadeBean>();
+        PreparedStatement stm = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("select u.id, u.nome from acl.funcionarios f ");
+        sql.append("join hosp.unidade u on (f.codunidade = u.id) ");
+        sql.append("where f.id_funcionario = ? ");
+        sql.append("union ");
+        sql.append("select u.id, u.nome from acl.funcionarios f ");
+        sql.append("join hosp.funcionario_unidades fu on (f.id_funcionario = fu.cod_funcionario) ");
+        sql.append("join hosp.unidade u on (u.id = fu.cod_unidade) ");
+        sql.append("where f.id_funcionario = ?");
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setLong(1, idUsuario);
+            stm.setLong(2, idUsuario);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                UnidadeBean UnidadeBean = new UnidadeBean();
+                UnidadeBean.setId(rs.getInt("id"));
+                UnidadeBean.setNomeUnidade(rs.getString("nome"));
+                lista.add(UnidadeBean);
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
+    }
+
+    public String retornaNomeDaUnidadeAtual(Integer codigoDaUnidadeSelecionada){
+        String textoUnidade = null;
+        PreparedStatement stm = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("select u.nome from acl.funcionarios f ");
+        sql.append("join hosp.unidade u on (f.codunidade = u.id) ");
+        sql.append("where u.id = ? ");
+        sql.append("union ");
+        sql.append("select u.nome from acl.funcionarios f ");
+        sql.append("join hosp.funcionario_unidades fu on (f.id_funcionario = fu.cod_funcionario) ");
+        sql.append("join hosp.unidade u on (u.id = fu.cod_unidade) ");
+        sql.append("where u.id = ?");
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setLong(1, codigoDaUnidadeSelecionada);
+            stm.setLong(2, codigoDaUnidadeSelecionada);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                textoUnidade = rs.getString("nome");
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return textoUnidade.toUpperCase();
+        }
+    }
+
 }

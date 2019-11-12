@@ -51,6 +51,8 @@ public class FuncionarioController implements Serializable {
 	private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
 	private UnidadeBean unidadeBean;
+	private List<UnidadeBean> unidadesDoUsuarioLogado;
+	private Integer codigoDaUnidadeSelecionada = null;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -105,6 +107,7 @@ public class FuncionarioController implements Serializable {
 		this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
 		usuario = new FuncionarioBean();
 		renderizarPermissoes = false;
+		unidadesDoUsuarioLogado = new ArrayList<>();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -183,71 +186,119 @@ public class FuncionarioController implements Serializable {
 
 			} else {
 
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
-						usuarioLogado);
-
-				// ACL =============================================================
-
-				List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
-
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario_sis",
-						sistemas);
-
-				List<Permissoes> permissoes = fDao.carregarPermissoes(usuarioLogado);
-
-				sistemaLogado.setDescricao("Sem Sistema");
-				sistemaLogado.setSigla("Sem Sistema");
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sistema_logado",
-						sistemaLogado);
-
-				for (Sistema s : sistemas) {
-					Menu m = new Menu();
-					m.setDescricao("Principal");
-					m.setUrl(s.getUrl());
-					m.setTipo("injetado");
-					Permissoes perms = new Permissoes();
-					perms.setMenu(m);
-					permissoes.add(perms);
+				unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+				if(unidadesDoUsuarioLogado.size() > 1){
+					JSFUtil.abrirDialog("selecaoUnidade");
+				}else{
+					String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+					return url;
 				}
+			}
+			return "";
+		}
+	}
 
-				for (Sistema s : sistemas) {
-					Menu m = new Menu();
-					m.setDescricao("Fale Conosco");
-					m.setUrl(s.getUrl());
-					m.setTipo("injetado");
-					Permissoes perms = new Permissoes();
-					perms.setMenu(m);
-					permissoes.add(perms);
+	public String associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin() throws ProjetoException {
+		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
+		String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+		return url;
+	}
+
+	public void associarUnidadeSelecionadaAoUsuarioDaSessao() throws ProjetoException {
+		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
+				usuarioLogado);
+		JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!","Sucesso!");
+		JSFUtil.fecharDialog("selecaoUnidade");
+	}
+
+	public void abrirDialogDeSelecaoDeUnidade() throws ProjetoException {
+
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "N");
+		String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
+
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
+			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
+		} else {
+
+			usuarioLogado = fDao.autenticarUsuario(usuario);
+
+			if (usuarioLogado == null) {
+				JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
+			} else {
+				List<UnidadeBean> unidadesDoUsuario = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+				if(unidadesDoUsuario.size() > 1){
+					JSFUtil.abrirDialog("selecaoUnidade");
 				}
-
-				Permissoes perms2 = new Permissoes();
-				Menu m3 = new Menu();
-				m3.setDescricao("Primeiro Acesso");
-				m3.setUrl("/pages/comum/primeiroAcesso.faces");
-				m3.setTipo("injetado");
-				perms2.setMenu(m3);
-				permissoes.add(perms2);
-
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario", permissoes);
-
-				HttpSession session = SessionUtil.getSession();
-				session.setAttribute("User", usuarioLogado.getId());
-
-				recoverDataFromSession();
-
-				String url = "";
-
-				if (sistemas.size() > 1)
-					url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-				else {
-					recSistemaLogado(sistemas.get(0));
-					gerarMenus(sistemaLogado);
-					url = sistemas.get(0).getUrl() + "?faces-redirect=true";
-				}
-
-				return url;
 			}
 		}
+	}
+
+
+
+	private String carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao() throws ProjetoException {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
+				usuarioLogado);
+
+		// ACL =============================================================
+
+		List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
+
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario_sis",
+				sistemas);
+
+		List<Permissoes> permissoes = fDao.carregarPermissoes(usuarioLogado);
+
+		sistemaLogado.setDescricao("Sem Sistema");
+		sistemaLogado.setSigla("Sem Sistema");
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sistema_logado",
+				sistemaLogado);
+
+		for (Sistema s : sistemas) {
+			Menu m = new Menu();
+			m.setDescricao("Principal");
+			m.setUrl(s.getUrl());
+			m.setTipo("injetado");
+			Permissoes perms = new Permissoes();
+			perms.setMenu(m);
+			permissoes.add(perms);
+		}
+
+		for (Sistema s : sistemas) {
+			Menu m = new Menu();
+			m.setDescricao("Fale Conosco");
+			m.setUrl(s.getUrl());
+			m.setTipo("injetado");
+			Permissoes perms = new Permissoes();
+			perms.setMenu(m);
+			permissoes.add(perms);
+		}
+
+		Permissoes perms2 = new Permissoes();
+		Menu m3 = new Menu();
+		m3.setDescricao("Primeiro Acesso");
+		m3.setUrl("/pages/comum/primeiroAcesso.faces");
+		m3.setTipo("injetado");
+		perms2.setMenu(m3);
+		permissoes.add(perms2);
+
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario", permissoes);
+
+		HttpSession session = SessionUtil.getSession();
+		session.setAttribute("User", usuarioLogado.getId());
+
+		recoverDataFromSession();
+
+		String url = "";
+
+		if (sistemas.size() > 1)
+			url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+		else {
+			recSistemaLogado(sistemas.get(0));
+			gerarMenus(sistemaLogado);
+			url = sistemas.get(0).getUrl() + "?faces-redirect=true";
+		}
+		return url;
 	}
 
 	public void carregaListaSistemasDualInsercao() throws ProjetoException {
@@ -886,6 +937,10 @@ public class FuncionarioController implements Serializable {
 		JSFUtil.abrirDialog("dlgAlterarSenha");
 	}
 
+	public void abrirDialogTrocarDeUnidade(){
+		JSFUtil.abrirDialog("selecaoUnidade");
+	}
+
 	public void alterarSenhaFuncionario() {
 
 		if (validarSeNovasSenhasSãoIguais()) {
@@ -1245,4 +1300,23 @@ public class FuncionarioController implements Serializable {
 		return listaSistemasTarget;
 	}
 
+	public List<UnidadeBean> getUnidadesDoUsuarioLogado() {
+		return unidadesDoUsuarioLogado;
+	}
+
+	public void setUnidadesDoUsuarioLogado(List<UnidadeBean> unidadesDoUsuarioLogado) {
+		this.unidadesDoUsuarioLogado = unidadesDoUsuarioLogado;
+	}
+
+	public Integer getCodigoDaUnidadeSelecionada() {
+		return codigoDaUnidadeSelecionada;
+	}
+
+	public void setCodigoDaUnidadeSelecionada(Integer codigoDaUnidadeSelecionada) {
+		this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
+	}
+
+	public String retornaTextoDaUnidadeAtual(){
+		return fDao.retornaNomeDaUnidadeAtual(usuarioLogado.getCodigoDaUnidadeSelecionada());
+	}
 }

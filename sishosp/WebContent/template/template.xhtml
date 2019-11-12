@@ -1,176 +1,198 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content="" />
-	<meta name="author" content="" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
 
-	<ui:insert name="title">
-		<title>EHosp</title>
-	</ui:insert>
+    <ui:insert name="title">
+        <title>EHosp</title>
+    </ui:insert>
 
 
-	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
-	<link rel="styleSheet" type="text/css"
-		href="../../css/font-awesome.css" />
-	<link rel="stylesheet" type="text/css" href="../../css/datatable.css" />
+    <link rel="styleSheet" type="text/css" href="../../css/newStyle.css"/>
+    <link rel="styleSheet" type="text/css"
+          href="../../css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/datatable.css"/>
 
-		type="text/javascript" />
+    type="text/javascript" />
 
-	<script type="text/javascript">
-		PrimeFaces.locales['pt'] = {
-			closeText : 'Fechar',
-			prevText : 'Anterior',
-			nextText : 'Próximo',
-			currentText : 'Começo',
-			monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
-					'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
-					'Novembro', 'Dezembro' ],
-			monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-					'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
-			dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
-					'Sexta', 'Sábado' ],
-			dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb' ],
-			dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
-			weekHeader : 'Semana',
-			firstDay : 0,
-			isRTL : false,
-			showMonthAfterYear : false,
-			yearSuffix : '',
-			timeOnlyTitle : 'Só Horas',
-			timeText : 'Tempo',
-			hourText : 'Hora',
-			minuteText : 'Minuto',
-			secondText : 'Segundo',
-			ampm : false,
-			month : 'Mês',
-			week : 'Semana',
-			day : 'Dia',
-			allDayText : 'Todo o Dia'
-		};
-	</script>
+    <script type="text/javascript">
+        PrimeFaces.locales['pt'] = {
+            closeText: 'Fechar',
+            prevText: 'Anterior',
+            nextText: 'Próximo',
+            currentText: 'Começo',
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+                'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+                'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+                'Sexta', 'Sábado'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+            weekHeader: 'Semana',
+            firstDay: 0,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: '',
+            timeOnlyTitle: 'Só Horas',
+            timeText: 'Tempo',
+            hourText: 'Hora',
+            minuteText: 'Minuto',
+            secondText: 'Segundo',
+            ampm: false,
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia',
+            allDayText: 'Todo o Dia'
+        };
+    </script>
 
 </h:head>
 <h:body>
-	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
-		style="z-index: 1080;" draggable="false" resizable="false"
-		closable="true" modal="true" styleClass="sml-size-dlg topDialog2"
-		showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
+    <p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
+              style="z-index: 1080;" draggable="false" resizable="false"
+              closable="true" modal="true" styleClass="sml-size-dlg topDialog2"
+              showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
 
-		<h:form id="frmAlterarSenha">
-			<p:growl id="msgAlterarSenha"></p:growl>
+        <h:form id="frmAlterarSenha">
+            <p:growl id="msgAlterarSenha"></p:growl>
 
-			<h:panelGrid columns="1" cellpadding="3">
-				<b:label class="label-agendaEquipe" value="Senha Atual" severity="info" />
-				<b:inputSecret class="select-agendaEquipe" required="true"
-					placeholder="Senha Atual"
-					requiredMessage="Antiga Senha: Campo obrigatório"
-					value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
-				<b:message for="@previous" />
-				<br />
-				<b:label class="label-agendaEquipe" value="Nova Senha" severity="info" />
-				<b:inputSecret class="select-agendaEquipe" required="true"
-					placeholder="Senha Nova"
-					requiredMessage="Nova Senha: Campo obrigatório"
-					value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
-				<b:message for="@previous" />
-				<br />
-				<b:label class="label-agendaEquipe" value="Confirmação de Nova Senha" severity="info" />
-				<b:inputSecret class="select-agendaEquipe" required="true"
-					placeholder="Confirmação Senha Nova"
-					requiredMessage="Confirmação Nova Senha: Campo obrigatório"
-					value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
-				<b:message for="@previous" />
+            <h:panelGrid columns="1" cellpadding="3">
+                <b:label class="label-agendaEquipe" value="Senha Atual" severity="info"/>
+                <b:inputSecret class="select-agendaEquipe" required="true"
+                               placeholder="Senha Atual"
+                               requiredMessage="Antiga Senha: Campo obrigatório"
+                               value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+                <b:message for="@previous"/>
+                <br/>
+                <b:label class="label-agendaEquipe" value="Nova Senha" severity="info"/>
+                <b:inputSecret class="select-agendaEquipe" required="true"
+                               placeholder="Senha Nova"
+                               requiredMessage="Nova Senha: Campo obrigatório"
+                               value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
+                <b:message for="@previous"/>
+                <br/>
+                <b:label class="label-agendaEquipe" value="Confirmação de Nova Senha" severity="info"/>
+                <b:inputSecret class="select-agendaEquipe" required="true"
+                               placeholder="Confirmação Senha Nova"
+                               requiredMessage="Confirmação Nova Senha: Campo obrigatório"
+                               value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
+                <b:message for="@previous"/>
 
-			</h:panelGrid>
+            </h:panelGrid>
 
-			<p:separator />
+            <p:separator/>
 
-			<div align="center">
+            <div align="center">
 
-				<p:commandButton value="Alterar Senha" icon="fa fa-fw fa-check"
-					class="btn-cad-gravar" update=":frmAlterarSenha:msgAlterarSenha"
-					action="#{MBFuncionarios.alterarSenhaFuncionario()}" ajax="true" />
+                <p:commandButton value="Alterar Senha" icon="fa fa-fw fa-check"
+                                 class="btn-cad-gravar" update=":frmAlterarSenha:msgAlterarSenha"
+                                 action="#{MBFuncionarios.alterarSenhaFuncionario()}" ajax="true"/>
 
-				<p:commandButton value="Fechar" icon="fa fa-fw fa-close" class="btn-cad-cancel"
-					oncomplete="PF('dlgAlterarSenha').hide();" ajax="true" />
-			</div>
+                <p:commandButton value="Fechar" icon="fa fa-fw fa-close" class="btn-cad-cancel"
+                                 oncomplete="PF('dlgAlterarSenha').hide();" ajax="true"/>
+            </div>
 
-		</h:form>
-	</p:dialog>
+        </h:form>
+    </p:dialog>
 
-	<p:growl id="msgPagina" />
-	<p:ajaxStatus onstart="PF('statusDialog').show();"
-		onsuccess="PF('statusDialog').hide();" />
-	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
-		showHeader="true" header="Processando..."
-		style="width:40px; height:20px; border:0;" resizable="false"
-		widgetVar="statusDialog" draggable="false" closable="false">
-		<center>
-			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
-		</center>
-	</p:dialog>
+    <p:dialog header="Escolha a sua unidade" widgetVar="selecaoUnidade" closable="false"
+              draggable="false" id="selecaoUnidade" modal="true"
+              resizable="false" showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
+        <h:form>
+            <p:outputPanel autoUpdate="true">
+                <div align="center">
+                    <p:selectOneMenu value="#{MBFuncionarios.codigoDaUnidadeSelecionada}"
+                                     style="width: 10.0em;">
+                        <f:selectItems value="#{MBFuncionarios.unidadesDoUsuarioLogado}"
+                                       var="unidade" itemLabel="#{unidade.nomeUnidade}"
+                                       itemValue="#{unidade.id}"/>
+                    </p:selectOneMenu>
+                    <br></br>
+                    <br></br>
+                    <p:commandButton value="Selecionar"
+                                     action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessao()}"/>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
 
-	<div id="header">
-		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
-			
-			<h:form id="mainFormtempSist" styleClass="user-nav">
-				
-				<p:row>
-					<p:column>
-						<h:outputText
-							styleClass="name-user-nav"
-							value="#{MBFuncionarios.usuarioLogado.nome}"
-							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
-					</p:column>
-					
-					<p:column>
-						<h:outputText
-							styleClass="sub-name-user-nav"
-							value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
-							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
-					</p:column>
-				</p:row>
-				
-				<p:commandLink styleClass="editUSer"
-					oncomplete="PF('dlguser').show()"
-					style="position:absolute;z-index:1000" id="linkuser"
-					title="Opções para o usuário">
-					<h:graphicImage value="../../imgs/user-nav-icon1.png"
-						styleClass="img-user-nav"></h:graphicImage>
-				</p:commandLink>
-				
-			</h:form>
-			<h:form>
-				<ui:include src="/pages/comum/menu.xhtml" />
-			</h:form>
-		</b:navBar>
-	</div>
+    <p:growl id="msgPagina"/>
+    <p:ajaxStatus onstart="PF('statusDialog').show();"
+                  onsuccess="PF('statusDialog').hide();"/>
+    <p:dialog id="myDialogId" styleClass="process_msg" modal="true"
+              showHeader="true" header="Processando..."
+              style="width:40px; height:20px; border:0;" resizable="false"
+              widgetVar="statusDialog" draggable="false" closable="false">
+        <center>
+            <p:graphicImage value="../../imgs/ajax_loading_bar.gif"/>
+        </center>
+    </p:dialog>
 
-	<div id="container" class="clearfix">
-		<p:messages for="home-msg" globalOnly="true" />
-		<ui:insert name="content" />
-	</div>
+    <div id="header">
+        <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 
-	<div id="foot">
-		<div class="connect">
-			<a href="#" target="_blank"> <img src="../../imgs/facebook1.png" /></a>
-			<a href="#" target="_blank"> <img src="../../imgs/twitter1.png" /></a>
-		</div>
-		<div class="foot-text">
-			<p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos
-				reservados.</p>
-			<p>Versão: 1.1.1</p>
-		</div>
-	</div>
+            <h:form id="mainFormtempSist" styleClass="user-nav">
+
+                <p:row>
+                    <p:column>
+                        <h:outputText
+                                styleClass="name-user-nav"
+                                value="#{MBFuncionarios.usuarioLogado.nome}"
+                                rendered="#{MBFuncionarios.usuarioLogado.id != null}"/>
+                    </p:column>
+
+                    <p:column>
+                        <h:outputText
+                                styleClass="sub-name-user-nav"
+                                value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
+                                rendered="#{MBFuncionarios.usuarioLogado.id != null}"/>
+                    </p:column>
+                </p:row>
+
+                <p:commandLink styleClass="editUSer"
+                               oncomplete="PF('dlguser').show()"
+                               style="position:absolute;z-index:1000" id="linkuser"
+                               title="Opções para o usuário">
+                    <h:graphicImage value="../../imgs/user-nav-icon1.png"
+                                    styleClass="img-user-nav"></h:graphicImage>
+                </p:commandLink>
+
+            </h:form>
+            <h:form>
+                <ui:include src="/pages/comum/menu.xhtml"/>
+            </h:form>
+        </b:navBar>
+    </div>
+
+    <div id="container" class="clearfix">
+        <p:messages for="home-msg" globalOnly="true"/>
+        <ui:insert name="content"/>
+    </div>
+
+    <div id="foot">
+        <div class="connect">
+            <a href="#" target="_blank"> <img src="../../imgs/facebook1.png"/></a>
+            <a href="#" target="_blank"> <img src="../../imgs/twitter1.png"/></a>
+        </div>
+        <div class="foot-text">
+            <p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos
+                reservados.</p>
+            <p>Versão: 1.1.1</p>
+        </div>
+    </div>
 
 </h:body>
 </html>

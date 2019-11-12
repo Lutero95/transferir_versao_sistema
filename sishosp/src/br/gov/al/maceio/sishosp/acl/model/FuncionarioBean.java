@@ -32,6 +32,7 @@ public class FuncionarioBean implements Serializable {
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
     private List<HorarioAtendimento> listaHorarioAtendimentos;
+    private Integer codigoDaUnidadeSelecionada;
 
     // LISTAS
     private List<ProgramaBean> programa;
@@ -472,5 +473,13 @@ public class FuncionarioBean implements Serializable {
 
     public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
         this.listaHorarioAtendimentos = listaHorarioAtendimentos;
+    }
+
+    public Integer getCodigoDaUnidadeSelecionada() {
+        return codigoDaUnidadeSelecionada;
+    }
+
+    public void setCodigoDaUnidadeSelecionada(Integer codigoDaUnidadeSelecionada) {
+        this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
     }
 }
