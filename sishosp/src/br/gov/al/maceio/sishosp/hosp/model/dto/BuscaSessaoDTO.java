@@ -3,10 +3,11 @@ package br.gov.al.maceio.sishosp.hosp.model.dto;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class BuscaSessaoDTO {
+public class BuscaSessaoDTO implements Serializable {
 
     private ProgramaBean programaBean;
     private GrupoBean grupoBean;

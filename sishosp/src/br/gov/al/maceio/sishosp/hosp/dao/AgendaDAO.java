@@ -163,58 +163,51 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         Boolean retorno = false;
         int idAtendimento = 0;
 
-        String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
+        String sql = "INSERT INTO hosp.atendimentos(codpaciente,  codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao, avulso)"
+                + " turno,  observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario,  avulso)"
                 + " VALUES " + "(?, ?, ?, ?, ?," + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?, ?, ?, true) RETURNING id_atendimento;";
+                + " ?, ?, ?, ?,  true) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
             ps = con.prepareStatement(sql);
 
             ps.setInt(1, agenda.getPaciente().getId_paciente());
-            ps.setNull(2, Types.NULL);
-            ps.setInt(3, agenda.getPrograma().getIdPrograma());
+            ps.setInt(2, agenda.getPrograma().getIdPrograma());
 
-            ps.setDate(4, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            ps.setString(5, "A");
-            ps.setDate(6, new java.sql.Date(new Date().getTime()));
-            ps.setInt(7, agenda.getTipoAt().getIdTipo());
+            ps.setDate(3, new java.sql.Date(agenda.getDataAtendimento().getTime()));
+            ps.setString(4, "A");
+            ps.setDate(5, new java.sql.Date(new Date().getTime()));
+            ps.setInt(6, agenda.getTipoAt().getIdTipo());
 
             if (agenda.getTurno() != null) {
-                ps.setString(8, agenda.getTurno().toUpperCase());
+                ps.setString(7, agenda.getTurno().toUpperCase());
             } else {
-                ps.setNull(8, Types.NULL);
+            	ps.setNull(7, Types.NULL);
             }
 
-            if (agenda.getEquipe().getCodEquipe() != null) {
-                ps.setInt(9, agenda.getEquipe().getCodEquipe());
-            } else {
-                ps.setNull(9, Types.NULL);
-            }
-            ps.setString(10, agenda.getObservacao().toUpperCase());
-            ps.setString(11, "S");
-            ps.setInt(12, agenda.getUnidade().getId());
+            ps.setString(8, agenda.getObservacao().toUpperCase());
+            ps.setString(9, "S");
+            ps.setInt(10, agenda.getUnidade().getId());
 
             if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
-                ps.setInt(13, agenda.getGrupo().getIdGrupo());
+                ps.setInt(11, agenda.getGrupo().getIdGrupo());
             } else {
-                ps.setNull(13, Types.NULL);
+                ps.setNull(11, Types.NULL);
             }
 
-            ps.setBoolean(14, false);
+            ps.setBoolean(12, false);
 
-            ps.setNull(15, Types.NULL);
+            ps.setNull(13, Types.NULL);
 
 
             if (agenda.getHorario() != null) {
-                ps.setTime(16, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+                ps.setTime(14, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
-                ps.setNull(16, Types.NULL);
+                ps.setNull(14, Types.NULL);
             }
 
-            ps.setBoolean(17, false);
 
             ResultSet rs = ps.executeQuery();
 

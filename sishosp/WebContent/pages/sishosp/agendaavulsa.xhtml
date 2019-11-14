@@ -65,7 +65,7 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
-										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outEquipeRow"
+										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, "
 										global="false" />
 
 								</p:autoComplete>
@@ -143,7 +143,7 @@
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectPrograma}"
-											update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt,  outEquipeRow" />
+											update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt" />
 
 
 									</p:autoComplete>
@@ -173,7 +173,7 @@
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectGrupo}"
-											update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi, outEquipeRow" />
+											update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi" />
 
 									</p:autoComplete>
 
@@ -202,7 +202,7 @@
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-											update=":formAgendaMedica, msgPagina, outTipoAt,  outEquipeRow" />
+											update=":formAgendaMedica, msgPagina, outTipoAt" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" immediate="true"
@@ -220,149 +220,8 @@
 					</p:outputPanel>
 
 
-					<p:outputPanel id="outEquipeRow">
-						<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
-
-							<b:column span="2"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Equipe" severity="info"
-									rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-
-								<p:outputPanel id="outEquipe"
-									rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
-									<p:autoComplete value="#{AgendaController.agenda.equipe}"
-										size="31" converter="conEquipe" required="true"
-										requiredMessage="Equipe: Campo obrigatório!"
-										class="select-agendaEquipe4"
-										completeMethod="#{AgendaController.listaEquipeAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descEquipe}">
-										<p:ajax event="itemSelect"
-											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina"></p:ajax>
-
-									</p:autoComplete>
-
-									<p:commandButton id="btBusEqui" immediate="true"
-										disabled="#{AgendaController.agenda.tipoAt==null}"
-										icon="ui-icon-search"
-										oncomplete="PF('dlgConsuEquipe').show();"
-										action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
-										update=":formConsuEquipe"
-										rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-								</p:outputPanel>
-							</b:column>
-
-
-							<b:column span="2"
-								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null)  and (AgendaController.listaConfigAgendaGeral.size()	>0)}">
-								<p:outputPanel id="outHorariosEquipeGeral">
-
-									<div align="left">
-										<h:outputText style="font-weight:bold" value="Agenda Padrão" />
-									</div>
-									<p:dataTable id="dtDiasAtendimentoEquipeGeral"
-										resizableColumns="true"
-										value="#{AgendaController.listaConfigAgendaGeral}" var="agend"
-										emptyMessage="Sem registros.">
-
-
-										<p:column headerText="Dia da Semana" width="20">
-											<h:outputLabel value="#{agend.diaSemana}" />
-										</p:column>
-
-										<p:column headerText="Turno" width="5">
-											<h:outputLabel value="#{agend.turno}" />
-										</p:column>
-
-
-
-									</p:dataTable>
-
-
-								</p:outputPanel>
-							</b:column>
-
-							<b:column span="2"
-								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null) and (AgendaController.listaConfigAgendaMesAtual.size()>0) }">
-
-								<p:outputPanel id="outHorariosEquipeEspecifico">
-
-									<div>
-										<h:outputText
-											value="Agenda Específica #{AgendaController.dataAtual}"
-											style="font-weight:bold" />
-									</div>
-									<p:dataTable id="dtDiasAtendimentoEquipeEspecifico"
-										resizableColumns="true"
-										value="#{AgendaController.listaConfigAgendaMesAtual}"
-										var="agend" emptyMessage="Sem registros.">
-
-
-										<p:column headerText="Dia da Semana" width="21">
-											<h:outputLabel value="#{agend.diaSemana}" />
-										</p:column>
-
-										<p:column headerText="Turno" width="5">
-											<h:outputLabel value="#{agend.turno}" />
-										</p:column>
-
-										<p:column headerText="Data" width="7">
-											<h:outputLabel value="#{agend.dataEspecifica}">
-												<f:convertDateTime pattern="dd/MM/yyyy" />
-											</h:outputLabel>
-										</p:column>
-
-									</p:dataTable>
-
-
-
-								</p:outputPanel>
-							</b:column>
-
-
-						</b:row>
-					</p:outputPanel>
-
-
-					<p:outputPanel id="outEquipeAvaliacaoRow">
-						<b:row
-							rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}">
-
-							<b:column span="3"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Equipe" severity="info"
-									rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}" />
-
-								<p:outputPanel id="outEquipeAvaliacao"
-									rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}">
-									<p:autoComplete value="#{AgendaController.agenda.equipe}"
-										size="31" converter="conEquipe" required="true"
-										requiredMessage="Equipe: Campo obrigatório!"
-										class="select-agendaEquipe4"
-										completeMethod="#{AgendaController.listaEquipeAvaliacaoAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descEquipe}">
-										<p:ajax event="itemSelect"
-											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina"></p:ajax>
-
-									</p:autoComplete>
-
-									<p:commandButton id="btBusEquiAvaliacao" immediate="true"
-										disabled="#{AgendaController.agenda.tipoAt==null}"
-										icon="ui-icon-search"
-										oncomplete="PF('dlgConsuEquipe').show();"
-										action="#{AgendaController.carregaListaEquipeAvaliacao()}"
-										update=":formConsuEquipe"
-										rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}" />
-								</p:outputPanel>
-							</b:column>
-
-						</b:row>
-					</p:outputPanel>
+					
+					
 
 					<b:row>
 
@@ -393,7 +252,7 @@
 						</b:column>
 
 					</b:row>
-					
+					<!-- 
 					
 					<p:outputPanel id="outQtdIhMax">
 						<b:row rendered="#{AgendaController.tipoData == 'U'}">
@@ -418,10 +277,10 @@
 						</b:row>
 					</p:outputPanel>
 
-
+ -->
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 
-						<b:column span="1" class="btn-radio-table">
+						<b:column span="1" class="label-position btn-radio-table">
 							<b:label value="Turno" severity="info" />
 							<p:selectOneRadio value="#{AgendaController.agenda.turno}" style="margin-left:-15px;margin-top:10px">
 								<f:selectItem itemLabel="Manhã" itemValue="M" />
@@ -604,7 +463,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt :formAgendaMedica:outEquipeRow"
+							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt "
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
 							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"

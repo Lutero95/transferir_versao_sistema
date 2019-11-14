@@ -41,7 +41,6 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBusPa" icon="ui-icon-search"
-									action="#{PacienteController.listarTodosPaciente()}"
 									process="@this" update="formConsuPac"
 									oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
@@ -465,44 +464,76 @@
 		</div>
 
 
-		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
-			modal="true" width="750px" height="400px">
+<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			responsive="true">
 			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
 
 				<div class="form-group row">
 					<div class="col-sm-2"></div>
 				</div>
 
+    <p:row>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="pacie" value="#{PacienteController.listaPacientesAgenda}">
+                        <p:panelGrid columns="4">
 
-					<h:column>
+                            <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                                <f:selectItem itemLabel="Nome" itemValue="nome" />
+                                <f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+                                <f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+                                <f:selectItem itemLabel="CPF" itemValue="cpf" />
+                                <f:selectItem itemLabel="CNS" itemValue="cns" />
+                            </p:selectOneMenu>
+
+                            <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
+
+                            <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}" update="tabelapacientes"
+                                             icon="ui-icon-search" style="margin-left: 10px;"/>
+
+                            <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                             icon="limpar" style="margin-left: 10px;"/>
+
+                        </p:panelGrid>
+
+                    </p:row>
+				<p:dataTable paginator="true"  rows="10"  id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
+
+					<p:column width="100">
 						<f:facet name="header">
-                            Código
+                            Prontuário
                         </f:facet>
 
 						<p:outputLabel value="#{pacie.id_paciente}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Nome
                         </f:facet>
 
 						<p:outputLabel value="#{pacie.nome}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
-                            CPF
+                            Matrícula
                         </f:facet>
-						<p:outputLabel value="#{pacie.cpf}" />
-					</h:column>
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
-                            Ação
+                            CNS
+                        </f:facet>
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Selecionar
                         </f:facet>
 						<p:commandButton
 							update=":formLaudo:outPac1, :formLaudo:outPac2, :formLaudo:outPac3"
@@ -513,14 +544,16 @@
 								target="#{LaudoController.laudo.paciente}" />
 						</p:commandButton>
 
-					</h:column>
+					</p:column>
 
 
-				</b:dataTable>
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento Primário"
+		
+
+		<p:dialog header="Consultar Procedimento Primário" dynamic="true"
 			widgetVar="dlgConsulProcPrimario" modal="true">
 			<h:form id="formConsulProcPrimario">
 				<p:outputPanel>
@@ -554,7 +587,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento Secundário 1"
+		<p:dialog header="Consultar Procedimento Secundário 1" dynamic="true"
 			widgetVar="dlgConsulProcSecundario1" modal="true">
 			<h:form id="formConsulProcSecundario1">
 				<p:outputPanel>
@@ -587,7 +620,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Procedimento Secundário 2"
-			widgetVar="dlgConsulProcSecundario2" modal="true">
+			widgetVar="dlgConsulProcSecundario2" modal="true" dynamic="true">
 			<h:form id="formConsulProcSecundario2">
 				<p:outputPanel>
 				<p:autoUpdate/>
@@ -618,7 +651,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento Secundário 3"
+		<p:dialog header="Consultar Procedimento Secundário 3" dynamic="true"
 			widgetVar="dlgConsulProcSecundario3" modal="true">
 			<h:form id="formConsulProcSecundario3">
 				<p:outputPanel>
@@ -650,7 +683,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento Secundário 4"
+		<p:dialog header="Consultar Procedimento Secundário 4" dynamic="true"
 			widgetVar="dlgConsulProcSecundario4" modal="true">
 			<h:form id="formConsulProcSecundario4">
 				<p:outputPanel >
@@ -682,7 +715,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento Secundário 5"
+		<p:dialog header="Consultar Procedimento Secundário 5" dynamic="true"
 			widgetVar="dlgConsulProcSecundario5" modal="true">
 			<h:form id="formConsulProcSecundario5">
 				<p:outputPanel >
@@ -714,7 +747,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar CID 1" widgetVar="dlgConsulCid1"
+		<p:dialog header="Consultar CID 1" widgetVar="dlgConsulCid1" 
 			responsive="true" height="350" modal="true" dynamic="true">
 			<h:form id="formConsulCid1">
 				<p:outputPanel id="outcid1">
@@ -922,7 +955,7 @@
 		</p:dialog>
 
 
-		<p:dialog widgetVar="dlgImprimir" modal="true" header="Atenção"
+		<p:dialog widgetVar="dlgImprimir" modal="true" header="Atenção" dynamic="true"
 			resizable="false" showEffect="clip" hideEffect="clip">
 
 			<h:form id="dlgexcluir">
