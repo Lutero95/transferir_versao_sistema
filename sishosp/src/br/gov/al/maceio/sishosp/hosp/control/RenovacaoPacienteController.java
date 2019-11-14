@@ -69,6 +69,12 @@ public class RenovacaoPacienteController implements Serializable {
     public void setaRenovacaoPacienteComOuSemLaudo() {
     	if (insercaoParaLaudo.isInsercaoPacienteSemLaudo()==true) {
     		insercaoParaLaudo.setPaciente(insercao.getLaudo().getPaciente());
+    		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(insercao.getLaudo().getProcedimentoPrimario());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
     	}
     	else
     	{
@@ -362,6 +368,12 @@ public class RenovacaoPacienteController implements Serializable {
 
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
         	Integer codPaciente = null;
+        	Integer codProcPrimario = null;
+        	Integer codProcSecundario1 = null;
+        	Integer codProcSecundario2 = null;
+        	Integer codProcSecundario3 = null;
+        	Integer codProcSecundario4 = null;
+        	Integer codProcSecundario5 = null;
         	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
         			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
         	

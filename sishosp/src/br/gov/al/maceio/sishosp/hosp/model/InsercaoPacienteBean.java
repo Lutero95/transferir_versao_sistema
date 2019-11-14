@@ -30,6 +30,13 @@ public class InsercaoPacienteBean implements Serializable {
     private List<HorarioAtendimento> listaHorarioAtendimento;
     private String turno;
     private String horario;
+    private ProcedimentoBean procedimentoPrimarioSemLaudo;
+    private ProcedimentoBean procedimentoSecundario1SemLaudo;
+    private ProcedimentoBean procedimentoSecundario2SemLaudo;
+    private ProcedimentoBean procedimentoSecundario3SemLaudo;
+    private ProcedimentoBean procedimentoSecundario4SemLaudo;
+    private ProcedimentoBean procedimentoSecundario5SemLaudo;
+
 
     public InsercaoPacienteBean() {
         laudo = new LaudoBean();
@@ -43,6 +50,12 @@ public class InsercaoPacienteBean implements Serializable {
         horarioAtendimento = new HorarioAtendimento();
         listaHorarioAtendimento = new ArrayList<>();
         paciente = new PacienteBean();
+        procedimentoPrimarioSemLaudo = new ProcedimentoBean();
+        procedimentoSecundario1SemLaudo = new ProcedimentoBean();
+        procedimentoSecundario2SemLaudo = new ProcedimentoBean();
+        procedimentoSecundario3SemLaudo = new ProcedimentoBean();
+        procedimentoSecundario4SemLaudo = new ProcedimentoBean();
+        procedimentoSecundario5SemLaudo = new ProcedimentoBean();
     }
 
     public LaudoBean getLaudo() {
@@ -196,5 +209,45 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setHorario(String horario) {
 		this.horario = horario;
+	}
+
+	public ProcedimentoBean getProcedimentoPrimarioSemLaudo() {
+		return procedimentoPrimarioSemLaudo;
+	}
+
+	public ProcedimentoBean getProcedimentoSecundario1SemLaudo() {
+		return procedimentoSecundario1SemLaudo;
+	}
+
+	public ProcedimentoBean getProcedimentoSecundario2SemLaudo() {
+		return procedimentoSecundario2SemLaudo;
+	}
+
+	public ProcedimentoBean getProcedimentoSecundario3SemLaudo() {
+		return procedimentoSecundario3SemLaudo;
+	}
+
+	public ProcedimentoBean getProcedimentoSecundario4SemLaudo() {
+		return procedimentoSecundario4SemLaudo;
+	}
+
+	public void setProcedimentoPrimarioSemLaudo(ProcedimentoBean procedimentoPrimarioSemLaudo) {
+		this.procedimentoPrimarioSemLaudo = procedimentoPrimarioSemLaudo;
+	}
+
+	public void setProcedimentoSecundario1SemLaudo(ProcedimentoBean procedimentoSecundario1SemLaudo) {
+		this.procedimentoSecundario1SemLaudo = procedimentoSecundario1SemLaudo;
+	}
+
+	public void setProcedimentoSecundario2SemLaudo(ProcedimentoBean procedimentoSecundario2SemLaudo) {
+		this.procedimentoSecundario2SemLaudo = procedimentoSecundario2SemLaudo;
+	}
+
+	public void setProcedimentoSecundario3SemLaudo(ProcedimentoBean procedimentoSecundario3SemLaudo) {
+		this.procedimentoSecundario3SemLaudo = procedimentoSecundario3SemLaudo;
+	}
+
+	public void setProcedimentoSecundario4SemLaudo(ProcedimentoBean procedimentoSecundario4SemLaudo) {
+		this.procedimentoSecundario4SemLaudo = procedimentoSecundario4SemLaudo;
 	}
 }

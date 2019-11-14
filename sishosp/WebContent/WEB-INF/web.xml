@@ -106,5 +106,10 @@
 	 <servlet-name>Faces Servlet</servlet-name>
 </filter-mapping>
 
+<context-param>
+    <param-name>timezone</param-name>
+    <param-value>GMT-3</param-value>
+  </context-param>
+
 	
 </web-app>
