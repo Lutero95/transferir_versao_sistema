@@ -18,6 +18,7 @@ public class AtendimentoBean implements Serializable {
     private String evolucao;
     private Boolean avaliacao;
     private String perfil;
+    private String horarioAtendimento;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -220,5 +221,13 @@ public class AtendimentoBean implements Serializable {
 
 	public void setGrupo(GrupoBean grupo) {
 		this.grupo = grupo;
+	}
+
+	public String getHorarioAtendimento() {
+		return horarioAtendimento;
+	}
+
+	public void setHorarioAtendimento(String horarioAtendimento) {
+		this.horarioAtendimento = horarioAtendimento;
 	}
 }

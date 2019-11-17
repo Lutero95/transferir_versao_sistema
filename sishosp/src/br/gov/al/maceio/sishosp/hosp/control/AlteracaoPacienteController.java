@@ -88,9 +88,9 @@ public class AlteracaoPacienteController implements Serializable {
                         .listarDiasAtendimentoProfissionalEquipe(id);
                 listarProfissionaisEquipe();
 
-                List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasAtendimetoParaPacienteInstituicao(id);
+                List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
                 for(int i=0; i<listaFuncionarioAuxiliar.size(); i++){
-                    adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar.get(i));
+                    adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
                 }
             }
             if (insercao.getFuncionario().getId() != null
@@ -461,12 +461,12 @@ public class AlteracaoPacienteController implements Serializable {
         JSFUtil.fecharDialog("dlgDiasAtendimento");
     }
 
-    public void adicionarFuncionarioParaEdicao(FuncionarioBean funcionario) {
+    public void adicionarFuncionarioParaEdicao(List<FuncionarioBean> listaFuncionarioAuxiliar) {
         String dias = "";
-
+        /*
         for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
             if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.DOMINGO.getSigla())) {
-                dias = dias + "Domingo";
+                dias = dias + "Domingo "+" "+funcionario.getListDiasSemana().get(i).get;
 
                 if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
                     dias = dias + ", ";
@@ -516,10 +516,74 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
         }
-        dias = dias + ".";
+        
+        */
+        
+        for (int i = 0; i < listaFuncionarioAuxiliar.size(); i++) {
+        	
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.DOMINGO.getSigla())) {
+                dias = dias + "Domingo "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
 
-        funcionario.setDiasSemana(dias);
-        listaProfissionaisAdicionados.add(funcionario);
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+            
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                dias = dias + "Segunda "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.TERCA.getSigla())) {
+                dias = dias + "Terça "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.QUARTA.getSigla())) {
+                dias = dias + "Quarta "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+            
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.QUINTA.getSigla())) {
+                dias = dias + "Quinta"+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+            
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.SEXTA.getSigla())) {
+                dias = dias + "Sexta "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+            
+            if (listaFuncionarioAuxiliar.get(i).getDiaSemana().equals(DiasDaSemana.SABADO.getSigla())) {
+                dias = dias + "Sábado "+" "+listaFuncionarioAuxiliar.get(i).getHorarioAtendimento();
+
+              //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+              //      dias = dias + ", ";
+               // }
+            }
+            dias = dias + ".";
+
+            funcionario.setDiasSemana(dias);
+            listaProfissionaisAdicionados.add(funcionario);
+
+        }
+        
+       
 
     }
 

@@ -250,4 +250,12 @@ public class InsercaoPacienteBean implements Serializable {
 	public void setProcedimentoSecundario4SemLaudo(ProcedimentoBean procedimentoSecundario4SemLaudo) {
 		this.procedimentoSecundario4SemLaudo = procedimentoSecundario4SemLaudo;
 	}
+
+	public ProcedimentoBean getProcedimentoSecundario5SemLaudo() {
+		return procedimentoSecundario5SemLaudo;
+	}
+
+	public void setProcedimentoSecundario5SemLaudo(ProcedimentoBean procedimentoSecundario5SemLaudo) {
+		this.procedimentoSecundario5SemLaudo = procedimentoSecundario5SemLaudo;
+	}
 }

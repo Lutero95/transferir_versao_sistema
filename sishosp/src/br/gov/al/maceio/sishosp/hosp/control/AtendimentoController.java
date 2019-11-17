@@ -49,6 +49,7 @@ public class AtendimentoController implements Serializable {
     private List<GrupoBean> listaGrupos;
 	private String tipoBusca;
 	private String campoBusca;
+	private String opcaoAtendimento;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -134,7 +135,7 @@ public class AtendimentoController implements Serializable {
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
-
+            opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
 
             verificarSeRenderizaDialogDeLaudo();
@@ -541,5 +542,13 @@ public class AtendimentoController implements Serializable {
 
 	public void setCampoBusca(String campoBusca) {
 		this.campoBusca = campoBusca;
+	}
+
+	public String getOpcaoAtendimento() {
+		return opcaoAtendimento;
+	}
+
+	public void setOpcaoAtendimento(String opcaoAtendimento) {
+		this.opcaoAtendimento = opcaoAtendimento;
 	}
 }

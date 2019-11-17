@@ -32,6 +32,7 @@ public class FuncionarioBean implements Serializable {
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
     private List<HorarioAtendimento> listaHorarioAtendimentos;
+    private String horarioAtendimento;
 
     // LISTAS
     private List<ProgramaBean> programa;
@@ -473,4 +474,14 @@ public class FuncionarioBean implements Serializable {
     public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
         this.listaHorarioAtendimentos = listaHorarioAtendimentos;
     }
+
+
+	public String getHorarioAtendimento() {
+		return horarioAtendimento;
+	}
+
+
+	public void setHorarioAtendimento(String horarioAtendimento) {
+		this.horarioAtendimento = horarioAtendimento;
+	}
 }

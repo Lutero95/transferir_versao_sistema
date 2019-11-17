@@ -404,21 +404,7 @@
                         </p:outputPanel>
                     </b:row>
 
-                    <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'H'}">
-                        <p:outputPanel>
-                            <b:column span="3" class="label-position">
-                                <b:label value="Horário:" severity="info" class="fire-label"/>
 
-                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                 requiredMessage="Horário: Campo obrigatório!"
-                                                 value="#{AlteracaoPacienteController.insercao.agenda.horario}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                    <f:selectItems
-                                            value="#{InsercaoController.listaHorarios}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-                        </p:outputPanel>
-                    </b:row>
 
                     <div align="center">
                         <b:messages value="Error" id="msgPagina"></b:messages>

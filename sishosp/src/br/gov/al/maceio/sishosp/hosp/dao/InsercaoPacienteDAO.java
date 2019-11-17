@@ -336,16 +336,16 @@ public class InsercaoPacienteDAO {
 				id = rs.getInt("id");
 			}
 
-			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, horario_atendimento) VALUES  (?, ?, ?, ?)";
 			ps = con.prepareStatement(sql2);
 
 			for (int i = 0; i < listaHorarioFinal.size(); i++) {
-				for (int j = 0; j < listaHorarioFinal.get(i).getListaFuncionarios().size(); j++) {
 					ps.setLong(1, id);
-					ps.setLong(2, listaHorarioFinal.get(i).getListaFuncionarios().get(j).getId());
+					ps.setLong(2, listaHorarioFinal.get(i).getFuncionario().getId());
 					ps.setInt(3, listaHorarioFinal.get(i).getDiaSemana());
+					ps.setTime(4, DataUtil.retornarHorarioEmTime(listaHorarioFinal.get(i).getHorario()));
 					ps.executeUpdate();
-				}
+				
 			}
 
 			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
@@ -395,32 +395,42 @@ public class InsercaoPacienteDAO {
 				}
 
 				for (int h = 0; h < listaHorarioFinal.size(); h++) {
-					for (int l = 0; l < listaHorarioFinal.get(h).getListaFuncionarios().size(); l++) {
-
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataMarcacao()) == listaHorarioFinal.get(h).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
 
-							ps4.setLong(1, listaHorarioFinal.get(h).getListaFuncionarios().get(l).getId());
+							ps4.setLong(1, listaHorarioFinal.get(h).getFuncionario().getId());
 							ps4.setInt(2, idAtendimento);
 							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo())) {
+									listaHorarioFinal.get(h).getFuncionario().getCbo().getCodCbo())) {
 								ps4.setNull(3, Types.NULL);
 							} else {
 								ps4.setLong(3,
-										listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo());
+										listaHorarioFinal.get(h).getFuncionario().getCbo().getCodCbo());
 							}
-							ps4.setInt(4,
-									listaHorarioFinal.get(h).getListaFuncionarios().get(l).getProc1().getIdProc());
-
+							
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+									listaHorarioFinal.get(h).getFuncionario().getProc1().getIdProc())) {
+								ps4.setNull(4, Types.NULL);
+							} else {
+								ps4.setLong(4,
+										listaHorarioFinal.get(h).getFuncionario().getProc1().getIdProc());
+							}
+							
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+									listaHorarioFinal.get(h).getHorario())) {
+								ps4.setNull(5, Types.NULL);
+							} else {
+								ps4.setTime(5,
+										DataUtil.retornarHorarioEmTime(listaHorarioFinal.get(h).getHorario()));
+							}
 							ps4.executeUpdate();
-						}
-					}
-				}
+						} //fimloop 2
+				} //fimloop 1
 
 			}
 
@@ -595,14 +605,15 @@ public class InsercaoPacienteDAO {
 
 		Date data = null;
 
-		String sql = "select (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) " + 
-				" + INTERVAL '1 DAYS' as datafinal " + 
-				" from hosp.paciente_instituicao pi " + 
-				" join hosp.laudo l on l.id_laudo = pi.codlaudo " + 
-				" where codpaciente=? and pi.codprograma=? and pi.codgrupo=? " + 
-				" and pi.id= (select max(id) from hosp.paciente_instituicao pi2 " + 
+		String sql = "select (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))  + INTERVAL '1 DAYS' as datafinal  from hosp.paciente_instituicao pi  join hosp.laudo l on l.id_laudo = pi.codlaudo  where codpaciente=? and pi.codprograma=? and pi.codgrupo=?  and l.id_laudo= ( " + 
+				"  select max(l1.id_laudo) from hosp.paciente_instituicao pi1 " + 
+				" join hosp.laudo l1 on l1.id_laudo = pi1.codlaudo where l1.codpaciente=? and pi1.codprograma=? and pi1.codgrupo=? " + 
+				" and to_char(l1.ano_final, '9999')||lpad(trim(to_char(l1.mes_final,'99')),2,'0')= " + 
+				" (select max(to_char(l2.ano_final, '9999')||lpad(trim(to_char(l2.mes_final,'99')),2,'0')) from hosp.paciente_instituicao pi2 " + 
 				" join hosp.laudo l2 on l2.id_laudo = pi2.codlaudo " + 
-				"where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? )" ;
+				" where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? " + 
+				" ) " + 
+				")" ;
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -615,6 +626,9 @@ public class InsercaoPacienteDAO {
 			stm.setInt(4, codPaciente);
 			stm.setInt(5, insercao.getPrograma().getIdPrograma());
 			stm.setInt(6, insercao.getGrupo().getIdGrupo());
+			stm.setInt(7, codPaciente);
+			stm.setInt(8, insercao.getPrograma().getIdPrograma());
+			stm.setInt(9, insercao.getGrupo().getIdGrupo());
 
 			ResultSet rs = stm.executeQuery();
 

@@ -11,11 +11,9 @@ public class HorarioAtendimento implements Serializable {
     private Integer diaSemana;
     private String horario;
     private FuncionarioBean funcionario;
-    private List<FuncionarioBean> listaFuncionarios;
 
     public HorarioAtendimento() {
         funcionario = new FuncionarioBean();
-        listaFuncionarios = new ArrayList<>();
     }
 
     public Integer getDiaSemana() {
@@ -42,11 +40,5 @@ public class HorarioAtendimento implements Serializable {
         this.funcionario = funcionario;
     }
 
-    public List<FuncionarioBean> getListaFuncionarios() {
-        return listaFuncionarios;
-    }
 
-    public void setListaFuncionarios(List<FuncionarioBean> listaFuncionarios) {
-        this.listaFuncionarios = listaFuncionarios;
-    }
 }

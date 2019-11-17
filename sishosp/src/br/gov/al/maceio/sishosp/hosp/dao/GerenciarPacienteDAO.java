@@ -28,13 +28,13 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar, String campoBusca, String tipoBusca) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
                 + "coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))),\n" + 
                 " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
-                + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
+                + " left join hosp.proc pr on (pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) "
                 + " left join hosp.pacientes pa on (coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
@@ -124,6 +124,7 @@ public class GerenciarPacienteDAO {
                 gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
                 gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
+                gp.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
                 gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
                 gp.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));

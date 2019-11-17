@@ -262,12 +262,12 @@ public class EspecialidadeDAO {
 
         List<EspecialidadeBean> lista = new ArrayList<>();
 
-        String sql = "select pi.codprograma, pi.codgrupo,es.id_especialidade, es.descespecialidade from hosp.paciente_instituicao pi\n" + 
-        		"join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
+        String sql = "select distinct pi.codprograma, pi.codgrupo,es.id_especialidade, es.descespecialidade from hosp.paciente_instituicao pi\n" + 
+        		" left join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
         		"join hosp.profissional_dia_atendimento pda on pda.id_paciente_instituicao = pi.id\n" + 
         		"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = pda.id_profissional) \n" + 
         		"LEFT JOIN hosp.especialidade es ON (es.id_especialidade = f.codespecialidade) \n" + 
-        		"where pi.codprograma=? and pi.codgrupo=? and codpaciente=? and status='A'";
+        		"where pi.codprograma=? and pi.codgrupo=? and coalesce(l.codpaciente, pi.id_paciente) =? and status='A'";
 
 
         try {

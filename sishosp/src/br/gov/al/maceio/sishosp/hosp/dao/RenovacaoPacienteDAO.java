@@ -171,8 +171,11 @@ public class RenovacaoPacienteDAO {
 
 			ps.executeUpdate();
 
-			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, id_paciente, turno) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?,  current_timestamp, ?, ?) RETURNING id;";
+			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, id_paciente, turno, "+
+			" codprocedimento_primario_laudo_anterior, codprocedimento_secundario1_laudo_anterior, codprocedimento_secundario2_laudo_anterior, "+
+			" codprocedimento_secundario3_laudo_anterior, codprocedimento_secundario4_laudo_anterior, "+
+			" codprocedimento_secundario5_laudo_anterior) "
+					+ " values (?, ?, ?, ?, ?, ?, ?, ?,  current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
@@ -194,6 +197,44 @@ public class RenovacaoPacienteDAO {
 				ps2.setNull(9, Types.NULL);
 			}
 			ps2.setString(10, insercao.getTurno());
+
+			if ((insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc()!= null) && (insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc()!= 0)) {
+				ps2.setInt(11, insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc());
+			} else {
+				ps2.setNull(11, Types.NULL);
+			}
+			
+			if ((insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc()!= null) && (insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc()!= 0) ) {
+				ps2.setInt(12, insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(12, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(13, insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(13, Types.NULL);
+			}
+			
+			if ((insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(14, insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(14, Types.NULL);
+			}
+			
+			if ((insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(15, insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(15, Types.NULL);
+			}
+			
+			if ((insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(16, insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(16, Types.NULL);
+			}
+			
+			
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {

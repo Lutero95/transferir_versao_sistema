@@ -32,8 +32,8 @@ public class AlteracaoPacienteDAO {
 				+ " pi.codequipe, e.descequipe, pi.turno, pi.horario, "
 				+ "  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n"
 				+ " coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n"
-				+ " pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao "
-				+ " from hosp.paciente_instituicao pi "
+				+ " pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao, codprocedimento_primario, codprocedimento_secundario1, "
+				+ " codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5 from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
 				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
 				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
@@ -64,6 +64,12 @@ public class AlteracaoPacienteDAO {
 					ip.getLaudo().setId(rs.getInt("codlaudo"));
 					ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
 					ip.getLaudo().getPaciente().setNome(rs.getString("nome"));
+					ip.getLaudo().getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+					ip.getLaudo().getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+					ip.getLaudo().getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+					ip.getLaudo().getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+					ip.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+					ip.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
 				} else
 				{
 					ip.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
@@ -75,10 +81,10 @@ public class AlteracaoPacienteDAO {
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
 				ip.setTurno(rs.getString("turno"));
-				if (user_session.getUnidade().getParametro().getOpcaoAtendimento().equals("H"))
+			/*	if (user_session.getUnidade().getParametro().getOpcaoAtendimento().equals("H"))
 					ip.setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"),
 							limitadorHorarioParaStringInicio, limitadorHorarioParaStringFinal));
-			
+			*/
 				ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 				ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
 				ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
@@ -108,7 +114,7 @@ public class AlteracaoPacienteDAO {
 				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
 				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
 				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
-				+ " end as dia from hosp.profissional_dia_atendimento p "
+				+ " end as dia, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento from hosp.profissional_dia_atendimento p "
 				+ " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
 				+ " where p.id_paciente_instituicao = ? " + " order by id_profissional";
 		try {
@@ -124,7 +130,7 @@ public class AlteracaoPacienteDAO {
 				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ge.getFuncionario().setId(rs.getLong("id_profissional"));
 				ge.setId(rs.getInt("id_paciente_instituicao"));
-				ge.getFuncionario().setDiasSemana(rs.getString("dia"));
+				ge.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
 				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
 				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
 

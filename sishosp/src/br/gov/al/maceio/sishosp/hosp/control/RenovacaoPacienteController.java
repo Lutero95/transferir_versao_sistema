@@ -190,6 +190,50 @@ public class RenovacaoPacienteController implements Serializable {
         }
 
     }
+    
+    public Boolean verificaPeriodoValidoRenovacaoLaudo() throws ProjetoException {
+    	Boolean rst = false;
+    	Integer codPaciente = null;
+    	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+    			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+    	
+    	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
+    		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        df.setLenient(false);
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), codPaciente, insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        Date d1 = periodoInicial;
+        Date d2 =null;
+        if ((insercaoParaLaudo.getLaudo().getId()!=null) && (insercaoParaLaudo.getLaudo().getId()!=0))
+         d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
+        else
+        {
+             Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
+             Calendar cal = Calendar.getInstance();
+             cal.setTime(dataFinalSemLaudo);
+             cal.add(Calendar.MONTH, 2);
+             cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+             d2 = cal.getTime();
+        }
+        Long dt = (d2.getTime() - d1.getTime());
+
+        dt = (dt / 86400000L);
+        
+        if (dt<0) {
+        	rst = false;
+        	JSFUtil.adicionarMensagemErro("Não é possível renovar este Paciente! /n A data de renovação está fora do intervalo do Laudo", "Atenção");
+        }
+        else
+        {
+        	rst = true;
+        }
+
+        return rst;
+
+    }
+    
+    
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
     	Integer codPaciente = null;
@@ -367,18 +411,33 @@ public class RenovacaoPacienteController implements Serializable {
     public void gravarRenovacaoPaciente() throws ProjetoException {
 
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
+        	if (verificaPeriodoValidoRenovacaoLaudo()) { //Verifica se a data de renovacao está dentro do periodo do laudo ou da nova solicitacao sem laudo 
         	Integer codPaciente = null;
-        	Integer codProcPrimario = null;
-        	Integer codProcSecundario1 = null;
-        	Integer codProcSecundario2 = null;
-        	Integer codProcSecundario3 = null;
-        	Integer codProcSecundario4 = null;
-        	Integer codProcSecundario5 = null;
-        	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+        	Integer codProcPrimarioSemLaudo = null;
+        	Integer codProcSecundario1SemLaudo = null;
+        	Integer codProcSecundario2SemLaudo = null;
+        	Integer codProcSecundario3SemLaudo = null;
+        	Integer codProcSecundario4SemLaudo = null;
+        	Integer codProcSecundario5SemLaudo = null;
+        	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) {
         			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+        			codProcPrimarioSemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoPrimario().getIdProc();
+                	codProcSecundario1SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario1().getIdProc();
+                	codProcSecundario2SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario2().getIdProc();
+                	codProcSecundario3SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario3().getIdProc();
+                	codProcSecundario4SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario4().getIdProc();
+                	codProcSecundario5SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario5().getIdProc();		
+        	}
         	
-        	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
+        	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null)) {
         		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
+        		codProcPrimarioSemLaudo = insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc();
+            	codProcSecundario1SemLaudo = insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc();
+            	codProcSecundario2SemLaudo = insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc();
+            	codProcSecundario3SemLaudo = insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc();
+            	codProcSecundario4SemLaudo = insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc();
+            	codProcSecundario5SemLaudo = insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc();		
+        	}
 
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
@@ -421,6 +480,7 @@ public class RenovacaoPacienteController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
+        }
         } else {
             JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo ou selecione um Paciente!", "Bloqueio");
         }

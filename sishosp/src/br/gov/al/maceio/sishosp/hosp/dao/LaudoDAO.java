@@ -674,12 +674,15 @@ public class LaudoDAO {
 
 		LaudoBean laudo = new LaudoBean();
 
-		String sql = "select mes_final, ano_final \n" + 
-				"from hosp.paciente_instituicao pi\n" + 
-				" join hosp.laudo l on l.id_laudo = pi.codlaudo\n" + 
-				" where codpaciente=? and pi.codprograma=? and pi.codgrupo=? and pi.id= (select max(id) from hosp.paciente_instituicao pi2\n" + 
+		String sql = "select mes_final, ano_final from hosp.laudo where laudo.id_laudo=(\n" + 
+				" select max(l1.id_laudo) from hosp.paciente_instituicao pi1\n" + 
+				" join hosp.laudo l1 on l1.id_laudo = pi1.codlaudo where l1.codpaciente=? and pi1.codprograma=? and pi1.codgrupo=? " + 
+				" and to_char(l1.ano_final, '9999')||lpad(trim(to_char(l1.mes_final,'99')),2,'0')=\n" + 
+				" (select max(to_char(l2.ano_final, '9999')||lpad(trim(to_char(l2.mes_final,'99')),2,'0')) from hosp.paciente_instituicao pi2\n" + 
 				" join hosp.laudo l2 on l2.id_laudo = pi2.codlaudo\n" + 
-				" where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? )";
+				" where l2.codpaciente=? and pi2.codprograma=? and pi2.codgrupo=? " + 
+				" )\n" + 
+				" )";
 
 		try {
 			conexao = ConnectionFactory.getConnection();

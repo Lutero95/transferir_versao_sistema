@@ -7,6 +7,8 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -209,7 +211,7 @@ public class AtendimentoDAO {
 				}
 
 				String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
-						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?, ?);";
+						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao, horario_atendimento) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 				PreparedStatement stmt2 = con.prepareStatement(sql2);
 				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
@@ -219,13 +221,21 @@ public class AtendimentoDAO {
 				} else {
 					stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
 				}
-				stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+				
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getProcedimento().getIdProc())) {
+					stmt2.setNull(4, Types.NULL);
+				} else {
+					stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+				}
+				
+				
 				if ((lista.get(i).getStatus() != null) && (!lista.get(i).getStatus().equals("")))
 					stmt2.setString(5, lista.get(i).getStatus());
 				else
 					stmt2.setNull(5, Types.NULL);
 				stmt2.setString(6, lista.get(i).getEvolucao());
 				stmt2.setString(7, lista.get(i).getPerfil());
+				stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
 				stmt2.executeUpdate();
 
 			}
@@ -447,7 +457,7 @@ public class AtendimentoDAO {
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer id) throws ProjetoException {
 
 		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
-				+ " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao "
+				+ " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao, to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento "
 				+ " from hosp.atendimentos1 a1"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
@@ -478,7 +488,8 @@ public class AtendimentoDAO {
 				at.getProcedimento().setIdProc(rs.getInt("id"));
 				at.setEvolucao(rs.getString("evolucao"));
 				at.setPerfil(rs.getString("perfil_avaliacao"));
-
+				if (!VerificadorUtil.verificarSeObjetoNulo(rs.getString("horario_atendimento")))
+					at.setHorarioAtendimento(rs.getString("horario_atendimento"));
 				lista.add(at);
 			}
 

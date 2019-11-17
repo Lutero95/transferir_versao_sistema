@@ -147,4 +147,6 @@ public class GerenciarPacienteBean implements Serializable {
 		this.dataDesligamento = dataDesligamento;
 	}
 
+
+
 }

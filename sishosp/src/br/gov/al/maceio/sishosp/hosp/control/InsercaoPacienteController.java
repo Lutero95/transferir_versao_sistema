@@ -347,11 +347,16 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionaisAdicionados.add(funcionario);
 
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+        /*
         for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
             listaHorarioAtendimentosAuxiliar.add(listaHorarioAtendimentos.get(i));
         }
-
+*/
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+        	listaHorarioFinal.add(listaHorarioAtendimentos.get(i));
+        }
         adicionarProfissionalIhHorarioNaLista();
+        
 
         JSFUtil.fecharDialog("dlgDiasAtendimentoHorario");
     }
@@ -378,13 +383,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     private void adicionarProfissionalIhHorarioNaLista() {
-
+/*
         if (listaHorarioFinal.size() == 0) {
             for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
                 listaHorarioFinal.add(listaHorarioAtendimentosAuxiliar.get(i));
             }
             for (int i = 0; i < listaHorarioFinal.size(); i++) {
-                listaHorarioFinal.get(i).getListaFuncionarios().add(funcionario);
+                listaHorarioFinal.get(i).setFuncionario(funcionario);
             }
 
         } else {
@@ -412,8 +417,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     ) {
 
                     } else {
-                        if (!listaHorarioFinal.get(j).getListaFuncionarios().contains(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario().getId())) {
-                            listaHorarioFinal.get(j).getListaFuncionarios().add(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario());
+                        if (!listaHorarioFinal.get(j).getFuncionario().getId().contains(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario().getId())) {
+                            listaHorarioFinal.get(j).setFuncionario(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario());
                         }
 
                     }
@@ -421,12 +426,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
         }
 
-
+*/
         for (int i = 0; i < listaHorarioFinal.size(); i++) {
             if (!listaDias.contains(listaHorarioFinal.get(i).getDiaSemana())) {
                 listaDias.add(listaHorarioFinal.get(i).getDiaSemana());
             }
         }
+        
     }
 
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL

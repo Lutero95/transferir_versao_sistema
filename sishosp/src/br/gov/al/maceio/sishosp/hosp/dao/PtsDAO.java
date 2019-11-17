@@ -148,7 +148,7 @@ public class PtsDAO {
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
                 "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa) " +
                 "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
-                "WHERE pi.status = 'A' and laudo.codpaciente = p.cod_paciente AND p.id = ?;";
+                "WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_paciente AND p.id = ?;";
         
 
         Pts pts = new Pts();
@@ -541,16 +541,16 @@ public class PtsDAO {
         //Inicia com 2, pois é o número mínimo de parametros.
 
         String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
-                "pi.codgrupo, pi.codprograma, laudo.codpaciente, pa.cpf, pa.cns, pa.matricula, " +
+                "pi.codgrupo, pi.codprograma, pa.id_paciente codpaciente, pa.cpf, pa.cns, pa.matricula, " +
                 "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
                 "WHEN p.status = 'R' THEN 'Renovado' END AS status_por_extenso " +
                 "FROM hosp.paciente_instituicao pi " +
                 "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma) " +
                 "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = laudo.codpaciente) " +
+                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) " +
                 "LEFT JOIN hosp.pts p ON " +
-                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = laudo.codpaciente) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' " +
+                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente =coalesce(laudo.codpaciente, pi.id_paciente)) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' " +
                 " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " + 
                 " (select max(id) from hosp.pts p3 " +
                 " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " + 

@@ -113,6 +113,11 @@
 
 							<p:ajax event="cellEdit"
 								listener="#{AtendimentoController.onCellEdit}" />
+							
+							<p:column headerText="Horário Atendimento" width="10%" rendered="#{AtendimentoController.opcaoAtendimento=='H'}">
+								<h:outputText value="#{atendimento.horarioAtendimento}">
+								</h:outputText>
+							</p:column>
 
 							<p:column headerText="CNS" width="10%">
 								<h:outputText value="#{atendimento.funcionario.cns}"></h:outputText>
