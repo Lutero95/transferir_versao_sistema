@@ -365,7 +365,7 @@ public class AlteracaoPacienteDAO {
 				return retorno;
 			}
 
-			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, horario_atendimento) VALUES  (?, ?, ?, ?)";
 			PreparedStatement ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 

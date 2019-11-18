@@ -27,7 +27,7 @@ public class FuncionarioBean implements Serializable {
     private Boolean realizaEncaixes;
     private String cns;
     private String diasSemana;
-    private ArrayList<String> listDiasSemana;
+    private ArrayList<DiaAtendimento> listaDiasAtendimentoSemana;
     private Integer diaSemana;
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
@@ -78,7 +78,7 @@ public class FuncionarioBean implements Serializable {
         this.grupoRmv = new GrupoBean();
         this.unidade = new UnidadeBean();
         this.perfil = new Perfil();
-        listDiasSemana = new ArrayList<String>();
+        listaDiasAtendimentoSemana = new ArrayList<DiaAtendimento>();
         this.realizaAtendimento = false;
         this.realizaLiberacoes = false;
         listaUnidades = new ArrayList<>();
@@ -373,13 +373,7 @@ public class FuncionarioBean implements Serializable {
         this.diasSemana = diasSemana;
     }
 
-    public ArrayList<String> getListDiasSemana() {
-        return listDiasSemana;
-    }
-
-    public void setListDiasSemana(ArrayList<String> listDiasSemana) {
-        this.listDiasSemana = listDiasSemana;
-    }
+  
 
     public Integer getDiaSemana() {
         return diaSemana;
@@ -483,5 +477,15 @@ public class FuncionarioBean implements Serializable {
 
 	public void setHorarioAtendimento(String horarioAtendimento) {
 		this.horarioAtendimento = horarioAtendimento;
+	}
+
+
+	public ArrayList<DiaAtendimento> getListaDiasAtendimentoSemana() {
+		return listaDiasAtendimentoSemana;
+	}
+
+
+	public void setListaDiasAtendimentoSemana(ArrayList<DiaAtendimento> listaDiasAtendimentoSemana) {
+		this.listaDiasAtendimentoSemana = listaDiasAtendimentoSemana;
 	}
 }
