@@ -197,8 +197,8 @@ public class InsercaoPacienteDAO {
 			for (int i = 0; i < lista.size(); i++) {
 				ps.setLong(1, id);
 				ps.setLong(2, lista.get(i).getId());
-				for (int j = 0; j < lista.get(i).getListDiasSemana().size(); j++) {
-					ps.setInt(3, Integer.parseInt(lista.get(i).getListDiasSemana().get(j)));
+				for (int j = 0; j < lista.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps.setInt(3, lista.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
 					ps.executeUpdate();
 				}
 			}
@@ -252,10 +252,9 @@ public class InsercaoPacienteDAO {
 
 				for (int j = 0; j < lista.size(); j++) {
 
-					for (int h = 0; h < lista.get(j).getListDiasSemana().size(); h++) {
+					for (int h = 0; h < lista.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
-						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataMarcacao()) == Integer
-								.parseInt(lista.get(j).getListDiasSemana().get(h))) {
+						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataMarcacao()) == lista.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -493,10 +492,10 @@ public class InsercaoPacienteDAO {
 			PreparedStatement ps2 = null;
 			ps2 = con.prepareStatement(sql2);
 
-			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana().size(); i++) {
+			for (int i = 0; i < insercao.getFuncionario().getListaDiasAtendimentoSemana().size(); i++) {
 				ps2.setLong(1, id);
 				ps2.setLong(2, insercao.getFuncionario().getId());
-				ps2.setInt(3, Integer.parseInt(insercao.getFuncionario().getListDiasSemana().get(i)));
+				ps2.setInt(3, insercao.getFuncionario().getListaDiasAtendimentoSemana().get(i).getDiaSemana());
 				ps2.setInt(4, user_session.getUnidade().getId());
 				ps2.executeUpdate();
 

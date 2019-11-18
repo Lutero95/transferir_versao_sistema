@@ -124,7 +124,7 @@ public class AlteracaoPacienteDAO {
 			stm.setInt(1, id);
 
 			ResultSet rs = stm.executeQuery();
-
+			AgendaDAO aDao = new AgendaDAO();
 			while (rs.next()) {
 				GerenciarPacienteBean ge = new GerenciarPacienteBean();
 				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
@@ -133,6 +133,8 @@ public class AlteracaoPacienteDAO {
 				ge.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
 				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
 				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				ge.getFuncionario().setListaDiasAtendimentoSemana(aDao.listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
+                        id, ge.getFuncionario().getId(), conexao));
 
 				lista.add(ge);
 			}
@@ -217,8 +219,8 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listaProfissionais.size(); i++) {
 				ps6.setLong(1, insercao.getId());
 				ps6.setLong(2, listaProfissionais.get(i).getId());
-				for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
-					ps6.setInt(3, Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
+				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps6.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
 					ps6.executeUpdate();
 				}
 			}
@@ -294,11 +296,10 @@ public class AlteracaoPacienteDAO {
 
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
-						for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
+						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
-											.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
+									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -372,8 +373,9 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listaProfissionais.size(); i++) {
 				ps6.setLong(1, insercao.getId());
 				ps6.setLong(2, listaProfissionais.get(i).getId());
-				for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
-					ps6.setInt(3, Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
+				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps6.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+					ps6.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorarioAtendimento()));
 					ps6.executeUpdate();
 				}
 			}
@@ -442,11 +444,10 @@ public class AlteracaoPacienteDAO {
 
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
-						for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
+						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
-											.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
+									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -542,10 +543,10 @@ public class AlteracaoPacienteDAO {
 			PreparedStatement ps5 = null;
 			ps5 = conexao.prepareStatement(sql5);
 
-			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana().size(); i++) {
+			for (int i = 0; i < insercao.getFuncionario().getListaDiasAtendimentoSemana().size(); i++) {
 				ps5.setLong(1, insercao.getId());
 				ps5.setLong(2, insercao.getFuncionario().getId());
-				ps5.setInt(3, Integer.parseInt(insercao.getFuncionario().getListDiasSemana().get(i)));
+				ps5.setInt(3, insercao.getFuncionario().getListaDiasAtendimentoSemana().get(i).getDiaSemana());
 				ps5.setInt(4, user_session.getUnidade().getId());
 				ps5.executeUpdate();
 
