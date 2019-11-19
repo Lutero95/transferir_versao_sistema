@@ -50,7 +50,7 @@ public class AlteracaoPacienteController implements Serializable {
     private List<Integer> listaDias;
     private static List<Integer> listaDiasDuplicado;
     private InsercaoPacienteDAO iDao;
-    private static InsercaoPacienteDAO iDaoDuplicado;
+    private static InsercaoPacienteDAO iDaoDuplicado =  new InsercaoPacienteDAO();;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
     private static ArrayList<FuncionarioBean> listaProfissionaisAdicionadosDuplicado;
     private ArrayList<AgendaBean> listAgendamentoProfissional;
@@ -74,11 +74,15 @@ public class AlteracaoPacienteController implements Serializable {
 
     public AlteracaoPacienteController() throws ProjetoException, ParseException {
         insercao = new InsercaoPacienteBean();
+        insercaoDuplicado = new InsercaoPacienteBean();
         insercaoParaLaudo = new InsercaoPacienteBean();
+        insercaoParaLaudoDuplicado = new InsercaoPacienteBean();
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
+        listaProfissionaisAdicionadosDuplicado = new ArrayList<FuncionarioBean>();
         funcionario = new FuncionarioBean();
         tipo = "";
         iDao = new InsercaoPacienteDAO();
+        iDaoDuplicado = new InsercaoPacienteDAO();
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
         listaHorariosEquipe = new ArrayList<AgendaBean>();
         todosOsProfissionais = false;
@@ -100,6 +104,21 @@ public class AlteracaoPacienteController implements Serializable {
 
         return true;
     }
+    
+    public void botaoCarga() throws ProjetoException, ParseException {
+    	GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
+    	ArrayList<Integer> lista = new ArrayList<>();
+    	lista = gDao.carregarPacientesInstituicaoDuplicado();
+    	for (int i = 0; i < lista.size(); i++) {
+    		listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
+    		listAgendamentoProfissionalDuplicado = new ArrayList<>();
+    		listaDiasDuplicado = new ArrayList<>();
+    		listaProfissionaisAdicionadosDuplicado = new ArrayList<>();
+    		carregaAlteracaoDuplicado(lista.get(i));
+    		gravarAlteracaoPacienteDuplicado();
+    	}
+    	JSFUtil.adicionarMensagemAdvertencia("Acabou carga", "Advertência");
+	}
     
     private Boolean verificarSeHorariosDoFuncionarioJaForamAdicionados() {
         if (listaProfissionaisAdicionados.size() == 0) {
@@ -939,6 +958,9 @@ public class AlteracaoPacienteController implements Serializable {
        
 
     }
+    
+
+        
     
     public static void adicionarFuncionarioParaEdicaoDuplicado(List<FuncionarioBean> listaFuncionarioAuxiliar) {
         String dias = "";

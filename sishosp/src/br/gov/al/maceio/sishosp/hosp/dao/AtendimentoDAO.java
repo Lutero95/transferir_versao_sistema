@@ -235,7 +235,10 @@ public class AtendimentoDAO {
 					stmt2.setNull(5, Types.NULL);
 				stmt2.setString(6, lista.get(i).getEvolucao());
 				stmt2.setString(7, lista.get(i).getPerfil());
-				stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
+				if (lista.get(i).getHorarioAtendimento() != null)
+					stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
+				else
+					stmt2.setNull(8, Types.NULL);
 				stmt2.executeUpdate();
 
 			}

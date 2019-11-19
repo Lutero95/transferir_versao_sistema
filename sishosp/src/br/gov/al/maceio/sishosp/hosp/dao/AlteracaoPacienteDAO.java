@@ -502,6 +502,8 @@ public class AlteracaoPacienteDAO {
 
 		Boolean retorno = false;
 		ResultSet rs = null;
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -611,6 +613,7 @@ public class AlteracaoPacienteDAO {
 				}
 			}
 
+			
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
 
