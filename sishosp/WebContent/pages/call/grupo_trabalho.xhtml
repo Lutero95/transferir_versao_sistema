@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:b="http://bootsfaces.net/ui">
+
+
+<ui:composition template="../../template/templategeral.xhtml">
+	<ui:define name="body">
+		<h:form id="formData">
+			<p:growl id="msg" />
+
+			<h3 style="font-size: 20px; font-weight: bold">Gerenciamento de
+				Grupos de Trabalho</h3>
+
+			<p:outputPanel id="outbotoes" autoUpdate="true">
+				<div>
+					<h:panelGrid columns="5"
+						style="margin-top:15px;margin-bottom:15px;font-size:12px !important;">
+
+						<p:commandButton value="Novo" icon="ui-icon-plus"
+							action="#{MBCall.limparGrupo2}"
+							actionListener="#{MBCall.abreGrupo}"
+							update=":formCadastro:pngcadastro">
+						</p:commandButton>
+
+						<p:commandButton style="margin-left:5px;" icon="ui-icon-wrench"
+							value="Editar"
+							disabled="#{MBCall.grupo == null || MBCall.grupo.id == null}"
+							action="#{MBCall.carregaGrupo}" update=":formEditar:pick2" />
+
+						<p:commandButton rendered="false" style="margin-left:5px;"
+							value="Excluir"
+							disabled="#{MBCall.rowBeanGrupo.id == null || MBCall.rowBeanGrupo.id == 0}"
+							onclick="PF('dlgExcluir').show();" icon="ui-icon-check" />
+					</h:panelGrid>
+				</div>
+			</p:outputPanel>
+		</h:form>
+
+		<h:form id="formDt">
+			<p:outputPanel id="outorc">
+
+				<b:dataTable id="singleDT" var="grupo"
+					rowStyleClass="#{grupo.ativo ? null : 'rowRedBlood'}"
+					value="#{MBCall.listaGrupoTrabalho}" selectionMode="single"
+					select="true" custom-lang-url="#{resource['pt-br.json']}"
+					onselect="ajax: MBCall.onRowSelectGrupo(grupo)"
+					ondeselect="ajax: MBCall.onRowSelectGrupo(null)">
+
+					<b:dataTableColumn label="Código" value="#{grupo.id}"
+						style="text-align:center;" />
+					<b:dataTableColumn label="Nome do Grupo" value="#{grupo.turno}"
+						style="text-align:center;" />
+					<b:dataTableColumn label="Nº Funcionários"
+						value="#{grupo.numero_funcionarios}" style="text-align:center;" />
+				</b:dataTable>
+
+				<br />
+				<br />
+
+				<b:dataTable id="funcDT" var="grupo"
+					value="#{MBCall.lstFuncionarioGrupo}" searching="false"
+					paginated="false" custom-lang-url="#{resource['pt-br.json']}">
+
+					<b:dataTableColumn label="Funcionários do Grupo"
+						value="#{grupo.nome}" style="text-align:center;" />
+				</b:dataTable>
+
+			</p:outputPanel>
+		</h:form>
+
+		<p:dialog responsive="true" header="Novo Grupo de Trabalho"
+			widgetVar="dlgNovoScript" modal="true" width="950"
+			style="font-size:12px !important;" height="auto" resizable="false">
+			<h:form id="formCadastro">
+
+				<p:panelGrid columns="10" styleClass="semBorda" id="pngcadastro">
+					<p:outputLabel value="Nome do Grupo: " />
+					<p:inputText value="#{MBCall.grupo.turno}" required="true"
+						requiredMessage="Nome: Campo obrigatório" />
+				</p:panelGrid>
+
+				<p:outputPanel autoUpdate="false">
+					<center>
+						<p:outputLabel value="Funcionários: "></p:outputLabel>
+					</center>
+					<p:dataTable id="DTFunc1" var="fun" scrollable="true"
+						scrollHeight="150" emptyMessage="Nenhum Registro"
+						value="#{MBCall.listGrupo}" selectionMode="single"
+						selection="#{MBCall.rowBean2}" rowKey="#{fun.codFunc}">
+						<p:ajax event="rowSelect" listener="#{MBCall.onRowSelectFunc}" />
+
+
+						<p:column style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+							<h:outputText value="#{fun.nome}" />
+						</p:column>
+
+						<p:column style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CPF" />
+							</f:facet>
+							<h:outputText value="#{fun.cpf}" />
+						</p:column>
+
+					</p:dataTable>
+					<p:commandButton value="Adicionar"
+						action="#{MBCall.incluirListaFunc()}" icon="ui-icon-plus"
+						update=":formCadastro:DTFunc1 :formCadastro:DTFunc2">
+
+					</p:commandButton>
+
+
+					<center>
+						<p:outputLabel value="Funcionários inseridos no grupo: "></p:outputLabel>
+					</center>
+					<p:dataTable id="DTFunc2" var="fun" scrollable="true"
+						scrollHeight="100" emptyMessage="Nenhum Registro"
+						value="#{MBCall.listFuncCall}" selectionMode="single"
+						selection="#{MBCall.rowBean3}" rowKey="#{fun.codFunc}">
+						<p:ajax event="rowSelect" listener="#{MBCall.onRowSelectFunc3}" />
+
+						<p:column style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+							<h:outputText value="#{fun.nome}" />
+						</p:column>
+
+						<p:column style=";text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CPF" />
+							</f:facet>
+							<h:outputText value="#{fun.cpf}" />
+						</p:column>
+					</p:dataTable>
+
+					<p:commandButton value="Remover"
+						action="#{MBCall.removeListaFunc()}"
+						update=":formCadastro:DTFunc1,:formCadastro:DTFunc2"
+						icon="ui-icon-closethick">
+					</p:commandButton>
+
+				</p:outputPanel>
+				<br></br>
+
+				<center>
+					<p:commandButton value="Cadastrar"
+						style="width: 200px; font-size: 15px !important;"
+						action="#{MBCall.insertGrupo()}"
+						update=":formData:msg, :formDt:singleDT, :formEditar, :formData:outbotoes">
+					</p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" header="Editar Grupo"
+			widgetVar="dlgEditarScript" modal="true" width="600"
+			style="font-size:12px !important;" height="auto" resizable="false">
+
+			<h:form id="formEditar">
+				<p:outputPanel id="outEdit" autoUpdate="false">
+					<p:panelGrid columns="4" styleClass="semBorda">
+						<p:outputLabel value="Nome do Grupo: " />
+						<p:inputText value="#{MBCall.grupo.turno}" required="true"
+							requiredMessage="Turno: Campo obrigatório" />
+
+						<h:outputText value="Ativo:" />
+						<p:selectBooleanCheckbox value="#{MBCall.grupo.ativo}" />
+
+					</p:panelGrid>
+					<center>
+						<p:panelGrid columns="2" styleClass="semBorda">
+
+							<p:pickList id="pick2" value="#{MBCall.listaGrupoDual}" var="sis"
+								itemLabel="#{sis.nome}" itemValue="#{sis}" showCheckbox="true"
+								converter="conPickListGrupoTrabalho" showSourceFilter="false"
+								showTargetFilter="false" filterMatchMode="contains">
+
+								<f:facet name="sourceCaption">Funcionários fora do Grupo</f:facet>
+								<f:facet name="targetCaption">Funcionários do Grupo</f:facet>
+
+								<p:ajax event="transfer" process="@this" immediate="true"
+									listener="#{MBCall.onTransferGrupo}" />
+							</p:pickList>
+						</p:panelGrid>
+						<br></br> <br></br>
+
+						<p:commandButton value="Salvar"
+							style="width: 200px; font-size: 15px !important;"
+							update=":formData:msg, :formDt, :formEditar, :formData:outbotoes"
+							action="#{MBCall.updateGrupo(MBCall.grupo)}" />
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" header="Excluir Grupo"
+			widgetVar="dlgExcluir" modal="true" width="auto"
+			style="font-size:12px !important;" height="auto" resizable="false">
+			<h:form id="formExcluir">
+				<p:outputPanel id="outExcluir" autoUpdate="false">
+					<p:inputText value="#{MBCall.grupo.id}" style="display: none" />
+					<center>
+						<h:outputText value="Deseja exluir o grupo #{MBCall.grupo.turno}?"
+							style="font-size: 15px" />
+
+						<p:panelGrid columns="2" styleClass="semBorda"
+							style="margin-top: 30px">
+							<p:commandButton value="Sim"
+								update=":formData:msg, :formDt, :formExcluir, :formData:outbotoes"
+								actionListener="#{MBCall.excluirGrupo()}" />
+
+							<p:commandButton value="Não" onclick="dlgExcluir.hide()" />
+						</p:panelGrid>
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

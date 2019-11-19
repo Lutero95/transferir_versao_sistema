@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+					<center>
+						<div style="margin-top: 10px">
+							<p:panel style="width:600px; text-align:left;" id="pnl">
+								<f:facet name="header">
+									<h:outputText value="Carga Funcionário - Call Center" />
+								</f:facet>
+								<br />
+								
+								<h:form>
+									<p:panelGrid columns="4" styleClass="semBorda">
+										<h:outputText value="Data início:" />
+										<p:calendar value="#{reportController.periodoinicial}"
+											mask="true" showOn="button" pattern="dd/MM/yyyy" size="8"
+											required="true" locale="pt"
+											requiredMessage="Campo Data início é obrigatório" id="dti"
+											style="width:200px;margin-left:20px">
+										</p:calendar>
+
+										<h:outputText value="Data fim:" />
+										<p:calendar value="#{reportController.periodofinal}"
+											mask="true" showOn="button" pattern="dd/MM/yyyy" size="8"
+											required="true" locale="pt"
+											requiredMessage="Campo Data fim é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
+									</p:panelGrid>
+								<!--
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Tipo:" />
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
+											<f:selectItem itemLabel="Sintético" itemValue="S" />
+											<f:selectItem itemLabel="Analítico" itemValue="A" />
+										</p:selectOneRadio>
+									</p:panelGrid>
+									-->
+									<br />
+									<center>
+										<p:commandButton icon="ui-icon-print" value="Imprimir"
+											style="font-size: 12px; text-align: right;"
+											actionListener="#{reportController.cargaCallCenter}"
+											ajax="false" />
+									</center>
+									
+								</h:form>
+							</p:panel>
+						</div>
+					</center>
+				</f:view>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

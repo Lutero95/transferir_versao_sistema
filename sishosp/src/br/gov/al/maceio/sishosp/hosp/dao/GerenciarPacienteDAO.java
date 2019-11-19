@@ -147,6 +147,44 @@ public class GerenciarPacienteDAO {
         }
         return lista;
     }
+    
+    public ArrayList<Integer> carregarPacientesInstituicaoDuplicado() throws ProjetoException {
+
+        String sql = "select p.id "
+                + " from hosp.paciente_instituicao p "
+                + " where p.id_paciente<>164722";
+                      
+
+        ArrayList<Integer> lista = new ArrayList<>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+           
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GerenciarPacienteBean gp = new GerenciarPacienteBean();
+
+                gp.setId(rs.getInt("id"));
+                
+
+                lista.add(gp.getId());
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }    
 
     public Boolean desligarPaciente(GerenciarPacienteBean gerenciarRow,
                                     GerenciarPacienteBean gerenciar) throws ProjetoException {

@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+	<ui:define name="body">
+
+
+		<div id="conteudo">
+			<div id="contMenuBar">
+
+
+				<p:outputPanel autoUpdate="false">
+					<center>
+						<div style="margin-top: 10px">
+
+							<p:panel style="width:600px; text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Agendamento por Período" />
+								</f:facet>
+
+								<br />
+								<h:form>
+									<p:panelGrid columns="4" styleClass="semBorda">
+
+										<h:outputLabel for="dti" styleClass="rotulosBold"
+											value="Data início:  " />
+										<p:calendar value="#{reportController.periodoinicial}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data início é obrigatório" id="dti"
+											style="width:200px">
+
+										</p:calendar>
+										<h:outputLabel for="dtf" styleClass="rotulosBold"
+											style="margin-left: 15px;" value="    		Data fim:  " />
+										<p:calendar value="#{reportController.periodofinal}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data fim é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
+
+									</p:panelGrid>
+									
+									<br></br>
+
+									<p:panelGrid columns="2" styleClass="semBorda">
+
+										<h:outputText value="Sala:" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.codsala}">
+											<f:selectItem itemLabel="SELECIONE UMA SALA/TODAS" itemValue="0" />
+											<f:selectItems value="#{salaController.listaTodasSalas()}" var="x" itemLabel="#{x.descricao}" itemValue="#{x.codsala}" />
+										</p:selectOneMenu>
+
+										<h:outputText value="Cliente:"></h:outputText>
+									
+										<p:autoComplete value="#{reportController.clienteBean}" size="30"
+											completeMethod="#{buscaController.completeBuscaCliente}" var="theme"	forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente">
+											<p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+										</p:autoComplete>
+
+									</p:panelGrid>
+									<br />
+									<center>
+										<p:commandButton icon="ui-icon-print" value="Imprimir"
+											style="font-size: 12px; text-align: right;"
+											actionListener="#{reportController.executeAgendaNovo}"
+											ajax="false" />	
+										<h:commandLink icon="ui-icon-print"  
+											value="Gerar CSV" style="font-size: 12px; text-align: right; margin-left: 10px;"
+											actionListener="#{reportController.agendaExcel}"
+											update="tabela1">
+											<h:graphicImage title="CSV" value="../../imgs/csv.png" />
+											<p:dataExporter type="csv" target="tabela1"
+											fileName="agendamentosPorPeriodo" />
+										</h:commandLink>
+										<h:commandLink icon="ui-icon-print"  
+											value="Gerar XLS" style="font-size: 12px; text-align: right; margin-left: 10px;"
+											actionListener="#{reportController.agendaExcel}"
+											update="tabela1">
+											<h:graphicImage title="XLS" value="../../imgs/excel.png" />
+											<p:dataExporter type="xls" target="tabela1"
+											fileName="agendamentosPorPeriodo" />
+										</h:commandLink>
+									</center>
+
+
+									<p:dataTable id="tabela1"
+										value="#{reportController.listaAgendaDTO}" var="m"
+										style="display: none">
+	
+										<p:column headerText="Dia" width="10%">
+											<p:outputLabel value="#{m.dia}" />
+										</p:column>
+	
+										<p:column headerText="Sala" width="40%">
+											<p:outputLabel value="#{m.sala}" />
+										</p:column>
+										
+										<p:column headerText="Horário" width="40%">
+											<p:outputLabel value="#{m.horario}" />
+										</p:column>
+										
+										<p:column headerText="Cliente" width="40%">
+											<p:outputLabel value="#{m.clienteNome}" />
+										</p:column>
+	
+										<p:column headerText="CPF/CNPJ" width="10%">
+											<p:outputLabel value="#{m.numeroCpf}" />
+										</p:column>
+	
+										<p:column headerText="Telefone" width="15%">
+											<p:outputLabel
+												value="#{m.telefone}" />
+										</p:column>
+										
+										<p:column headerText="Procedimento" width="15%">
+											<p:outputLabel
+												value="#{m.descricaoProcedimento}" />
+										</p:column>
+	
+										<p:column headerText="Situação" width="20%">
+											<p:outputLabel value="#{m.situacao}" />
+										</p:column>
+									</p:dataTable>
+								</h:form>
+
+							</p:panel>
+						</div>
+					</center>
+				</p:outputPanel>
+
+				<!-- Terminar edição -->
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

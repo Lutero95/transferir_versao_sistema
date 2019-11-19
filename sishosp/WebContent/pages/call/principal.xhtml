@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+
+	<ui:define name="body">
+		<h:body class="bg-callcenter">
+
+			<p:panelGrid columns="2" styleClass="semBorda">
+				<h:outputText value="Usuário Online:" />
+				<h:outputText value="#{MBUsuarios.pegandoNome()}" />
+
+				<h:outputText value="Perfil:" />
+				<h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}" />
+
+				<h:outputText value="Empresa:" />
+				<h:outputText value="#{MBUsuarios.pegandoEmpresa()}" />
+			</p:panelGrid>
+
+			<div class="sistemas">
+
+				<div class="container">
+					<p:outputPanel autoUpdate="true">
+						<div class="ui-grid ui-grid-responsive">
+							<div class="ui-grid-row" style="display: inline-block;">
+
+								<div class="ui-grid-col-4">
+									<h:link outcome="planilha_atividade.faces?faces-redirect=true"
+										rendered="#{MBUsuarios.verificarPermComp('FC-2', MBUsuarios.sistemaLogado.id) == true}">
+										<p:graphicImage
+											value="../../imgs/principal/icone-planilha.png" width="200px"
+											height="200px"></p:graphicImage>
+									</h:link>
+									<p:graphicImage value="../../imgs/principal/icone-planilha.png"
+										width="200px" height="200px"
+										rendered="#{MBUsuarios.verificarPermComp('FC-2', MBUsuarios.sistemaLogado.id) == false}">
+									</p:graphicImage>
+								</div>
+
+							</div>
+
+							<div class="ui-grid-row" style="display: inline-block;">
+
+								<div class="ui-grid-col-5" style="margin-left: 20">
+								<h:form>
+									<h:commandLink action="#{MBUsuarios.redirecionarPagina()}"
+										style="margin-left:20"
+										rendered="#{MBUsuarios.verificarPermComp('FC-2', MBUsuarios.sistemaLogado.id) == true}">
+										<p:graphicImage value="../../imgs/principal/icone-agenda.png"
+											width="200px" height="200px"></p:graphicImage>
+									</h:commandLink>
+									<p:graphicImage value="../../imgs/principal/icone-agenda.png"
+										width="200px" height="200px"
+										rendered="#{MBUsuarios.verificarPermComp('FC-2', MBUsuarios.sistemaLogado.id) == false}">
+									</p:graphicImage>
+									</h:form>
+								</div>
+							</div>
+						</div>
+
+
+					</p:outputPanel>
+				</div>
+			</div>
+		</h:body>
+	</ui:define>
+
+</ui:composition>
+</html>

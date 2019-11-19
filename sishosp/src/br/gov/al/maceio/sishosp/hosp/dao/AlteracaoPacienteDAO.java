@@ -495,6 +495,141 @@ public class AlteracaoPacienteDAO {
 		}
 		return retorno;
 	}
+	
+	public boolean gravarAlteracaoEquipeDiaHorarioDuplicado(InsercaoPacienteBean insercao,
+			InsercaoPacienteBean insercaoParaLaudo, List<AgendaBean> listAgendamentoProfissional,
+			Integer id_paciente, List<FuncionarioBean> listaProfissionais) throws ProjetoException {
+
+		Boolean retorno = false;
+		ResultSet rs = null;
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)) {
+
+				conexao.close();
+
+				return retorno;
+			}
+
+			String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
+					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
+
+			PreparedStatement ps7 = null;
+			ps7 = conexao.prepareStatement(sql7);
+
+			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
+
+				if (!verificarSeAtendimentoExistePorEquipe(insercao,
+						listAgendamentoProfissional.get(i).getDataMarcacao(),
+						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
+
+					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+					ps7.setNull(2, Types.NULL);
+					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
+							listAgendamentoProfissional.get(i).getDataMarcacao()));
+					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+
+					if (insercao.getTurno() != null) {
+						ps7.setString(5, insercao.getTurno());
+					} else {
+						ps7.setNull(5, Types.NULL);
+					}
+
+					ps7.setString(6, insercao.getObservacao());
+					ps7.setInt(7, id_paciente);
+					ps7.setInt(8, user_session.getUnidade().getId());
+
+					if (insercao.getHorario() != null) {
+						ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
+					} else {
+						ps7.setNull(9, Types.NULL);
+					}
+
+					if (insercao.getPrograma().getIdPrograma() != null) {
+						ps7.setInt(10, insercao.getPrograma().getIdPrograma());
+					} else {
+						ps7.setNull(10, Types.NULL);
+					}
+
+					if (insercao.getGrupo().getIdGrupo() != null) {
+						ps7.setInt(11, insercao.getGrupo().getIdGrupo());
+					} else {
+						ps7.setNull(11, Types.NULL);
+					}
+
+					if (insercao.getEquipe().getCodEquipe() != null) {
+						ps7.setInt(12, insercao.getEquipe().getCodEquipe());
+					} else {
+						ps7.setNull(12, Types.NULL);
+					}
+
+					ps7.setLong(13, user_session.getId());
+
+					rs = ps7.executeQuery();
+
+					int idAgend = 0;
+					if (rs.next()) {
+						idAgend = rs.getInt("id_atendimento");
+					}
+
+					for (int j = 0; j < listaProfissionais.size(); j++) {
+
+						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
+
+							if (DataUtil.extrairDiaDeData(
+									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+
+								PreparedStatement ps8 = null;
+								ps8 = conexao.prepareStatement(sql8);
+
+								ps8.setLong(1, listaProfissionais.get(j).getId());
+								ps8.setInt(2, idAgend);
+								if ((listaProfissionais.get(j).getCbo().getCodCbo() != null)
+										&& (listaProfissionais.get(j).getCbo().getCodCbo() != 0)) {
+									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+								} else {
+									ps8.setNull(3, Types.NULL);
+								}
+
+								if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
+										&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+								} else {
+									ps8.setNull(4, Types.NULL);
+								}
+
+								ps8.executeUpdate();
+							}
+						}
+					}
+				}
+			}
+
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
+				conexao.commit();
+
+				retorno = true;
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+	
 
 	public boolean gravarAlteracaoProfissional(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
 			ArrayList<AgendaBean> listaAgendamento, Integer id_paciente) throws ProjetoException {

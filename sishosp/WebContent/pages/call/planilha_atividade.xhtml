@@ -1,0 +1,2213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/templategeral.xhtml">
+	<ui:define name="header"></ui:define>
+	<ui:define name="body">
+
+		<h:form id="frmbotoes">
+			<h3 style="font-size: 20px; font-weight: bold">Planilha de
+				Atividades</h3>
+
+			<p:outputPanel autoUpdate="true">
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:commandButton value="Atendimento"
+							icon="ui-icon-folder-collapsed"
+							onclick="PF('dlgAtendimento').show();"
+							action="#{planilhaAtividadesController.carregaCliente}"
+							actionListener="#{planilhaAtividadesController.carregaScript}"
+							disabled="#{planilhaAtividadesController.idcliente == 0}"
+							update=":grwgeral">
+						</p:commandButton>
+
+						<p:commandButton value="Remarcação"
+							style="background:#d9534f; color: #f2f2f2 !important; margin-left: 5px"
+							onclick="PF('dlgAtenderRemarcacao').show();"
+							rendered="#{planilhaAtividadesController.listaRemarcacao!=null and planilhaAtividadesController.listaRemarcacao.size() != 0}"
+							update=":grwgeral :frmAtenderRemarcacao">
+						</p:commandButton>
+
+						<p:commandButton value="Adicionar" icon="ui-icon-plus"
+							rendered="false"
+							action="#{planilhaAtividadesController.verificaAdicionaCliente()}"
+							update=":grwgeral :frmdlgadicionar:outadicionar"
+							style="margin-left:3px;" />
+					</p:toolbarGroup>
+
+					<p:toolbarGroup align="right">
+						<p:commandButton ajax="false" icon="ui-icon-document"
+							disabled="#{planilhaAtividadesController.listahorariosagendadia == null or planilhaAtividadesController.listahorariosagendadia.size() == 0}"
+							value="Gerar CSV">
+							<p:dataExporter type="csv" target=":frmhorarios1:tabela1"
+								fileName="planilha" />
+						</p:commandButton>
+					</p:toolbarGroup>
+
+				</p:toolbar>
+			</p:outputPanel>
+		</h:form>
+
+		<p:layout style="min-width:400px;height:480px;margin-top:5px;">
+			<p:layoutUnit position="west" resizable="true" size="250"
+				minSize="40">
+				<h:form id="formGrupo">
+					<center>
+						<p:dataTable emptyMessage="Nenhum Grupo" id="tabelaGrupo"
+							value="#{MBCall.listaTodosGrupos()}" var="m" scrollable="true"
+							style="width:99%" scrollRows="8" selectionMode="single"
+							selection="#{planilhaAtividadesController.grupo}"
+							rowKey="#{m.id}" scrollHeight="230" scrollWidth="220">
+
+							<p:ajax event="rowSelect" global="true"
+								listener="#{planilhaAtividadesController.onRowSelectGrupo}"
+								update=":frmhorarios1:tabela1 :grwgeral" />
+
+							<p:column style="text-align: center;">
+								<h:outputText value="#{m.turno}" />
+							</p:column>
+						</p:dataTable>
+					</center>
+
+					<center>
+						<p:calendar mode="inline" id="event" locale="pt"
+							value="#{planilhaAtividadesController.dataEscolhida}">
+							<p:ajax event="dateSelect"
+								listener="#{planilhaAtividadesController.onDateSelect}"
+								update=":grwgeral :frmhorarios1:tabela1" />
+						</p:calendar>
+					</center>
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="frmhorarios1">
+
+					<p:outputPanel autoUpdate="true">
+						<p:dataTable id="tabela1" emptyMessage="Horários indisponíveis"
+							value="#{planilhaAtividadesController.listahorariosagendadia}"
+							var="m" style="width:95%" selectionMode="single"
+							scrollable="true" scrollHeight="450"
+							selection="#{planilhaAtividadesController.rowBean}"
+							rowStyleClass="#{m.evento.nome == 'AGENDADO' ? 'rowAmarelo' : null} 
+							#{m.evento.nome == 'NÃO TEM INTERESSE NO MOMENTO' ? 'rowOrange' : null}
+							#{m.evento.nome == 'NÃO CONSEGUIU CONTATO' ? 'rowOrange' : null}
+							#{m.evento.nome == 'NÃO INTERESSADO' ? 'rowOrange' : null}
+							#{m.evento.nome == 'RETORNAR NOVAMENTE' ? 'rowTeal' : null}
+							#{m.evento.nome == 'TELEFONE MUDOU' ? 'rowGreen' : null}
+							#{m.evento.nome == 'CLIENTE INSATISFEITO' ? 'rowGreen' : null}
+							#{m.evento.nome == 'PEDIU PARA NÃO LIGAR MAIS' ? 'rowGreen' : null}"
+							rowKey="#{m.id}">
+
+							<p:ajax event="rowSelect" global="false"
+								listener="#{planilhaAtividadesController.onRowSelect}"
+								update=":grwgeral" />
+
+							<p:ajax event="rowDblselect" global="false"
+								listener="#{planilhaAtividadesController.onRowDblClckSelect}"
+								update=":formTabelas:pnlAgendamentos" />
+
+							<p:column headerText="Último Atendimento" width="10%">
+								<h:outputText value="#{m.historico.dataUltimoAtendimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Cliente" width="30%">
+								<h:outputText value="#{m.cliente.nome}" />
+							</p:column>
+
+							<p:column headerText="Telefone" width="15%">
+								<h:outputText value="#{m.cliente.telefone1}" />
+							</p:column>
+
+							<p:column headerText="CPF" width="15%">
+								<h:outputText value="#{m.cliente.cpfcnpj}" />
+							</p:column>
+
+							<p:column headerText="Motivo" width="15%">
+								<h:outputText value="#{m.motivo}" />
+							</p:column>
+
+							<p:column headerText="Evento" width="15%">
+								<h:outputText value="#{m.evento.nome}" />
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+
+		<!-- Sim Inicio -->
+		<p:dialog responsive="true" widgetVar="dlgAtendimento"
+			header="Tela de Atendimento" dynamic="true" width="1250" modal="true"
+			height="600" draggable="false">
+
+			<h:form id="frmbotoes1">
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:commandButton value="Vendas" style="margin-left:205px;"
+							action="#{planilhaAtividadesController.listaDeVendas}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Execuções" style="margin-left:20px;"
+							action="#{planilhaAtividadesController.listaDeExecucoes}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Agendamentos" style="margin-left:20px"
+							action="#{planilhaAtividadesController.listaDeMarcacoes}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Orçamentos" style="margin-left:20px"
+							action="#{planilhaAtividadesController.listaDeOrcamentos}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Financeiro" style="margin-left:20px"
+							action="#{planilhaAtividadesController.listarPromissorias()}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Call Center" style="margin-left:20px"
+							action="#{planilhaAtividadesController.listaAtendimentos}"
+							update=":formTabelas:tabelas" />
+
+						<p:commandButton value="Evoluções" style="margin-left:20px"
+							action="#{planilhaAtividadesController.evolucaoClienteFicha}"
+							update=":grwgeral :frmdlgevolucoes:outevolucoes :frmdlgevolucoes" />
+
+						<p:commandButton value="Opinião do Cliente"
+							style="margin-left:20px"
+							action="#{planilhaAtividadesController.listaOpCliente}"
+							update=":formTabelas:tabelas" />
+					</p:toolbarGroup>
+
+					<p:toolbarGroup align="center" />
+				</p:toolbar>
+			</h:form>
+
+			<h:form id="aberto">
+				<p:outputPanel autoUpdate="true">
+					<p:panelGrid styleClass="semBorda"
+						rendered="#{planilhaAtividadesController.aberto}"
+						style="width:30%;float:left;">
+						<p:outputLabel style="margin-top: 10px">
+							<span style="font-weight: bold; font-size: 15px; color: red;">CLIENTE
+								COM PROMISSÓRIA EM ABERTO!</span>
+						</p:outputLabel>
+					</p:panelGrid>
+
+					<p:panelGrid columns="8" styleClass="semBorda"
+						style="width:70%;float:right;margin-top:5px;">
+
+						<h:outputText value="CLIENTE:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.nome}" />
+
+						<h:outputText value="DATA DE NASCIMENTO:"
+							style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.dtnasc}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<h:outputText value="TELEFONE 1:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.telefone1}" />
+
+						<h:outputText value="TELEFONE 2:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.telefone2}" />
+
+						<h:outputText value="SEXO:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.sexo}" />
+
+						<h:outputText value="CLIENTE DESDE:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.datacadastro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<h:outputText value="CPF:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.cpfcnpj}" />
+
+						<h:outputText value="PROFISSÃO:" style="font-weight: bold;" />
+						<h:outputText style="color:blue;font-size:14px;"
+							value="#{planilhaAtividadesController.cli.profissao.descricao}" />
+
+					</p:panelGrid>
+				</p:outputPanel>
+
+			</h:form>
+
+			<h:form id="formTabelas">
+				<p:growl id="growlAtendimento">
+					<p:outputPanel id="tabelas" autoUpdate="true">
+
+						<p:panel id="pnlVendas" header="Vendas Carregadas"
+							style="width:40%;height:480px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela =='V'}">
+
+							<p:dataTable value="#{planilhaAtividadesController.lstVendas}"
+								var="v"
+								rendered="#{planilhaAtividadesController.idtabela =='V'}"
+								id="tabtit" scrollRows="2" scrollable="true" scrollHeight="170"
+								rowKey="#{v.codVenda}" selectionMode="single"
+								selection="#{planilhaAtividadesController.venda}"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								emptyMessage="Cliente sem vendas">
+
+								<p:ajax event="rowSelect"
+									listener="#{planilhaAtividadesController.listaDeVendasDetalhadas}"
+									update="formTabelas:TBD" />
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Código" />
+									</f:facet>
+									<h:outputText value="#{v.codVenda}" />
+								</p:column>
+								<p:column width="40%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Data" />
+									</f:facet>
+									<h:outputText value="#{v.dtEmissao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column width="40%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Pago" />
+									</f:facet>
+									<h:outputText value="#{v.valorPago}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+							</p:dataTable>
+
+							<p:dataTable emptyMessage="Sem detalhamento"
+								style="font-size:12px;" scrollRows="2" scrollable="true"
+								scrollHeight="100"
+								value="#{planilhaAtividadesController.lstVendasDetalhadas}"
+								var="v" id="TBD" rows="12">
+								<p:column width="30%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Procedimento" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.descProduto}" />
+									</center>
+								</p:column>
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Qtd." />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.qtdV}">
+										</h:outputText>
+									</center>
+								</p:column>
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Valor" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.valorTotalVenda}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</center>
+								</p:column>
+								<p:column width="22%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Angariador" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.nomeAngariador}">
+										</h:outputText>
+									</center>
+								</p:column>
+								<p:column width="8%" rendered="false">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Sessões" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.servicos.qtdvendida}" />
+									</center>
+								</p:column>
+								<p:column width="8%" rendered="false">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Executado" />
+									</f:facet>
+									<h:outputText value="#{v.servicos.qtdexecutada}" />
+								</p:column>
+								<p:column width="18%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Saldo" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.saldoRestante}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</center>
+								</p:column>
+							</p:dataTable>
+
+							<p:panelGrid columns="2" styleClass="semBorda"
+								id="panelvalorsaldo">
+								<h:outputText
+									style="font-weight: bold;;font-size: 13px;color:blue"
+									value="Total da Venda: R$ #{planilhaAtividadesController.valor_total} " />
+
+								<h:outputText
+									style="font-weight: bold;font-size: 13px;margin-left:10px; color:blue"
+									value="Total Disponível R$ #{planilhaAtividadesController.saldo_total} " />
+							</p:panelGrid>
+						</p:panel>
+
+						<p:panel id="pnlOrcamentos" header="Orçamentos Carregados"
+							style="width:40%;height:480px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'O'}">
+
+							<p:dataTable
+								value="#{planilhaAtividadesController.lstOrcamentos}" var="v"
+								rendered="#{planilhaAtividadesController.idtabela == 'O'}"
+								id="tabtit2" scrollRows="2" scrollable="true" scrollHeight="170"
+								rowKey="#{v.codOrcamento}" selectionMode="single"
+								selection="#{planilhaAtividadesController.orcamento}"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								emptyMessage="Cliente sem orçamentos">
+
+								<p:ajax event="rowSelect"
+									listener="#{planilhaAtividadesController.listaDeOrcamentosDetalhados()}"
+									update="formTabelas:taborc" />
+
+								<p:column width="15%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Código" />
+									</f:facet>
+									<h:outputText value="#{v.codOrcamento}"></h:outputText>
+								</p:column>
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Data" />
+									</f:facet>
+									<h:outputText value="#{v.dtOrcamento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="35%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Valor" />
+									</f:facet>
+									<h:outputText value="#{v.totalOrcamento}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="35%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Desconto" />
+									</f:facet>
+									<h:outputText value="#{v.vlrdesc}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+							</p:dataTable>
+
+							<p:dataTable emptyMessage="Sem detalhamento" scrollRows="2"
+								scrollable="true" scrollHeight="100"
+								value="#{planilhaAtividadesController.lstOrcamentosDetalhados}"
+								var="v" id="taborc" rows="12">
+
+								<p:column width="30%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Procedimento" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.descProduto}" />
+									</center>
+								</p:column>
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Valor" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.precoVenda}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</center>
+								</p:column>
+
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Qtd." />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.qtd}">
+											<f:convertNumber pattern="#0" />
+										</h:outputText>
+									</center>
+								</p:column>
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Desconto" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.vlrdesc}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</center>
+								</p:column>
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Angariador" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.angariador.nome}">
+										</h:outputText>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+
+						<p:panel id="pnlExecucoes" header="Execuções Carregadas"
+							style="width:40%;height:480px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'E'}">
+							<p:dataTable emptyMessage="Cliente sem execuções"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								scrollRows="10" scrollable="true" scrollHeight="300"
+								rendered="#{planilhaAtividadesController.idtabela == 'E'}"
+								value="#{planilhaAtividadesController.lstExecucoes}" var="v"
+								id="tabtit3" rows="100">
+
+								<p:column width="55%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Produto" />
+									</f:facet>
+									<h:outputText value="#{v.descproduto}"></h:outputText>
+								</p:column>
+
+
+								<p:column width="15%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Adquiridas" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.qtd}">
+										</h:outputText>
+									</center>
+								</p:column>
+
+
+								<p:column width="15%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Executadas" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.executadas}">
+										</h:outputText>
+									</center>
+								</p:column>
+
+
+								<p:column width="15%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Disponíveis" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.disponiveis}">
+										</h:outputText>
+									</center>
+								</p:column>
+
+
+							</p:dataTable>
+
+						</p:panel>
+
+						<p:panel id="pnlAgendamentos" header="Agendamentos Carregados"
+							style="width:40%;height:480px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'M'}">
+							<p:dataTable emptyMessage="Cliente sem agendamentos"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								scrollRows="10" scrollable="true" scrollHeight="300"
+								rendered="#{planilhaAtividadesController.idtabela == 'M'}"
+								value="#{planilhaAtividadesController.listaDeMarcacoes()}" var="v"
+								id="tabtit4" rows="100">
+
+								<p:column width="17%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Data" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</center>
+								</p:column>
+								<p:column width="14%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Horario" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.horario}"></h:outputText>
+									</center>
+								</p:column>
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Produto" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.procedimento.descricao}" />
+									</center>
+								</p:column>
+								<p:column width="17%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Sala" />
+									</f:facet>
+									<h:outputText value="#{v.sala.descricao}" />
+								</p:column>
+								<p:column width="16%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Status" />
+									</f:facet>
+									<h:outputText value="#{v.status}" />
+								</p:column>
+								<p:column headerText="Desmarcar" width="16%">
+									<center>
+										<p:commandButton value="Sim"
+											action="#{planilhaAtividadesController.cancelaAgendamento}"
+											actionListener="#{planilhaAtividadesController.chamarListaMarcacoes()}"
+											update=":formTabelas:tabtit4 :formTabelas:tabelas">
+
+											<f:setPropertyActionListener value="#{v.codagenda}"
+												target="#{planilhaAtividadesController.agenda.codagenda}" />
+
+											<f:setPropertyActionListener value="#{v.status}"
+												target="#{planilhaAtividadesController.agenda.status}" />
+
+											<f:setPropertyActionListener
+												value="#{v.procedimento.codproduto}"
+												target="#{planilhaAtividadesController.agenda.procedimento.codproduto}" />
+
+											<f:setPropertyActionListener value="#{v.codsala}"
+												target="#{planilhaAtividadesController.agenda.codsala}" />
+
+											<f:setPropertyActionListener value="#{v.horario}"
+												target="#{planilhaAtividadesController.agenda.horario}" />
+
+										</p:commandButton>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+
+						</p:panel>
+
+						<p:panel id="pnlFinanceiro" header="Ficha Financeira Carregada"
+							style="width:40%;height:450px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'F'}">
+
+							<p:dataTable
+								value="#{planilhaAtividadesController.lstPromissoria}" var="x"
+								rendered="#{planilhaAtividadesController.idtabela == 'F'}"
+								id="dataTable" scrollRows="2" scrollable="true"
+								scrollHeight="170" rowKey="#{x.codigo}" selectionMode="single"
+								selection="#{planilhaAtividadesController.rowBeanProm}"
+								rowStyleClass="#{x.situacao == 'Aberto' ? 'rowRedBlood' : null}"
+								style="margin-top:20px;"
+								emptyMessage="Cliente não possui promissórias.">
+
+								<p:ajax event="rowSelect"
+									listener="#{planilhaAtividadesController.limpLstPagamento()}"
+									update="formTabelas:dtPagamento" />
+
+								<p:column headerText="Data da Venda" width="20%">
+									<h:outputText value="#{x.venda.dtEmissao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Vencimento" width="20%">
+									<h:outputText value="#{x.vencimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Valor Total" width="23%">
+									<h:outputText value="#{x.valor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Valor Em Aberto" width="23%">
+									<h:outputText value="#{x.valorAberto}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Situação" width="14%">
+									<h:outputText value="#{x.situacao}" />
+								</p:column>
+							</p:dataTable>
+							<br />
+
+							<p:dataTable id="dtPagamento"
+								rendered="#{planilhaAtividadesController.idtabela == 'F'}"
+								value="#{planilhaAtividadesController.lstPagamentoPromissoria}"
+								scrollRows="2" scrollable="true" scrollHeight="100"
+								emptyMessage="Nenhum pagamento!" var="x">
+
+								<p:column headerText="Valor Pago" width="25%">
+									<center>
+										<h:outputText value="#{x.valorPago}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</center>
+								</p:column>
+
+								<p:column headerText="Tipo do Pagamento" width="20%">
+									<center>
+										<h:outputText value="#{x.tipoPag.descricao}" />
+									</center>
+								</p:column>
+
+								<p:column headerText="Data do pagamento" width="20%">
+									<center>
+										<h:outputText value="#{x.dataPagamento}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</center>
+								</p:column>
+
+								<p:column headerText="Operador" width="35%">
+									<center>
+										<h:outputText value="#{x.func.nome}" />
+									</center>
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+
+
+						<p:panel id="pnlFinanceiros" header="Ficha Financeira Carregada"
+							style="width:40%;height:480px;float:left;" rendered="false">
+							<p:dataTable emptyMessage="Cliente sem ficha financeira"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								scrollRows="10" scrollable="true" scrollHeight="300"
+								rendered="false"
+								value="#{planilhaAtividadesController.lstFinanceira}" var="v"
+								id="tabtit5" rows="100">
+
+								<p:column width="40">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Parcela" />
+									</f:facet>
+									<h:outputText value="#{v.parcela}">
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="50">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Valor" />
+									</f:facet>
+									<h:outputText value="#{v.valor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="50">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Pago" />
+									</f:facet>
+									<h:outputText value="#{v.pago}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="50">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Aberto" />
+									</f:facet>
+									<h:outputText value="#{v.valor_aberto}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="70">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Data Emissão" />
+									</f:facet>
+									<h:outputText value="#{v.data_emissao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="70">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Vencimento" />
+									</f:facet>
+									<h:outputText value="#{v.vencimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:column width="80">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Situação" />
+									</f:facet>
+									<h:outputText value="#{v.situacao}"></h:outputText>
+								</p:column>
+
+							</p:dataTable>
+
+						</p:panel>
+
+						<p:panel id="pnlAtendimentos" header="Atendimentos Carregados"
+							style="width:40%;height:480px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'A'}">
+
+							<p:dataTable
+								value="#{planilhaAtividadesController.lstAtendimentos}" var="v"
+								rendered="#{planilhaAtividadesController.idtabela == 'A'}"
+								id="tabtit6" scrollRows="2" scrollable="true" scrollHeight="170"
+								rowKey="#{v.id}" selectionMode="single"
+								selection="#{planilhaAtividadesController.historico}"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								emptyMessage="Cliente sem atendimentos">
+
+								<p:ajax event="rowSelect"
+									listener="#{planilhaAtividadesController.listaAtendimentosDetalhados()}"
+									update="formTabelas:tabati" />
+
+								<p:column width="30%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Data" />
+									</f:facet>
+									<h:outputText value="#{v.data_atendimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="35%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Atendente" />
+									</f:facet>
+									<h:outputText value="#{v.funcionario.nome}" />
+								</p:column>
+
+								<p:column width="35%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Evento" />
+									</f:facet>
+									<h:outputText value="#{v.evento.nome}" />
+								</p:column>
+							</p:dataTable>
+
+							<p:dataTable emptyMessage="Sem detalhamento" scrollRows="2"
+								scrollable="true" scrollHeight="100"
+								value="#{planilhaAtividadesController.lstAtendimentosDetalhados}"
+								var="v" id="tabati" rows="12">
+								<p:column width="100%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Atendimento" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.atendimento}" />
+									</center>
+								</p:column>
+							</p:dataTable>
+
+						</p:panel>
+
+						<p:panel id="pnlOpCliente" header="Opiniao do Cliente"
+							style="width:40%;height:450px;float:left;"
+							rendered="#{planilhaAtividadesController.idtabela == 'OP'}">
+
+							<p:dataTable value="#{planilhaAtividadesController.lstOp}"
+								var="v"
+								rendered="#{planilhaAtividadesController.idtabela == 'OP'}"
+								id="tabtit9" scrollRows="2" scrollable="true" scrollHeight="170"
+								rowKey="#{v.id}" selectionMode="single"
+								selection="#{planilhaAtividadesController.opiniao}"
+								style="font-size:12px;width:100px;max-width:450px;min-width:450px"
+								emptyMessage="Cliente não possui opinião cadastrada.">
+
+								<p:ajax event="rowSelect"
+									listener="#{planilhaAtividadesController.listaOpClienteDetalhados()}"
+									update="formTabelas:tabat9" />
+
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Data" />
+									</f:facet>
+									<h:outputText value="#{v.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="30%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Funcionário" />
+									</f:facet>
+									<h:outputText value="#{v.func.nome}" />
+								</p:column>
+
+								<p:column width="25%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Tipo" />
+									</f:facet>
+									<h:outputText value="#{v.tipo}" />
+								</p:column>
+
+								<p:column width="25%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px" value="Área" />
+									</f:facet>
+									<h:outputText value="#{v.area}" />
+								</p:column>
+							</p:dataTable>
+
+							<p:dataTable emptyMessage="Sem detalhamento" scrollRows="10"
+								scrollable="true" scrollHeight="100"
+								value="#{planilhaAtividadesController.lstOpDetalhado}" var="v"
+								id="tabat9">
+								<p:column width="100%">
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px;width:10px"
+											value="Opinião" />
+									</f:facet>
+									<center>
+										<h:outputText value="#{v.opiniao}" />
+									</center>
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:outputPanel>
+
+					<p:outputPanel autoUpdate="true">
+						<p:panel id="pnlScript" header="Script de Atendimento"
+							style="width:59%;height:151px;float:right;">
+							<div class="row">
+								<div class="col-md-4">
+
+									<h:outputLabel style="min-width:660px;max-height:250px;"
+										value="#{planilhaAtividadesController.script.roteiro}" />
+
+								</div>
+							</div>
+						</p:panel>
+					</p:outputPanel>
+
+					<p:outputPanel autoUpdate="true">
+						<p:panel id="pnlDados" header="Resumo do Último Atendimento"
+							style="width:59%;height:190px;float:right;">
+							<p:panelGrid columns="4" styleClass="semBorda" style="width:99%">
+
+								<h:outputText value="DATA DO ATENDIMENTO: "
+									style="font-weight: bold;"></h:outputText>
+
+								<h:outputText style="margin-left:5px;color:blue;"
+									value="#{planilhaAtividadesController.historico.data_atendimento}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+								</h:outputText>
+
+
+								<h:outputText value="ATENDENTE: " style="font-weight: bold;" />
+								<h:outputText style="margin-left:5px;color:blue;"
+									value="#{planilhaAtividadesController.historico.funcionario.nome}">
+
+								</h:outputText>
+
+							</p:panelGrid>
+
+							<br></br>
+
+							<h:outputLabel
+								style="min-width:660px;max-height:250px;margin-top:5px;"
+								value="#{planilhaAtividadesController.historico.ultimoAtendimento}" />
+
+						</p:panel>
+					</p:outputPanel>
+
+					<p:outputPanel autoUpdate="true">
+						<p:panel id="pnlAtendimento" header="Opções"
+							style="width:59%;height:110px;float:right;">
+
+							<p:commandButton value="Atendimento Call Center"
+								style="margin-left:0px;" icon="ui-icon-comment"
+								action="#{planilhaAtividadesController.limparAtendimento}"
+								disabled="#{planilhaAtividadesController.idevento != 0 and planilhaAtividadesController.idevento != 4 and planilhaAtividadesController.idevento != 3 }"
+								update=":frmAteFech"
+								onclick="PF('dlgAtendimentoFechamento').show();" />
+
+							<p:commandButton value="Opinião do Cliente"
+								style="margin-left:15px;" icon="ui-icon-comment"
+								update=":frmOpiniao"
+								action="#{planilhaAtividadesController.limparOpiniao}"
+								onclick="PF('dlgOpiniao').show();" />
+
+							<p:commandButton value="Horários mais Próximos" rendered="false"
+								style="margin-left:15px;" icon="ui-icon-calendar" />
+
+							<p:commandButton value="Gerar Orçamento"
+								icon="ui-icon-calculator"
+								actionListener="#{planilhaAtividadesController.setaClienteOrcamentoFicha}"
+								update=":grwgeral, :formDt:singleDT" style="margin-left:15px;" />
+
+							<p:commandButton value="Alterar Cadastro"
+								action="#{planilhaAtividadesController.cadastroClienteFicha()}"
+								update=":grwgeral :frmaltc:outaltcl" icon="ui-icon-pencil"
+								style="margin-left:15px;margin-top:10px;" />
+
+
+						</p:panel>
+					</p:outputPanel>
+
+				</p:growl>
+			</h:form>
+		</p:dialog>
+		<!-- Sim Fim -->
+
+		<p:dialog responsive="true" widgetVar="dlgAgenda" modal="true"
+			resizable="false" height="auto" width="auto">
+
+			<f:facet name="header">
+				<h:outputText value="Agendamento" />
+			</f:facet>
+			<h:form id="frmdlgtransf">
+				<p:outputPanel autoUpdate="false">
+					<p:panelGrid columns="2" styleClass="semBorda" id="pnlAgendar">
+
+						<h:outputText value="Data" />
+						<p:calendar value="#{planilhaAtividadesController.agenda.data}"
+							required="false" requiredMessage="Informe a Data" showOn="button"
+							pattern="dd/MM/yyyy" size="8">
+							<p:ajax event="dateSelect"
+								listener="#{planilhaAtividadesController.carregaHorariosLivres()}"
+								process="@form @this" update=":frmdlgtransf:hor :grwgeral" />
+						</p:calendar>
+						<h:outputText value="Sala" />
+						<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+							required="false" requiredMessage="Informe a Sala"
+							value="#{planilhaAtividadesController.agenda.codsala}">
+
+
+							<f:selectItem itemLabel="Selecione um item" />
+							<f:selectItems value="#{salaController.listaTodasSalas()}"
+								var="x" itemLabel="#{x.descricao}" itemValue="#{x.codsala}" />
+							<p:ajax event="change"
+								listener="#{planilhaAtividadesController.carregaHorariosLivres()}"
+								process="@form @this" update=":frmdlgtransf:hor :grwgeral" />
+						</p:selectOneMenu>
+
+
+						<h:outputText value="Horários" />
+						<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+							id="hor" required="false" requiredMessage="Informe o Horário"
+							value="#{planilhaAtividadesController.agenda.codagenda}">
+
+							<f:selectItem itemLabel="Selecione um Horário" />
+							<f:selectItems
+								value="#{planilhaAtividadesController.listahorarioslivres}"
+								var="x" itemLabel="#{x.horario}" itemValue="#{x.codagenda}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText value="Procedimento" />
+						<p:autoComplete
+							value="#{planilhaAtividadesController.agenda.procedimento}"
+							size="30" required="false"
+							requiredMessage="Informe o Procedimento"
+							completeMethod="#{buscaController.completeBuscaProcedimento2}"
+							var="theme" forceSelection="true" itemValue="#{theme}"
+							itemLabel="#{theme.descricao}" converter="conProcedimento2">
+							<p:ajax event="itemSelect"
+								listener="#{buscaController.onItemSelectProcedimento2}" />
+						</p:autoComplete>
+
+						<h:outputText value="Angariador" />
+						<p:autoComplete
+							value="#{planilhaAtividadesController.agenda.angariador}"
+							size="30"
+							completeMethod="#{buscaController.completeBuscaAngariador}"
+							var="theme" required="false"
+							requiredMessage="Informe o Angariador!" forceSelection="true"
+							itemValue="#{theme}" itemLabel="#{theme.nome}"
+							converter="conFuncionario">
+							<p:ajax event="itemSelect"
+								listener="#{buscaController.onItemSelectFuncionario}" />
+						</p:autoComplete>
+
+					</p:panelGrid>
+
+					<center style="margin-top: 25px">
+						<p:commandButton value="Sim"
+							action="#{planilhaAtividadesController.salvarAgendamento}"
+							update=":grwgeral, :frmhorarios1:tabela1 :frmAtenderRemarcacao"
+							style="font-size: 14px" icon="ui-icon-check">
+						</p:commandButton>
+
+						<p:commandButton value="Não"
+							style="font-size: 14px;margin-left:20px"
+							icon="ui-icon-closethick" onclick="PF('dlgAgenda').hide();" />
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgRemarcar" modal="true"
+			resizable="false" height="auto" width="auto">
+
+			<f:facet name="header">
+				<h:outputText value="Remarcar Ligação" />
+			</f:facet>
+
+			<h:form id="frmdlgremarcar">
+				<p:outputPanel autoUpdate="false">
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<h:outputText value="Data:" />
+						<p:calendar
+							value="#{planilhaAtividadesController.planilha.datadia}"
+							mask="true" required="false" requiredMessage="Informe a Data"
+							showOn="button" pattern="dd/MM/yyyy" size="8">
+						</p:calendar>
+					</p:panelGrid>
+
+					<p:outputPanel autoUpdate="true">
+						<p:panel>
+							<div class="row">
+								<div class="col-md-4">
+									<h:inputTextarea rows="5" cols="89" label="Observação"
+										style="height:106px;width:160"
+										value="#{planilhaAtividadesController.planilha.obs}" />
+								</div>
+							</div>
+						</p:panel>
+					</p:outputPanel>
+
+					<center style="margin-top: 25px">
+						<p:commandButton value="Sim"
+							action="#{planilhaAtividadesController.remarcarLigacao()}"
+							update=":grwgeral, :frmhorarios1:tabela1 :frmAtenderRemarcacao"
+							style="font-size: 14px" icon="ui-icon-check">
+						</p:commandButton>
+
+						<p:commandButton value="Não"
+							style="font-size: 14px;margin-left:20px"
+							icon="ui-icon-closethick" onclick="PF('dlgRemarcar').hide();" />
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgAtendimentoFechamento"
+			modal="true" resizable="false" height="auto" width="auto">
+
+			<f:facet name="header">
+				<h:outputText value="Atendimento Call Center" />
+			</f:facet>
+			<h:form id="frmAteFech">
+
+				<p:outputPanel autoUpdate="true">
+					<p:panel id="pnlAtendimento">
+						<div class="row">
+							<div class="col-md-4">
+								<h:inputTextarea rows="5" cols="89"
+									style="height:106px;width:160" required="true"
+									requiredMessage="Digite o atendimento"
+									value="#{planilhaAtividadesController.historico.atendimento}" />
+							</div>
+						</div>
+					</p:panel>
+				</p:outputPanel>
+
+				<p:panel styleClass="semBorda" id="pnlBotao">
+					<div class="row">
+						<div class="col-md-4">
+							<p:outputPanel autoUpdate="true">
+								<p:panelGrid columns="3" styleClass="semBorda">
+									<p:outputLabel value="Fechamento" />
+									<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+										style="width:250px;" required="true"
+										requiredMessage="Escolha o evento de fechamento"
+										value="#{planilhaAtividadesController.historico.codevento}">
+										<f:selectItem itemLabel="SELECIONE" itemValue="" />
+										<f:selectItems value="#{MBCall.listEvento}" var="td"
+											itemLabel="#{td.nome}" itemValue="#{td.id}" />
+									</p:selectOneMenu>
+
+									<p:commandButton value="FINALIZAR" icon="ui-icon-check"
+										action="#{planilhaAtividadesController.finalizaAtendimento}"
+										update=":frmdlgtransf:pnlAgendar, :grwgeral, :frmdlgremarcar, :frmbotoes " />
+								</p:panelGrid>
+							</p:outputPanel>
+						</div>
+					</div>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgOpiniao" modal="true"
+			resizable="false" height="auto" width="auto">
+			<f:facet name="header">
+				<h:outputText value="Opinião do Cliente" />
+			</f:facet>
+			<h:form id="frmOpiniao">
+				<p:growl id="growlOpiniao" showDetail="false" />
+
+				<div class="row">
+					<div class="col-md-4">
+						<h:inputTextarea rows="5" cols="89" style="height:106px;width:160"
+							id="textOp" required="false"
+							requiredMessage="Digite a opinião do cliente"
+							value="#{planilhaAtividadesController.opiniao.opiniao}" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4">
+						<p:outputPanel autoUpdate="true">
+							<p:panelGrid columns="3" styleClass="semBorda">
+								<p:outputLabel value="Tipo:"></p:outputLabel>
+								<p:selectOneRadio id="console2" style="margin-top:0px"
+									value="#{agendaController.opiniao.tipo}" required="true"
+									requiredMessage="Informe o tipo de opinião do cliente">
+									<f:selectItem itemLabel="Observação" itemValue="O" />
+									<f:selectItem itemLabel="Reclamação" itemValue="R" />
+								</p:selectOneRadio>
+							</p:panelGrid>
+
+							<p:panelGrid columns="6" styleClass="semBorda">
+								<p:outputLabel value="Área:"></p:outputLabel>
+								<p:selectOneRadio id="console3" style="margin-top:0px"
+									value="#{agendaController.opiniao.area}" required="true"
+									requiredMessage="Informe a que área se refere a opinião">
+									<f:selectItem itemLabel="Atendimento" itemValue="A" />
+									<f:selectItem itemLabel="Venda" itemValue="V" />
+									<f:selectItem itemLabel="Execução" itemValue="E" />
+									<f:selectItem itemLabel="Call Center" itemValue="C" />
+									<f:selectItem itemLabel="Outros" itemValue="O" />
+								</p:selectOneRadio>
+							</p:panelGrid>
+
+							<p:commandButton value="SALVAR" icon="ui-icon-check"
+								action="#{planilhaAtividadesController.salvaOpiniao}"
+								update="growlOpiniao" />
+						</p:outputPanel>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgaltcl"
+			header="Alterar Dados do Cliente" height="510" width="1050"
+			modal="true" resizable="false">
+			<h:form id="frmaltc">
+				<p:growl id="growlalt" showDetail="false" />
+				<p:panel id="pnlalt" style="border:none; ">
+					<p:outputPanel autoUpdate="false" id="outaltcl">
+						<p:tabView activeIndex="0" tabindex="0" widgetVar="tabvi">
+							<p:tab title="Dados Gerais">
+								<h:panelGrid columns="2"></h:panelGrid>
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column>
+											<p:outputLabel for="console" value="Tipo de Pessoa" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="outlblcpf">
+												<h:outputText value="CPF"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}" />
+												<h:outputText value="CNPJ"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="idnome">
+												<h:outputText value="Nome"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}" />
+												<h:outputText value="Razão Social"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="fant">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}"
+													value="Fantasia" />
+											</p:outputPanel>
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column>
+											<p:selectOneRadio id="console" style="margin-top:0px"
+												value="#{planilhaAtividadesController.cli.tipopessoa}"
+												required="true" requiredMessage="Informe o tipo de Pessoa">
+												<f:selectItem itemLabel="Física" itemValue="F" />
+												<f:selectItem itemLabel="Jurídica" itemValue="J" />
+												<p:ajax
+													update="idnome, outlblcpf, outedtcpf, fant, inFant,
+												dataNasc, inDataNasc, sexo, inSexo, prof, inProf, rg, inRG,
+												oe, inOE, insc, inINSC, civil, inCivil"
+													event="click" />
+											</p:selectOneRadio>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="outedtcpf">
+												<p:inputMask
+													value="#{planilhaAtividadesController.cli.cpfcnpj}"
+													mask="999.999.999-99"
+													required="#{MBUsuarios.user.parametro.obrigacpf==true}"
+													requiredMessage="Informe o CPF"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													validator="CPFValidator">
+													<p:ajax
+														listener="#{planilhaAtividadesController.validaCPF}"
+														global="false" event="blur" />
+												</p:inputMask>
+
+												<p:inputMask
+													value="#{planilhaAtividadesController.cli.cpfcnpj}"
+													mask="99.999.999/9999-99"
+													required="#{MBUsuarios.user.parametro.obrigacpf==true}"
+													requiredMessage="Informe o CNPJ"
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}"
+													validator="CNPJValidator">
+													<p:ajax
+														listener="#{planilhaAtividadesController.validaCPF}"
+														global="false" event="blur" />
+												</p:inputMask>
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText value="#{planilhaAtividadesController.cli.nome}"
+												required="true" requiredMessage="Informe o nome" size="50" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inFant">
+												<p:inputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}"
+													value="#{planilhaAtividadesController.cli.fantasia}"
+													size="50" />
+											</p:outputPanel>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column colspan="1">
+											<p:outputPanel id="insc">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}"
+													value="Insc. Estadual" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="dataNasc">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="Data de Nascimento" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="sexo">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="Sexo" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="prof">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="Profissão" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="rg">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="RG" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="oe">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="Órgão Emissor" />
+											</p:outputPanel>
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1">
+											<p:outputPanel id="inINSC">
+												<p:inputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='J'}"
+													value="#{planilhaAtividadesController.cli.inscest}"
+													size="10" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inDataNasc">
+												<p:calendar
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="#{planilhaAtividadesController.cli.dtnasc}"
+													mask="true" showOn="button" pattern="dd/MM/yyyy" size="8"></p:calendar>
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inSexo">
+												<p:selectOneMenu
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="#{planilhaAtividadesController.cli.sexo}"
+													required="false" requiredMessage="Informe o Sexo">
+													<f:selectItem itemLabel="Selecione" itemValue="" />
+													<f:selectItem itemLabel="Feminino" itemValue="F" />
+													<f:selectItem itemLabel="Masculino" itemValue="M" />
+												</p:selectOneMenu>
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inProf">
+												<p:selectOneMenu
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="#{planilhaAtividadesController.cli.profissao.idProfissao}"
+													style="width:120px;">
+													<f:selectItem itemLabel="Selecione" itemValue="" />
+													<f:selectItems itemValue="#{x.idProfissao}"
+														itemLabel="#{x.descricao}"
+														value="#{clienteController.lst}" var="x"></f:selectItems>
+												</p:selectOneMenu>
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inRG">
+												<p:inputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="#{planilhaAtividadesController.cli.identidade}"
+													size="20" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inOE">
+												<p:inputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="#{planilhaAtividadesController.cli.orgaoident}"
+													size="12" />
+											</p:outputPanel>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column colspan="1">
+											<h:outputText value="DDD" />
+										</p:column>
+
+										<p:column>
+											<h:outputText value="Telefone 1" />
+										</p:column>
+
+										<p:column>
+											<h:outputText value="Tipo" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="DDD" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Telefone 2" />
+										</p:column>
+
+										<p:column>
+											<h:outputText value="Tipo" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1">
+											<p:inputMask mask="99"
+												value="#{planilhaAtividadesController.cli.ddd1}"
+												style="width:30px"></p:inputMask>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.telefone1}"
+												required="#{MBUsuarios.user.parametro.obrigatelefone==true}"
+												requiredMessage="Informe ao menos o Telefone 1" size="15" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:selectOneRadio style="margin-top:0px;width:100px"
+												value="#{planilhaAtividadesController.cli.tipotelefone1}">
+												<f:selectItem itemLabel="Celular" itemValue="C" />
+												<f:selectItem itemLabel="Fixo" itemValue="F" />
+											</p:selectOneRadio>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputMask mask="99"
+												value="#{planilhaAtividadesController.cli.ddd2}"
+												style="width:30px"></p:inputMask>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.telefone2}"
+												size="15" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:selectOneRadio style="margin-top:0px;width:100px"
+												value="#{planilhaAtividadesController.cli.tipotelefone2}">
+												<f:selectItem itemLabel="Celular" itemValue="C" />
+												<f:selectItem itemLabel="Fixo" itemValue="F" />
+											</p:selectOneRadio>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+								<!-- Cpf e Insc. Estadual Endereco-->
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column colspan="1">
+											<h:outputText value="CEP" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Endereço" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Bairro" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Cidade" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1">
+											<p:inputMask mask="99999-999"
+												value="#{planilhaAtividadesController.cli.cep}"
+												id="campoCpf" size="12"
+												required="#{MBUsuarios.user.parametro.obrigacep == true}"
+												requiredMessage="Informe o CEP">
+												<p:ajax
+													listener="#{planilhaAtividadesController.encontraCEP}"
+													update="altbairro,altbairro, altendereco, altuf, altlocalidade, frmaltc:growlalt"
+													global="false" event="blur"></p:ajax>
+											</p:inputMask>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.end.logradouro}"
+												id="altendereco"
+												required="#{MBUsuarios.user.parametro.obrigaendereco==true}"
+												requiredMessage="Informe o Endereço" size="60" />
+										</p:column>
+
+										<p:column colspan="1">
+											<div
+												style="min-height: 20px; border-top: 0pxwhite; border-right: 0pxwhite; border-bottom: 0pxwhite; border-left: 0pxwhite">
+												<p:inputText
+													value="#{planilhaAtividadesController.cli.end.bairro}"
+													id="altbairro" />
+											</div>
+										</p:column>
+
+										<p:column colspan="1">
+											<div
+												style="min-width: 200px; min-height: 20px; border-top: 0pxwhite; border-right: 0pxwhite; border-bottom: 0pxwhite; border-left: 0pxwhite">
+												<p:inputText
+													value="#{planilhaAtividadesController.cli.end.localidade}"
+													id="altlocalidade" />
+											</div>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+								<!-- endereco e complemento e cep -->
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column colspan="1">
+											<h:outputText value="UF" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Ponto de Referência" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Complemento" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Número" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1">
+											<div
+												style="min-width: 10px; min-height: 20px; border-top: 0pxsolidwhite; border-right: 0pxsolidwhite; border-bottom: 0pxsolidwhite; border-left: 0pxsolidwhite">
+												<p:selectOneMenu
+													value="#{planilhaAtividadesController.cli.end.uf}"
+													id="altuf">
+													<f:selectItem itemLabel="Selecione" />
+													<f:selectItems
+														value="#{planilhaAtividadesController.listaEstados}" />
+												</p:selectOneMenu>
+											</div>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.pontoref}"
+												size="50" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.end.complemento}"
+												id="altcomplemento" size="50" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.end.numero}"
+												size="6" />
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+								<!-- ponto ref e cep -->
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column colspan="1">
+											<h:outputText value="Nacionalidade" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="civil">
+												<h:outputText
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													value="Estado Civil" />
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Site" />
+										</p:column>
+
+										<p:column colspan="1">
+											<h:outputText value="Email" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.nacionalidaade}"
+												size="30" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:outputPanel id="inCivil">
+												<p:selectOneMenu
+													rendered="#{planilhaAtividadesController.cli.tipopessoa=='F'}"
+													filter="true" filterMatchMode="startsWith"
+													style="width:150px;"
+													value="#{planilhaAtividadesController.cli.estciv.codestadocivil}">
+													<f:selectItem itemLabel="SELECIONE" itemValue="" />
+													<f:selectItems value="#{clienteController.listaEstCiv}"
+														var="td" itemLabel="#{td.descricao}"
+														itemValue="#{td.codestadocivil}" />
+												</p:selectOneMenu>
+											</p:outputPanel>
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText value="#{planilhaAtividadesController.cli.site}"
+												size="22" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.email}" size="30" />
+										</p:column>
+
+										<p:column colspan="1">
+											<p:selectBooleanCheckbox label="Ativo" itemLabel="Ativo"
+												value="#{planilhaAtividadesController.cli.ativo}" />
+										</p:column>
+
+									</p:row>
+								</p:panelGrid>
+								<br />
+							</p:tab>
+
+							<p:tab title="Cônjuge">
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column style="width:300px">
+											<h:outputText value="Nome" />
+										</p:column>
+										<p:column style="width:150px">
+											<h:outputText value="Data de Nascimento" />
+										</p:column>
+										<p:column style="width:200px">
+											<h:outputText value="Sexo" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.nomeconjuge}"
+												size="60"></p:inputText>
+										</p:column>
+										<p:column style="width:20px">
+											<p:calendar
+												value="#{planilhaAtividadesController.cli.dtnascconjuge}"
+												showOn="button" pattern="dd/MM/yyyy" mask="true" size="8"></p:calendar>
+										</p:column>
+										<p:column style="width:200px">
+											<p:selectOneMenu
+												value="#{planilhaAtividadesController.cli.sexoconjuge}"
+												style="width:100px">
+												<f:selectItem itemLabel="Selecione" itemValue="" />
+												<f:selectItem itemLabel="Feminino" itemValue="F" />
+												<f:selectItem itemLabel="Masculino" itemValue="M" />
+											</p:selectOneMenu>
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<h:outputText value="CPF" />
+										</p:column>
+										<p:column colspan="2">
+											<h:outputText value="RG" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:inputMask mask="999.999.999-99"
+												value="#{planilhaAtividadesController.cli.cpfconjuge}" />
+										</p:column>
+										<p:column colspan="2">
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.rgconjuge}" />
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</p:tab>
+							<p:tab title="Relacionamento">
+								<p:panelGrid styleClass="semBorda">
+									<p:row>
+										<p:column style="width:30px">
+											<h:outputText value="Percentual de Desconto" />
+										</p:column>
+										<p:column style="width:30px">
+											<h:outputText value="Score" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:inputText
+												value="#{planilhaAtividadesController.cli.percdesconto}"
+												size="20">
+												<f:convertNumber type="number" />
+											</p:inputText>
+										</p:column>
+										<p:column style="width:8px">
+											<div
+												style="min-width: 60px; min-height: 20px; border-top: 1pxsolidblack; border-right: 1pxsolidblack; border-bottom: 1pxsolidblack; border-left: 1pxsolidblack">
+												<h:outputText
+													value="#{planilhaAtividadesController.cli.score}" />
+											</div>
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<h:outputText value="Categoria :" />
+										</p:column>
+										<p:column colspan="1">
+											<p:selectOneMenu
+												value="#{planilhaAtividadesController.idCategoria}"
+												style="width:120px;">
+												<f:selectItem itemLabel="Selecione" itemValue="" />
+												<f:selectItems itemValue="#{x.codcategoria}"
+													itemLabel="#{x.descricao}"
+													value="#{clienteController.listacategoria}" var="x"></f:selectItems>
+											</p:selectOneMenu>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</p:tab>
+						</p:tabView>
+					</p:outputPanel>
+					<center>
+						<p:commandButton value="Gravar"
+							action="#{planilhaAtividadesController.preparaAltCliente()}"
+							update=":grwgeral" style="font-size: 14px;margin-top:15px;"
+							icon="ui-icon-check" />
+						<p:commandButton value="Cancelar"
+							style="font-size: 14px;margin-left:20px"
+							icon="ui-icon-closethick" onclick="PF('dlgaltcl').hide()" />
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgadicionar" modal="true"
+			resizable="false" dynamic="true" height="150" width="400">
+			<f:facet name="header">
+				<h:outputText value="Adicionar Cliente" />
+			</f:facet>
+			<h:form id="frmdlgadicionar">
+				<center>
+					<p:outputPanel id="outadicionar" autoUpdate="false">
+						<p:panelGrid style="width:380px">
+							<p:row>
+								<p:column style="width:60px">
+									<h:outputText value="Cliente" />
+								</p:column>
+
+								<p:column style="width:1150px">
+									<p:outputPanel id="text1">
+										<p:autoComplete value="#{planilhaAtividadesController.cli}"
+											size="40"
+											completeMethod="#{buscaController.completeBuscaCliente}"
+											var="theme" required="true"
+											requiredMessage="Informe o Cliente" forceSelection="true"
+											itemValue="#{theme}" itemLabel="#{theme.nome}"
+											converter="conCliente">
+											<p:ajax event="itemSelect"
+												listener="#{buscaController.onItemSelectCliente}" />
+										</p:autoComplete>
+									</p:outputPanel>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column style="width:60px">
+									<h:outputText value="Script" />
+								</p:column>
+
+								<p:column style="width:115px">
+									<p:outputPanel id="text2" autoUpdate="true">
+
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px" required="false"
+											requiredMessage="Informe o Script"
+											value="#{planilhaAtividadesController.rowBean.codscript}">
+											<f:selectItem itemLabel="Selecione um item"></f:selectItem>
+											<f:selectItems value="#{MBCall.lstScript()}" var="x"
+												itemLabel="#{x.nome}" itemValue="#{x.id}"></f:selectItems>
+										</p:selectOneMenu>
+
+									</p:outputPanel>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:outputPanel>
+					<br /> <br /> <br />
+					<p:commandButton value="Sim"
+						action="#{planilhaAtividadesController.adicionarCliente()}"
+						update=":frmhorarios1:tabela1" style="font-size: 14px"
+						icon="podeGravar"></p:commandButton>
+					<p:commandButton value="Não"
+						style="font-size: 14px;margin-left:20px" icon="cancela"
+						onclick="PF('dlgadicionar').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<!-- Dialog para Gerenciamento de Evolucoes -->
+		<p:dialog responsive="true" widgetVar="dlgevolucoes" modal="true"
+			resizable="false" dynamic="true" height="520" width="650">
+			<f:facet name="header">
+				<h:outputText value="Gerenciamento de Evoluções" />
+			</f:facet>
+			<h:form id="frmdlgevolucoes">
+				<center>
+					<p:outputPanel id="outevolucoes" autoUpdate="false">
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<h:outputText style="font-size: 14px;" value="Cliente:" />
+									<h:outputText style="font-size: 14px;font-weight: bold;"
+										value="#{planilhaAtividadesController.agendaselecionada.cliente.nome}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:panel header="Procedimentos" style="height:230px">
+										<p:dataTable id="tabelaproced"
+											emptyMessage="Nenhum Procedimento"
+											value="#{planilhaAtividadesController.listaprocedevolucao}"
+											var="m" style="width:100%;height:220px"
+											selectionMode="single" scrollable="true" scrollRows="6"
+											scrollHeight="158"
+											selection="#{planilhaAtividadesController.procedimentoselecionado}"
+											rowKey="#{m.codproduto}">
+											<p:ajax event="rowSelect"
+												listener="#{planilhaAtividadesController.onRowSelectProced}"
+												update=":frmdlgevolucoes:tabelaevolu :frmdlgevolucoes" />
+											<p:column headerText="Procedimento">
+												<h:outputText value="#{m.descricao}"></h:outputText>
+											</p:column>
+										</p:dataTable>
+									</p:panel>
+									<p:panel header="Evoluções">
+										<p:commandButton value="Incluir" rendered="false"
+											action="#{agendaController.preparaInsercaoEvolucao()}"
+											onclick="PF('dlgcadevolucoes').show()"
+											update=":frmdlgcadevolucoes:outcadevolucoes">
+											<f:setPropertyActionListener
+												value="#{agendaController.agendaselecionada.cliente}"
+												target="#{agendaController.evolucaoselecionada.cliente}" />
+											<f:setPropertyActionListener
+												value="#{agendaController.agendaselecionada.procedimento}"
+												target="#{agendaController.evolucaoselecionada.procedimento}" />
+											<f:setPropertyActionListener value="I"
+												target="#{agendaController.evolucaoselecionada.tipo}" />
+										</p:commandButton>
+
+										<p:outputPanel autoUpdate="true">
+											<p:dataTable id="tabelaevolu" emptyMessage="Nenhuma Evolução"
+												scrollable="true" scrollRows="2" scrollHeight="160"
+												value="#{planilhaAtividadesController.listaevolucao}"
+												var="m" style="width:100%;height:160">
+
+												<p:column headerText="Data" width="18%">
+													<center>
+														<h:outputText value="#{m.data}">
+															<f:convertDateTime pattern="dd/MM/yyyy" />
+														</h:outputText>
+													</center>
+												</p:column>
+
+												<p:column headerText="Executante" width="42%">
+													<center>
+														<h:outputText value="#{m.executor.nome}"></h:outputText>
+													</center>
+												</p:column>
+
+												<p:column headerText="Origem" width="20%">
+													<center>
+														<h:outputText value="#{m.origem}"></h:outputText>
+													</center>
+												</p:column>
+
+												<!--  
+												<p:column headerText="Alterar" width="80">
+													<center>
+														<p:commandButton value="Alterar" title="Alterar Evolução"
+															rendered="false"
+															oncomplete="PF('dlgcadevolucoes').show()"
+															update=":frmdlgcadevolucoes:outcadevolucoes">
+															<f:setPropertyActionListener value="#{m}"
+																target="#{planilhaAtividadesController.evolucaoselecionada}" />
+															<f:setPropertyActionListener value="A"
+																target="#{planilhaAtividadesController.evolucaoselecionada.tipo}" />
+														</p:commandButton>
+													</center>
+												</p:column>
+												-->
+
+												<p:column headerText="Visualizar" width="20%">
+													<center>
+														<p:commandButton value="Visualizar"
+															title="Visualizar Evolução"
+															oncomplete="PF('dlgcadevolucoes').show()"
+															update=":frmdlgcadevolucoes:outcadevolucoes">
+															<f:setPropertyActionListener value="#{m}"
+																target="#{planilhaAtividadesController.evolucaoselecionada}" />
+															<f:setPropertyActionListener value="V"
+																target="#{planilhaAtividadesController.evolucaoselecionada.tipo}" />
+														</p:commandButton>
+													</center>
+												</p:column>
+											</p:dataTable>
+										</p:outputPanel>
+									</p:panel>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:outputPanel>
+					<p:outputPanel id="btnadd">
+						<center>
+							<p:commandButton value="Fechar"
+								style="font-size: 14px;margin-left:5px;margin-top:4px;"
+								icon="ui-icon-closethick" onclick="PF('dlgevolucoes').hide()" />
+						</center>
+					</p:outputPanel>
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<!-- Dialog para Gerenciamento de Evolucoes -->
+		<p:dialog responsive="true" widgetVar="dlgcadevolucoes" modal="true"
+			resizable="false" dynamic="true" height="520" width="500">
+			<f:facet name="header">
+				<h:outputText value="Visualização de Evolução" />
+			</f:facet>
+			<h:form id="frmdlgcadevolucoes">
+				<center>
+					<p:outputPanel id="outcadevolucoes">
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<h:outputText style="font-size: 14px;" value="Data:" />
+									<h:outputText style="font-size: 14px;font-weight: bold;"
+										value="#{planilhaAtividadesController.evolucaoselecionada.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText style="font-size: 14px;" value="Cliente:" />
+									<h:outputText style="font-size: 14px;font-weight: bold;"
+										value="#{planilhaAtividadesController.agendaselecionada.cliente.nome}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText style="font-size: 14px;" value="Procedimento:" />
+									<h:outputText style="font-size: 14px;font-weight: bold;"
+										value="#{planilhaAtividadesController.evolucaoselecionada.procedimento.descricao}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<h:outputText style="font-size: 14px;" value="Executante:" />
+									<h:outputText style="font-size: 14px;font-weight: bold;"
+										value="#{planilhaAtividadesController.evolucaoselecionada.executor.nome}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:panel header="Evolução" style="width:450px;height:370px">
+										<h:inputTextarea scrollHeight="100" required="true" rows="20"
+											cols="89" style="height:330px;width:100%"
+											requiredMessage="Informe a Evolução"
+											value="#{planilhaAtividadesController.evolucaoselecionada.evolucao}">
+										</h:inputTextarea>
+									</p:panel>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+						<center>
+							<p:commandButton value="Gravar" rendered="false"
+								disabled="#{agendaController.evolucaoselecionada.tipo=='V'}"
+								action="#{agendaController.gravaEvolucao()}"
+								update=":grwgeral :frmdlgevolucoes:outevolucoes"
+								style="font-size: 14px" icon="ok">
+							</p:commandButton>
+							<p:commandButton value="Fechar" icon="ui-icon-closethick"
+								style="font-size: 14px;margin-left:20px;margin-top:10px"
+								onclick="PF('dlgcadevolucoes').hide()" />
+						</center>
+					</p:outputPanel>
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgcanc" modal="true"
+			resizable="false" dynamic="true" height="auto" width="auto">
+			<f:facet name="header">
+				<h:outputText value="Cancelamento" />
+			</f:facet>
+			<h:form id="frmdlgcanc">
+				<center>
+					<h:outputText style="font-size: 14px;"
+						value="Deseja realmente cancelar este agendamento? " />
+					<br /> <br />
+					<h:inputTextarea value="#{planilhaAtividadesController.motivo}"
+						rows="10" cols="60" style="height:120px;width:30" id="apagar"
+						required="true" requiredMessage="Informe o motivo do cancelamento" />
+					<br /> <br /> <br />
+					<p:commandButton value="Sim"
+						action="#{planilhaAtividadesController.gravaCancelamentoHorario()}"
+						update=":grwgeral" style="font-size: 14px" icon="ok">
+					</p:commandButton>
+					<p:commandButton value="Não"
+						style="font-size: 14px;margin-left:20px" icon="cancela"
+						onclick="PF('dlgcanc').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgDevendo" modal="true"
+			resizable="false" closable="false" height="120" width="300">
+			<f:facet name="header">
+				<h:outputText value="Aviso!" />
+			</f:facet>
+			<h:form id="frmdlgconfirmar">
+				<center>
+					<p:outputPanel id="outpresenca">
+						<h:outputText style="font-size: 14px;"
+							value="O Cliente possui promisória(s) em aberto!" />
+					</p:outputPanel>
+					<hr />
+					<p:commandButton value="OK" icon="ui-icon-check"
+						onclick="PF('dlgDevendo').hide();" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgReservarSemPagamento"
+			modal="true" resizable="false" height="180" width="350">
+			<f:facet name="header">
+				<h:outputText value="Aviso" />
+			</f:facet>
+			<h:form id="frmdlgReservarSemPagamento">
+				<center>
+					<p:outputPanel id="outReservarSemPagamento">
+						<p:panelGrid styleClass="semBorda" columns="1">
+							<h:outputText
+								style="font-size:16px;font-weight:bold;color:#FF0000;"
+								value="Cliente agendado, mas não tem sessões disponíveis para esse procedimento!" />
+						</p:panelGrid>
+					</p:outputPanel>
+					<hr />
+					<p:commandButton value="Ok"
+						onclick="PF('dlgReservarSemPagamento').hide()"
+						update=":grwgeral :frmhorarios1:tabela1" style="font-size: 14px"
+						icon="ok">
+					</p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgAlertaRemarcacao"
+			modal="true" resizable="false" width="350">
+			<f:facet name="header">
+				<h:outputText value="Aviso" />
+			</f:facet>
+			<h:form id="frmdlgAlertaRemarcacao">
+				<center>
+					<p:outputPanel id="outAlertaRemarcacao">
+						<p:panelGrid styleClass="semBorda" columns="1">
+							<h:outputText
+								style="font-size:16px;font-weight:bold;color:#FF0000;"
+								value="Tem atendimento remarcado pra o dia atual!" />
+						</p:panelGrid>
+					</p:outputPanel>
+					<hr />
+					<p:commandButton value="Ok"
+						onclick="PF('dlgAlertaRemarcacao').hide()"
+						update=":grwgeral :frmhorarios1:tabela1" style="font-size: 14px"
+						icon="ui-icon-check">
+					</p:commandButton>
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgAtenderRemarcacao"
+			header="Remarcações" height="470" width="700" modal="true">
+			<h:form id="frmAtenderRemarcacao">
+				<p:panel id="pnlinc" style="border:none; ">
+					<b:dataTable var="p" custom-lang-url="#{resource['pt-br.json']}"
+						value="#{planilhaAtividadesController.listaRemarcacao}">
+						<b:dataTableColumn label="Cliente" value="#{p.cliente.nome}"
+							style="width: 30%" />
+
+						<b:dataTableColumn label="Observação" value="#{p.obs}"
+							style="width: 40%" />
+
+						<b:dataTableColumn label="Data Atendimento" style="width: 15%">
+							<center>
+								<h:outputText value="#{p.datadia}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</center>
+						</b:dataTableColumn>
+
+						<b:dataTableColumn label="Ação" style="width: 15%;">
+							<center>
+								<p:commandButton value="Atender"
+									action="#{planilhaAtividadesController.atenderRemarcado()}"
+									update=":grwgeral :frmhorarios1:tabela1"
+									style="font-size: 14px" icon="ui-icon-check">
+									<f:setPropertyActionListener
+										target="#{planilhaAtividadesController.rowBean}" value="#{p}" />
+								</p:commandButton>
+							</center>
+						</b:dataTableColumn>
+					</b:dataTable>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<ui:include src="/pages/call/orcamentocallcenter.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>
+

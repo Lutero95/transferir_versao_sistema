@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+<ui:composition template="../../template/templategeral.xhtml">
+	<ui:define name="body">
+
+
+		<h:form id="formData">
+			<p:growl id="msg" />
+
+			<h3 style="font-size: 20px; font-weight: bold">Gerenciamento de
+				Script</h3>
+
+			<p:outputPanel id="outbotoes" autoUpdate="false">
+				<div>
+					<h:panelGrid columns="5"
+						style="margin-top:15px;margin-bottom:0px;font-size:12px !important;">
+
+
+						<p:commandButton value="Novo" icon="ui-icon-plus"
+							onclick="PF('dlgNovoScript').show()"
+							action="#{MBCall.limparScript()}" update=":formCadastro">
+						</p:commandButton>
+
+
+						<p:commandButton style="margin-left:5px;" icon="ui-icon-wrench"
+							value="Editar"
+							disabled="#{MBCall.rowBeanScript.id == null || MBCall.rowBeanScript.id == 0}"
+							onclick="PF('dlgEditarScript').show();" />
+
+
+						<p:commandButton style="margin-left:5px;" value="Excluir"
+							disabled="#{MBCall.rowBeanScript.id == null || MBCall.rowBeanScript.id == 0}"
+							onclick="PF('dlgExcluir').show();" icon="ui-icon-check" />
+
+
+
+					</h:panelGrid>
+					
+				</div>
+
+
+			</p:outputPanel>
+			
+			<br/>
+
+		</h:form>
+
+		<h:form id="formDt">
+
+			<p:outputPanel id="outorc">
+				<p:dataTable id="singleDT" var="script" scrollRows="5"
+					scrollable="true" scrollHeight="200" emptyMessage="Nenhum Registro"
+					value="#{MBCall.listScript}" selectionMode="single"
+					selection="#{MBCall.rowBeanScript}" rowKey="#{script.id}">
+
+					<p:ajax event="rowSelect" listener="#{MBCall.onRowSelectScript}"
+						update=":formDt:singleDT :formData:outbotoes :formEditar:outEdit :formExcluir:outExcluir " />
+
+
+
+					<p:column style="width:15px;text-align:center;">
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px;" value="Código" />
+						</f:facet>
+						<h:outputText value="#{script.id}">
+
+						</h:outputText>
+					</p:column>
+
+					<p:column style="width:25px;text-align:center;">
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px;" value="Nome" />
+						</f:facet>
+						<h:outputText value="#{script.nome}">
+
+						</h:outputText>
+					</p:column>
+
+					<p:column width="120">
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px;" value="Roteiro" />
+						</f:facet>
+						<h:outputText value="#{script.roteiro}" />
+					</p:column>
+
+					<p:column width="55">
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px;" value="Tipo" />
+						</f:facet>
+						<h:outputText value="#{script.tipo}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:outputPanel>
+
+		</h:form>
+
+		<p:dialog responsive="true"    header="Novo Script" widgetVar="dlgNovoScript" modal="true"
+			width="auto" style="font-size:12px !important;" height="auto"
+			resizable="false">
+			<h:form id="formCadastro">
+
+				<p:panelGrid columns="1" styleClass="semBorda">
+					<p:outputLabel value="Nome: "></p:outputLabel>
+					<p:inputText value="#{MBCall.script.nome}" required="true"
+						size="50" requiredMessage="Nome: Campo obrigatório"></p:inputText>
+
+					<p:outputLabel value="Roteiro: "></p:outputLabel>
+					<h:inputTextarea value="#{MBCall.script.roteiro}"
+						autoResize="false" required="true" rows="5" cols="89"
+						style="height:120px;width:120"
+						requiredMessage="Roteiro: Campo obrigatório">
+					</h:inputTextarea>
+
+					<p:outputLabel value="Tipo: "></p:outputLabel>
+					<p:inputText value="#{MBCall.script.tipo}" required="true"
+						size="50" requiredMessage="Tipo: Campo obrigatório"></p:inputText>
+					<br></br>
+
+				</p:panelGrid>
+				<center>
+
+
+
+					<p:commandButton value="Cadastrar"
+						style="width: 200px; font-size: 15px !important;"
+						update=":formData:msg, :formDt, :formCadastro"
+						action="#{MBCall.insertScript()}"></p:commandButton>
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true"    header="Editar Script" widgetVar="dlgEditarScript"
+			modal="true" width="auto" style="font-size:12px !important;"
+			height="auto" resizable="false">
+
+			<h:form id="formEditar">
+
+				<p:outputPanel id="outEdit" autoUpdate="false">
+					<p:inputText value="#{MBCall.script.id}" style="display: none" />
+					<p:panelGrid columns="1" styleClass="semBorda">
+						<p:outputLabel value="Nome: "></p:outputLabel>
+						<p:inputText value="#{MBCall.script.nome}" required="true"
+							size="50" requiredMessage="Nome: Campo obrigatório"></p:inputText>
+
+						<p:outputLabel value="Roteiro: "></p:outputLabel>
+						<h:inputTextarea value="#{MBCall.script.roteiro}"
+							autoResize="false" rows="5" cols="89"
+							style="height:120px;width:120" required="true"
+							requiredMessage="Roteiro: Campo obrigatório"></h:inputTextarea>
+
+						<p:outputLabel value="Tipo: "></p:outputLabel>
+						<p:inputText value="#{MBCall.script.tipo}" required="true"
+							size="50" requiredMessage="Tipo: Campo obrigatório"></p:inputText>
+						<br></br>
+
+					</p:panelGrid>
+					<center>
+
+						<p:commandButton value="Salvar"
+							style="width: 200px; font-size: 15px !important;"
+							update=":formData:msg, :formDt, :formEditar, :formData:outbotoes"
+							action="#{MBCall.updateScript(MBCall.script)}"></p:commandButton>
+
+					</center>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+		<p:dialog responsive="true"    header="Excluir Script" widgetVar="dlgExcluir" modal="true"
+			width="auto" style="font-size:12px !important;" height="auto"
+			resizable="false">
+			<h:form id="formExcluir">
+				<p:outputPanel id="outExcluir" autoUpdate="false">
+					<p:inputText value="#{MBCall.script.id}" style="display: none" />
+					<center>
+						<h:outputText value="Deseja excluir #{MBCall.script.nome}?"
+							style="font-size: 20px"></h:outputText>
+
+						<p:panelGrid columns="2" styleClass="semBorda"
+							style="margin-top: 30px">
+							<p:commandButton value="Sim"
+								update=":formData:msg, :formDt, :formExcluir, :formData:outbotoes"
+								actionListener="#{MBCall.excluirScript()}"></p:commandButton>
+
+							<p:commandButton value="Não" onclick="dlgExcluir.hide()"></p:commandButton>
+						</p:panelGrid>
+					</center>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+	</ui:define>
+</ui:composition>
+</html>

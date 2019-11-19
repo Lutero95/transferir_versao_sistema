@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+
+
+					<center>
+						<div style="margin-top: 10px">
+
+							<p:panel style="width:600px; text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Vendas Por Operador de Call Center" />
+								</f:facet>
+
+								<br />
+								<h:form>
+									<p:panelGrid columns="4" styleClass="semBorda">
+										<h:outputText value="Data início:  " />
+										<p:calendar value="#{reportController.periodoinicial}"
+											mask="true" showOn="button" pattern="dd/MM/yyyy" size="8"
+											required="true" locale="pt"
+											requiredMessage="Campo Data início é obrigatório" id="dti"
+											style="width:200px;margin-left:20px">
+
+										</p:calendar>
+										<h:outputText value="    		Data fim:  " />
+										<p:calendar value="#{reportController.periodofinal}"
+											mask="true" showOn="button" pattern="dd/MM/yyyy" size="8"
+											required="true" locale="pt"
+											requiredMessage="Campo Data fim é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
+									</p:panelGrid>
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Tipo:" />
+
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
+
+											<f:selectItem itemLabel="Sintético" itemValue="S" />
+											<f:selectItem itemLabel="Analítico" itemValue="A" />
+
+										</p:selectOneRadio>
+									</p:panelGrid>
+
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Divisão" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.procedimento.divisao.coddivisao}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems value="#{divisaoController.listaDiv}" var="td"
+												itemLabel="#{td.descricao}" itemValue="#{td.coddivisao}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Seção" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.procedimento.secao.codsecao}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems value="#{secaoController.listaSec}" var="td"
+												itemLabel="#{td.descricao}" itemValue="#{td.codsecao}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Grupo" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.procedimento.grupo.codgrupo}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems value="#{grupoController.listarGrupo}"
+												var="td" itemLabel="#{td.descricao}"
+												itemValue="#{td.codgrupo}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Subgrupo" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.procedimento.subgrupo.codsubgrupo}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems value="#{subGrupoController.listarGrupo}"
+												var="td" itemLabel="#{td.descricao}"
+												itemValue="#{td.codsubgrupo}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Angariador" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codAngariador}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listaAngariador}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Vendedor" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codVendedor}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listarVendedores}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Op. Call Center" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codOpCallCenter}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listarOpCallCenter}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Avaliador" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codAvaliador}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listarAvaliadores}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Indicador" />
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codIndicador}">
+											<f:selectItem itemLabel="SELECIONE" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listarIndicadores}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<br />
+									<center>
+										<p:commandButton icon="ui-icon-print" value="Imprimir"
+											style="font-size: 12px; text-align: right;"
+											actionListener="#{reportController.vendasPorOperadorCallCenter}"
+											ajax="false" />
+									</center>
+								</h:form>
+							</p:panel>
+						</div>
+					</center>
+				</f:view>
+				<!-- Terminar edição -->
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

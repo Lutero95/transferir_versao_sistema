@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+
+
+					<center>
+						<div style="margin-top: 10px">
+
+							<p:panel style="width:600px; text-align:left;" id="pnl">
+								<f:facet name="header">
+									<h:outputText value="Planilha Atendente" />
+								</f:facet>
+
+								<br />
+
+								<h:form>
+
+									<p:panelGrid columns="4" styleClass="semBorda">
+
+										<h:outputLabel styleClass="rotulosBold" value="Data Início:" />
+
+										<p:calendar value="#{reportController.periodoinicial}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data final é obrigatório" id="dti"
+											style="width:200px">
+										</p:calendar>
+
+										<h:outputLabel for="dtf" styleClass="rotulosBold"
+											style="margin-left: 15px;" value="    		Data Final:  " />
+										<p:calendar value="#{reportController.periodofinal}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data final é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
+
+									</p:panelGrid>
+
+
+									<p:panelGrid columns="2" styleClass="semBorda">
+
+										<h:outputText value="Funcionário:" />
+
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											required="true" requiredMessage="Informe o Funcionário!"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.venda.codOpCallCenter}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{funcionarioController.listarOpCallCenter}" var="td"
+												itemLabel="#{td.nome}" itemValue="#{td.codFunc}" />
+										</p:selectOneMenu>
+
+										<h:outputText value="Grupo de Trabalho:"></h:outputText>
+										<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+											style="width:222px;margin-left:0px"
+											value="#{reportController.idGrupo}">
+
+											<f:selectItem itemLabel="Selecione um Grupo de Trabalho"
+												itemValue="" />
+											<f:selectItems value="#{MBCall.listaTodosGruposFilial()}"
+												var="td" itemLabel="#{td.turno}" itemValue="#{td.id}" />
+
+										</p:selectOneMenu>
+
+									</p:panelGrid>
+
+									<br />
+
+									<center>
+
+										<p:commandButton icon="ui-icon-print" value="Imprimir"
+											style="font-size: 12px; text-align: right;"
+											actionListener="#{reportController.planilhaAtendente}"
+											ajax="false" />
+
+									</center>
+
+								</h:form>
+
+							</p:panel>
+
+						</div>
+
+					</center>
+
+				</f:view>
+
+			</div>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

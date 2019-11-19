@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+<ui:composition template="../../template/templategeral.xhtml">
+	<ui:define name="body">
+
+
+		<h:form id="formData">
+			<p:growl id="msg" />
+
+			<h3 style="font-size: 20px; font-weight: bold">Gerenciamento de
+				Cargas</h3>
+
+			<p:outputPanel id="outbotoes" autoUpdate="false">
+				<div>
+					<h:panelGrid columns="5"
+						style="margin-top:15px;margin-bottom:0px;font-size:12px !important;">
+
+						<p:commandButton style="margin-left:5px;" value="Excluir"
+							disabled="#{MBCall.rowBeanCarga.id == null || MBCall.rowBeanCarga.id == 0}"
+							update=":formData:msg" action="#{MBCall.preparaExcluirCarga()}"
+							icon="ui-icon-close" />
+
+
+
+					</h:panelGrid>
+
+				</div>
+
+
+			</p:outputPanel>
+
+			<br />
+
+		</h:form>
+
+		<h:form id="formDt">
+
+			<p:outputPanel id="outorc">
+				<p:dataTable id="singleDT" var="carga" scrollRows="5"
+					scrollable="true" scrollHeight="200" emptyMessage="Nenhum Registro"
+					value="#{MBCall.listCarga}" selectionMode="single"
+					selection="#{MBCall.rowBeanCarga}" rowKey="#{carga.id}">
+
+					<p:ajax event="rowSelect" listener="#{MBCall.onRowSelectCarga}"
+						update=":formDt:singleDT :formData:outbotoes :formExcluir:outExcluir
+						:formDt:tableItens" />
+
+
+					<p:column headerText="Código" width="5%">
+						<h:outputText value="#{carga.id}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Inicio" width="7%">
+						<h:outputText value="#{carga.data_inicio}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Fim" width="7%">
+						<h:outputText value="#{carga.data_final}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Supervisor" width="13%">
+						<h:outputText value="#{carga.operador.nome}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Motivo" width="12%">
+						<h:outputText value="#{carga.motivo}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Código" width="5%">
+						<h:outputText value="#{carga.grupo.id}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Grupo" width="17%">
+						<h:outputText value="#{carga.grupo.turno}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Seção" width="10%">
+						<h:outputText value="#{carga.secao.descricao}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Origem" width="7%">
+						<h:outputText value="#{carga.origem}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Carga" width="10%">
+						<h:outputText value="#{carga.data_hora_gerado}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+								timeZone="GMT-03:00" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gerar a partir:" width="7%">
+						<h:outputText value="#{carga.gerar_para_data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+			 <br />
+			 
+			 <ul class="nav nav-tabs" style="margin-top: 10px;">
+				<li role="presentation" class="active"><a href="#"
+					style="color: #428bca; font-size: 12px !important;">Funcionários que Receberam a Carga </a></li>
+
+			</ul>
+			<p:dataTable id="tableItens" var="func" scrollable="true"
+				scrollHeight="90" rows="14" emptyMessage="Nenhum Funcionário"
+				value="#{MBCall.listFuncCarga}">
+
+
+				<p:column style="width:100%;text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Funcionário" />
+					</f:facet>
+					
+					<h:outputText value="#{func.nome}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+
+		<p:dialog responsive="true"    header="Excluir Carga" widgetVar="dlgExcluir" modal="true"
+			width="auto" style="font-size:12px !important;" height="auto"
+			resizable="false">
+			<h:form id="formExcluir">
+				<p:outputPanel id="outExcluir" autoUpdate="false">
+					<center>
+						<h:outputText value="Deseja excluir essa carga?"
+							style="font-size: 20px"></h:outputText>
+
+						<p:panelGrid columns="2" styleClass="semBorda"
+							style="margin-top: 30px">
+							<p:commandButton value="Sim"
+								update=":formData:msg, :formDt, :formExcluir, :formData:outbotoes"
+								actionListener="#{MBCall.excluirCarga()}"></p:commandButton>
+
+							<p:commandButton value="Não" onclick="PF('dlgExcluir').hide();"></p:commandButton>
+						</p:panelGrid>
+					</center>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+	</ui:define>
+</ui:composition>
+</html>

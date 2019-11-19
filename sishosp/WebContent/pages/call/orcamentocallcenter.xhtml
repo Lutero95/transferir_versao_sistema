@@ -1,0 +1,2003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+<p:dialog responsive="true"    widgetVar="dlgorcagenda" height="auto" modal="true"
+	header="Gerenciamento de Orçamento" resizable="false">
+	<h:form id="formData">
+		<p:outputPanel id="outbotoes" autoUpdate="false">
+			<h:panelGrid columns="5"
+				style="margin-top:15px;margin-bottom:15px;font-size:12px !important;">
+				<p:commandButton value="Novo" icon="ui-icon-plus"
+					action="#{agendaController.orc.limpaBeansOrcAgenda(agendaController.agendaselecionada.cliente)}"
+					update=":formNovoOrcamento:outdadosbasinc :formNovoOrcamento:outlstinsert"
+					onclick="PF('dlgNovoOrcamento').show()">
+				</p:commandButton>
+				<p:commandButton style="margin-left:5px;" process="@this"
+					icon="ui-icon-wrench" value="Negociar"
+					actionListener="#{agendaController.orc.limpaBeans()}"
+					action="#{agendaController.orc.lstProdutosEdit()}"
+					update=":formEditOrcamento:outlstedit :formEditOrcamento:outdadosbasinc"
+					disabled="#{agendaController.orc.rowBean.codOrcamento==null || agendaController.orc.rowBean.status=='CT' || agendaController.orc.rowBean.status=='CP' }"
+					oncomplete="PF('dlgEditOrcamento').show();" />
+				<p:commandButton style="margin-left:5px;"
+					action="#{agendaController.orc.limpaItens()}" value="Confirmar"
+					icon="ui-icon-check"
+					actionListener="#{agendaController.orc.preparaConfirmarOrcamento()}"
+					disabled="#{agendaController.orc.rowBean.codOrcamento==null || agendaController.orc.rowBean.status=='CT'}"
+					update=":formNovoOrcamento:pnlOrcamento, :formConfOrcamento:outconf, :formConfOrcamento:outCli, :formConfOrcamento:atualizar, 
+					:formNovoOrcamento:pnlOrcamento, :formConfOrcamentoParcial:outconfParcial, :formConfOrcamentoParcial:outCliParcial, :formConfOrcamentoParcial:atualizarParcial">
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-print" value="Imprimir"
+					style="font-size: 12px;margin-left:5px;"
+					actionListener="#{reportController.executeOrcamento(agendaController.orc.rowBean.codOrcamento)}"
+					ajax="false"
+					disabled="#{agendaController.orc.rowBean.codOrcamento==null}" />
+				<p:commandButton icon="ui-icon-mail-closed" value="Enviar Email"
+					rendered="false" action="#{agendaController.carregarEmail}"
+					style="font-size: 12px;margin-left:5px;"
+					onclick="PF('confEmail').show();"
+					disabled="#{agendaController.orc.rowBean.codOrcamento==null}" />
+			</h:panelGrid>
+			<p:panelGrid>
+				<p:row>
+					<p:column> Ordenar por </p:column>
+					<p:column> Período </p:column>
+					<p:column>
+						<h:outputText value="Angariador" />
+					</p:column>
+					<p:column>
+						<h:outputText value="Cliente" />
+					</p:column>
+					<p:column>
+						<h:outputText value="Cód. Orçamento" />
+					</p:column>
+				</p:row>
+				<p:row>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:selectOneMenu
+							value="#{agendaController.orc.buscaOrcamento.ordenacao}">
+							<f:selectItem itemLabel="Código" itemValue="C" />
+							<f:selectItem itemLabel="Data" itemValue="D" />
+							<f:selectItem itemLabel="Angariador" itemValue="A" />
+							<f:ajax event="change" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<p:calendar id="button"
+							value="#{agendaController.orc.buscaOrcamento.periodoinicial}"
+							size="8" pattern="dd/MM/yyyy" showOn="button" />
+						<h:outputText value="a" style="margin-left: 5px" />
+						<p:calendar
+							value="#{agendaController.orc.buscaOrcamento.periodofinal}"
+							style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
+							showOn="button" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-search"
+							update=":formDlgProd:panelProduto" onclick="PF('dlgang').show();"></p:commandButton>
+						<p:autoComplete
+							value="#{agendaController.orc.buscaOrcamento.angariador}"
+							size="30"
+							completeMethod="#{buscaController.completeBuscaAngariador}"
+							var="theme" forceSelection="true" itemValue="#{theme}"
+							itemLabel="#{theme.nome}" converter="conFuncionario">
+							<p:ajax event="itemSelect"
+								listener="#{buscaController.onItemSelectFuncionario}" />
+						</p:autoComplete>
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-search" process="@this"
+							style="margin-right:3px;" onclick="PF('dlgBuscaCli').show();"></p:commandButton>
+						<p:autoComplete
+							value="#{agendaController.orc.buscaOrcamento.cliente}" size="30"
+							completeMethod="#{buscaController.completeBuscaCliente}"
+							var="theme" forceSelection="true" itemValue="#{theme}"
+							itemLabel="#{theme.nome}" converter="conCliente">
+							<p:ajax event="itemSelect"
+								listener="#{buscaController.onItemSelectCliente}" />
+						</p:autoComplete>
+					</p:column>
+					<p:column>
+						<p:inputText size="15"
+							value="#{agendaController.orc.buscaOrcamento.codorcamento}" />
+					</p:column>
+					<p:column>
+						<p:commandButton value="Buscar" icon="ui-icon-search"
+							actionListener="#{agendaController.orc.busca}"
+							update=":formEditOrcamento:msgEdit,:formDt:singleDT" />
+						<p:commandButton value="Limpar" icon="ui-icon-search"
+							style="margin-left:20px"
+							actionListener="#{agendaController.orc.limpaBusca()}"
+							update=":formEditOrcamento:msgEdit,:formDt:singleDT" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:outputPanel>
+	</h:form>
+	<h:form id="formDt">
+		<p:outputPanel id="outorc" autoUpdate="true">
+			<p:dataTable id="singleDT" var="orcamento" scrollRows="5"
+				scrollable="true" scrollHeight="100" emptyMessage="Nenhum Orçamento"
+				value="#{planilhaAtividadesController.age.orc.lstOrcamentos}"
+				selectionMode="single" selection="#{agendaController.orc.rowBean}"
+				rowKey="#{orcamento.codOrcamento}">
+				<p:ajax event="rowSelect"
+					listener="#{agendaController.orc.limpLstItens()}"
+					update=":formDt:tableItens :formData:outbotoes " />
+				<p:column style="width:7%;text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{orcamento.codOrcamento}">
+					</h:outputText>
+				</p:column>
+				<p:column style="width:14%;text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Data Emissão" />
+					</f:facet>
+					<h:outputText value="#{orcamento.dtOrcamento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column width="34%">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Cliente" />
+					</f:facet>
+					<h:outputText value="#{orcamento.clienteBean.nome}" />
+				</p:column>
+				<p:column width="26%">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Vendedor" />
+					</f:facet>
+					<h:outputText value="#{orcamento.vendedor.nome}" />
+				</p:column>
+				<p:column style="width:18%;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Situação" />
+					</f:facet>
+					<center>
+						<h:outputText style="font-size: 14px;"
+							value="#{orcamento.situacao}" />
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<ul class="nav nav-tabs" style="margin-top: 10px;">
+			<li role="presentation" class="active"><a href="#"
+				style="color: #428bca; font-size: 12px !important;">Itens do
+					orçamento </a></li>
+		</ul>
+		<p:dataTable id="tableItens" var="orcamento" style="margin-top:10px;"
+			rows="14" emptyMessage="Nenhum Orçamento"
+			value="#{agendaController.orc.lstItens()}">
+			<p:column style="width:5%;text-align:center;">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Código" />
+				</f:facet>
+				<h:outputText value="#{orcamento.estoque.codprod}">
+				</h:outputText>
+			</p:column>
+			<p:column style="width:25%;text-align:center;">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Procedimento" />
+				</f:facet>
+				<h:outputText value="#{orcamento.estoque.descricao}">
+				</h:outputText>
+			</p:column>
+			<p:column style="width:15%px;text-align:center;">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Angariador" />
+				</f:facet>
+				<h:outputText value="#{orcamento.estoque.angariadorBean.nome}">
+				</h:outputText>
+			</p:column>
+			<p:column style="width:15%px;text-align:center;">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Indicador" />
+				</f:facet>
+				<h:outputText value="#{orcamento.estoque.indicador.nome}">
+				</h:outputText>
+			</p:column>
+			<p:column width="10%">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Valor Unitário" />
+				</f:facet>
+				<center>
+					<h:outputText value="#{orcamento.estoque.tabela.valorvenda}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</center>
+			</p:column>
+			<p:column width="10%">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Quantidade" />
+				</f:facet>
+				<center>
+					<h:outputText value="#{orcamento.quantidade}" />
+				</center>
+			</p:column>
+			<p:column width="10%">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Valor Total" />
+				</f:facet>
+				<center>
+					<h:outputText value="#{orcamento.estoque.valorComDesconto}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</center>
+			</p:column>
+			<p:column width="10%">
+				<f:facet name="header">
+					<h:outputText style="font-size: 14px;" value="Desconto da Venda" />
+				</f:facet>
+				<center>
+					<h:outputText value="#{orcamento.estoque.desconto}">
+						<f:convertNumber type="currency" currencySymbol="R$" />
+					</h:outputText>
+				</center>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="confEmail" header="Enviar E-mail" height="120"
+	width="350">
+	<h:form id="formEmail">
+		<p:outputPanel id="outEmail" autoUpdate="true">
+			<h:outputText value="Email:" />
+			<br />
+			<br />
+			<p:inputText
+				value="#{agendaController.orc.rowBean.clienteBean.email}" size="50"></p:inputText>
+			<center>
+				<br></br>
+				<p:commandButton value="Sim"
+					action="#{reportController.disparaEmail()}"
+					update=":formEmail:outEmail" oncomplete="PF('confEmail').hide()" />
+				<p:commandButton value="Não" onclick="PF('cconfEmail').hide();"
+					style="margin-left:10px">
+				</p:commandButton>
+			</center>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    header="Editar Orçamento" widgetVar="dlgEditOrcamento"
+	modal="true" width="auto" style="font-size:12px !important;"
+	height="auto" resizable="false">
+	<h:form id="formEditOrcamento">
+		<p:growl id="msgEdit" />
+		<p:outputPanel id="outdadosbasinc">
+			<p:panel header="Dados Básico">
+				<p:panelGrid styleClass="semBorda" columns="8" id="pnlOrcamento">
+					<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+					<p:inputText size="40"
+						value="#{agendaController.orc.rowBean.clienteBean.nome}"
+						readonly="true"></p:inputText>
+					<h:outputText value="Vendedor" style="font-weight:bold;"></h:outputText>
+					<p:inputText size="40"
+						value="#{agendaController.orc.rowBean.vendedor.nome}"
+						readonly="true"></p:inputText>
+				</p:panelGrid>
+			</p:panel>
+		</p:outputPanel>
+		<p:commandButton value="Incluir Procedimento" style="margin-top:10px;"
+			icon="ui-icon-plus" onclick="PF('dlgProduto').show();"
+			update=":formDlgProd:panelProduto"
+			action="#{agendaController.orc.lstInsert()}" />
+		<h:panelGrid style="width:95%;margin-top:20px;">
+			<p:outputPanel id="outlstedit">
+				<p:remoteCommand name="onCellEditE" update="outlstedit" />
+				<p:dataTable value="#{agendaController.orc.lstEstoque}"
+					id="dtProdEdit" scrollable="true" scrollHeight="100"
+					editable="true" editMode="cell" style="width:710px"
+					scrollWidth="100%" var="produto"
+					emptyMessage="Nenhum Procedimento inserido">
+
+					<p:ajax event="cellEdit" oncomplete="onCellEditE()"
+						listener="#{agendaController.orc.onCellEdit}" />
+					<p:column headerText="Procedimento" style="width:150px">
+						<h:outputText value="#{produto.descricao}"></h:outputText>
+					</p:column>
+					<p:column headerText="Quantidade" style="width:65px">
+						<center>
+							<h:outputText value="#{produto.qtd}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Unitário" style="width:65px">
+						<center>
+							<h:outputText value="#{produto.tabela.valorvenda}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Final" style="width:65px">
+						<p:cellEditor>
+							<center>
+								<f:facet name="output">
+									<h:outputText value="#{produto.valorComDesconto}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{produto.valorComDesconto}" />
+								</f:facet>
+								<h:outputText value="#{produto.valorComDesconto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</center>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="Desconto" style="width:85px">
+
+						<center>
+
+							<h:outputText value="#{produto.desconto}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+
+						</center>
+
+
+
+					</p:column>
+					<p:column headerText="Editar" style="width:5%;">
+						<center>
+							<p:commandButton icon="ui-icon-wrench" process="@this"
+								update=":formDlgProd:panelProduto,:formEditOrcamento:dtProdEdit :formDlgEditProd:panelProduto"
+								action="#{agendaController.orc.produtoEdit()}"
+								onclick="PF('dlgEditProduto').show();">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.estoqueBean}" value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+
+						</center>
+					</p:column>
+					<p:column headerText="Retirar" width="40">
+						<center>
+							<p:commandButton icon="ui-icon-closethick" process="@this"
+								update=":formEditOrcamento:outlstedit"
+								action="#{agendaController.orc.removeProdutoLst()}">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.estoqueBean}" value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</center>
+					</p:column>
+				</p:dataTable>
+				<hr />
+				<p:outputPanel id="outtotalorcins" autoUpdate="true">
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:outputLabel value="Total Orçamento: " />
+						<p:outputLabel value="#{agendaController.orc.totalOrcamento}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</p:outputLabel>
+						<p:outputLabel value="Total Desconto: " />
+						<p:outputLabel
+							value="#{agendaController.orc.orcamentoBean.vlrdesc}"
+							style="margin-left:-2px; margin-top:-2px;">
+							<!-- <f:ajax listener="#{agendaController.orc.totalizaOrcamento()}"
+								render="outtotalorcins" />
+								 -->
+						</p:outputLabel>
+						<p:outputLabel value="Valor Final: " />
+						<p:outputLabel value="#{agendaController.orc.totalLiquido}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</p:outputLabel>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:outputPanel>
+		</h:panelGrid>
+		<hr />
+		<center>
+			<p:commandButton value="Salvar" style="margin-top:10px;"
+				update=":formDt:singleDT,msgEdit :formDt:tableItens"
+				action="#{agendaController.orc.editOrcamento()}"
+				icon="ui-icon-check" />
+			<p:commandButton value="Cancelar"
+				style="margin-top:10px;margin-left:5px;"
+				onclick="PF('dlgEditOrcamento').hide();" icon="ui-icon-closethick" />
+		</center>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgNovoOrcamento" header="Novo Orçamento"
+	width="800" modal="true" style="font-size:12px !important;"
+	height="500" resizable="false">
+	<h:form id="formNovoOrcamento">
+		<p:growl id="msg" />
+		<p:outputPanel id="outdadosbasinc">
+			<p:panel header="Dados Básico">
+				<p:panelGrid styleClass="semBorda" columns="3" id="pnlOrcamento">
+					<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+					<p:commandButton icon="ui-icon-search" process="@this"
+						style="margin-right:3px;" update=":formNovoOrcamento:pnlOrcamento"
+						onclick="PF('dlg').show();"></p:commandButton>
+					<p:autoComplete
+						value="#{agendaController.orc.orcamentoBean.clienteBean}"
+						size="30" required="true" requiredMessage="Informe o Cliente"
+						completeMethod="#{buscaController.completeBuscaCliente}"
+						var="theme" forceSelection="true" itemValue="#{theme}"
+						itemLabel="#{theme.nome}" converter="conCliente">
+						<p:ajax event="itemSelect"
+							listener="#{buscaController.onItemSelectCliente}" />
+					</p:autoComplete>
+
+					<h:outputText value="Vendedor" style="font-weight:bold;"></h:outputText>
+					<p:commandButton icon="ui-icon-search" process="@this"
+						style="margin-right:3px;" update=":formNovoOrcamento:pnlOrcamento"
+						onclick="PF('dlgBuscaVend').show();"></p:commandButton>
+					<p:autoComplete required="true"
+						requiredMessage="Informe o Vendedor"
+						value="#{agendaController.orc.orcamentoBean.vendedor}" size="30"
+						completeMethod="#{buscaController.completeBuscaVendedor}"
+						var="theme" forceSelection="true" itemValue="#{theme}"
+						itemLabel="#{theme.nome}" converter="conFuncionario">
+						<p:ajax event="itemSelect"
+							listener="#{buscaController.onItemSelectFuncionario}" />
+					</p:autoComplete>
+
+				</p:panelGrid>
+			</p:panel>
+		</p:outputPanel>
+		<p:commandButton value="Incluir Procedimento" style="margin-top:10px;"
+			process="@this" icon="ui-icon-plus"
+			update=":formDlgProd:panelProduto"
+			oncomplete="PF('dlgProduto').show();"
+			action="#{agendaController.orc.lstInsert()}" />
+		<h:panelGrid>
+			<p:outputPanel id="outlstinsert">
+				<p:remoteCommand name="onCellEdit" update="outlstinsert" />
+				<p:dataTable value="#{agendaController.orc.lstEstoque}"
+					id="tabelaProduto" scrollable="true" scrollHeight="100"
+					style="width:710px" scrollWidth="100%" var="produto"
+					editable="true" editMode="cell"
+					emptyMessage="Nenhum Procedimento inserido">
+					<p:ajax event="cellEdit" oncomplete="onCellEdit()"
+						listener="#{agendaController.orc.onCellEdit}" />
+					<p:column headerText="Procedimento" style="width:150px">
+						<h:outputText value="#{produto.descricao}"></h:outputText>
+					</p:column>
+					<p:column headerText="Desconto Máximo" width="50">
+						<center>
+							<h:outputText value="#{produto.tabela.valormaxdesconto}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Quantidade" style="width:65px">
+						<center>
+							<h:outputText value="#{produto.qtd}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Unitário" style="width:65px">
+						<center>
+							<h:outputText value="#{produto.tabela.valorvenda}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Final" style="width:65px">
+						<p:cellEditor>
+							<center>
+								<f:facet name="output">
+									<h:outputText value="#{produto.valorComDesconto}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{produto.valorComDesconto}" />
+								</f:facet>
+								<h:outputText value="#{produto.valorComDesconto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</center>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="Desconto" style="width:75px">
+
+						<center>
+
+							<h:outputText value="#{produto.desconto}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+
+						</center>
+
+					</p:column>
+					<p:column headerText="Editar" style="width:50px;">
+						<center>
+							<p:commandButton icon="ui-icon-wrench" process="@this"
+								update=":formDlgProd:panelProduto,:formEditOrcamento:dtProdEdit :formDlgEditProd:panelProduto"
+								action="#{agendaController.orc.produtoEdit()}"
+								onclick="PF('dlgEditProduto').show();">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.estoqueBean}" value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</center>
+					</p:column>
+					<p:column headerText="Retirar" style="width:40px">
+						<center>
+							<p:commandButton icon="ui-icon-closethick" process="@this"
+								update=":formNovoOrcamento:outlstinsert"
+								action="#{agendaController.orc.removeProdutoLst()}">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.estoqueBean}" value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</center>
+					</p:column>
+				</p:dataTable>
+				<hr />
+				<p:outputPanel id="outtotalorcins" autoUpdate="true">
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:outputLabel value="Total Orçamento: " />
+						<p:outputLabel value="#{agendaController.orc.totalOrcamento}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</p:outputLabel>
+						<p:outputLabel value="Total Desconto: " />
+						<p:outputLabel
+							value="#{agendaController.orc.orcamentoBean.vlrdesc}"
+							style="margin-left:-2px; margin-top:-2px;">
+							<!-- 
+							<f:ajax listener
+							<f:convertNumber type="currency" currencySymbol="R$" />="#{agendaController.orc.totalizaOrcamento()}"
+								render="outtotalorcins" />
+								 -->
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</p:outputLabel>
+						<p:outputLabel value="Valor Final: " rendered="false" />
+						<p:outputLabel value="#{agendaController.orc.totalLiquido}"
+							rendered="false">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</p:outputLabel>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:outputPanel>
+		</h:panelGrid>
+		<hr />
+		<center>
+			<p:commandButton value="Salvar" style="margin-top:10px;"
+				action="#{agendaController.orc.novoOrcamento()}"
+				icon="ui-icon-check" update="msg,:formDt:singleDT,formNovoOrcamento">
+				<f:setPropertyActionListener target="#{MBOrcamento.rowBean}"
+					value="#{MBOrcamento.orcamentoBean}"></f:setPropertyActionListener>
+			</p:commandButton>
+			<p:commandButton value="Cancelar"
+				style="margin-top:10px;margin-left:5px;"
+				onclick="PF('dlgNovoOrcamento').hide();" icon="ui-icon-closethick" />
+		</center>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="cancelOrcamento" header="Atenção">
+	<h:form id="formCancel">
+		<h:outputText value="Deseja cancelar o orçamento ?" />
+		<center>
+			<p:commandButton value="Sim"
+				action="#{agendaController.orc.cancelarOrcamento()}"
+				update=":formNovoOrcamento:msg" />
+			<p:commandButton value="Não" onclick="PF('cancelOrcamento').hide();" />
+		</center>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="confItem" header="Confirmar">
+	<h:form id="formConfItem2">
+		<p:outputPanel id="outconf2" autoUpdate="true">
+			<h:outputText value="Quantidade:" />
+			<br />
+			<p:spinner min="1" id="basico"
+				max="#{agendaController.orc.itemOrcamento.quantidade}"
+				value="#{agendaController.orc.itemOrcamento.qtdconfirmada}">
+			</p:spinner>
+			<center>
+				<p:commandButton value="Sim"
+					action="#{agendaController.orc.totalizaItensConfOrcamento()}"
+					update=":formConfOrcamento:outconf"
+					oncomplete="PF('confItem').hide()" />
+				<p:commandButton value="Não" onclick="PF('confItem').hide();"
+					style="margin-left:10px">
+				</p:commandButton>
+			</center>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="confItemParcial" header="Confirmar" dynamic="true">
+	<h:form id="formConfItem2Parcial">
+		<p:outputPanel id="outconf2Parcial" autoUpdate="true">
+			<h:outputText value="Quantidade:" />
+			<br />
+			<p:spinner min="1" id="basicoParcial"
+				max="#{agendaController.orc.itemOrcamento.qtdParcial}"
+				value="#{agendaController.orc.itemOrcamento.qtdconfirmadaParcial}">
+			</p:spinner>
+			<center>
+				<p:commandButton value="Sim"
+					action="#{agendaController.orc.totalizaItensConfOrcamento()}"
+					update=":formConfOrcamentoParcial:outconfParcial"
+					oncomplete="PF('confItemParcial').hide()" />
+				<p:commandButton value="Não" onclick="PF('confItemParcial').hide();"
+					style="margin-left:10px">
+				</p:commandButton>
+			</center>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgProduto" header="Inserir Procedimento"
+	width="600" height="220" modal="true">
+	<h:form id="formDlgProd">
+		<p:growl id="msgGrow" />
+		<p:panel id="panelProduto" style="font-size:10px;">
+			<p:outputPanel autoUpdate="false" id="outdlgprod">
+				<h:panelGrid id="pnlVenda2">
+					<p:row>
+						<p:column>
+							<h:outputText value="Procedimento" style="font-weight:bold;"></h:outputText>
+							<p:commandButton icon="ui-icon-search" process="@this"
+								style="margin-right:3px;" update=":formDlgProd:panelProduto"
+								onclick="PF('dlg3').show();"></p:commandButton>
+							<p:autoComplete value="#{agendaController.orc.estoqueBean}"
+								size="30"
+								completeMethod="#{buscaController.completeBuscaProcedimento}"
+								var="theme" required="true"
+								requiredMessage="Informe o Procedimento" forceSelection="true"
+								itemValue="#{theme}" itemLabel="#{theme.descricao}"
+								converter="conProcedimento">
+								<p:ajax event="itemSelect"
+									listener="#{buscaController.onItemSelectProcedimento}" />
+							</p:autoComplete>
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<p:outputPanel autoUpdate="true">
+								<h:outputText value="Valor Unitário:"
+									style="margin-left:22px;font-weight:bold;"></h:outputText>
+								<h:outputText
+									value="#{agendaController.orc.estoqueBean.tabela.valorvenda}"
+									style="font-size:10px;margin-left:35px" />
+							</p:outputPanel>
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Angariador"
+								style="font-weight:bold;margin-left:12px"></h:outputText>
+							<p:commandButton icon="ui-icon-search" process="@this"
+								style="margin-right:0px;" update=":formDlgProd:panelProduto"
+								onclick="PF('dlg7').show();"></p:commandButton>
+							<p:autoComplete
+								value="#{agendaController.orc.estoqueBean.angariadorBean}"
+								size="30"
+								completeMethod="#{buscaController.completeBuscaAngariador}"
+								var="theme" required="true"
+								requiredMessage="Informe o Angariador" forceSelection="true"
+								itemValue="#{theme}" itemLabel="#{theme.nome}"
+								converter="conFuncionario">
+								<p:ajax event="itemSelect"
+									listener="#{buscaController.onItemSelectFuncionario}" />
+							</p:autoComplete>
+
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<h:outputText value="Indicador"
+							style="font-weight:bold;margin-left:12px"></h:outputText>
+						<p:commandButton icon="ui-icon-search" process="@this"
+							style="margin-left:10px;" update=":formDlgProd:panelProduto"
+							onclick="PF('dlgBuscaInd').show();"></p:commandButton>
+						<p:autoComplete
+							value="#{agendaController.orc.estoqueBean.indicador}" size="30"
+							completeMethod="#{buscaController.completeBuscaIndicador}"
+							var="theme" forceSelection="true" itemValue="#{theme}"
+							itemLabel="#{theme.nome}" converter="conFuncionario">
+							<p:ajax event="itemSelect"
+								listener="#{buscaController.onItemSelectFuncionario}" />
+						</p:autoComplete>
+					</p:row>
+					<div style="height: 10px" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Quantidade"
+								style="margin-left:10px;font-weight:bold;"></h:outputText>
+							<p:inputText value="#{agendaController.orc.estoqueBean.qtd}"
+								size="5" style="margin-left:2px" required="true"
+								requiredMessage="Informe a Quantidade" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column></p:column>
+					</p:row>
+				</h:panelGrid>
+				<center>
+					<p:commandButton value="Incluir" style="margin-top:10px;"
+						update=":formNovoOrcamento:tabelaProduto :formDlgProd:panelProduto, msgGrow :formNovoOrcamento:outdadosbasinc :formEditOrcamento:outlstedit :formNovoOrcamento:outtotalorcins"
+						action="#{agendaController.orc.inserirProdutoNaLista()}"
+						icon="ui-icon-check" />
+					<p:commandButton value="Cancelar"
+						style="margin-top:10px;margin-left:5px;"
+						onclick="PF('dlgProduto').hide();" icon="ui-icon-closethick"></p:commandButton>
+				</center>
+			</p:outputPanel>
+		</p:panel>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgEditProduto" header="Editar Procedimento"
+	width="600" height="200" modal="true" closable="true">
+	<h:form id="formDlgEditProd">
+		<p:growl id="msgGrow" />
+		<p:panel id="panelProduto" style="font-size:10px;">
+			<p:outputPanel id="outdlgeditprod">
+				<h:panelGrid id="pnlVenda2">
+					<p:row>
+						<p:column>
+							<h:outputText value="Procedimento" style="font-weight:bold;"></h:outputText>
+							<h:outputText style="margin-left:10px"
+								value="#{agendaController.orc.estoqueBean.codprod} - #{agendaController.orc.estoqueBean.descricao}" />
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Valor Unit"
+								style="margin-left:22px;font-weight:bold;"></h:outputText>
+							<h:outputText
+								value="#{agendaController.orc.estoqueBean.tabela.valorvenda}"
+								style="font-size:10px;margin-left:10px" />
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Angariador"
+								style="font-weight:bold;margin-left:12px"></h:outputText>
+
+							<p:commandButton icon="ui-icon-search" process="@this"
+								style="margin-right:0px;" update=":formDlgEditProd:panelProduto"
+								onclick="PF('dlg7').show();"></p:commandButton>
+
+							<p:autoComplete
+								value="#{agendaController.orc.estoqueBean.angariadorBean}"
+								size="30"
+								completeMethod="#{buscaController.completeBuscaAngariador}"
+								var="theme" required="true"
+								requiredMessage="Informe o Angariador" forceSelection="true"
+								itemValue="#{theme}" itemLabel="#{theme.nome}"
+								converter="conFuncionario">
+								<p:ajax event="itemSelect"
+									listener="#{buscaController.onItemSelectFuncionario}" />
+							</p:autoComplete>
+
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Indicador"
+								style="font-weight:bold;margin-left:12px"></h:outputText>
+
+							<p:commandButton icon="ui-icon-search" process="@this"
+								style="margin-right:0px;" update=":formDlgEditProd:panelProduto"
+								onclick="PF('dlgBuscaInd').show();"></p:commandButton>
+
+							<p:autoComplete
+								value="#{agendaController.orc.estoqueBean.indicador}" size="30"
+								completeMethod="#{buscaController.completeBuscaIndicador}"
+								var="theme" forceSelection="true" itemValue="#{theme}"
+								itemLabel="#{theme.nome}" converter="conFuncionario">
+								<p:ajax event="itemSelect"
+									listener="#{buscaController.onItemSelectFuncionario}" />
+							</p:autoComplete>
+						</p:column>
+					</p:row>
+					<div style="height: 10px" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<div style="height: 10px" />
+					<p:row>
+						<p:column>
+							<h:outputText value="Quantidade"
+								style="margin-left:10px;font-weight:bold;"></h:outputText>
+							<p:inputText value="#{agendaController.orc.estoqueBean.qtd}"
+								size="5" style="margin-left:2px">
+								<p:ajax listener="#{agendaController.orc.calculaValorFinal()}"
+									event="blur"></p:ajax>
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+						</p:column>
+					</p:row>
+				</h:panelGrid>
+				<center>
+					<p:commandButton value="Gravar" style="margin-top:10px;"
+						update=":formNovoOrcamento:tabelaProduto,panelProduto, msgGrow :formNovoOrcamento:outdadosbasinc :formEditOrcamento:outlstedit :formNovoOrcamento:outtotalorcins :formDlgEditProd:panelProduto"
+						action="#{agendaController.orc.inserirProdutoNaLista()}"
+						icon="ui-icon-check" />
+				</center>
+			</p:outputPanel>
+		</p:panel>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgConfOrcamento" header="Confirmar Orçamento"
+	dynamic="true" width="800" style="font-size:12px !important;"
+	height="427">
+	<h:form id="formConfOrcamento">
+		<p:growl id="msg" />
+		<p:panel header="Dados do Orçamento">
+			<h:panelGrid columns="2" id="pnlConfOrcamento">
+				<p:outputPanel id="outCli">
+					<h:outputText
+						value="Cliente: #{agendaController.orc.rowBean.clienteBean.nome}"></h:outputText>
+				</p:outputPanel>
+			</h:panelGrid>
+		</p:panel>
+
+		<h:panelGrid style="margin-top:20px;">
+			<p:outputPanel id="outconf">
+				<p:dataTable value="#{agendaController.orc.listaItensOrcamento()}"
+					id="tabelaProduto" var="produto"
+					emptyMessage="Nenhum produto inserido">
+					<f:facet name="header"> Procedimentos Inseridos</f:facet>
+					<p:column headerText="Procedimento">
+						<h:outputText value="#{produto.estoque.descricao}"></h:outputText>
+					</p:column>
+					<p:column headerText="Qtd." width="5%">
+						<center>
+							<h:outputText value="#{produto.quantidade}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Qtd. Confirmada" width="13%">
+						<center>
+							<h:outputText value="#{produto.qtdconfirmada}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Unitário" width="13%">
+						<center>
+							<h:outputText value="#{produto.estoque.tabela.valorvenda}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Final" width="13%">
+						<center>
+							<h:outputText value="#{produto.valorliquido}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Desconto por item" width="13%">
+						<center>
+							<h:outputText value="#{produto.descontoUnitario}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Confirmar" width="10%">
+						<center>
+							<p:commandButton icon="ui-icon-check"
+								action="#{agendaController.orc.setarValor}"
+								update=":formConfItem2:basico, tabelaProduto"
+								onclick="PF('confItem').show()">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.itemOrcamento}"
+									value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</center>
+					</p:column>
+					<!--<f:facet name="footer">
+						  <h:outputText
+							value="Total Orçamento: R$ #{agendaController.orc.rowBean.totalOrcamento}"></h:outputText>
+					</f:facet>-->
+				</p:dataTable>
+
+
+			</p:outputPanel>
+		</h:panelGrid>
+		<center>
+			<p:commandButton value="Confirmar" style="margin-top:10px;"
+				update="msg,:formDt:singleDT,formNovoOrcamento"
+				action="#{agendaController.orc.confirmaOrcamento()}"
+				icon="ui-icon-check">
+			</p:commandButton>
+			<p:commandButton value="Desistir"
+				style="margin-top:10px;margin-left:10px"
+				onclick="PF('dlgConfOrcamento').hide();" icon="ui-icon-closethick" />
+		</center>
+		<center>
+			<br></br>
+			<p:outputPanel autoUpdate="true">
+				<br></br>
+
+				<br></br>
+				<h:outputLabel value="Total Confirmado:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.valorAtual.vlrdesc}"
+					id="idtotal"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+
+				<br></br>
+				<h:outputLabel value="Desconto:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.descontoOrcamento}"
+					id="idtotal2"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+
+				<br></br>
+				<h:outputLabel value="Valor Final:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.totalLiquido}"
+					id="atualizar"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+			</p:outputPanel>
+		</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgConfOrcamentoParcial"
+	header="Confirmar itens restantes" dynamic="true" width="800"
+	style="font-size:12px !important;" height="427">
+	<h:form id="formConfOrcamentoParcial">
+		<p:growl id="msg" />
+		<p:panel header="Dados do Orçamento">
+			<h:panelGrid columns="2" id="pnlConfOrcamentoParcial">
+				<p:outputPanel id="outCliParcial">
+					<h:outputText
+						value="Cliente: #{agendaController.orc.rowBean.clienteBean.nome}"></h:outputText>
+				</p:outputPanel>
+			</h:panelGrid>
+		</p:panel>
+
+		<h:panelGrid style="margin-top:20px;">
+			<p:outputPanel id="outconfParcial">
+				<p:dataTable value="#{agendaController.orc.listaItensOrcamento()}"
+					id="tabelaProdutoParcial" var="produto"
+					emptyMessage="Nenhum produto inserido">
+					<f:facet name="header"> Procedimentos Inseridos</f:facet>
+					<p:column headerText="Procedimento">
+						<h:outputText value="#{produto.estoque.descricao}"></h:outputText>
+					</p:column>
+					<p:column headerText="Qtd." width="5%">
+						<center>
+							<h:outputText value="#{produto.qtdParcial}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Qtd. Confirmada" width="13%">
+						<center>
+							<h:outputText value="#{produto.qtdconfirmadaParcial}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Unitário" width="13%">
+						<center>
+							<h:outputText value="#{produto.estoque.tabela.valorvenda}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor Final" width="13%">
+						<center>
+							<h:outputText value="#{produto.valorliquido}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Desconto por item" width="13%">
+						<center>
+							<h:outputText value="#{produto.descontoUnitario}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Confirmar" width="10%">
+						<center>
+							<p:commandButton icon="ui-icon-check"
+								action="#{agendaController.orc.setarValorParcial}"
+								update=":formConfItem2Parcial:basicoParcial, tabelaProdutoParcial"
+								onclick="PF('confItemParcial').show()">
+								<f:setPropertyActionListener
+									target="#{agendaController.orc.itemOrcamento}"
+									value="#{produto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</center>
+					</p:column>
+					<!--<f:facet name="footer">
+						<h:outputText
+							value="Total Orçamento: R$ #{agendaController.orc.rowBean.totalOrcamento}"></h:outputText>
+					</f:facet>-->
+				</p:dataTable>
+
+
+			</p:outputPanel>
+		</h:panelGrid>
+		<center>
+			<p:commandButton value="Confirmar" style="margin-top:10px;"
+				update="msg,:formDt:singleDT,formNovoOrcamento"
+				action="#{agendaController.orc.confirmaOrcamento()}"
+				icon="ui-icon-check">
+			</p:commandButton>
+			<p:commandButton value="Desistir"
+				style="margin-top:10px;margin-left:10px"
+				onclick="PF('dlgConfOrcamento').hide();" icon="ui-icon-closethick" />
+		</center>
+		<center>
+			<br></br>
+			<p:outputPanel autoUpdate="true">
+				<br></br>
+
+				<br></br>
+				<h:outputLabel value="Total Confirmado:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.valorAtual.vlrdesc}"
+					id="idtotalParcial"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+
+				<br></br>
+				<h:outputLabel value="Desconto:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.descontoOrcamento}"
+					id="idtotal2Parcial"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+
+				<br></br>
+				<h:outputLabel value="Valor Final:"
+					style="font-size:13px;font-weight:bold;" />
+				<h:outputText value="#{agendaController.orc.totalLiquido}"
+					id="atualizarParcial"
+					style="font-size:13px;font-weight:bold;margin-left:4px;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+			</p:outputPanel>
+		</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlg7" modal="true" resizable="false" height="370"
+	width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Angariadores" />
+	</f:facet>
+	<h:form id="frminter7">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBVenda.func}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBVenda.buscarAngariador()}" update="outinteressados7">
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outinteressados7">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBVenda.lstBuscaAngariador}"
+				var="cliente" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codFunc}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{cliente.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formDlgEditProd:outdlgeditprod :formDlgProd:outdlgprod"
+							value="Confirmar" oncomplete="PF('dlg7').hide();"
+							icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{agendaController.orc.estoqueBean.angariadorBean}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgang" modal="true" resizable="false" height="370"
+	width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Angariadores" />
+	</f:facet>
+	<h:form id="frmang">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBVenda.func}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBVenda.buscarAngariador()}" update="outang">
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outang">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBVenda.lstBuscaAngariador}"
+				var="angariador" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{angariador.codFunc}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{angariador.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formData:outbotoes" value="Confirmar"
+							oncomplete="PF('dlgang').hide();" icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{angariador}"
+								target="#{agendaController.orc.buscaOrcamento.angariador}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgBuscaCli" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Clientes" />
+	</f:facet>
+	<h:form id="frmBuscaCli">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBcliente.cli.nome}" />
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+			<p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBcliente.buscarClientes()}" update="outBuscaCli">
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outBuscaCli">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBcliente.listaclientes}"
+				var="cliente" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codigo_alternativo}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{cliente.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{cliente.cpfcnpj}">
+					</h:outputText>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formData:outbotoes" value="Confirmar"
+							oncomplete="PF('dlgBuscaCli').hide();" icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{agendaController.orc.buscaOrcamento.cliente}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgBuscaVend" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Vendedores" />
+	</f:facet>
+	<h:form id="frmBuscaVend">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBcliente.cli.nome}" />
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+			<p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{funcionarioController.buscarVendedores(MBcliente.cli.nome)}"
+				update="outBuscaVen">
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outBuscaVen">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom"
+				value="#{funcionarioController.listaVendedores}" var="vend"
+				paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{vend.codFunc}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{vend.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{vend.cpf}">
+					</h:outputText>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formNovoOrcamento:outdadosbasinc" value="Confirmar"
+							oncomplete="PF('dlgBuscaVend').hide();" icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{vend}"
+								target="#{agendaController.orc.orcamentoBean.vendedor}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    id="dlgcli" widgetVar="dlg" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Clientes" />
+	</f:facet>
+	<h:form id="frmcli">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBcliente.cli.nome}" />
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+			<p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBcliente.buscarClientes()}" update="outinteressados"></p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outinteressados">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBcliente.listaclientes}"
+				var="cliente" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codigo_alternativo}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{cliente.nome}"></h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{cliente.cpfcnpj}"></h:outputText>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formNovoOrcamento:pnlOrcamento" value="Confirmar"
+							oncomplete="PF('dlg').hide();" icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{agendaController.orc.orcamentoBean.clienteBean}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    id="dlgproced" widgetVar="dlg3" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Procedimentos" />
+	</f:facet>
+	<h:form id="frmproced">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Descrição " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{estoqueController.estoqueBean.descricao}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{estoqueController.buscarProduto()}"
+				update="outinteressados3"></p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outinteressados3">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{estoqueController.lstEstoque}"
+				var="produto" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{produto.codprod}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Descrição" />
+					</f:facet>
+					<h:outputText value="#{produto.descricao}"></h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Valor Unitário" />
+					</f:facet>
+					<h:outputText value="#{produto.tabela.valorvenda}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Desc. Máximo" />
+					</f:facet>
+					<h:outputText value="#{produto.tabela.valormaxdesconto}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formDlgProd:panelProduto" value="Confirmar"
+							disabled="#{produto.tabela.valorvenda==0}"
+							oncomplete="PF('dlg3').hide();" icon="ui-icon-circle-check">
+							<f:setPropertyActionListener value="#{produto}"
+								target="#{agendaController.orc.estoqueBean}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    id="mp8" widgetVar="dlg8" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Angariadores" />
+	</f:facet>
+	<h:form id="frminter8">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBVenda.nomePreco}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBVenda.buscarPreco()}" update="outinteressados8"></p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outinteressados8">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBVenda.lstPrecos}"
+				var="cliente" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codTabelaPreco}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{cliente.nome}"></h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update=":formNovaVenda:pnlVenda" value="Confirmar"
+							oncomplete="PF('dlg8').hide();" icon="podeGravar">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{MBVenda.precoBean}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgPagamento" width="650" height="520"
+	dynamic="true" resizable="false" style="font-size:12px;"
+	header="Pagamento da Venda" modal="true">
+	<h:form id="formPag">
+		<p:outputPanel id="outpagto" autoUpdate="true">
+			<h:panelGrid columns="2" style="margin-left:3px;">
+				<h:outputText value="Total: "
+					style="font-size:25px;font-weight:bold;" />
+				<h:outputText
+					value="#{agendaController.orc.rowBean.venda.valorTotalVenda}"
+					style="font-size:25px;font-weight:bold;margin-left:4px">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+				<h:outputText value="Aberto: "
+					style="font-size:25px;font-weight:bold;color:#FF0000;" />
+				<h:outputText value="#{agendaController.orc.valorEmAberto}"
+					style="font-size:25px;font-weight:bold;margin-left:4px;color:#FF0000;">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+			</h:panelGrid>
+		</p:outputPanel>
+		<hr />
+		<p:toolbar>
+			<p:toolbarGroup>
+				<p:commandButton value="Dinheiro" process="@this"
+					action="#{agendaController.orc.buscaPorDinheiro()}"
+					style="width:70px" update="out"></p:commandButton>
+				<p:commandButton value="Cartão" process="@this"
+					action="#{agendaController.orc.buscarPorCartao()}"
+					style="margin-left: 10px;width:70px" update="out"></p:commandButton>
+				<p:commandButton value="Cheque" process="@this"
+					action="#{agendaController.orc.buscarPorCheque()}"
+					style="margin-left: 10px;width:70px" update="out"></p:commandButton>
+				<p:commandButton value="Promissória" process="@this"
+					action="#{agendaController.orc.buscarPorPromissoria()}"
+					style="margin-left: 10px;width:75px" update="out"></p:commandButton>
+				<p:commandButton value="Crédito" process="@this"
+					onclick="PF('creditoOk').show();"
+					action="#{agendaController.orc.buscarPorCredito()}"
+					style="margin-left: 10px;width:70px" update=":formCreditoOk out"></p:commandButton>
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+			</p:toolbarGroup>
+		</p:toolbar>
+		<p:outputPanel id="out" autoUpdate="true">
+			<center>
+				<p:panelGrid style="margin-top:15px;font-size:12px;" columns="5"
+					styleClass="semBorda"
+					rendered="#{agendaController.orc.rendererDinheiro == 'S'}">
+					<h:outputText value="Tipo Moeda" />
+					<p:selectOneMenu
+						value="#{agendaController.orc.pagamentoBean.idTipo}">
+						<f:selectItems value="#{MBtipo.listarDinheiro}" var="din"
+							itemLabel="#{din.descricao}" itemValue="#{din.codtippag}" />
+					</p:selectOneMenu>
+					<h:outputText value="Valor"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.valor}"
+						required="true" requiredMessage="Informe o Valor">
+						<f:convertNumber type="number" />
+					</p:inputText>
+					<p:commandButton value="Adicionar" icon="ui-icon-check"
+						update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+						action="#{agendaController.orc.inserirNaListDinheiro()}" />
+				</p:panelGrid>
+			</center>
+			<center>
+				<p:panelGrid
+					rendered="#{agendaController.orc.rendererCheque == 'S'}"
+					styleClass="semBorda" style="margin-top:15px;font-size:12px;"
+					columns="4">
+					<h:outputText value="Tipo Cheque"></h:outputText>
+					<p:selectOneMenu
+						value="#{agendaController.orc.pagamentoBean.idTipo}">
+						<f:selectItems value="#{MBtipo.listarCheque}"
+							itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText value="Valor"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.valor}"
+						required="true" requiredMessage="Informe o Valor">
+						<f:convertNumber type="number" />
+					</p:inputText>
+					<h:outputText value="Parcelas"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.parcela}"
+						required="true" requiredMessage="Informe o Número de Parcelas" />
+					<h:outputText value=""></h:outputText>
+					<p:commandButton value="Adicionar" icon="ui-icon-check"
+						update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+						action="#{agendaController.orc.inserirNaListaCheque()}"></p:commandButton>
+				</p:panelGrid>
+			</center>
+			<center>
+				<p:panelGrid
+					rendered="#{agendaController.orc.rendererCartao == 'S'}"
+					styleClass="semBorda" style="margin-top:15px;font-size:12px;"
+					columns="4">
+					<h:outputText value="Tipo Cartão"></h:outputText>
+					<p:selectOneMenu
+						value="#{agendaController.orc.pagamentoBean.idTipo}">
+						<f:selectItems value="#{MBtipo.listarCartao}"
+							itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText value="Valor"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.valor}"
+						required="true" requiredMessage="Informe o Valor">
+						<f:convertNumber type="number" />
+					</p:inputText>
+					<h:outputText value="Parcelas"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.parcela}"
+						required="true" requiredMessage="Informe o Número de Parcelas" />
+					<h:outputText value=""></h:outputText>
+					<p:commandButton value="Adicionar" icon="ui-icon-check"
+						action="#{agendaController.orc.pegaBandeira}"
+						update="dtPagamento,btnPaga,out,:grwgeral,outpagto"></p:commandButton>
+				</p:panelGrid>
+			</center>
+			<center>
+				<p:panelGrid style="margin-top:15px;font-size:12px;" columns="4"
+					styleClass="semBorda"
+					rendered="#{agendaController.orc.rendererPromissoria == 'S'}">
+					<h:outputText value="Tipo" />
+					<p:selectOneMenu
+						value="#{agendaController.orc.pagamentoBean.idTipo}">
+						<f:selectItems value="#{MBtipo.listaPromissoria}" var="np"
+							itemLabel="#{np.descricao}" itemValue="#{np.codtippag}" />
+					</p:selectOneMenu>
+					<h:outputText value="Valor"></h:outputText>
+					<p:inputText value="#{agendaController.orc.pagamentoBean.valor}"
+						required="true" requiredMessage="Informe o Valor">
+						<f:convertNumber type="number" />
+					</p:inputText>
+					<h:outputText value="Vencimento" style="float:right" />
+					<p:calendar
+						value="#{agendaController.orc.pagamentoBean.vencimento}"
+						pattern="dd/MM/yyyy" showOn="button" size="8" mask="99/99/9999"
+						required="true" requiredMessage="Informe o Vencimento"></p:calendar>
+					<!-- aaaa -->
+					<p:commandButton value="Adicionar" icon="ui-icon-check"
+						update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+						action="#{agendaController.orc.inserirNaListPromissoria()}" />
+				</p:panelGrid>
+			</center>
+			<center>
+				<p:outputPanel autoUpdate="true"
+					rendered="#{agendaController.orc.rendererCredito == 'NAO'}">
+
+					<br></br>
+
+					<h:outputText value="Cliente"></h:outputText>
+					<p:autoComplete value="#{agendaController.orc.rowBean.clienteBean}"
+						size="40" completeMethod="#{buscaController.completeBuscaCliente}"
+						var="theme" forceSelection="true" itemValue="#{theme}"
+						itemLabel="#{theme.nome}" converter="conCliente">
+						<p:ajax event="itemSelect"
+							listener="#{buscaController.onItemSelectCliente}" />
+					</p:autoComplete>
+
+
+					<p:commandButton style="margin-left:10px" value="Buscar"
+						icon="ui-icon-search"
+						action="#{agendaController.orc.carregaCreditos}"></p:commandButton>
+
+					<p:dataTable id="dtCredito"
+						value="#{agendaController.orc.listarVendasCredito()}"
+						paginator="true" paginatorPosition="bottom" var="x" rows="3"
+						emptyMessage="Sem créditos">
+						<p:column headerText="Crédito Disponível">
+							<center>
+								<h:outputText value="#{x.valor}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</center>
+						</p:column>
+						<p:column headerText="Data de cadastro">
+							<center>
+								<h:outputText value="#{x.dtCadastro}">
+									<f:convertDateTime pattern="d/MM/yyyy"></f:convertDateTime>
+								</h:outputText>
+							</center>
+						</p:column>
+						<p:column headerText="Ação">
+							<center>
+								<p:commandButton value="Utilizar Crédito"
+									onclick="PF('creditoVenda').show();">
+									<f:setPropertyActionListener value="#{x}"
+										target="#{agendaController.orc.vendaCreditoBean}" />
+								</p:commandButton>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</center>
+			<hr />
+			<p:dataTable id="dtPagamento"
+				value="#{agendaController.orc.lstPagamento}" paginator="true"
+				paginatorPosition="bottom" var="x" rows="3"
+				emptyMessage="Sem pagamentos">
+				<p:column headerText="Tipo Pagamento">
+					<center>
+						<h:outputText value="#{x.descTipo}"></h:outputText>
+					</center>
+				</p:column>
+				<p:column headerText="Valor">
+					<center>
+						<h:outputText value="#{x.valor}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</center>
+				</p:column>
+				<p:column headerText="Nº Parcelas">
+					<center>
+						<h:outputText value="#{x.parcela}"></h:outputText>
+					</center>
+				</p:column>
+				<p:column headerText="Ação">
+					<center>
+						<p:commandButton icon="ui-icon-closethick"
+							update="dtPagamento, formPag:outpagto"
+							action="#{agendaController.orc.removeDaListaPagamento2()}">
+							<f:setPropertyActionListener value="#{x}"
+								target="#{agendaController.orc.removePagamentoObj}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+				<f:facet name="footer">
+					<h:outputText
+						value="Valor Total Pagamento: R$ #{agendaController.orc.vlrTotalOrcamento()}"></h:outputText>
+				</f:facet>
+			</p:dataTable>
+		</p:outputPanel>
+		<hr />
+		<center>
+			<p:outputPanel autoUpdate="true">
+				<p:commandButton value="Pagar" icon="ui-icon-check" id="btnPaga"
+					disabled="#{agendaController.orc.valorEmAberto != 0}"
+					action="#{agendaController.orc.inserirVenda2()}"
+					update=":formDt:singleDT out :grwgeral :formPag:outpagto"
+					process="@this,:formPag">
+				</p:commandButton>
+				<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+					onclick="PF('dlgPagamento').hide();"></p:commandButton>
+			</p:outputPanel>
+		</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgTipoCartao" height="120" width="500"
+	modal="true" resizable="false" header="Bandeira Cartão">
+	<h:form id="frmTipoCartao">
+		<p:outputPanel autoUpdate="true">
+			<p:panelGrid columns="2" styleClass="semBorda">
+				<h:outputText value="Deseja adicionar a bandeira:"
+					style="font-size:20px;font-wight:bold" />
+				<h:outputText value="#{agendaController.orc.nomeBandeira}"
+					style="font-size:20px;font-weight:bold;color:#FF0000;" />
+			</p:panelGrid>
+			<br />
+			<br />
+			<center>
+				<p:commandButton value="Sim"
+					action="#{agendaController.orc.inserirNaListaCartao()}"
+					update=":grwgeral" />
+				<p:commandButton value="Não" onclick="PF('dlgTipoCartao')hide"
+					style="margin-left:20px" />
+			</center>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="dlgdesconto" height="200" width="300" modal="true"
+	resizable="false" header="Desconto Pagamento">
+	<h:form id="frmdesc">
+		<p:outputPanel autoUpdate="true">
+			<p:panelGrid columns="2">
+				<h:outputText value="Em Aberto"
+					style="font-size:14px;font-wight:bold" />
+				<h:outputText value="#{agendaController.orc. valorEmAberto}"
+					style="font-size:12px;font-wight:bold">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+				<h:outputText value="Valor do Desconto"
+					style="font-size:14px;font-wight:bold" />
+				<h:outputText value="#{agendaController.orc.rowBean.vlrdesc}"
+					id="vlrdesc" style="font-size:14px;font-wight:bold">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+				<h:outputText value="Total a Pagar"
+					style="font-size:14px;font-wight:bold" />
+				<p:inputText value="#{agendaController.orc.totalPagar}" id="totpag"
+					style="font-size:14px;font-wight:bold">
+					<p:ajax event="blur"
+						listener="#{agendaController.orc.calculaValorPagarOrcamento()}"
+						global="false" process="@this"
+						update=":frmdesc:totpag :frmdesc:vlrdesc"></p:ajax>
+					<f:convertNumber type="number" />
+				</p:inputText>
+			</p:panelGrid>
+			<br />
+			<center>
+				<p:commandButton value="Pagar"
+					action="#{agendaController.orc.gravaDescontoVenda()}"
+					update=":grwgeral" />
+				<p:commandButton value="Desistir" onclick="PF('dlgdesconto')hide"
+					style="margin-left:20px" />
+			</center>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+<p:dialog responsive="true"    widgetVar="dlgBuscaInd" modal="true" resizable="false"
+	height="370" width="750">
+	<f:facet name="header">
+		<h:outputText value="Lista de Indicadores" />
+	</f:facet>
+	<h:form id="frmBuscaInd">
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBcliente.cli.nome}" />
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+			<p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{funcionarioController.buscarIndicadores(MBcliente.cli.nome)}"
+				update="outBuscaInd">
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outBuscaInd">
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom"
+				value="#{funcionarioController.listaIndicadores}" var="vend"
+				paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{vend.codFunc}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+					<h:outputText value="#{vend.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{vend.cpf}">
+					</h:outputText>
+				</p:column>
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							update="formDlgProd:outdlgprod :formDlgEditProd:outdlgeditprod"
+							value="Confirmar" oncomplete="PF('dlgBuscaInd').hide();"
+							icon="ui-icon-check">
+							<f:setPropertyActionListener value="#{vend}"
+								target="#{agendaController.orc.estoqueBean.indicador}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+		<br />
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="creditoVenda" header="Utilizar Créditos"
+	dynamic="true" modal="false" resizable="false">
+	<h:form id="formCredito">
+		<p:outputPanel autoUpdate="true">
+			<h:panelGrid columns="2" id="panelcredito">
+				<h:outputText value="Saldo:" style="font-size:12px !important;" />
+				<h:outputText value="#{agendaController.orc.vendaCreditoBean.valor}"
+					style="font-size:14px !important;">
+					<f:convertNumber type="currency" currencySymbol="R$" />
+				</h:outputText>
+				<h:outputText value="Tipo" />
+				<p:selectOneMenu
+					value="#{agendaController.orc.pagamentoBean.idTipo}">
+					<f:selectItems value="#{MBtipo.listarCredito}" var="din"
+						itemLabel="#{din.descricao}" itemValue="#{din.codtippag}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<hr />
+			<h:panelGrid columns="2">
+				<h:outputText value="Valor: R$" style="font-size:14px !important;"></h:outputText>
+				<p:inputText value="#{agendaController.orc.pagamentoBean.valor}" />
+			</h:panelGrid>
+		</p:outputPanel>
+		<hr />
+		<center>
+			<p:commandButton value="Usar"
+				action="#{agendaController.orc.inserirNaListaCredito()}"
+				icon="ui-icon-check"
+				update=":formEditOrcamento:msgEdit, formPag:dtCredito, formPag:dtPagamento"></p:commandButton>
+			<p:commandButton value="Cancelar" style="margin-left:5px;"
+				icon="ui-icon-closethick" onclick="PF('creditoVenda').hide();"></p:commandButton>
+		</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="creditoOk" header="Créditos" modal="true"
+	dynamic="true" resizable="false" width="400" height="300">
+	<h:form id="formCreditoOk">
+		<p:growl id="msgCredito"></p:growl>
+		<br></br>
+
+		<center>
+			<h:outputText value="Cliente:"></h:outputText>
+			<p:autoComplete value="#{agendaController.orc.clienteBean}" size="40"
+				style="margin-left:10px" required="true"
+				requiredMessage="Escolha um cliente"
+				completeMethod="#{buscaController.completeBuscaCliente}" var="theme"
+				forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}"
+				converter="conCliente">
+				<p:ajax event="itemSelect"
+					listener="#{buscaController.onItemSelectCliente}" />
+			</p:autoComplete>
+
+
+			<p:commandButton style="margin-left:10px" value="Buscar"
+				icon="ui-icon-search"
+				action="#{agendaController.orc.carregaCreditos}"
+				update=":formCreditoOk:msgCredito :formCreditoOk:dtCredito2"></p:commandButton>
+
+		</center>
+
+		<p:outputPanel autoUpdate="true" style="margin-top:20px">
+
+			<p:dataTable id="dtCredito2"
+				value="#{agendaController.orc.listarVendasCredito()}"
+				paginator="true" paginatorPosition="bottom" var="x" rows="5"
+				emptyMessage="Sem créditos para esse cliente">
+				<p:column headerText="Crédito Disponível">
+					<center>
+						<h:outputText value="#{x.valor}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</center>
+				</p:column>
+				<p:column headerText="Data de cadastro">
+					<center>
+						<h:outputText value="#{x.dtCadastro}">
+							<f:convertDateTime pattern="d/MM/yyyy"></f:convertDateTime>
+						</h:outputText>
+					</center>
+				</p:column>
+				<p:column headerText="Ação">
+					<center>
+						<p:commandButton value="Utilizar Crédito"
+							disabled="#{x.valor == 0}" onclick="PF('creditoVenda').show();">
+							<f:setPropertyActionListener value="#{x}"
+								target="#{agendaController.orc.vendaCreditoBean}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="promissoriaImprimir" header="Imprimir Promissória"
+	modal="false" resizable="false" closable="false">
+	<h:form id="formPromIm">
+
+		<h:outputText value="Nota promissória sendo Impressa, clique em OK"
+			style="font-size:12px !important;" />
+		<hr />
+		<center>
+			<p:commandButton value="Ok"
+				actionListener="#{reportController.notaPromissoria(agendaController.orc.codvenda)}"
+				ajax="false" onclick="PF('promissoriaImprimir').hide();"></p:commandButton>
+
+		</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    widgetVar="imprimirOrcamento" header="Imprimir Orçamento"
+	modal="true" resizable="false" closable="true">
+	<h:form id="formImOr">
+
+		<h:outputText value="Deseja imprimir o orçamento? "
+			style="font-size:12px !important;" />
+
+		<hr />
+		<center>
+			<p:commandButton value="Sim"
+				actionListener="#{reportController.executeOrcamento(agendaController.orc.codOrcReport)}"
+				ajax="false" onclick="PF('imprimirOrcamento').hide();"></p:commandButton>
+
+			<p:commandButton value="Não"
+				onclick="PF('imprimirOrcamento').hide();"></p:commandButton>
+
+		</center>
+	</h:form>
+</p:dialog>
+</html>
