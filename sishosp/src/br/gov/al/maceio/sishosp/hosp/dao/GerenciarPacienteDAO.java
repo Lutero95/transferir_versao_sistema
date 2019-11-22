@@ -152,9 +152,8 @@ public class GerenciarPacienteDAO {
 
         String sql = "select distinct p.id \n" + 
         		" from hosp.paciente_instituicao p \n" + 
-        		" join hosp.profissional_dia_atendimento d on d.id_paciente_instituicao = p.id\n" + 
-        		" where p.id_paciente<>164722\n" + 
-        		"";// and id=209";
+        		" join hosp.profissional_dia_atendimento d on d.id_paciente_instituicao = p.id " ;
+
                       
 
         ArrayList<Integer> lista = new ArrayList<>();

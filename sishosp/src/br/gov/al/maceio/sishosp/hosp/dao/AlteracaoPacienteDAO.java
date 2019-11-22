@@ -10,6 +10,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.DiaAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
@@ -151,11 +152,11 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public ArrayList<String> listarDiasAtendimentoProfissional(Integer id) throws ProjetoException {
+	public ArrayList<DiaAtendimento> listarDiasAtendimentoProfissional(Integer id) throws ProjetoException {
 
-		ArrayList<String> lista = new ArrayList<>();
+		ArrayList<DiaAtendimento> lista = new ArrayList<>();
 
-		String sql = "select dia_semana from hosp.profissional_dia_atendimento "
+		String sql = "select dia_semana, horario_atendimento from hosp.profissional_dia_atendimento "
 				+ " where id_paciente_instituicao = ? ";
 
 		try {
@@ -167,7 +168,10 @@ public class AlteracaoPacienteDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				lista.add(rs.getString("dia_semana"));
+				DiaAtendimento diaAtendimento = new DiaAtendimento();
+				diaAtendimento.setDiaSemana(rs.getInt("dia_semana"));
+				diaAtendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
+				lista.add(diaAtendimento);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -509,12 +513,14 @@ public class AlteracaoPacienteDAO {
 			conexao = ConnectionFactory.getConnection();
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			/*
 			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)) {
 
 				conexao.close();
 
 				return retorno;
 			}
+			*/
 
 			String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"

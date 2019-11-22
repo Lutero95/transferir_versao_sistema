@@ -248,8 +248,8 @@ public class RenovacaoPacienteDAO {
 			for (int i = 0; i < listaProfissionais.size(); i++) {
 				ps8.setLong(1, idPacienteInstituicao);
 				ps8.setLong(2, listaProfissionais.get(i).getId());
-				for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
-					ps8.setInt(3, Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
+				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps8.setInt(3,listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
 					ps8.executeUpdate();
 				}
 			}
@@ -316,11 +316,10 @@ public class RenovacaoPacienteDAO {
 
 				for (int j = 0; j < listaProfissionais.size(); j++) {
 
-					for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
+					for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 						if (DataUtil.extrairDiaDeData(
-								listAgendamentoProfissional.get(i).getDataMarcacao()) == Integer
-										.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
+								listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -373,7 +372,7 @@ public class RenovacaoPacienteDAO {
 
 	public boolean gravarRenovacaoEquipeDiaHorario(InsercaoPacienteBean insercao,
 			InsercaoPacienteBean insercaoParaLaudo, ArrayList<AgendaBean> listaAgendamento,
-			List<HorarioAtendimento> listaHorarioFinal) {
+			List<FuncionarioBean> listaProfissionais) {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -412,18 +411,21 @@ public class RenovacaoPacienteDAO {
 				idPacienteInstituicao = rs.getInt("id");
 			}
 
-			String sql8 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			String sql8 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, horario_atendimento) VALUES  (?, ?, ?,?)";
 			PreparedStatement ps8 = null;
 			ps8 = conexao.prepareStatement(sql8);
-
-			for (int i = 0; i < listaHorarioFinal.size(); i++) {
-				for (int j = 0; j < listaHorarioFinal.get(i).getListaFuncionarios().size(); j++) {
-					ps.setLong(1, idPacienteInstituicao);
-					ps.setLong(2, listaHorarioFinal.get(i).getListaFuncionarios().get(j).getId());
-					ps.setInt(3, listaHorarioFinal.get(i).getDiaSemana());
-					ps.executeUpdate();
+			
+			for (int i = 0; i < listaProfissionais.size(); i++) {
+				ps8.setLong(1, insercao.getId());
+				ps8.setLong(2, listaProfissionais.get(i).getId());
+				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps8.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+					ps8.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorarioAtendimento()));
+					ps8.executeUpdate();
 				}
 			}
+
+
 
 			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
@@ -483,28 +485,32 @@ public class RenovacaoPacienteDAO {
 					idAgend = rs.getInt("id_atendimento");
 				}
 
-				for (int h = 0; h < listaHorarioFinal.size(); h++) {
-					for (int l = 0; l < listaHorarioFinal.get(h).getListaFuncionarios().size(); l++) {
+				for (int h = 0; h < listaProfissionais.size(); h++) {
+					for (int l = 0; l < listaProfissionais.get(h).getListaDiasAtendimentoSemana().size(); l++) {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
-								.getDataMarcacao()) == listaHorarioFinal.get(h).getDiaSemana()) {
+								.getDataMarcacao()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
 
-							ps4.setLong(1, listaHorarioFinal.get(h).getListaFuncionarios().get(l).getId());
+							ps4.setLong(1, listaProfissionais.get(h).getId());
 							ps4.setInt(2, idAgend);
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo())) {
-								ps4.setNull(3, Types.NULL);
+							if ((listaProfissionais.get(h).getCbo().getCodCbo() != null)
+									&& (listaProfissionais.get(h).getCbo().getCodCbo() != 0)) {
+								ps4.setInt(3, listaProfissionais.get(h).getCbo().getCodCbo());
 							} else {
-								ps4.setLong(3,
-										listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo());
+								ps4.setNull(3, Types.NULL);
 							}
-							ps4.setInt(4,
-									listaHorarioFinal.get(h).getListaFuncionarios().get(l).getProc1().getIdProc());
+
+							if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
+									&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+							} else {
+								ps4.setNull(4, Types.NULL);
+							}
 
 							ps4.executeUpdate();
 						}
@@ -576,10 +582,10 @@ public class RenovacaoPacienteDAO {
 			PreparedStatement ps3 = null;
 			ps3 = conexao.prepareStatement(sql3);
 
-			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana().size(); i++) {
+			for (int i = 0; i < insercao.getFuncionario().getListaDiasAtendimentoSemana().size(); i++) {
 				ps3.setLong(1, insercao.getId());
 				ps3.setLong(2, insercao.getFuncionario().getId());
-				ps3.setInt(3, Integer.parseInt(insercao.getFuncionario().getListDiasSemana().get(i)));
+				ps3.setInt(3,insercao.getFuncionario().getListaDiasAtendimentoSemana().get(i).getDiaSemana());
 				ps3.executeUpdate();
 
 			}
