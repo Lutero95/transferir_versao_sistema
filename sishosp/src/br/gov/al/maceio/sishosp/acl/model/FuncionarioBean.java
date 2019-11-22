@@ -33,6 +33,8 @@ public class FuncionarioBean implements Serializable {
     private String nomeBancoAcesso;
     private List<HorarioAtendimento> listaHorarioAtendimentos;
     private String horarioAtendimento;
+    private ArrayList<String> listDiasSemana;
+    
 
     // LISTAS
     private List<ProgramaBean> programa;
@@ -87,6 +89,7 @@ public class FuncionarioBean implements Serializable {
         novaSenha = "";
         confirmacaoNovaSenha = "";
         listaHorarioAtendimentos = new ArrayList<>();
+        listDiasSemana = new ArrayList<String>();
     }
 
 
@@ -487,5 +490,15 @@ public class FuncionarioBean implements Serializable {
 
 	public void setListaDiasAtendimentoSemana(ArrayList<DiaAtendimento> listaDiasAtendimentoSemana) {
 		this.listaDiasAtendimentoSemana = listaDiasAtendimentoSemana;
+	}
+
+
+	public ArrayList<String> getListDiasSemana() {
+		return listDiasSemana;
+	}
+
+
+	public void setListDiasSemana(ArrayList<String> listDiasSemana) {
+		this.listDiasSemana = listDiasSemana;
 	}
 }

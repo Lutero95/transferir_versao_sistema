@@ -9,6 +9,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.StringUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.DiaAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -453,7 +454,7 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -472,6 +473,14 @@ public class AlteracaoPacienteDAO {
 									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
+								}
+								
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+										listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorarioAtendimento())) {
+									ps8.setNull(5, Types.NULL);
+								} else {
+									ps8.setTime(5,
+											DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorarioAtendimento()));
 								}
 
 								ps8.executeUpdate();
