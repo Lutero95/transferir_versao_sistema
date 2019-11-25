@@ -14,6 +14,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
@@ -373,6 +374,18 @@ public class AlteracaoPacienteDAO {
 
 				return retorno;
 			}
+			
+			
+			String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=? "
+	                + " where id = ?";
+	        
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+            stmt.setString(2, insercao.getObservacao());
+            stmt.setInt(3, insercao.getId());
+            stmt.executeUpdate();
+			
 
 			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, horario_atendimento) VALUES  (?, ?, ?, ?)";
 			PreparedStatement ps6 = null;
@@ -457,7 +470,7 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -477,6 +490,15 @@ public class AlteracaoPacienteDAO {
 								} else {
 									ps8.setNull(4, Types.NULL);
 								}
+								
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+										listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario())) {
+									ps8.setNull(5, Types.NULL);
+								} else {
+									ps8.setTime(5,
+											DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario()));
+								}
+
 
 								ps8.executeUpdate();
 							}

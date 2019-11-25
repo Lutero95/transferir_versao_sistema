@@ -67,7 +67,7 @@ public class AlteracaoPacienteController implements Serializable {
     private Boolean todosOsProfissionais;
     private AgendaDAO agendaDAO = new AgendaDAO();
     private static AgendaDAO agendaDAODuplicado = new AgendaDAO();
-    private List<HorarioAtendimento> listaHorarioAtendimentos;
+    private ArrayList<HorarioAtendimento> listaHorarioAtendimentos;
     private ArrayList<String> listaHorarios;
     private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
@@ -203,6 +203,7 @@ public class AlteracaoPacienteController implements Serializable {
         dias = dias + ".";
 
         funcionario.setDiasSemana(dias);
+        funcionario.setListaDiasAtendimentoSemana(listaHorarioAtendimentos);
         listaProfissionaisAdicionados.add(funcionario);
 
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
@@ -1196,11 +1197,11 @@ public class AlteracaoPacienteController implements Serializable {
 		this.listaHorariosEquipe = listaHorariosEquipe;
 	}
 
-	public List<HorarioAtendimento> getListaHorarioAtendimentos() {
+	public ArrayList<HorarioAtendimento> getListaHorarioAtendimentos() {
 		return listaHorarioAtendimentos;
 	}
 
-	public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
+	public void setListaHorarioAtendimentos(ArrayList<HorarioAtendimento> listaHorarioAtendimentos) {
 		this.listaHorarioAtendimentos = listaHorarioAtendimentos;
 	}
 

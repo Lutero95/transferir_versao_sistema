@@ -302,7 +302,7 @@ public class TransferenciaPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataMarcacao()) == listaProfissionais.get(h).getDiaSemana()) {
 
-							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 							ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -322,8 +322,16 @@ public class TransferenciaPacienteDAO {
 							} else {
 								ps4.setNull(4, Types.NULL);
 							}
+							
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+									listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario())) {
+								ps4.setNull(5, Types.NULL);
+							} else {
+								ps4.setTime(5,
+										DataUtil.retornarHorarioEmTime(listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario()));
+							}
 
-							ps8.executeUpdate();
+							ps4.executeUpdate();
 						}
 					}
 				}

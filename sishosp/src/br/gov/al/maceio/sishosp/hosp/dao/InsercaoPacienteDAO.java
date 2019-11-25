@@ -339,7 +339,7 @@ public class InsercaoPacienteDAO {
 			ps = con.prepareStatement(sql2);
 
 			for (int i = 0; i < listaProfissionais.size(); i++) {
-				ps.setLong(1, insercao.getId());
+				ps.setLong(1, id);
 				ps.setLong(2, listaProfissionais.get(i).getId());
 				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());

@@ -71,7 +71,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private Boolean liberacao;
     private Boolean ehAvaliacao;
     private ArrayList<Liberacao> listaLiberacao;
-    private List<HorarioAtendimento> listaHorarioAtendimentos;
+    private ArrayList<HorarioAtendimento> listaHorarioAtendimentos;
     private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
     private List<Integer> listaDias;
@@ -344,6 +344,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         dias = dias + ".";
 
         funcionario.setDiasSemana(dias);
+        funcionario.setListaDiasAtendimentoSemana(listaHorarioAtendimentos);
         listaProfissionaisAdicionados.add(funcionario);
 
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
@@ -1005,11 +1006,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.ehAvaliacao = ehAvaliacao;
     }
 
-    public List<HorarioAtendimento> getListaHorarioAtendimentos() {
+    public ArrayList<HorarioAtendimento> getListaHorarioAtendimentos() {
         return listaHorarioAtendimentos;
     }
 
-    public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
+    public void setListaHorarioAtendimentos(ArrayList<HorarioAtendimento> listaHorarioAtendimentos) {
         this.listaHorarioAtendimentos = listaHorarioAtendimentos;
     }
 
