@@ -1,21 +1,23 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.StringUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.DiaAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
-
-import javax.faces.context.FacesContext;
 
 public class AlteracaoPacienteDAO {
 
@@ -153,11 +155,11 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public ArrayList<DiaAtendimento> listarDiasAtendimentoProfissional(Integer id) throws ProjetoException {
+	public ArrayList<HorarioAtendimento> listarDiasAtendimentoProfissional(Integer id) throws ProjetoException {
 
-		ArrayList<DiaAtendimento> lista = new ArrayList<>();
+		ArrayList<HorarioAtendimento> lista = new ArrayList<>();
 
-		String sql = "select dia_semana, horario_atendimento from hosp.profissional_dia_atendimento "
+		String sql = "select dia_semana, horario_atendimento, id_profissional from hosp.profissional_dia_atendimento "
 				+ " where id_paciente_instituicao = ? ";
 
 		try {
@@ -169,9 +171,10 @@ public class AlteracaoPacienteDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				DiaAtendimento diaAtendimento = new DiaAtendimento();
+				HorarioAtendimento diaAtendimento = new HorarioAtendimento();
 				diaAtendimento.setDiaSemana(rs.getInt("dia_semana"));
-				diaAtendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
+				diaAtendimento.setHorario(rs.getString("horario_atendimento"));
+				diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
 				lista.add(diaAtendimento);
 			}
 		} catch (Exception ex) {
@@ -380,7 +383,7 @@ public class AlteracaoPacienteDAO {
 				ps6.setLong(2, listaProfissionais.get(i).getId());
 				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps6.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
-					ps6.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorarioAtendimento()));
+					ps6.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()));
 					ps6.executeUpdate();
 				}
 			}
@@ -454,7 +457,7 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -473,14 +476,6 @@ public class AlteracaoPacienteDAO {
 									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
-								}
-								
-								if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-										listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorarioAtendimento())) {
-									ps8.setNull(5, Types.NULL);
-								} else {
-									ps8.setTime(5,
-											DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorarioAtendimento()));
 								}
 
 								ps8.executeUpdate();

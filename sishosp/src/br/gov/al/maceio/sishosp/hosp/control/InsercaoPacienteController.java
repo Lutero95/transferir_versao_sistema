@@ -35,7 +35,6 @@ import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.DiaAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
@@ -130,7 +129,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void limparDias() {
-        funcionario.setListaDiasAtendimentoSemana(new ArrayList<DiaAtendimento>());
+        funcionario.setListaDiasAtendimentoSemana(new ArrayList<HorarioAtendimento>());
     }
 
     public void listarLaudosVigentes(String campoBusca, String tipoBusca)
@@ -362,6 +361,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         JSFUtil.fecharDialog("dlgDiasAtendimentoHorario");
     }
     
+    /*
     public boolean verificaSeExisteDiaSemanaEHorario(List<HorarioAtendimento> lista, int diaSemana, String horario) {
     	boolean rst = false;
         for (int j = 0; j < listaHorarioFinal.size(); j++) {
@@ -377,6 +377,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }	
         return rst;
     }
+    */
 
 
     public void excluirDiasHorariosDoFuncionario(HorarioAtendimento horarioAtendimento) {
@@ -779,7 +780,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
                 //gerarListaAgendamentosEquipe();
             	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaHorarioFinal);
+                cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaProfissionaisAdicionados);
             	else
                     cadastrou = iDao.gravarInsercaoEquipeTurno(insercao,
                             listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);

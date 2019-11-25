@@ -222,18 +222,17 @@ public class TransferenciaPacienteDAO {
 
 			ps6.executeUpdate();
 
-			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade) "
+					+ " values (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
 			ps = conexao.prepareStatement(sql7);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
 			ps.setInt(2, insercao.getGrupo().getIdGrupo());
-			ps.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
-			ps.setInt(4, insercao.getEquipe().getCodEquipe());
-			ps.setString(5, "A");
-			ps.setInt(6, insercao.getLaudo().getId());
-			ps.setString(7, insercao.getObservacao());
-			ps.setInt(8, user_session.getUnidade().getId());
+			ps.setInt(3, insercao.getEquipe().getCodEquipe());
+			ps.setString(4, "A");
+			ps.setInt(5, insercao.getLaudo().getId());
+			ps.setString(6, insercao.getObservacao());
+			ps.setInt(7, user_session.getUnidade().getId());
 
 			rs = ps.executeQuery();
 			int idPacienteInstituicaoNovo = 0;
@@ -332,7 +331,7 @@ public class TransferenciaPacienteDAO {
 			}
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "IT",
 					conexao)) {
-				conexao.commit();
+			//	conexao.commit();
 
 				retorno = true;
 			}

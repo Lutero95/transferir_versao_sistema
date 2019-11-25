@@ -22,7 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
-import br.gov.al.maceio.sishosp.hosp.model.DiaAtendimento;
+import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
@@ -2506,11 +2506,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return qtd;
     }
 
-    public ArrayList<DiaAtendimento> listaDiasDeAtendimetoParaPacienteInstituicao(Integer idPacienteInstituicao)
+    public ArrayList<HorarioAtendimento> listaDiasDeAtendimetoParaPacienteInstituicao(Integer idPacienteInstituicao)
             throws ProjetoException {
-        ArrayList<DiaAtendimento> lista = new ArrayList<DiaAtendimento>();
+        ArrayList<HorarioAtendimento> lista = new ArrayList<HorarioAtendimento>();
 
-        String sql = "SELECT dia_semana, horario_atendimento FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ?";
+        String sql = "SELECT dia_semana, horario_atendimento, id_profissional FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -2521,9 +2521,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-            	DiaAtendimento diaAtendimento = new DiaAtendimento();
+            	HorarioAtendimento diaAtendimento = new HorarioAtendimento();
                 diaAtendimento.setDiaSemana(rs.getInt("dia_semana"));
-                diaAtendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
+                diaAtendimento.setHorario(rs.getString("horario_atendimento"));
+                diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
                 lista.add(diaAtendimento);
             }
         } catch (Exception ex) {
@@ -2625,11 +2626,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return lista;
     }
 
-    public ArrayList<DiaAtendimento> listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(Integer idPacienteInstituicao,
+    public ArrayList<HorarioAtendimento> listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(Integer idPacienteInstituicao,
                                                                                         Long idProfissional, Connection conAuxiliar) {
-        ArrayList<DiaAtendimento> lista = new ArrayList<DiaAtendimento>();
+        ArrayList<HorarioAtendimento> lista = new ArrayList<HorarioAtendimento>();
 
-        String sql = "SELECT dia_semana, horario_atendimento FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
+        String sql = "SELECT dia_semana, horario_atendimento, id_profissional FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
 
         try {
             PreparedStatement stm = null;
@@ -2640,9 +2641,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-            	DiaAtendimento diaAtendimento = new DiaAtendimento();
+            	HorarioAtendimento diaAtendimento = new HorarioAtendimento();
                 diaAtendimento.setDiaSemana(rs.getInt("dia_semana"));
-                diaAtendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
+                diaAtendimento.setHorario(rs.getString("horario_atendimento"));
+                diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
                 lista.add(diaAtendimento);
             }
         } catch (Exception ex) {

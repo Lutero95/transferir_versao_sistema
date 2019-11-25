@@ -306,7 +306,7 @@ public class InsercaoPacienteDAO {
 
 	public boolean gravarInsercaoEquipeDiaHorario(InsercaoPacienteBean insercao,
 			ArrayList<AgendaBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao,
-			List<HorarioAtendimento> listaHorarioFinal) throws ProjetoException {
+			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -338,14 +338,18 @@ public class InsercaoPacienteDAO {
 			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, horario_atendimento) VALUES  (?, ?, ?, ?)";
 			ps = con.prepareStatement(sql2);
 
-			for (int i = 0; i < listaHorarioFinal.size(); i++) {
-					ps.setLong(1, id);
-					ps.setLong(2, listaHorarioFinal.get(i).getFuncionario().getId());
-					ps.setInt(3, listaHorarioFinal.get(i).getDiaSemana());
-					ps.setTime(4, DataUtil.retornarHorarioEmTime(listaHorarioFinal.get(i).getHorario()));
+			for (int i = 0; i < listaProfissionais.size(); i++) {
+				ps.setLong(1, insercao.getId());
+				ps.setLong(2, listaProfissionais.get(i).getId());
+				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+					ps.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()));
 					ps.executeUpdate();
-				
+				}
 			}
+			
+			
+		
 
 			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, encaixe, codatendente, dtamarcacao, codprograma, codgrupo)"
@@ -392,45 +396,50 @@ public class InsercaoPacienteDAO {
 				if (rs.next()) {
 					idAtendimento = rs.getInt("id_atendimento");
 				}
+				
+				
+				for (int j = 0; j < listaProfissionais.size(); j++) {
 
-				for (int h = 0; h < listaHorarioFinal.size(); h++) {
-						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
-								.getDataMarcacao()) == listaHorarioFinal.get(h).getDiaSemana()) {
+					for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
+
+						if (DataUtil.extrairDiaDeData(
+								listaAgendamento.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
 
-							ps4.setLong(1, listaHorarioFinal.get(h).getFuncionario().getId());
+							ps4.setLong(1, listaProfissionais.get(j).getId());
 							ps4.setInt(2, idAtendimento);
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaHorarioFinal.get(h).getFuncionario().getCbo().getCodCbo())) {
+							if ((listaProfissionais.get(j).getCbo().getCodCbo() != null)
+									&& (listaProfissionais.get(j).getCbo().getCodCbo() != 0)) {
+								ps4.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+							} else {
 								ps4.setNull(3, Types.NULL);
-							} else {
-								ps4.setLong(3,
-										listaHorarioFinal.get(h).getFuncionario().getCbo().getCodCbo());
 							}
-							
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaHorarioFinal.get(h).getFuncionario().getProc1().getIdProc())) {
+
+							if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
+									&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+							} else {
 								ps4.setNull(4, Types.NULL);
-							} else {
-								ps4.setLong(4,
-										listaHorarioFinal.get(h).getFuncionario().getProc1().getIdProc());
 							}
 							
 							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaHorarioFinal.get(h).getHorario())) {
+									listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario())) {
 								ps4.setNull(5, Types.NULL);
 							} else {
 								ps4.setTime(5,
-										DataUtil.retornarHorarioEmTime(listaHorarioFinal.get(h).getHorario()));
+										DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario()));
 							}
-							ps4.executeUpdate();
-						} //fimloop 2
-				} //fimloop 1
 
+							ps4.executeUpdate();
+						}
+					}
+				}
+				
+				
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {

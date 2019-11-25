@@ -420,7 +420,7 @@ public class RenovacaoPacienteDAO {
 				ps8.setLong(2, listaProfissionais.get(i).getId());
 				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps8.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
-					ps8.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorarioAtendimento()));
+					ps8.setTime(4, DataUtil.retornarHorarioEmTime(listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()));
 					ps8.executeUpdate();
 				}
 			}

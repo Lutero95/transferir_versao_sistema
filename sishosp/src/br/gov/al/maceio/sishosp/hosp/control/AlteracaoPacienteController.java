@@ -764,7 +764,7 @@ public class AlteracaoPacienteController implements Serializable {
 
         for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
-                dias = dias + "Domingo "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();
+                dias = dias + "Domingo "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();
 
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
@@ -772,42 +772,42 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
-                dias = dias + "Segunda "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Segunda "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
-                dias = dias + "Terça "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Terça "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
-                dias = dias + "Quarta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Quarta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
-                dias = dias + "Quinta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Quinta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
-                dias = dias + "Sexta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Sexta "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
             }
 
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
-                dias = dias + "Sábado "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorarioAtendimento();;
+                dias = dias + "Sábado "+funcionario.getListaDiasAtendimentoSemana().get(i).getHorario();;
                 if(funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
                 }
@@ -889,7 +889,7 @@ public class AlteracaoPacienteController implements Serializable {
         func.setListaDiasAtendimentoSemana(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana());
         func.setHorarioAtendimento(listaFuncionarioAuxiliar.get(i).getHorarioAtendimento());
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
-                dias = dias + "Domingo "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Domingo "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -897,7 +897,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
-                dias = dias + "Segunda "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Segunda "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -905,7 +905,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
-                dias = dias + "Terça "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Terça "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -913,7 +913,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
-                dias = dias + "Quarta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Quarta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -921,7 +921,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
-                dias = dias + "Quinta"+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Quinta"+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -929,7 +929,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
-                dias = dias + "Sexta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Sexta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -937,7 +937,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
-                dias = dias + "Sábado "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Sábado "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1029,7 +1029,7 @@ public class AlteracaoPacienteController implements Serializable {
         func.setListaDiasAtendimentoSemana(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana());
         func.setHorarioAtendimento(listaFuncionarioAuxiliar.get(i).getHorarioAtendimento());
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
-                dias = dias + "Domingo "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Domingo "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1037,7 +1037,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
-                dias = dias + "Segunda "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Segunda "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1045,7 +1045,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
-                dias = dias + "Terça "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Terça "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1053,7 +1053,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
-                dias = dias + "Quarta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Quarta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1061,7 +1061,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
-                dias = dias + "Quinta"+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Quinta"+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1069,7 +1069,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
-                dias = dias + "Sexta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Sexta "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";
@@ -1077,7 +1077,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
-                dias = dias + "Sábado "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorarioAtendimento();
+                dias = dias + "Sábado "+" "+listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario();
 
               //  if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
               //      dias = dias + ", ";

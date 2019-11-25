@@ -27,11 +27,10 @@ public class FuncionarioBean implements Serializable {
     private Boolean realizaEncaixes;
     private String cns;
     private String diasSemana;
-    private ArrayList<DiaAtendimento> listaDiasAtendimentoSemana;
+    private ArrayList<HorarioAtendimento> listaDiasAtendimentoSemana;
     private Integer diaSemana;
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
-    private List<HorarioAtendimento> listaHorarioAtendimentos;
     private String horarioAtendimento;
     private ArrayList<String> listDiasSemana;
     
@@ -80,7 +79,7 @@ public class FuncionarioBean implements Serializable {
         this.grupoRmv = new GrupoBean();
         this.unidade = new UnidadeBean();
         this.perfil = new Perfil();
-        listaDiasAtendimentoSemana = new ArrayList<DiaAtendimento>();
+        listaDiasAtendimentoSemana = new ArrayList<HorarioAtendimento>();
         this.realizaAtendimento = false;
         this.realizaLiberacoes = false;
         listaUnidades = new ArrayList<>();
@@ -88,7 +87,6 @@ public class FuncionarioBean implements Serializable {
         senha = "";
         novaSenha = "";
         confirmacaoNovaSenha = "";
-        listaHorarioAtendimentos = new ArrayList<>();
         listDiasSemana = new ArrayList<String>();
     }
 
@@ -464,13 +462,6 @@ public class FuncionarioBean implements Serializable {
         this.confirmacaoNovaSenha = confirmacaoNovaSenha;
     }
 
-    public List<HorarioAtendimento> getListaHorarioAtendimentos() {
-        return listaHorarioAtendimentos;
-    }
-
-    public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
-        this.listaHorarioAtendimentos = listaHorarioAtendimentos;
-    }
 
 
 	public String getHorarioAtendimento() {
@@ -483,12 +474,12 @@ public class FuncionarioBean implements Serializable {
 	}
 
 
-	public ArrayList<DiaAtendimento> getListaDiasAtendimentoSemana() {
+	public ArrayList<HorarioAtendimento> getListaDiasAtendimentoSemana() {
 		return listaDiasAtendimentoSemana;
 	}
 
 
-	public void setListaDiasAtendimentoSemana(ArrayList<DiaAtendimento> listaDiasAtendimentoSemana) {
+	public void setListaDiasAtendimentoSemana(ArrayList<HorarioAtendimento> listaDiasAtendimentoSemana) {
 		this.listaDiasAtendimentoSemana = listaDiasAtendimentoSemana;
 	}
 

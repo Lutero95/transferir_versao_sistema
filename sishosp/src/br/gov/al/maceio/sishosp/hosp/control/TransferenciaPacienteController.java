@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
@@ -43,8 +44,10 @@ public class TransferenciaPacienteController implements Serializable {
     private TransferenciaPacienteDAO aDao = new TransferenciaPacienteDAO();
     private InsercaoPacienteBean insercao;
     private InsercaoPacienteBean insercaoParaLaudo;
+    private ArrayList<String> listaHorarios;
     private String tipo;
     private InsercaoPacienteDAO iDao;
+    private ArrayList<HorarioAtendimento> listaHorarioAtendimentos;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
     private ArrayList<AgendaBean> listAgendamentoProfissional;
@@ -52,6 +55,7 @@ public class TransferenciaPacienteController implements Serializable {
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
     private String opcaoAtendimento;
     private List<Integer> listaDias;
+    private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private EquipeDAO eDao = new EquipeDAO();
     private FuncionarioBean funcionario;
@@ -72,12 +76,16 @@ public class TransferenciaPacienteController implements Serializable {
         todosOsProfissionais = false;
         listaHorariosAgenda =  new ArrayList<AgendaBean>();
         listaEquipePorGrupo = new ArrayList<>();
-    }
+        listaHorarioAtendimentos = new ArrayList<>();
+        listaHorarios = new ArrayList<>();
+        listaHorarioAtendimentosAuxiliar = new ArrayList<>();
 
+    }
     public void carregarTransferencia() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        listaDias = new ArrayList<>();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
@@ -279,7 +287,19 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void abrirDialog() {
-        JSFUtil.abrirDialog("dlgDiasAtendimento");
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+            //funcionario.setListDiasSemana(new ArrayList<>());
+            JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
+            JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+        } else {
+            limparHorariosProfissional();
+            JSFUtil.abrirDialog("dlgDiasAtendimentoHorario");
+        }
+    }
+    
+    private void limparHorariosProfissional() {
+        insercao.setHorarioAtendimento(new HorarioAtendimento());
+        listaHorarioAtendimentos = new ArrayList<>();
     }
 
     public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
@@ -481,6 +501,188 @@ public class TransferenciaPacienteController implements Serializable {
                         "Bloqueio");
             }
     }
+    
+    private Boolean verificarSeHorariosDoFuncionarioJaForamAdicionados() {
+        if (listaProfissionaisAdicionados.size() == 0) {
+            return false;
+        } else {
+            for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+                if (listaProfissionaisAdicionados.get(i).getId().equals(funcionario.getId())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
+    public void verificarAdicionarFuncionarioHorarioDia() {
+        if (listaHorarioAtendimentos.size() == 0) {
+            JSFUtil.adicionarMensagemAdvertencia("Adicione ao menos 1 dia e horário!", "Advertência");
+        } else if (verificarSeHorariosDoFuncionarioJaForamAdicionados()) {
+            JSFUtil.adicionarMensagemAdvertencia("Esse funcionário já teve seus horários adicionados!", "Advertência");
+        } else {
+            adicionarFuncionarioHorarioDia();
+        }
+    }
+    
+    private void adicionarFuncionarioHorarioDia() {
+
+        String dias = "";
+
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
+                dias = dias + "Domingo " + listaHorarioAtendimentos.get(i).getHorario();
+
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                dias = dias + "Segunda " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
+                dias = dias + "Terça " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
+                dias = dias + "Quarta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
+                dias = dias + "Quinta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
+                dias = dias + "Sexta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
+                dias = dias + "Sábado " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+        }
+        dias = dias + ".";
+
+        funcionario.setDiasSemana(dias);
+        funcionario.setListaDiasAtendimentoSemana(listaHorarioAtendimentos);
+        listaProfissionaisAdicionados.add(funcionario);
+
+        listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+        /*
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            listaHorarioAtendimentosAuxiliar.add(listaHorarioAtendimentos.get(i));
+        }
+*/
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+        	listaHorarioFinal.add(listaHorarioAtendimentos.get(i));
+        }
+        adicionarProfissionalIhHorarioNaLista();
+        
+
+        JSFUtil.fecharDialog("dlgDiasAtendimentoHorario");
+    }
+    
+    private void adicionarProfissionalIhHorarioNaLista() {
+    	/*
+    	        if (listaHorarioFinal.size() == 0) {
+    	            for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+    	                listaHorarioFinal.add(listaHorarioAtendimentosAuxiliar.get(i));
+    	            }
+    	            for (int i = 0; i < listaHorarioFinal.size(); i++) {
+    	                listaHorarioFinal.get(i).setFuncionario(funcionario);
+    	            }
+
+    	        } else {
+    	            List<HorarioAtendimento> listaClonada = new ArrayList<>();
+    	            for (int i = 0; i < listaHorarioFinal.size(); i++) {
+    	                listaClonada.add(listaHorarioFinal.get(i));
+    	            }
+
+    	            for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+
+    	            	if (!verificaSeExisteDiaSemanaEHorario (listaHorarioAtendimentosAuxiliar, listaHorarioAtendimentosAuxiliar.get(i).getDiaSemana(), listaHorarioAtendimentosAuxiliar.get(i).getHorario())) {
+    	                    listaClonada.add(listaHorarioAtendimentosAuxiliar.get(i));
+
+    	                }
+    	            }
+
+    	            listaHorarioFinal = new ArrayList<>();
+    	            listaHorarioFinal = listaClonada;
+
+    	            for (int j = 0; j < listaHorarioFinal.size(); j++) {
+    	                for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+
+    	                    if (listaHorarioFinal.get(j).getDiaSemana().equals(listaHorarioAtendimentosAuxiliar.get(i).getDiaSemana())
+    	                            && listaHorarioFinal.get(j).getHorario().equals(listaHorarioAtendimentosAuxiliar.get(i).getHorario())
+    	                    ) {
+
+    	                    } else {
+    	                        if (!listaHorarioFinal.get(j).getFuncionario().getId().contains(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario().getId())) {
+    	                            listaHorarioFinal.get(j).setFuncionario(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario());
+    	                        }
+
+    	                    }
+    	                }
+    	            }
+    	        }
+
+    	*/
+    	        for (int i = 0; i < listaHorarioFinal.size(); i++) {
+    	            if (!listaDias.contains(listaHorarioFinal.get(i).getDiaSemana())) {
+    	                listaDias.add(listaHorarioFinal.get(i).getDiaSemana());
+    	            }
+    	        }
+    	        
+    	    }
+    
+
+    
+    
+    public void adicionarFuncionarioDiaHorario() {
+        if (validarAdicionarFuncionarioDiaHorario()) {
+            insercao.getHorarioAtendimento().setFuncionario(funcionario);
+            listaHorarioAtendimentos.add(insercao.getHorarioAtendimento());
+            insercao.setHorarioAtendimento(new HorarioAtendimento());
+        } else {
+            JSFUtil.adicionarMensagemAdvertencia("Esse dia já foi adicionado!", "Advertência");
+        }
+    }
+    
+    private Boolean validarAdicionarFuncionarioDiaHorario() {
+        Boolean retorno = false;
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            if (listaHorarioAtendimentos.get(i).getDiaSemana() == insercao.getHorarioAtendimento().getDiaSemana()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private void gerarHorariosAtendimento() throws ParseException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
+    }
 
     public void selecionarPrograma(){
         insercao.setGrupo(new GrupoBean());
@@ -584,5 +786,22 @@ public class TransferenciaPacienteController implements Serializable {
 
 	public void setListaEquipePorGrupo(List<EquipeBean> listaEquipePorGrupo) {
 		this.listaEquipePorGrupo = listaEquipePorGrupo;
+	}
+
+	public ArrayList<HorarioAtendimento> getListaHorarioAtendimentos() {
+		return listaHorarioAtendimentos;
+	}
+
+	public void setListaHorarioAtendimentos(ArrayList<HorarioAtendimento> listaHorarioAtendimentos) {
+		this.listaHorarioAtendimentos = listaHorarioAtendimentos;
+	}
+
+	public ArrayList<String> getListaHorarios() throws ParseException {
+		gerarHorariosAtendimento();
+		return listaHorarios;
+	}
+
+	public void setListaHorarios(ArrayList<String> listaHorarios) {
+		this.listaHorarios = listaHorarios;
 	}
 }
