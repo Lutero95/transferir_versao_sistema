@@ -111,7 +111,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     if (agenda.getProfissional().getId() != null) {
                         ps.setLong(1, agenda.getProfissional().getId());
                         ps.setInt(2, idAtendimento);
-                        ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+                        if (agenda.getProfissional().getCbo().getCodCbo() != null)
+                            ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+                        else
+                            ps.setNull(3, Types.NULL);
+                        
+                        
                         if (agenda.getAvaliacao()) {
                             ps.setInt(4, agenda.getProgramaAvaliacao().getProcedimento().getIdProc());
                         } else {
