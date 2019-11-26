@@ -416,7 +416,7 @@ public class RenovacaoPacienteDAO {
 			ps8 = conexao.prepareStatement(sql8);
 			
 			for (int i = 0; i < listaProfissionais.size(); i++) {
-				ps8.setLong(1, insercao.getId());
+				ps8.setLong(1, idPacienteInstituicao);
 				ps8.setLong(2, listaProfissionais.get(i).getId());
 				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps8.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
@@ -427,9 +427,9 @@ public class RenovacaoPacienteDAO {
 
 
 
-			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente,  situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
-					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
+					+ " VALUES (?,  'A', ?, ?, ?,?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
 			PreparedStatement ps3 = null;
 			rs = null;
@@ -438,45 +438,44 @@ public class RenovacaoPacienteDAO {
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps3.setLong(2, listaAgendamento.get(i).getProfissional().getId());
-				ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
-				ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+				ps3.setDate(2, new java.sql.Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
+				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
-					ps3.setString(5, insercao.getTurno());
+					ps3.setString(4, insercao.getTurno());
 				} else {
-					ps3.setNull(5, Types.NULL);
+					ps3.setNull(4, Types.NULL);
 				}
 
-				ps3.setString(6, insercao.getObservacao());
-				ps3.setInt(7, idPacienteInstituicao);
-				ps3.setInt(8, user_session.getUnidade().getId());
+				ps3.setString(5, insercao.getObservacao());
+				ps3.setInt(6, idPacienteInstituicao);
+				ps3.setInt(7, user_session.getUnidade().getId());
 
 				if (insercao.getHorario() != null) {
-					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
+					ps3.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getHorario()));
+				} else {
+					ps3.setNull(8, Types.NULL);
+				}
+
+				if (insercao.getPrograma().getIdPrograma() != null) {
+					ps3.setInt(9, insercao.getPrograma().getIdPrograma());
 				} else {
 					ps3.setNull(9, Types.NULL);
 				}
 
-				if (insercao.getPrograma().getIdPrograma() != null) {
-					ps3.setInt(10, insercao.getPrograma().getIdPrograma());
+				if (insercao.getGrupo().getIdGrupo() != null) {
+					ps3.setInt(10, insercao.getGrupo().getIdGrupo());
 				} else {
 					ps3.setNull(10, Types.NULL);
 				}
 
-				if (insercao.getGrupo().getIdGrupo() != null) {
-					ps3.setInt(11, insercao.getGrupo().getIdGrupo());
+				if (insercao.getEquipe().getCodEquipe() != null) {
+					ps3.setInt(11, insercao.getEquipe().getCodEquipe());
 				} else {
 					ps3.setNull(11, Types.NULL);
 				}
 
-				if (insercao.getEquipe().getCodEquipe() != null) {
-					ps3.setInt(12, insercao.getEquipe().getCodEquipe());
-				} else {
-					ps3.setNull(12, Types.NULL);
-				}
-
-				ps3.setLong(13, user_session.getId());
+				ps3.setLong(12, user_session.getId());
 
 				rs = ps3.executeQuery();
 
@@ -491,7 +490,7 @@ public class RenovacaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataMarcacao()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -510,6 +509,14 @@ public class RenovacaoPacienteDAO {
 								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 							} else {
 								ps4.setNull(4, Types.NULL);
+							}
+							
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
+									listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario())) {
+								ps4.setNull(5, Types.NULL);
+							} else {
+								ps4.setTime(5,
+										DataUtil.retornarHorarioEmTime(listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario()));
 							}
 
 							ps4.executeUpdate();

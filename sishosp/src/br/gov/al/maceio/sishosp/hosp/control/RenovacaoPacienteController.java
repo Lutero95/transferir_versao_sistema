@@ -94,6 +94,7 @@ public class RenovacaoPacienteController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        listaDias = new ArrayList<>();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
@@ -408,6 +409,12 @@ public class RenovacaoPacienteController implements Serializable {
 
         funcionario.setDiasSemana(dias);
         listaProfissionaisAdicionados.add(funcionario);
+        
+        for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
+            if (!listaDias.contains(funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana())) {
+                listaDias.add(funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana());
+            }
+        }
 
     }
 
