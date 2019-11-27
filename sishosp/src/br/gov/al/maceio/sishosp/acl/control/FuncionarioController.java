@@ -168,12 +168,12 @@ public class FuncionarioController implements Serializable {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "N");
 		/*Bloco Producao */
 		
-	//	String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
+		String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
 		//Bloco Teste
-		
+	/*	
 		String nomeBancoAcesso = "teste_pestalozzi_maceio"; 
 		SessionUtil.adicionarNaSessao(nomeBancoAcesso, "nomeBancoAcesso");
-
+*/
 		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
 			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
 			return null;
