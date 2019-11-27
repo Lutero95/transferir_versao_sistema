@@ -750,7 +750,7 @@ public class AlteracaoPacienteController implements Serializable {
             if (existe == false) {
                 adicionarFuncionario();
             } else {
-                JSFUtil.fecharDialog("dlgDiasAtendimento");
+                JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
 
                 JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
@@ -763,6 +763,13 @@ public class AlteracaoPacienteController implements Serializable {
     public void adicionarFuncionario() {
         String dias = "";
 
+        for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
+        	HorarioAtendimento horarioAtendimento = new HorarioAtendimento();
+        	horarioAtendimento.setDiaSemana(Integer.parseInt(funcionario.getListDiasSemana().get(i)));
+            	funcionario.getListaDiasAtendimentoSemana().add(horarioAtendimento);
+            
+        }
+        
         for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
             if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
                 dias = dias + "Domingo "+(funcionario.getListaDiasAtendimentoSemana().get(i).getHorario()!=null ? funcionario.getListaDiasAtendimentoSemana().get(i).getHorario() :"") ;
@@ -820,7 +827,7 @@ public class AlteracaoPacienteController implements Serializable {
         funcionario.setDiasSemana(dias);
         listaProfissionaisAdicionados.add(funcionario);
 
-        JSFUtil.fecharDialog("dlgDiasAtendimento");
+        
     }
 
     public void adicionarFuncionarioParaEdicao(List<FuncionarioBean> listaFuncionarioAuxiliar) {
