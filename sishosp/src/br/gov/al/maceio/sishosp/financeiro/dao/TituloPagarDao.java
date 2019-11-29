@@ -18,7 +18,9 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.financeiro.model.BaixaPagar;
 import br.gov.al.maceio.sishosp.financeiro.model.BancoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.BuscaBeanPagar;
+import br.gov.al.maceio.sishosp.financeiro.model.CaixaDiarioBean;
 import br.gov.al.maceio.sishosp.financeiro.model.CentroCustoBean;
+import br.gov.al.maceio.sishosp.financeiro.model.ChequeEmitidoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.DespesaBean;
 import br.gov.al.maceio.sishosp.financeiro.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ImpostoBean;
@@ -318,6 +320,177 @@ public class TituloPagarDao {
 			}
 		}
 		return rst;
+	}
+	
+	public boolean salvarPagarAvulso(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, Integer id_desistencia,
+			BancoBean banco, CaixaDiarioBean caixa)
+			throws ProjetoException {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+
+		Connection con = null;
+		CallableStatement ps = null;
+		PreparedStatement pst = null;
+		TesourariaDAO tDAo = new TesourariaDAO();
+
+		try {
+			con = ConnectionFactory.getConnection();
+
+			ps = con.prepareCall("{ ? = call financeiro.pagdup(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }");
+
+			ps.registerOutParameter(1, Types.INTEGER);
+			if (tituloPagarBean.getDtcompete() == null) {
+				ps.setNull(2, Types.OTHER);
+			} else
+				ps.setString(2, tituloPagarBean.getDtcompete());
+
+			if (tituloPagarBean.getForn() == null) {
+				if (tituloPagarBean.getForn().getCodforn() == null) {
+					ps.setNull(3, Types.OTHER);
+				}
+			} else
+				ps.setInt(3, tituloPagarBean.getForn().getCodforn());
+
+			if (tituloPagarBean.getPortador().getCodportador() == null) {
+				ps.setNull(4, Types.OTHER);
+			} else
+				ps.setInt(4, tituloPagarBean.getPortador().getCodportador());
+
+			if (tituloPagarBean.getNotaFiscal() == null) {
+				ps.setNull(5, Types.OTHER);
+			} else
+				ps.setString(5, tituloPagarBean.getNotaFiscal().toUpperCase());
+
+			if (tituloPagarBean.getCcusto().getIdccusto() == null) {
+				ps.setNull(6, Types.OTHER);
+			} else
+				ps.setInt(6, tituloPagarBean.getCcusto().getIdccusto());
+
+			if (tituloPagarBean.getDespesa().getId() == null) {
+				ps.setNull(7, Types.OTHER);
+			} else
+				ps.setInt(7, tituloPagarBean.getDespesa().getId());
+
+			if (Double.valueOf(tituloPagarBean.getValor()) == null) {
+				ps.setNull(8, Types.OTHER);
+			} else
+				ps.setDouble(8, tituloPagarBean.getValor());
+
+			if (Double.valueOf(tituloPagarBean.getDesconto()) == null) {
+				ps.setNull(9, Types.OTHER);
+			} else
+				ps.setDouble(9, tituloPagarBean.getDesconto());
+
+			if (Double.valueOf(tituloPagarBean.getJuros()) == null) {
+				ps.setNull(10, Types.OTHER);
+			} else
+				ps.setDouble(10, tituloPagarBean.getJuros());
+
+			if (Double.valueOf(tituloPagarBean.getMulta()) == null) {
+				ps.setNull(11, Types.OTHER);
+			} else
+				ps.setDouble(11, tituloPagarBean.getMulta());
+
+			if (tituloPagarBean.getHistorico() == null) {
+				ps.setNull(12, Types.OTHER);
+			} else
+				ps.setString(12, tituloPagarBean.getHistorico().toUpperCase());
+
+			if (tituloPagarBean.getDtvcto() == null) {
+				ps.setNull(13, Types.OTHER);
+			} else
+				ps.setDate(13, new java.sql.Date(tituloPagarBean.getDtvcto().getTime()));
+
+		
+
+			if (tituloPagarBean.getDtemissao() == null) {
+				ps.setNull(14, Types.OTHER);
+			} else
+				ps.setDate(14, new java.sql.Date(tituloPagarBean.getDtemissao().getTime()));
+
+			if (tituloPagarBean.getParcela() == null) {
+				ps.setNull(15, Types.OTHER);
+			} else
+				ps.setString(15, tituloPagarBean.getParcela().toUpperCase());
+
+			if (tituloPagarBean.getDuplicata() == null) {
+				ps.setNull(16, Types.OTHER);
+			} else
+				ps.setString(16, tituloPagarBean.getDuplicata().toUpperCase());
+
+			if (tituloPagarBean.getDtprevisao() == null) {
+				ps.setNull(17, Types.DATE);
+			} else
+				ps.setDate(17, new java.sql.Date(tituloPagarBean.getDtprevisao().getTime()));
+
+			if (tituloPagarBean.getTipoDocumento().getCodtipodocumento() == null) {
+				ps.setNull(18, Types.OTHER);
+			} else
+				ps.setInt(18, tituloPagarBean.getTipoDocumento().getCodtipodocumento());
+
+			if (tituloPagarBean.getNominal() == null) {
+				ps.setNull(19, Types.OTHER);
+			} else
+				ps.setString(19, tituloPagarBean.getNominal().toUpperCase());
+			if (String.valueOf(tituloPagarBean.getIcmsst()) == null) {
+				ps.setNull(20, Types.OTHER);
+			} else
+				ps.setDouble(20, tituloPagarBean.getIcmsst());
+			if ((id_desistencia != null) && (id_desistencia != 0)) {
+				ps.setInt(21, id_desistencia);
+			} else {
+				ps.setNull(21, Types.OTHER);
+			}
+
+			ps.execute();
+
+			String sql = "update financeiro.pagdup SET situacao = 'A' where codigo = ? ";
+			pst = con.prepareStatement(sql);
+			pst.setInt(1, ps.getInt(1));
+			pst.executeUpdate();
+
+			int retornoid = 0;
+
+			retornoid = ps.getInt(1);
+			for (int i = 0; i < lstRetencao.size(); i++) {
+
+				lstRetencao.get(i).setDuplicata(retornoid);
+				salvarRetencao(lstRetencao.get(i));
+			}
+			ChequeEmitidoBean cheque = new ChequeEmitidoBean();
+			  cheque.setBanco(banco);
+		        cheque.setCaixa(caixa);
+		        cheque.setTipo("CC");
+		        cheque.setStatus("OK");
+		        cheque.setValor(tituloPagarBean.getValor());
+		        
+		        	
+		        	java.util.Date data = new java.util.Date();
+		        	cheque.setDtvencimento(data);
+		        	cheque.setCompensado("S");
+		        	cheque.setDtcompensado(caixa.getDataCaixaAbertura());
+		        	
+		        	
+		        	//cheque.setNumcheque(String.valueOf(sequenciaCheque));
+		       
+			tDAo.compensaTituloAvulso(cheque, tituloPagarBean, "CC", con);
+			con.commit();
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			try {
+				ps.close();
+				pst.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+
 	}
 
 	public boolean salvarPagar(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, Integer id_desistencia)

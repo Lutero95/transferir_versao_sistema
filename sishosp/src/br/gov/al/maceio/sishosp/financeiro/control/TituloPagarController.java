@@ -59,7 +59,7 @@ public class TituloPagarController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private TituloPagarDao pDao = new TituloPagarDao();
-    private Date periodoInicial, periodoFinal;
+	private Date periodoInicial, periodoFinal;
 	private TotalizadorBeanPagar totBuscaPagar;
 	private TituloPagarBean tituloPagarBean;
 	private ArrayList<TituloPagarBean> lstTitPagar;
@@ -74,7 +74,7 @@ public class TituloPagarController implements Serializable {
 	private ArrayList<TituloPagarBean> lstTituloPagar;
 	private Integer codFornecedor;
 	private TituloPagarBean rowBean;
-	private BaixaPagar rowBeanBaixa;	
+	private BaixaPagar rowBeanBaixa;
 	private List<TipoImposto> tipoImposto;
 	private ImpostoBean rowBeanImposto;
 	private ImpostoBean impostoBean;
@@ -87,36 +87,36 @@ public class TituloPagarController implements Serializable {
 	private List<PortadorBean> lstPortador;
 	private List<PortadorBean> lstPortadorAlt;
 	private BuscaBeanPagar buscaPagar;
-	
+
 	private Integer idSelecionado = 0;
 	private Integer parcelas = 0;
 	private Integer DocumentoParcelas = 0;
-	private TipoDocumentoBean tipoDoc; 
+	private TipoDocumentoBean tipoDoc;
 	private List<PagamentoBean> lstDesistencia;
 	private TituloReceberBean funcBean;
- 	private PagamentoBean pagamentoDesi;
- 	
-	//CONSTANTES
+	private PagamentoBean pagamentoDesi;
+
+	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastropagar?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
 	private static final String ENDERECO_ID = "&amp;id=";
 	private static final String CABECALHO_INCLUSAO = "Inclus�o de T�tulo a Pagar";
 	private static final String CABECALHO_ALTERACAO = "Altera��o de T�tulo a Pagar";
-	
+
 	public TituloPagarController() throws ParseException {
 		buscaPagar = new BuscaBeanPagar();
 		buscaPagar.setOrdenacao("C");
 		buscaPagar.setSituacao("T");
 		Calendar calendar = Calendar.getInstance();
-			//calendar.setTime(data);
-			 Format format = new SimpleDateFormat("dd/MM/yyyy");
-			    
-			int dia = 1;
-			int mes = 1;
-			int ano = calendar.get(Calendar.YEAR);
-			
-			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-			Date date = (Date)formatter.parse(String.valueOf(dia)+"/"+String.valueOf(mes)+"/"+ String.valueOf(ano));
+		// calendar.setTime(data);
+		Format format = new SimpleDateFormat("dd/MM/yyyy");
+
+		int dia = 1;
+		int mes = 1;
+		int ano = calendar.get(Calendar.YEAR);
+
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = (Date) formatter.parse(String.valueOf(dia) + "/" + String.valueOf(mes) + "/" + String.valueOf(ano));
 		buscaPagar.setPeriodoinicial(date);
 		buscaPagar.setPeriodofinal(new java.util.Date(System.currentTimeMillis()));
 		lstBancos = new ArrayList<BancoBean>();
@@ -151,38 +151,34 @@ public class TituloPagarController implements Serializable {
 		funcBean = new TituloReceberBean();
 		pagamentoDesi = new PagamentoBean();
 	}
-	
-    public void onRowSelectTitulo(TituloPagarBean titulo) throws ProjetoException {
-    	if(titulo != null) {
-    		rowBean = titulo;
-	        TituloPagarDao tpdao = new TituloPagarDao();
-	        idSelecionado = rowBean.getCodigo();
-	        lstBaixa = tpdao.lstBaixas(idSelecionado);
-    	}
-    	else {
-    		rowBean = null;
-    	}
-    	
 
-    }
-	
+	public void onRowSelectTitulo(TituloPagarBean titulo) throws ProjetoException {
+		if (titulo != null) {
+			rowBean = titulo;
+			TituloPagarDao tpdao = new TituloPagarDao();
+			idSelecionado = rowBean.getCodigo();
+			lstBaixa = tpdao.lstBaixas(idSelecionado);
+		} else {
+			rowBean = null;
+		}
+
+	}
+
 	public String redirectInsert() {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
-	
 	public String redirectEdit() {
-		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.rowBean.getCodigo(), ENDERECO_TIPO, tipo);
+		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.rowBean.getCodigo(), ENDERECO_TIPO,
+				tipo);
 	}
-	
+
 	public void getEditTitulo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-
 
 			this.tituloPagarBean = pDao.buscaTituloPorId(id);
 			fornecedorBean = tituloPagarBean.getForn();
@@ -195,9 +191,7 @@ public class TituloPagarController implements Serializable {
 
 	}
 
-	
-	
-	public void limparDados(){
+	public void limparDados() {
 		totBuscaPagar = new TotalizadorBeanPagar();
 		tituloPagarBean = new TituloPagarBean();
 		tituloPagarBean.setParcela("UN");
@@ -207,315 +201,338 @@ public class TituloPagarController implements Serializable {
 		lstBaixa = new ArrayList<>();
 		lstTituloPagar = new ArrayList<>();
 		lstImpostos = new ArrayList<>();
-		
-	}
-	
 
-	
+	}
+
 	public void limpaBusca() throws ParseException {
 
-        buscaPagar = new BuscaBeanPagar();
-        buscaPagar.setOrdenacao("C");
-        buscaPagar.setSituacao("T");
-        Calendar calendar = Calendar.getInstance();
-		//calendar.setTime(data);
-		 Format format = new SimpleDateFormat("dd/MM/yyyy");
-		    
+		buscaPagar = new BuscaBeanPagar();
+		buscaPagar.setOrdenacao("C");
+		buscaPagar.setSituacao("T");
+		Calendar calendar = Calendar.getInstance();
+		// calendar.setTime(data);
+		Format format = new SimpleDateFormat("dd/MM/yyyy");
+
 		int dia = 1;
 		int mes = 1;
 		int ano = calendar.get(Calendar.YEAR);
-		
+
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = (Date)formatter.parse(String.valueOf(dia)+"/"+String.valueOf(mes)+"/"+ String.valueOf(ano));
-	buscaPagar.setPeriodoinicial(date);
-        buscaPagar.setPeriodofinal(new java.util.Date(System
-                .currentTimeMillis()));
-        lstTitPagar = null;
-    }
-	
-	public void limparDadosRetAlt(){
+		Date date = (Date) formatter.parse(String.valueOf(dia) + "/" + String.valueOf(mes) + "/" + String.valueOf(ano));
+		buscaPagar.setPeriodoinicial(date);
+		buscaPagar.setPeriodofinal(new java.util.Date(System.currentTimeMillis()));
+		lstTitPagar = null;
+	}
+
+	public void limparDadosRetAlt() {
 		lstImpostosAlt = new ArrayList<>();
 		lstImpostosAlt = null;
 		lstFornecedor = new ArrayList<>();
 		lstFornecedor = null;
 	}
-	
-	public void busca(){
+
+	public void busca() {
 		lstTitPagar = null;
 	}
-	
-	   /*replicar argemiro*/
-			public void replicarDocumentoPagar() throws ProjetoException, ParseException {
-				
-				SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
-				SimpleDateFormat fcomp = new SimpleDateFormat("MM/yyyy");
-				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-				Date d = new Date();
-				d = rowBean.getDtvcto();
-				GregorianCalendar calendar = new GregorianCalendar();
-				calendar.setTime(d);
-				Calendar c = Calendar.getInstance();
-				c.setTime(d);
-				//int mes = 0;
-				
-					
-				//c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
-				//c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 30);
-				//c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
-				//c.set(Calendar.YEAR, c.get(Calendar.YEAR) + 1);
-				
-				
-				boolean gravou = false;
-				TituloPagarDao pagarDAo = new TituloPagarDao();
-	
-				
-				this.DocumentoParcelas = 0;
-				if(rowBean.getValor() > 0) {
-					if(this.parcelas > 0){
-						if(this.parcelas == 1){
-							//mes = 0;
-							rowBean.setParcela("UN");
-						}
-						
-						for(int i = 0; i < this.parcelas; i++){
-							this.DocumentoParcelas ++;
 
-							Integer dia = calendar.getActualMaximum(c.DAY_OF_MONTH);
-							Integer mes = c.get(Calendar.MONTH);
-							Integer ano = c.get(Calendar.YEAR);
-												
-							if (mes==0 || mes==2 || mes==4 || mes==6 || mes==7 || mes==9 || mes==11){
-							dia = 31;
-							}
-							else if (mes==3 || mes==5 || mes==8 || mes==10){
-							dia = 30;
-							}
-							else if (mes==1){
-							if(ano % 400 == 0){
-							dia = 29;
-							} else if((ano % 4 == 0) && (ano % 100 != 0)){
-							dia = 29;
-							} else{
-							dia = 28;
-							}
-							}					
-												
-							c.set(ano, mes, dia);
-							String DataString = f.format(c.getTime());
-							String Dtcompete = fcomp.format(c.getTime());
-							java.sql.Date data = new java.sql.Date(f.parse(DataString).getTime());
-							tituloPagarBean.setDtvcto(data); 
-						
-							
-							rowBean.setDuplicata(this.DocumentoParcelas +" / "+ this.parcelas);
-							rowBean.setDtvcto(data);
-							rowBean.setDtcompete(Dtcompete);
-							
-							
-							//String par = String.valueOf(this.parcelas);
-							String par = String.valueOf(this.DocumentoParcelas);
-							rowBean.setParcela(par);
-					
-							c.set(ano, mes, 1);
-							c.add(Calendar.MONTH, 1);
-							gravou = pagarDAo.replicarPagar2(rowBean, this.lstImpostos);
-						}
-						
-						
-					}else{
-						JSFUtil.adicionarMensagemErro("Parcelas deve ser maior que 0.","Atenção");
-					}
-					
-					
-				} else {
-					JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
-				}
-				
-				
-				if (valorTotal() <0){
-					JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
-				
-				}
-				else
-				if(gravou == true) {		
-				limparDados();
-				rowBean = new TituloPagarBean();
-				RequestContext.getCurrentInstance().execute("PF('dlgRepetir').hide();");
-				
-								
-				
-				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Sucesso");
-				lstTitPagar = null;
-				
-				} else {
-					
-					JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
-				}
-			}
+	/* replicar argemiro */
+	public void replicarDocumentoPagar() throws ProjetoException, ParseException {
 
-	public void verificarParcelas() throws ProjetoException {
-		if (tituloPagarBean.getParcela().equals("UN") || tituloPagarBean.getParcela().equals("1")){
-			salvarDocumentoPagarUnico();
-		}
-		else{
-			RequestContext.getCurrentInstance().execute(
-					"PF('simounao').show();");
-		}
-	}
-			
-    
-	public void salvarDocumentoPagar() throws ProjetoException, ParseException {
-		
+		SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat fcomp = new SimpleDateFormat("MM/yyyy");
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date d = new Date();
+		d = rowBean.getDtvcto();
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTime(d);
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		// int mes = 0;
+
+		// c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+		// c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 30);
+		// c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+		// c.set(Calendar.YEAR, c.get(Calendar.YEAR) + 1);
+
 		boolean gravou = false;
 		TituloPagarDao pagarDAo = new TituloPagarDao();
-				
+
+		this.DocumentoParcelas = 0;
+		if (rowBean.getValor() > 0) {
+			if (this.parcelas > 0) {
+				if (this.parcelas == 1) {
+					// mes = 0;
+					rowBean.setParcela("UN");
+				}
+
+				for (int i = 0; i < this.parcelas; i++) {
+					this.DocumentoParcelas++;
+
+					Integer dia = calendar.getActualMaximum(c.DAY_OF_MONTH);
+					Integer mes = c.get(Calendar.MONTH);
+					Integer ano = c.get(Calendar.YEAR);
+
+					if (mes == 0 || mes == 2 || mes == 4 || mes == 6 || mes == 7 || mes == 9 || mes == 11) {
+						dia = 31;
+					} else if (mes == 3 || mes == 5 || mes == 8 || mes == 10) {
+						dia = 30;
+					} else if (mes == 1) {
+						if (ano % 400 == 0) {
+							dia = 29;
+						} else if ((ano % 4 == 0) && (ano % 100 != 0)) {
+							dia = 29;
+						} else {
+							dia = 28;
+						}
+					}
+
+					c.set(ano, mes, dia);
+					String DataString = f.format(c.getTime());
+					String Dtcompete = fcomp.format(c.getTime());
+					java.sql.Date data = new java.sql.Date(f.parse(DataString).getTime());
+					tituloPagarBean.setDtvcto(data);
+
+					rowBean.setDuplicata(this.DocumentoParcelas + " / " + this.parcelas);
+					rowBean.setDtvcto(data);
+					rowBean.setDtcompete(Dtcompete);
+
+					// String par = String.valueOf(this.parcelas);
+					String par = String.valueOf(this.DocumentoParcelas);
+					rowBean.setParcela(par);
+
+					c.set(ano, mes, 1);
+					c.add(Calendar.MONTH, 1);
+					gravou = pagarDAo.replicarPagar2(rowBean, this.lstImpostos);
+				}
+
+			} else {
+				JSFUtil.adicionarMensagemErro("Parcelas deve ser maior que 0.", "Atenção");
+			}
+
+		} else {
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
+		}
+
+		if (valorTotal() < 0) {
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
+
+		} else if (gravou == true) {
+			limparDados();
+			rowBean = new TituloPagarBean();
+			RequestContext.getCurrentInstance().execute("PF('dlgRepetir').hide();");
+
+			JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Sucesso");
+			lstTitPagar = null;
+
+		} else {
+
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
+		}
+	}
+
+	public void verificarParcelas() throws ProjetoException {
+		if (tituloPagarBean.getParcela().equals("UN") || tituloPagarBean.getParcela().equals("1")) {
+			salvarDocumentoPagarUnico();
+		} else {
+			RequestContext.getCurrentInstance().execute("PF('simounao').show();");
+		}
+	}
+
+	public void gravarTituloAvulso() throws ProjetoException {
+		if (tituloPagarBean.getParcela().equals("UN") || tituloPagarBean.getParcela().equals("1")) {
+			salvarDocumentoPagarUnico();
+		} else {
+			RequestContext.getCurrentInstance().execute("PF('simounao').show();");
+		}
+	}
+
+	public void salvarDocumentoPagar() throws ProjetoException, ParseException {
+
+		boolean gravou = false;
+		TituloPagarDao pagarDAo = new TituloPagarDao();
+
 		this.tituloPagarBean.setForn(this.fornecedorBean);
 		this.tituloPagarBean.setPortador(this.portadorBean);
 
 		SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat fcomp = new SimpleDateFormat("MM/yyyy");	
+		SimpleDateFormat fcomp = new SimpleDateFormat("MM/yyyy");
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
 		Date d = new Date();
 		d = tituloPagarBean.getDtvcto();
-		
-		
+
 		GregorianCalendar calendar = new GregorianCalendar();
 		calendar.setTime(d);
-		
+
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
-		
+
 		this.funcBean.getCliente().getNome();
 		this.pagamentoDesi.getValor();
 		this.pagamentoDesi.getDtCadastro();
-		int parcelas2=0;
-		if (tituloPagarBean.getParcela().equals("UN")){
+		int parcelas2 = 0;
+		if (tituloPagarBean.getParcela().equals("UN")) {
 			parcelas2 = 1;
 		}
 		parcelas2 = Integer.parseInt(tituloPagarBean.getParcela());
 		Boolean podeSalvar = true;
-				
-		
-		if(tituloPagarBean.getValor() > 0) {
-			for(int i = 1; i <= parcelas2; i++){
+
+		if (tituloPagarBean.getValor() > 0) {
+			for (int i = 1; i <= parcelas2; i++) {
 				Integer dia = calendar.getActualMaximum(c.DAY_OF_MONTH);
-					Integer mes = c.get(Calendar.MONTH);
-					int ano = c.get(Calendar.YEAR);
-					
-					if (mes==0 || mes==2 || mes==4 || mes==6 || mes==7 || mes==9 || mes==11){
+				Integer mes = c.get(Calendar.MONTH);
+				int ano = c.get(Calendar.YEAR);
+
+				if (mes == 0 || mes == 2 || mes == 4 || mes == 6 || mes == 7 || mes == 9 || mes == 11) {
 					dia = 31;
-					}
-					else if (mes==3 || mes==5 || mes==8 || mes==10){
+				} else if (mes == 3 || mes == 5 || mes == 8 || mes == 10) {
 					dia = 30;
+				} else if (mes == 1) {
+					if (ano % 400 == 0) {
+						dia = 29;
+					} else if ((ano % 4 == 0) && (ano % 100 != 0)) {
+						dia = 29;
+					} else {
+						dia = 28;
 					}
-					else if (mes==1){
-						if(ano % 400 == 0){
-				           dia = 29;
-				        } else if((ano % 4 == 0) && (ano % 100 != 0)){
-				            dia = 29;
-				        } else{
-				            dia = 28;
-				        }
-				    }					
-					
-					c.set(ano, mes, dia);
-					
-					String DataString = f.format(c.getTime());
-					String Dtcompete = fcomp.format(c.getTime());
-					java.sql.Date data = new java.sql.Date(f.parse(DataString).getTime());
-					tituloPagarBean.setDtvcto(data); 
-					
-			
+				}
 
-			
-			if(podeSalvar){
-				this.tituloPagarBean.setParcela(String.valueOf(i));
-					gravou = pagarDAo.salvarPagar(this.tituloPagarBean, this.lstImpostos, this.pagamentoDesi.getId_desistencia());
-					c.set( ano, mes, 1);
+				c.set(ano, mes, dia);
+
+				String DataString = f.format(c.getTime());
+				String Dtcompete = fcomp.format(c.getTime());
+				java.sql.Date data = new java.sql.Date(f.parse(DataString).getTime());
+				tituloPagarBean.setDtvcto(data);
+
+				if (podeSalvar) {
+					this.tituloPagarBean.setParcela(String.valueOf(i));
+					gravou = pagarDAo.salvarPagar(this.tituloPagarBean, this.lstImpostos,
+							this.pagamentoDesi.getId_desistencia());
+					c.set(ano, mes, 1);
 					c.add(Calendar.MONTH, 1);
-					RequestContext.getCurrentInstance().execute("PF('simounao').hide();");	
-			}
+					RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
+				}
 			}
 		} else {
-			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
 		}
-		
-		
-		 if (valorTotal() <0){
-			 JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
-		
-		}
-		else{
-		if(gravou == true) {
-			limparDados();
-		RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
-	
 
-		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Atenção");
-		lstTitPagar = null;
-		
+		if (valorTotal() < 0) {
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
+
 		} else {
-			
+			if (gravou == true) {
+				limparDados();
+				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
 
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
+				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
+				lstTitPagar = null;
+
+			} else {
+
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
+			}
+
 		}
-		
 	}
-	}
-	
-public void salvarDocumentoPagarUnico() throws ProjetoException {
-		
+
+	public void salvarDocumentoPagarUnico() throws ProjetoException {
+
 		boolean gravou = false;
 		TituloPagarDao pagarDAo = new TituloPagarDao();
-		
+
 		this.tituloPagarBean.setForn(this.fornecedorBean);
 		this.tituloPagarBean.setPortador(this.portadorBean);
-		
-		//Date data = new java.util.Date();
-		//this.tituloPagarBean.setDtemissao(new java.sql.Date(data.getTime()));
-		
+
+		// Date data = new java.util.Date();
+		// this.tituloPagarBean.setDtemissao(new java.sql.Date(data.getTime()));
+
 		this.funcBean.getCliente().getNome();
 		this.pagamentoDesi.getValor();
 		this.pagamentoDesi.getDtCadastro();
-		
+
 		Boolean podeSalvar = true;
-				
-		
-		if(tituloPagarBean.getValor() > 0) {
-			
-			
 
-			
-			if(podeSalvar){
-				
-					gravou = pagarDAo.salvarPagar(this.tituloPagarBean, this.lstImpostos, this.pagamentoDesi.getId_desistencia());
-		    	
+		if (tituloPagarBean.getValor() > 0) {
+
+			if (podeSalvar) {
+
+				gravou = pagarDAo.salvarPagar(this.tituloPagarBean, this.lstImpostos,
+						this.pagamentoDesi.getId_desistencia());
+
 			}
-			
-		} else {
-			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
-		}
-		
-		
-		 if (valorTotal() <0){
-			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
-		
-		}
-		else{
-		if(gravou == true) {
-			limparDados();
-		RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
-		RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
-		
 
-		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Atenção");
-		lstTitPagar = null;
-		
 		} else {
-			
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
 		}
+
+		if (valorTotal() < 0) {
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
+
+		} else {
+			if (gravou == true) {
+				limparDados();
+				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
+				RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
+
+				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
+				lstTitPagar = null;
+
+			} else {
+
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
+			}
+		}
+	}
+
+	public void salvarDocumentoPagarAvulso(BancoBean banco) throws ProjetoException {
+
+		boolean gravou = false;
+		TituloPagarDao pagarDAo = new TituloPagarDao();
+
+		this.tituloPagarBean.setForn(this.fornecedorBean);
+		this.tituloPagarBean.setPortador(this.portadorBean);
+		CaixaDiarioBean cx = new CaixaDiarioBean();
+		TesourariaDAO tdao = new TesourariaDAO();
+		cx = tdao.retornaCaixaAtual();
+		// Date data = new java.util.Date();
+		// this.tituloPagarBean.setDtemissao(new java.sql.Date(data.getTime()));
+
+		this.funcBean.getCliente().getNome();
+		this.pagamentoDesi.getValor();
+		this.pagamentoDesi.getDtCadastro();
+
+		Boolean podeSalvar = true;
+
+		if (tituloPagarBean.getValor() > 0) {
+
+			if (podeSalvar) {
+
+				gravou = pagarDAo.salvarPagarAvulso(this.tituloPagarBean, this.lstImpostos,
+						this.pagamentoDesi.getId_desistencia(), banco, cx);
+
+			}
+
+		} else {
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
+		}
+
+		if (valorTotal() < 0) {
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
+
+		} else {
+			if (gravou == true) {
+				limparDados();
+				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
+				RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
+
+				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
+				lstTitPagar = null;
+
+			} else {
+
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
+			}
 		}
 	}
 
@@ -523,68 +540,63 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		boolean excluiu = false;
 		TituloPagarDao pagarDao = new TituloPagarDao();
 		excluiu = pagarDao.excluir(this.rowBean);
-		if(excluiu == true) {
+		if (excluiu == true) {
 			RequestContext.getCurrentInstance().execute("PF('dlgAt').hide();");
 
-			JSFUtil.adicionarMensagemSucesso("Excluído com sucesso!","Atenção");
+			JSFUtil.adicionarMensagemSucesso("Excluído com sucesso!", "Atenção");
 			lstTitPagar = null;
 		} else {
-			
-			JSFUtil.adicionarMensagemErro("Falha ao excluir!","Atenção");
+
+			JSFUtil.adicionarMensagemErro("Falha ao excluir!", "Atenção");
 		}
 
 	}
-	
-	
-	   public void editar() throws ProjetoException, IOException {
-	        TituloPagarDao dao = new TituloPagarDao();
-	        
-	        ExternalContext ec = FacesContext.getCurrentInstance()
-	                .getExternalContext();
-	        	if(tituloPagarBean.getValor() > 0) {
-	        		if(tituloPagarBean.getDespesa().getId() != null && tituloPagarBean.getCcusto().getIdccusto() != null){	        		
-	        	boolean alterou = dao.editar(this.tituloPagarBean, this.lstImpostosAlt);	        	
-	        	 if(alterou) {
-	 	            
-	 	            lstTituloPagar = null;
 
-	 	           JSFUtil.adicionarMensagemSucesso("Editado com sucesso!","Atenção");
-	 	          ec.redirect(ec.getRequestContextPath()+ "/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true");
-	 	            lstTitPagar = null;
-	 	            RequestContext.getCurrentInstance().execute("PF('dlgEditRet').hide();");
-	 	        } else {
-	 	            JSFUtil.adicionarMensagemErro("Erro ao realizar a alteração!","Atenção");
-	 	        	}
-	        	 
-	        } else {
-	        	JSFUtil.adicionarMensagemErro("Os campos Centro de Custo e Despesa não podem ser vazios.","Atenção");	        	
-	        	}
-	        		
-	        
-	        } else {
-	        	JSFUtil.adicionarMensagemErro("O valor não pode ser menor ou igual a 0.","Atenção");
-	        	}	
-	        
-	        
-	    }
-	   
+	public void editar() throws ProjetoException, IOException {
+		TituloPagarDao dao = new TituloPagarDao();
 
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		if (tituloPagarBean.getValor() > 0) {
+			if (tituloPagarBean.getDespesa().getId() != null && tituloPagarBean.getCcusto().getIdccusto() != null) {
+				boolean alterou = dao.editar(this.tituloPagarBean, this.lstImpostosAlt);
+				if (alterou) {
+
+					lstTituloPagar = null;
+
+					JSFUtil.adicionarMensagemSucesso("Editado com sucesso!", "Atenção");
+					ec.redirect(ec.getRequestContextPath()
+							+ "/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true");
+					lstTitPagar = null;
+					RequestContext.getCurrentInstance().execute("PF('dlgEditRet').hide();");
+				} else {
+					JSFUtil.adicionarMensagemErro("Erro ao realizar a alteração!", "Atenção");
+				}
+
+			} else {
+				JSFUtil.adicionarMensagemErro("Os campos Centro de Custo e Despesa não podem ser vazios.", "Atenção");
+			}
+
+		} else {
+			JSFUtil.adicionarMensagemErro("O valor não pode ser menor ou igual a 0.", "Atenção");
+		}
+
+	}
 
 	public void buscaFornecedor() throws ProjetoException {
 
 		FornecedorDAO dao = new FornecedorDAO();
 
-		lstFornecedor = (ArrayList<FornecedorBean>) dao.buscaFornecedor(
-				this.fornecedorBean.getNome(), this.fornecedorBean.getCnpj());
+		lstFornecedor = (ArrayList<FornecedorBean>) dao.buscaFornecedor(this.fornecedorBean.getNome(),
+				this.fornecedorBean.getCnpj());
 
 	}
-	
+
 	public void buscaFornecedorAlt() throws ProjetoException {
 
 		FornecedorDAO dao = new FornecedorDAO();
 
-		lstFornecedorAlt = (ArrayList<FornecedorBean>) dao.buscaFornecedor(
-				this.rowBean.getForn().getNome(), this.rowBean.getForn().getCnpj());
+		lstFornecedorAlt = (ArrayList<FornecedorBean>) dao.buscaFornecedor(this.rowBean.getForn().getNome(),
+				this.rowBean.getForn().getCnpj());
 
 	}
 
@@ -603,182 +615,174 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		lstPortadorAlt = dao.lstPortadores(this.rowBean.getPortador().getDescricao());
 
 	}
-	public ArrayList<TituloPagarBean> lstTituloPagarBean()
-			throws ProjetoException {
-		  TituloPagarDao tDao = new TituloPagarDao();
 
-	        if (lstTitPagar == null) {
-	        	
-	        	lstTitPagar = tDao.todosFinanceiro(buscaPagar);
-	        	totBuscaPagar = tDao.totalizaTitulosBusca(buscaPagar);
-	        	
-	        }
+	public ArrayList<TituloPagarBean> lstTituloPagarBean() throws ProjetoException {
+		TituloPagarDao tDao = new TituloPagarDao();
 
-	        return lstTitPagar;		
+		if (lstTitPagar == null) {
+
+			lstTitPagar = tDao.todosFinanceiro(buscaPagar);
+			totBuscaPagar = tDao.totalizaTitulosBusca(buscaPagar);
+
+		}
+
+		return lstTitPagar;
 
 	}
-	
+
 	public void buscaEstornar() throws ProjetoException {
 
 		TituloPagarDao tDao = new TituloPagarDao();
-		
+
 		if (lstTitPagar == null) {
 
-        	lstTitPagar = tDao.titulosEstornar(buscaPagar); //tDao.todosFinanceiro(buscaPagar);
-        	totBuscaPagar = tDao.totalizaTitulosBusca(buscaPagar);
-        	
-        }
+			lstTitPagar = tDao.titulosEstornar(buscaPagar); // tDao.todosFinanceiro(buscaPagar);
+			totBuscaPagar = tDao.totalizaTitulosBusca(buscaPagar);
 
-      //  return lstTitPagar;	
+		}
+
+		// return lstTitPagar;
 
 	}
 
+	public List<FornecedorBean> listDeFornecedores() throws ProjetoException, SQLException {
 
-	
-	public List<FornecedorBean> listDeFornecedores() throws ProjetoException, SQLException{
-		
 		BuscaDAO buscaDao = new BuscaDAO();
-		
-		if(lstFornecedor == null){
-		lstFornecedor = buscaDao.buscaFornecedor();
-		
-	
+
+		if (lstFornecedor == null) {
+			lstFornecedor = buscaDao.buscaFornecedor();
+
 		}
 		return lstFornecedor;
 
 	}
 
-	public ArrayList<CentroCustoBean> listCentroCusto()
-			throws ProjetoException, SQLException
+	public ArrayList<CentroCustoBean> listCentroCusto() throws ProjetoException, SQLException
 
 	{
-		if (lstccusto==null) {
-		BuscaDAO buscaDao = new BuscaDAO();
-		lstccusto = (ArrayList<CentroCustoBean>) buscaDao.buscaCentroCusto();
+		if (lstccusto == null) {
+			BuscaDAO buscaDao = new BuscaDAO();
+			lstccusto = (ArrayList<CentroCustoBean>) buscaDao.buscaCentroCusto();
 		}
 		return lstccusto;
 
 	}
-	
-	public void carregarBuscas() throws ProjetoException, SQLException{
+
+	public void carregarBuscas() throws ProjetoException, SQLException {
 		limparDados();
 		listarTipoDoc();
 	}
-	
-	public void verificarDevolucao(){
-		
+
+	public void verificarDevolucao() {
+
 		int i = tituloPagarBean.getTipoDocumento().getCodtipodocumento();
-		for(TipoDocumentoBean t : lsttipdoc){
-			if(i == t.getCodtipodocumento()){
+		for (TipoDocumentoBean t : lsttipdoc) {
+			if (i == t.getCodtipodocumento()) {
 				setTipoDoc(t);
 			}
 		}
 	}
-	
-	public void listarTipoDoc()
-			throws ProjetoException, SQLException
+
+	public void listarTipoDoc() throws ProjetoException, SQLException
 
 	{
-		
+
 		BuscaDAO buscaDao = new BuscaDAO();
 		lsttipdoc = (ArrayList<TipoDocumentoBean>) buscaDao.buscaTipoDoc();
-		
+
 	}
-	
-	
 
-	public ArrayList<TipoDocumentoBean> listTipDoc()
-			throws ProjetoException, SQLException
+	public ArrayList<TipoDocumentoBean> listTipDoc() throws ProjetoException, SQLException
 
 	{
-		if (lsttipdoc==null) {
-		BuscaDAO buscaDao = new BuscaDAO();
-		lsttipdoc = (ArrayList<TipoDocumentoBean>) buscaDao.buscaTipoDoc();
+		if (lsttipdoc == null) {
+			BuscaDAO buscaDao = new BuscaDAO();
+			lsttipdoc = (ArrayList<TipoDocumentoBean>) buscaDao.buscaTipoDoc();
 		}
-		return 		lsttipdoc;
+		return lsttipdoc;
 
 	}
-	
 
-	public ArrayList<DespesaBean> listDepesas() throws ProjetoException,
-			SQLException
+	public ArrayList<DespesaBean> listDepesas() throws ProjetoException, SQLException
 
 	{
-		if(lstDespesa==null) {
-		BuscaDAO buscaDao = new BuscaDAO();
-		lstDespesa = (ArrayList<DespesaBean>) buscaDao.buscaDespesa();
+		if (lstDespesa == null) {
+			BuscaDAO buscaDao = new BuscaDAO();
+			lstDespesa = (ArrayList<DespesaBean>) buscaDao.buscaDespesa();
 		}
 		return lstDespesa;
 
 	}
-	
-	public void estornarTitPagar() throws ProjetoException{
-    	TesourariaDAO tdao = new TesourariaDAO();
-    	ChequeEmitidoBean chq = new ChequeEmitidoBean();
-    	
-    	//estou carregando esse rowBeanBaixa.getCodChequeEmitido dentro do metodo onRowSelect
-    	chq = tdao.pesquisaChequeEmitido(rowBeanBaixa.getCodChequeEmitido(), idSelecionado);
-    	CaixaDiarioBean cx = new CaixaDiarioBean();
-    	cx = tdao.retornaCaixaAtual();
-    	chq.setCaixa(cx);
-    	FacesContext msg = FacesContext.getCurrentInstance();
-    	if (chq.getCodcheque() == null){
-    		msg.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Esse documento já foi estornado.", "Aviso"));
-    	}
-    	else{
-    	boolean cancelou = tdao.cancelarCheque(chq, "Estorno de Débito", rowBean.getCodigo());    	
-    	if (cancelou) {
-    		lstBaixa = new ArrayList<BaixaPagar>();
-    		lstTitPagar = null;
-    		buscaEstornar();
-    		idSelecionado = 0;
-    		rowBeanBaixa  = new BaixaPagar();
-			msg.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Título estornado com sucesso.", "Sucesso"));
-			RequestContext.getCurrentInstance().execute("PF('dlgBaixa').hide();");
+
+	public void estornarTitPagar() throws ProjetoException {
+		TesourariaDAO tdao = new TesourariaDAO();
+		ChequeEmitidoBean chq = new ChequeEmitidoBean();
+
+		// estou carregando esse rowBeanBaixa.getCodChequeEmitido dentro do metodo
+		// onRowSelect
+		chq = tdao.pesquisaChequeEmitido(rowBeanBaixa.getCodChequeEmitido(), idSelecionado);
+		CaixaDiarioBean cx = new CaixaDiarioBean();
+		cx = tdao.retornaCaixaAtual();
+		chq.setCaixa(cx);
+		FacesContext msg = FacesContext.getCurrentInstance();
+		if (chq.getCodcheque() == null) {
+			msg.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Esse documento já foi estornado.", "Aviso"));
 		} else {
-			msg.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro ao realizar estorno.", "Aviso"));
+			boolean cancelou = tdao.cancelarCheque(chq, "Estorno de Débito", rowBean.getCodigo());
+			if (cancelou) {
+				lstBaixa = new ArrayList<BaixaPagar>();
+				lstTitPagar = null;
+				buscaEstornar();
+				idSelecionado = 0;
+				rowBeanBaixa = new BaixaPagar();
+				msg.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Título estornado com sucesso.", "Sucesso"));
+				RequestContext.getCurrentInstance().execute("PF('dlgBaixa').hide();");
+			} else {
+				msg.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro ao realizar estorno.", "Aviso"));
+			}
 		}
-    	}
-    }
+	}
 
-	/*public String vlrTotal() {
+	/*
+	 * public String vlrTotal() {
+	 * 
+	 * 
+	 * 
+	 * String vlr = null;
+	 * 
+	 * vlr = String.valueOf(this.tituloPagarBean.getValor());
+	 * 
+	 * if (tituloPagarBean.getDesconto() != 0) {
+	 * 
+	 * vlr = String.valueOf(this.tituloPagarBean.getValor() -
+	 * this.tituloPagarBean.getDesconto());
+	 * 
+	 * } if (tituloPagarBean.getJuros() != 0) {
+	 * 
+	 * vlr = String.valueOf(this.tituloPagarBean.getValor() +
+	 * this.tituloPagarBean.getJuros());
+	 * 
+	 * }
+	 * 
+	 * return vlr; }
+	 */
 
-		
-		
-		String vlr = null;
-		
-		vlr = String.valueOf(this.tituloPagarBean.getValor());
-
-		if (tituloPagarBean.getDesconto() != 0) {
-
-			vlr = String.valueOf(this.tituloPagarBean.getValor()
-					- this.tituloPagarBean.getDesconto());
-
-		}
-		if (tituloPagarBean.getJuros() != 0) {
-
-			vlr = String.valueOf(this.tituloPagarBean.getValor()
-					+ this.tituloPagarBean.getJuros());
-
-		}
-
-		return vlr;
-	}*/
-	
 	public Double valorTotal() {
 
-		
 		Double vlr = tituloPagarBean.getValor();
-		
-		if(tituloPagarBean.getDesconto() !=0){
+
+		if (tituloPagarBean.getDesconto() != 0) {
 			vlr = tituloPagarBean.getValor() - tituloPagarBean.getDesconto();
 		}
-		
-		if(tituloPagarBean.getMulta() !=0){
+
+		if (tituloPagarBean.getMulta() != 0) {
 			vlr += tituloPagarBean.getMulta();
 		}
-		
-		if(tituloPagarBean.getJuros() !=0){
+
+		if (tituloPagarBean.getJuros() != 0) {
 			vlr += tituloPagarBean.getJuros();
 		}
 		BigDecimal vlrAux = new BigDecimal(vlr);
@@ -786,226 +790,202 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		vlr = vlrAux2.doubleValue();
 		return vlr;
 	}
-	
+
 	public Double valorTotalEdit() {
-	
-			
-			Double vlr = rowBean.getValor();
-			
-			if(rowBean.getDesconto() !=0){
-				vlr = rowBean.getValor() - rowBean.getDesconto();
-			}
-			if(rowBean.getMulta() !=0){
-				vlr += rowBean.getMulta();
-			}
-			if(rowBean.getJuros() !=0){
-				vlr += rowBean.getJuros();
-			}
-			
-			BigDecimal vlrAux = new BigDecimal(vlr);
-			BigDecimal vlrAux2 = vlrAux.setScale(2, BigDecimal.ROUND_HALF_UP);
-			
-			vlr = vlrAux2.doubleValue();
-			return vlr;
+
+		Double vlr = rowBean.getValor();
+
+		if (rowBean.getDesconto() != 0) {
+			vlr = rowBean.getValor() - rowBean.getDesconto();
 		}
-		
-	/*public String vlrTotalEdit() {
-	
-			
-			
-			String vlr = null;
-			
-			vlr = String.valueOf(this.rowBean.getValor());
-	
-			if (rowBean.getDesconto() != 0) {
-	
-				vlr = String.valueOf(this.rowBean.getValor()
-						- this.tituloPagarBean.getDesconto());
-	
+		if (rowBean.getMulta() != 0) {
+			vlr += rowBean.getMulta();
+		}
+		if (rowBean.getJuros() != 0) {
+			vlr += rowBean.getJuros();
+		}
+
+		BigDecimal vlrAux = new BigDecimal(vlr);
+		BigDecimal vlrAux2 = vlrAux.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+		vlr = vlrAux2.doubleValue();
+		return vlr;
+	}
+
+	/*
+	 * public String vlrTotalEdit() {
+	 * 
+	 * 
+	 * 
+	 * String vlr = null;
+	 * 
+	 * vlr = String.valueOf(this.rowBean.getValor());
+	 * 
+	 * if (rowBean.getDesconto() != 0) {
+	 * 
+	 * vlr = String.valueOf(this.rowBean.getValor() -
+	 * this.tituloPagarBean.getDesconto());
+	 * 
+	 * } if (rowBean.getJuros() != 0) {
+	 * 
+	 * vlr = String.valueOf(this.rowBean.getValor() + this.rowBean.getJuros());
+	 * 
+	 * }
+	 * 
+	 * return vlr; }
+	 */
+
+	public void verificaAdd() {
+
+		for (int i = 0; i < lstImpostos.size(); i++) {
+
+			validarTipo(lstImpostos.get(i).getDescImposto());
+
+		}
+
+	}
+
+	public void validarTipo(String desc) {
+
+		for (int i = 0; i < tipoImposto.size(); i++) {
+
+			if (tipoImposto.get(i).getDescricao().equals(desc)) {
+
+				tipoImposto.remove(i);
+
 			}
-			if (rowBean.getJuros() != 0) {
-	
-				vlr = String.valueOf(this.rowBean.getValor()
-						+ this.rowBean.getJuros());
-	
+
+		}
+
+	}
+
+	public void onRowSelect(SelectEvent event) throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"ccodagendacapt Selected" + String.valueOf(1), String.valueOf(1)));
+		TituloPagarDao tpdao = new TituloPagarDao();
+		idSelecionado = rowBean.getCodigo();
+		lstBaixa = tpdao.lstBaixas(idSelecionado);
+
+		/*
+		 * for (int i=0; i<lstBaixa.size(); i++){
+		 * rowBeanBaixa.setCodChequeEmitido(lstBaixa.get(i).getCodChequeEmitido()); }
+		 */
+
+	}
+
+	public void carregarImposto() {
+
+		TipoImposto t = new TipoImposto();
+		t.setIndice(0);
+		t.setDescricao("CSLL");
+
+		TipoImposto t2 = new TipoImposto();
+		t2.setIndice(1);
+		t2.setDescricao("IRPF");
+
+		TipoImposto t3 = new TipoImposto();
+		t3.setIndice(2);
+		t3.setDescricao("IRPI");
+
+		TipoImposto t4 = new TipoImposto();
+		t4.setIndice(3);
+		t4.setDescricao("INSS");
+
+		TipoImposto t5 = new TipoImposto();
+		t5.setIndice(4);
+		t5.setDescricao("ISS");
+
+		tipoImposto.add(t);
+		tipoImposto.add(t2);
+		tipoImposto.add(t3);
+		tipoImposto.add(t4);
+		tipoImposto.add(t5);
+
+	}
+
+	public void addNaListImpostos() {
+		boolean existe = false;
+
+		for (ImpostoBean ip : lstImpostos) {
+			if (ip.getDescImposto().equals(impostoBean.getDescImposto())) {
+				existe = true;
 			}
-	
-			return vlr;
-		}*/
-	
-	 public void verificaAdd() {
 
-	        
+		}
+		if (existe) {
+			JSFUtil.adicionarMensagemErro("Imposto já incluso", "Atenção");
+		} else {
+			lstImpostos.add(impostoBean);
+		}
+		this.impostoBean = new ImpostoBean();
 
-	        for (int i = 0; i < lstImpostos.size(); i++) {
+	}
 
-	            
+	public void addNaListImpostosAlt() {
 
-	            validarTipo(lstImpostos.get(i).getDescImposto());
+		boolean existe = false;
 
-	        }
+		for (ImpostoBean ip : lstImpostosAlt) {
+			if (ip.getDescImposto().equals(rowBeanImposto.getDescImposto())) {
+				existe = true;
+			}
 
-	    }
+		}
+		if (existe) {
+			JSFUtil.adicionarMensagemErro("Imposto já incluso", "Atenção");
+		} else {
+			lstImpostosAlt.add(rowBeanImposto);
+		}
+		rowBeanImposto = new ImpostoBean();
 
-	 public void validarTipo(String desc) {
+	}
 
-	        
+	public void removerRetencao() {
+		lstImpostos.remove(this.rowBeanImposto);
+	}
 
-	        for (int i = 0; i < tipoImposto.size(); i++) {
+	public void removerRetencaoAlt() {
 
-	            if (tipoImposto.get(i).getDescricao().equals(desc)) {
+		lstImpostosAlt.remove(rowBeanImposto);
 
-	                
+	}
 
+	public void alterarRetencaoAlt() {
 
-	                tipoImposto.remove(i);
+		for (ImpostoBean ip : lstImpostosAlt) {
+			if (ip.getDescImposto().equals(rowBeanImposto.getDescImposto())) {
+				ip.setPcRentencao(rowBeanImposto.getPcRentencao());
+				ip.setValorBase(rowBeanImposto.getValorBase());
+			}
+			rowBeanImposto = new ImpostoBean();
+		}
+		RequestContext.getCurrentInstance().execute("PF('dlgAltRetencao').hide();");
+	}
 
-	                
+	public ArrayList<BancoBean> lstBancosTotal() throws ProjetoException {
 
-	            }
+		TituloReceberDao dao = new TituloReceberDao();
 
-	        }
+		this.lstBancos = dao.lstTodosBancos();
 
-	    }
-	 
-	 public void onRowSelect(SelectEvent event) throws ProjetoException {
-	        FacesContext facesContext = FacesContext.getCurrentInstance();
-	        facesContext.addMessage(
-	                null,
-	                new FacesMessage(FacesMessage.SEVERITY_INFO,
-	                        "ccodagendacapt Selected" + String.valueOf(1), String
-	                        .valueOf(1)));
-	        TituloPagarDao tpdao = new TituloPagarDao();
-	        idSelecionado = rowBean.getCodigo();
-	        lstBaixa = tpdao.lstBaixas(idSelecionado);
-	        
-	        /*for (int i=0; i<lstBaixa.size(); i++){
-	        	rowBeanBaixa.setCodChequeEmitido(lstBaixa.get(i).getCodChequeEmitido());
-	        }*/
-	        
-	        
-	    }
-	 
+		return (ArrayList<BancoBean>) this.lstBancos;
 
-	 
-	 
-	 
-	 public void carregarImposto() {
+	}
 
-	        TipoImposto t = new TipoImposto();
-	        t.setIndice(0);
-	        t.setDescricao("CSLL");
+	public void alterarRetencao() {
 
-	        TipoImposto t2 = new TipoImposto();
-	        t2.setIndice(1);
-	        t2.setDescricao("IRPF");
+		for (ImpostoBean ip : lstImpostos) {
+			if (ip.getDescImposto().equals(rowBeanImposto.getDescImposto())) {
+				ip.setPcRentencao(rowBeanImposto.getPcRentencao());
+				ip.setValorBase(rowBeanImposto.getValorBase());
+			}
 
-	        TipoImposto t3 = new TipoImposto();
-	        t3.setIndice(2);
-	        t3.setDescricao("IRPI");
+		}
+		this.rowBeanImposto = new ImpostoBean();
+		RequestContext.getCurrentInstance().execute("PF('dlgEditRetencao').hide();");
+	}
 
-	        TipoImposto t4 = new TipoImposto();
-	        t4.setIndice(3);
-	        t4.setDescricao("INSS");
-
-	        TipoImposto t5 = new TipoImposto();
-	        t5.setIndice(4);
-	        t5.setDescricao("ISS");
-
-	        tipoImposto.add(t);
-	        tipoImposto.add(t2);
-	        tipoImposto.add(t3);
-	        tipoImposto.add(t4);
-	        tipoImposto.add(t5);
-
-	    }
-	 
-	  public void addNaListImpostos() {
-		  boolean existe = false;	
-		  
-		  	for(ImpostoBean ip: lstImpostos){
-		  		if(ip.getDescImposto().equals(impostoBean.getDescImposto())){
-		  			existe = true;
-		  		} 
-		  		
-		  	}
-		  	if(existe){
-		  		JSFUtil.adicionarMensagemErro("Imposto já incluso", "Atenção");
-		  	} else {
-		  		lstImpostos.add(impostoBean);
-		  	}
-	        this.impostoBean = new ImpostoBean();
-
-
-	    }
-	  
-	  public void addNaListImpostosAlt() {
-
-		  boolean existe = false;	
-		  
-		  	for(ImpostoBean ip: lstImpostosAlt){
-		  		if(ip.getDescImposto().equals(rowBeanImposto.getDescImposto())){
-		  			existe = true;
-		  		} 
-		  		
-		  	}
-		  	if(existe){
-		  		JSFUtil.adicionarMensagemErro("Imposto já incluso","Atenção");
-		  	} else {
-		  		lstImpostosAlt.add(rowBeanImposto);
-		  	}
-	        rowBeanImposto = new ImpostoBean();
-
-
-	    }
-	  
-	  
-	  
-	  public void removerRetencao(){
-		  lstImpostos.remove(this.rowBeanImposto);		  
-	  }
-	  
-	  public void removerRetencaoAlt(){
-		  
-		  lstImpostosAlt.remove(rowBeanImposto);
-		  
-	  }
-	 
-	  public void alterarRetencaoAlt() {
-	      
-	            for(ImpostoBean ip : lstImpostosAlt) {
-	            	if(ip.getDescImposto().equals(rowBeanImposto.getDescImposto())){
-                    ip.setPcRentencao(rowBeanImposto.getPcRentencao());
-                    ip.setValorBase(rowBeanImposto.getValorBase());
-                    }
-                    rowBeanImposto = new ImpostoBean();
-	        } 
-	        RequestContext.getCurrentInstance().execute("PF('dlgAltRetencao').hide();");
-	    }
-	  
-	  
-	  public ArrayList<BancoBean> lstBancosTotal() throws ProjetoException {
-
-	        TituloReceberDao dao = new TituloReceberDao();
-
-	        this.lstBancos = dao.lstTodosBancos();
-
-	        return (ArrayList<BancoBean>) this.lstBancos;
-
-	    }
-	  
-	  public void alterarRetencao() {
-     		
-          for(ImpostoBean ip : lstImpostos) {
-        	  if(ip.getDescImposto().equals(rowBeanImposto.getDescImposto())){
-              ip.setPcRentencao(rowBeanImposto.getPcRentencao());
-              ip.setValorBase(rowBeanImposto.getValorBase());
-              }
-              
-      } 
-      this.rowBeanImposto = new ImpostoBean();
-      RequestContext.getCurrentInstance().execute("PF('dlgEditRetencao').hide();");
-  }
 	public ArrayList<TituloPagarBean> getLstTituloPagar() {
 		return lstTituloPagar;
 	}
@@ -1090,30 +1070,27 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		this.portadorBean = portadorBean;
 	}
 
-	
-	public List<PortadorBean> lstPortador() throws ProjetoException{
-		  BuscaDAO buscaDao = new BuscaDAO();
-		  	
-	        if (lstPortador == null) {
+	public List<PortadorBean> lstPortador() throws ProjetoException {
+		BuscaDAO buscaDao = new BuscaDAO();
 
-	            lstPortador = buscaDao.lstTodosPortadores();
+		if (lstPortador == null) {
 
-	        }
+			lstPortador = buscaDao.lstTodosPortadores();
 
-	        
-			return lstPortador;
+		}
+
+		return lstPortador;
 	}
 
 	public List<PortadorBean> getLstPortador() throws ProjetoException {
-	    BuscaDAO buscaDao = new BuscaDAO();
+		BuscaDAO buscaDao = new BuscaDAO();
 
-        if (lstPortador == null) {
+		if (lstPortador == null) {
 
-            lstPortador = buscaDao.lstTodosPortadores();
+			lstPortador = buscaDao.lstTodosPortadores();
 
-        }
+		}
 
-        
 		return lstPortador;
 	}
 
@@ -1150,7 +1127,7 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 	}
 
 	public List<TituloPagarBean> getListaAbertos() throws ProjetoException {
-		if(listaAbertos == null) {
+		if (listaAbertos == null) {
 			TituloPagarDao tpdao = new TituloPagarDao();
 			listaAbertos = tpdao.listaAbertos(null, periodoInicial, periodoFinal);
 		}
@@ -1160,8 +1137,6 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 	public void setListaAbertos(List<TituloPagarBean> listaAbertos) {
 		this.listaAbertos = listaAbertos;
 	}
-
-
 
 	public void setLstBaixa(List<BaixaPagar> lstBaixa) {
 		this.lstBaixa = lstBaixa;
@@ -1183,9 +1158,9 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		this.tipoPagamento = tipoPagamento;
 	}
 
-	public List<ImpostoBean> getLstImpostosAlt() throws SQLException, ProjetoException{
-		
-		if(lstImpostosAlt == null) {
+	public List<ImpostoBean> getLstImpostosAlt() throws SQLException, ProjetoException {
+
+		if (lstImpostosAlt == null) {
 			TituloPagarDao tpdao = new TituloPagarDao();
 			lstImpostosAlt = tpdao.listaImposto(rowBean.getCodigo());
 		}
@@ -1311,8 +1286,5 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 	public List<BaixaPagar> getLstBaixa() {
 		return lstBaixa;
 	}
-	
-	
-	
-	
+
 }

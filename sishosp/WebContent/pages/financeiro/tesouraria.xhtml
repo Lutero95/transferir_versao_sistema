@@ -1,1283 +1,1946 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition  template="../../template/template.xhtml">
-        <ui:define name="content">
-        <p:growl id="grwgeral"/>
-<!--  -->
+<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
+		<p:growl id="grwgeral" />
+		<!--  -->
 
-            <p:layout style="min-width:400px;width:99%;height:600px;">
-                <p:layoutUnit position="west" resizable="false" size="240" 
-                              minSize="40">
-                    <h:form id="frmbanco">
-                    <p:growl id="grwgeral" showDetail="false" />
-                        <center>
-                            <div style="background-color:white;height:100%">
-                            <p:outputPanel  id="pnlTabelaGeral">
-                            <p:autoUpdate/>
-                                <p:dataTable emptyMessage="Nenhum Banco" id="tabela" 
-                                             value="#{tesourariaController.listabancos}" var="m"
-                                             scrollable="true" style="width:99%" scrollRows="8"
-                                             selectionMode="single" selection="#{tesourariaController.banco}"
-                                             rowKey="#{m.id}" scrollHeight="230" scrollWidth="220">
+		<p:layout style="min-width:400px;width:99%;height:600px;">
+			<p:layoutUnit position="west" resizable="false" size="240"
+				minSize="40">
+				<h:form id="frmbanco">
+					<p:growl id="grwgeral" showDetail="false" />
+					<center>
+						<div style="background-color: white; height: 100%">
+							<p:outputPanel id="pnlTabelaGeral">
+								<p:autoUpdate />
+								<p:dataTable emptyMessage="Nenhum Banco" id="tabela"
+									value="#{tesourariaController.listabancos}" var="m"
+									scrollable="true" style="width:99%" scrollRows="8"
+									selectionMode="single"
+									selection="#{tesourariaController.banco}" rowKey="#{m.id}"
+									scrollHeight="230" scrollWidth="220">
 
-                                    <p:ajax event="rowSelect" disabled="#{tesourariaController.caixa.status=='F'}"
-                                            listener="#{tesourariaController.onBancoSelect}" update=":frmmov:tabmov">
-                                     
-                                     	
-                                     </p:ajax>
-
-                                    <p:column style="text-align: center;">
-
-                                        <h:outputText value="#{m.descricao}" />
-		
-                                    </p:column>
-
-                                </p:dataTable>
-                                </p:outputPanel>
-                            </div>
-                        </center>
-                        <center>
+									<p:ajax event="rowSelect"
+										disabled="#{tesourariaController.caixa.status=='F'}"
+										listener="#{tesourariaController.onBancoSelect}"
+										update=":frmmov:tabmov">
 
 
+									</p:ajax>
 
-                        </center>
-                    </h:form>
+									<p:column style="text-align: center;">
 
-                    <div style="background-color:Cornsilk;height:350px">
-                        <p:outputPanel id="outcaixa">
-                            <center>
-                                <br/>
-                                <h:form>
-                                <p:commandButton label="Abrir Caixa" value="Abrir Caixa" icon="ui-icon-unlocked" 
-                                    rendered="#{tesourariaController.caixa.status=='F'}" 
-                                    oncomplete="PF('dlgabrecaixa').show()" update="grwgeral" 
-                                    disabled="#{MBUsuarios.verificarPermComp('FC-56', MBUsuarios.sistemaLogado.id) == false}">
+										<h:outputText value="#{m.descricao}" />
 
-                                </p:commandButton>
-                                <p:commandButton label="Fechar Caixa" value="Fechar Caixa" icon="ui-icon-locked" 
-                                    rendered="#{tesourariaController.caixa.status=='A'}" 
-                                    oncomplete="PF('dlgfechacaixa').show()" update="grwgeral" 
-                                    disabled="#{MBUsuarios.verificarPermComp('FC-57', MBUsuarios.sistemaLogado.id) == false}">
+									</p:column>
 
-                                </p:commandButton>
-                                </h:form>
-                            </center>
-                        </p:outputPanel>
-                        <br/>
+								</p:dataTable>
+							</p:outputPanel>
+						</div>
+					</center>
+					<center></center>
+				</h:form>
+
+				<div style="background-color: Cornsilk; height: 350px">
+					<p:outputPanel id="outcaixa">
+						<center>
+							<br />
+							<h:form>
+								<p:commandButton label="Abrir Caixa" value="Abrir Caixa"
+									icon="ui-icon-unlocked"
+									rendered="#{tesourariaController.caixa.status=='F'}"
+									oncomplete="PF('dlgabrecaixa').show()" update="grwgeral"
+									disabled="#{MBUsuarios.verificarPermComp('FC-56', MBUsuarios.sistemaLogado.id) == false}">
+
+								</p:commandButton>
+								<p:commandButton label="Fechar Caixa" value="Fechar Caixa"
+									icon="ui-icon-locked"
+									rendered="#{tesourariaController.caixa.status=='A'}"
+									oncomplete="PF('dlgfechacaixa').show()" update="grwgeral"
+									disabled="#{MBUsuarios.verificarPermComp('FC-57', MBUsuarios.sistemaLogado.id) == false}">
+
+								</p:commandButton>
+
+								<p:commandButton label="Avulso" value="Avulso"
+									icon="ui-icon-locked" oncomplete="PF('dlgtituloavulso').show()"
+									update="grwgeral">
+
+								</p:commandButton>
+							</h:form>
+						</center>
+					</p:outputPanel>
+					<br />
 
 
-                    </div>
-                </p:layoutUnit>
+				</div>
+			</p:layoutUnit>
 
-                <p:layoutUnit position="center">
-                    <h:form id="frmmov">
-                        <p:tabView id="tabmov">
-                            <p:tab title="Movimentação" >
-                            	<p:outputPanel id="pnlMovimentacao" >
-                            	<p:autoUpdate/>
-                                    <b:dataTable emptyMessage="Nenhuma Movimentação"  paginated="false" searching="false"
-                                                 value="#{tesourariaController.listamovimentacao}" var="m"
-                                                 style="width:99%" scrollRows="8"
-                                                 scrollable="true"
-                                                 scrollHeight="230" id="tabelaMov" >
+			<p:layoutUnit position="center">
+				<h:form id="frmmov">
+					<p:tabView id="tabmov">
+						<p:tab title="Movimentação">
+							<p:outputPanel id="pnlMovimentacao">
+								<p:autoUpdate />
+								<b:dataTable emptyMessage="Nenhuma Movimentação"
+									paginated="false" searching="false"
+									value="#{tesourariaController.listamovimentacao}" var="m"
+									style="width:99%" scrollRows="8" scrollable="true"
+									scrollHeight="230" id="tabelaMov">
 
-                                        <h:column style="text-align: center;"  >
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                             Data Movim.
                         </f:facet>
-                                            <h:outputText value="#{m.dtmovimento}">
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
+										<h:outputText value="#{m.dtmovimento}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
 
-                                        </h:column>
+									</h:column>
 
 
-                                        <h:column style="text-align: center;" >
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                            CD/DB
                         </f:facet>
-                                            <h:outputText value="#{m.tipo}" />
+										<h:outputText value="#{m.tipo}" />
 
-                                        </h:column>
+									</h:column>
 
-                                        <h:column style="text-align: center;" >
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                             Valor
                         </f:facet>
-                                            <h:outputText value="#{m.valor}">
-                                            <f:convertNumber type="currency"/>
-                                            </h:outputText>
+										<h:outputText value="#{m.valor}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
 
-                                        </h:column>		
+									</h:column>
 
-                                        <h:column style="text-align: center;">
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                             Complemento
                         </f:facet>
-                                            <h:outputText value="#{m.complemento}" />
+										<h:outputText value="#{m.complemento}" />
 
-                                        </h:column>	
+									</h:column>
 
-                                        <h:column style="text-align: center;" >
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                             Cód. Receber
                         </f:facet>
-                                            <h:outputText value="#{m.codreceber}" />
+										<h:outputText value="#{m.codreceber}" />
 
-                                        </h:column>
+									</h:column>
 
-                                        <h:column style="text-align: center;">
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                            Cód. Pagar
                         </f:facet>
-                                            <h:outputText value="#{m.codpagar}" />
+										<h:outputText value="#{m.codpagar}" />
 
-                                        </h:column>		
+									</h:column>
 
-                                        <h:column style="text-align: center;" >
-<f:facet name="header">
+									<h:column style="text-align: center;">
+										<f:facet name="header">
                             Operador
                         </f:facet>
-                                            <h:outputText value="#{m.func.codigo}" />
+										<h:outputText value="#{m.func.id}" />
 
-                                        </h:column>															
+									</h:column>
 
-                                    </b:dataTable>
-                                </p:outputPanel>
-                            </p:tab>
+								</b:dataTable>
+							</p:outputPanel>
+						</p:tab>
 
-                            <p:tab title="cheques Emitidos" id="tabchq">	
-                                <p:outputPanel  id="outchqemit">
-                                <p:autoUpdate/>
-                                
-                              	    <p:panelGrid columns="4" styleClass="semBorda" id="busca">
-                                	  <h:outputText value="Vencimento:"  style="font-weight:bold;"/>
-                                	  <p:calendar id="button"
-                                            value="#{tesourariaController.chequeBusca.dtemissao}" size="8"
-                                            pattern="dd/MM/yyyy" showOn="button" />
+						<p:tab title="cheques Emitidos" id="tabchq">
+							<p:outputPanel id="outchqemit">
+								<p:autoUpdate />
 
-                              		  <h:outputText value="a" style="margin-left: 5px" />
-                                	   <p:calendar value="#{tesourariaController.chequeBusca.dtvencimento}"
-                                            style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
-                                            showOn="button" />
-                                	
-                                	</p:panelGrid>
-                                
-                                   <p:panelGrid columns="2" styleClass="semBorda" id="busca2">
-                                     <h:outputText value="Situação:"  style="font-weight:bold;"/>
-                    				 <p:selectOneRadio value="#{tesourariaController.chequeBusca.status}" columns="3"  tabindex="0">
-                    				      <f:selectItem itemLabel="Todos" itemValue="T" />
-                            	 		  <f:selectItem itemLabel="Cancelado" itemValue="CA" />
-                           		 		  <f:selectItem itemLabel="Compensado" itemValue="OK" />
-                           		  		  <f:selectItem itemLabel="Pendente" itemValue="P" />
-                       				 </p:selectOneRadio>
-                       				  
-								   </p:panelGrid>
-								   <p:panelGrid columns="3" styleClass="semBorda" id="busca3">
-								       <h:outputText value="Num. cheque: "  style="font-weight:bold;"/>
-								       <p:inputText value="#{tesourariaController.chequeBusca.numcheque}"/>
-									   <p:commandButton value="Buscar" action="#{tesourariaController.pesquisaChequesBusca()}"  icon="ui-icon-search"/>	
-								   </p:panelGrid>
+								<p:panelGrid columns="4" styleClass="semBorda" id="busca">
+									<h:outputText value="Vencimento:" style="font-weight:bold;" />
+									<p:calendar id="button"
+										value="#{tesourariaController.chequeBusca.dtemissao}" size="8"
+										pattern="dd/MM/yyyy" showOn="button" />
 
-                                    <p:dataTable emptyMessage="Nenhum Cheque" 
-                                                 value="#{tesourariaController.listachequesemitidos}" var="m"
-                                                 style="width:100%" scrollable="true" scrollRows="8"
-                                                 selectionMode="single" selection="#{tesourariaController.rowCheque}"
-                                                 rowKey="#{m.codcheque}" scrollHeight="230" id="tabComp" >
-										
-					                    <p:ajax event="rowSelect"
-					                        listener="#{tesourariaController.onRowSelect}">
-					                    </p:ajax>
-					                    
-					                    
-					                   
-                                        <p:column style="text-align: center;"  >
-									<f:facet name="header">
+									<h:outputText value="a" style="margin-left: 5px" />
+									<p:calendar
+										value="#{tesourariaController.chequeBusca.dtvencimento}"
+										style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
+										showOn="button" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" styleClass="semBorda" id="busca2">
+									<h:outputText value="Situação:" style="font-weight:bold;" />
+									<p:selectOneRadio
+										value="#{tesourariaController.chequeBusca.status}" columns="3"
+										tabindex="0">
+										<f:selectItem itemLabel="Todos" itemValue="T" />
+										<f:selectItem itemLabel="Cancelado" itemValue="CA" />
+										<f:selectItem itemLabel="Compensado" itemValue="OK" />
+										<f:selectItem itemLabel="Pendente" itemValue="P" />
+									</p:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="3" styleClass="semBorda" id="busca3">
+									<h:outputText value="Num. cheque: " style="font-weight:bold;" />
+									<p:inputText
+										value="#{tesourariaController.chequeBusca.numcheque}" />
+									<p:commandButton value="Buscar"
+										action="#{tesourariaController.pesquisaChequesBusca()}"
+										icon="ui-icon-search" />
+								</p:panelGrid>
+
+								<p:dataTable emptyMessage="Nenhum Cheque"
+									value="#{tesourariaController.listachequesemitidos}" var="m"
+									style="width:100%" scrollable="true" scrollRows="8"
+									selectionMode="single"
+									selection="#{tesourariaController.rowCheque}"
+									rowKey="#{m.codcheque}" scrollHeight="230" id="tabComp">
+
+									<p:ajax event="rowSelect"
+										listener="#{tesourariaController.onRowSelect}">
+									</p:ajax>
+
+
+
+									<p:column style="text-align: center;">
+										<f:facet name="header">
 									                            Compensado
 									                        </f:facet>
-                                            <h:outputText value="#{m.compensado}" />
+										<h:outputText value="#{m.compensado}" />
 
-                                        </p:column>
+									</p:column>
 
 
-                                        <p:column style="text-align: center;" >
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Status
 									    </f:facet>
-                                            <h:outputText value="#{m.status}" />
+										<h:outputText value="#{m.status}" />
 
-                                        </p:column>
+									</p:column>
 
-                                        <p:column style="text-align: center;">
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Núm. Cheque
 									    </f:facet>
-                                            <h:outputText value="#{m.numcheque}" />
+										<h:outputText value="#{m.numcheque}" />
 
-                                        </p:column>		
+									</p:column>
 
-                                        <p:column style="text-align: center;">
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Valor
 									    </f:facet>
-                                            <h:outputText value="#{m.valor}">
-                                            <f:convertNumber type="currency"/>
-                                             </h:outputText>
+										<h:outputText value="#{m.valor}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
 
-                                        </p:column>	
+									</p:column>
 
-                                        <p:column style="text-align: center;">
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Emissão
 									    </f:facet>
-                                            <h:outputText value="#{m.dtemissao}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
+										<h:outputText value="#{m.dtemissao}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
 
-                                        </p:column>
+									</p:column>
 
-                                        <p:column style="text-align: center;">
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Vencimento
 									    </f:facet>
-                                            <h:outputText value="#{m.dtvencimento}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
+										<h:outputText value="#{m.dtvencimento}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
 
-                                        </p:column>		
+									</p:column>
 
 
 
-                                        <p:column style="text-align: center;" >
+									<p:column style="text-align: center;">
 										<f:facet name="header">
 									        Data Compensação
 									    </f:facet>
-                                            <h:outputText value="#{m.dtcompensado}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
+										<h:outputText value="#{m.dtcompensado}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
 
-                                        </p:column>																								
+									</p:column>
 
-                                    </p:dataTable>
-                                </p:outputPanel>
+								</p:dataTable>
+							</p:outputPanel>
 
-                                <p:outputPanel >
-                                <p:autoUpdate/>
-                                <p:commandButton value="Compensar" oncomplete="PF('dlgcomp').show()" style="width:100px" 
-                                	disabled="#{tesourariaController.idSelecionado == 0 or tesourariaController.rowCheque.compensado == 'S' 
+							<p:outputPanel>
+								<p:autoUpdate />
+								<p:commandButton value="Compensar"
+									oncomplete="PF('dlgcomp').show()" style="width:100px"
+									disabled="#{tesourariaController.idSelecionado == 0 or tesourariaController.rowCheque.compensado == 'S' 
                                 			or tesourariaController.rowCheque.status == 'CA'
                                 			
                                             or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />
-                                
-                                <p:commandButton value="Cancelar" style="margin-left:10px;width:100px" 
-                                	disabled="#{tesourariaController.idSelecionado == 0
+
+								<p:commandButton value="Cancelar"
+									style="margin-left:10px;width:100px"
+									disabled="#{tesourariaController.idSelecionado == 0
                                 	or tesourariaController.rowCheque.compensado == 'S'
-                                	or tesourariaController.rowCheque.status == 'CA'}" 
-                                	onclick="PF('dlgConfExc').show()"/>
-                                	</p:outputPanel>
-			
-                                <br/>
+                                	or tesourariaController.rowCheque.status == 'CA'}"
+									onclick="PF('dlgConfExc').show()" />
+							</p:outputPanel>
 
-                            </p:tab>
+							<br />
 
-                            <p:tab title="Cheques Recebidos" disabled="true">
- <p:outputPanel  id="outchqreceb">
- <p:autoUpdate/>
-                                
-                              	    <p:panelGrid columns="4" styleClass="semBorda">
-                                	  <h:outputText value="Vencimento:"  style="font-weight:bold;"/>
-                                	  <p:calendar 
-                                            value="#{tesourariaController.chequeRecebidobusca.dtemissao}" size="8"
-                                            pattern="dd/MM/yyyy" showOn="button" />
+						</p:tab>
 
-                              		  <h:outputText value="a" style="margin-left: 5px" />
-                                	   <p:calendar value="#{tesourariaController.chequeRecebidobusca.dtvencimento}"
-                                            style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
-                                            showOn="button" />
-                                	
-                                	</p:panelGrid>
-                                
-                                   <p:panelGrid columns="2" styleClass="semBorda" >
-                                     <h:outputText value="Situação:"  style="font-weight:bold;"/>
-                    				 <p:selectOneRadio value="#{tesourariaController.chequeRecebidobusca.status}" columns="3"  tabindex="0">
-                    				      <f:selectItem itemLabel="Todos" itemValue="T" />
-                           		 		  <f:selectItem itemLabel="Compensado" itemValue="OK" />
-                           		  		  <f:selectItem itemLabel="Pendente" itemValue="P" />
-                       				 </p:selectOneRadio>
-                       				  
-								   </p:panelGrid>
-								   <p:panelGrid columns="3" styleClass="semBorda">
-								       <h:outputText value="Num. cheque: "  style="font-weight:bold;"/>
-								       <p:inputText value="#{tesourariaController.chequeRecebidobusca.numcheque}"/>
-									   <p:commandButton value="Buscar" action="#{tesourariaController.pesquisaChequesRecebidos()}"  icon="ui-icon-search"/>	
-								   </p:panelGrid>
+						<p:tab title="Cheques Recebidos" disabled="true">
+							<p:outputPanel id="outchqreceb">
+								<p:autoUpdate />
 
-                                    <p:dataTable emptyMessage="Nenhum Cheque" 
-                                                 value="#{tesourariaController.listaChequesRecebidos}" var="w"
-                                                 style="width:100%" scrollable="true" scrollRows="8"
-                                                 selectionMode="single" selection="#{tesourariaController.rowChequeRecebido}"
-                                                 rowKey="#{w.codcheque}" scrollHeight="230"  >
-										
-					                    <p:ajax event="rowSelect"
-					                        listener="#{tesourariaController.selecionaChequeRecebido}">
-					                    </p:ajax>
-					                    
-					                    
-					                   
-                                        <h:column style="text-align: center;" headerText="Compensado" >
+								<p:panelGrid columns="4" styleClass="semBorda">
+									<h:outputText value="Vencimento:" style="font-weight:bold;" />
+									<p:calendar
+										value="#{tesourariaController.chequeRecebidobusca.dtemissao}"
+										size="8" pattern="dd/MM/yyyy" showOn="button" />
 
-                                            <h:outputText value="#{w.compensado}" />
+									<h:outputText value="a" style="margin-left: 5px" />
+									<p:calendar
+										value="#{tesourariaController.chequeRecebidobusca.dtvencimento}"
+										style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
+										showOn="button" />
 
-                                        </h:column>
+								</p:panelGrid>
 
+								<p:panelGrid columns="2" styleClass="semBorda">
+									<h:outputText value="Situação:" style="font-weight:bold;" />
+									<p:selectOneRadio
+										value="#{tesourariaController.chequeRecebidobusca.status}"
+										columns="3" tabindex="0">
+										<f:selectItem itemLabel="Todos" itemValue="T" />
+										<f:selectItem itemLabel="Compensado" itemValue="OK" />
+										<f:selectItem itemLabel="Pendente" itemValue="P" />
+									</p:selectOneRadio>
 
-                                        <h:column style="text-align: center;" headerText="Status">
+								</p:panelGrid>
+								<p:panelGrid columns="3" styleClass="semBorda">
+									<h:outputText value="Num. cheque: " style="font-weight:bold;" />
+									<p:inputText
+										value="#{tesourariaController.chequeRecebidobusca.numcheque}" />
+									<p:commandButton value="Buscar"
+										action="#{tesourariaController.pesquisaChequesRecebidos()}"
+										icon="ui-icon-search" />
+								</p:panelGrid>
 
-                                            <h:outputText value="#{w.status}" />
+								<p:dataTable emptyMessage="Nenhum Cheque"
+									value="#{tesourariaController.listaChequesRecebidos}" var="w"
+									style="width:100%" scrollable="true" scrollRows="8"
+									selectionMode="single"
+									selection="#{tesourariaController.rowChequeRecebido}"
+									rowKey="#{w.codcheque}" scrollHeight="230">
 
-                                        </h:column>
-
-                                        <h:column style="text-align: center;" headerText="Num. Cheque">
-
-                                            <h:outputText value="#{w.numcheque}" />
-
-                                        </h:column>		
-
-                                        <h:column style="text-align: center;" headerText="Valor">
-
-                                            <h:outputText value="#{w.valor}">
-                                            <f:convertNumber type="currency"/>
-                                             </h:outputText>
-
-                                        </h:column>	
-
-                                        <h:column style="text-align: center;" headerText="Emissão">
-
-                                            <h:outputText value="#{w.dtemissao}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
-
-                                        </h:column>
-
-                                        <h:column style="text-align: center;" headerText="Vencimento">
-
-                                            <h:outputText value="#{w.dtvencimento}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
-
-                                        </h:column>		
+									<p:ajax event="rowSelect"
+										listener="#{tesourariaController.selecionaChequeRecebido}">
+									</p:ajax>
 
 
 
-                                        <h:column style="text-align: center;" headerText="Data Compensação">
+									<h:column style="text-align: center;" headerText="Compensado">
 
-                                            <h:outputText value="#{w.dtcompensado}" >
-                                            	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
+										<h:outputText value="#{w.compensado}" />
 
-                                        </h:column>																								
+									</h:column>
 
-                                    </p:dataTable>
-                                </p:outputPanel>
 
-                                <p:outputPanel >
-                                <p:autoUpdate/>
-                                <p:commandButton value="Compensar"  oncomplete="PF('dlgcompreceb').show()" style="width:100px" 
-                                	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
+									<h:column style="text-align: center;" headerText="Status">
+
+										<h:outputText value="#{w.status}" />
+
+									</h:column>
+
+									<h:column style="text-align: center;" headerText="Num. Cheque">
+
+										<h:outputText value="#{w.numcheque}" />
+
+									</h:column>
+
+									<h:column style="text-align: center;" headerText="Valor">
+
+										<h:outputText value="#{w.valor}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+
+									</h:column>
+
+									<h:column style="text-align: center;" headerText="Emissão">
+
+										<h:outputText value="#{w.dtemissao}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+
+									</h:column>
+
+									<h:column style="text-align: center;" headerText="Vencimento">
+
+										<h:outputText value="#{w.dtvencimento}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+
+									</h:column>
+
+
+
+									<h:column style="text-align: center;"
+										headerText="Data Compensação">
+
+										<h:outputText value="#{w.dtcompensado}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+
+									</h:column>
+
+								</p:dataTable>
+							</p:outputPanel>
+
+							<p:outputPanel>
+								<p:autoUpdate />
+								<p:commandButton value="Compensar"
+									oncomplete="PF('dlgcompreceb').show()" style="width:100px"
+									disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
                                 			or tesourariaController.rowChequeRecebido.status == 'CA'
                                 			or tesourariaController.rowChequeRecebido.status == 'DV'
                                             or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />
-                                            
- <p:commandButton value="Depositar"  oncomplete="PF('dlgdeposreceb').show()" style="width:100px" 
-                                	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
+
+								<p:commandButton value="Depositar"
+									oncomplete="PF('dlgdeposreceb').show()" style="width:100px"
+									disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
                                 			or tesourariaController.rowChequeRecebido.status != 'PE'
-                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" /> 
-                                            
-			 <p:commandButton value="Devolvido"  oncomplete="PF('dlgdevolreceb').show()" style="width:100px" 
-                                	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
+                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />
+
+								<p:commandButton value="Devolvido"
+									oncomplete="PF('dlgdevolreceb').show()" style="width:100px"
+									disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
                                 			or tesourariaController.rowChequeRecebido.status == 'DV'
 
-                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" /> 
-                                            
-                                        
-                                            
-<p:commandButton value="Reapresentar"  oncomplete="PF('dlgreapreceb').show()" style="width:100px" 
-                                	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
+                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />
+
+
+
+								<p:commandButton value="Reapresentar"
+									oncomplete="PF('dlgreapreceb').show()" style="width:100px"
+									disabled="#{tesourariaController.idSelecionadoChequeReceb == 0 or tesourariaController.rowChequeRecebido.compensado == 'S' 
                                 			or tesourariaController.rowChequeRecebido.status == 'CA'
                                 			or tesourariaController.rowChequeRecebido.status == 'RP'
-                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />                                             
-                                
-                                <p:commandButton value="Cancelar" style="margin-left:10px;width:100px" 
-                                	disabled="#{tesourariaController.idSelecionadoChequeReceb == 0
+                                            or MBUsuarios.verificarPermComp('FC-58', MBUsuarios.sistemaLogado.id) == false}" />
+
+								<p:commandButton value="Cancelar"
+									style="margin-left:10px;width:100px"
+									disabled="#{tesourariaController.idSelecionadoChequeReceb == 0
                                 	or tesourariaController.rowChequeRecebido.compensado == 'S'
-                                	or tesourariaController.rowChequeRecebido.status == 'CA'}" 
-                                	onclick="PF('dlgConfExc').show()"/>
-                                	</p:outputPanel>
-			
-                                <br/>
-                            </p:tab>
+                                	or tesourariaController.rowChequeRecebido.status == 'CA'}"
+									onclick="PF('dlgConfExc').show()" />
+							</p:outputPanel>
+
+							<br />
+						</p:tab>
 
 
-                        </p:tabView>
+					</p:tabView>
 
-                        <p:outputPanel >
-                        <p:autoUpdate/>
-                            <div style="background-color:snow;width:100%;height:275px;margin-top:0px">
-                                <div style="background-color:snow;width:15%;float:left;margin-top:0px">
-                                    <center>
-                                        <p:commandButton label="Emitir Cheque" value="Emitir Cheque" style="width:120px;margin-top:10px"
-                                         rendered="#{tesourariaController.banco.contaCaixa == 'N'}" onclick="PF('dlgchqemi').show()"
-                                         actionListener="#{tesourariaController.setarCheque()}" process="@this" 
-                                         disabled="#{MBUsuarios.verificarPermComp('FC-59', MBUsuarios.sistemaLogado.id) == false}">
-                                        </p:commandButton>
-                                        
-                                       
-                                        <p:commandButton label="Débito em Conta" value="Débito em Conta" style="width:120px;margin-top:10px"
-                                        rendered="#{tesourariaController.banco.contaCaixa == 'N'}" onclick="PF('dlgchqemi').show();" 
-                                        actionListener="#{tesourariaController.setarDebito()}" process="@this" 
-                                        disabled="#{MBUsuarios.verificarPermComp('FC-60', MBUsuarios.sistemaLogado.id) == false}" />
-                                        
-                                     
-                                        
-                                        <p:commandButton label="Pagamento" value="Pagamento" style="width:120px;margin-top:10px"
-                                        rendered="#{tesourariaController.banco.contaCaixa == 'S'}" onclick="PF('dlgchqemi').show();" 
-                                         actionListener="#{tesourariaController.setarDebito()}" process="@this" 
-                                         disabled="#{MBUsuarios.verificarPermComp('FC-61', MBUsuarios.sistemaLogado.id) == false}"/> 
-                                       
-                                        
-                                       
-                                        <p:commandButton label="Gravar Lançamento" value="Gravar Lançamento" 
-                                        rendered="#{tesourariaController.banco.id != null}"
-                                        actionListener="#{tesourariaController.novoLancamento}" style="width:120px;margin-top:10px" onclick="PF('dlglancto').show()" 
-                                        disabled="#{MBUsuarios.verificarPermComp('FC-62', MBUsuarios.sistemaLogado.id) == false}">
+					<p:outputPanel>
+						<p:autoUpdate />
+						<div
+							style="background-color: snow; width: 100%; height: 275px; margin-top: 0px">
+							<div
+								style="background-color: snow; width: 15%; float: left; margin-top: 0px">
+								<center>
+									<p:commandButton label="Emitir Cheque" value="Emitir Cheque"
+										style="width:120px;margin-top:10px"
+										rendered="#{tesourariaController.banco.contaCaixa == 'N'}"
+										onclick="PF('dlgchqemi').show()"
+										actionListener="#{tesourariaController.setarCheque()}"
+										process="@this"
+										disabled="#{MBUsuarios.verificarPermComp('FC-59', MBUsuarios.sistemaLogado.id) == false}">
+									</p:commandButton>
 
-                                        </p:commandButton>
-                                       
-                                        <p:commandButton label="Gravar Acerto" style="width:120px;margin-top:10px" 
-                                        rendered="#{tesourariaController.banco.id != null}" 
-                                        actionListener="#{tesourariaController.listaMovimentacaoCaixa}"                                       
-                                         action="#{tesourariaController.limparAcerto}"
-                                        value="Gravar Acerto" onclick="PF('dlgacerto').show()"
-                                        disabled="#{MBUsuarios.verificarPermComp('FC-63', MBUsuarios.sistemaLogado.id) == false}">
 
-                                        </p:commandButton>
-                                    </center>
-                                </div>
-                                
-                                <div style="background-color: snow;width:85%;float:right;margin-top:0px;height:142px">
-                                <p:outputPanel  rendered="#{tesourariaController.banco.id>0}">
-                                <p:autoUpdate/>
-                              		<p:panelGrid columns="2">
-                              		<p:panelGrid columns="2">
-                              		<h:outputText value="Conta:"  style="font-size:16px;font-weight:bold"/>
-                                    <h:outputText value="#{tesourariaController.banco.banco}"  style="font-size:16px;font-weight:bold"/>
-                                    
-                                    
-                                    <h:outputText value="Saldo Anterior:"  style="font-size:16px;font-weight:bold">										
-                                    </h:outputText>
-                                    <h:outputText value="#{tesourariaController.saldoinicial}"  style="font-size:16px;font-weight:bold">
-										<f:convertNumber type="currency" currencySymbol="R$ "/>
-                                    </h:outputText>
-                                    
-                                    <h:outputText value="Créditos:"  style="font-size:16px;font-weight:bold">                                    	
-                                    </h:outputText>
-                                    <h:outputText value="#{tesourariaController.creditos}"  style="font-size:16px;font-weight:bold">
-                                    	<f:convertNumber type="currency" currencySymbol="R$ "/>
-                                    </h:outputText>
-                                    
-                                    <h:outputText value="Débitos:" style="font-size:16px;font-weight:bold">
-                                    </h:outputText>
-                                    <h:outputText value="#{tesourariaController.debitos}" style="font-size:16px;font-weight:bold">
-                                    	<f:convertNumber type="currency" currencySymbol="R$ "/>
-                                    </h:outputText>
-                                    
-                                    <h:outputText value="SALDO ATUAL:" style="font-size:16px;font-weight:bold">
-                                    </h:outputText>
-                                    <h:outputText value="#{tesourariaController.saldohoje}" style="font-size:16px;font-weight:bold">
-                                    	<f:convertNumber type="currency" currencySymbol="R$ " maxFractionDigits="2"/>
-                                    </h:outputText>
-                             		</p:panelGrid>
-                             		
-                             		<p:panelGrid columns="2">
-                             		<h:outputText value="Cheques do Dia:"  style="font-size:16px;font-weight:bold"/>
-                                    <h:outputText value="#{tesourariaController.banco.banco}"  style="font-size:16px;font-weight:bold"/>
-                                    
-                                    <h:outputText value="Cheques a prazo:"  style="font-size:16px;font-weight:bold"/>
-                                    <h:outputText value="#{tesourariaController.banco.banco}"  style="font-size:16px;font-weight:bold"/>
-                                    
-                                    <h:outputText value="Cheques a compensar:"  style="font-size:16px;font-weight:bold"/>
-                                    <h:outputText value="#{tesourariaController.banco.banco}"  style="font-size:16px;font-weight:bold"/>
-                             		</p:panelGrid>
-                             		</p:panelGrid>
-</p:outputPanel>
-                                </div>
+									<p:commandButton label="Débito em Conta"
+										value="Débito em Conta" style="width:120px;margin-top:10px"
+										rendered="#{tesourariaController.banco.contaCaixa == 'N'}"
+										onclick="PF('dlgchqemi').show();"
+										actionListener="#{tesourariaController.setarDebito()}"
+										process="@this"
+										disabled="#{MBUsuarios.verificarPermComp('FC-60', MBUsuarios.sistemaLogado.id) == false}" />
 
 
 
+									<p:commandButton label="Pagamento" value="Pagamento"
+										style="width:120px;margin-top:10px"
+										rendered="#{tesourariaController.banco.contaCaixa == 'S'}"
+										onclick="PF('dlgchqemi').show();"
+										actionListener="#{tesourariaController.setarDebito()}"
+										process="@this"
+										disabled="#{MBUsuarios.verificarPermComp('FC-61', MBUsuarios.sistemaLogado.id) == false}" />
 
-                            </div>
 
 
-                        </p:outputPanel>
+									<p:commandButton label="Gravar Lançamento"
+										value="Gravar Lançamento"
+										rendered="#{tesourariaController.banco.id != null}"
+										actionListener="#{tesourariaController.novoLancamento}"
+										style="width:120px;margin-top:10px"
+										onclick="PF('dlglancto').show()"
+										disabled="#{MBUsuarios.verificarPermComp('FC-62', MBUsuarios.sistemaLogado.id) == false}">
 
-                    </h:form>
+									</p:commandButton>
 
-                </p:layoutUnit>
-            </p:layout>
-            <p:dialog responsive="true"    widgetVar="dlgabrecaixa" header="Abrir Caixa" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmabrecaixa">
-                    <h:outputText value="Deseja abrir o Caixa?" />
-                    <br/>
-                    <br/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.abreCaixa}" update=":grwgeral :outcaixa :frmbanco:tabela" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgabrecaixa').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>
-            
+									<p:commandButton label="Gravar Acerto"
+										style="width:120px;margin-top:10px"
+										rendered="#{tesourariaController.banco.id != null}"
+										actionListener="#{tesourariaController.listaMovimentacaoCaixa}"
+										action="#{tesourariaController.limparAcerto}"
+										value="Gravar Acerto" onclick="PF('dlgacerto').show()"
+										disabled="#{MBUsuarios.verificarPermComp('FC-63', MBUsuarios.sistemaLogado.id) == false}">
 
-            <p:dialog responsive="true"    widgetVar="dlgfechacaixa" header="Fechar Caixa" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmfechacaixa">
-                    <h:outputText value="Deseja fechar o Caixa?" />
-                    <br/>
-                    <br/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.fechaCaixa}" update=":grwgeral :outcaixa :frmbanco:tabela"  />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgabrecaixa').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>
-            
-            <p:dialog responsive="true"    widgetVar="dlgConfExc" header="Cancelamento de Cheque" resizable="false" modal="true"
-            	height="100px" width="250px">
-            	<h:form id="formCancelaCheque">
-            		<p:outputLabel value="Deseja realmente cancelar este cheque?"/>
-            		<center>
-	            		<p:panelGrid styleClass="semBorda" columns="2">
-	            			<p:commandButton value="Sim" action="#{tesourariaController.cancelarCheque}" 
-	            				update=":grwgeral, :frmmov:tabmov:tabelaMov, :frmmov:tabmov:tabComp"/>
-	           				<p:commandButton value="Não" onclick="PF('dlgConfExc').hide()"/>
-	            		</p:panelGrid>
-            		</center>
-            	</h:form>
-            	
-                                	
-            </p:dialog>
+									</p:commandButton>
+								</center>
+							</div>
 
-            <p:dialog responsive="true"    widgetVar="dlgchqemi" header="Dados do Cheque Emitido" resizable="false"
-                      height="400px" width="800px" modal="true">
-                <h:form id="frmemitechq">
-                    <p:outputPanel  >
-                    <p:autoUpdate/>
-                        <p:panelGrid style="width:400px; border:none !important" styleClass="semBorda" >
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Banco: #{tesourariaController.banco.descricao} " />
-                                </p:column>
-                            </p:row>
-                            </p:panelGrid>
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                    <h:outputText value="Emissão:" />
-                                    <p:calendar value="#{tesourariaController.cheque.dtemissao}" required="true"
-                                    requiredMessage="Informe a data de emissão." showOn="button" pattern="dd/MM/yyyy" locale="pt"/>
-                               
-                                    <h:outputText value="Nominal:" rendered="#{tesourariaController.tipoDocumento == 'CP'}"/>
-                                    <p:inputText value="#{tesourariaController.cheque.nominal}" rendered="#{tesourariaController.tipoDocumento == 'CP'}"/>
-                            
-                                    <h:outputText value="Número Cheque:" rendered="#{tesourariaController.tipoDocumento == 'CP'}" />
-                                    <h:outputText value="Processo:" rendered="#{tesourariaController.tipoDocumento == 'CC' and tesourariaController.operacao != 1}" />
-                                   	<h:outputText value="Processo:"  
-                                    rendered="#{tesourariaController.operacao == 1}" />
-                                    <h:outputText value="#{tesourariaController.sequenciaCheque}" rendered="#{tesourariaController.operacao == 1}"/> 
-                                    <p:inputText value="#{tesourariaController.cheque.numcheque}" maxlength="15" 
-                                    rendered="#{tesourariaController.banco.contaCaixa == 'N'}" required="true"
-                                    requiredMessage="Informe o número do Cheque/Processo"/>
-                                    <h:outputText value="Vencimento:" />
-                                    <p:calendar value="#{tesourariaController.cheque.dtvencimento}" pattern="dd/MM/yyyy"
-                                    rendered="#{tesourariaController.banco.contaCaixa == 'N' and tesourariaController.tipoDocumento == 'CP'}" required="true"
-                                    requiredMessage="Informe a data de vencimento." showOn="button" locale="pt"/>
-                                     <h:outputText value="#{tesourariaController.cheque.dtvencimento}" rendered="#{tesourariaController.operacao == 1 or tesourariaController.tipoDocumento == 'CC'}">
-									<f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime> 
+							<div
+								style="background-color: snow; width: 85%; float: right; margin-top: 0px; height: 142px">
+								<p:outputPanel rendered="#{tesourariaController.banco.id>0}">
+									<p:autoUpdate />
+									<p:panelGrid columns="2">
+										<p:panelGrid columns="2">
+											<h:outputText value="Conta:"
+												style="font-size:16px;font-weight:bold" />
+											<h:outputText value="#{tesourariaController.banco.banco}"
+												style="font-size:16px;font-weight:bold" />
+
+
+											<h:outputText value="Saldo Anterior:"
+												style="font-size:16px;font-weight:bold">
+											</h:outputText>
+											<h:outputText value="#{tesourariaController.saldoinicial}"
+												style="font-size:16px;font-weight:bold">
+												<f:convertNumber type="currency" currencySymbol="R$ " />
+											</h:outputText>
+
+											<h:outputText value="Créditos:"
+												style="font-size:16px;font-weight:bold">
+											</h:outputText>
+											<h:outputText value="#{tesourariaController.creditos}"
+												style="font-size:16px;font-weight:bold">
+												<f:convertNumber type="currency" currencySymbol="R$ " />
+											</h:outputText>
+
+											<h:outputText value="Débitos:"
+												style="font-size:16px;font-weight:bold">
+											</h:outputText>
+											<h:outputText value="#{tesourariaController.debitos}"
+												style="font-size:16px;font-weight:bold">
+												<f:convertNumber type="currency" currencySymbol="R$ " />
+											</h:outputText>
+
+											<h:outputText value="SALDO ATUAL:"
+												style="font-size:16px;font-weight:bold">
+											</h:outputText>
+											<h:outputText value="#{tesourariaController.saldohoje}"
+												style="font-size:16px;font-weight:bold">
+												<f:convertNumber type="currency" currencySymbol="R$ "
+													maxFractionDigits="2" />
+											</h:outputText>
+										</p:panelGrid>
+
+										<p:panelGrid columns="2">
+											<h:outputText value="Cheques do Dia:"
+												style="font-size:16px;font-weight:bold" />
+											<h:outputText value="#{tesourariaController.banco.banco}"
+												style="font-size:16px;font-weight:bold" />
+
+											<h:outputText value="Cheques a prazo:"
+												style="font-size:16px;font-weight:bold" />
+											<h:outputText value="#{tesourariaController.banco.banco}"
+												style="font-size:16px;font-weight:bold" />
+
+											<h:outputText value="Cheques a compensar:"
+												style="font-size:16px;font-weight:bold" />
+											<h:outputText value="#{tesourariaController.banco.banco}"
+												style="font-size:16px;font-weight:bold" />
+										</p:panelGrid>
+									</p:panelGrid>
+								</p:outputPanel>
+							</div>
+
+
+
+
+						</div>
+
+
+					</p:outputPanel>
+
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+		<p:dialog responsive="true" widgetVar="dlgabrecaixa"
+			header="Abrir Caixa" resizable="false" height="100px" width="250px"
+			modal="true">
+			<h:form id="frmabrecaixa">
+				<h:outputText value="Deseja abrir o Caixa?" />
+				<br />
+				<br />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.abreCaixa}"
+						update=":grwgeral :outcaixa :frmbanco:tabela" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgabrecaixa').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgfechacaixa"
+			header="Fechar Caixa" resizable="false" height="100px" width="250px"
+			modal="true">
+			<h:form id="frmfechacaixa">
+				<h:outputText value="Deseja fechar o Caixa?" />
+				<br />
+				<br />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.fechaCaixa}"
+						update=":grwgeral :outcaixa :frmbanco:tabela" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgabrecaixa').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgConfExc"
+			header="Cancelamento de Cheque" resizable="false" modal="true"
+			height="100px" width="250px">
+			<h:form id="formCancelaCheque">
+				<p:outputLabel value="Deseja realmente cancelar este cheque?" />
+				<center>
+					<p:panelGrid styleClass="semBorda" columns="2">
+						<p:commandButton value="Sim"
+							action="#{tesourariaController.cancelarCheque}"
+							update=":grwgeral, :frmmov:tabmov:tabelaMov, :frmmov:tabmov:tabComp" />
+						<p:commandButton value="Não" onclick="PF('dlgConfExc').hide()" />
+					</p:panelGrid>
+				</center>
+			</h:form>
+
+
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgchqemi"
+			header="Dados do Cheque Emitido" resizable="false" height="400px"
+			width="800px" modal="true">
+			<h:form id="frmemitechq">
+				<p:outputPanel>
+					<p:autoUpdate />
+					<p:panelGrid style="width:400px; border:none !important"
+						styleClass="semBorda">
+						<p:row>
+							<p:column>
+								<h:outputText
+									value="Banco: #{tesourariaController.banco.descricao} " />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<h:outputText value="Emissão:" />
+						<p:calendar value="#{tesourariaController.cheque.dtemissao}"
+							required="true" requiredMessage="Informe a data de emissão."
+							showOn="button" pattern="dd/MM/yyyy" locale="pt" />
+
+						<h:outputText value="Nominal:"
+							rendered="#{tesourariaController.tipoDocumento == 'CP'}" />
+						<p:inputText value="#{tesourariaController.cheque.nominal}"
+							rendered="#{tesourariaController.tipoDocumento == 'CP'}" />
+
+						<h:outputText value="Número Cheque:"
+							rendered="#{tesourariaController.tipoDocumento == 'CP'}" />
+						<h:outputText value="Processo:"
+							rendered="#{tesourariaController.tipoDocumento == 'CC' and tesourariaController.operacao != 1}" />
+						<h:outputText value="Processo:"
+							rendered="#{tesourariaController.operacao == 1}" />
+						<h:outputText value="#{tesourariaController.sequenciaCheque}"
+							rendered="#{tesourariaController.operacao == 1}" />
+						<p:inputText value="#{tesourariaController.cheque.numcheque}"
+							maxlength="15"
+							rendered="#{tesourariaController.banco.contaCaixa == 'N'}"
+							required="true"
+							requiredMessage="Informe o número do Cheque/Processo" />
+						<h:outputText value="Vencimento:" />
+						<p:calendar value="#{tesourariaController.cheque.dtvencimento}"
+							pattern="dd/MM/yyyy"
+							rendered="#{tesourariaController.banco.contaCaixa == 'N' and tesourariaController.tipoDocumento == 'CP'}"
+							required="true" requiredMessage="Informe a data de vencimento."
+							showOn="button" locale="pt" />
+						<h:outputText value="#{tesourariaController.cheque.dtvencimento}"
+							rendered="#{tesourariaController.operacao == 1 or tesourariaController.tipoDocumento == 'CC'}">
+							<f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+						</h:outputText>
+
+						<p:commandButton icon="ui-icon-plus" value="Compensação de Título"
+							process="@this"
+							actionListener="#{tesourariaController.pesquisaTitulosAberto()}"
+							oncomplete="PF('dlgbuscatit').show()"
+							update=":frmbuscatit:tabelaTodosAbertos" />
+
+					</p:panelGrid>
+					<center>
+						<h:outputText value="Títulos Selecionados" />
+					</center>
+					<p:outputPanel>
+						<p:autoUpdate />
+						<p:dataTable emptyMessage="Nenhum Título" style="font-size: 11px;"
+							value="#{tesourariaController.listatitulosbaixar}" var="tit"
+							id="tabtit" paginator="true" rows="5" paginatorPosition="bottom"
+							paginatorAlwaysVisible="true">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;width:10px" value="Código" />
+								</f:facet>
+								<h:outputText value="#{tit.codigo}"></h:outputText>
+							</p:column>
+							<p:column headerText="Vencimento">
+								<h:outputText value="#{tit.dtvcto}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
-								
-								<p:commandButton icon="ui-icon-plus" value="Compensação de Título" process="@this"  actionListener="#{tesourariaController.pesquisaTitulosAberto()}" oncomplete="PF('dlgbuscatit').show()"
-									update=":frmbuscatit:tabelaTodosAbertos"/>
-                           
-                        </p:panelGrid>
-                        <center><h:outputText value="Títulos Selecionados"/></center>
-                        <p:outputPanel >
-                        <p:autoUpdate/>
-                        <p:dataTable emptyMessage="Nenhum Título" style="font-size: 11px;" 
-                                     value="#{tesourariaController.listatitulosbaixar}"
-                                     var="tit" id="tabtit" paginator="true" rows="5" 
-                                     paginatorPosition="bottom"  paginatorAlwaysVisible="true">
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;width:10px" value="Código" />
-                                </f:facet>
-                                <h:outputText value="#{tit.codigo}"></h:outputText>
-                            </p:column>
-                            <p:column headerText="Vencimento">
-                                <h:outputText value="#{tit.dtvcto}" >                    
-                                	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Documento" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.duplicata}">
-                                </h:outputText>
-                            </p:column>
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Parcela" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.parcela}">
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Valor"/>
-
-                                </f:facet>
-								
-                                <h:outputText value="#{tit.titulobaixa.valorpago}">
-                                <f:convertNumber type="currency"/>
-                                </h:outputText>
-                            </p:column>
-
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Previsão" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.dtprevisao}">
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Emissão" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.dtemissao}">                                
-                                   	<f:convertDateTime pattern="dd/MM/yyyy"/>                                            
-                                </h:outputText>
-                            </p:column>					
-                            <p:column style="margin: 0 -10 0 -10 !important;">
-                                <center>
-                                    <f:facet name="header">
-                                        <h:outputText style="font-size: 11px; text-align: center; "
-                                                      value="Ação" />
-                                    </f:facet>
-                                </center>
-
-                                <center>
-                                    
-                                    
-                                    <p:commandButton style="font-size: 11px;" value="Remover" 
-                                     actionListener="#{tesourariaController.removerTitulo()}"
-                                     update="frmemitechq:tabtit"
-                                     icon="fa fa-fw fa-check" process="@this">
-                                    <f:setPropertyActionListener value="#{tit}"
-                                       target="#{tesourariaController.tituloselecionado}" />                                    
-                                    </p:commandButton>
-                                    
-
-                                </center>
-
-                            </p:column>
-
-                        </p:dataTable>
-                        </p:outputPanel>
-
-                        <center>
-                            <p:commandButton icon="fa fa-fw fa-check" value="Confirmar" style="margin-left:10px"
-                                             action="#{tesourariaController.compensaTitulosPagar()}" update=":grwgeral, :frmbanco:tabela, :frmmov:tabmov:tabelaMov"
-                                              />
-                                             <p:commandButton icon="ui-icon-close" value="Desistir" style="margin-left:10px"
-                                             onclick="PF('dlgchqemi').hide()"/>
-                        </center>
-                    </p:outputPanel>
-                </h:form>
-            </p:dialog>		
-
-
-
-
-            <p:dialog responsive="true"    id="dlgtit" widgetVar="dlgbuscatit" modal="true" resizable="false"
-                      height="370" width="780">
-
-                <f:facet name="header">
-                    <h:outputText value="Pesquisa títulos" />
-                </f:facet>
-                <h:form id="frmbuscatit">
-                    <p:outputPanel id="outtit" >
-                    <p:autoUpdate/>
-                        <p:panelGrid style="padding:0px !important">
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Fornecedor"></h:outputText>	
-                                </p:column>
-
-                            </p:row>
-
-                            <p:row>
-                                <p:column>
-
-                                    <p:commandButton icon="ui-icon-search" process="@this"
-                                                     style="margin-right:3px;" update=":frmforn:outforn"
-                                                     onclick="PF('dlgbuscaforn').show();"></p:commandButton>
-
-                                    <p:inputText size="30" onclick="PF('dlgbuscaforn').show();"
-                                                 value="#{tesourariaController.forn.nome}" 
-                                                 ></p:inputText>
-                                </p:column>
-
-                              
-                               
-                            
-
- 
-                                <p:column>
-                            <p:panelGrid columns="5" >
-						<h:outputText value="Periodo:" style="font-weight:bold;" />
-						<p:calendar id="perini"
-							value="#{tesourariaController.periodoInicial}" size="8"
-							pattern="dd/MM/yyyy" showOn="button" />
-						<h:outputText value="a" style="margin-left: 5px" />
-						<p:calendar id="perfim"
-							value="#{tesourariaController.periodoFinal}"
-							style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
-							showOn="button" />
-							<p:commandButton icon="ui-icon-plus" value="Buscar" process="@this perini perfim"  actionListener="#{tesourariaController.pesquisaTitulosAberto()}" 
-									update=":frmbuscatit"/>
-					 </p:panelGrid>
-					 
-					
-					 </p:column>
-					  </p:row>
-                        </p:panelGrid>
-                        
-                       <p:dataTable emptyMessage="Nenhum Título" style="font-size: 11px;" 
-                            value="#{tesourariaController.listaTitulosAberto()}"
-                            var="tit" id="tabelaTodosAbertos" paginator="true"
-                            paginatorPosition="bottom" rows="5" paginatorAlwaysVisible="true">
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;width:5px" value="Código" />
-                                </f:facet>
-                                <h:outputText value="#{tit.codigo}"></h:outputText>
-                            </p:column>
-                            <p:column headerText="Vencimento">
-                                <h:outputText value="#{tit.dtvcto}" >                                
-                                	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Documento" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.duplicata}">
-                                </h:outputText>
-                            </p:column>
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Parcela" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.parcela}">
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Valor" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.valor}">
-                                <f:convertNumber type="currency" currencySymbol="R$"/>
-                                </h:outputText>
-                            </p:column>
-
-                         	
-                         	  <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Valor em Aberto" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.valoraberto}">
-                                <f:convertNumber type="currency" currencySymbol="R$"/>
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Previsão" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.dtprevisao}">
-                                  	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 11px;" value="Emissão" />
-                                </f:facet>
-
-                                <h:outputText value="#{tit.dtemissao}">
-                                	<f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </h:outputText>
-                            </p:column>				
-                            <p:column >
-                               
-                                    <f:facet name="header">
-                                        <h:outputText style="font-size: 11px; text-align: center; "
-                                                      value="Ação" />
-                                    </f:facet>
-                              
-                                <center> 
-                                    <p:commandButton style="font-size: 11px;" value="Confirma"
-                                          oncomplete="PF('dlgbuscatit').hide();PF('dlgliqtitchq').show()" 
-                                          
-                                          process="@this"
-                                          update=":frmtitchq:outtit" icon="fa fa-fw fa-check" >
-
-	                                     <f:setPropertyActionListener value="#{tit}" 
-	                                     	target="#{tesourariaController.tituloselecionado}" />
-                                    </p:commandButton>
-                                </center>
-                            </p:column>
-                        </p:dataTable>
-                    </p:outputPanel>
-
-
-
-                    <br />
-
-                </h:form>
-            </p:dialog>
-
-
-            <p:dialog responsive="true"    id="dlgforn" widgetVar="dlgbuscaforn" modal="true" resizable="false"
-                      height="370" width="750">
-
-                <f:facet name="header">
-                    <h:outputText value="Pesquisa Fornecedores" />
-                </f:facet>
-                <h:form id="frmforn">
-
-                    <p:panelGrid columns="5" styleClass="semBorda">
-                        <h:outputText style="font-size: 14px;" value="Nome " />
-                        <p:inputText style="width: 250px; font-size: 14px;" size="30"
-                                     id="searchnome" value="#{fornecedorControllerFin.func.nome}" />
-                        <h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
-                        <p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
-                                     id="searchcnpj" value="#{fornecedorControllerFin.func.cnpj}" />
-
-                        <p:commandButton style="font-size: 14px" icon="ui-icon-search"
-                                         action="#{fornecedorControllerFin.buscarFornecedores()}" update="outforn">
-
-                        </p:commandButton>
-                    </p:panelGrid>
-                    <p:outputPanel id="outforn">
-
-                        <b:dataTable emptyMessage="Nenhum Fornecedor" style="font-size: 12px; "
-                                     paginatorPosition="bottom" value="#{fornecedorControllerFin.listafornecedores}"
-                                     var="forn" paginator="true" rows="7">
-                            <h:column width="40">
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 14px;" value="Código" />
-                                </f:facet>
-                                <h:outputText value="#{forn.codforn}"></h:outputText>
-                            </h:column>
-                            <h:column width="200">
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 14px;" value="Nome" />
-                                </f:facet>
-
-                                <h:outputText value="#{forn.nome}">
-                                </h:outputText>
-                            </h:column>
-                            <h:column width="200">
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 14px;" value="Fantasia" />
-                                </f:facet>
-
-                                <h:outputText value="#{forn.fantasia}">
-                                </h:outputText>
-                            </h:column>
-                            <h:column width="80" style="text-align:center;">
-                                <f:facet name="header">
-                                    <h:outputText style="font-size: 14px;" value="CNPJ" />
-                                </f:facet>
-                                <h:outputText value="#{forn.cnpj}">
-                                </h:outputText>
-                            </h:column>
-
-                            <h:column width="90" style="margin: 0 -10 0 -10 !important;">
-                                <center>
-                                    <f:facet name="header">
-                                        <h:outputText style="font-size: 14px; text-align: center; "
-                                                      value="Ação" />
-                                    </f:facet>
-                                </center>
-
-                                <center>
-                                    <p:commandButton style="font-size: 12px;"
-                                                     value="Confirmar"
-                                                     oncomplete="PF('dlgbuscaforn').hide();"  update=":frmbuscatit:outtit" icon="fa fa-fw fa-check">
-
-                                        <f:setPropertyActionListener value="#{forn}"
-                                                                     target="#{tesourariaController.forn}"></f:setPropertyActionListener>
-
-                                    </p:commandButton>
-
-                                </center>
-
-                            </h:column>
-
-                        </b:dataTable>
-
-
-                    </p:outputPanel>
-
-
-
-                    <br />
-
-                </h:form>
-            </p:dialog>
-
-
-
-            <p:dialog responsive="true"    id="liqtitchq" widgetVar="dlgliqtitchq" modal="true" resizable="false"
-                      height="370" width="300">
-
-                <f:facet name="header">
-                    <h:outputText value="Dados do título" />
-                </f:facet>
-                <h:form id="frmtitchq">
-                    <p:outputPanel id="outtit" >
-                    <p:autoUpdate/>
-                        <p:panelGrid styleClass="semBorda">
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Valor em Aberto"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{tesourariaController.tituloselecionado.valoraberto}">
-                                    <f:convertNumber type="currency"/>
-                                    </h:outputText>
-
-                                </p:column>
-
-
-                            </p:row>
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Desconto"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <p:inputText value="#{tesourariaController.tituloselecionado.titulobaixa.vlrdesc}">
-                                        <f:ajax listener="#{tesourariaController.calculasaldoPagar()}" event="blur" global="true" update=":frmbuscatit:outtit" />
-                                    </p:inputText>
-
-                                </p:column>
-
-
-                            </p:row>
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Juros"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <p:inputText value="#{tesourariaController.tituloselecionado.titulobaixa.vlrjuros}">
-                                        <f:ajax listener="#{tesourariaController.calculasaldoPagar()}" event="blur" global="false" update=":frmbuscatit:outtit" />
-                                    </p:inputText>
-
-                                </p:column>
-
-
-                            </p:row>
-
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Multa"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <p:inputText value="#{tesourariaController.tituloselecionado.titulobaixa.vlrmulta}" >
-                                        <f:ajax listener="#{tesourariaController.calculasaldoPagar()}" event="blur" global="false" update=":frmbuscatit:outtit" />
-                                    </p:inputText>
-
-                                </p:column>
-
-
-                            </p:row>
-                            <p:row>
-                                <p:column >
-                                	<h:outputText value="Tipo Baixa" />
-                                </p:column>	
-                                	<p:column>
-
-                                    <p:selectOneMenu value="#{tesourariaController.tituloselecionado.titulobaixa.tpbaixa}" 
-                                                     required="true" requiredMessage="Informe o tipo da baixa.">
-										<f:ajax listener="#{tesourariaController.calcularTotalParcial()}" global="false"/>                                        
-                                        <f:selectItem itemLabel="Total" itemValue="1" /> 
-                                        <f:selectItem itemLabel="Parcial" itemValue="2" />
-                                                                                                                               
-                                    </p:selectOneMenu>
-                                
-                                  
-
-
-
-                                </p:column>
-                            </p:row>
-							
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Valor a Pagar"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{tesourariaController.aPagar}">
-                                    <f:convertNumber type="currency"/>
-									</h:outputText>
-                                </p:column>
-
-
-                            </p:row>	
-
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Valor Pago"></h:outputText>	
-                                </p:column>
-                                <p:column>
-                                    <p:inputText value="#{tesourariaController.tituloselecionado.titulobaixa.valorpago}"
-                                    readonly="#{tesourariaController.totalDisable}" >
-                                    
-                                    </p:inputText>
-									
-                                </p:column>
-
-
-                            </p:row>	
-
-
-                        </p:panelGrid>
-						
-						<center>
-	                        <p:commandButton style="font-size: 11px;"
-	                          value="Selecionar"
-	                          action="#{tesourariaController.addTituloBaixar()}"
-	                          update=":frmtitchq:outtit, grwgeral" icon="fa fa-fw fa-check" />
-	                          
-	                           <p:commandButton style="font-size: 11px;"
-	                      	    value="Cancelar" icon="ui-icon-close" onclick="PF('dlgliqtitchq').hide();"
-	                      	    actionListener="#{tesourariaController.limparDadosTit()}"
-	                      	     update=":frmtitchq:outtit, grwgeral"
-	                      	     process="@this"/>
-                        </center>
-            
-                    </p:outputPanel>
-
-
-
-                    <br />
-
-                </h:form>
-            </p:dialog>
-
-
-
-
-
-            <p:dialog responsive="true"    widgetVar="dlgcomp" header="Compensar Cheque" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmcompchq">
-                    <h:outputText value="Deseja compensar o Cheque?" />
-                    <br/>
-                    <br/>
-                    <h:outputText value="Data Compensação:"/>
-                    <p:calendar value="#{tesourariaController.rowCheque.dtcompensado}" pattern="dd/MM/yyyy" locale="pt" showOn="button"/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.compensaChq}" update=":grwgeral, :frmmov:tabmov:tabComp" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgcomp').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>
-            
-<p:dialog responsive="true"    widgetVar="dlgcompreceb" header="Compensar Cheque recebido" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmcompchqreceb">
-                    <h:outputText value="Deseja compensar o Cheque recebido?" />
-                    <br/>
-                    <br/>
-                    <h:outputText value="Data Compensação:"/>
-                    <p:calendar value="#{tesourariaController.rowChequeRecebido.dtcompensado}" pattern="dd/MM/yyyy" locale="pt" showOn="button"/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.compensaChqRecebido}" update=":grwgeral, :frmmov:tabmov:tabComp" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgcompreceb').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>            
-
-
-<p:dialog responsive="true"    widgetVar="dlgdeposreceb" header="Depositar Cheque recebido" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmdeposchqreceb">
-                    <h:outputText value="Deseja depositar o Cheque recebido?" />
-                    <br/>
-                    <br/>
-                    <h:outputText value="Data Depósito:"/>
-                    <p:calendar value="#{tesourariaController.rowChequeRecebido.dtdeposito}" pattern="dd/MM/yyyy" locale="pt" showOn="button"/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.depositaChqRecebido}" update=":grwgeral, :frmmov:tabmov:tabComp" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgdeposreceb').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>  
-            
-            
-<p:dialog responsive="true"    widgetVar="dlgdevolreceb" header="Devolução de Cheque recebido" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmdevolchqreceb">
-                    <h:outputText value="Deseja confirmar a devolução de Cheque recebido?" />
-                    <br/>
-                    <br/>
-                    <h:outputText value="Data Devolução"/>
-                    <p:calendar value="#{tesourariaController.rowChequeRecebido.dtdevolucao}" pattern="dd/MM/yyyy" locale="pt" showOn="button"/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.devolveChqRecebido}" update=":grwgeral, :frmmov:tabmov:tabComp" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgdevolreceb').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>              
-
-
-<p:dialog responsive="true"    widgetVar="dlgreapreceb" header="Reapresentar Cheque recebido" resizable="false"
-                      height="100px" width="250px" modal="true">
-                <h:form id="frmreapchqreceb">
-                    <h:outputText value="Deseja reapresentar o Cheque recebido?" />
-                    <br/>
-                    <br/>
-                    <h:outputText value="Data Reapresentação"/>
-                    <p:calendar value="#{tesourariaController.rowChequeRecebido.dtreapresentacao}" pattern="dd/MM/yyyy" locale="pt" showOn="button"/>
-                    <center>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.reapresentaChqRecebido}" update=":grwgeral, :frmmov:tabmov:tabComp" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgreapreceb').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>   
-
-            <p:dialog responsive="true"    widgetVar="dlglancto" header="Lançamento" resizable="false"
-                      height="300px" width="450px" modal="true">
-                <h:form id="frmlancto">
-
-                    <br/>
-                    <br/>
-                    <h:outputText value="Valor:"/>
-                    <p:inputText value="#{tesourariaController.lancamento.valor}"></p:inputText>
-                    <br/>
-                    <p:selectOneRadio style="font-size:10px" label="Operação"  value="#{tesourariaController.lancamento.operacao}">
-                        <f:selectItem itemLabel="Despesa Bancária" itemValue="DESPBANC"  />
-                        <f:selectItem itemLabel="Capital de Giro - Amortização" itemValue="CAPGIRD" />
-                        <f:selectItem itemLabel="Capital de Giro - Crédito" itemValue="CAPGIRC" />
-
-                    </p:selectOneRadio>
-                    <br/>
-                    <h:outputText value="Dados Adicionais"/>
-                    <br/>
-                    <p:inputTextarea value="#{tesourariaController.lancamento.obs}" cols="50"></p:inputTextarea>
-
-                    <center>
-                        <br/>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"
-                                         action="#{tesourariaController.gravaLancamento}" update=":grwgeral" />
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgcomp').hide()" />
-                    </center>
-                </h:form>
-            </p:dialog>
-            
-            
-            <p:dialog responsive="true"    widgetVar="dlgacerto" header="Acerto" resizable="false"
-                      height="350px" width="500px" modal="true">
-                <h:form id="frmacerto">
-					<p:outputPanel >
-					<p:autoUpdate/>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;" value="Documento" />
+								</f:facet>
+
+								<h:outputText value="#{tit.duplicata}">
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;" value="Parcela" />
+								</f:facet>
+
+								<h:outputText value="#{tit.parcela}">
+								</h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;" value="Valor" />
+
+								</f:facet>
+
+								<h:outputText value="#{tit.titulobaixa.valorpago}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;" value="Previsão" />
+								</f:facet>
+
+								<h:outputText value="#{tit.dtprevisao}">
+								</h:outputText>
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText style="font-size: 11px;" value="Emissão" />
+								</f:facet>
+
+								<h:outputText value="#{tit.dtemissao}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column style="margin: 0 -10 0 -10 !important;">
+								<center>
+									<f:facet name="header">
+										<h:outputText style="font-size: 11px; text-align: center; "
+											value="Ação" />
+									</f:facet>
+								</center>
+
+								<center>
+
+
+									<p:commandButton style="font-size: 11px;" value="Remover"
+										actionListener="#{tesourariaController.removerTitulo()}"
+										update="frmemitechq:tabtit" icon="fa fa-fw fa-check"
+										process="@this">
+										<f:setPropertyActionListener value="#{tit}"
+											target="#{tesourariaController.tituloselecionado}" />
+									</p:commandButton>
+
+
+								</center>
+
+							</p:column>
+
+						</p:dataTable>
+					</p:outputPanel>
+
+					<center>
+						<p:commandButton icon="fa fa-fw fa-check" value="Confirmar"
+							style="margin-left:10px"
+							action="#{tesourariaController.compensaTitulosPagar()}"
+							update=":grwgeral, :frmbanco:tabela, :frmmov:tabmov:tabelaMov" />
+						<p:commandButton icon="ui-icon-close" value="Desistir"
+							style="margin-left:10px" onclick="PF('dlgchqemi').hide()" />
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+
+
+		<p:dialog responsive="true" id="dlgtit" widgetVar="dlgbuscatit"
+			modal="true" resizable="false" height="370" width="780">
+
+			<f:facet name="header">
+				<h:outputText value="Pesquisa títulos" />
+			</f:facet>
+			<h:form id="frmbuscatit">
+				<p:outputPanel id="outtit">
+					<p:autoUpdate />
+					<p:panelGrid style="padding:0px !important">
+						<p:row>
+							<p:column>
+								<h:outputText value="Fornecedor"></h:outputText>
+							</p:column>
+
+						</p:row>
+
+						<p:row>
+							<p:column>
+
+								<p:commandButton icon="ui-icon-search" process="@this"
+									style="margin-right:3px;" update=":frmforn:outforn"
+									onclick="PF('dlgbuscaforn').show();"></p:commandButton>
+
+								<p:inputText size="30" onclick="PF('dlgbuscaforn').show();"
+									value="#{tesourariaController.forn.nome}"></p:inputText>
+							</p:column>
+
+
+
+
+
+
+							<p:column>
+								<p:panelGrid columns="5">
+									<h:outputText value="Periodo:" style="font-weight:bold;" />
+									<p:calendar id="perini"
+										value="#{tesourariaController.periodoInicial}" size="8"
+										pattern="dd/MM/yyyy" showOn="button" />
+									<h:outputText value="a" style="margin-left: 5px" />
+									<p:calendar id="perfim"
+										value="#{tesourariaController.periodoFinal}"
+										style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
+										showOn="button" />
+									<p:commandButton icon="ui-icon-plus" value="Buscar"
+										process="@this perini perfim"
+										actionListener="#{tesourariaController.pesquisaTitulosAberto()}"
+										update=":frmbuscatit" />
+								</p:panelGrid>
+
+
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+					<p:dataTable emptyMessage="Nenhum Título" style="font-size: 11px;"
+						value="#{tesourariaController.listaTitulosAberto()}" var="tit"
+						id="tabelaTodosAbertos" paginator="true"
+						paginatorPosition="bottom" rows="5" paginatorAlwaysVisible="true">
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;width:5px" value="Código" />
+							</f:facet>
+							<h:outputText value="#{tit.codigo}"></h:outputText>
+						</p:column>
+						<p:column headerText="Vencimento">
+							<h:outputText value="#{tit.dtvcto}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Documento" />
+							</f:facet>
+
+							<h:outputText value="#{tit.duplicata}">
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Parcela" />
+							</f:facet>
+
+							<h:outputText value="#{tit.parcela}">
+							</h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Valor" />
+							</f:facet>
+
+							<h:outputText value="#{tit.valor}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Valor em Aberto" />
+							</f:facet>
+
+							<h:outputText value="#{tit.valoraberto}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Previsão" />
+							</f:facet>
+
+							<h:outputText value="#{tit.dtprevisao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px;" value="Emissão" />
+							</f:facet>
+
+							<h:outputText value="#{tit.dtemissao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+
+							<f:facet name="header">
+								<h:outputText style="font-size: 11px; text-align: center; "
+									value="Ação" />
+							</f:facet>
+
+							<center>
+								<p:commandButton style="font-size: 11px;" value="Confirma"
+									oncomplete="PF('dlgbuscatit').hide();PF('dlgliqtitchq').show()"
+									process="@this" update=":frmtitchq:outtit"
+									icon="fa fa-fw fa-check">
+
+									<f:setPropertyActionListener value="#{tit}"
+										target="#{tesourariaController.tituloselecionado}" />
+								</p:commandButton>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" id="dlgforn" widgetVar="dlgbuscaforn"
+			modal="true" resizable="false" height="370" width="750">
+
+			<f:facet name="header">
+				<h:outputText value="Pesquisa Fornecedores" />
+			</f:facet>
+			<h:form id="frmforn">
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:inputText style="width: 250px; font-size: 14px;" size="30"
+						id="searchnome" value="#{fornecedorControllerFin.func.nome}" />
+					<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+						size="30" id="searchcnpj"
+						value="#{fornecedorControllerFin.func.cnpj}" />
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{fornecedorControllerFin.buscarFornecedores()}"
+						update="outforn">
+
+					</p:commandButton>
+				</p:panelGrid>
+				<p:outputPanel id="outforn">
+
+					<b:dataTable emptyMessage="Nenhum Fornecedor"
+						style="font-size: 12px; " paginatorPosition="bottom"
+						value="#{fornecedorControllerFin.listafornecedores}" var="forn"
+						paginator="true" rows="7">
+						<h:column width="40">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Código" />
+							</f:facet>
+							<h:outputText value="#{forn.codforn}"></h:outputText>
+						</h:column>
+						<h:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+
+							<h:outputText value="#{forn.nome}">
+							</h:outputText>
+						</h:column>
+						<h:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Fantasia" />
+							</f:facet>
+
+							<h:outputText value="#{forn.fantasia}">
+							</h:outputText>
+						</h:column>
+						<h:column width="80" style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CNPJ" />
+							</f:facet>
+							<h:outputText value="#{forn.cnpj}">
+							</h:outputText>
+						</h:column>
+
+						<h:column width="90" style="margin: 0 -10 0 -10 !important;">
+							<center>
+								<f:facet name="header">
+									<h:outputText style="font-size: 14px; text-align: center; "
+										value="Ação" />
+								</f:facet>
+							</center>
+
+							<center>
+								<p:commandButton style="font-size: 12px;" value="Confirmar"
+									oncomplete="PF('dlgbuscaforn').hide();"
+									update=":frmbuscatit:outtit" icon="fa fa-fw fa-check">
+
+									<f:setPropertyActionListener value="#{forn}"
+										target="#{tesourariaController.forn}"></f:setPropertyActionListener>
+
+								</p:commandButton>
+
+							</center>
+
+						</h:column>
+
+					</b:dataTable>
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+		<p:dialog responsive="true" id="liqtitchq" widgetVar="dlgliqtitchq"
+			modal="true" resizable="false" height="370" width="300">
+
+			<f:facet name="header">
+				<h:outputText value="Dados do título" />
+			</f:facet>
+			<h:form id="frmtitchq">
+				<p:outputPanel id="outtit">
+					<p:autoUpdate />
+					<p:panelGrid styleClass="semBorda">
+						<p:row>
+							<p:column>
+								<h:outputText value="Valor em Aberto"></h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText
+									value="#{tesourariaController.tituloselecionado.valoraberto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+
+							</p:column>
+
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Desconto"></h:outputText>
+							</p:column>
+							<p:column>
+								<p:inputText
+									value="#{tesourariaController.tituloselecionado.titulobaixa.vlrdesc}">
+									<f:ajax listener="#{tesourariaController.calculasaldoPagar()}"
+										event="blur" global="true" update=":frmbuscatit:outtit" />
+								</p:inputText>
+
+							</p:column>
+
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Juros"></h:outputText>
+							</p:column>
+							<p:column>
+								<p:inputText
+									value="#{tesourariaController.tituloselecionado.titulobaixa.vlrjuros}">
+									<f:ajax listener="#{tesourariaController.calculasaldoPagar()}"
+										event="blur" global="false" update=":frmbuscatit:outtit" />
+								</p:inputText>
+
+							</p:column>
+
+
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Multa"></h:outputText>
+							</p:column>
+							<p:column>
+								<p:inputText
+									value="#{tesourariaController.tituloselecionado.titulobaixa.vlrmulta}">
+									<f:ajax listener="#{tesourariaController.calculasaldoPagar()}"
+										event="blur" global="false" update=":frmbuscatit:outtit" />
+								</p:inputText>
+
+							</p:column>
+
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Tipo Baixa" />
+							</p:column>
+							<p:column>
+
+								<p:selectOneMenu
+									value="#{tesourariaController.tituloselecionado.titulobaixa.tpbaixa}"
+									required="true" requiredMessage="Informe o tipo da baixa.">
+									<f:ajax
+										listener="#{tesourariaController.calcularTotalParcial()}"
+										global="false" />
+									<f:selectItem itemLabel="Total" itemValue="1" />
+									<f:selectItem itemLabel="Parcial" itemValue="2" />
+
+								</p:selectOneMenu>
+
+
+
+
+
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Valor a Pagar"></h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{tesourariaController.aPagar}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Valor Pago"></h:outputText>
+							</p:column>
+							<p:column>
+								<p:inputText
+									value="#{tesourariaController.tituloselecionado.titulobaixa.valorpago}"
+									readonly="#{tesourariaController.totalDisable}">
+
+								</p:inputText>
+
+							</p:column>
+
+
+						</p:row>
+
+
+					</p:panelGrid>
+
+					<center>
+						<p:commandButton style="font-size: 11px;" value="Selecionar"
+							action="#{tesourariaController.addTituloBaixar()}"
+							update=":frmtitchq:outtit, grwgeral" icon="fa fa-fw fa-check" />
+
+						<p:commandButton style="font-size: 11px;" value="Cancelar"
+							icon="ui-icon-close" onclick="PF('dlgliqtitchq').hide();"
+							actionListener="#{tesourariaController.limparDadosTit()}"
+							update=":frmtitchq:outtit, grwgeral" process="@this" />
+					</center>
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+		<p:dialog responsive="true" widgetVar="dlgcomp"
+			header="Compensar Cheque" resizable="false" height="100px"
+			width="250px" modal="true">
+			<h:form id="frmcompchq">
+				<h:outputText value="Deseja compensar o Cheque?" />
+				<br />
+				<br />
+				<h:outputText value="Data Compensação:" />
+				<p:calendar value="#{tesourariaController.rowCheque.dtcompensado}"
+					pattern="dd/MM/yyyy" locale="pt" showOn="button" />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.compensaChq}"
+						update=":grwgeral, :frmmov:tabmov:tabComp" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgcomp').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgcompreceb"
+			header="Compensar Cheque recebido" resizable="false" height="100px"
+			width="250px" modal="true">
+			<h:form id="frmcompchqreceb">
+				<h:outputText value="Deseja compensar o Cheque recebido?" />
+				<br />
+				<br />
+				<h:outputText value="Data Compensação:" />
+				<p:calendar
+					value="#{tesourariaController.rowChequeRecebido.dtcompensado}"
+					pattern="dd/MM/yyyy" locale="pt" showOn="button" />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.compensaChqRecebido}"
+						update=":grwgeral, :frmmov:tabmov:tabComp" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgcompreceb').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgdeposreceb"
+			header="Depositar Cheque recebido" resizable="false" height="100px"
+			width="250px" modal="true">
+			<h:form id="frmdeposchqreceb">
+				<h:outputText value="Deseja depositar o Cheque recebido?" />
+				<br />
+				<br />
+				<h:outputText value="Data Depósito:" />
+				<p:calendar
+					value="#{tesourariaController.rowChequeRecebido.dtdeposito}"
+					pattern="dd/MM/yyyy" locale="pt" showOn="button" />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.depositaChqRecebido}"
+						update=":grwgeral, :frmmov:tabmov:tabComp" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgdeposreceb').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgdevolreceb"
+			header="Devolução de Cheque recebido" resizable="false"
+			height="100px" width="250px" modal="true">
+			<h:form id="frmdevolchqreceb">
+				<h:outputText
+					value="Deseja confirmar a devolução de Cheque recebido?" />
+				<br />
+				<br />
+				<h:outputText value="Data Devolução" />
+				<p:calendar
+					value="#{tesourariaController.rowChequeRecebido.dtdevolucao}"
+					pattern="dd/MM/yyyy" locale="pt" showOn="button" />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.devolveChqRecebido}"
+						update=":grwgeral, :frmmov:tabmov:tabComp" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgdevolreceb').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgreapreceb"
+			header="Reapresentar Cheque recebido" resizable="false"
+			height="100px" width="250px" modal="true">
+			<h:form id="frmreapchqreceb">
+				<h:outputText value="Deseja reapresentar o Cheque recebido?" />
+				<br />
+				<br />
+				<h:outputText value="Data Reapresentação" />
+				<p:calendar
+					value="#{tesourariaController.rowChequeRecebido.dtreapresentacao}"
+					pattern="dd/MM/yyyy" locale="pt" showOn="button" />
+				<center>
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.reapresentaChqRecebido}"
+						update=":grwgeral, :frmmov:tabmov:tabComp" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgreapreceb').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlglancto" header="Lançamento"
+			resizable="false" height="300px" width="450px" modal="true">
+			<h:form id="frmlancto">
+
+				<br />
+				<br />
+				<h:outputText value="Valor:" />
+				<p:inputText value="#{tesourariaController.lancamento.valor}"></p:inputText>
+				<br />
+				<p:selectOneRadio style="font-size:10px" label="Operação"
+					value="#{tesourariaController.lancamento.operacao}">
+					<f:selectItem itemLabel="Despesa Bancária" itemValue="DESPBANC" />
+					<f:selectItem itemLabel="Capital de Giro - Amortização"
+						itemValue="CAPGIRD" />
+					<f:selectItem itemLabel="Capital de Giro - Crédito"
+						itemValue="CAPGIRC" />
+
+				</p:selectOneRadio>
+				<br />
+				<h:outputText value="Dados Adicionais" />
+				<br />
+				<p:inputTextarea value="#{tesourariaController.lancamento.obs}"
+					cols="50"></p:inputTextarea>
+
+				<center>
+					<br />
+					<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+						action="#{tesourariaController.gravaLancamento}"
+						update=":grwgeral" />
+					<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+						style="margin-left:10px" onclick="PF('dlgcomp').hide()" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgacerto" header="Acerto"
+			resizable="false" height="350px" width="500px" modal="true">
+			<h:form id="frmacerto">
+				<p:outputPanel>
+					<p:autoUpdate />
 					<h:outputText value="Banco: " />
-					<h:outputText value="#{tesourariaController.banco.banco}" style="font-weight:bold"/>
-					<br/>
-					<br/>
-                    <h:outputText value="Valor Atual: "/>
-                    <h:outputText value="#{tesourariaController.saldohoje}" style="font-weight:bold">
-                    <f:convertNumber type="currency" currencySymbol="R$ " maxFractionDigits="2"/>
-                    </h:outputText>
-                    <br/>
-                    <br/>
-                    <p:selectOneRadio style="font-size:10px" label="Operação"  value="#{tesourariaController.lancamento.operacao}"
-                    required="true" requiredMessage="Escolha entre crédito ou débito">
-                        <f:selectItem itemLabel="Crédito" itemValue="CRED"  />
-                        <f:selectItem itemLabel="Débito" itemValue="DEB" />
+					<h:outputText value="#{tesourariaController.banco.banco}"
+						style="font-weight:bold" />
+					<br />
+					<br />
+					<h:outputText value="Valor Atual: " />
+					<h:outputText value="#{tesourariaController.saldohoje}"
+						style="font-weight:bold">
+						<f:convertNumber type="currency" currencySymbol="R$ "
+							maxFractionDigits="2" />
+					</h:outputText>
+					<br />
+					<br />
+					<p:selectOneRadio style="font-size:10px" label="Operação"
+						value="#{tesourariaController.lancamento.operacao}"
+						required="true" requiredMessage="Escolha entre crédito ou débito">
+						<f:selectItem itemLabel="Crédito" itemValue="CRED" />
+						<f:selectItem itemLabel="Débito" itemValue="DEB" />
 
-                    </p:selectOneRadio>
-                    <br/>
-                    <br/>
-                    <h:outputText value="Valor: "/>
-                    <p:inputText value="#{tesourariaController.lancamento.valor}" required="tue" requiredMessage="Digite o valor"></p:inputText>
-                    <br/>                   
-                    <br/>
-                    <h:outputText value="Descrição/Motivo"/>
-                    <br/>
-                    <p:inputTextarea value="#{tesourariaController.lancamento.obs}" cols="50" required="true" requiredMessage="Prencha o motivo do acerto"></p:inputTextarea>
+					</p:selectOneRadio>
+					<br />
+					<br />
+					<h:outputText value="Valor: " />
+					<p:inputText value="#{tesourariaController.lancamento.valor}"
+						required="tue" requiredMessage="Digite o valor"></p:inputText>
+					<br />
+					<br />
+					<h:outputText value="Descrição/Motivo" />
+					<br />
+					<p:inputTextarea value="#{tesourariaController.lancamento.obs}"
+						cols="50" required="true"
+						requiredMessage="Prencha o motivo do acerto"></p:inputTextarea>
 
-                    <center>
-                        <br/>
-                        <p:commandButton icon="ui-icon-confirm" value="Confirmar"                     				 
-                                         action="#{tesourariaController.gravaAcerto}" update=":grwgeral"/>
-                        <p:commandButton icon="ui-icon-confirm" value="Cancelar" style="margin-left:10px"
-                                         onclick="PF('dlgacerto').hide()" />
-                    </center>
-                    </p:outputPanel>
-                </h:form>
-            </p:dialog>
+					<center>
+						<br />
+						<p:commandButton icon="ui-icon-confirm" value="Confirmar"
+							action="#{tesourariaController.gravaAcerto}" update=":grwgeral" />
+						<p:commandButton icon="ui-icon-confirm" value="Cancelar"
+							style="margin-left:10px" onclick="PF('dlgacerto').hide()" />
+					</center>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 
 
-        </ui:define>
+		<p:dialog responsive="true" header="Dados" widgetVar="dlgtituloavulso"
+			width="850">
+
+			<h:form id="formInsert">
+
+				<p:growl id="msg" />
+				<p:outputPanel autoUpdate="false">
+					<p:tabView id="tbview">
+
+						<p:tab title="Documento">
+
+							<br />
+
+							<p:panelGrid columns="4" styleClass="semBorda">
+
+								<h:outputText value="Documento"></h:outputText>
+								<p:inputText
+									value="#{tituloPagarController.tituloPagarBean.duplicata}" />
+
+								<h:outputText value="Tipo Doc."></h:outputText>
+
+								<p:selectOneMenu
+									value="#{tituloPagarController.tituloPagarBean.tipoDocumento.codtipodocumento}"
+									required="true" requiredMessage="Informe o Tipo de documento"
+									style="width:130px;">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems value="#{tituloPagarController.listTipDoc()}"
+										itemValue="#{x.codtipodocumento}" var="x"
+										itemLabel="#{x.descricao}">
+									</f:selectItems>
+
+									<p:ajax update="formInsert"
+										listener="#{tituloPagarController.verificarDevolucao()}"
+										global="false"></p:ajax>
+								</p:selectOneMenu>
 
 
-    </ui:composition>
+
+
+								<h:outputText value="Nota Fiscal"></h:outputText>
+								<p:inputText maxlength="10"
+									value="#{tituloPagarController.tituloPagarBean.notaFiscal}"></p:inputText>
+
+								<h:outputText value="Parcela"></h:outputText>
+								<p:inputText size="10" required="true"
+									requiredMessage="Informe a Parcela" maxlength="2"
+									value="#{tituloPagarController.tituloPagarBean.parcela}" />
+
+
+							</p:panelGrid>
+							<p:outputPanel autoUpdate="false">
+								<p:panelGrid columns="8" styleClass="semBorda">
+									<h:outputText value="Devolução"
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" />
+									<p:commandButton icon="ui-icon-search"
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										onclick="PF('dlgDesistencia').show();" process="@this"></p:commandButton>
+
+
+									<h:outputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										value="Cliente: " />
+									<p:inputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										readonly="true"
+										value="#{tituloPagarController.funcBean.cliente.nome}"></p:inputText>
+
+
+									<h:outputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										value="Valor: " />
+									<p:inputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										readonly="true"
+										value="#{tituloPagarController.pagamentoDesi.valor}"></p:inputText>
+
+									<h:outputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										value="Data Desistência: " />
+									<p:inputText
+										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
+										readonly="true"
+										value="#{tituloPagarController.pagamentoDesi.dtCadastro}"></p:inputText>
+
+								</p:panelGrid>
+								<p:separator
+									rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" />
+							</p:outputPanel>
+
+
+
+							<p:panelGrid columns="6" styleClass="semBorda">
+								<h:outputText value="Fornecedor"></h:outputText>
+								<p:commandButton icon="ui-icon-search"
+									onclick="PF('dlgF').show();"></p:commandButton>
+
+								<p:autoComplete value="#{tituloPagarController.fornecedorBean}"
+									size="30"
+									completeMethod="#{buscaController.completeBuscaFornecedor}"
+									var="theme" required="true"
+									requiredMessage="Informe um fornecedor" forceSelection="true"
+									itemValue="#{theme}" itemLabel="#{theme.nome}"
+									converter="conFornecedorFinanceiro">
+									<p:ajax event="itemSelect"
+										listener="#{buscaController.onItemSelectFornecedor}" />
+								</p:autoComplete>
+
+								<h:outputText value="Data Emissão"></h:outputText>
+								<p:calendar
+									value="#{tituloPagarController.tituloPagarBean.dtemissao}"
+									pattern="dd/MM/yyyy" required="true"
+									requiredMessage="Informe a data de Emissão." showOn="button"
+									locale="pt" />
+							</p:panelGrid>
+
+							<p:outputPanel>
+
+								<p:panelGrid columns="4" styleClass="semBorda" id="pnlBuscas">
+
+									<h:outputText value="C.Custo"></h:outputText>
+
+									<p:selectOneMenu
+										value="#{tituloPagarController.tituloPagarBean.ccusto.idccusto}"
+										required="true" requiredMessage="Informe o centro de custo"
+										style="width:230px;">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{tituloPagarController.listCentroCusto()}"
+											itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}" />
+
+									</p:selectOneMenu>
+
+
+									<h:outputText value="Despesa"></h:outputText>
+
+									<p:selectOneMenu
+										value="#{tituloPagarController.tituloPagarBean.despesa.id}"
+										required="true" requiredMessage="Informe a despesa."
+										style="width:230px;">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems value="#{tituloPagarController.listDepesas()}"
+											itemValue="#{x.id}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:outputPanel>
+							<p:panelGrid columns="6" styleClass="semBorda">
+
+								<h:outputText value="Portador"></h:outputText>
+								<p:commandButton icon="ui-icon-search"
+									onclick="PF('dlgP').show();"></p:commandButton>
+								<p:autoComplete value="#{tituloPagarController.portadorBean}"
+									size="30"
+									completeMethod="#{buscaController.completeBuscaPortador}"
+									var="theme" required="true"
+									requiredMessage="Informe um portador" forceSelection="true"
+									itemValue="#{theme}" itemLabel="#{theme.descricao}"
+									converter="conPortador">
+									<p:ajax event="itemSelect"
+										listener="#{buscaController.onItemSelectPortador}" />
+								</p:autoComplete>
+
+
+								<p:inputMask
+									value="#{tituloPagarController.tituloPagarBean.dtcompete}"
+									mask="99/9999"></p:inputMask>
+							</p:panelGrid>
+
+							<p:panelGrid columns="4" styleClass="semBorda">
+
+								<h:outputText value="Vencimento"></h:outputText>
+
+								<p:calendar
+									value="#{tituloPagarController.tituloPagarBean.dtvcto}"
+									pattern="dd/MM/yyyy" required="true"
+									requiredMessage="Informe a data de vencimento." showOn="button"
+									locale="pt" />
+								<h:outputText value="Previsão Pagamento"></h:outputText>
+
+								<p:calendar
+									value="#{tituloPagarController.tituloPagarBean.dtprevisao}"
+									pattern="dd/MM/yyyy" required="false"
+									requiredMessage="Informe a data de vencimento." showOn="button"
+									locale="pt" />
+
+
+
+
+							</p:panelGrid>
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputText value="Histórico"></h:outputText>
+
+								<p:inputTextarea cols="60"
+									value="#{tituloPagarController.tituloPagarBean.historico}"></p:inputTextarea>
+							</p:panelGrid>
+							<p:panelGrid columns="6" styleClass="semBorda">
+
+
+
+								<h:outputText value="Valor"></h:outputText>
+								<p:inputNumber decimalPlaces="2" symbol="R$ " required="true"
+									value="#{tituloPagarController.tituloPagarBean.valor}"
+									requiredMessage="Valor Obrigatório" thousandSeparator="."
+									decimalSeparator=",">
+									<p:ajax update="panelTotal"
+										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</p:inputNumber>
+
+
+								<h:outputText value="Desconto"></h:outputText>
+
+								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+									value="#{tituloPagarController.tituloPagarBean.desconto}"
+									requiredMessage="Valor Obrigatório" thousandSeparator="."
+									decimalSeparator=",">
+									<p:ajax update="panelTotal"
+										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</p:inputNumber>
+
+								<h:outputText value="Juros"></h:outputText>
+
+								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+									value="#{tituloPagarController.tituloPagarBean.juros}"
+									requiredMessage="Valor Obrigatório" thousandSeparator="."
+									decimalSeparator=",">
+									<p:ajax update="panelTotal"
+										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</p:inputNumber>
+								<h:outputText value="Multa"></h:outputText>
+
+								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+									value="#{tituloPagarController.tituloPagarBean.multa}"
+									requiredMessage="Valor Obrigatório" thousandSeparator="."
+									decimalSeparator=",">
+									<p:ajax update="panelTotal"
+										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</p:inputNumber>
+
+
+
+								<h:outputText value="ICMS St."></h:outputText>
+
+								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+									value="#{tituloPagarController.tituloPagarBean.icmsst}"
+									requiredMessage="Valor Obrigatório" thousandSeparator="."
+									decimalSeparator=",">
+									<p:ajax update="panelTotal"
+										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</p:inputNumber>
+
+
+								<h:outputText value="Total"></h:outputText>
+
+								<p:outputPanel id="panelTotal">
+
+									<p:outputLabel
+										value="Total: R$ #{tituloPagarController.valorTotal()}">
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</p:outputLabel>
+								</p:outputPanel>
+
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputText value="Nominal" />
+								<p:inputText
+									value="#{tituloPagarController.tituloPagarBean.nominal}"
+									size="60" />
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Retenção">
+
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<p:commandButton value="Incluir Novo" icon="ui-icon-plus"
+									action="#{tituloPagarController.verificaAdd()}"
+									onclick="PF('dlgNovoImposto').show();"></p:commandButton>
+							</p:panelGrid>
+
+
+							<p:outputPanel>
+								<p:dataTable value="#{tituloPagarController.lstImpostos}"
+									var="x" paginatorAlwaysVisible="true" paginator="true"
+									paginatorPosition="bottom" id="dtImposto" rows="4"
+									style="margin-top:10px;">
+
+
+									<p:column headerText="Imposto" width="auto">
+
+										<h:outputText value="#{x.descImposto}" />
+
+									</p:column>
+
+									<p:column headerText="%Retenção" width="auto">
+
+										<h:outputText value="#{x.pcRentencao}" />
+
+									</p:column>
+
+									<p:column headerText="Base(R$)" width="auto">
+
+										<h:outputText value="#{x.valorBase}" />
+
+									</p:column>
+									<p:column width="auto">
+
+										<center>
+											<p:commandButton icon="ui-icon-pencil"
+												onclick="PF('dlgEditRetencao').show();"
+												title="Editar retenção,base">
+
+												<f:setPropertyActionListener value="#{x}"
+													target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
+
+											</p:commandButton>
+
+											<p:commandButton icon="ui-icon-trash"
+												title="Remover retenção"
+												action="#{tituloPagarController.removerRetencao()}"
+												process="@this" update="formInsert">
+
+												<f:setPropertyActionListener value="#{x}"
+													target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
+
+											</p:commandButton>
+										</center>
+
+									</p:column>
+
+								</p:dataTable>
+							</p:outputPanel>
+						</p:tab>
+
+					</p:tabView>
+
+
+					<hr />
+
+					<center>
+
+						<p:commandButton value="Salvar"
+							actionListener="#{tituloPagarController.salvarDocumentoPagarAvulso(tesourariaController.banco)}"
+							icon="ui-icon-check" update="msg,:frmmov"></p:commandButton>
+
+						<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
+							style="margin-left:5px;" icon="ui-icon-closethick"></p:commandButton>
+
+					</center>
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+		<p:dialog responsive="true" id="mpF" widgetVar="dlgF" modal="true"
+			resizable="false" height="370" width="750">
+
+			<f:facet name="header">
+				<h:outputText value="Lista de Fornecedores" />
+			</f:facet>
+			<h:form id="frminterF">
+
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:inputText style="width: 250px; font-size: 14px;" size="30"
+						id="searchnome"
+						value="#{tituloPagarController.fornecedorBean.nome}" />
+
+					<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+						size="30" id="searchcpfcnpj"
+						value="#{tituloPagarController.fornecedorBean.cnpj}" />
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{tituloPagarController.buscaFornecedor()}"
+						update="outinteressadosF">
+					</p:commandButton>
+
+
+				</p:panelGrid>
+				<p:outputPanel id="outinteressadosF">
+
+					<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+						paginatorPosition="bottom"
+						value="#{tituloPagarController.lstFornecedor}" var="cliente"
+						paginator="true" rows="7">
+						<p:column width="40">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Código" />
+							</f:facet>
+							<h:outputText value="#{cliente.codforn}"></h:outputText>
+						</p:column>
+						<p:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+
+							<h:outputText value="#{cliente.nome}">
+							</h:outputText>
+						</p:column>
+						<p:column width="80" style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+							</f:facet>
+							<h:outputText value="#{cliente.cnpj}" />
+
+						</p:column>
+
+						<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+							<center>
+								<f:facet name="header">
+									<h:outputText style="font-size: 14px; text-align: center; "
+										value="Ação" />
+								</f:facet>
+							</center>
+
+							<center>
+
+								<p:commandButton style="font-size: 12px;"
+									update=":formInsert:tbview, :formInsert:msg" value="Confirmar"
+									oncomplete="PF('dlgF').hide();" icon="fa fa-fw fa-check">
+
+									<f:setPropertyActionListener value="#{cliente}"
+										target="#{tituloPagarController.fornecedorBean}"></f:setPropertyActionListener>
+
+								</p:commandButton>
+
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" id="mpP" widgetVar="dlgP" modal="true"
+			resizable="false" height="370" width="750">
+
+			<f:facet name="header">
+				<h:outputText value="Lista de Portadores" />
+			</f:facet>
+			<h:form id="frminterP">
+
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:inputText style="width: 250px; font-size: 14px;" size="30"
+						id="searchnome"
+						value="#{tituloPagarController.portadorBean.descricao}" />
+
+
+
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{tituloPagarController.buscaPortador()}"
+						update="outinteressadosP">
+					</p:commandButton>
+
+
+				</p:panelGrid>
+				<p:outputPanel id="outinteressadosP">
+
+					<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+						paginatorPosition="bottom"
+						value="#{tituloPagarController.lstPortador}" var="cliente"
+						paginator="true" rows="7">
+						<p:column width="40">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Código" />
+							</f:facet>
+							<h:outputText value="#{cliente.codportador}"></h:outputText>
+						</p:column>
+						<p:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+
+							<h:outputText value="#{cliente.descricao}">
+							</h:outputText>
+						</p:column>
+
+						<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+							<center>
+								<f:facet name="header">
+									<h:outputText style="font-size: 14px; text-align: center; "
+										value="Ação" />
+								</f:facet>
+							</center>
+
+							<center>
+
+								<p:commandButton style="font-size: 12px;"
+									update=":formInsert:tbview, :formInsert:msg" value="Confirmar"
+									oncomplete="PF('dlgP').hide();" icon="fa fa-fw fa-check">
+
+									<f:setPropertyActionListener value="#{cliente}"
+										target="#{tituloPagarController.portadorBean}"></f:setPropertyActionListener>
+
+								</p:commandButton>
+
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+
+	</ui:define>
+
+
+</ui:composition>
 
 </html>

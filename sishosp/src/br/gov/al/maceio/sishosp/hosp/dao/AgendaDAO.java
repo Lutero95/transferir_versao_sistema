@@ -2590,8 +2590,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             Integer idPacienteInstituicao) throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
-        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao,  to_char(p.horario_atendimento,'HH24:MI') horario_atendimento, "
-                + " p.dia_semana FROM hosp.profissional_dia_atendimento p "
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao,  to_char(p.horario_atendimento,'HH24:MI') horario_atendimento  "
+                + "  FROM hosp.profissional_dia_atendimento p "
                 + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
                 + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
                 + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ?";
@@ -2609,7 +2609,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.setId(rs.getLong("id_profissional"));
                 funcionario.setNome(rs.getString("descfuncionario"));
                 funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-                funcionario.setDiaSemana(rs.getInt("dia_semana"));
+              //  funcionario.setDiaSemana(rs.getInt("dia_semana"));
                 funcionario.setListaDiasAtendimentoSemana(listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
                         idPacienteInstituicao, funcionario.getId(), con));
                 funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));

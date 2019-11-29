@@ -650,7 +650,7 @@ public class TesourariaDAO {
 			ps.setDouble(6, cheque.getValor());
 			ps.setString(7, cheque.getNominal());
 			ps.setString(8, cheque.getCompensado());
-			ps.setLong(9, user_session.getId());
+			ps.setInt(9, Integer.valueOf(String.valueOf(user_session.getId())));
 			ps.setString(10, cheque.getStatus());
 			ps.setDate(11, new java.sql.Date(cheque.getDtemissao().getTime()));
 			ps.setInt(12, cheque.getCaixa().getSeqcaixadiario());
@@ -768,6 +768,147 @@ public class TesourariaDAO {
 
 		return result;
 	}
+	
+	public boolean compensaTituloAvulso(ChequeEmitidoBean cheque, TituloPagarBean titulo, String tipodoc, Connection conexao)
+			throws ProjetoException, SQLException {
+
+		Connection con = null;
+		CallableStatement ps = null;
+
+		boolean result = false;
+
+		try {
+			
+
+			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().get("obj_usuario");
+
+			ps = conexao.prepareCall("{ ? = call financeiro.cheque_emitido(?,?,?,?,?,?,?,?,?,?,?,?) }");
+
+			ps.registerOutParameter(1, Types.INTEGER);
+			ps.setInt(2, cheque.getBanco().getId());
+			ps.setString(3, cheque.getNumcheque());
+			ps.setDate(4, new java.sql.Date(cheque.getDtemissao().getTime()));
+			ps.setString(5, tipodoc);
+			ps.setDouble(6, cheque.getValor());
+			ps.setString(7, cheque.getNominal());
+			ps.setString(8, cheque.getCompensado());
+			ps.setInt(9, Integer.valueOf(String.valueOf(user_session.getId())));
+			ps.setString(10, cheque.getStatus());
+			ps.setDate(11, new java.sql.Date(cheque.getDtemissao().getTime()));
+			ps.setInt(12, cheque.getCaixa().getSeqcaixadiario());
+
+			if (cheque.getDtcompensado() != null)
+				ps.setDate(13, new java.sql.Date(cheque.getDtcompensado().getTime()));
+			else
+				ps.setNull(13, Types.OTHER);
+			
+			ps.executeUpdate();
+
+			int retornoid = 0;
+
+			retornoid = ps.getInt(1);
+
+				// CHEQUE_EMITIDO2
+
+				String sql = "insert into financeiro.cheque_emitido2 (	codcheque, codpagdup, valor, vlratual, desconto, juros, multa, tipobx) values (?,?,?,?,?,?,?,?) ";
+				PreparedStatement psProduto = conexao.prepareStatement(sql);
+
+				psProduto.setInt(1, retornoid);
+				psProduto.setInt(2, titulo.getCodigo());
+				psProduto.setDouble(3, titulo.getTitulobaixa().getValorpago());
+				psProduto.setDouble(4, titulo.getValoraberto());
+				psProduto.setDouble(5, titulo.getTitulobaixa().getVlrdesc());
+				psProduto.setDouble(6, titulo.getTitulobaixa().getVlrjuros());
+				psProduto.setDouble(7, titulo.getTitulobaixa().getVlrmulta());
+				psProduto.setString(8, titulo.getTitulobaixa().getTpbaixa());
+
+				psProduto.execute();
+				psProduto.close();
+
+				// insercao pagdupbx
+				sql = "select max(Ord) ord from financeiro.PagdupBx where Codigo =? ";
+				int ord = 0;
+
+				PreparedStatement ps2 = null;
+				ps2 = conexao.prepareStatement(sql);
+				ps2.setInt(1, titulo.getCodigo());
+
+				ResultSet rs = ps2.executeQuery();
+
+				while (rs.next()) {
+					ord = rs.getInt("ord");
+				}
+
+				ps2.close();
+				rs.close();
+
+				sql = "insert into financeiro.pagdupbx (	codigo, ord, dtpagto, dtvcto, valoratual, valorpago, tpbaixa, frbaixa, vlrdesc, vlrjuros, vlrmulta, idbanco, numcheque, codchqemitido, opcad) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				PreparedStatement psbx = conexao.prepareStatement(sql);
+
+				psbx.setInt(1, titulo.getCodigo());
+				psbx.setDouble(2, ord + 1);
+				psbx.setDate(3, new java.sql.Date(cheque.getDtvencimento().getTime()));
+				psbx.setDate(4, new java.sql.Date(titulo.getDtvcto().getTime()));
+				psbx.setDouble(5, titulo.getValoraberto());
+				psbx.setDouble(6, titulo.getTitulobaixa().getValorpago());
+				psbx.setString(7, titulo.getTitulobaixa().getTpbaixa());
+				psbx.setString(8, "2");
+				psbx.setDouble(9, titulo.getTitulobaixa().getVlrdesc());
+				psbx.setDouble(10, titulo.getTitulobaixa().getVlrjuros());
+				psbx.setDouble(11, titulo.getTitulobaixa().getVlrmulta());
+				psbx.setDouble(12, cheque.getBanco().getId());
+				psbx.setString(13, titulo.getTitulobaixa().getNumcheque());
+				psbx.setDouble(14, retornoid);
+				psbx.setDouble(15, user_session.getId());
+
+				psbx.execute();
+				psbx.close();
+
+				if (titulo.getTitulobaixa().getTpbaixa().equals("1")) {
+					sql = "update financeiro.pagdup set situacao='F' where codigo=? ";
+					PreparedStatement pspg = conexao.prepareStatement(sql);
+
+					pspg.setInt(1, titulo.getCodigo());
+
+					pspg.execute();
+					pspg.close();
+				}
+
+			
+
+			// insercao movtesouraria
+			sql = "insert into financeiro.movtesouraria (	idbanco, tipo, valor, codchqemitido, complemento, seqcaixadiario,  dtmovimento, opcad) values (?,?,?,?,?,?,current_date,?) ";
+			PreparedStatement pstes = conexao.prepareStatement(sql);
+
+			pstes.setInt(1, cheque.getBanco().getId());
+			pstes.setString(2, "DB");
+			pstes.setDouble(3, cheque.getValor());
+			pstes.setInt(4, retornoid);
+			pstes.setString(5, "Cheque N° " + cheque.getNumcheque());
+			pstes.setInt(6, cheque.getCaixa().getSeqcaixadiario());
+			pstes.setLong(7, user_session.getId());
+
+			pstes.execute();
+
+			result = true;
+
+			pstes.close();
+
+		} catch (Exception sqle) {
+			sqle.printStackTrace();
+			throw new ProjetoException(sqle);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (Exception sqlc) {
+				sqlc.printStackTrace();
+			}
+		}
+
+		return result;
+	}	
 
 	public boolean cancelarChequeEstornoReceber(ChequeEmitidoBean cheque, String complemento, TituloReceberBean t,
 			BaixaReceber baixa) throws ProjetoException {
@@ -926,7 +1067,7 @@ public class TesourariaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 
-			String sql = " select codcheque, idbanco, valor,  numcheque, dtemissao, dtvencimento,  coalesce(compensado,'N') compensado, dtcompensado,status, nominal from financeiro.cheque_emitido where idbanco = ? "
+			String sql = " select codcheque, idbanco, valor,  numcheque, dtemissao, dtvencimento,  coalesce(compensado,'N') compensado, dtcompensado,status, nominal from financeiro.cheque_emitido where idbanco = ? and cheque_emitido.tipo='CP' "
 					+ "  ";
 
 			if (cheque.getStatus().equals("P")) {
