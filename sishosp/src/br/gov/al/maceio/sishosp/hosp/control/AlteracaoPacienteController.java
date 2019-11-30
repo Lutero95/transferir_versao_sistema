@@ -25,14 +25,18 @@ import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.RenovacaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
 @ManagedBean(name = "AlteracaoPacienteController")
 @ViewScoped
@@ -43,9 +47,11 @@ public class AlteracaoPacienteController implements Serializable {
     private static AlteracaoPacienteDAO aDaoDuplicado = new AlteracaoPacienteDAO();
     private InsercaoPacienteBean insercao;
     private static InsercaoPacienteBean insercaoDuplicado;
+    private RenovacaoPacienteDAO rDao = new RenovacaoPacienteDAO();
     private InsercaoPacienteBean insercaoParaLaudo;
     private static InsercaoPacienteBean insercaoParaLaudoDuplicado;
     private String tipo;
+    private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private static String tipoDuplicado;
     private List<Integer> listaDias;
     private static List<Integer> listaDiasDuplicado;
@@ -58,6 +64,7 @@ public class AlteracaoPacienteController implements Serializable {
     private Integer id_paciente_insituicao;
     private static Integer id_paciente_insituicaoDuplicado;
     private String opcaoAtendimento;
+    private LaudoBean laudo;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private static ArrayList<FuncionarioBean> listaProfissionaisEquipeDuplicado;
     private List<AgendaBean> listaHorariosEquipe;
@@ -80,6 +87,7 @@ public class AlteracaoPacienteController implements Serializable {
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listaProfissionaisAdicionadosDuplicado = new ArrayList<FuncionarioBean>();
         funcionario = new FuncionarioBean();
+        listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
         tipo = "";
         iDao = new InsercaoPacienteDAO();
         iDaoDuplicado = new InsercaoPacienteDAO();
@@ -90,6 +98,7 @@ public class AlteracaoPacienteController implements Serializable {
         InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
         opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
         listaHorarios = new ArrayList<>();
+        laudo = new LaudoBean();
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
     }
     
@@ -303,8 +312,9 @@ public class AlteracaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
-            if (insercao.getLaudo().getId()!=null)
-            carregarLaudoPaciente();
+            if (insercao.getLaudo().getId()!=null) 
+            	carregarLaudoPaciente();
+            
             
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {
@@ -686,6 +696,17 @@ public class AlteracaoPacienteController implements Serializable {
 
        
     }    
+    
+    public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
+    	Date dataSolicitacaoPacienteTerapia = insercao.getDataSolicitacao();
+    	Date dataVigenciaInicialLaudo = insercao.getLaudo().getVigenciaInicial();
+    	if (dataVigenciaInicialLaudo.before(dataSolicitacaoPacienteTerapia)){
+            JSFUtil.adicionarMensagemErro("A data do laudo selecionado é menor que a data de inclusão do paciente na Terapia", "Erro!");
+            insercao.setLaudo(null);
+            insercaoParaLaudo.setLaudo(null);
+        }
+        
+    }
 
     public void carregarLaudoPaciente() throws ProjetoException {
         insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
@@ -829,6 +850,15 @@ public class AlteracaoPacienteController implements Serializable {
 
         
     }
+    
+    public void listarLaudosVigentes()
+            throws ProjetoException {
+        LaudoDAO laudoDAO = new LaudoDAO();
+        listaLaudosVigentes = laudoDAO.listarLaudosVigentesParaPaciente(insercao.getPaciente().getId_paciente());
+    }
+    
+    
+
 
     public void adicionarFuncionarioParaEdicao(List<FuncionarioBean> listaFuncionarioAuxiliar) {
         
@@ -1258,5 +1288,15 @@ public class AlteracaoPacienteController implements Serializable {
 
 	public void setListaHorarioFinal(List<HorarioAtendimento> listaHorarioFinal) {
 		this.listaHorarioFinal = listaHorarioFinal;
+	}
+
+
+	public ArrayList<InsercaoPacienteBean> getListaLaudosVigentes() {
+		return listaLaudosVigentes;
+	}
+
+
+	public void setListaLaudosVigentes(ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
+		this.listaLaudosVigentes = listaLaudosVigentes;
 	}
 }
