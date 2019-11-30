@@ -21,8 +21,24 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
+                
+                 <b:row>
+
+                        <b:column span="2" class="label-position">
+                            <p:outputLabel value="Laudo:"
+                                           style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                           <p:commandButton size="sm" style="margin-left: 20px;"
+								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+								update=":formConsuLaudo"
+								actionListener="#{AlteracaoPacienteController.listarLaudosVigentes()}"
+								oncomplete="PF('dlgConsuLaudo').show();" />
+                        </b:column>
+
+                    </b:row>
                
-                    <b:row rendered="#{AlteracaoPacienteController.insercao.paciente.id_paciente!=null}">
+                    <b:row rendered="#{AlteracaoPacienteController.insercao.paciente.id_paciente!=null and AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
 
                         <b:column span="2" class="label-position inserPacient">
                             <b:label value="Paciente:" severity="info"/>
@@ -635,6 +651,82 @@
                 </div>
             </h:form>
         </p:dialog>
+        
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+			dynamic="true" modal="true" id="laudo-id">
+			<h:form id="formConsuLaudo">
+
+				<p:growl id="msgLaudo"></p:growl>
+
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AlteracaoPacienteController.listaLaudosVigentes}"
+					id="dtLaudo" var="insercao" display="Nenhum Laudo">
+
+					<h:column>
+						<f:facet name="header">
+                            Paciente
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            CNS
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Vigência Inicial
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Vigência Final
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+					</h:column>
+
+					<h:column rendered="false">
+						<f:facet name="header">
+                            Paciente
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.mesFinal}" />
+					</h:column>
+
+					<h:column rendered="false">
+						<f:facet name="header">
+                            Paciente
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.anoFinal}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuLaudo').hide();"
+							class="new-btn-acao-table acao-editar"
+							action="#{AlteracaoPacienteController.validaSelecaoLaudoPacienteSemLaudo()}">
+							<f:setPropertyActionListener value="#{insercao.laudo}"
+								target="#{AlteracaoPacienteController.insercao.laudo}" />
+								<f:setPropertyActionListener value="#{insercao.laudo}"
+								target="#{AlteracaoPacienteController.insercaoParaLaudo.laudo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
         
     
     </ui:define>
