@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.Configuracao.ConexaoBuilder;
+import br.gov.al.maceio.sishosp.comum.Configuracao.Conexoes;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 public class ConnectionFactory {
@@ -15,40 +17,12 @@ public class ConnectionFactory {
 
         String nomeBancoAcesso = (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso");
 
-        //LOCAL
-/*
-        String url = "jdbc:postgresql://localhost:5432/";
-        String usuario = "postgres";
-        String senha = "engetron";
-  */    
-        //String senha = "engetron";
-
-        //PRODUÇÃO
-  
-   /*
-        String url = "jdbc:postgresql://72.55.172.244:5432/publico";
-        String usuario = "postgres";
-        String senha = "E2@spwxlmQo";
-
-    	*/
-        
-        String url = "jdbc:postgresql://node39025-env-8766995.nordeste-idc.saveincloud.net:11511/";
-        String usuario = "webadmin";
-        String senha = "BVEsvr50661";
-
-  
-  /*
-    	String url = "jdbc:postgresql://10.101.17.65:5432/";
-        String usuario = "webadmin";
-        String senha = "BVEsvr50661";
-
- */
-        url = url + nomeBancoAcesso;
+        Conexoes conexoes = ConexaoBuilder.carregarDadosConexao(nomeBancoAcesso);
 
         try {
             Class.forName("org.postgresql.Driver");
             Connection con;
-            con = DriverManager.getConnection(url, usuario, senha);
+            con = DriverManager.getConnection(conexoes.getUrlBanco(), conexoes.getUsuario(), conexoes.getSenha());
             con.setAutoCommit(false);
             return con;
         } catch (ClassNotFoundException cnf) {
