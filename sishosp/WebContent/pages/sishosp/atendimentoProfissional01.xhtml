@@ -1,0 +1,399 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewAction
+                    action="#{AtendimentoController.getCarregaAtendimentoProfissional()}"/>
+        </f:metadata>
+
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Atendimento Profissional</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form>
+
+                    <b:row>
+                        <div align="center">
+                            <b:row>
+                                <p:commandButton value="Consultar Evolucao" look="success" size="sm"
+                                                 icon="ui-icon-search" immediate="true" update=":frmPrincipal"
+                                                 action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+                                                 oncomplete="PF('dlgConsultaEvolucoes').show();"/>
+
+                                <p:commandButton value="Consultar PTS" look="success" size="sm"
+                                                 style="margin-left: 10px"
+                                                 icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
+                                                 action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+                                                 oncomplete="PF('dlgConsultaPTS').show();"/>
+                            </b:row>
+                        </div>
+                    </b:row>
+
+                </h:form>
+
+                <h:form id="formConsAge">
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position">
+                            <b:label value="Paciente" severity="info"/>
+
+                            <b:inputText class="form-control select-agendaEquipe5"
+                                         value="#{AtendimentoController.atendimento.paciente.nome}"
+                                         readonly="true" id="inputname"></b:inputText>
+                        </b:column>
+
+                        <b:column span="5" class="label-position">
+                            <b:label value="Procedimento" severity="info"/>
+
+                            <p:outputPanel id="outProcP1">
+                                <p:autoComplete required="true" class="select-agendaEquipe4"
+                                                requiredMessage="Escolha o procedimento!"
+                                                value="#{AtendimentoController.atendimento.procedimento}"
+                                                size="31" converter="conProcedimento" id="descProc1"
+                                                completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nomeProc}">
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position">
+                            <b:label value="Profissional" severity="info"/>
+
+                            <b:inputText
+                                    value="#{AtendimentoController.atendimento.funcionario.nome}"
+                                    readonly="true" class="form-control select-agendaEquipe5"
+                                    id="inputnamefunc"></b:inputText>
+                        </b:column>
+
+                        <b:column span="5" class="label-position">
+                            <b:label value="Atendimento" severity="info"/>
+
+                            <p:outputPanel id="outProfi">
+                                <p:autoComplete id="acpro" required="true"
+                                                requiredMessage="Escolha o atendente"
+                                                value="#{AtendimentoController.funcionario}" size="31"
+                                                converter="conFuncionario" class="select-agendaEquipe4"
+                                                completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nome}">
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+
+                        <b:column span="12" class="label-position">
+                            <b:label value="Evolução" severity="info"/>
+
+                            <p:editor widgetVar="editor2" style="margin-right: 15px;"
+                                      value="#{AtendimentoController.atendimento.evolucao}"
+                                      class="select-agendaEquipe2" required="true"
+                                      requiredMessage="Evolução: Campo obrigatório!">
+
+                            </p:editor>
+                        </b:column>
+
+                    </b:row>
+
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <b:commandButton
+                                action="#{AtendimentoController.realizarAtendimentoProfissional()}"
+                                icon="glyphicon-ok" size="sm" look="success" value="Gravar"
+                                update="msgPagina" class="btn-incluir" style="float:left"/>
+
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         style="float:right" size="sm" immediate="true" look="info"
+                                         class="btn-voltar"
+                                         action="/pages/sishosp/atendimento.faces?faces-redirect=true">
+                        </b:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog widgetVar="dialogExclusao" modal="true"
+                  header="Limpar Atendimento" resizable="false">
+
+            <h:form id="dlglimpar">
+                <h:panelGrid columns="1">
+
+                    <div class="alert alert-warning" role="alert">Deseja limpar o
+                        atendimento?
+                    </div>
+
+                </h:panelGrid>
+
+                <div align="center">
+
+                    <p:separator/>
+
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{AtendimentoController.limparAtendimentoProfissional()}"
+                                     ajax="true" icon="glyphicon-ok" update=":formConsAge:msgPagina"/>
+
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="400px"
+                  dynamic="true" responsive="true" modal="true">
+
+            <h:form id="frmPrincipal">
+
+                <p:outputPanel id="outDtEvolucoes">
+
+                    <b:row>
+                        <b:column span="12">
+                            <ui:repeat var="evo"
+                                       value="#{AtendimentoController.listaEvolucoes}"
+                                       varStatus="status">
+
+                                <p:panelGrid columns="2" styleClass="semBorda2">
+
+                                    <h:outputLabel value="Data Atendimento:"/>
+                                    <h:outputLabel value="#{evo.dataAtendimentoInicio}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputLabel>
+
+                                    <h:outputLabel value="Profissional:"/>
+                                    <h:outputLabel value="#{evo.funcionario.nome}"/>
+
+                                    <h:outputLabel value="Evolução:"/>
+                                    <h:outputLabel value="#{evo.evolucao}" escape="false"/>
+
+                                    <hr></hr>
+                                </p:panelGrid>
+
+                            </ui:repeat>
+
+                        </b:column>
+                    </b:row>
+                </p:outputPanel>
+
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px" styleClass="topDialog">
+
+            <h:form id="frmPrincipalPts">
+                <b:row>
+
+                    <h1>VISÃO GERAL DO PACIENTE</h1>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="Incapacidades Funcionais:" id="incapacidadesFuncionais"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.incapacidadesFuncionais}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="2"></b:column>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="Capacidades Funcionais:" id="capacidadesFuncionais"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Capacidades Funcionais: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.capacidadesFuncionais}"></h:inputTextarea>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="2"></b:column>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="4" class="label-position data-size">
+
+                        <b:label value="Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="4" class="label-position data-size">
+
+                        <b:label value="Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="4" class="label-position data-size">
+
+                        <b:label value="Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <b:row>
+
+                    <h1>VISÃO MULTIDISCIPLINAR</h1>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <p:dataTable id="dtPtsAdicionados" resizableColumns="true"
+                                 value="#{AtendimentoController.pts.listaPtsArea}"
+                                 var="pts" emptyMessage="Sem registros.">
+
+                        <p:column headerText="Cód Especialidade" width="0%" rendered="false">
+                            <h:outputLabel value="#{pts.area.codEspecialidade}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Especialidade" width="13%">
+                            <h:outputLabel value="#{pts.area.descEspecialidade}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Curto" width="13%">
+                            <h:outputLabel value="#{pts.objetivoCurto}"/>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Médio" width="13%">
+                            <h:outputLabel value="#{pts.objetivoMedio}"/>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Longo" width="13%">
+                            <h:outputLabel value="#{pts.objetivoLongo}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Curto" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesCurto}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Médio" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesMedio}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Longo" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesLongo}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </b:row>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

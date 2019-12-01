@@ -164,7 +164,7 @@ public class AtendimentoDAO {
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, funcionario.getId());
 			stmt.setInt(2, atendimento.getProcedimento().getIdProc());
-			stmt.setString(3, atendimento.getStatus());
+			stmt.setString(3, "A");
 			stmt.setString(4, atendimento.getEvolucao());
 			stmt.setInt(5, atendimento.getId());
 
@@ -304,6 +304,9 @@ public class AtendimentoDAO {
 	public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento, String campoBusca, String tipo)
 			throws ProjetoException {
 
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.avaliacao,  "
@@ -322,7 +325,9 @@ public class AtendimentoDAO {
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?"
+				+ " and exists (select codatendimento from hosp.atendimentos1 a11 "
+				+ " where a11.codprofissionalatendimento=? and a11.codatendimento = atendimentos.codatendimento)";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
@@ -347,16 +352,16 @@ public class AtendimentoDAO {
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
+
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			int i = 4;
+			int i = 5;
 			stm.setDate(1, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
 			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
 			stm.setInt(3, user_session.getUnidade().getId());
+			stm.setLong(4, user_session.getId());
 			
             if ((atendimento.getPrograma()!=null) && (atendimento.getPrograma().getIdPrograma()!=null)) {
             stm.setInt(i, atendimento.getPrograma().getIdPrograma());

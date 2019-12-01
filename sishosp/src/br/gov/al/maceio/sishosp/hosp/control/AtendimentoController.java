@@ -53,7 +53,7 @@ public class AtendimentoController implements Serializable {
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
-    private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional?faces-redirect=true";
+    private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public AtendimentoController() {
