@@ -341,7 +341,7 @@ public class TransferenciaPacienteController implements Serializable {
             if (existe == false) {
                 adicionarFuncionario();
             } else {
-                JSFUtil.fecharDialog("dlgDiasAtendimento");
+                JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
 
                 JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
@@ -418,7 +418,7 @@ public class TransferenciaPacienteController implements Serializable {
         funcionario.setDiasSemana(dias);
         listaProfissionaisAdicionados.add(funcionario);
 
-        JSFUtil.fecharDialog("dlgDiasAtendimento");
+        JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
     }
 
     public void adicionarFuncionarioParaEdicao(FuncionarioBean funcionario) {

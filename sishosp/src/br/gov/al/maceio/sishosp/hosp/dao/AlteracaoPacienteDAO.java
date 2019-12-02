@@ -210,7 +210,7 @@ public class AlteracaoPacienteDAO {
 			}
 			
 			 
-	        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, turno=? "
+	        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, turno=?, codlaudo=? "
 	                + " where id = ?";
 	        
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -218,7 +218,11 @@ public class AlteracaoPacienteDAO {
             stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             stmt.setString(2, insercao.getObservacao());
             stmt.setString(3, insercao.getTurno());
-            stmt.setInt(4, insercao.getId());
+            if (insercao.getLaudo().getId()!=null) 
+            	stmt.setInt(4,insercao.getLaudo().getId());
+            else
+            	stmt.setNull(4, Types.NULL);
+            stmt.setInt(5, insercao.getId());
             stmt.executeUpdate();
 
 			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";

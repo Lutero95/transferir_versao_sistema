@@ -63,7 +63,6 @@ public class TransferenciaPacienteDAO {
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
 				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
-				ip.setTurno(rs.getString("turno"));
 				if ((rs.getString("codpaciente_laudo"))!=null) {
 					ip.getLaudo().setId(rs.getInt("codlaudo"));
 					ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));

@@ -22,7 +22,7 @@
 
                 <h:form id="formInsercao">
                 
-                 <b:row>
+                 <b:row  rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
 
                         <b:column span="2" class="label-position">
                             <p:outputLabel value="Laudo:"

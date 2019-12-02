@@ -158,15 +158,15 @@ public class AtendimentoDAO {
 		con = ConnectionFactory.getConnection();
 		try {
 
-			String sql = "update hosp.atendimentos1 set codprofissionalatendimento = ?, codprocedimento = ?, "
-					+ "dtaatendido = current_timestamp, situacao = ?, evolucao = ? " + " where id_atendimento = ?";
+			String sql = "update hosp.atendimentos1 set codprocedimento = ?, "
+					+ "dtaatendido = current_timestamp, situacao = ?, evolucao = ? " + " where id_atendimento = ? and codprofissionalatendimento = ?";
 
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, funcionario.getId());
-			stmt.setInt(2, atendimento.getProcedimento().getIdProc());
-			stmt.setString(3, "A");
-			stmt.setString(4, atendimento.getEvolucao());
-			stmt.setInt(5, atendimento.getId());
+			stmt.setInt(1, atendimento.getProcedimento().getIdProc());
+			stmt.setString(2, "A");
+			stmt.setString(3, atendimento.getEvolucao());
+			stmt.setInt(4, atendimento.getId());
+			stmt.setLong(5, funcionario.getId());
 
 			stmt.executeUpdate();
 
@@ -325,9 +325,123 @@ public class AtendimentoDAO {
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
+				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+
+		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+			sql = sql + " and  a.codprograma = ?";
+		}
+		if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+			sql = sql + " and  a.codgrupo = ?";
+		}
+
+		if (tipo.equals("nome")) {
+			sql = sql + " and p.nome like ?";
+		} else if (tipo.equals("cpf")) {
+			sql = sql + " and p.cpf like ?";
+		} else if (tipo.equals("cns")) {
+			sql = sql + " and p.cns like ?";
+		} else if (tipo.equals("prontuario")) {
+			sql = sql + " and p.id_paciente = ?";
+		} else if (tipo.equals("matricula")) {
+			sql = sql + " and p.matricula like ?";
+		}
+
+		sql = sql + " order by a.dtaatende";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			int i = 4;
+			stm.setDate(1, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
+			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
+			stm.setInt(3, user_session.getUnidade().getId());
+			
+            if ((atendimento.getPrograma()!=null) && (atendimento.getPrograma().getIdPrograma()!=null)) {
+            stm.setInt(i, atendimento.getPrograma().getIdPrograma());
+            i = i+1;
+            }
+            if ((atendimento.getGrupo()!=null) && (atendimento.getGrupo().getIdGrupo()!=null)) {            
+            stm.setInt(i, atendimento.getGrupo().getIdGrupo());
+            i = i+1;
+            }			
+
+			if (!campoBusca.equals(null)) {
+				if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
+					stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
+				else
+					stm.setInt(i, Integer.valueOf(campoBusca));
+				i = i+1;
+			}
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AtendimentoBean at = new AtendimentoBean();
+				at.setId(rs.getInt("id_atendimento"));
+				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				at.getPaciente().setNome(rs.getString("nome"));
+				at.getPaciente().setCns(rs.getString("cns"));
+				at.setTurno(rs.getString("turno"));
+				at.getFuncionario().setId(rs.getLong("codmedico"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				at.setSituacao(rs.getString("situacao"));
+				at.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
+				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
+				at.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				at.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				at.setEhEquipe(rs.getString("ehEquipe"));
+				at.setAvaliacao(rs.getBoolean("avaliacao"));
+
+				lista.add(at);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+	
+	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo)
+			throws ProjetoException {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
+		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
+				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
+				+ " a.codequipe, e.descequipe, a.avaliacao,  "
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
+
+				+ " case when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null) =  "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " then 'Atendimento Não Informado' " + " when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is not null) = "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao "
+
+				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
+				+ " left join acl.funcionarios f on (f.id_funcionario = a.codmedico)"
+				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
+				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
+				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
 				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?"
-				+ " and exists (select codatendimento from hosp.atendimentos1 a11 "
-				+ " where a11.codprofissionalatendimento=? and a11.codatendimento = atendimentos.codatendimento)";
+				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
+				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento)";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
@@ -416,7 +530,7 @@ public class AtendimentoDAO {
 			}
 		}
 		return lista;
-	}
+	}	
 
 	public AtendimentoBean listarAtendimentoProfissionalPorId(int id) throws ProjetoException {
 
@@ -461,6 +575,51 @@ public class AtendimentoDAO {
 		}
 		return at;
 	}
+	
+	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
+
+		AtendimentoBean at = new AtendimentoBean();
+		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, "
+				+ "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma "
+				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
+				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
+				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
+				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) " + "where a.id_atendimento = ? and a1.codprofissionalatendimento=?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			stm.setLong(2, user_session.getId());
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				at.setId(rs.getInt("id_atendimento"));
+				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				at.getPaciente().setNome(rs.getString("nome"));
+				at.getProcedimento().setIdProc(rs.getInt("codprocedimento"));
+				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
+				at.getFuncionario().setId(rs.getLong("codmedico"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.setStatus(rs.getString("situacao"));
+				at.setEvolucao(rs.getString("evolucao"));
+				at.setAvaliacao(rs.getBoolean("avaliacao"));
+				at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
+				at.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
+				at.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return at;
+	}	
 
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer id) throws ProjetoException {
 

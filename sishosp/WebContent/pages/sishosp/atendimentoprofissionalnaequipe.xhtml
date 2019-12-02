@@ -1,0 +1,335 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<f:metadata>
+		<f:viewAction action="#{AtendimentoController.carregarGerenciamentoAtendimento()}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Atendimentos</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+				<h:form>
+					<b:row
+						rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
+
+						<b:column span="2" class="label-position">
+							<b:label value="Unidade:" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{AtendimentoController.atendimento.unidade.id}">
+								<f:selectItems
+									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
+									var="und" itemLabel="#{und.nomeUnidade}"
+									itemValue="#{und.id}" />
+								<p:ajax event="change" process="@this" />
+							</b:selectOneMenu>
+
+						</b:column>
+
+						<br></br>
+
+					</b:row>
+				</h:form>
+
+				<h:form id="formConsAge">
+
+					<b:row>
+						<p:outputPanel class="data-size5">
+
+							<b:column span="2" class="label-position data-size1">
+								<b:label value="Dia de Atendimento:" severity="info" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
+							</b:column>
+
+							<b:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="à" style="margin-left: 20px" />
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="2" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									class="select-agendaEquipe2" showOn="button" size="15"
+									id="dtagen3" locale="pt"
+									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
+							</b:column>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Programa" severity="info" />
+
+								<p:outputPanel id="outProg">
+									<p:autoComplete
+										value="#{AtendimentoController.atendimento.programa}"
+										size="31" converter="conPrograma" class="select-agendaEquipe4"
+										completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descPrograma}">
+										<p:ajax event="itemSelect"
+											update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
+							:formConsAge:btBusGr, :formConsAge:outGrupo" />
+
+									</p:autoComplete>
+
+									<p:commandButton id="btBusPr" icon="ui-icon-search"
+										process="@this"
+										action="#{ProgramaController.carregaListaProgramasUsuario()}"
+										update=":formConsuProg"
+										oncomplete="PF('dlgConsuProg').show();" />
+								</p:outputPanel>
+							</b:column>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Grupo" severity="info" />
+
+								<p:outputPanel id="outGrupo">
+									<p:autoComplete
+										value="#{AtendimentoController.atendimento.grupo}" size="31"
+										converter="conGrupo" class="select-agendaEquipe4"
+										disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+										completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descGrupo}">
+										<p:ajax event="itemSelect" update=":formConsAge:outGrupo" />
+
+									</p:autoComplete>
+
+									<p:commandButton id="btBusGr" icon="ui-icon-search"
+										process="@this"
+										action="#{AtendimentoController.listarGruposPorProgramas()}"
+										disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+										update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
+								</p:outputPanel>
+							</b:column>
+
+						</p:outputPanel>
+
+					</b:row>
+
+
+					<b:row class="row-table">
+
+
+					
+						<b:column span="2" class="col-row-tabel">
+							<b:selectOneMenu size="10"
+								value="#{AtendimentoController.tipoBusca}">
+								<f:selectItem itemLabel="Nome" itemValue="nome" />
+								<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+								<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+								<f:selectItem itemLabel="CPF" itemValue="cpf" />
+								<f:selectItem itemLabel="CNS" itemValue="cns" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="2" class="col-row-tabel">
+							<b:inputText value="#{AtendimentoController.campoBusca}"
+								placeholder="Digite aqui a busca" />
+						</b:column>
+
+						<b:column span="2">
+							<p:commandButton value="Buscar" icon="fa fa-fw fa-search"
+								class="btn-prime btn-acao-table acao-buscar"
+								action="#{AtendimentoController.consultarAtendimentosProfissionalNaEquipe()}"
+								update="dtAtendimentos, msgPagina">
+							</p:commandButton>
+						</b:column>
+
+					</b:row>
+
+					<p:dataTable id="dtAtendimentos" emptyMessage="Nenhum Registro"
+						reflow="true" paginator="true" rows="15" var="atendimento"
+						value="#{AtendimentoController.listAtendimentos}"
+						styleClass="table table-hover" paginatorPosition="bottom">
+
+						<p:column>
+							<f:facet name="header">
+                        Data
+                    </f:facet>
+							<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Paciente
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.paciente.nome}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        CNS
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.paciente.cns}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Turno
+                    </f:facet>
+							<h:outputLabel value="MANHÃ"
+								rendered="#{atendimento.turno == 'M'}" />
+							<h:outputLabel value="TARDE"
+								rendered="#{atendimento.turno == 'T'}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Profissional
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.funcionario.nome}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Programa
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.programa.descPrograma}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Tipo de Atendimento
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Nome Equipe
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Equipe
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.ehEquipe}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Situação
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.situacao}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                        Atendimento
+                    </f:facet>
+							<div align="center">
+								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-pencil-square-o"
+									size="sm" class="btn-acao-table acao-editar"
+									action="#{AtendimentoController.redirectAtendimentoProfissional()}">
+									<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+								</p:commandButton>
+							</div>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:form>
+			</div>
+		</div>
+
+
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
+			<h:form id="formConsuProg">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+					display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                            Programa
+                        </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
+							:formConsAge:btBusGr, :formConsAge:outGrupo"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AtendimentoController.atendimento.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
+			
+			<h:form id="formConsuGrop">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AtendimentoController.listaGrupos}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
+                            Grupo
+                        </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":formConsAge:outGrupo"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AtendimentoController.atendimento.grupo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

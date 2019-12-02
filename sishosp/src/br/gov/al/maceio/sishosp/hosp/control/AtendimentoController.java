@@ -53,6 +53,7 @@ public class AtendimentoController implements Serializable {
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
+    private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
@@ -101,6 +102,17 @@ public class AtendimentoController implements Serializable {
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
         listarAtendimentos(campoBusca, tipoBusca);
     }
+    
+    public void consultarAtendimentosProfissionalNaEquipe() throws ProjetoException {
+        if (this.atendimento.getDataAtendimentoInicio() == null
+                || this.atendimento.getDataAtendimentoFinal() == null) {
+            JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
+            return;
+        }
+        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
+                atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
+        listarAtendimentosProfissionalNaEquipe(campoBusca, tipoBusca);
+    }
 
     public String redirectAtendimento() {
         if (atendimento.getEhEquipe().equals("Sim") || atendimento.getAvaliacao()) {
@@ -108,6 +120,11 @@ public class AtendimentoController implements Serializable {
         } else {
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
         }
+    }
+    
+    public String redirectAtendimentoProfissional() {
+            return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
+       
     }
 
     public void getCarregaAtendimentoProfissional() throws ProjetoException {
@@ -122,7 +139,7 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+            this.atendimento = aDao.listarAtendimentoProfissionalPaciente(id);
             atendimento.setStatus("A");
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
@@ -215,6 +232,11 @@ public class AtendimentoController implements Serializable {
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
                 .carregaAtendimentos(atendimento, campoBusca, tipo);
+    }
+    
+    public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
+        this.listAtendimentos = aDao
+                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
