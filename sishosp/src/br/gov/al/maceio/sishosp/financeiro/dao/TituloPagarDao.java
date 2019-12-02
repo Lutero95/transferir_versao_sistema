@@ -322,8 +322,7 @@ public class TituloPagarDao {
 		return rst;
 	}
 	
-	public boolean salvarPagarAvulso(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, Integer id_desistencia,
-			BancoBean banco, CaixaDiarioBean caixa)
+	public boolean salvarPagarAvulso(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, BancoBean banco, CaixaDiarioBean caixa)
 			throws ProjetoException {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
@@ -436,19 +435,16 @@ public class TituloPagarDao {
 				ps.setNull(20, Types.OTHER);
 			} else
 				ps.setDouble(20, tituloPagarBean.getIcmsst());
-			if ((id_desistencia != null) && (id_desistencia != 0)) {
-				ps.setInt(21, id_desistencia);
-			} else {
 				ps.setNull(21, Types.OTHER);
-			}
+			
 
 			ps.execute();
 
-			String sql = "update financeiro.pagdup SET situacao = 'A' where codigo = ? ";
+			String sql = "update financeiro.pagdup SET situacao = 'F' where codigo = ? ";
 			pst = con.prepareStatement(sql);
 			pst.setInt(1, ps.getInt(1));
 			pst.executeUpdate();
-
+			tituloPagarBean.setCodigo(ps.getInt(1));
 			int retornoid = 0;
 
 			retornoid = ps.getInt(1);
@@ -467,6 +463,7 @@ public class TituloPagarDao {
 		        	
 		        	java.util.Date data = new java.util.Date();
 		        	cheque.setDtvencimento(data);
+		        	cheque.setDtemissao(data);
 		        	cheque.setCompensado("S");
 		        	cheque.setDtcompensado(caixa.getDataCaixaAbertura());
 		        	

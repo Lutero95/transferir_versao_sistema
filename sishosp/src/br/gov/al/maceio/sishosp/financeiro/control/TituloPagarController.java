@@ -485,56 +485,7 @@ public class TituloPagarController implements Serializable {
 		}
 	}
 
-	public void salvarDocumentoPagarAvulso(BancoBean banco) throws ProjetoException {
 
-		boolean gravou = false;
-		TituloPagarDao pagarDAo = new TituloPagarDao();
-
-		this.tituloPagarBean.setForn(this.fornecedorBean);
-		this.tituloPagarBean.setPortador(this.portadorBean);
-		CaixaDiarioBean cx = new CaixaDiarioBean();
-		TesourariaDAO tdao = new TesourariaDAO();
-		cx = tdao.retornaCaixaAtual();
-		// Date data = new java.util.Date();
-		// this.tituloPagarBean.setDtemissao(new java.sql.Date(data.getTime()));
-
-		this.funcBean.getCliente().getNome();
-		this.pagamentoDesi.getValor();
-		this.pagamentoDesi.getDtCadastro();
-
-		Boolean podeSalvar = true;
-
-		if (tituloPagarBean.getValor() > 0) {
-
-			if (podeSalvar) {
-
-				gravou = pagarDAo.salvarPagarAvulso(this.tituloPagarBean, this.lstImpostos,
-						this.pagamentoDesi.getId_desistencia(), banco, cx);
-
-			}
-
-		} else {
-			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
-		}
-
-		if (valorTotal() < 0) {
-			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
-
-		} else {
-			if (gravou == true) {
-				limparDados();
-				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
-				RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
-
-				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
-				lstTitPagar = null;
-
-			} else {
-
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
-			}
-		}
-	}
 
 	public void excluirDocumentoPagar() throws ProjetoException {
 		boolean excluiu = false;

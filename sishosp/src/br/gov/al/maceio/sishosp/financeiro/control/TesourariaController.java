@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.financeiro.control;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -29,6 +30,8 @@ import br.gov.al.maceio.sishosp.financeiro.model.CaixaDiarioBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ChequeEmitidoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ChequeRecebidoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.FornecedorBean;
+import br.gov.al.maceio.sishosp.financeiro.model.ImpostoBean;
+import br.gov.al.maceio.sishosp.financeiro.model.PortadorBean;
 import br.gov.al.maceio.sishosp.financeiro.model.PrestacaoContasBean;
 import br.gov.al.maceio.sishosp.financeiro.model.TesourariaBean;
 import br.gov.al.maceio.sishosp.financeiro.model.TituloPagarBean;
@@ -52,6 +55,7 @@ public class TesourariaController implements Serializable {
     private TesourariaBean tesouraria2;
     private FornecedorBean forn;
     private TituloPagarBean tituloselecionado;
+    private TituloPagarBean tituloAvulso;
     private List<TituloPagarBean> listatitulosbaixar;
     private List<ChequeEmitidoBean> listachequesemitidos;
     private List<ChequeRecebidoBean> listaChequesRecebidos;
@@ -64,6 +68,9 @@ public class TesourariaController implements Serializable {
     private Integer operacao;
     private Integer idSelecionado, idSelecionadoChequeReceb;
     boolean totalDisable;
+    private FornecedorBean fornecedorBean;
+	private PortadorBean portadorBean;
+	private ArrayList<ImpostoBean> lstImpostos;
     
 
     public TesourariaController() throws ProjetoException, ParseException {
@@ -89,6 +96,7 @@ public class TesourariaController implements Serializable {
         listachequesemitidos = new ArrayList<ChequeEmitidoBean>();
         listaChequesRecebidos = new ArrayList<ChequeRecebidoBean>();
         tituloselecionado = new TituloPagarBean();
+        tituloAvulso = new TituloPagarBean();
         tituloselecionado.getTitulobaixa().setTpbaixa("1");
         lancamento = new TesourariaBean();
         listatitulosaberto =  new ArrayList<TituloPagarBean>();
@@ -114,7 +122,9 @@ public class TesourariaController implements Serializable {
         tesouraria2 = new TesourariaBean();
         banco = new BancoBean();
         banco2 = new BancoBean();
-        
+		fornecedorBean = new FornecedorBean();
+		portadorBean = new PortadorBean();
+		lstImpostos = new ArrayList<>();
         
        
         
@@ -437,6 +447,76 @@ public void gravaAcerto() throws ProjetoException, ParseException {
 		}
     }
     
+    public Double valorTotalPagamentoAvulso() {
+
+		Double vlr = tituloAvulso.getValor();
+
+		if (tituloAvulso.getDesconto() != 0) {
+			vlr = tituloAvulso.getValor() - tituloAvulso.getDesconto();
+		}
+
+		if (tituloAvulso.getMulta() != 0) {
+			vlr += tituloAvulso.getMulta();
+		}
+
+		if (tituloAvulso.getJuros() != 0) {
+			vlr += tituloAvulso.getJuros();
+		}
+		BigDecimal vlrAux = new BigDecimal(vlr);
+		BigDecimal vlrAux2 = vlrAux.setScale(2, BigDecimal.ROUND_HALF_UP);
+		vlr = vlrAux2.doubleValue();
+		return vlr;
+	}
+    
+	public void salvarDocumentoPagarAvulso(BancoBean banco) throws ProjetoException, ParseException {
+
+		boolean gravou = false;
+		TituloPagarDao pagarDAo = new TituloPagarDao();
+
+		this.tituloAvulso.setForn(this.fornecedorBean);
+		this.tituloAvulso.setPortador(this.portadorBean);
+		this.tituloAvulso.getTitulobaixa().setTpbaixa("1");
+		CaixaDiarioBean cx = new CaixaDiarioBean();
+		TesourariaDAO tdao = new TesourariaDAO();
+		cx = tdao.retornaCaixaAtual();
+		// Date data = new java.util.Date();
+		// this.tituloPagarBean.setDtemissao(new java.sql.Date(data.getTime()));
+
+
+
+		Boolean podeSalvar = true;
+
+		if (tituloAvulso.getValor() > 0) {
+
+			if (podeSalvar) {
+
+				gravou = pagarDAo.salvarPagarAvulso(this.tituloAvulso, this.lstImpostos,
+						 banco, cx);
+
+			}
+
+		} else {
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.", "Atenção");
+		}
+
+		if (valorTotalPagamentoAvulso() < 0) {
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.", "Atenção");
+
+		} else {
+			if (gravou == true) {
+				limparDados();
+				RequestContext.getCurrentInstance().execute("PF('dlgtituloavulso').hide();");
+				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
+				onBancoSelect(null);
+				tituloAvulso  = new TituloPagarBean();
+
+			} else {
+
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.", "Atenção");
+			}
+		}
+	}
+    
     public void removerTitulo() {
     	
     	
@@ -549,6 +629,11 @@ public void gravaAcerto() throws ProjetoException, ParseException {
     	
     	}
     	
+    	
+    }
+    
+    public void setarTituloAvulso() {
+    	tituloAvulso.setParcela("UN");
     	
     }
     
@@ -952,6 +1037,38 @@ public void gravaAcerto() throws ProjetoException, ParseException {
 
 	public void setRowChequeRecebido(ChequeRecebidoBean rowChequeRecebido) {
 		this.rowChequeRecebido = rowChequeRecebido;
+	}
+
+	public TituloPagarBean getTituloAvulso() {
+		return tituloAvulso;
+	}
+
+	public void setTituloAvulso(TituloPagarBean tituloAvulso) {
+		this.tituloAvulso = tituloAvulso;
+	}
+
+	public FornecedorBean getFornecedorBean() {
+		return fornecedorBean;
+	}
+
+	public PortadorBean getPortadorBean() {
+		return portadorBean;
+	}
+
+	public void setFornecedorBean(FornecedorBean fornecedorBean) {
+		this.fornecedorBean = fornecedorBean;
+	}
+
+	public void setPortadorBean(PortadorBean portadorBean) {
+		this.portadorBean = portadorBean;
+	}
+
+	public ArrayList<ImpostoBean> getLstImpostos() {
+		return lstImpostos;
+	}
+
+	public void setLstImpostos(ArrayList<ImpostoBean> lstImpostos) {
+		this.lstImpostos = lstImpostos;
 	}  
 	
 	

@@ -885,7 +885,7 @@ public class TesourariaDAO {
 			pstes.setString(2, "DB");
 			pstes.setDouble(3, cheque.getValor());
 			pstes.setInt(4, retornoid);
-			pstes.setString(5, "Cheque N° " + cheque.getNumcheque());
+			pstes.setString(5, "PAGAMENTO AVULSO");
 			pstes.setInt(6, cheque.getCaixa().getSeqcaixadiario());
 			pstes.setLong(7, user_session.getId());
 
@@ -901,7 +901,7 @@ public class TesourariaDAO {
 		} finally {
 			try {
 				ps.close();
-				con.close();
+				//con.close();
 			} catch (Exception sqlc) {
 				sqlc.printStackTrace();
 			}

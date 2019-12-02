@@ -169,7 +169,7 @@
 					        <p:menuitem value="Repetir registro" onclick="PF('dlgRepetir').show();" 
 					        actionListener="#{tituloPagarController.limparDadosRetAlt()}" 
 					       icon="ui-icon-arrowrefresh-1-w" 
-					     update=":formRep:tbViewEdit, :formRep:tbViewEdit:tabRetAlt" disabled="#{MBUsuarios.verificarPermComp('FC-16', MBUsuarios.sistemaLogado.id) == false or tituloPagarController.rowBean.codigo==null}" />
+					     update=":formRep:tbViewEdit, :formRep:tbViewEdit:tabRetAlt" disabled="#{tituloPagarController.rowBean.codigo==null}" />
 				
 				<f:setPropertyActionListener value="1"
 									target="#{tituloPagarController.tipo}" />
@@ -748,12 +748,7 @@
 
 </p:inputNumber>
 									
-									<p:outputLabel value="ICMS St."/>
-									<p:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
-								value="#{tituloPagarController.rowBean.icmsst}"
-								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
-
-</p:inputNumber>									
+								
 										
                         			
                         			

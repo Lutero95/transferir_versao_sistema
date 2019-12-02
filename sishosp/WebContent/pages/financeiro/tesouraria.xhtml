@@ -68,11 +68,7 @@
 
 								</p:commandButton>
 
-								<p:commandButton label="Avulso" value="Avulso"
-									icon="ui-icon-locked" oncomplete="PF('dlgtituloavulso').show()"
-									update="grwgeral">
 
-								</p:commandButton>
 							</h:form>
 						</center>
 					</p:outputPanel>
@@ -482,11 +478,21 @@
 
 
 
-									<p:commandButton label="Pagamento" value="Pagamento"
+									<p:commandButton label="Pagamento de Título"
+										value="Pagamento de Título"
 										style="width:120px;margin-top:10px"
 										rendered="#{tesourariaController.banco.contaCaixa == 'S'}"
 										onclick="PF('dlgchqemi').show();"
 										actionListener="#{tesourariaController.setarDebito()}"
+										process="@this"
+										disabled="#{MBUsuarios.verificarPermComp('FC-61', MBUsuarios.sistemaLogado.id) == false}" />
+
+
+									<p:commandButton label="Pagamento Avulso"
+										value="Pagamento Avulso" style="width:120px;margin-top:10px"
+										rendered="#{tesourariaController.banco.contaCaixa == 'S'}"
+										onclick="PF('dlgtituloavulso').show();" update=":formInsert"
+										actionListener="#{tesourariaController.setarTituloAvulso()}"
 										process="@this"
 										disabled="#{MBUsuarios.verificarPermComp('FC-61', MBUsuarios.sistemaLogado.id) == false}" />
 
@@ -1342,7 +1348,7 @@
 				<h:outputText value="Dados Adicionais" />
 				<br />
 				<p:inputTextarea value="#{tesourariaController.lancamento.obs}"
-					cols="50"></p:inputTextarea>
+					cols="50" rows="2"></p:inputTextarea>
 
 				<center>
 					<br />
@@ -1406,7 +1412,7 @@
 		</p:dialog>
 
 
-		<p:dialog responsive="true" header="Dados" widgetVar="dlgtituloavulso"
+		<p:dialog responsive="true" header="Dados" widgetVar="dlgtituloavulso"  positionType="absolute" style="z-indez:100000 !important"
 			width="850">
 
 			<h:form id="formInsert">
@@ -1419,16 +1425,16 @@
 
 							<br />
 
-							<p:panelGrid columns="4" styleClass="semBorda">
+							<p:panelGrid columns="6" styleClass="semBorda">
 
 								<h:outputText value="Documento"></h:outputText>
 								<p:inputText
-									value="#{tituloPagarController.tituloPagarBean.duplicata}" />
+									value="#{tesourariaController.tituloAvulso.duplicata}" />
 
 								<h:outputText value="Tipo Doc."></h:outputText>
 
 								<p:selectOneMenu
-									value="#{tituloPagarController.tituloPagarBean.tipoDocumento.codtipodocumento}"
+									value="#{tesourariaController.tituloAvulso.tipoDocumento.codtipodocumento}"
 									required="true" requiredMessage="Informe o Tipo de documento"
 									style="width:130px;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -1437,9 +1443,7 @@
 										itemLabel="#{x.descricao}">
 									</f:selectItems>
 
-									<p:ajax update="formInsert"
-										listener="#{tituloPagarController.verificarDevolucao()}"
-										global="false"></p:ajax>
+
 								</p:selectOneMenu>
 
 
@@ -1447,53 +1451,10 @@
 
 								<h:outputText value="Nota Fiscal"></h:outputText>
 								<p:inputText maxlength="10"
-									value="#{tituloPagarController.tituloPagarBean.notaFiscal}"></p:inputText>
+									value="#{tesourariaController.tituloAvulso.notaFiscal}"></p:inputText>
 
-								<h:outputText value="Parcela"></h:outputText>
-								<p:inputText size="10" required="true"
-									requiredMessage="Informe a Parcela" maxlength="2"
-									value="#{tituloPagarController.tituloPagarBean.parcela}" />
-
-
+								
 							</p:panelGrid>
-							<p:outputPanel autoUpdate="false">
-								<p:panelGrid columns="8" styleClass="semBorda">
-									<h:outputText value="Devolução"
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" />
-									<p:commandButton icon="ui-icon-search"
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										onclick="PF('dlgDesistencia').show();" process="@this"></p:commandButton>
-
-
-									<h:outputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										value="Cliente: " />
-									<p:inputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										readonly="true"
-										value="#{tituloPagarController.funcBean.cliente.nome}"></p:inputText>
-
-
-									<h:outputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										value="Valor: " />
-									<p:inputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										readonly="true"
-										value="#{tituloPagarController.pagamentoDesi.valor}"></p:inputText>
-
-									<h:outputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										value="Data Desistência: " />
-									<p:inputText
-										rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"
-										readonly="true"
-										value="#{tituloPagarController.pagamentoDesi.dtCadastro}"></p:inputText>
-
-								</p:panelGrid>
-								<p:separator
-									rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" />
-							</p:outputPanel>
 
 
 
@@ -1502,7 +1463,7 @@
 								<p:commandButton icon="ui-icon-search"
 									onclick="PF('dlgF').show();"></p:commandButton>
 
-								<p:autoComplete value="#{tituloPagarController.fornecedorBean}"
+								<p:autoComplete value="#{tesourariaController.fornecedorBean}"
 									size="30"
 									completeMethod="#{buscaController.completeBuscaFornecedor}"
 									var="theme" required="true"
@@ -1514,9 +1475,9 @@
 								</p:autoComplete>
 
 								<h:outputText value="Data Emissão"></h:outputText>
-								<p:calendar
-									value="#{tituloPagarController.tituloPagarBean.dtemissao}"
-									pattern="dd/MM/yyyy" required="true"
+								<p:calendar style="width:30px !important"
+									value="#{tesourariaController.tituloAvulso.dtemissao}"
+									pattern="dd/MM/yyyy" required="true" mask="99/99/9999"
 									requiredMessage="Informe a data de Emissão." showOn="button"
 									locale="pt" />
 							</p:panelGrid>
@@ -1528,7 +1489,7 @@
 									<h:outputText value="C.Custo"></h:outputText>
 
 									<p:selectOneMenu
-										value="#{tituloPagarController.tituloPagarBean.ccusto.idccusto}"
+										value="#{tesourariaController.tituloAvulso.ccusto.idccusto}"
 										required="true" requiredMessage="Informe o centro de custo"
 										style="width:230px;">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -1542,7 +1503,7 @@
 									<h:outputText value="Despesa"></h:outputText>
 
 									<p:selectOneMenu
-										value="#{tituloPagarController.tituloPagarBean.despesa.id}"
+										value="#{tesourariaController.tituloAvulso.despesa.id}"
 										required="true" requiredMessage="Informe a despesa."
 										style="width:230px;">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -1557,7 +1518,7 @@
 								<h:outputText value="Portador"></h:outputText>
 								<p:commandButton icon="ui-icon-search"
 									onclick="PF('dlgP').show();"></p:commandButton>
-								<p:autoComplete value="#{tituloPagarController.portadorBean}"
+								<p:autoComplete value="#{tesourariaController.portadorBean}"
 									size="30"
 									completeMethod="#{buscaController.completeBuscaPortador}"
 									var="theme" required="true"
@@ -1568,38 +1529,20 @@
 										listener="#{buscaController.onItemSelectPortador}" />
 								</p:autoComplete>
 
+							<h:outputText value="Vencimento"></h:outputText>
 
-								<p:inputMask
-									value="#{tituloPagarController.tituloPagarBean.dtcompete}"
-									mask="99/9999"></p:inputMask>
-							</p:panelGrid>
-
-							<p:panelGrid columns="4" styleClass="semBorda">
-
-								<h:outputText value="Vencimento"></h:outputText>
-
-								<p:calendar
-									value="#{tituloPagarController.tituloPagarBean.dtvcto}"
+								<p:calendar value="#{tesourariaController.tituloAvulso.dtvcto}"
 									pattern="dd/MM/yyyy" required="true"
 									requiredMessage="Informe a data de vencimento." showOn="button"
 									locale="pt" />
-								<h:outputText value="Previsão Pagamento"></h:outputText>
-
-								<p:calendar
-									value="#{tituloPagarController.tituloPagarBean.dtprevisao}"
-									pattern="dd/MM/yyyy" required="false"
-									requiredMessage="Informe a data de vencimento." showOn="button"
-									locale="pt" />
-
-
-
-
 							</p:panelGrid>
+
+							
 							<p:panelGrid columns="2" styleClass="semBorda">
 								<h:outputText value="Histórico"></h:outputText>
 
 								<p:inputTextarea cols="60"
-									value="#{tituloPagarController.tituloPagarBean.historico}"></p:inputTextarea>
+									value="#{tesourariaController.tituloAvulso.historico}"></p:inputTextarea>
 							</p:panelGrid>
 							<p:panelGrid columns="6" styleClass="semBorda">
 
@@ -1607,54 +1550,16 @@
 
 								<h:outputText value="Valor"></h:outputText>
 								<p:inputNumber decimalPlaces="2" symbol="R$ " required="true"
-									value="#{tituloPagarController.tituloPagarBean.valor}"
+									value="#{tesourariaController.tituloAvulso.valor}"
 									requiredMessage="Valor Obrigatório" thousandSeparator="."
 									decimalSeparator=",">
 									<p:ajax update="panelTotal"
-										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+										listener="#{tesourariaController.valorTotalPagamentoAvulso()}"></p:ajax>
 								</p:inputNumber>
 
 
-								<h:outputText value="Desconto"></h:outputText>
+							
 
-								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
-									value="#{tituloPagarController.tituloPagarBean.desconto}"
-									requiredMessage="Valor Obrigatório" thousandSeparator="."
-									decimalSeparator=",">
-									<p:ajax update="panelTotal"
-										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</p:inputNumber>
-
-								<h:outputText value="Juros"></h:outputText>
-
-								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
-									value="#{tituloPagarController.tituloPagarBean.juros}"
-									requiredMessage="Valor Obrigatório" thousandSeparator="."
-									decimalSeparator=",">
-									<p:ajax update="panelTotal"
-										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</p:inputNumber>
-								<h:outputText value="Multa"></h:outputText>
-
-								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
-									value="#{tituloPagarController.tituloPagarBean.multa}"
-									requiredMessage="Valor Obrigatório" thousandSeparator="."
-									decimalSeparator=",">
-									<p:ajax update="panelTotal"
-										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</p:inputNumber>
-
-
-
-								<h:outputText value="ICMS St."></h:outputText>
-
-								<p:inputNumber decimalPlaces="2" symbol="R$ " required="false"
-									value="#{tituloPagarController.tituloPagarBean.icmsst}"
-									requiredMessage="Valor Obrigatório" thousandSeparator="."
-									decimalSeparator=",">
-									<p:ajax update="panelTotal"
-										listener="#{tituloPagarController.valorTotal()}"></p:ajax>
-								</p:inputNumber>
 
 
 								<h:outputText value="Total"></h:outputText>
@@ -1662,7 +1567,7 @@
 								<p:outputPanel id="panelTotal">
 
 									<p:outputLabel
-										value="Total: R$ #{tituloPagarController.valorTotal()}">
+										value="Total: R$ #{tesourariaController.valorTotalPagamentoAvulso()}">
 										<f:convertNumber type="currency" currencySymbol="R$" />
 									</p:outputLabel>
 								</p:outputPanel>
@@ -1670,90 +1575,22 @@
 
 							</p:panelGrid>
 
-							<p:panelGrid columns="2" styleClass="semBorda">
-								<h:outputText value="Nominal" />
-								<p:inputText
-									value="#{tituloPagarController.tituloPagarBean.nominal}"
-									size="60" />
-							</p:panelGrid>
 						</p:tab>
 
-						<p:tab title="Retenção">
-
-
-							<p:panelGrid columns="2" styleClass="semBorda">
-								<p:commandButton value="Incluir Novo" icon="ui-icon-plus"
-									action="#{tituloPagarController.verificaAdd()}"
-									onclick="PF('dlgNovoImposto').show();"></p:commandButton>
-							</p:panelGrid>
-
-
-							<p:outputPanel>
-								<p:dataTable value="#{tituloPagarController.lstImpostos}"
-									var="x" paginatorAlwaysVisible="true" paginator="true"
-									paginatorPosition="bottom" id="dtImposto" rows="4"
-									style="margin-top:10px;">
-
-
-									<p:column headerText="Imposto" width="auto">
-
-										<h:outputText value="#{x.descImposto}" />
-
-									</p:column>
-
-									<p:column headerText="%Retenção" width="auto">
-
-										<h:outputText value="#{x.pcRentencao}" />
-
-									</p:column>
-
-									<p:column headerText="Base(R$)" width="auto">
-
-										<h:outputText value="#{x.valorBase}" />
-
-									</p:column>
-									<p:column width="auto">
-
-										<center>
-											<p:commandButton icon="ui-icon-pencil"
-												onclick="PF('dlgEditRetencao').show();"
-												title="Editar retenção,base">
-
-												<f:setPropertyActionListener value="#{x}"
-													target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
-
-											</p:commandButton>
-
-											<p:commandButton icon="ui-icon-trash"
-												title="Remover retenção"
-												action="#{tituloPagarController.removerRetencao()}"
-												process="@this" update="formInsert">
-
-												<f:setPropertyActionListener value="#{x}"
-													target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
-
-											</p:commandButton>
-										</center>
-
-									</p:column>
-
-								</p:dataTable>
-							</p:outputPanel>
-						</p:tab>
+						
 
 					</p:tabView>
 
 
-					<hr />
-
 					<center>
 
 						<p:commandButton value="Salvar"
-							actionListener="#{tituloPagarController.salvarDocumentoPagarAvulso(tesourariaController.banco)}"
+							actionListener="#{tesourariaController.salvarDocumentoPagarAvulso(tesourariaController.banco)}"
 							icon="ui-icon-check" update="msg,:frmmov"></p:commandButton>
 
-						<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
-							style="margin-left:5px;" icon="ui-icon-closethick"></p:commandButton>
+						<p:commandButton value="Cancelar"
+							onclick="PF('dlgtituloavulso').hide();" style="margin-left:5px;"
+							icon="ui-icon-closethick"></p:commandButton>
 
 					</center>
 				</p:outputPanel>
@@ -1833,7 +1670,7 @@
 									oncomplete="PF('dlgF').hide();" icon="fa fa-fw fa-check">
 
 									<f:setPropertyActionListener value="#{cliente}"
-										target="#{tituloPagarController.fornecedorBean}"></f:setPropertyActionListener>
+										target="#{tesourariaController.fornecedorBean}"></f:setPropertyActionListener>
 
 								</p:commandButton>
 
@@ -1868,13 +1705,13 @@
 					<h:outputText style="font-size: 14px;" value="Nome " />
 					<p:inputText style="width: 250px; font-size: 14px;" size="30"
 						id="searchnome"
-						value="#{tituloPagarController.portadorBean.descricao}" />
+						value="#{tesourariaController.portadorBean.descricao}" />
 
 
 
 
 					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
-						action="#{tituloPagarController.buscaPortador()}"
+						action="#{tesourariaController.buscaPortador()}"
 						update="outinteressadosP">
 					</p:commandButton>
 
@@ -1916,7 +1753,7 @@
 									oncomplete="PF('dlgP').hide();" icon="fa fa-fw fa-check">
 
 									<f:setPropertyActionListener value="#{cliente}"
-										target="#{tituloPagarController.portadorBean}"></f:setPropertyActionListener>
+										target="#{tesourariaController.portadorBean}"></f:setPropertyActionListener>
 
 								</p:commandButton>
 
