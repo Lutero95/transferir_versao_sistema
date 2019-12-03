@@ -12,6 +12,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuItem;
@@ -51,6 +52,7 @@ public class FuncionarioController implements Serializable {
 	private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
 	private UnidadeBean unidadeBean;
+	private AtalhosAmbulatorialDTO atalhosAmbulatorialDTO;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -200,6 +202,8 @@ public class FuncionarioController implements Serializable {
 
 				List<Permissoes> permissoes = fDao.carregarPermissoes(usuarioLogado);
 
+				carregarAtalhosPaginaInicial(permissoes);
+
 				sistemaLogado.setDescricao("Sem Sistema");
 				sistemaLogado.setSigla("Sem Sistema");
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sistema_logado",
@@ -253,6 +257,37 @@ public class FuncionarioController implements Serializable {
 				return url;
 			}
 		}
+	}
+
+	public void carregarAtalhosPaginaInicial(List<Permissoes> permissoes){
+		atalhosAmbulatorialDTO = new AtalhosAmbulatorialDTO();
+
+		for(int i=0; i<permissoes.size(); i++){
+
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(permissoes.get(i).getMenu().getUrl())) {
+
+				if (permissoes.get(i).getMenu().getUrl().contains("cadastroPaciente")) {
+					atalhosAmbulatorialDTO.setAtalhoCadastroPaciente(true);
+				}
+				if (permissoes.get(i).getMenu().getUrl().contains("insercaoPaciente")) {
+					atalhosAmbulatorialDTO.setAtalhoInsercaoPaciente(true);
+				}
+				if (permissoes.get(i).getMenu().getUrl().contains("cadastroLaudoDigita")) {
+					atalhosAmbulatorialDTO.setAtalhoLaudo(true);
+				}
+				if (permissoes.get(i).getMenu().getUrl().contains("agendaMedica")) {
+					atalhosAmbulatorialDTO.setAtalhoAgenda(true);
+				}
+				if (permissoes.get(i).getMenu().getUrl().contains("consAgendamentos")) {
+					atalhosAmbulatorialDTO.setAtalhoConsultarAgendamentos(true);
+				}
+				if (permissoes.get(i).getMenu().getUrl().contains("atendimento")) {
+					atalhosAmbulatorialDTO.setAtalhoAtendimentos(true);
+				}
+			}
+
+		}
+
 	}
 
 	public void carregaListaSistemasDualInsercao() throws ProjetoException {
@@ -1250,4 +1285,11 @@ public class FuncionarioController implements Serializable {
 		return listaSistemasTarget;
 	}
 
+	public AtalhosAmbulatorialDTO getAtalhosAmbulatorialDTO() {
+		return atalhosAmbulatorialDTO;
+	}
+
+	public void setAtalhosAmbulatorialDTO(AtalhosAmbulatorialDTO atalhosAmbulatorialDTO) {
+		this.atalhosAmbulatorialDTO = atalhosAmbulatorialDTO;
+	}
 }

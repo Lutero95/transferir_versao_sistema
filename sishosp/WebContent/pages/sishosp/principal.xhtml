@@ -1,96 +1,108 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<h:form id="form">
-			<div class="sistemas-sel2">
-				<p:outputPanel>
+        <h:form id="form">
+            <div class="sistemas-sel2">
+                <p:outputPanel>
 
-					<div class="ui-grid ui-grid-responsive sis-sel1">
+                    <div class="ui-grid ui-grid-responsive sis-sel1">
 
-						<div class="ui-grid-row" style="display: inline-block;">
+                        <div class="ui-grid-row" style="display: inline-block;">
 
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/cadastroPaciente.xhtml?tipo=1faces-redirect=true">
-									<p:graphicImage class="img-sistema1 fade"
-										value="../../imgs/cadastro_paciente.png"
-										alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">CADASTRO PACIENTE</h3>
-							</div>
-
-
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
-									<p:graphicImage class="img-sistema1 fade"
-										value="../../imgs/insercao_paciente.png"
-										alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">INSERÇÃO DE PACIENTES</h3>
-							</div>
+                            <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoCadastroPaciente}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/cadastroPaciente.xhtml?tipo=1faces-redirect=true">
+                                        <p:graphicImage class="img-sistema1 fade"
+                                                        value="../../imgs/cadastro_paciente.png"
+                                                        alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">CADASTRO PACIENTE</h3>
+                                </div>
+                            </p:outputPanel>
 
 
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?tipo=1faces-redirect=true">
-									<p:graphicImage class="img-sistema1 fade"
-										value="../../imgs/laudos.png" alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">LAUDOS</h3>
+                            <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoInsercaoPaciente}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
+                                        <p:graphicImage class="img-sistema1 fade"
+                                                        value="../../imgs/insercao_paciente.png"
+                                                        alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">INSERÇÃO DE PACIENTES</h3>
+                                </div>
+                            </p:outputPanel>
 
-							</div>
-						</div>
-					</div>
+
+                            <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoLaudo}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?tipo=1faces-redirect=true">
+                                        <p:graphicImage class="img-sistema1 fade"
+                                                        value="../../imgs/laudos.png" alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">LAUDOS</h3>
+
+                                </div>
+                            </p:outputPanel>
+                        </div>
+                    </div>
 
 
-					<div class="ui-grid ui-grid-responsive sis-sel2">
+                    <div class="ui-grid ui-grid-responsive sis-sel2">
 
-						<div class="ui-grid-row" style="display: inline-block;">
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/agendaMedica.xhtml?faces-redirect=true">
-									<p:graphicImage class="img-sistema2 fade"
-										value="../../imgs/agenda.png" alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">AGENDA</h3>
+                        <div class="ui-grid-row" style="display: inline-block;">
+                            <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAgenda}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/agendaMedica.xhtml?faces-redirect=true">
+                                        <p:graphicImage class="img-sistema2 fade"
+                                                        value="../../imgs/agenda.png" alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">AGENDA</h3>
 
-							</div>
+                                </div>
+                            </p:outputPanel>
 
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/consAgendamentos.xhtml?faces-redirect=true">
-									<p:graphicImage class="img-sistema2 fade"
-										value="../../imgs/consulta_agendamento.png"
-										alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">CONSULTAR AGENDAMENTOS</h3>
-							</div>
+                            <p:outputPanel
+                                    rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoConsultarAgendamentos}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/consAgendamentos.xhtml?faces-redirect=true">
+                                        <p:graphicImage class="img-sistema2 fade"
+                                                        value="../../imgs/consulta_agendamento.png"
+                                                        alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">CONSULTAR AGENDAMENTOS</h3>
+                                </div>
+                            </p:outputPanel>
 
-							<div class="ui-grid-col-4">
-								<h:link
-									outcome="/pages/sishosp/atendimento.xhtml?faces-redirect=true">
-									<p:graphicImage class="img-sistema2 fade"
-										value="../../imgs/atendimentos.png" alt="Dados Cadastrais" />
-								</h:link>
-								<h3 class="texto-h3">ATENDIMENTOS</h3>
-							</div>
+                            <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAtendimentos}">
+                                <div class="ui-grid-col-4">
+                                    <h:link
+                                            outcome="/pages/sishosp/atendimento.xhtml?faces-redirect=true">
+                                        <p:graphicImage class="img-sistema2 fade"
+                                                        value="../../imgs/atendimentos.png" alt="Dados Cadastrais"/>
+                                    </h:link>
+                                    <h3 class="texto-h3">ATENDIMENTOS</h3>
+                                </div>
+                            </p:outputPanel>
 
-						</div>
-					</div>
-				</p:outputPanel>
-			</div>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </div>
 
-		</h:form>
+        </h:form>
 
-		
 
-	</ui:define>
+    </ui:define>
 </ui:composition>
