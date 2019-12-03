@@ -209,7 +209,7 @@
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.descEquipe}">
-                                    <p:ajax event="itemSelect" update=""/>
+                                    <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}"/>
                                 </p:autoComplete>
 
                                 <p:commandButton icon="ui-icon-search"

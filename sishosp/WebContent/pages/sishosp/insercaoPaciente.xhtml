@@ -246,7 +246,7 @@
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect"/>
+                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}"/>
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
@@ -921,6 +921,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton update=":formInsercao2:outEquipe"
+                                         actionListener="#{InsercaoController.listarProfissionaisEquipe()}"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuEquipe').hide();">
