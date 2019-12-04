@@ -246,7 +246,7 @@
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}"/>
+                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina" />
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
@@ -256,16 +256,7 @@
                                                      update=":formConsuEquipe"
                                                      rendered="#{InsercaoController.tipo == 'E'}"/>
                                 </b:column>
-                                <b:column span="3" class="label-position5 carregar-margin">
-                                    <p:commandButton icon="ui-icon-search" process="@this"
-                                                     value="Carregar Profissionais"
-                                                     disabled="#{InsercaoController.ehAvaliacao == true}"
-                                                     style="margin-top:20px; margin-bottom:10px;"
-                                                     class="btn-acao-table acao-confirmar"
-                                                     update="dtEquipe, :msgPagina" immediate="true"
-                                                     rendered="#{InsercaoController.tipo == 'E'}"
-                                                     action="#{InsercaoController.listarProfissionaisEquipe()}"/>
-                                </b:column>
+
                                 <b:column span="2">
                                     <p:commandButton value="Visualizar" look="success" size="sm"
                                                      id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
@@ -920,8 +911,8 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao2:outEquipe"
-                                         actionListener="#{InsercaoController.listarProfissionaisEquipe()}"
+                        <p:commandButton update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina"
+                                         action="#{InsercaoController.listarProfissionaisEquipe()}"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuEquipe').hide();">

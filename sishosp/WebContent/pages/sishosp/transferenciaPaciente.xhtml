@@ -231,7 +231,8 @@
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}"/>
+                                        <p:ajax event="itemSelect" listener="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
+                                                update="dtEquipe, :formInsercao2:msgPagina"/>
                                     </p:autoComplete>
 
                                     <p:commandButton icon="ui-icon-search"
@@ -527,10 +528,10 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao2:outEquipe"
+                        <p:commandButton update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :formInsercao2:msgPagina"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
-                                         actionListener="#{InsercaoController.listarProfissionaisEquipe()}"
+                                         action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
                                          onclick="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{TransferenciaPacienteController.insercao.equipe}"/>
