@@ -281,7 +281,7 @@ public class FuncionarioController implements Serializable {
 				if (permissoes.get(i).getMenu().getUrl().contains("consAgendamentos")) {
 					atalhosAmbulatorialDTO.setAtalhoConsultarAgendamentos(true);
 				}
-				if (permissoes.get(i).getMenu().getUrl().contains("atendimento")) {
+				if (permissoes.get(i).getMenu().getDescPagina().equals("atendimento")) {
 					atalhosAmbulatorialDTO.setAtalhoAtendimentos(true);
 				}
 			}

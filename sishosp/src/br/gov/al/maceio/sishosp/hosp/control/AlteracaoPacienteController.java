@@ -699,8 +699,8 @@ public class AlteracaoPacienteController implements Serializable {
     
     public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
     	Date dataSolicitacaoPacienteTerapia = insercao.getDataSolicitacao();
-    	Date dataVigenciaInicialLaudo = insercao.getLaudo().getVigenciaInicial();
-    	if (dataVigenciaInicialLaudo.before(dataSolicitacaoPacienteTerapia)){
+    	Date dataVigenciaFinalLaudo = insercao.getLaudo().getVigenciaFinal();
+    	if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)){
             JSFUtil.adicionarMensagemErro("A data do laudo selecionado é menor que a data de inclusão do paciente na Terapia", "Erro!");
             insercao.setLaudo(null);
             insercaoParaLaudo.setLaudo(null);
