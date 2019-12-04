@@ -742,15 +742,14 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 
-		String sql = "update acl.funcionarios set senha = ?, cpf=? where id_funcionario = ? and banco_acesso=?";
+		String sql = "update acl.funcionarios set senha = ? where id_funcionario = ? and banco_acesso=?";
 
 		try {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, usuario.getNovaSenha());
-			stmt.setString(2, usuario.getCpf());
-			stmt.setLong(3, user_session.getId());
-			stmt.setString(4, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+			stmt.setLong(2, user_session.getId());
+			stmt.setString(3, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 			stmt.executeUpdate();
 			con.commit();
 

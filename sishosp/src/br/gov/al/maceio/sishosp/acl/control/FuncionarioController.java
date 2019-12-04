@@ -922,8 +922,15 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void abrirDialogAlterarSenha() {
-		usuario.setSenha(null);
+		limparCamposSenha();
 		JSFUtil.abrirDialog("dlgAlterarSenha");
+		JSFUtil.atualizarComponente("frmAlterarSenha");
+	}
+
+	public void limparCamposSenha(){
+		usuario.setSenha(null);
+		usuario.setNovaSenha(null);
+		usuario.setConfirmacaoNovaSenha(null);
 	}
 
 	public void alterarSenhaFuncionario() {
