@@ -136,6 +136,8 @@ public class GerenciarPacienteController implements Serializable {
 
 			listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
 
+			rowBean = new GerenciarPacienteBean();
+
 			JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
 
 		} else {
