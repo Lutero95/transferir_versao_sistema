@@ -33,7 +33,7 @@ public class FuncionarioBean implements Serializable {
     private String nomeBancoAcesso;
     private String horarioAtendimento;
     private ArrayList<String> listDiasSemana;
-    
+    private Integer codigoDaUnidadeSelecionada; 
 
     // LISTAS
     private List<ProgramaBean> programa;
@@ -492,4 +492,11 @@ public class FuncionarioBean implements Serializable {
 	public void setListDiasSemana(ArrayList<String> listDiasSemana) {
 		this.listDiasSemana = listDiasSemana;
 	}
+	    public Integer getCodigoDaUnidadeSelecionada() {
+        return codigoDaUnidadeSelecionada;
+    }
+
+    public void setCodigoDaUnidadeSelecionada(Integer codigoDaUnidadeSelecionada) {
+        this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
+    }
 }

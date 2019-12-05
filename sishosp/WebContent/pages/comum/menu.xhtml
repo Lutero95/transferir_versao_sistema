@@ -2,43 +2,54 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <body>
-	<ui:composition>
-		<p:sidebar widgetVar="dlguser" styleClass="edit-opc-user">
+<ui:composition>
+    <p:sidebar widgetVar="dlguser" styleClass="edit-opc-user">
 
-			<h1 class="title-sidbar-user">
-				<i class="fa fa-fw fa-cogs" style="margin-right: 5px;"></i>Opções
-				para o usuário
-			</h1>
+        <h1 class="title-sidbar-user">
+            <i class="fa fa-fw fa-cogs" style="margin-right: 5px;"></i>Opções
+            para o usuário
+        </h1>
 
-			<p:panel styleClass="panel-border-color-user">
+        <p:panel styleClass="panel-border-color-user">
 
-				<p:outputLabel class="user-index title-panel-user"
-					value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
-					rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
+            <p:outputLabel class="user-index title-panel-user"
+                           value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
+                           rendered="#{MBFuncionarios.usuarioLogado.id != null}"/>
 
-				<p:commandButton value="Alterar Senha" icon="fa fa-fw fa-key"
-					class="btn-acao-table acao-alterar-senha"
-					action="#{MBFuncionarios.abrirDialogAlterarSenha()}" />
+            <p:commandButton value="Alterar Senha" icon="fa fa-fw fa-key"
+                             class="btn-acao-table acao-alterar-senha"
+                             action="#{MBFuncionarios.abrirDialogAlterarSenha()}"/>
 
-				<p:separator />
+            <p:outputPanel rendered="#{MBFuncionarios.usuarioLogado.codigoDaUnidadeSelecionada != null}">
+                <p:separator/>
+                <p:outputPanel autoUpdate="true">
+                    <p:outputLabel value="Unidade atual: #{MBFuncionarios.retornaTextoDaUnidadeAtual()}"
+                                   class="user-index title-panel-user"/>
+                </p:outputPanel>
+                <p:commandButton value="Trocar de Unidade" icon="fa fa-fw fa-refresh"
+                                 class="btn-acao-table acao-alterar-senha"
+                                 action="#{MBFuncionarios.abrirDialogTrocarDeUnidade()}"/>
+            </p:outputPanel>
 
-				<p:commandButton value="Fechar" icon="fa fa-fw fa-close" class="btn-cad-cancel" 
-					oncomplete="PF('dlguser').hide();" ajax="true" />
+            <p:separator/>
 
-			</p:panel>
-		</p:sidebar>
+            <p:commandButton value="Fechar" icon="fa fa-fw fa-close" class="btn-cad-cancel"
+                             oncomplete="PF('dlguser').hide();" ajax="true"/>
 
-		<p:menubar styleClass="menu-sistema"
-			model="#{MBFuncionarios.menuModel}" />
+        </p:panel>
+    </p:sidebar>
 
-	</ui:composition>
+    <p:menubar styleClass="menu-sistema"
+               model="#{MBFuncionarios.menuModel}"/>
+
+</ui:composition>
 </body>
 
 

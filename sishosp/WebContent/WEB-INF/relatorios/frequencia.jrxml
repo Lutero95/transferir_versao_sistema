@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="pestalizzi_maceio"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -77,7 +77,7 @@ select
 	where t1.id_paciente = p.id_paciente ) tel_id1 , 
 	 pi.id codpacienteinstituicao,lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca,empresa.logomarca2,coalesce(l.data_solicitacao, pi.data_solicitacao) data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
-p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
+p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome,case when p.cpf='' then '           ' when p.cpf is null then '           ' else p.cpf end cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
 p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,

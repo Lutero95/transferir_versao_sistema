@@ -53,6 +53,8 @@ public class FuncionarioController implements Serializable {
 	private FuncionarioDAO fDao = new FuncionarioDAO();
 	private UnidadeBean unidadeBean;
 	private AtalhosAmbulatorialDTO atalhosAmbulatorialDTO;
+	private List<UnidadeBean> unidadesDoUsuarioLogado;
+	private Integer codigoDaUnidadeSelecionada = null;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -107,6 +109,7 @@ public class FuncionarioController implements Serializable {
 		this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
 		usuario = new FuncionarioBean();
 		renderizarPermissoes = false;
+		unidadesDoUsuarioLogado = new ArrayList<>();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -168,14 +171,9 @@ public class FuncionarioController implements Serializable {
 	public String login() throws ProjetoException {
 
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "N");
-		/*Bloco Producao */
-		
+
 		String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
-		//Bloco Teste
-	/*	
-		String nomeBancoAcesso = "teste_pestalozzi_maceio"; 
-		SessionUtil.adicionarNaSessao(nomeBancoAcesso, "nomeBancoAcesso");
-*/
+
 		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
 			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
 			return null;
@@ -190,10 +188,61 @@ public class FuncionarioController implements Serializable {
 
 			} else {
 
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
-						usuarioLogado);
+				unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+				if(unidadesDoUsuarioLogado.size() > 1){
+					JSFUtil.abrirDialog("selecaoUnidade");
+				}else{
+					String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+					return url;
+				}
+			}
+			return "";
+		}
+	}
 
-				// ACL =============================================================
+	public String associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin() throws ProjetoException {
+		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
+		String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+		return url;
+	}
+
+	public void associarUnidadeSelecionadaAoUsuarioDaSessao() throws ProjetoException {
+		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
+				usuarioLogado);
+		JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!","Sucesso!");
+		JSFUtil.fecharDialog("selecaoUnidade");
+	}
+
+	public void abrirDialogDeSelecaoDeUnidade() throws ProjetoException {
+
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "N");
+		String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
+
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
+			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
+		} else {
+
+			usuarioLogado = fDao.autenticarUsuario(usuario);
+
+			if (usuarioLogado == null) {
+				JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
+			} else {
+				List<UnidadeBean> unidadesDoUsuario = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+				if(unidadesDoUsuario.size() > 1){
+					JSFUtil.abrirDialog("selecaoUnidade");
+				}
+			}
+		}
+	}
+
+
+
+	private String carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao() throws ProjetoException {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
+				usuarioLogado);
+
+		// ACL =============================================================
 
 				List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
 
@@ -926,6 +975,10 @@ public class FuncionarioController implements Serializable {
 		JSFUtil.abrirDialog("dlgAlterarSenha");
 		JSFUtil.atualizarComponente("frmAlterarSenha");
 	}
+	
+		public void abrirDialogTrocarDeUnidade(){
+		JSFUtil.abrirDialog("selecaoUnidade");
+	}
 
 	public void limparCamposSenha(){
 		usuario.setSenha(null);
@@ -1298,5 +1351,24 @@ public class FuncionarioController implements Serializable {
 
 	public void setAtalhosAmbulatorialDTO(AtalhosAmbulatorialDTO atalhosAmbulatorialDTO) {
 		this.atalhosAmbulatorialDTO = atalhosAmbulatorialDTO;
+	}
+	public List<UnidadeBean> getUnidadesDoUsuarioLogado() {
+		return unidadesDoUsuarioLogado;
+	}
+
+	public void setUnidadesDoUsuarioLogado(List<UnidadeBean> unidadesDoUsuarioLogado) {
+		this.unidadesDoUsuarioLogado = unidadesDoUsuarioLogado;
+	}
+
+	public Integer getCodigoDaUnidadeSelecionada() {
+		return codigoDaUnidadeSelecionada;
+	}
+
+	public void setCodigoDaUnidadeSelecionada(Integer codigoDaUnidadeSelecionada) {
+		this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
+	}
+
+	public String retornaTextoDaUnidadeAtual(){
+		return fDao.retornaNomeDaUnidadeAtual(usuarioLogado.getCodigoDaUnidadeSelecionada());
 	}
 }
