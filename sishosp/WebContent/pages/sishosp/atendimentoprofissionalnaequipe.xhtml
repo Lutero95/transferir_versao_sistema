@@ -119,12 +119,13 @@
 								</p:outputPanel>
 							</b:column>
 
-							<b:column span="2" class="col-row-tabel">
+							<b:column span="3" class="col-row-tabel">
+							<b:label value="Situação Evolução" severity="info" />
 								<b:selectOneMenu size="10"
 												 value="#{AtendimentoController.buscaEvolucao}">
 									<f:selectItem itemLabel="Todos" itemValue="T" />
-									<f:selectItem itemLabel="Com Evolução" itemValue="CE" />
-									<f:selectItem itemLabel="Sem Evolução" itemValue="SE" />
+									<f:selectItem itemLabel="Evolução Realizada" itemValue="CE" />
+									<f:selectItem itemLabel="Evolução não Realizada" itemValue="SE" />
 								</b:selectOneMenu>
 							</b:column>
 
@@ -229,16 +230,10 @@
 							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
 						</p:column>
 
+						
 						<p:column>
 							<f:facet name="header">
-                        Equipe
-                    </f:facet>
-							<p:outputLabel value="#{atendimento.ehEquipe}" />
-						</p:column>
-
-						<p:column>
-							<f:facet name="header">
-                        Situação
+                        Sit. Evolução
                     </f:facet>
 							<p:outputLabel value="#{atendimento.situacao}" />
 						</p:column>

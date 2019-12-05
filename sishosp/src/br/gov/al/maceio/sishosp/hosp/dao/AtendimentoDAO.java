@@ -436,8 +436,8 @@ public class AtendimentoDAO {
 				"		where\n" + 
 				"			a11.id_atendimento = a.id_atendimento\n" + 
 				"			and a11.codprofissionalatendimento=255\n" + 
-				"			and a11.evolucao is null)  then 'Atendimento Não Informado'\n" + 
-				"		 else 'Atendimento Informado'\n" + 
+				"			and a11.evolucao is null)  then 'Evolução Não Realizada'\n" + 
+				"		 else 'Evolução Realizada'\n" + 
 				"	end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
