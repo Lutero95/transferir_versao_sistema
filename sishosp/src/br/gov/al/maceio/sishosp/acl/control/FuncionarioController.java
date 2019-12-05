@@ -304,8 +304,8 @@ public class FuncionarioController implements Serializable {
 				}
 
 				return url;
-			}
-		}
+			
+		
 	}
 
 	public void carregarAtalhosPaginaInicial(List<Permissoes> permissoes){
