@@ -119,6 +119,15 @@
 								</p:outputPanel>
 							</b:column>
 
+							<b:column span="2" class="col-row-tabel">
+								<b:selectOneMenu size="10"
+												 value="#{AtendimentoController.buscaEvolucao}">
+									<f:selectItem itemLabel="Todos" itemValue="T" />
+									<f:selectItem itemLabel="Com Evolução" itemValue="CE" />
+									<f:selectItem itemLabel="Sem Evolução" itemValue="SE" />
+								</b:selectOneMenu>
+							</b:column>
+
 						</p:outputPanel>
 
 					</b:row>

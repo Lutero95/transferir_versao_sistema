@@ -10,6 +10,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 
@@ -415,7 +416,7 @@ public class AtendimentoDAO {
 		return lista;
 	}
 	
-	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo)
+	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo, String buscaEvolucao)
 			throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -435,6 +436,7 @@ public class AtendimentoDAO {
 				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
+				+ " JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a.codmedico)"
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
@@ -448,6 +450,13 @@ public class AtendimentoDAO {
 		}
 		if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
 			sql = sql + " and  a.codgrupo = ?";
+		}
+
+		if (buscaEvolucao.equals(BuscaEvolucao.COM_EVOLUCAO.getSigla())) {
+			sql = sql + " and a1.evolucao IS NOT NULL ";
+		}
+		if (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla())) {
+			sql = sql + " and a1.evolucao IS NULL ";
 		}
 
 		if (tipo.equals("nome")) {

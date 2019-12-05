@@ -48,6 +48,7 @@ public class AtendimentoController implements Serializable {
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private List<GrupoBean> listaGrupos;
 	private String tipoBusca;
+	private String buscaEvolucao;
 	private String campoBusca;
 	private String opcaoAtendimento;
 
@@ -77,6 +78,7 @@ public class AtendimentoController implements Serializable {
         pts = new Pts();
         renderizarDialogLaudo = false;
         listaGrupos = new ArrayList<>();
+        buscaEvolucao = "T";
     }
 
     public void carregarGerenciamentoAtendimento(){
@@ -236,7 +238,7 @@ public class AtendimentoController implements Serializable {
     
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo);
+                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
@@ -573,4 +575,12 @@ public class AtendimentoController implements Serializable {
 	public void setOpcaoAtendimento(String opcaoAtendimento) {
 		this.opcaoAtendimento = opcaoAtendimento;
 	}
+
+    public String getBuscaEvolucao() {
+        return buscaEvolucao;
+    }
+
+    public void setBuscaEvolucao(String buscaEvolucao) {
+        this.buscaEvolucao = buscaEvolucao;
+    }
 }
