@@ -163,7 +163,7 @@
 
 						<b:column span="1">
 
-							<p:commandButton value="Buscar" icon="glyphicon-search"
+							<p:commandButton value="Buscar" icon="ui-icon-search"
 								style="margin-top:-11px" class="btn-acao-table acao-buscar"
 								id="btnBusca" action="#{PtsController.buscarPtsPacientesAtivos}"
 								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg, btnInserir"></p:commandButton>
@@ -172,7 +172,7 @@
 
 						<b:column span="1">
 
-							<p:commandButton value="Limpar" icon="glyphicon-trash"
+							<p:commandButton value="Limpar" icon="ui-icon-trash"
 								style="margin-top:-11px" class="btn-acao-table acao-limpar2"
 								action="#{PtsController.limparBusca()}"
 								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg"></p:commandButton>
@@ -192,7 +192,7 @@
 									id="btnInserir" immediate="true"
 									disabled="#{PtsController.renderizarBotaoNovo == false}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
-									update=":formGerenPaci, :msgPagina" icon="glyphicon-plus"
+									update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
 									action="#{PtsController.redirectInsert}" />
 							</b:column>
 
@@ -201,7 +201,7 @@
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnAlterar" immediate="true"
 									class="btn-acao-table acao-altera2 btn-new-padding2"
-									update=":formGerenPaci, :msgPagina" icon="glyphicon-pencil"
+									update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil"
 									action="#{PtsController.redirectEdit()}" />
 							</b:column>
 
@@ -211,7 +211,7 @@
 									id="btnRenovar" immediate="true"
 									class="btn-acao-table acao-limpar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina"
-									icon="glyphicon glyphicon-refresh"
+									icon="ui-icon-refresh"
 									action="#{PtsController.redirectRenovacao()}" />
 							</b:column>
 
@@ -221,7 +221,7 @@
 									id="btnExcluir" immediate="true"
 									class="btn-acao-table acao-desligar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina"
-									icon="glyphicon glyphicon-remove"
+									icon="ui-icon-close"
 									action="#{PtsController.abrirDialogCancelarPts()}" />
 							</b:column>
 

@@ -444,16 +444,16 @@
 					<div align="center">
 
 						<p:commandButton action="#{LaudoController.gravarLaudo()}"
-							update="msgPagina, formLaudo" icon="glyphicon-ok" size="sm"
+							update="msgPagina, formLaudo" icon="ui-icon-check" 
 							look="success" value="Gravar" class="btn-incluir"
 							rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}" />
 
-						<p:commandButton action="#{LaudoController.alterarLaudo()}"
-							update="msgPagina" icon="fa fa-fw fa-check" size="sm" value="Alterar"
+						<p:commandButton action="#{LaudoController.alterarLaudo()}" icon="ui-icon-check"
+							update="msgPagina"   value="Alterar"
 							look="success" class="btn-incluir"
 							rendered="#{LaudoController.tipo  == 2}" />
 
-						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></p:commandButton>
 

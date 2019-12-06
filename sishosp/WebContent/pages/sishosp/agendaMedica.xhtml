@@ -664,18 +664,18 @@
 						<p:commandButton value="Confirmar" style="margin-top:5px;"
 							class="btn-acao-table acao-confirmar"
 							update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe, outQtdIhMax"
-							id="btnConfirmar" icon="glyphicon-ok"
+							id="btnConfirmar" icon="ui-icon-check"
 							action="#{AgendaController.validarParaConfirmar()}" />
 
 						<p:commandButton value="Limpar Busca" immediate="true"
 							style="margin-top:5px;margin-left:25px"
-							icon="glyphicon-remove-sign" class="btn-acao-table acao-limpar"
+							icon="ui-icon-trash" class="btn-acao-table acao-limpar"
 							actionListener="#{AgendaController.limparDados()}"
 							update=":formAgendaMedica" />
 
 						<p:commandButton value="Agendados na Data"
 							style="margin-top:5px;margin-left:25px"
-							icon="glyphicon glyphicon-list-alt"
+							icon="ui-icon-calendar"
 							class="btn-acao-table acao-agend"
 							action="#{AgendaController.preparaVerificarDisponibilidadeData()}"
 							oncomplete="PF('dlgAgendadosData').show();"
@@ -685,7 +685,7 @@
 						<p:outputPanel id="btnOcupados">
 							<p:commandButton value="Visualizar Ocupados"
 								style="margin-top:5px;margin-left:25px"
-								icon="glyphicon glyphicon-list-alt"
+								icon="ui-icon-document"
 								class="btn-acao-table acao-agend"
 								rendered="#{AgendaController.temLotado == true}"
 								actionListener="#{AgendaController.carregarListaOcupados()}"
@@ -737,12 +737,12 @@
 					<div align="center">
 
 						<p:commandButton value="Gravar" look="success" size="sm"
-							id="bgravar" icon="glyphicon-ok"
+							id="bgravar" icon="ui-icon-check"
 							action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
 							update=":formAgendaMedica, :frmSenha, outProf"
 							class="btn-incluir" />
 
-						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
