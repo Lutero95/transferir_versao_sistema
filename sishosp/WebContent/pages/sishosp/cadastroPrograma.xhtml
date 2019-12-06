@@ -47,9 +47,9 @@
                                            style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                            <b:commandButton process="@this" size="sm"
+                            <p:commandButton process="@this" size="sm"
                                              action="#{GrupoController.listaTodosGrupos()}"
-                                             tooltip="Incluir Grupo" icon="glyphicon-plus"
+                                             title="Incluir Grupo" icon="ui-icon-plus"
                                              class="btn-acao-table acao-editar" style="margin-left: 20px;"
                                              oncomplete="PF('dlgConsuGrupos').show();"
                                              update=":formConsuGrop"/>
@@ -118,20 +118,20 @@
 
                     <div align="center">
 
-                        <b:commandButton action="#{ProgramaController.gravarPrograma()}"
+                        <p:commandButton action="#{ProgramaController.gravarPrograma()}"
                                          icon="glyphicon-ok" size="sm" look="success"
                                          update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
                                          rendered="#{ProgramaController.tipo == 1}"/>
 
-                        <b:commandButton action="#{ProgramaController.alterarPrograma()}"
+                        <p:commandButton action="#{ProgramaController.alterarPrograma()}"
                                          icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
                                          class="btn-incluir" value="Alterar" look="success"
                                          rendered="#{ProgramaController.tipo  == 2}"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          class="btn-voltar" size="sm" immediate="true" look="info"
                                          action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-                        </b:commandButton>
+                        </p:commandButton>
 
                     </div>
 

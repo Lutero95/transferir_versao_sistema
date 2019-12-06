@@ -49,10 +49,10 @@
 							<p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 							
-                        <b:commandButton process="@this" size="sm" style="margin-left: 20px;"
-                        				 class="btn-acao-table acao-editar"
+                        <p:commandButton process="@this"  style="margin-left: 20px;"
+                        				 class="btn-acao-table acao-editar" 
                                          action="#{MBFuncionarios.ListarTodosProfissionais()}"
-                                         tooltip="Incluir Profissional" icon="glyphicon-plus"
+                                         title="Incluir Profissional" icon="ui-icon-plus"
                                          oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
                     </b:column>
 
@@ -90,7 +90,7 @@
 
 
                 <div align="center">
-                    <b:commandButton action="#{EquipeController.gravarEquipe()}"
+                    <p:commandButton action="#{EquipeController.gravarEquipe()}"
                                      icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
                                      value="Incluir" class="btn-incluir"
                                      rendered="#{EquipeController.tipo == 1}"/>

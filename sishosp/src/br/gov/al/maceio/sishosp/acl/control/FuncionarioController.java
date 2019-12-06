@@ -226,7 +226,7 @@ public class FuncionarioController implements Serializable {
 	public String associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin() throws ProjetoException {
 		UnidadeDAO uDao = new UnidadeDAO();
 		UnidadeBean unidade = uDao.buscarUnidadePorId(codigoDaUnidadeSelecionada);
-		usuario.setUnidade(unidade);
+		usuarioLogado.setUnidade(unidade);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", usuarioLogado);
 		String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
 		return url;

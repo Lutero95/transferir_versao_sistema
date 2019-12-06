@@ -81,10 +81,10 @@
 							<p:outputLabel value="Equipe:" style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 							
-                        <b:commandButton process="@this" size="sm" style="margin-left: 20px;"
+                        <p:commandButton process="@this" size="sm" style="margin-left: 20px;"
                         				 class="btn-acao-table acao-editar"
 								action="#{EquipeController.ListarTodasEquipes()	}"
-								tooltip="Incluir Profissional" icon="glyphicon-plus"
+								tooltip="Incluir Profissional" icon="ui-icon-plus"
 								oncomplete="PF('dlgConsultEquipes').show();"
 								update="formConsuEquipe" />
 						</b:column>
@@ -127,8 +127,8 @@
 
 					<div align="center">
 
-						<b:commandButton action="#{GrupoController.gravarGrupo()}"
-							icon="glyphicon-ok" size="sm" look="success"
+						<p:commandButton action="#{GrupoController.gravarGrupo()}"
+							icon="ui-icon-ok"  look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{GrupoController.tipo == 1}" />
 

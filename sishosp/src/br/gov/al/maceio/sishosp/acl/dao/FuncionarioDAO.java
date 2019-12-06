@@ -1194,14 +1194,23 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, "
-				+ " codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
-				+ " from acl.funcionarios join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
-				+ "left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade = ? AND realiza_atendimento IS TRUE order by descfuncionario";
+		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, \n" + 
+				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
+				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE \n" + 
+				"union all\n" + 
+				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, \n" + 
+				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
+				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao \n" + 
+				"join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" + 
+				"where  fu.cod_unidade=?  AND realiza_atendimento IS TRUE \n" + 
+				" ) a order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, user_session.getUnidade().getId());
+			stm.setInt(2, user_session.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -1243,17 +1252,29 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_usuario");
 
-		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, "
-				+ " codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
-				+ " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade "
-				+ " left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
-				+ " left join hosp.cbo c on c.id = funcionarios.codcbo "
-				+ " left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao"
-				+" where coalesce(admin,false) is false and unidade.id=? order by descfuncionario";
+		String sql = "select * from (\n" + 
+				"select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
+				" codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade \n" + 
+				" from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade \n" + 
+				" left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				" left join hosp.cbo c on c.id = funcionarios.codcbo \n" + 
+				" left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao\n" + 
+				" where coalesce(admin,false) is false and unidade.id=?\n" + 
+				" union\n" + 
+				" select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
+				" codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade \n" + 
+				" from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade \n" + 
+				" left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				" left join hosp.cbo c on c.id = funcionarios.codcbo \n" + 
+				" left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao\n" + 
+				" join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" + 
+				" where coalesce(admin,false) is false and fu.cod_unidade=? \n" + 
+				" ) a order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setLong(1, user_session.getUnidade().getId());
+			stm.setLong(2, user_session.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

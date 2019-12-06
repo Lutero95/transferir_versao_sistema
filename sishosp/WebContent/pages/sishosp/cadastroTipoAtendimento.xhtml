@@ -83,10 +83,10 @@
                                                style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                                <b:commandButton process="@this" size="sm"
+                                <p:commandButton process="@this" 
                                                  class="btn-acao-table acao-editar" style="margin-left: 20px;"
                                                  actionListener="#{GrupoController.listaTodosGrupos()}"
-                                                 tooltip="Incluir Grupo" icon="glyphicon-plus"
+                                                 title="Incluir Grupo" icon="ui-icon-plus"
                                                  oncomplete="PF('dlgConsuGrupo').show();" update="formConsuGrop"/>
                             </b:column>
 
@@ -188,7 +188,7 @@
                                 update=":frmPrincipal msgPagina" value="Incluir"
                                 rendered="#{TipoAtendimentoController.tipo == 1}"/>
 
-                        <b:commandButton
+                        <p:commandButton
                                 action="#{TipoAtendimentoController.alterarTipo()}"
                                 icon="glyphicon-ok" size="sm" class="btn-incluir"
                                 update=":frmPrincipal msgPagina" value="Alterar" look="success"

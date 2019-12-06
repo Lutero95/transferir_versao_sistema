@@ -265,7 +265,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-                + "where codprofissional = ?";
+                + "where codprofissional = ? and programa.cod_unidade=?";
 
         if (tipo == 1) {
             sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
@@ -275,7 +275,8 @@ public class ProgramaDAO {
             PreparedStatement stm = con.prepareStatement(sql);
 
             stm.setLong(1, user_session.getId());
-            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            stm.setLong(2, user_session.getUnidade().getId());
+            stm.setString(3, "%" + descricao.toUpperCase() + "%");
 
             ResultSet rs = stm.executeQuery();
 
@@ -304,7 +305,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-                + "where codprofissional = ? order by descprograma";
+                + "where codprofissional = ? and programa.cod_unidade=? order by descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -314,6 +315,7 @@ public class ProgramaDAO {
                     .get("obj_usuario");
 
             stm.setLong(1, user_session.getId());
+            stm.setLong(2, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 

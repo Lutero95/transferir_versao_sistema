@@ -380,12 +380,12 @@
 
 					<br></br>
 
-					<b:commandButton action="#{UnidadeController.gravarUnidade()}"
+					<p:commandButton action="#{UnidadeController.gravarUnidade()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir"
 						rendered="#{UnidadeController.tipo == 1}" />
 
-					<b:commandButton action="#{UnidadeController.alterarUnidade()}"
+					<p:commandButton action="#{UnidadeController.alterarUnidade()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{UnidadeController.tipo  == 2}" />
