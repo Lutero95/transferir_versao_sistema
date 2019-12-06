@@ -111,19 +111,19 @@
 						<b:column span="2" class="col-md-2-new new-span1"
 							style="margin-bottom:10px;">
 
-							<b:commandButton value="Buscar" icon="glyphicon-search"
+							<p:commandButton value="Buscar" icon="glyphicon-search"
 								class="btn-acao-table acao-buscar"
 								action="#{AgendaController.consultarAgenda(AgendaController.agenda.presenca)}"
-								update=":formConsAge msgPagina"></b:commandButton>
+								update=":formConsAge msgPagina"></p:commandButton>
 
 						</b:column>
 
 						<b:column span="2" class="new-span1">
 
-							<b:commandButton value="Limpar" icon="glyphicon-trash"
+							<p:commandButton value="Limpar" icon="glyphicon-trash"
 								class="btn-acao-table acao-limpar2"
 								action="#{GerenciarPacienteController.limparBusca()}"
-								update=":formConsAge"></b:commandButton>
+								update=":formConsAge"></p:commandButton>
 						</b:column>
 
 					</b:row>
@@ -133,13 +133,13 @@
 						<div align="center">
 
 							<b:column span="2" class="new-span2">
-								<b:commandButton value="Marcar Presença" style="margin-top:5px;"
+								<p:commandButton value="Marcar Presença" style="margin-top:5px;"
 									id="btnmarca" immediate="true"
 									rendered="#{AgendaController.rowBean.presenca=='N'}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formConsAge" icon="glyphicon-check"
 									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
-								<b:commandButton value="Retirar Presença"
+								<p:commandButton value="Retirar Presença"
 									style="margin-top:5px;" id="btnretira" immediate="true"
 									rendered="#{AgendaController.rowBean.presenca=='S'}"
 									class="btn-acao-table acao-cancelar btn-new-padding2"

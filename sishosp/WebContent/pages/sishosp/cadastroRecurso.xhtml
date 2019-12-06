@@ -46,20 +46,20 @@
 				<br></br>
 
 				<div align="center">
-					<b:commandButton action="#{RecursoController.gravarRecurso()}"
+					<p:commandButton action="#{RecursoController.gravarRecurso()}"
 						icon="glyphicon-ok" size="sm" look="success"
 						update=":frmPrincipal, msgPagina" value="Incluir" class="btn-incluir"
 						rendered="#{RecursoController.tipo == 1}" />
 
-					<b:commandButton action="#{RecursoController.alterarRecurso()}"
+					<p:commandButton action="#{RecursoController.alterarRecurso()}"
 						icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{RecursoController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						class="btn-voltar" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarRecurso.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</div>
 

@@ -62,7 +62,8 @@ public class AtendimentoController implements Serializable {
     public AtendimentoController() {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
-
+        tipoBusca = "nome";
+        campoBusca = "";
         this.atendimento = new AtendimentoBean();
         this.atendimentoLista = null;
         listAtendimentos = new ArrayList<AtendimentoBean>();
@@ -82,7 +83,7 @@ public class AtendimentoController implements Serializable {
         buscaEvolucao = "T";
     }
 
-    public void carregarGerenciamentoAtendimento(){
+    public void carregarGerenciamentoAtendimento() throws ProjetoException{
         BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
         if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
             if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla())) {
@@ -92,6 +93,8 @@ public class AtendimentoController implements Serializable {
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
             }
         }
+        
+        consultarAtendimentosProfissionalNaEquipe();
 
     }
 

@@ -348,7 +348,7 @@
 							</b:column>
 
 							<b:column span="2">
-								<b:commandButton value="Incluir" icon="glyphicon-plus"
+								<p:commandButton value="Incluir" icon="glyphicon-plus"
 									style="margin-top: 20px;margin-left: -15px;"
 									class="btn btn-default btn-acao-table acao-confirmar"
 									action="#{ConfigAgendaController.addNaListaConfigProfissional()}" id="b5"
@@ -406,18 +406,18 @@
 
 			<div align="center">
 
-				<b:commandButton
+				<p:commandButton
 					action="#{ConfigAgendaController.validarConfiguracoesAgendaProfissional()}"
 					icon="glyphicon-ok" id="b1" update="msgPagina"
 					class="btn-incluir bottom-agenda" value="Gravar" look="success"
 					size="sm" />
 
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					size="sm" immediate="true" look="info"
 					class="btn-voltar bottom-agenda" id="b4" update=":formConfiAgenda"
 					actionListener="#{ConfigAgendaController.limparDados()}"
 					action="consConfAgendaProfissional.xhtml?faces-redirect=true">
-				</b:commandButton>
+				</p:commandButton>
 
 			</div>
 

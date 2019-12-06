@@ -43,22 +43,22 @@
 					<br></br>
 
 					<div align="center">
-						<b:commandButton
+						<p:commandButton
 							action="#{FormaTransporteController.gravarTransporte()}"
 							icon="glyphicon-ok" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{FormaTransporteController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{FormaTransporteController.alterarTransporte()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{FormaTransporteController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 
 					</div>

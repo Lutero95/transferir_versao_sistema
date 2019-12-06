@@ -1049,22 +1049,22 @@
 			<br></br>
 
 			<div align="center">
-				<b:commandButton action="#{PacienteController.gravarPaciente()}"
+				<p:commandButton action="#{PacienteController.gravarPaciente()}"
 					icon="glyphicon-ok" size="sm" look="success"
 					update=":frmPrincipal msgPagina" value="Incluir"
 					class="btn-incluir new-bottom"
 					rendered="#{PacienteController.tipo == 1}" />
 
-				<b:commandButton action="#{PacienteController.alterarPaciente()}"
+				<p:commandButton action="#{PacienteController.alterarPaciente()}"
 					icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 					value="Alterar" look="success" class="btn-incluir new-bottom"
 					rendered="#{PacienteController.tipo  == 2}" />
 
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					class="btn-voltar new-bottom" size="sm" immediate="true"
 					look="info"
 					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
-				</b:commandButton>
+				</p:commandButton>
 
 			</div>
 
@@ -1511,7 +1511,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{EnderecoController.gravarBairros()}"
 						style="float:left"
 						action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
@@ -1624,7 +1624,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{ProfissaoController.gravarProfissao()}"
 						action="#{ProfissaoController.atualizarListaDeProfissoes()}"
 						icon="glyphicon-ok" size="sm" look="success" style="float:left"
@@ -1677,7 +1677,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{EncaminhadoController.gravarEncaminhado()}"
 						action="#{EncaminhadoController.atualizarListaDeTiposDeEncaminhamento()}"
 						icon="glyphicon-ok" size="sm" look="success" style="float:left"
@@ -1725,7 +1725,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{FormaTransporteController.gravarTransporte()}"
 						action="#{FormaTransporteController.atualizarListaFormaTransporte()}"
 						icon="glyphicon-ok" size="sm" look="success" style="float:left"
@@ -1775,7 +1775,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{EscolaridadeController.gravarEscolaridade()}"
 						action="#{EscolaridadeController.atualizarListaDeEscolaridade()}"
 						icon="glyphicon-ok" size="sm" look="success" style="float:left"
@@ -1829,7 +1829,7 @@
 
 					<br></br>
 
-					<b:commandButton
+					<p:commandButton
 						actionListener="#{EscolaController.gravarEscola()}"
 						action="#{EscolaController.atualizarListaDeEscolas()}"
 						icon="glyphicon-ok" size="sm" look="success" style="float:left"
@@ -1882,7 +1882,7 @@
 					<br></br>
 
 					<div align="center">
-						<b:commandButton
+						<p:commandButton
 							actionListener="#{GeneroController.gravarGenero()}"
 							action="#{GeneroController.atualizarListaDeGeneros()}"
 							style="float:left" icon="glyphicon-ok" size="sm" look="success"
@@ -1936,7 +1936,7 @@
 					<br></br>
 
 					<div align="center">
-						<b:commandButton
+						<p:commandButton
 							actionListener="#{ReligiaoController.gravarReligiao()}"
 							action="#{ReligiaoController.atualizarListaDeReligioes()}"
 							icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"

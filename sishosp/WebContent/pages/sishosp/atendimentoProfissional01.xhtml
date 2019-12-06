@@ -118,11 +118,11 @@
                                 icon="glyphicon-ok" size="sm" look="success" value="Gravar"
                                 update=":msgPagina" class="btn-incluir" style="float:left"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          style="float:right" size="sm" immediate="true" look="info"
                                          class="btn-voltar"
                                          action="/pages/sishosp/atendimentoprofissionalnaequipe.faces?faces-redirect=true">
-                        </b:commandButton>
+                        </p:commandButton>
 
                     </div>
 
@@ -146,11 +146,11 @@
 
                     <p:separator/>
 
-                    <b:commandButton look="success" value="Sim" style="float:left;"
+                    <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{AtendimentoController.limparAtendimentoProfissional()}"
                                      ajax="true" icon="glyphicon-ok" update=":msgPagina"/>
 
-                    <b:commandButton value="Não"
+                    <p:commandButton value="Não"
                                      oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 

@@ -59,20 +59,20 @@
                             Ação
                         </f:facet>
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+							<p:commandButton tooltip="Alterar" icon="glyphicon-edit"
 								size="sm" action="#{PestalozziController.redirectEdit()}"
 								class="btn-acao-table acao-editar">
 
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{PestalozziController.pestalozzi.paciente}" />
-							</b:commandButton>
+							</p:commandButton>
 
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							<p:commandButton tooltip="Excluir" icon="glyphicon-trash"
 								size="sm" ajax="true" style="margin-left:10px" 
 								class="btn-acao-table acao-excluir" oncomplete="PF('dialogExclusao').show()">
 								<f:setPropertyActionListener value="#{tab.id_paciente}"
 									target="#{PacienteController.paciente.id_paciente}" />
-							</b:commandButton>
+							</p:commandButton>
 
 						</h:column>
 
@@ -93,11 +93,11 @@
 
 				<div align="center">
 					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{PacienteController.excluirPaciente()}" ajax="true"
 						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 				</div>

@@ -427,15 +427,15 @@
 
 					<div align="center">
 
-						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
 							icon="glyphicon-ok" update=":formInsercao2:msgPagina"
 							class="btn-incluir"
 							action="#{RenovarPacienteController.gravarRenovacaoPaciente()}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 				</h:form>
@@ -537,7 +537,7 @@
 				<br></br>
 
 				<div align="center">
-					<b:commandButton value="Adicionar" style="margin-top:5px;"
+					<p:commandButton value="Adicionar" style="margin-top:5px;"
 						class="btn-acao-table acao-confirmar"
 						update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
 						id="b2" icon="glyphicon-ok"
@@ -608,7 +608,7 @@
 			<h:form id="formRenovacaoEfetuada">
 
 				<div align="center">
-					<b:commandButton value="Fechar" class="btn-fechar" look="info"
+					<p:commandButton value="Fechar" class="btn-fechar" look="info"
 						ajax="true"
 						action="#{GerenciarPacienteController.redirectGerenciamento}"
 						icon="glyphicon-remove" />

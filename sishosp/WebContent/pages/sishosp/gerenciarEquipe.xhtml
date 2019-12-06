@@ -20,13 +20,13 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmPrincipal">
-					<b:commandButton id="btninc" value="Novo" size="sm"
+					<p:commandButton id="btninc" value="Novo" size="sm"
 						class="btn-addNovo" action="#{EquipeController.redirectInsert()}"
 						icon="glyphicon-plus" look="primary">
 						<f:setPropertyActionListener value="1"
 							target="#{EquipeController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-					</b:commandButton>
+					</p:commandButton>
 
 
 
@@ -53,7 +53,7 @@
                             Ação
                         </f:facet>
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+							<p:commandButton tooltip="Alterar" icon="glyphicon-edit"
 								size="sm" class="btn-acao-table acao-editar"
 								action="#{EquipeController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
@@ -61,16 +61,16 @@
 
 								<f:setPropertyActionListener value="2"
 									target="#{EquipeController.tipo}" />
-							</b:commandButton>
+							</p:commandButton>
 
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							<p:commandButton tooltip="Excluir" icon="glyphicon-trash"
 								class="btn-acao-table acao-excluir" size="sm" ajax="true"
 								style="margin-left:10px"
 								oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{EquipeController.equipe}" />
-							</b:commandButton>
+							</p:commandButton>
 
 						</h:column>
 					</b:dataTable>
@@ -89,11 +89,11 @@
 				<p:separator />
 
 				<div align="center">
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{EquipeController.excluirEquipe()}" ajax="true"
 						class="btn-sim" icon="glyphicon-ok" update="frmPrincipal" />
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 

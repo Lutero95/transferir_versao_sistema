@@ -66,20 +66,20 @@
 					
 					<br></br>
 
-					<b:commandButton action="#{FeriadoController.gravarFeriado()}"
+					<p:commandButton action="#{FeriadoController.gravarFeriado()}"
 						icon="glyphicon-ok" update=":frmPrincipal msgPagina" value="Cadastrar"
 						look="success" class="btn-incluir" size="sm"
 						rendered="#{FeriadoController.tipo == 1}" />
 
-					<b:commandButton action="#{FeriadoController.alterarFeriado()}"
+					<p:commandButton action="#{FeriadoController.alterarFeriado()}"
 						icon="glyphicon-ok" update=":frmPrincipal msgPagina" value="Alterar"
 						look="success" class="btn-incluir" size="sm"
 						rendered="#{FeriadoController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" class="btn-voltar"
 						action="/pages/sishosp/gerenciarFeriados.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 
 				</h:form>

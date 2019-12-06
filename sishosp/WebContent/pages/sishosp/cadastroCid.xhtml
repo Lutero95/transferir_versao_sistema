@@ -49,20 +49,20 @@
 					
 					<br></br>
 
-					<b:commandButton action="#{CidController.gravarCid()}"
+					<p:commandButton action="#{CidController.gravarCid()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir"
 						rendered="#{CidController.tipo == 1}" />
 
-					<b:commandButton action="#{CidController.alterarCid()}"
+					<p:commandButton action="#{CidController.alterarCid()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{CidController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" class="btn-voltar"
 						action="/pages/sishosp/gerenciarCid.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</h:form>
 			</div>

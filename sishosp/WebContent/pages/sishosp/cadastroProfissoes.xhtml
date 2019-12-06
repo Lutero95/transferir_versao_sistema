@@ -46,21 +46,21 @@
 
 					<div align="center">
 
-						<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
+						<p:commandButton action="#{ProfissaoController.gravarProfissao()}"
 							icon="glyphicon-ok" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{ProfissaoController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{ProfissaoController.alterarProfissao()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" class="btn-incluir" look="success"
 							rendered="#{ProfissaoController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

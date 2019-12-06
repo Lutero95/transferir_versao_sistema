@@ -53,18 +53,18 @@
                         <div align="center">
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Inserir" style="margin-top:5px;"
+                                <p:commandButton value="Inserir" style="margin-top:5px;"
                                                  id="btnInserir" immediate="true"
                                                  class="btn-acao-table acao-confirmar btn-new-padding2"
                                                  icon="glyphicon-plus"
                                                  action="#{OrteseProteseController.redirectInserir}">
                                     <f:setPropertyActionListener value="1"
                                                                  target="#{OrteseProteseController.tipo}"/>
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Alterar" style="margin-top:5px;"
+                                <p:commandButton value="Alterar" style="margin-top:5px;"
                                                  id="btnAlterar" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
                                                  or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
@@ -74,11 +74,11 @@
                                                  action="#{OrteseProteseController.redirectAlterar}">
                                     <f:setPropertyActionListener value="2"
                                                                  target="#{OrteseProteseController.tipo}"/>
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Encaminhar" style="margin-top:5px;"
+                                <p:commandButton value="Encaminhar" style="margin-top:5px;"
                                                  id="btnEncaminhar" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
                                                  or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
@@ -86,11 +86,11 @@
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
                                                  icon="glyphicon-share-alt"
                                                  action="#{OrteseProteseController.redirectEncaminhar}">
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Medição" style="margin-top:5px;"
+                                <p:commandButton value="Medição" style="margin-top:5px;"
                                                  id="btnMedicao" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
                                                  or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
@@ -98,28 +98,28 @@
                                                  class="btn-acao-table acao-pts btn-new-padding2"
                                                  icon="glyphicon-tasks"
                                                  action="#{OrteseProteseController.iniciarMedicao}">
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Recebimento" style="margin-top:5px;"
+                                <p:commandButton value="Recebimento" style="margin-top:5px;"
                                                  id="btnRecebimento" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
                                                  or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
                                                  icon="glyphicon-save"
                                                  action="#{OrteseProteseController.verificarRecebimento}">
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                             <b:column span="2" class="new-span2">
-                                <b:commandButton value="Entrega" style="margin-top:5px;"
+                                <p:commandButton value="Entrega" style="margin-top:5px;"
                                                  id="btnEntrega" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-transfere btn-new-padding2"
                                                  icon="glyphicon-open"
                                                  action="#{OrteseProteseController.verificarEntrega}">
-                                </b:commandButton>
+                                </p:commandButton>
                             </b:column>
 
                         </div>
@@ -258,11 +258,11 @@
                 <div align="center">
 
                     <p:separator/>
-                    <b:commandButton look="success" value="Gravar" style="float:left;"
+                    <p:commandButton look="success" value="Gravar" style="float:left;"
                                      action="#{OrteseProteseController.gravarMedicaoOrteseIhProtese}" ajax="true"
                                      class="btn-sim" icon="glyphicon-ok" update="formGerenOrteseEProtese:msgPagina"/>
 
-                    <b:commandButton value="Fechar"
+                    <p:commandButton value="Fechar"
                                      oncomplete="PF('dlgMedicao').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" class="btn-nao"
                                      style="margin-left:5px;float:right;"/>

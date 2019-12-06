@@ -133,7 +133,7 @@
                                                style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                                <b:commandButton process="@this" size="sm"
+                                <p:commandButton process="@this" size="sm"
                                                  class="btn-acao-table acao-editar" style="margin-left: 20px;"
                                                  actionListener="#{ProgramaController.carregaListaProgramas()}"
                                                  tooltip="Incluir Programa" icon="glyphicon-plus"
@@ -182,7 +182,7 @@
 
                     <div align="center">
 
-                        <b:commandButton
+                        <p:commandButton
                                 action="#{TipoAtendimentoController.gravarTipo()}"
                                 icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
                                 update=":frmPrincipal msgPagina" value="Incluir"
@@ -194,10 +194,10 @@
                                 update=":frmPrincipal msgPagina" value="Alterar" look="success"
                                 rendered="#{TipoAtendimentoController.tipo  == 2}"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          class="btn-voltar" size="sm" immediate="true" look="info"
                                          action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
-                        </b:commandButton>
+                        </p:commandButton>
 
                     </div>
 

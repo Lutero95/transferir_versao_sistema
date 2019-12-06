@@ -54,12 +54,12 @@
 							
 							<b:column span="2" class="label-position5">
 
-							<b:commandButton value="Limpar" icon="glyphicon-trash"
+							<p:commandButton value="Limpar" icon="glyphicon-trash"
 								style="height:37px; margin-top:0px;"
 								class="btn-acao-table acao-limpar2"
 								actionListener="#{menuMB.limparBusca()}"
 								update=":form:campoBusca, :form:tabela">
-							</b:commandButton>
+							</p:commandButton>
 						</b:column>
 
 						</b:row>
@@ -575,12 +575,12 @@
 
 					<p:separator />
 					<p:panelGrid columns="2" styleClass="semBorda">
-						<b:commandButton value="Sim" icon="glyphicon-ok"
+						<p:commandButton value="Sim" icon="glyphicon-ok"
 							class="btn-sim" style="float:left;"
 							action="#{menuMB.excluirMenu()}"
 							update=":form:tabela, :form:growl" />
 
-						<b:commandButton value="Não" icon="glyphicon-remove"
+						<p:commandButton value="Não" icon="glyphicon-remove"
 							class="btn-nao" style="margin-left:5px;float:right;"
 							onclick="PF('dlgExcMenu').hide();" process="@this" />
 					</p:panelGrid>

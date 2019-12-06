@@ -21,13 +21,13 @@
 
 				<h:form id="frmPrincipal">
 
-					<b:commandButton id="btninc" value="Novo" size="sm"
+					<p:commandButton id="btninc" value="Novo" size="sm"
 						action="#{UnidadeController.redirectInsert()}"
 						icon="glyphicon-plus" class="btn-addNovo">
 						<f:setPropertyActionListener value="1"
 							target="#{UnidadeController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-					</b:commandButton>
+					</p:commandButton>
 
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
@@ -80,7 +80,7 @@
                             Ação
                         </f:facet>
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+							<p:commandButton tooltip="Alterar" icon="glyphicon-edit"
 								size="sm" action="#{UnidadeController.redirectEdit()}"
 								class="btn-acao-table acao-editar">
 								<f:setPropertyActionListener value="#{tab}"
@@ -88,16 +88,16 @@
 
 								<f:setPropertyActionListener value="2"
 									target="#{UnidadeController.tipo}" />
-							</b:commandButton>
+							</p:commandButton>
 
-							<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
+							<p:commandButton tooltip="Desativar" icon="glyphicon-trash"
 								size="sm" ajax="true" style="margin-left:10px"
 								class="btn-acao-table acao-excluir"
 								oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{UnidadeController.unidade}" />
-							</b:commandButton>
+							</p:commandButton>
 
 						</h:column>
 					</b:dataTable>
@@ -115,11 +115,11 @@
 					esta Unidade?</div>
 				<div align="center">
 					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{UnidadeController.desativarUnidade()}" ajax="true"
 						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 				</div>

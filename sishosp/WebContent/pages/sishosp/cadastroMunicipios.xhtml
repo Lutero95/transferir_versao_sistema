@@ -77,21 +77,21 @@
 					</div>
 
 					<div align="center">
-						<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
+						<p:commandButton action="#{EnderecoController.gravarMunicipios()}"
 							icon="glyphicon-ok" size="sm" look="success"
 							update=":frmPrincipal" value="Incluir" class="btn-incluir"
 							rendered="#{EnderecoController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{EnderecoController.alterarMunicipios()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EnderecoController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

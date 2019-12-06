@@ -23,13 +23,13 @@
 				<h:form id="frmPrincipal">
 
 
-					<b:commandButton id="btninc" value="Novo" size="sm"
+					<p:commandButton id="btninc" value="Novo" title="Incluir"
 						action="#{LaudoController.redirectInsert()}" icon="glyphicon-plus"
 						class="btn-addNovo">
 						<f:setPropertyActionListener value="1"
 							target="#{LaudoController.tipo}" />
-						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-					</b:commandButton>
+						
+					</p:commandButton>
 
 					<p:selectOneRadio id="console"
 						value="#{LaudoController.laudo.situacao}" required="true"
@@ -122,7 +122,7 @@
                                 Ação
                             </f:facet>
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+							<p:commandButton title="Alterar" icon="ui-icon-pencil"
 								size="sm" class="btn-acao-table acao-editar"
 								action="#{LaudoController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
@@ -130,9 +130,9 @@
 
 								<f:setPropertyActionListener value="2"
 									target="#{LaudoController.tipo}" />
-							</b:commandButton>
+							</p:commandButton>
 
-							<b:commandButton tooltip="Renovar" icon="glyphicon-refresh"
+							<p:commandButton title="Renovar" icon="ui-icon-refresh"
 								style="margin-left:10px" size="sm"
 								class="btn-acao-table acao-editar"
 								action="#{LaudoController.redirectEdit()}">
@@ -141,25 +141,25 @@
 
 								<f:setPropertyActionListener value="3"
 									target="#{LaudoController.tipo}" />
-							</b:commandButton>
+							</p:commandButton>
 
 
-							<b:commandButton tooltip="Imprimir Laudo" icon="glyphicon-print"
+							<p:commandButton title="Imprimir Laudo" icon="ui-icon-print"
 								size="sm" class="btn-acao-table acao-editar"
 								style="margin-left:10px"
 								action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
 
-							</b:commandButton>
+							</p:commandButton>
 
 
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							<p:commandButton title="Excluir" icon="ui-icon-trash"
 								class="btn-acao-table acao-excluir" size="sm" ajax="true"
 								style="margin-left:10px"
 								oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{LaudoController.laudo}" />
-							</b:commandButton>
+							</p:commandButton>
 
 						</p:column>
 
@@ -185,13 +185,13 @@
 
 					<p:separator />
 
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{LaudoController.excluirLaudo()}" ajax="true"
 						icon="glyphicon-ok" update="frmPrincipal" class="btn-sim">
-					</b:commandButton>
+					</p:commandButton>
 
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 

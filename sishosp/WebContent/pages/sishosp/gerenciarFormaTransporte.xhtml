@@ -22,13 +22,13 @@
 
 			<h:form id="frmPrincipal">
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
+				<p:commandButton id="btninc" value="Novo" size="sm"
 					action="#{FormaTransporteController.redirectInsert()}"
 					icon="glyphicon-plus" class="btn-addNovo">
 					<f:setPropertyActionListener value="1"
 						target="#{FormaTransporteController.tipo}" />
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
+				</p:commandButton>
 
 			
 
@@ -48,7 +48,7 @@
                             Ação
                         </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+						<p:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
 							class="btn-acao-table acao-editar"
 							action="#{FormaTransporteController.redirectEdit()}">
 							<f:setPropertyActionListener value="#{tab}"
@@ -56,15 +56,15 @@
 
 							<f:setPropertyActionListener value="2"
 								target="#{FormaTransporteController.tipo}" />
-						</b:commandButton>
+						</p:commandButton>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+						<p:commandButton tooltip="Excluir" icon="glyphicon-trash"
 							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dialogExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{FormaTransporteController.transporte}" />
-						</b:commandButton>
+						</p:commandButton>
 
 					</h:column>
 
@@ -88,11 +88,11 @@
 				<div align="center">
 
 					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{FormaTransporteController.excluirTransporte()}"
 						class="btn-sim" ajax="true" icon="glyphicon-ok" update="frmPrincipal msgPagina" />
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 

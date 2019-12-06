@@ -78,20 +78,20 @@
 					<br></br>
 
 					<div align="center">
-						<b:commandButton action="#{EnderecoController.gravarBairros()}"
+						<p:commandButton action="#{EnderecoController.gravarBairros()}"
 							icon="glyphicon-ok" size="sm" class="btn-incluir"
 							update=":frmPrincipal" value="Incluir"
 							rendered="#{EnderecoController.tipo == 1}" />
 
-						<b:commandButton action="#{EnderecoController.alterarBairros()}"
+						<p:commandButton action="#{EnderecoController.alterarBairros()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
 							value="Alterar" class="btn-incluir"
 							rendered="#{EnderecoController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" class="btn-voltar"
 							action="/pages/sishosp/gerenciarBairros.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

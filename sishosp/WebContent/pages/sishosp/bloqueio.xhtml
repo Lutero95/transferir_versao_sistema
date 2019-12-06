@@ -99,17 +99,17 @@
 
 					<div align="center">
 
-						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
 							icon="glyphicon-ok"
 							update=":formBloqueio:msgPagina, :formBloqueio"
 							class="btn-incluir"
 							action="#{BloqueioController.gravarBloqueio()}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							actionListener="#{ConfigAgendaController.limparDados()}"
 							action="/pages/sishosp/consBloqueios.xhtml?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

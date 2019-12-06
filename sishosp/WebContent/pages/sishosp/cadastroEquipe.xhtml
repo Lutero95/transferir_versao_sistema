@@ -95,15 +95,15 @@
                                      value="Incluir" class="btn-incluir"
                                      rendered="#{EquipeController.tipo == 1}"/>
 
-                    <b:commandButton action="#{EquipeController.alterarEquipe()}"
+                    <p:commandButton action="#{EquipeController.alterarEquipe()}"
                                      icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
                                      look="success" class="btn-incluir"
                                      rendered="#{EquipeController.tipo  == 2}"/>
 
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                    <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                      size="sm" immediate="true" look="info" class="btn-voltar"
                                      action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-                    </b:commandButton>
+                    </p:commandButton>
 
                 </div>
             </h:form>

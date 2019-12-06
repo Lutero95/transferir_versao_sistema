@@ -21,13 +21,13 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmPrincipal">
-					<b:commandButton id="btninc" value="Novo" size="sm"
+					<p:commandButton id="btninc" value="Novo" size="sm"
 						action="#{ParentescoController.redirectInsert()}"
 						icon="glyphicon-plus" class="btn-addNovo">
 						<f:setPropertyActionListener value="1"
 							target="#{ParentescoController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-					</b:commandButton>
+					</p:commandButton>
 
 
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
@@ -47,7 +47,7 @@
                         </f:facet>
 
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+							<p:commandButton tooltip="Alterar" icon="glyphicon-edit"
 								class="btn-acao-table acao-editar"
 								size="sm" action="#{ParentescoController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
@@ -55,15 +55,15 @@
 
 								<f:setPropertyActionListener value="2"
 									target="#{ParentescoController.tipo}" />
-							</b:commandButton>
+							</p:commandButton>
 
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							<p:commandButton tooltip="Excluir" icon="glyphicon-trash"
 								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 								oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab.codParentesco}"
 									target="#{ParentescoController.parentesco.codParentesco}" />
-							</b:commandButton>
+							</p:commandButton>
 
 
 						</h:column>
@@ -86,11 +86,11 @@
 				<p:separator />
 
 				<div align="center">
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{ParentescoController.excluirParentesco()}" ajax="true"
 						icon="glyphicon-ok" update="frmPrincipal msgPagina" class="btn-sim" />
 
-					<b:commandButton value="Não" class="btn-nao" 
+					<p:commandButton value="Não" class="btn-nao" 
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 

@@ -136,19 +136,19 @@
                         <b:column span="2" class="col-md-2-new new-span1"
                                   style="margin-bottom:10px;">
 
-                            <b:commandButton value="Buscar" icon="glyphicon-search"
+                            <p:commandButton value="Buscar" icon="glyphicon-search"
                                              class="btn-acao-table acao-buscar"
                                              action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
-                                             update="msgPagina :formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg, btnInserir"></b:commandButton>
+                                             update="msgPagina :formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:dtNovosAg, btnInserir"></p:commandButton>
 
                         </b:column>
 
                         <b:column span="2" class="new-span1">
 
-                            <b:commandButton value="Limpar" icon="glyphicon-trash"
+                            <p:commandButton value="Limpar" icon="glyphicon-trash"
                                              class="btn-acao-table acao-limpar2"
                                              action="#{GerenciarPacienteController.limparBusca()}"
-                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg"></b:commandButton>
+                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:dtNovosAg"></p:commandButton>
                         </b:column>
 
                     </b:row>
@@ -166,41 +166,41 @@
                                 <b:column span="1"></b:column>
 
                                 <b:column span="2" class="new-span2">
-                                    <b:commandButton value="Inserir" style="margin-top:5px;"
+                                    <p:commandButton value="Inserir" style="margin-top:5px;"
                                                      id="btnInserir" immediate="true"
                                                      class="btn-acao-table acao-confirmar btn-new-padding2"
-                                                     update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                     update=":formGerenPaci"
                                                      icon="glyphicon-plus"
                                                      action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"/>
                                 </b:column>
 
                                 <b:column span="2" class="new-span2">
-                                    <b:commandButton value="Alterar" style="margin-top:5px;"
+                                    <p:commandButton value="Alterar" style="margin-top:5px;"
                                                      disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
                                                      id="btnAlterar" immediate="true"
                                                      class="btn-acao-table acao-altera2 btn-new-padding2"
-                                                     update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                     update=":formGerenPaci"
                                                      icon="glyphicon-pencil"
                                                      action="#{GerenciarPacienteController.redirectAlteracao()}"/>
                                 </b:column>
 
                                 <b:column span="2" class="new-span2">
-                                    <b:commandButton value="Renovar" style="margin-top:5px;"
+                                    <p:commandButton value="Renovar" style="margin-top:5px;"
                                                      disabled="#{GerenciarPacienteController.rowBean.status != 'A' or (GerenciarPacienteController.rowBean.laudo.id==null or GerenciarPacienteController.rowBean.laudo.id==0)}"
                                                      id="btnRenovar" immediate="true"
                                                      class="btn-acao-table acao-limpar btn-new-padding2"
-                                                     update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                     update=":formGerenPaci"
                                                      icon="glyphicon glyphicon-refresh"
                                                      action="#{GerenciarPacienteController.redirectRenovacao()}"/>
                                 </b:column>
 
                                 <b:column span="2" class="new-span2">
-                                    <b:commandButton value="Transferir" style="margin-top:5px;" rendered="true"
+                                    <p:commandButton value="Transferir" style="margin-top:5px;" rendered="true"
                                                      disabled="#{GerenciarPacienteController.rowBean.status != 'A'
 												 or GerenciarPacienteController.rowBean.equipe.codEquipe == 0 or (GerenciarPacienteController.rowBean.laudo.id==null or GerenciarPacienteController.rowBean.laudo.id==0)}"
                                                      id="btnTransferir" immediate="true"
                                                      class="btn-acao-table acao-transfere btn-new-padding2"
-                                                     update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                     update=":formGerenPaci"
                                                      icon="glyphicon glyphicon-random"
                                                      action="#{GerenciarPacienteController.redirectTransferencia()}"/>
                                 </b:column>
@@ -329,14 +329,14 @@
                             </b:column>
 
                             <b:column span="2">
-                                <b:commandButton icon="glyphicon-plus" style="margin-top:18px;"
+                                <p:commandButton icon="glyphicon-plus" style="margin-top:18px;"
                                                  rendered="#{GerenciarPacienteController.rowBean.status == 'A'
 							and GerenciarPacienteController.rowBean.laudo.procedimentoPrimario.utilizaEquipamento == true}"
                                                  value="Gerar Encaminhamento"
                                                  class="btn btn-default btn-acao-table acao-confirmar"
                                                  action="#{GerenciarPacienteController.gerarEncaminhamento()}"
                                                  update="msgPagina, dtNovosAg">
-                                </b:commandButton>
+                                </p:commandButton>
 
                             </b:column>
 
@@ -473,7 +473,7 @@
 
                 <div align="center">
                     <p:separator/>
-                    <b:commandButton value="Desligar" look="success" size="sm" id="b1"
+                    <p:commandButton value="Desligar" look="success" size="sm" id="b1"
                                      icon="glyphicon-ok"
                                      actionListener="#{GerenciarPacienteController.desligarPaciente}"
                                      update=":formDeslPac:grwdesligamento, :frmEquipamentos:dtNovosAg, :formGerenPaci:botoes"

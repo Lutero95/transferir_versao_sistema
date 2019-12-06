@@ -661,19 +661,19 @@
 					</p:outputPanel>
 
 					<div align="center">
-						<b:commandButton value="Confirmar" style="margin-top:5px;"
+						<p:commandButton value="Confirmar" style="margin-top:5px;"
 							class="btn-acao-table acao-confirmar"
 							update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe, outQtdIhMax"
 							id="btnConfirmar" icon="glyphicon-ok"
 							action="#{AgendaController.validarParaConfirmar()}" />
 
-						<b:commandButton value="Limpar Busca" immediate="true"
+						<p:commandButton value="Limpar Busca" immediate="true"
 							style="margin-top:5px;margin-left:25px"
 							icon="glyphicon-remove-sign" class="btn-acao-table acao-limpar"
 							actionListener="#{AgendaController.limparDados()}"
 							update=":formAgendaMedica" />
 
-						<b:commandButton value="Agendados na Data"
+						<p:commandButton value="Agendados na Data"
 							style="margin-top:5px;margin-left:25px"
 							icon="glyphicon glyphicon-list-alt"
 							class="btn-acao-table acao-agend"
@@ -683,7 +683,7 @@
 						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
 
 						<p:outputPanel id="btnOcupados">
-							<b:commandButton value="Visualizar Ocupados"
+							<p:commandButton value="Visualizar Ocupados"
 								style="margin-top:5px;margin-left:25px"
 								icon="glyphicon glyphicon-list-alt"
 								class="btn-acao-table acao-agend"

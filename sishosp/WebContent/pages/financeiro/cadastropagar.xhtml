@@ -336,21 +336,21 @@
 
 				<hr />
 
-			<b:commandButton action="#{tituloPagarController.verificarParcelas()}"
+			<p:commandButton action="#{tituloPagarController.verificarParcelas()}"
 					icon="glyphicon-ok" size="sm" look="success" 
 					value="Incluir" class="btn-incluir new-bottom" update="msg, formInsert"
 					rendered="#{tituloPagarController.tipo == 1}" />
 
-				<b:commandButton action="#{tituloPagarController.editar()}"
+				<p:commandButton action="#{tituloPagarController.editar()}"
 					icon="glyphicon-ok" size="sm" 
 					value="Alterar" look="success" class="btn-incluir new-bottom"
 					rendered="#{tituloPagarController.tipo  == 2}" />
 
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					class="btn-voltar new-bottom" size="sm" immediate="true"
 					look="info"
 					action="/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true">
-				</b:commandButton>
+				</p:commandButton>
 
 				
 

@@ -44,20 +44,20 @@
 
 
 					<div align="center">
-						<b:commandButton action="#{EscolaController.gravarEscola()}"
+						<p:commandButton action="#{EscolaController.gravarEscola()}"
 							icon="glyphicon-ok" size="sm" look="success"
 							update=":frmPrincipal, msgPagina" value="Incluir"
 							class="btn-incluir" rendered="#{EscolaController.tipo == 1}" />
 
-						<b:commandButton action="#{EscolaController.alterarEscola()}"
+						<p:commandButton action="#{EscolaController.alterarEscola()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EscolaController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 				</h:form>

@@ -540,7 +540,7 @@
 				<br></br>
 
 				<div align="center">
-					<b:commandButton action="#{MBFuncionarios.gravarProfissional()}"
+					<p:commandButton action="#{MBFuncionarios.gravarProfissional()}"
 						icon="glyphicon-ok" size="sm" look="success"
 						update=":frmPrincipal msgPagina" class="btn-incluir new-bottom"
 						value="Incluir" rendered="#{MBFuncionarios.tipo == 1}" />
@@ -550,11 +550,11 @@
 						value="Alterar" look="success" class="btn-incluir new-bottom"
 						rendered="#{MBFuncionarios.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						class="btn-voltar new-bottom" size="sm" immediate="true"
 						look="info"
 						action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</div>
 

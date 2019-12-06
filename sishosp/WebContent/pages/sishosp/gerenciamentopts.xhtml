@@ -163,19 +163,19 @@
 
 						<b:column span="1">
 
-							<b:commandButton value="Buscar" icon="glyphicon-search"
+							<p:commandButton value="Buscar" icon="glyphicon-search"
 								style="margin-top:-11px" class="btn-acao-table acao-buscar"
 								id="btnBusca" action="#{PtsController.buscarPtsPacientesAtivos}"
-								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg, btnInserir"></b:commandButton>
+								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg, btnInserir"></p:commandButton>
 
 						</b:column>
 
 						<b:column span="1">
 
-							<b:commandButton value="Limpar" icon="glyphicon-trash"
+							<p:commandButton value="Limpar" icon="glyphicon-trash"
 								style="margin-top:-11px" class="btn-acao-table acao-limpar2"
 								action="#{PtsController.limparBusca()}"
-								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg"></b:commandButton>
+								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg"></p:commandButton>
 						</b:column>
 
 					</b:row>
@@ -188,7 +188,7 @@
 						<div align="center">
 
 							<b:column span="3" class="new-span2">
-								<b:commandButton value="Novo" style="margin-top:5px;"
+								<p:commandButton value="Novo" style="margin-top:5px;"
 									id="btnInserir" immediate="true"
 									disabled="#{PtsController.renderizarBotaoNovo == false}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
@@ -197,7 +197,7 @@
 							</b:column>
 
 							<b:column span="3" class="new-span2">
-								<b:commandButton value="Alterar" style="margin-top:5px;"
+								<p:commandButton value="Alterar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnAlterar" immediate="true"
 									class="btn-acao-table acao-altera2 btn-new-padding2"
@@ -206,7 +206,7 @@
 							</b:column>
 
 							<b:column span="3" class="new-span2">
-								<b:commandButton value="Renovar" style="margin-top:5px;"
+								<p:commandButton value="Renovar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A'}"
 									id="btnRenovar" immediate="true"
 									class="btn-acao-table acao-limpar btn-new-padding2"
@@ -216,7 +216,7 @@
 							</b:column>
 
 							<b:column span="3" class="new-span2">
-								<b:commandButton value="Cancelar" style="margin-top:5px;"
+								<p:commandButton value="Cancelar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnExcluir" immediate="true"
 									class="btn-acao-table acao-desligar btn-new-padding2"
@@ -397,12 +397,12 @@
 				<div align="center">
 					<p:separator />
 
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{PtsController.cancelarPts}" ajax="true" class="btn-sim"
 						icon="glyphicon-ok"
 						update=":formGerenPaci, :frmTabela, :msgPagina" />
 
-					<b:commandButton value="Não"
+					<p:commandButton value="Não"
 						oncomplete="PF('dlgCancelarPts').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" class="btn-nao"
 						style="margin-left:5px;float:right;" />

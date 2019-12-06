@@ -436,7 +436,7 @@
                                 </b:column>
 
                                 <b:column span="2">
-                                    <b:commandButton value="Incluir" icon="glyphicon-plus"
+                                    <p:commandButton value="Incluir" icon="glyphicon-plus"
                                                      style="margin-top: 20px;margin-left: -15px;"
                                                      class="btn btn-default btn-acao-table acao-confirmar"
                                                      action="#{ConfigAgendaController.addNaListaConfigEquipe()}" id="b5"
@@ -491,18 +491,18 @@
 
                     <div align="center">
 
-                        <b:commandButton
+                        <p:commandButton
                                 update="msgPagina :formConfiAgendaEquipe, :formConfiAgendaEquipe"
                                 action="#{ConfigAgendaController.validarGravarConfigAgendaEquipe()}"
                                 icon="glyphicon-ok" id="b1" class="btn-incluir" value="Gravar"
                                 look="success" size="sm"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
                                          update=":formConfiAgendaEquipe" id="b4"
                                          actionListener="#{ConfigAgendaController.limparDados()}"
                                          action="consConfAgendaEquipe.xhtml?faces-redirect=true">
-                        </b:commandButton>
+                        </p:commandButton>
 
                     </div>
                 </h:form>

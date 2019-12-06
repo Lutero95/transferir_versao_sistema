@@ -21,13 +21,13 @@
 
 			<h:form id="frmPrincipal">
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
+				<p:commandButton id="btninc" value="Novo" size="sm"
 					action="#{EmpresaController.redirectInsert()}"
 					icon="glyphicon-plus" class="btn-addNovo">
 					<f:setPropertyActionListener value="1"
 						target="#{EmpresaController.tipo}" />
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
+				</p:commandButton>
 		
 				<br></br>
 
@@ -73,22 +73,22 @@
                             Ação
                         </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+						<p:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
 							action="#{EmpresaController.redirectEdit()}" class="btn-acao-table acao-editar">
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{EmpresaController.empresa}" />
 
 							<f:setPropertyActionListener value="2"
 								target="#{EmpresaController.tipo}" />
-						</b:commandButton>
+						</p:commandButton>
 
-						<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
+						<p:commandButton tooltip="Desativar" icon="glyphicon-trash"
 							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dialogExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{EmpresaController.empresa}" />
-						</b:commandButton>
+						</p:commandButton>
 
 					</h:column>
 				</b:dataTable>
@@ -106,11 +106,11 @@
 					esta Empresa?</div>
 				<div align="center">
 					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{EmpresaController.desativarEmpresa()}" ajax="true"
 						icon="glyphicon-ok" update=":frmPrincipal msgPagina" class="btn-sim"/>
 
-					<b:commandButton value="Não" class="btn-nao"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 				</div>

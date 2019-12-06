@@ -392,16 +392,16 @@
 							class="btn-incluir" value="Incluir"
 							rendered="#{ProcedimentoController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{ProcedimentoController.alterarProcedimento()}"
 							icon="glyphicon-ok" size="sm" update="frmCadProc msgPagina" value="Alterar"
 							class="btn-incluir" look="success"
 							rendered="#{ProcedimentoController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 				</h:form>

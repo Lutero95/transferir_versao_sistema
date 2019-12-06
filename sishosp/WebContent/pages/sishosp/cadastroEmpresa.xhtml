@@ -211,20 +211,20 @@
 
 
 
-					<b:commandButton action="#{EmpresaController.gravarEmpresa()}"
+					<p:commandButton action="#{EmpresaController.gravarEmpresa()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir"
 						rendered="#{EmpresaController.tipo == 1}" />
 
-					<b:commandButton action="#{EmpresaController.alterarEmpresa()}"
+					<p:commandButton action="#{EmpresaController.alterarEmpresa()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{EmpresaController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" class="btn-voltar"
 						action="/pages/sishosp/gerenciarEmpresa.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</h:form>
 			</div>

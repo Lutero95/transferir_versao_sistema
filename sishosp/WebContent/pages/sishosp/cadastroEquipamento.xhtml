@@ -45,22 +45,22 @@
 
 					<div align="center">
 
-						<b:commandButton
+						<p:commandButton
 							action="#{EquipamentoController.gravarEquipamento()}"
 							icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 							update=":frmPrincipal msgPagina" value="Incluir"
 							rendered="#{EquipamentoController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{EquipamentoController.alterarEquipamento()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EquipamentoController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarEquipamento.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

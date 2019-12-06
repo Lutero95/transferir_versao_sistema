@@ -500,7 +500,8 @@ public class AtendimentoDAO {
             stm.setInt(i, atendimento.getGrupo().getIdGrupo());
             i = i+1;
             }			
-
+            
+            if (campoBusca!=null) {
 			if (!campoBusca.equals(null)) {
 				if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
 					stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
@@ -508,6 +509,7 @@ public class AtendimentoDAO {
 					stm.setInt(i, Integer.valueOf(campoBusca));
 				i = i+1;
 			}
+            }
 			
 			ResultSet rs = stm.executeQuery();
 

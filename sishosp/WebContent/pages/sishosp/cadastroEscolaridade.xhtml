@@ -43,22 +43,22 @@
 
 					<div align="center">
 
-						<b:commandButton
+						<p:commandButton
 							action="#{EscolaridadeController.gravarEscolaridade()}"
 							icon="glyphicon-ok" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo == 1}" />
 
-						<b:commandButton
+						<p:commandButton
 							action="#{EscolaridadeController.alterarEscolaridade()}"
 							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo  == 2}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							class="btn-voltar" size="sm" immediate="true" look="info"
 							action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 

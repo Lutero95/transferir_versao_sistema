@@ -43,20 +43,20 @@
 
 				<div align="center">
 
-					<b:commandButton action="#{MotivoController.gravarMotivo()}"
+					<p:commandButton action="#{MotivoController.gravarMotivo()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{MotivoController.tipo == 1}" />
 
-					<b:commandButton action="#{MotivoController.alterarMotivo()}"
+					<p:commandButton action="#{MotivoController.alterarMotivo()}"
 						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{MotivoController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						class="btn-voltar" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarMotivoDesligamento.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</div>
 

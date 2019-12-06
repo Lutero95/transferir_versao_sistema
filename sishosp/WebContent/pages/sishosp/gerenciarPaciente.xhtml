@@ -20,13 +20,13 @@
             <div class="panel-body table-body">
 
                 <h:form id="frmPrincipal">
-                    <b:commandButton id="btninc" value="Novo" size="sm"
+                    <p:commandButton id="btninc" value="Novo" size="sm"
                                      action="#{PacienteController.redirectInsert()}"
                                      icon="glyphicon-plus" class="btn-addNovo">
                         <f:setPropertyActionListener value="1"
                                                      target="#{PacienteController.tipo}"/>
                         <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                    </b:commandButton>
+                    </p:commandButton>
 
                     <p:row>
 
@@ -85,7 +85,7 @@
                                 Ação
                             </f:facet>
 
-                            <b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+                            <p:commandButton tooltip="Alterar" icon="glyphicon-edit"
                                              size="sm" action="#{PacienteController.redirectEdit()}"
                                              class="btn-acao-table acao-editar">
 
@@ -93,15 +93,15 @@
                                                              target="#{PacienteController.paciente}"/>
                                 <f:setPropertyActionListener value="2"
                                                              target="#{PacienteController.tipo}"/>
-                            </b:commandButton>
+                            </p:commandButton>
 
-                            <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                            <p:commandButton tooltip="Excluir" icon="glyphicon-trash"
                                              size="sm" ajax="true" style="margin-left:10px"
                                              class="btn-acao-table acao-excluir"
                                              oncomplete="PF('dialogExclusao').show()">
                                 <f:setPropertyActionListener value="#{tab.id_paciente}"
                                                              target="#{PacienteController.paciente.id_paciente}"/>
-                            </b:commandButton>
+                            </p:commandButton>
 
                         </p:column>
 
@@ -123,11 +123,11 @@
 
                 <div align="center">
                     <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
+                    <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{PacienteController.excluirPaciente()}" ajax="true"
                                      icon="glyphicon-ok" update=":frmPrincipal msgPagina" class="btn-sim"/>
 
-                    <b:commandButton value="Não" class="btn-nao"
+                    <p:commandButton value="Não" class="btn-nao"
                                      oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
                 </div>

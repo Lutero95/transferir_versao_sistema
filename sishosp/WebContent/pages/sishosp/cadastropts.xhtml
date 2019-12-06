@@ -249,14 +249,14 @@
 
 					<div align="center">
 
-						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
 							icon="glyphicon-ok" update=":msgPagina, formPts"
 							class="btn-incluir" action="#{PtsController.gravarPts()}" />
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							action="/pages/sishosp/gerenciamentopts.xhtml?faces-redirect=true">
-						</b:commandButton>
+						</p:commandButton>
 
 					</div>
 
@@ -433,7 +433,7 @@
 			<h:form id="frmptsgravado">
 
 				<div align="center">
-					<b:commandButton value="Fechar" class="btn-fechar" look="info"
+					<p:commandButton value="Fechar" class="btn-fechar" look="info"
 						ajax="true" action="#{PtsController.redirectGerPts}"
 						icon="glyphicon-remove" />
 				</div>

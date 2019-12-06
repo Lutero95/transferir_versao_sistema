@@ -43,20 +43,20 @@
 
 				<div align="center">
 
-					<b:commandButton action="#{GeneroController.gravarGenero()}"
+					<p:commandButton action="#{GeneroController.gravarGenero()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{GeneroController.tipo == 1}" />
 
-					<b:commandButton action="#{GeneroController.alterarGenero()}"
+					<p:commandButton action="#{GeneroController.alterarGenero()}"
 						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{GeneroController.tipo  == 2}" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						class="btn-voltar" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciargenero.faces?faces-redirect=true">
-					</b:commandButton>
+					</p:commandButton>
 
 				</div>
 
