@@ -12,6 +12,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import br.gov.al.maceio.sishosp.acl.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -24,11 +25,6 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
-import br.gov.al.maceio.sishosp.acl.model.Funcao;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Permissoes;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -55,6 +51,8 @@ public class FuncionarioController implements Serializable {
 	private AtalhosAmbulatorialDTO atalhosAmbulatorialDTO;
 	private List<UnidadeBean> unidadesDoUsuarioLogado;
 	private Integer codigoDaUnidadeSelecionada = null;
+	private List<Empresa> listaEmpresaFuncionario;
+	private Empresa empresa;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -110,6 +108,8 @@ public class FuncionarioController implements Serializable {
 		usuario = new FuncionarioBean();
 		renderizarPermissoes = false;
 		unidadesDoUsuarioLogado = new ArrayList<>();
+		listaEmpresaFuncionario = new ArrayList<>();
+		empresa = new Empresa();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -174,29 +174,52 @@ public class FuncionarioController implements Serializable {
 
 		String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
 
+		String retorno = "";
+
 		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
 			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
 			return null;
 
 		} else {
 
-			usuarioLogado = fDao.autenticarUsuario(usuario);
+			Integer quantidadeEmpresas = fDao.verificarSeTrabalhaEmMaisDeUmaEmpresa(usuario.getCpf());
 
-			if (usuarioLogado == null) {
-				JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
-				return null;
-
-			} else {
-
-				unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
-				if(unidadesDoUsuarioLogado.size() > 1){
-					JSFUtil.abrirDialog("selecaoUnidade");
-				}else{
-					String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
-					return url;
-				}
+			if(quantidadeEmpresas > 1){
+				listaEmpresaFuncionario = fDao.carregarEmpresasDoFuncionario(usuario.getCpf());
+				JSFUtil.abrirDialog("selecaoEmpresa");
 			}
-			return "";
+
+			else{
+				retorno = autenticarUsuario();
+			}
+
+			return retorno;
+		}
+	}
+
+	public String autenticarUsuario() throws ProjetoException {
+
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(empresa.getBancoAcesso())) {
+			SessionUtil.adicionarNaSessao(empresa.getBancoAcesso(), "nomeBancoAcesso");
+		}
+
+		usuarioLogado = fDao.autenticarUsuario(usuario);
+
+		if (usuarioLogado == null) {
+			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
+			return null;
+
+		} else {
+
+			unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+			if(unidadesDoUsuarioLogado.size() > 1){
+				JSFUtil.abrirDialog("selecaoUnidade");
+
+				return null;
+			}else{
+				String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+				return url;
+			}
 		}
 	}
 
@@ -1373,5 +1396,21 @@ public class FuncionarioController implements Serializable {
 
 	public String retornaTextoDaUnidadeAtual(){
 		return fDao.retornaNomeDaUnidadeAtual(usuarioLogado.getCodigoDaUnidadeSelecionada());
+	}
+
+	public List<Empresa> getListaEmpresaFuncionario() {
+		return listaEmpresaFuncionario;
+	}
+
+	public void setListaEmpresaFuncionario(List<Empresa> listaEmpresaFuncionario) {
+		this.listaEmpresaFuncionario = listaEmpresaFuncionario;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 }

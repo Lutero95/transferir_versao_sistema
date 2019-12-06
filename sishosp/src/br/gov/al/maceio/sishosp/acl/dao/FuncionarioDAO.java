@@ -10,11 +10,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Permissao;
-import br.gov.al.maceio.sishosp.acl.model.Permissoes;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.acl.model.*;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
@@ -75,6 +71,71 @@ public class FuncionarioDAO {
 		}
 	}
 
+	public Integer verificarSeTrabalhaEmMaisDeUmaEmpresa(String cpf) throws ProjetoException {
+
+		String sql = "select count(*) as quantidade from acl.funcionarios where cpf = ? and ativo = 'S';";
+
+		Integer quantidade = 0;
+
+		try {
+			con = ConnectionFactoryPublico.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, cpf.replaceAll("[^0-9]", ""));
+
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				quantidade = rs.getInt("quantidade");
+			}
+
+			return quantidade;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public List<Empresa> carregarEmpresasDoFuncionario(String cpf) throws ProjetoException {
+
+		String sql = "select e.nome_empresa, e.nome_banco from acl.funcionarios f " +
+				"join acl.empresas e on (f.banco_acesso = e.nome_banco) " +
+				"where f.ativo = 'S' and f.cpf = ?;";
+
+		List<Empresa> lista = new ArrayList<>();
+
+		try {
+			con = ConnectionFactoryPublico.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, cpf.replaceAll("[^0-9]", ""));
+
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Empresa empresa = new Empresa();
+				empresa.setEmpresa(rs.getString("nome_empresa"));
+				empresa.setBancoAcesso(rs.getString("nome_banco"));
+				lista.add(empresa);
+			}
+
+			return lista;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario) throws ProjetoException {
 
 		String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
@@ -85,7 +146,7 @@ public class FuncionarioDAO {
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
 				+ " join hosp.empresa e on e.cod_empresa = u.cod_empresa "
-				+ "where (us.cpf = ?) and ((us.senha) = ?) and us.ativo = 'S'";
+				+ "where (us.cpf = ?) and us.ativo = 'S'";
 
 		FuncionarioBean ub = null;
 		int count = 1;
@@ -95,7 +156,6 @@ public class FuncionarioDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-			pstmt.setString(2, usuario.getSenha());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				ub = new FuncionarioBean();

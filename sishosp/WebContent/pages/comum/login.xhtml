@@ -64,6 +64,27 @@
 
                                 </p:dialog>
 
+                                <p:dialog header="Escolha a empresa para acessar" widgetVar="selecaoEmpresa" closable="false"
+                                          draggable="false" id="selecaoEmpresa" responsive="true"
+                                          resizable="false">
+
+                                    <p:outputPanel autoUpdate="true">
+                                        <div align="center">
+                                            <p:selectOneMenu value="#{MBFuncionarios.empresa.bancoAcesso}"
+                                                             style="width: 10.0em;">
+                                                <f:selectItems value="#{MBFuncionarios.listaEmpresaFuncionario}"
+                                                               var="empresa" itemLabel="#{empresa.empresa}"
+                                                               itemValue="#{empresa.bancoAcesso}"/>
+                                            </p:selectOneMenu>
+                                            <br></br>
+                                            <br></br>
+                                            <p:commandButton value="Selecionar"
+                                                             action="#{MBFuncionarios.autenticarUsuario()}"/>
+                                        </div>
+                                    </p:outputPanel>
+
+                                </p:dialog>
+
                             </center>
 
                             <div align="center">
