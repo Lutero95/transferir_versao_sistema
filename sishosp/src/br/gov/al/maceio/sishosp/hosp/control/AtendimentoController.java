@@ -56,6 +56,7 @@ public class AtendimentoController implements Serializable {
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
+    private static final String ENDERECO_ATENDIMENTO_PROFISSIONAL = "atendimentoprofissionalnaequipe?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public AtendimentoController() {
@@ -180,7 +181,7 @@ public class AtendimentoController implements Serializable {
         atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.buscarLaudosPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
     }
 
-    public void realizarAtendimentoProfissional() throws ProjetoException {
+    public String realizarAtendimentoProfissional() throws ProjetoException {
         if (funcionario == null) {
             FuncionarioBean user_session = (FuncionarioBean) FacesContext
                     .getCurrentInstance().getExternalContext().getSessionMap()
@@ -198,8 +199,10 @@ public class AtendimentoController implements Serializable {
 
             if (alterou == true) {
                 JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
+                return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+                return null;
             }
           //comentado enquanto nao tiver a integracao com o datasus    } else {
           //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
