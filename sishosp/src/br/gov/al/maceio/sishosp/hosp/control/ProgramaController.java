@@ -78,9 +78,12 @@ public class ProgramaController implements Serializable {
     }
 
     public void gravarPrograma() throws ProjetoException {
-        if (this.prog.getGrupo().isEmpty()) {
+       /*
+    	if (this.prog.getGrupo().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
+        	*/
+        
             boolean cadastrou = pDao.gravarPrograma(prog);
 
             if (cadastrou == true) {
@@ -90,7 +93,7 @@ public class ProgramaController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
             listaProgramas = pDao.listarProgramas();
-        }
+       // }
     }
 
     public void alterarPrograma() {

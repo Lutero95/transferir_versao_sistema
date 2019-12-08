@@ -49,7 +49,7 @@
 
 				<b:dataTableColumn label="Id" style="width:7%" value="#{m.codforn}" />
 				<b:dataTableColumn label="Nome" value="#{m.nome}" />
-				<b:dataTableColumn label="CNPJ" value="#{m.cnpj}" />
+				<b:dataTableColumn label="cpfcnpj" value="#{m.cpfcnpj}" />
 			</b:dataTable>
 		</h:form>
 
@@ -75,9 +75,9 @@
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
 							size="30" value="#{fornecedorControllerFin.func.fantasia}" />
 
-						<h:outputText value="CNPJ" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o CNPJ"
-							value="#{fornecedorControllerFin.func.cnpj}">
+						<h:outputText value="cpfcnpj" style="font-weight:bold;"></h:outputText>
+						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o cpfcnpj"
+							value="#{fornecedorControllerFin.func.cpfcnpj}">
 							<stella:validateCNPJ  formatted="true"  />
 						</p:inputMask>
 
@@ -153,9 +153,9 @@
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
 							size="40" value="#{fornecedorControllerFin.rowBean.fantasia}" />
 
-						<h:outputText value="CNPJ" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o CNPJ"
-							value="#{fornecedorControllerFin.rowBean.cnpj}"
+						<h:outputText value="cpfcnpj" style="font-weight:bold;"></h:outputText>
+						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o cpfcnpj"
+							value="#{fornecedorControllerFin.rowBean.cpfcnpj}"
 							>
 							<stella:validateCNPJ  formatted="true" />
 						</p:inputMask>

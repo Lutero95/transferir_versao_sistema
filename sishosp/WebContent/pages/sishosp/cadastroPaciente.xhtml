@@ -1056,11 +1056,11 @@
 					rendered="#{PacienteController.tipo == 1}" />
 
 				<p:commandButton action="#{PacienteController.alterarPaciente()}"
-					icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+					icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 					value="Alterar" look="success" class="btn-incluir new-bottom"
 					rendered="#{PacienteController.tipo  == 2}" />
 
-				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+				<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 					class="btn-voltar new-bottom" size="sm" immediate="true"
 					look="info"
 					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
