@@ -1679,7 +1679,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                                             String campoBusca, String tipo) throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
-        String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, "
+        String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
                 + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca " + " FROM  hosp.atendimentos a "
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
@@ -1751,6 +1751,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 agenda.setPresenca(rs.getString("presenca"));
+                agenda.setSituacao(rs.getString("situacao"));
                 lista.add(agenda);
             }
         } catch (Exception ex) {
@@ -2662,6 +2663,66 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
         return lista;
+    }
+
+    public Boolean verificarSeAtendimentoFoiRealizado(Integer idAgenda) {
+
+        Boolean resultado = false;
+
+        String sql = "SELECT id_atendimentos1 FROM hosp.atendimentos1 WHERE situacao = 'A' AND id_atendimento = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, idAgenda);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                resultado = true;
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
+    public boolean cancelarAgendamento(Integer idAgenda) {
+
+        Boolean retorno = false;
+
+        String sql = "update hosp.atendimentos set situacao = ? where id_atendimento = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setString(1, "C");
+            stmt.setInt(2, idAgenda);
+            stmt.execute();
+            con.commit();
+            retorno = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
     }
 
 }

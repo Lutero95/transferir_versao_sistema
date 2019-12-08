@@ -1116,6 +1116,35 @@ public class AgendaController implements Serializable {
         this.listaProfissional = fDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
     }
 
+    public void verificarSeAtendimentoFoiRealizado(){
+        Boolean atendimentoRealizado = aDao.verificarSeAtendimentoFoiRealizado(rowBean.getIdAgenda());
+
+        if(atendimentoRealizado){
+            JSFUtil.adicionarMensagemAdvertencia("Não é possível cancelar o agendamento pois existe atendimento informado!", "Aviso");
+            return;
+        }
+        else{
+            JSFUtil.abrirDialog("dialogCancelamento");
+        }
+    }
+
+    public void cancelarAgendamento(){
+        Boolean cancelado = aDao.cancelarAgendamento(rowBean.getIdAgenda());
+
+        if(cancelado){
+            JSFUtil.adicionarMensagemSucesso("Cancelamento realizado com sucesso!", "Sucesso");
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Erro ao realizar cancelamento!", "Erro");
+        }
+
+        rowBean = null;
+        rowBean = new AgendaBean();
+        JSFUtil.fecharDialog("dialogCancelamento");
+    }
+
+
+
     public ProgramaBean getProgramaSelecionado() {
         return programaSelecionado;
     }

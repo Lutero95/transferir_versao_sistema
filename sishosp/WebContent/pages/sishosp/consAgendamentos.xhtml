@@ -34,6 +34,8 @@
 
 				<h:form id="formConsAge">
 
+					<p:growl id="mensagem"></p:growl>
+
 					<b:row>
 						<p:outputPanel class="data-size5">
 							<b:column span="1" class="label-position data-size">
@@ -132,22 +134,30 @@
 
 						<div align="center">
 
+							<p:outputPanel id="botoes">
+
 							<b:column span="2" class="new-span2">
 								<p:commandButton value="Marcar Presença" style="margin-top:5px;"
 									id="btnmarca" immediate="true"
-									rendered="#{AgendaController.rowBean.presenca=='N'}"
+									rendered="#{AgendaController.rowBean.presenca=='N' and AgendaController.rowBean.situacao != 'C'}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formConsAge" icon="glyphicon-check"
 									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
 								<p:commandButton value="Retirar Presença"
 									style="margin-top:5px;" id="btnretira" immediate="true"
-									rendered="#{AgendaController.rowBean.presenca=='S'}"
+									rendered="#{AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C'}"
 									class="btn-acao-table acao-cancelar btn-new-padding2"
 									update=":formConsAge" icon="glyphicon-remove"
 									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
+								<p:commandButton value="Cancelar Agendamento"
+												 style="margin-top:5px;" id="btncancela" immediate="true"
+												 rendered="#{AgendaController.rowBean.idAgenda != null and AgendaController.rowBean.situacao != 'C'}"
+												 class="btn-acao-table acao-cancelar btn-new-padding2"
+												 update=":formConsAge, mensagem" icon="ui-icon-close"
+												 action="#{AgendaController.verificarSeAtendimentoFoiRealizado()}" />
 							</b:column>
 
-
+							</p:outputPanel>
 
 						</div>
 
@@ -254,6 +264,33 @@
 				</h:form>
 			</div>
 		</div>
+
+		<p:dialog widgetVar="dialogCancelamento" modal="true" header="Cancelar Agendamento"
+				  resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="frmCancelar">
+				<h:panelGrid columns="1">
+
+					<div class="alert alert-warning" role="alert">Deseja cancelar o agendamento selecionado?</div>
+
+				</h:panelGrid>
+
+				<div align="center">
+
+					<p:separator />
+					<p:commandButton look="success" value="Sim" style="float:left;"
+									 action="#{AgendaController.cancelarAgendamento()}" ajax="true"
+									 class="btn-sim" icon="ui-icon-check" update=":formConsAge:mensagem, :formConsAge:botoes"/>
+
+					<p:commandButton value="Não"
+									 oncomplete="PF('dialogCancelamento').hide();" look="info" ajax="true"
+									 icon="ui-icon-close" class="btn-nao"
+									 style="margin-left:5px;float:right;" />
+
+				</div>
+
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>
