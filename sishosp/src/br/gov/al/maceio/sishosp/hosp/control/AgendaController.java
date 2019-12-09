@@ -1128,11 +1128,12 @@ public class AgendaController implements Serializable {
         }
     }
 
-    public void cancelarAgendamento(){
+    public void cancelarAgendamento() throws ProjetoException{
         Boolean cancelado = aDao.cancelarAgendamento(rowBean.getIdAgenda());
 
         if(cancelado){
             JSFUtil.adicionarMensagemSucesso("Cancelamento realizado com sucesso!", "Sucesso");
+            consultarAgenda("T");
         }
         else{
             JSFUtil.adicionarMensagemErro("Erro ao realizar cancelamento!", "Erro");
