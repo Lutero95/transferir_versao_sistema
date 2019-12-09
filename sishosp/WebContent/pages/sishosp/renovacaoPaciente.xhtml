@@ -445,62 +445,65 @@
 
 
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-			dynamic="true" modal="true" id="laudo-id">
+		
+			dynamic="true" modal="true" id="laudo-id" responsive="true">
 			<h:form id="formConsuLaudo">
 
 				<p:growl id="msgLaudo"></p:growl>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+				<p:dataTable 
+				 paginator="true"
+			rows="5"		 
 					value="#{RenovarPacienteController.listaLaudosVigentes}"
-					id="dtLaudo" var="insercao" display="Nenhum Laudo">
+					id="dtLaudo" var="insercao" emptyMessage="Nenhum Laudo">
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Paciente
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             CNS
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Vigência Inicial
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</p:outputLabel>
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Vigência Final
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</p:outputLabel>
-					</h:column>
+					</p:column>
 
-					<h:column rendered="false">
+					<p:column rendered="false">
 						<f:facet name="header">
                             Paciente
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.mesFinal}" />
-					</h:column>
+					</p:column>
 
-					<h:column rendered="false">
+					<p:column rendered="false">
 						<f:facet name="header">
                             Paciente
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.anoFinal}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
@@ -512,9 +515,9 @@
 							<f:setPropertyActionListener value="#{insercao}"
 								target="#{RenovarPacienteController.insercao}" />
 						</p:commandButton>
-					</h:column>
+					</p:column>
 
-				</b:dataTable>
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 

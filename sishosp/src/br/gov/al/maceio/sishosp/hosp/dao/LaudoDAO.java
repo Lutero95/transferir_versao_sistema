@@ -605,7 +605,7 @@ public class LaudoDAO {
 				// hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
 				// 'YYYY-MM-DD'))) "
 				+ " AND l.codpaciente = ?  "//AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
-				+ " ) a";
+				+ " ) a order by datainicio desc";
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
