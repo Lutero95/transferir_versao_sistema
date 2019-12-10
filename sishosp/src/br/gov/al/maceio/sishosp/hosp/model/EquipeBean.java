@@ -16,6 +16,7 @@ public class EquipeBean implements Serializable {
 	private String descEquipe;
 	private Integer codUnidade;
 	private Boolean realizaAvaliacao;
+	private String turno;
 
 	// LISTAS
 	private List<FuncionarioBean> profissionais;
@@ -114,5 +115,13 @@ public class EquipeBean implements Serializable {
 
 	public void setRealizaAvaliacao(Boolean realizaAvaliacao) {
 		this.realizaAvaliacao = realizaAvaliacao;
+	}
+
+	public String getTurno() {
+		return turno;
+	}
+
+	public void setTurno(String turno) {
+		this.turno = turno;
 	}
 }

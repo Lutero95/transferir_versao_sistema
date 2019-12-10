@@ -8,105 +8,119 @@
 
     <ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{EquipeController.getEditEquipe()}"/>
+        <f:metadata>
+            <f:viewAction action="#{EquipeController.getEditEquipe()}"/>
 
-    </f:metadata>
+        </f:metadata>
 
         <div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
+            <div class="panel-heading top-heading">
                 <h:outputText value="#{EquipeController.cabecalho}"
                               class="panel-title"></h:outputText>
             </div>
 
             <div class="panel-body table-body sub-table-body">
 
-				<h:form class="form-horizontal" id="frmPrincipal">
+                <h:form class="form-horizontal" id="frmPrincipal">
 
-                <b:row>
-						<b:column span="12" class="label-position">
-							<b:label for="inputnome" value="Descrição" severity="info" />
+                    <b:row>
+                        <b:column span="12" class="label-position">
+                            <b:label for="inputnome" value="Descrição" severity="info"/>
 
-							<b:inputText validator="CaractereEmBrancoValidator"
-								value="#{EquipeController.equipe.descEquipe}"
-								class="form-control" id="inputname" required="true"
-								requiredMessage="Descrição: Campo obrigatório!"
-								validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
-								<f:validateLength minimum="2" maximum="100" />
-							</b:inputText>
+                            <b:inputText validator="CaractereEmBrancoValidator"
+                                         value="#{EquipeController.equipe.descEquipe}"
+                                         class="form-control" id="inputname" required="true"
+                                         requiredMessage="Descrição: Campo obrigatório!"
+                                         validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
+                                <f:validateLength minimum="2" maximum="100"/>
+                            </b:inputText>
 
-						</b:column>
-					</b:row>
-<b:row>
-						<b:column span="3">
-							<p:selectBooleanCheckbox label="Realiza Avaliação" itemLabel="Realiza Avaliação"
-								style="color:#2e84ce;" value="#{EquipeController.equipe.realizaAvaliacao}">
-							</p:selectBooleanCheckbox>
-						</b:column>
-						</b:row>
-                <b:row>
-                    <b:column span="2" class="label-position">
-							<p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column span="3">
+                            <p:selectBooleanCheckbox label="Realiza Avaliação" itemLabel="Realiza Avaliação"
+                                                     style="color:#2e84ce;"
+                                                     value="#{EquipeController.equipe.realizaAvaliacao}">
+                            </p:selectBooleanCheckbox>
+                        </b:column>
+                    </b:row>
+                    <br/>
+                    <b:row>
+                        <b:column span="3" class="label-position">
+                            <b:label value="Turno:" severity="info" />
+
+                            <b:selectOneMenu class="select-agendaEquipe2"
+                                             value="#{EquipeController.equipe.turno}">
+                                <f:selectItem itemLabel="Manhã" itemValue="M" />
+                                <f:selectItem itemLabel="Tarde" itemValue="T" />
+                                <f:selectItem itemLabel="Ambos" itemValue="A" />
+                            </b:selectOneMenu>
+                        </b:column>
+
+                    </b:row>
+                    <br/>
+                    <b:row>
+                        <b:column span="2" class="label-position">
+                            <p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-							
-                        <p:commandButton process="@this"  style="margin-left: 20px;"
-                        				 class="btn-acao-table acao-editar" 
-                                         action="#{MBFuncionarios.ListarTodosProfissionais()}"
-                                         title="Incluir Profissional" icon="ui-icon-plus"
-                                         oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
-                    </b:column>
 
-                    <b:column span="9">
-                        <p:dataTable emptyMessage="Nenhum Profissional na Equipe"
-                                     styleClass="table table-hover" id="tabela"
-                                     value="#{EquipeController.equipe.profissionais}" var="tab"
-                                     paginator="true" paginatorPosition="bottom" rows="12"
-                                     resizableColumns="false">
+                            <p:commandButton process="@this" style="margin-left: 20px;"
+                                             class="btn-acao-table acao-editar"
+                                             action="#{MBFuncionarios.ListarTodosProfissionais()}"
+                                             title="Incluir Profissional" icon="ui-icon-plus"
+                                             oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
+                        </b:column>
 
-                            <p:column headerText="Nome" style="font-weight:bold;" width="80%">
-                                <h:outputText value="#{tab.nome}"/>
-                            </p:column>
+                        <b:column span="9">
+                            <p:dataTable emptyMessage="Nenhum Profissional na Equipe"
+                                         styleClass="table table-hover" id="tabela"
+                                         value="#{EquipeController.equipe.profissionais}" var="tab"
+                                         paginator="true" paginatorPosition="bottom" rows="12"
+                                         resizableColumns="false">
 
-                            <p:column headerText="Ação">
-                                <div align="center">
-                                    <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-                                                     action="#{EquipeController.equipe.removeProfList()}"
-                                                     icon="ui-icon-trash" update=":frmPrincipal">
-                                        <f:setPropertyActionListener value="#{tab}"
-                                                                     target="#{EquipeController.equipe.profAdd}"/>
-                                    </p:commandButton>
-                                </div>
-                            </p:column>
+                                <p:column headerText="Nome" style="font-weight:bold;" width="80%">
+                                    <h:outputText value="#{tab.nome}"/>
+                                </p:column>
 
-                        </p:dataTable>
+                                <p:column headerText="Ação">
+                                    <div align="center">
+                                        <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+                                                         action="#{EquipeController.equipe.removeProfList()}"
+                                                         icon="ui-icon-trash" update=":frmPrincipal">
+                                            <f:setPropertyActionListener value="#{tab}"
+                                                                         target="#{EquipeController.equipe.profAdd}"/>
+                                        </p:commandButton>
+                                    </div>
+                                </p:column>
 
-
-                    </b:column>
+                            </p:dataTable>
 
 
-                </b:row>
+                        </b:column>
 
 
+                    </b:row>
 
 
-                <div align="center">
-                    <p:commandButton action="#{EquipeController.gravarEquipe()}"
-                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
-                                     value="Incluir" class="btn-incluir"
-                                     rendered="#{EquipeController.tipo == 1}"/>
+                    <div align="center">
+                        <p:commandButton action="#{EquipeController.gravarEquipe()}"
+                                         icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
+                                         value="Incluir" class="btn-incluir"
+                                         rendered="#{EquipeController.tipo == 1}"/>
 
-                    <p:commandButton action="#{EquipeController.alterarEquipe()}"
-                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
-                                     look="success" class="btn-incluir"
-                                     rendered="#{EquipeController.tipo  == 2}"/>
+                        <p:commandButton action="#{EquipeController.alterarEquipe()}"
+                                         icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
+                                         look="success" class="btn-incluir"
+                                         rendered="#{EquipeController.tipo  == 2}"/>
 
-                    <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     size="sm" immediate="true" look="info" class="btn-voltar"
-                                     action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-                    </p:commandButton>
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
+                        </p:commandButton>
 
-                </div>
-            </h:form>
+                    </div>
+                </h:form>
             </div>
         </div>
 
