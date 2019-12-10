@@ -854,6 +854,22 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             JSFUtil.adicionarMensagemErro("Carregue um laudo primeiro!", "Bloqueio");
 
         }
+
+        turnoInsercaoReceberValorTurnoEquipe();
+
+    }
+
+    public void turnoInsercaoReceberValorTurnoEquipe(){
+        insercao.setTurno(insercao.getEquipe().getTurno());
+    }
+
+    public void zerarValorTurnoInsercao() throws ProjetoException {
+        if(tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
+            insercao.setTurno("");
+        }
+        else{
+            listarProfissionaisEquipe();
+        }
     }
 
     public void listarProfissionais() throws ProjetoException {

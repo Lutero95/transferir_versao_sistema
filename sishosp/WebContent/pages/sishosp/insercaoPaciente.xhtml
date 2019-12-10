@@ -111,8 +111,8 @@
                                     <f:selectItem itemLabel="Por Equipe" itemValue="E"/>
                                     <f:selectItem itemLabel="Por Profissional" itemValue="P"/>
                                     <p:ajax
-                                            update="outProg, outEquipe, outGrupo, outProf, outTabelas, outDias, outDetalhes"
-                                            event="click"/>
+                                            update="outProg, outEquipe, outGrupo, outProf, outTabelas, outDias, outDetalhes, opturno"
+                                            event="click" listener="#{InsercaoController.zerarValorTurnoInsercao()}"/>
                                 </p:selectOneRadio>
                             </b:column>
 
@@ -246,7 +246,7 @@
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina" />
+                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina, opturno" />
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
@@ -467,11 +467,13 @@
                         </b:row>
 
                         <b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
-                            <p:outputPanel>
+                            <p:outputPanel id="opturno">
                                 <b:column span="3" class="label-position">
                                     <b:label value="Turno:" severity="info" class="fire-label"/>
 
                                     <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                     readonly="#{InsercaoController.insercao.equipe.turno != 'A'
+                                                     and InsercaoController.tipo == 'E'}"
                                                      requiredMessage="Informe o Turno"
                                                      value="#{InsercaoController.insercao.turno}">
                                         <f:selectItem itemLabel="Selecione" itemValue="" />
