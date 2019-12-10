@@ -914,8 +914,12 @@ public class AgendaController implements Serializable {
     public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
         boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
         if (mudouStatusPresenca) {
+        	 if (agendaSelecionada.getPresenca().equals("S"))
+                 rowBean.setPresenca("N");
+        	 if (agendaSelecionada.getPresenca().equals("N"))
+                 rowBean.setPresenca("S");
             consultarAgenda(agenda.getPresenca());
-            rowBean = new AgendaBean();
+            //rowBean = new AgendaBean();
             JSFUtil.adicionarMensagemSucesso("ação conclu�da com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");

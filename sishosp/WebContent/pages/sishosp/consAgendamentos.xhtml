@@ -134,24 +134,30 @@
 
 						<div align="center">
 
-							<p:outputPanel id="botoes">
-
-							<b:column span="2" class="new-span2">
-								<p:commandButton value="Marcar Presença" style="margin-top:5px;"
-									id="btnmarca" immediate="true"
-									rendered="#{AgendaController.rowBean.presenca=='N' and AgendaController.rowBean.situacao != 'C'}"
+							<p:outputPanel id="botoes" autoUpdate="true">
+		<h:outputText value="#{AgendaController.rowBean.idAgenda}" />
+		<h:outputText value="E#{AgendaController.rowBean.presenca}F" />
+		<h:outputText value="#{AgendaController.rowBean.situacao}" />
+							<b:column span="2" rendered="#{(AgendaController.rowBean.presenca=='N' and AgendaController.rowBean.situacao != 'C')}" >
+								<p:commandButton value="Marcar Presença" style="margin-top:5px;width:120px !important"
+									id="btnmarca" immediate="true" 
+									disabled="#{AgendaController.rowBean.idAgenda == null or (AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C')}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
-									update=":formConsAge" icon="glyphicon-check"
+									update=":formConsAge" icon="ui-icon-check"
 									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
+									</b:column>
+									<b:column span="2" rendered="#{AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C'}">
 								<p:commandButton value="Retirar Presença"
-									style="margin-top:5px;" id="btnretira" immediate="true"
-									rendered="#{AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C'}"
+									style="margin-top:5px;width:120px !important" id="btnretira" immediate="true"
+									
 									class="btn-acao-table acao-cancelar btn-new-padding2"
 									update=":formConsAge" icon="glyphicon-remove"
 									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
-								<p:commandButton value="Cancelar Agendamento"
-												 style="margin-top:5px;" id="btncancela" immediate="true"
-												 rendered="#{AgendaController.rowBean.idAgenda != null and AgendaController.rowBean.situacao != 'C'}"
+									</b:column>
+									<b:column span="2" >
+								<p:commandButton value="Cancelar Agendamento" 
+												 style="margin-top:5px;width:120px !important" id="btncancela" immediate="true"
+												 disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
 												 class="btn-acao-table acao-cancelar btn-new-padding2"
 												 update=":formConsAge, mensagem" icon="ui-icon-close"
 												 action="#{AgendaController.verificarSeAtendimentoFoiRealizado()}" />
