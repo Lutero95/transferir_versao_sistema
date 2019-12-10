@@ -916,9 +916,13 @@ public class AgendaController implements Serializable {
         if (mudouStatusPresenca) {
         	 if (agendaSelecionada.getPresenca().equals("S"))
                  rowBean.setPresenca("N");
+                 else
         	 if (agendaSelecionada.getPresenca().equals("N"))
                  rowBean.setPresenca("S");
+        	 String presenca =""; rowBean.getPresenca();
+        	 AgendaBean linhaCapturada = rowBean;
             consultarAgenda(agenda.getPresenca());
+            rowBean = linhaCapturada;
             //rowBean = new AgendaBean();
             JSFUtil.adicionarMensagemSucesso("ação conclu�da com sucesso!", "Sucesso");
         } else {
