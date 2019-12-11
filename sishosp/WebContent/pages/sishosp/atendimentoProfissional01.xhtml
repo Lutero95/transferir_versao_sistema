@@ -2,7 +2,6 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="../../template/template.xhtml">
 
@@ -22,9 +21,9 @@
 
                 <h:form>
 
-                    <b:row>
+                    <p:row>
                         <div align="center">
-                            <b:row>
+                            <p:row>
                                 <p:commandButton value="Consultar Evolucao" look="success" size="sm"
                                                  icon="ui-icon-search" immediate="true" update=":frmPrincipal"
                                                  action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
@@ -35,9 +34,9 @@
                                                  icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
                                                  action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
                                                  oncomplete="PF('dlgConsultaPTS').show();"/>
-                            </b:row>
+                            </p:row>
                         </div>
-                    </b:row>
+                    </p:row>
 
                 </h:form>
 
@@ -45,58 +44,54 @@
 
                     <br></br>
 
-                    <b:row>
+                    <p:row>
 
-                        <b:column span="5" class="label-position">
-                            <b:label value="Paciente" severity="info"/>
+                        <p:column span="5" class="label-position">
+                            <p:outputLabel  value="Paciente" severity="info"/>
 
-                            <b:inputText class="form-control select-agendaEquipe5"
+                            <p:outputLabel class="form-control select-agendaEquipe5"
                                          value="#{AtendimentoController.atendimento.paciente.nome}"
-                                         readonly="true" id="inputname"></b:inputText>
-                        </b:column>
+                                        id="inputname"/>
+                        </p:column>
 
-                        <b:column span="5" class="label-position">
-                            <b:label value="Procedimento" severity="info"/>
+                        <p:column span="5" class="label-position">
+                            <p:outputLabel value="Procedimento" severity="info"/>
 
                             <p:outputPanel id="outProcP1">
-                                <p:autoComplete required="true" class="select-agendaEquipe4"
+                                <p:outputLabel   class="form-control select-agendaEquipe5"
                                                 requiredMessage="Escolha o procedimento!"
                                                 value="#{AtendimentoController.atendimento.procedimento}"
                                                 size="31" converter="conProcedimento" id="descProc1"
-                                                completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.nomeProc}">
-                                </p:autoComplete>
+                                              />
                             </p:outputPanel>
-                        </b:column>
+                        </p:column>
 
-                    </b:row>
+                    </p:row>
 
                     <br/>
 
-                    <b:row>
+                    <p:row>
 
-                        <b:column span="12" class="label-position">
-                            <b:label value="Profissional" severity="info"/>
+                        <p:column span="12" class="label-position">
+                            <p:outputLabel value="Profissional" severity="info"/>
 
-                            <b:inputText
+                            <p:outputLabel
                                     value="#{AtendimentoController.atendimento.funcionario.nome}"
                                     readonly="true" class="form-control select-agendaEquipe5"
-                                    id="inputnamefunc"></b:inputText>
-                        </b:column>
+                                    id="inputnamefunc"/>
+                        </p:column>
 
 
 
-                    </b:row>
+                    </p:row>
 
                     <br/>
 
-                    <b:row>
+                    <p:row>
 
 
-                        <b:column span="12" class="label-position">
-                            <b:label value="Evolução" severity="info"/>
+                        <p:column span="12" class="label-position">
+                            <p:outputLabel value="Evolução" severity="info"/>
 
                             <p:editor widgetVar="editor2" style="margin-right: 15px;"
                                       value="#{AtendimentoController.atendimento.evolucao}"
@@ -104,9 +99,9 @@
                                       requiredMessage="Evolução: Campo obrigatório!">
 
                             </p:editor>
-                        </b:column>
+                        </p:column>
 
-                    </b:row>
+                    </p:row>
 
 
                     <br></br>
@@ -167,8 +162,8 @@
 
                 <p:outputPanel id="outDtEvolucoes">
 
-                    <b:row>
-                        <b:column span="12">
+                    <p:row>
+                        <p:column span="12">
                             <ui:repeat var="evo"
                                        value="#{AtendimentoController.listaEvolucoes}"
                                        varStatus="status">
@@ -191,8 +186,8 @@
 
                             </ui:repeat>
 
-                        </b:column>
-                    </b:row>
+                        </p:column>
+                    </p:row>
                 </p:outputPanel>
 
 
@@ -203,19 +198,19 @@
         <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px" styleClass="topDialog">
 
             <h:form id="frmPrincipalPts">
-                <b:row>
+                <p:row>
 
                     <h1>VISÃO GERAL DO PACIENTE</h1>
 
-                </b:row>
+                </p:row>
 
                 <br></br>
 
-                <b:row>
+                <p:row>
 
-                    <b:column span="5" class="label-position data-size">
+                    <p:column span="5" class="label-position data-size">
 
-                        <b:label value="Incapacidades Funcionais:" id="incapacidadesFuncionais"
+                        <p:outputLabel value="Incapacidades Funcionais:" id="incapacidadesFuncionais"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
@@ -223,13 +218,13 @@
                                          requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
                                          value="#{AtendimentoController.pts.incapacidadesFuncionais}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                    <b:column span="2"></b:column>
+                    <p:column span="2"></p:column>
 
-                    <b:column span="5" class="label-position data-size">
+                    <p:column span="5" class="label-position data-size">
 
-                        <b:label value="Capacidades Funcionais:" id="capacidadesFuncionais"
+                        <p:outputLabel value="Capacidades Funcionais:" id="capacidadesFuncionais"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
@@ -237,17 +232,17 @@
                                          requiredMessage="Capacidades Funcionais: Campo obrigatório!"
                                          value="#{AtendimentoController.pts.capacidadesFuncionais}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                </b:row>
+                </p:row>
 
                 <br></br>
 
-                <b:row>
+                <p:row>
 
-                    <b:column span="5" class="label-position data-size">
+                    <p:column span="5" class="label-position data-size">
 
-                        <b:label value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
+                        <p:outputLabel value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
@@ -255,13 +250,13 @@
                                          requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
                                          value="#{AtendimentoController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                    <b:column span="2"></b:column>
+                    <p:column span="2"></p:column>
 
-                    <b:column span="5" class="label-position data-size">
+                    <p:column span="5" class="label-position data-size">
 
-                        <b:label value="Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
+                        <p:outputLabel value="Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
@@ -269,17 +264,17 @@
                                          requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
                                          value="#{AtendimentoController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                </b:row>
+                </p:row>
 
                 <br></br>
 
-                <b:row>
+                <p:row>
 
-                    <b:column span="4" class="label-position data-size">
+                    <p:column span="4" class="label-position data-size">
 
-                        <b:label value="Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
+                        <p:outputLabel value="Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
@@ -287,11 +282,11 @@
                                          requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
                                          value="#{AtendimentoController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                    <b:column span="4" class="label-position data-size">
+                    <p:column span="4" class="label-position data-size">
 
-                        <b:label value="Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
+                        <p:outputLabel value="Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
@@ -299,11 +294,11 @@
                                          requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
                                          value="#{AtendimentoController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                    <b:column span="4" class="label-position data-size">
+                    <p:column span="4" class="label-position data-size">
 
-                        <b:label value="Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
+                        <p:outputLabel value="Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
                                  severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
@@ -311,23 +306,23 @@
                                          requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
                                          value="#{AtendimentoController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
 
-                    </b:column>
+                    </p:column>
 
-                </b:row>
+                </p:row>
 
                 <br></br>
 
 
 
-                <b:row>
+                <p:row>
 
                     <h1>VISÃO MULTIDISCIPLINAR</h1>
 
-                </b:row>
+                </p:row>
 
                 <br></br>
 
-                <b:row>
+                <p:row>
 
                     <p:dataTable id="dtPtsAdicionados" resizableColumns="true"
                                  value="#{AtendimentoController.pts.listaPtsArea}"
@@ -369,7 +364,7 @@
 
                     </p:dataTable>
 
-                </b:row>
+                </p:row>
 
             </h:form>
 
