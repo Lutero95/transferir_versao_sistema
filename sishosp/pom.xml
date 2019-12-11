@@ -26,6 +26,15 @@
 			<artifactId>bootsfaces</artifactId>
 			<version>1.4.1</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
+<dependency>
+    <groupId>org.primefaces.extensions</groupId>
+    <artifactId>primefaces-extensions</artifactId>
+    <version>6.1.1</version>
+</dependency>
+
+		
 		<dependency>
 			<groupId>br.com.caelum.stella</groupId>
 			<artifactId>caelum-stella-core</artifactId>
