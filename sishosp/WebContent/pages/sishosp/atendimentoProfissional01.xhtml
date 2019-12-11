@@ -47,7 +47,7 @@
                     <p:row>
 
                         <p:column span="5" class="label-position">
-                            <p:outputLabel  value="Paciente" severity="info"/>
+                            <p:outputLabel  value="Paciente" severity="info" style="font-weight:bold !important"/>
 
                             <p:outputLabel class="form-control select-agendaEquipe5"
                                          value="#{AtendimentoController.atendimento.paciente.nome}"
@@ -55,11 +55,11 @@
                         </p:column>
 
                         <p:column span="5" class="label-position">
-                            <p:outputLabel value="Procedimento" severity="info"/>
+                            <p:outputLabel value="Procedimento" severity="info" style="font-weight:bold !important"/>
 
                             <p:outputPanel id="outProcP1">
                                 <p:outputLabel   class="form-control select-agendaEquipe5"
-                                                requiredMessage="Escolha o procedimento!"
+                                                
                                                 value="#{AtendimentoController.atendimento.procedimento}"
                                                 size="31" converter="conProcedimento" id="descProc1"
                                               />
@@ -73,7 +73,7 @@
                     <p:row>
 
                         <p:column span="12" class="label-position">
-                            <p:outputLabel value="Profissional" severity="info"/>
+                            <p:outputLabel value="Profissional" severity="info" style="font-weight:bold !important"/>
 
                             <p:outputLabel
                                     value="#{AtendimentoController.atendimento.funcionario.nome}"
@@ -90,20 +90,21 @@
                     <p:row>
 
 
-                        <p:column span="12" class="label-position">
-                            <p:outputLabel value="Evolução" severity="info"/>
+                        <p:column span="12" >
+                            <p:outputLabel value="Evolução" severity="info" style="font-weight:bold !important"/>
 
-                            <p:editor widgetVar="editor2" style="margin-right: 15px;"
+                            <p:textEditor style="height:200px;margin-bottom:30px"
                                       value="#{AtendimentoController.atendimento.evolucao}"
-                                      class="select-agendaEquipe2" required="true"
+                                     required="true"
                                       requiredMessage="Evolução: Campo obrigatório!">
 
-                            </p:editor>
+                            </p:textEditor>
                         </p:column>
 
                     </p:row>
 
 
+                    <br></br>
                     <br></br>
 
                     <div align="center">
