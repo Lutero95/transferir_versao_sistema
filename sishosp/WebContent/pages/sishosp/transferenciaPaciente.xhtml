@@ -108,7 +108,7 @@
                                              severity="info"/>
 
                                     <p:outputLabel class="fire-label" style="margin-top: 5px;"
-                                            value="#{TransferenciaPacienteController.insercao.programaAtual.descPrograma}"/>
+                                                   value="#{TransferenciaPacienteController.insercao.programaAtual.descPrograma}"/>
 
                                 </b:column>
                             </p:outputPanel>
@@ -126,7 +126,7 @@
                                              severity="info"/>
 
                                     <p:outputLabel class="fire-label" style="margin-top: 5px;"
-                                            value="#{TransferenciaPacienteController.insercao.grupoAtual.descGrupo}"></p:outputLabel>
+                                                   value="#{TransferenciaPacienteController.insercao.grupoAtual.descGrupo}"></p:outputLabel>
 
                                 </b:column>
 
@@ -145,7 +145,7 @@
                                              severity="info"/>
 
                                     <p:outputLabel class="fire-label" style="margin-top: 5px;"
-                                            value="#{TransferenciaPacienteController.insercao.equipeAtual.descEquipe}"></p:outputLabel>
+                                                   value="#{TransferenciaPacienteController.insercao.equipeAtual.descEquipe}"></p:outputLabel>
 
                                 </b:column>
 
@@ -220,7 +220,7 @@
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
-                                              severity="info"/>
+                                             severity="info"/>
 
                                     <p:autoComplete
                                             value="#{TransferenciaPacienteController.insercao.equipe}"
@@ -231,8 +231,9 @@
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect" listener="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
-                                                update="dtEquipe, :formInsercao2:msgPagina"/>
+                                        <p:ajax event="itemSelect"
+                                                listener="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
+                                                update="dtEquipe, :formInsercao2:msgPagina, opturno"/>
                                     </p:autoComplete>
 
                                     <p:commandButton icon="ui-icon-search"
@@ -379,16 +380,19 @@
                     </b:row>
 
                     <b:row rendered="#{TransferenciaPacienteController.opcaoAtendimento == 'T'}">
-                        <p:outputPanel>
+                        <p:outputPanel id="opturno">
                             <b:column span="3" class="label-position">
                                 <b:label value="Turno:" severity="info" class="fire-label"/>
 
-                                <p:selectOneMenu class="select-agendaEquipe2" requiredMessage="Informe o Turno" required="true"
+                                <b:selectOneMenu class="select-agendaEquipe2" requiredMessage="Informe o Turno"
+                                                 required="true"
+                                                 readonly="#{TransferenciaPacienteController.insercao.equipe.turno != 'A'
+                                                     and TransferenciaPacienteController.tipo == 'E'}"
                                                  value="#{TransferenciaPacienteController.insercao.turno}">
-									<f:selectItem itemLabel="Selecione o Turno" itemValue=""/>
+                                    <f:selectItem itemLabel="Selecione o Turno" itemValue=""/>
                                     <f:selectItem itemLabel="Manhã" itemValue="M"/>
                                     <f:selectItem itemLabel="Tarde" itemValue="T"/>
-                                </p:selectOneMenu>
+                                </b:selectOneMenu>
                             </b:column>
                         </p:outputPanel>
                     </b:row>
@@ -510,7 +514,7 @@
         </p:dialog>
 
 
-<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe" dynamic="true"
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuEquipe">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -528,11 +532,12 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :formInsercao2:msgPagina"
-                                         icon="fa fa-fw fa-check" title="Selecionar"
-                                         class="new-btn-acao-table acao-editar"
-                                         action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
-                                         onclick="PF('dlgConsuEquipe').hide();">
+                        <p:commandButton
+                                update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :formInsercao2:msgPagina, :formInsercao2:opturno"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
+                                onclick="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{TransferenciaPacienteController.insercao.equipe}"/>
                         </p:commandButton>
@@ -541,7 +546,7 @@
                 </b:dataTable>
             </h:form>
         </p:dialog>
-        
+
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoHorario" width="600px"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimentoHorario">

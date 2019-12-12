@@ -26,6 +26,7 @@
     <orderEntry type="library" name="Maven: com.nativelibs4java:bridj:0.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.android.tools:dx:1.7" level="project" />
     <orderEntry type="library" name="Maven: net.bootsfaces:bootsfaces:1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces.extensions:primefaces-extensions:6.1.1" level="project" />
     <orderEntry type="library" name="Maven: br.com.caelum.stella:caelum-stella-core:2.0-beta1" level="project" />
     <orderEntry type="library" name="Maven: br.com.caelum.stella:caelum-stella-faces:2.0-beta1" level="project" />
     <orderEntry type="library" name="Maven: com.github.sebhoss:common-annotations:1.0.0" level="project" />

@@ -258,7 +258,7 @@ public class EquipeDAO {
 
 	public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo) throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turnofrom hosp.equipe e "
+		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno from hosp.equipe e "
 				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? order by descequipe ";
 
 		try {

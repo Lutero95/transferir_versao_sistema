@@ -507,6 +507,12 @@ public class TransferenciaPacienteController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Escolha uma equipe!",
                         "Bloqueio");
             }
+
+        turnoInsercaoReceberValorTurnoEquipe();
+    }
+
+    public void turnoInsercaoReceberValorTurnoEquipe(){
+        insercao.setTurno(insercao.getEquipe().getTurno());
     }
     
     private Boolean verificarSeHorariosDoFuncionarioJaForamAdicionados() {
