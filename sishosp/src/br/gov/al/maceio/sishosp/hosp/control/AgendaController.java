@@ -514,7 +514,23 @@ public class AgendaController implements Serializable {
         return false;
     }
 
+    public Boolean verificarSeDiaFoiAdicionadoNosNovosAgendamentos(){
+
+        for(int i = 0; i < listaNovosAgendamentos.size(); i++){
+            if(listaNovosAgendamentos.get(i).getDataAtendimento().equals(agenda.getDataAtendimento())){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void preparaConfirmar() throws ProjetoException {
+        if(!verificarSeDiaFoiAdicionadoNosNovosAgendamentos()){
+            JSFUtil.adicionarMensagemErro("Essa data já foi adicionada a lista de agendamentos", "Erro");
+            return;
+        }
+
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if ((agenda.getAvaliacao() == true) && (agenda.getTipoAt().getIdTipo() == null)) {
                 JSFUtil.adicionarMensagemErro(

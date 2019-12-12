@@ -838,7 +838,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlComplementoFinal = "";
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = " AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = " AND d.turno = ?";
@@ -860,7 +860,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setInt(2, diaSemana);
             stm.setInt(3, agenda.getTipoAt().getIdTipo());
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
                 stm.setTime(4, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
                 stm.setString(4, agenda.getTurno().toUpperCase());
