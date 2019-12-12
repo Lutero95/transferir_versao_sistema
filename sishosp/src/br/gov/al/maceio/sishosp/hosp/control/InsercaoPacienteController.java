@@ -708,8 +708,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
      //   insercao.setDataSolicitacao(dataSolicitacaoCorreta);
-
-        if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())){
+        if (insercao.getTurno()==null) {
+        	 JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório",
+                     "Erro");
+        }
+        else if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())){
             JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo",
                     "Erro");
         }
