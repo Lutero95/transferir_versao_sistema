@@ -50,8 +50,9 @@
                         <b:column span="3" class="label-position">
                             <b:label value="Turno:" severity="info" />
 
-                            <b:selectOneMenu class="select-agendaEquipe2"
+                            <b:selectOneMenu class="select-agendaEquipe2" required="true" requiredMessage="Informe o Turno"
                                              value="#{EquipeController.equipe.turno}">
+								<f:selectItem itemLabel="Selecione o Turno" itemValue="" />
                                 <f:selectItem itemLabel="Manhã" itemValue="M" />
                                 <f:selectItem itemLabel="Tarde" itemValue="T" />
                                 <f:selectItem itemLabel="Ambos" itemValue="A" />
