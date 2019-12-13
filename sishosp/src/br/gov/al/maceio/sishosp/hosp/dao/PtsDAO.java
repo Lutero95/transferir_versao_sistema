@@ -183,7 +183,7 @@ public class PtsDAO {
                 pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
-                pts.setCondultaAlta(rs.getString("condulta_alta"));
+                pts.setCondutaAlta(rs.getString("condulta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(id, conexao));
 
             }
@@ -328,7 +328,7 @@ public class PtsDAO {
             ps.setString(14, pts.getObjetivosGeraisLongoPrazo());
             ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
             ps.setString(16, pts.getNovasEstrategiasDeTratamento());
-            ps.setString(17, pts.getCondultaAlta());
+            ps.setString(17, pts.getCondutaAlta());
             ps.setInt(18, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
@@ -409,7 +409,7 @@ public class PtsDAO {
             ps.setString(14, pts.getObjetivosGeraisLongoPrazo());
             ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
             ps.setString(16, pts.getNovasEstrategiasDeTratamento());
-            ps.setString(17, pts.getCondultaAlta());
+            ps.setString(17, pts.getCondutaAlta());
             ps.setInt(18, user_session.getUnidade().getId());
             ps.setInt(19, pts.getId());
 
@@ -802,7 +802,7 @@ public class PtsDAO {
                 pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
-                pts.setCondultaAlta(rs.getString("condulta_alta"));
+                pts.setCondutaAlta(rs.getString("condulta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao));
 
             }
@@ -833,6 +833,41 @@ public class PtsDAO {
             ps.setString(1, StatusPTS.CANCELADO.getSigla());
             ps.setLong(2, user_session.getId());
             ps.setInt(3, id);
+            ps.executeUpdate();
+
+            conexao.commit();
+
+            retorno = true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean desligarPts(Pts pts) {
+
+        Boolean retorno = false;
+
+        String sql = "UPDATE hosp.pts SET conduta_alta = ?, usuario_desligamento = ?, data_hora_desligamento = CURRENT_TIMESTAMP, " +
+                "data_desligamento = ?, status = ? WHERE id = ?;";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, pts.getCondutaAlta());
+            ps.setLong(2, user_session.getId());
+            ps.setDate(3, DataUtil.converterDateUtilParaDateSql(pts.getDataDesligamento()));
+            ps.setString(4, StatusPTS.DESLIGADO.getSigla());
+            ps.setInt(5, pts.getId());
             ps.executeUpdate();
 
             conexao.commit();

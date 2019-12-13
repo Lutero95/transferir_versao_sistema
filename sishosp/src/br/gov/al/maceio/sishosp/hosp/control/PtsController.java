@@ -199,6 +199,10 @@ public class PtsController implements Serializable {
         JSFUtil.abrirDialog("dlgCancelarPts");
     }
 
+    public void abrirDialogDesligarPts() {
+        JSFUtil.abrirDialog("dlgDesligarPts");
+    }
+
     private void limparInclusaoAreaPts() {
         pts.setPtsArea(new PtsArea());
     }
@@ -356,6 +360,22 @@ public class PtsController implements Serializable {
 
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
+        }
+    }
+
+    public void desligarPts() throws ProjetoException {
+
+        pts.setId(rowBean.getId());
+
+        Boolean desligou = pDao.desligarPts(pts);
+
+        if (desligou) {
+            JSFUtil.adicionarMensagemSucesso("PTS desligado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgDesligarPts");
+            buscarPtsPacientesAtivos();
+
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o desligamento!", "Erro");
         }
     }
 

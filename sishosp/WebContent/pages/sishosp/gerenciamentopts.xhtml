@@ -187,7 +187,9 @@
 
 						<div align="center">
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2"></b:column>
+
+							<b:column span="2" class="new-span2">
 								<p:commandButton value="Novo" style="margin-top:5px;"
 									id="btnInserir" immediate="true"
 									disabled="#{PtsController.renderizarBotaoNovo == false}"
@@ -196,7 +198,7 @@
 									action="#{PtsController.redirectInsert}" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
 								<p:commandButton value="Alterar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnAlterar" immediate="true"
@@ -205,7 +207,7 @@
 									action="#{PtsController.redirectEdit()}" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
 								<p:commandButton value="Renovar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A'}"
 									id="btnRenovar" immediate="true"
@@ -215,7 +217,17 @@
 									action="#{PtsController.redirectRenovacao()}" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
+								<p:commandButton value="Desligar" style="margin-top:5px;"
+												 disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
+												 id="btnDesligar" immediate="true"
+												 class="btn-acao-table acao-desligar btn-new-padding2"
+												 update=":formGerenPaci, :msgPagina"
+												 icon="ui-icon-close"
+												 action="#{PtsController.abrirDialogDesligarPts()}" />
+							</b:column>
+
+							<b:column span="2" class="new-span2">
 								<p:commandButton value="Cancelar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnExcluir" immediate="true"
@@ -244,7 +256,7 @@
 
 							<p:ajax event="rowSelect"
 								listener="#{PtsController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
-								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar" />
+								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar, :formGerenPaci:btnDesligar" />
 
 
 							<p:column width="20%">
@@ -406,6 +418,54 @@
 						oncomplete="PF('dlgCancelarPts').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" class="btn-nao"
 						style="margin-left:5px;float:right;" />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Desligar Pts" widgetVar="dlgDesligarPts" width="400"
+				  height="auto" modal="true" responsive="true">
+
+			<h:form id="formDesligarPts">
+
+				<b:row>
+
+					<b:column span="11" class="label-position">
+						<b:label for="obs" value="Conduta Alta" severity="info" />
+
+						<b:inputTextarea id="conduta" rows="4" class="select-agendaEquipe2" required="true"
+										 value="#{PtsController.pts.condutaAlta}" autoResize="false" />
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+
+					<b:column span="3" class="label-position data-size new-comple1">
+						<b:label value="Data Desligamento" severity="info" />
+						<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="9" class="select-agendaEquipe2"
+									required="true" requiredMessage="Data Desligamento: Campo obrigatório!"
+									value="#{PtsController.pts.dataDesligamento}" id="dtagen"
+									locale="pt" style="margin-left:10px;">
+						</p:calendar>
+
+					</b:column>
+
+				</b:row>
+
+				<div align="center">
+					<p:separator />
+
+					<p:commandButton look="success" value="Sim" style="float:left;"
+									 action="#{PtsController.desligarPts}" ajax="true" class="btn-sim"
+									 icon="glyphicon-ok"
+									 update=":formGerenPaci, :frmTabela, :msgPagina" />
+
+					<p:commandButton value="Não"
+									 oncomplete="PF('dlgDesligarPts').hide();" look="info" ajax="true"
+									 icon="glyphicon-remove" class="btn-nao"
+									 style="margin-left:5px;float:right;" />
 				</div>
 
 			</h:form>

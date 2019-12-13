@@ -19,9 +19,10 @@ public class Pts implements Serializable {
     private String objetivosGeraisLongoPrazo;
     private String analiseDosResultadosDosObjetivosGerias;
     private String novasEstrategiasDeTratamento;
-    private String condultaAlta;
+    private String condutaAlta;
     private Timestamp dataHoraOperacao;
     private Date dataVencimento;
+    private Date dataDesligamento;
     private String status;
     private String statusPorExtenso;
 
@@ -134,12 +135,12 @@ public class Pts implements Serializable {
         this.novasEstrategiasDeTratamento = novasEstrategiasDeTratamento;
     }
 
-    public String getCondultaAlta() {
-        return condultaAlta;
+    public String getCondutaAlta() {
+        return condutaAlta;
     }
 
-    public void setCondultaAlta(String condultaAlta) {
-        this.condultaAlta = condultaAlta;
+    public void setCondutaAlta(String condutaAlta) {
+        this.condutaAlta = condutaAlta;
     }
 
     public Timestamp getDataHoraOperacao() {
@@ -228,5 +229,13 @@ public class Pts implements Serializable {
 
     public void setInsercao(InsercaoPacienteBean insercao) {
         this.insercao = insercao;
+    }
+
+    public Date getDataDesligamento() {
+        return dataDesligamento;
+    }
+
+    public void setDataDesligamento(Date dataDesligamento) {
+        this.dataDesligamento = dataDesligamento;
     }
 }
