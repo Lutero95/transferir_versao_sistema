@@ -149,7 +149,7 @@ public class PtsDAO {
                 "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa) " +
                 "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_paciente AND p.id = ?;";
-        
+
 
         Pts pts = new Pts();
 
@@ -207,7 +207,7 @@ public class PtsDAO {
                 "pa.plano_curto, pa.plano_medio, pa.plano_longo, pa.id_funcionario " +
                 "FROM hosp.pts_area pa " +
                 "LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) " +
-                " left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario "+
+                " left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario " +
                 " LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
                 "WHERE p.id = ? ";
 
@@ -338,6 +338,7 @@ public class PtsDAO {
                 codPts = rs.getInt("id");
             }
 
+
             if (inserirAreaPts(pts, codPts, conexao)) {
                 if (statusPTS.equals(StatusPTS.RENOVADO.getSigla())) {
                     if (desativarPts(pts.getId(), conexao)) {
@@ -345,13 +346,11 @@ public class PtsDAO {
                     } else {
                         codPts = null;
                     }
-                } 
-                
-                else {
+                } else {
                     //codPts = null;
-                	conexao.commit();
+                    conexao.commit();
                 }
-                
+
             } else {
                 codPts = null;
             }
@@ -359,6 +358,73 @@ public class PtsDAO {
             conexao.close();
 
             retorno = codPts;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean alterarPts(Pts pts, String statusPTS, FuncionarioBean usuarioLiberacao) {
+
+        Boolean retorno = false;
+
+        final Integer SEIS_MESES_VENCIMENTO = 180;
+
+
+        String sql1 = "UPDATE hosp.pts SET " +
+                "data=?, id_funcionario=?, data_hora_operacao=CURRENT_TIMESTAMP, data_vencimento=?, cod_programa=?, cod_grupo=?, cod_paciente=?, status=?, " +
+                "incapacidades_funcionais=?, capacidades_funcionais=?, objetivos_familiar_paciente=?, objetivos_gerais_multidisciplinar=?, "+
+                "objetivos_gerais_curto_prazo=?, objetivos_gerais_medio_prazo=?, objetivos_gerais_longo_prazo=?, analise_resultados_objetivos_gerais=?, " +
+                "novas_estrategias_tratamento=?, condulta_alta=?, cod_unidade=? " +
+                "where id=?";
+
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            Boolean verificarSeDataPtsMudou = verificarSeDataPtsMudou(DataUtil.converterDateUtilParaDateSql(pts.getData()), pts.getId());
+
+            ps = conexao.prepareStatement(sql1);
+            ps.setDate(1, DataUtil.converterDateUtilParaDateSql(pts.getData()));
+            ps.setLong(2, user_session.getId());
+            ps.setDate(3, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getData(), SEIS_MESES_VENCIMENTO)));
+            ps.setInt(4, pts.getPrograma().getIdPrograma());
+            ps.setInt(5, pts.getGrupo().getIdGrupo());
+            ps.setInt(6, pts.getPaciente().getId_paciente());
+            ps.setString(7, statusPTS);
+            ps.setString(8, pts.getIncapacidadesFuncionais());
+            ps.setString(9, pts.getCapacidadesFuncionais());
+            ps.setString(10, pts.getObjetivosFamiliarPaciente());
+            ps.setString(11, pts.getObjetivosGeraisMultidisciplinar());
+            ps.setString(12, pts.getObjetivosGeraisCurtoPrazo());
+            ps.setString(13, pts.getObjetivosGeraisMedioPrazo());
+            ps.setString(14, pts.getObjetivosGeraisLongoPrazo());
+            ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
+            ps.setString(16, pts.getNovasEstrategiasDeTratamento());
+            ps.setString(17, pts.getCondultaAlta());
+            ps.setInt(18, user_session.getUnidade().getId());
+            ps.setInt(19, pts.getId());
+
+           ps.executeUpdate();
+
+            excluirListaArea(pts.getId(), conexao);
+            inserirAreaPts(pts, pts.getId(), conexao);
+
+            if (verificarSeDataPtsMudou) {
+                inserirLiberacaoPts(pts.getId(), usuarioLiberacao, conexao);
+            }
+
+            conexao.commit();
+
+            retorno = true;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -396,6 +462,36 @@ public class PtsDAO {
                 ps2.setLong(9, pts.getListaPtsArea().get(i).getFuncionario().getId());
                 ps2.execute();
             }
+
+            retorno = true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean inserirLiberacaoPts(Integer codPts, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, id_pts) " +
+                "values (?, ?, CURRENT_TIMESTAMP, ?);";
+
+
+        try {
+
+            PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
+            ps2.setString(1, "LIBERAÇÃO PARA ALTERAR A DATA DO PTS");
+            ps2.setLong(2, usuarioLiberacao.getId());
+            ps2.setInt(3, codPts);
+            ps2.execute();
 
             retorno = true;
 
@@ -535,7 +631,7 @@ public class PtsDAO {
     }
 
     public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
-                                              Integer filtroMesVencimento, Integer filtroAnoVencimento,Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca)
+                                              Integer filtroMesVencimento, Integer filtroAnoVencimento, Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca)
             throws ProjetoException {
 
         //Inicia com 2, pois é o número mínimo de parametros.
@@ -551,28 +647,28 @@ public class PtsDAO {
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) " +
                 "LEFT JOIN hosp.pts p ON " +
                 "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente =coalesce(laudo.codpaciente, pi.id_paciente)) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' " +
-                " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " + 
+                " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " +
                 " (select max(id) from hosp.pts p3 " +
-                " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " + 
-                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I' ) ) ptsmax on " + 
-                " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " + 
+                " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " +
+                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I' ) ) ptsmax on " +
+                " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " +
                 "WHERE pi.status = 'A'  AND pi.codgrupo = ? AND pi.codprograma = ? and (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
-        		if (filtroApenasPacientesSemPTS)
-        			sql = sql + " and not exists (select id from hosp.pts where pts.status='A' and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
-        
-        
-		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and pa.nome ilike ?";
-		}
+        if (filtroApenasPacientesSemPTS)
+            sql = sql + " and not exists (select id from hosp.pts where pts.status='A' and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
 
-		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and pa.matricula = ?";
-		}
-		
-		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-			sql = sql + " and pa.id_paciente = ?";
-		}
-		
+
+        if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            sql = sql + " and pa.nome ilike ?";
+        }
+
+        if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            sql = sql + " and pa.matricula = ?";
+        }
+
+        if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            sql = sql + " and pa.id_paciente = ?";
+        }
+
 
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
             sql = sql + " AND p.data_vencimento >= current_date";
@@ -609,22 +705,23 @@ public class PtsDAO {
                 stmt.setInt(i, filtroAnoVencimento);
                 i++;
             }
-            
-			if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
-				i++;;
-			}
-			
-			
-			if ( ((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
-				stmt.setString(i, campoBusca.toUpperCase());
-				i++;
-			}
 
-			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stmt.setInt(i, Integer.valueOf(campoBusca));
-				i++;
-			}
+            if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+                stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
+                i++;
+                ;
+            }
+
+
+            if (((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
+                stmt.setString(i, campoBusca.toUpperCase());
+                i++;
+            }
+
+            if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+                stmt.setInt(i, Integer.valueOf(campoBusca));
+                i++;
+            }
 
             ResultSet rs = stmt.executeQuery();
 
@@ -753,6 +850,39 @@ public class PtsDAO {
             }
             return retorno;
         }
+    }
+
+    public Boolean verificarSeDataPtsMudou(Date data, Integer idPts) {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT CASE WHEN DATA <> ? THEN TRUE ELSE FALSE END AS data_mudou FROM hosp.pts WHERE id = ?;";
+
+        Connection conexao1 = null;
+
+        try {
+            conexao1 = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao1.prepareStatement(sql);
+            stm.setDate(1, data);
+            stm.setInt(2, idPts);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = rs.getBoolean("data_mudou");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao1.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }

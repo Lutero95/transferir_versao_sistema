@@ -43,6 +43,8 @@ public class PtsController implements Serializable {
     private String statusPts;
     private String campoBusca;
     private String tipoBusca;
+    private FuncionarioBean usuarioLiberacao;
+    private Boolean liberacaoAlterarDataPts;
     //CONSTANTES
     private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_GERENCIAMENTOPTS = "gerenciamentopts.?faces-redirect=true";
@@ -59,6 +61,8 @@ public class PtsController implements Serializable {
         filtroTipoVencimento = FiltroBuscaVencimentoPTS.TODOS.getSigla();
         rowBean = new Pts();
         renderizarBotaoNovo = false;
+        usuarioLiberacao = new FuncionarioBean();
+        liberacaoAlterarDataPts = false;
     }
 
     public void carregarPts() throws ProjetoException {
@@ -172,6 +176,17 @@ public class PtsController implements Serializable {
         limparInclusaoAreaPts();
 
         JSFUtil.abrirDialog("dlgInclusaoAreaPts");
+    }
+
+    public void abrirDialogLiberacaoPts() {
+
+        limparDialogLiberacaoPts();
+
+        JSFUtil.abrirDialog("dlgSenhaLiberacaoPts");
+    }
+
+    public void limparDialogLiberacaoPts(){
+        usuarioLiberacao = new FuncionarioBean();
     }
 
     public void abrirDialogEdicaoPts(PtsArea ptsEditar) {
@@ -288,6 +303,24 @@ public class PtsController implements Serializable {
         return retorno;
     }
 
+    public String gravarAlteracaoPts() {
+
+        String retorno = null;
+
+        Boolean cadastrou = pDao.alterarPts(pts, StatusPTS.ATIVO.getSigla(), usuarioLiberacao);
+
+        if (cadastrou) {
+            JSFUtil.adicionarMensagemSucesso("PTS alterado com sucesso!", "Sucesso");
+            JSFUtil.abrirDialog("dlgPtsGravado");
+            pts = new Pts();
+
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+        }
+
+        return retorno;
+    }
+
     public String gravarRenovacaoPts() {
 
         String retorno = null;
@@ -323,6 +356,22 @@ public class PtsController implements Serializable {
 
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
+        }
+    }
+
+    public void validarSenhaLiberacaoPts() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(usuarioLiberacao.getCpf(),
+                usuarioLiberacao.getSenha(), ValidacaoSenha.LIBERACAO_ALTERAR_DATA_PTS.getSigla());
+
+        usuarioLiberacao.setId(func.getId());
+
+        if (func!=null) {
+            JSFUtil.fecharDialog("dlgSenhaLiberacaoPts");
+            liberacaoAlterarDataPts = true;
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada!", "Erro!");
         }
     }
 
@@ -480,4 +529,20 @@ public class PtsController implements Serializable {
 	public void setExistePts(Boolean existePts) {
 		this.existePts = existePts;
 	}
+
+    public FuncionarioBean getUsuarioLiberacao() {
+        return usuarioLiberacao;
+    }
+
+    public void setUsuarioLiberacao(FuncionarioBean usuarioLiberacao) {
+        this.usuarioLiberacao = usuarioLiberacao;
+    }
+
+    public Boolean getLiberacaoAlterarDataPts() {
+        return liberacaoAlterarDataPts;
+    }
+
+    public void setLiberacaoAlterarDataPts(Boolean liberacaoAlterarDataPts) {
+        this.liberacaoAlterarDataPts = liberacaoAlterarDataPts;
+    }
 }

@@ -66,18 +66,24 @@
 
 					<b:row>
 
-						<b:column span="2">
+						<b:column span="8">
 
 							<b:label value="Data do PTS:" id="datapts" severity="info"
 								class="fire-label" />
 
 							<p:calendar value="#{PtsController.pts.data}" id="dtagen"
-								disabled="#{PtsController.existePts}" locale="pt"
+								disabled="#{PtsController.existePts and PtsController.liberacaoAlterarDataPts == false}" locale="pt"
 								navigator="true" mask="true" required="true"
 								requiredMessage="Data do PTS: Campo obrigatório!"
 								class="select-agendaEquipe2" showOn="button"
 								pattern="dd/MM/yyyy" size="10">
 							</p:calendar>
+
+							<p:commandButton icon="ui-icon-calendar" style="margin-top: 10px;margin-left: 10px"
+											 value="Liberação Alterar Data" immediate="true"
+											 class="btn-acao-table acao-confirmar"
+											 update=":frmSenhaLiberacaoPts"
+											 actionListener="#{PtsController.abrirDialogLiberacaoPts()}" />
 
 						</b:column>
 
@@ -250,8 +256,14 @@
 					<div align="center">
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
+										 rendered="#{PtsController.existePts==false}"
 							icon="ui-icon-check" update=":msgPagina, formPts"
 							class="btn-incluir" action="#{PtsController.gravarPts()}" />
+
+						<p:commandButton value="Alterar" look="success" size="sm" id="b2"
+										 rendered="#{PtsController.existePts}"
+										 icon="ui-icon-check" update=":msgPagina, formPts"
+										 class="btn-incluir" action="#{PtsController.gravarAlteracaoPts()}" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							size="sm" immediate="true" look="info" class="btn-voltar"
@@ -436,6 +448,38 @@
 					<p:commandButton value="Fechar" class="btn-fechar" look="info"
 						ajax="true" action="#{PtsController.redirectGerPts}"
 						icon="glyphicon-remove" />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Digite a senha para a liberação" widgetVar="dlgSenhaLiberacaoPts"
+				  modal="true" styleClass="topDialog" draggable="false"
+				  position="center">
+			<h:form id="frmSenhaLiberacaoPts">
+
+				<p:growl id="grwSenhaLiberacao" />
+				<h:panelGrid columns="1" cellpadding="3">
+
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+								 required="true"
+								 value="#{PtsController.usuarioLiberacao.cpf}"
+								 placeholder="Digite o CPF" render-label="true"
+								 requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+								   placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+								   value="#{PtsController.usuarioLiberacao.senha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+				</h:panelGrid>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+									 style="margin-top:10px" icon="fa fa-fw fa-check"
+									 update=":formPts:dtagen, :msgPagina"
+									 action="#{PtsController.validarSenhaLiberacaoPts()}" />
 				</div>
 
 			</h:form>
