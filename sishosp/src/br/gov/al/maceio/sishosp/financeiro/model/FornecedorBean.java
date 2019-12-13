@@ -14,7 +14,7 @@ public class FornecedorBean implements Serializable {
 	private Integer codforn;
 	private String nome;
 	private String fantasia;
-	private String cnpj;
+	private String cpfcnpj;
 	private String endereco;
 	private String complemento;
 	private String cep;
@@ -22,7 +22,7 @@ public class FornecedorBean implements Serializable {
 	private String site;
 	private String email;
 	private String inscest;
-
+	private String tipoPessoa;
 	
 
 	public Integer getCodforn() {
@@ -53,13 +53,7 @@ public class FornecedorBean implements Serializable {
 
 	
 
-	public String getCnpj() {
-		return cnpj;
-	}
-
-	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
-	}
+	
 
 	public String getEndereco() {
 		return endereco;
@@ -115,6 +109,22 @@ public class FornecedorBean implements Serializable {
 
 	public void setInscest(String inscest) {
 		this.inscest = inscest;
+	}
+
+	public String getCpfcnpj() {
+		return cpfcnpj;
+	}
+
+	public String getTipoPessoa() {
+		return tipoPessoa;
+	}
+
+	public void setCpfcnpj(String cpfcnpj) {
+		this.cpfcnpj = cpfcnpj;
+	}
+
+	public void setTipoPessoa(String tipoPessoa) {
+		this.tipoPessoa = tipoPessoa;
 	}
 
 }

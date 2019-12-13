@@ -144,6 +144,7 @@ public class PtsController implements Serializable {
 
     public String redirectEdit() throws ProjetoException {
         String retorno = "";
+        /*
         statusPts = pDao.verificarStatusPts(rowBean.getId());
         if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
             SessionUtil.adicionarNaSessao(rowBean, "pts");
@@ -151,6 +152,8 @@ public class PtsController implements Serializable {
         } else {
             retorno = RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId(),ENDERECO_ID_GER_PAC_INSTITUICAO, this.rowBean.getGerenciarPaciente().getId());
         }
+        */
+        retorno = RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId(),ENDERECO_ID_GER_PAC_INSTITUICAO, this.rowBean.getGerenciarPaciente().getId());
         return retorno;
     }
 
@@ -311,7 +314,7 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        Boolean cadastrou = pDao.alterarPts(pts, StatusPTS.ATIVO.getSigla(), usuarioLiberacao);
+        Boolean cadastrou = pDao.alterarPts(pts, usuarioLiberacao);
 
         if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("PTS alterado com sucesso!", "Sucesso");

@@ -209,7 +209,7 @@
 
 							<b:column span="2" class="new-span2">
 								<p:commandButton value="Renovar" style="margin-top:5px;"
-									disabled="#{PtsController.rowBean.status != 'A'}"
+									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnRenovar" immediate="true"
 									class="btn-acao-table acao-limpar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina"

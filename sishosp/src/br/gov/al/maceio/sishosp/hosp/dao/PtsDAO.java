@@ -141,7 +141,7 @@ public class PtsDAO {
         String sql = "SELECT p.id AS id_pts, pi.id, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
                 "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, condulta_alta " +
+                "novas_estrategias_tratamento, conduta_alta " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
@@ -183,7 +183,7 @@ public class PtsDAO {
                 pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
-                pts.setCondutaAlta(rs.getString("condulta_alta"));
+                pts.setCondutaAlta(rs.getString("conduta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(id, conexao));
 
             }
@@ -301,7 +301,7 @@ public class PtsDAO {
         String sql1 = "INSERT INTO hosp.pts (data, id_funcionario, data_hora_operacao, data_vencimento, cod_programa, cod_grupo, cod_paciente, status, " +
                 "incapacidades_funcionais, capacidades_funcionais, objetivos_familiar_paciente, objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, condulta_alta, cod_unidade) " +
+                "novas_estrategias_tratamento, conduta_alta, cod_unidade) " +
                 "values (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
         try {
@@ -372,7 +372,7 @@ public class PtsDAO {
         }
     }
 
-    public Boolean alterarPts(Pts pts, String statusPTS, FuncionarioBean usuarioLiberacao) {
+    public Boolean alterarPts(Pts pts,  FuncionarioBean usuarioLiberacao) {
 
         Boolean retorno = false;
 
@@ -380,10 +380,10 @@ public class PtsDAO {
 
 
         String sql1 = "UPDATE hosp.pts SET " +
-                "data=?, id_funcionario=?, data_hora_operacao=CURRENT_TIMESTAMP, data_vencimento=?, cod_programa=?, cod_grupo=?, cod_paciente=?, status=?, " +
+                "data=?, id_funcionario=?, data_hora_operacao=CURRENT_TIMESTAMP, data_vencimento=?, cod_programa=?, cod_grupo=?, cod_paciente=?,  " +
                 "incapacidades_funcionais=?, capacidades_funcionais=?, objetivos_familiar_paciente=?, objetivos_gerais_multidisciplinar=?, "+
                 "objetivos_gerais_curto_prazo=?, objetivos_gerais_medio_prazo=?, objetivos_gerais_longo_prazo=?, analise_resultados_objetivos_gerais=?, " +
-                "novas_estrategias_tratamento=?, condulta_alta=?, cod_unidade=? " +
+                "novas_estrategias_tratamento=?, conduta_alta=?, cod_unidade=? " +
                 "where id=?";
 
 
@@ -399,19 +399,18 @@ public class PtsDAO {
             ps.setInt(4, pts.getPrograma().getIdPrograma());
             ps.setInt(5, pts.getGrupo().getIdGrupo());
             ps.setInt(6, pts.getPaciente().getId_paciente());
-            ps.setString(7, statusPTS);
-            ps.setString(8, pts.getIncapacidadesFuncionais());
-            ps.setString(9, pts.getCapacidadesFuncionais());
-            ps.setString(10, pts.getObjetivosFamiliarPaciente());
-            ps.setString(11, pts.getObjetivosGeraisMultidisciplinar());
-            ps.setString(12, pts.getObjetivosGeraisCurtoPrazo());
-            ps.setString(13, pts.getObjetivosGeraisMedioPrazo());
-            ps.setString(14, pts.getObjetivosGeraisLongoPrazo());
-            ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
-            ps.setString(16, pts.getNovasEstrategiasDeTratamento());
-            ps.setString(17, pts.getCondutaAlta());
-            ps.setInt(18, user_session.getUnidade().getId());
-            ps.setInt(19, pts.getId());
+            ps.setString(7, pts.getIncapacidadesFuncionais());
+            ps.setString(8, pts.getCapacidadesFuncionais());
+            ps.setString(9, pts.getObjetivosFamiliarPaciente());
+            ps.setString(10, pts.getObjetivosGeraisMultidisciplinar());
+            ps.setString(11, pts.getObjetivosGeraisCurtoPrazo());
+            ps.setString(12, pts.getObjetivosGeraisMedioPrazo());
+            ps.setString(13, pts.getObjetivosGeraisLongoPrazo());
+            ps.setString(14, pts.getAnaliseDosResultadosDosObjetivosGerias());
+            ps.setString(15, pts.getNovasEstrategiasDeTratamento());
+            ps.setString(16, pts.getCondutaAlta());
+            ps.setInt(17, user_session.getUnidade().getId());
+            ps.setInt(18, pts.getId());
 
            ps.executeUpdate();
 
@@ -764,7 +763,7 @@ public class PtsDAO {
         String sql = "SELECT p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
                 "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, condulta_alta " +
+                "novas_estrategias_tratamento, conduta_alta " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
@@ -802,7 +801,7 @@ public class PtsDAO {
                 pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
-                pts.setCondutaAlta(rs.getString("condulta_alta"));
+                pts.setCondutaAlta(rs.getString("conduta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao));
 
             }

@@ -33,7 +33,7 @@ public class FornecedorController implements Serializable {
 
 		func = new FornecedorBean();
 		rowBean = null;
-
+		func.setTipoPessoa("F");
 		listafornecedores = new ArrayList<>();
 		lstFornecedorALL = null;
 		busca = new BuscaBeanFornecedor();

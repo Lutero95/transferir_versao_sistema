@@ -8,66 +8,124 @@
 
 <ui:composition template="../../template/template.xhtml">
 	<ui:define name="content">
-<p:growl id="grwgeral" showDetail="false" />
+		<p:growl id="grwgeral" showDetail="false" />
 
 		<h:form id="frm">
 			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento de
 				Fornecedor</h3>
-
 			<p:toolbar style="margin-bottom: 7px">
 				<p:toolbarGroup>
-					<h:panelGrid id="outBotoes" columns="4">
+					<p:outputPanel autoUpdate="true">
 
-						<p:commandButton id="btninc" value="Novo" update=":frminc:pnlinc"
-							oncomplete="PF('dlginc').show();" icon="ui-icon-plus"
-							disabled="#{MBUsuarios.verificarPermComp('FC-76', MBUsuarios.sistemaLogado.id) == false}">
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
+						<h:panelGrid id="outBotoes" columns="4">
 
-						<p:commandButton id="btnalt" value="Editar"
-							style="margin-left :10px" update=":frmedit:pnledit :grwgeral"
-							action="#{fornecedorControllerFin.acaoEditar()}"
-							icon="ui-icon-wrench"
-							disabled="#{fornecedorControllerFin.rowBean == null or MBUsuarios.verificarPermComp('FC-77', MBUsuarios.sistemaLogado.id) == false}">
-						</p:commandButton>
+							<p:commandButton id="btninc" value="Novo" update=":frminc:pnlinc"
+								oncomplete="PF('dlginc').show();" icon="ui-icon-plus">
+								<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+							</p:commandButton>
 
-						<p:commandButton icon="ui-icon-closethick" value="Excluir"
-							style="margin-left :10px"
-							action="#{fornecedorControllerFin.acaoExcluir()}" update=":grwgeral"
-							disabled="#{fornecedorControllerFin.rowBean == null or MBUsuarios.verificarPermComp('FC-78', MBUsuarios.sistemaLogado.id) == false}">
-						</p:commandButton>
+							<p:commandButton id="btnalt" value="Editar"
+								style="margin-left :10px" update=":frmedit:pnledit :grwgeral"
+								action="#{fornecedorControllerFin.acaoEditar()}"
+								icon="ui-icon-wrench"
+								>
+							</p:commandButton>
 
-					</h:panelGrid>
+							<p:commandButton icon="ui-icon-closethick" value="Excluir"
+								style="margin-left :10px"
+								action="#{fornecedorControllerFin.acaoExcluir()}"
+								update=":grwgeral"
+								>
+							</p:commandButton>
+
+						</h:panelGrid>
+					</p:outputPanel>
 				</p:toolbarGroup>
 			</p:toolbar>
 
-			<b:dataTable select="true"  id="tabela" value="#{fornecedorControllerFin.listAll()}"
-				var="m"	selectionMode="single" customLangUrl="#{resource['pt-br.json']}"
-				onselect="ajax: fornecedorControllerFin.onRowSelect(m)"
-				ondeselect="ajax: fornecedorControllerFin.onRowSelect(null)"
-				 >
+			<p:dataTable select="true" id="tabela"
+				value="#{fornecedorControllerFin.listAll()}" var="m"
+				selectionMode="single"
+				selection="#{fornecedorControllerFin.rowBean}" rowKey="#{m.codforn}">
+								<p:column width="50">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome/Razão Social" />
+					</f:facet>
+					<h:outputText value="#{m.codforn}">
+					</h:outputText>
+				</p:column>
+				
+				<p:column width="50">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome/Razão Social" />
+					</f:facet>
+					<h:outputText value="#{m.nome}">
+					</h:outputText>
+				</p:column>
+								<p:column width="30">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{m.cpfcnpj}">
+					</h:outputText>
+				</p:column>
 
-				<b:dataTableColumn label="Id" style="width:7%" value="#{m.codforn}" />
-				<b:dataTableColumn label="Nome" value="#{m.nome}" />
-				<b:dataTableColumn label="cpfcnpj" value="#{m.cpfcnpj}" />
-			</b:dataTable>
+			</p:dataTable>
 		</h:form>
 
 
 		<!--  Dialog Inclusao dados TipoDoc -->
 
 		<p:dialog responsive="true" widgetVar="dlginc"
-			header="Dados do Fornecedor" height="300" width="770"
+			header="Dados do Fornecedor" height="400" width="770"
 			resizable="false" modal="true">
 
 			<h:form id="frminc">
 				<p:growl id="msg" />
 
 				<p:outputPanel id="pnlinc">
+					<p:panelGrid>
 
+						<p:row>
+							<p:column>
+								<p:selectOneRadio id="console" style="margin-top:0px"
+									value="#{fornecedorControllerFin.func.tipoPessoa}"
+									required="true" requiredMessage="Informe o tipo de Pessoa">
+									<f:selectItem itemLabel="Física" itemValue="F" />
+									<f:selectItem itemLabel="Jurídica" itemValue="J" />
+									<p:ajax update="outedtcpf" event="click" />
+
+								</p:selectOneRadio>
+							</p:column>
+
+							<p:column colspan="1">
+								<p:outputPanel id="outedtcpf">
+									<h:outputText value="CPF/CNPJ" style="font-weight:bold;"></h:outputText>
+									<p:inputMask value="#{fornecedorControllerFin.func.cpfcnpj}"
+										mask="999.999.999-99" id="cpfcampo"
+										requiredMessage="Informe o CPF" required="false"
+										rendered="#{fornecedorControllerFin.func.tipoPessoa=='F'}"
+										validator="CPFValidator">
+
+
+									</p:inputMask>
+
+									<p:inputMask value="#{fornecedorControllerFin.func.cpfcnpj}"
+										mask="99.999.999/9999-99" requiredMessage="Informe o CNPJ"
+										rendered="#{fornecedorControllerFin.func.tipoPessoa=='J'}"
+										validator="CNPJValidator">
+
+									</p:inputMask>
+								</p:outputPanel>
+							</p:column>
+
+
+
+						</p:row>
+					</p:panelGrid>
 					<p:panelGrid columns="4" styleClass="semBorda" style="width:100%;">
 
-						<h:outputText value="Nome" style="font-weight:bold;"></h:outputText>
+						<h:outputText value="Nome/Razão Social" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe o nome"
 							size="40" value="#{fornecedorControllerFin.func.nome}" />
 
@@ -75,11 +133,6 @@
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
 							size="30" value="#{fornecedorControllerFin.func.fantasia}" />
 
-						<h:outputText value="cpfcnpj" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o cpfcnpj"
-							value="#{fornecedorControllerFin.func.cpfcnpj}">
-							<stella:validateCNPJ  formatted="true"  />
-						</p:inputMask>
 
 						<h:outputText value="Insc. Estadual" style="font-weight:bold;"></h:outputText>
 						<p:inputText value="#{fornecedorControllerFin.func.inscest}">
@@ -104,10 +157,12 @@
 							value="#{fornecedorControllerFin.func.telefone}" />
 
 						<h:outputText value="Site" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorControllerFin.func.site}" size="40"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.func.site}"
+							size="40"></p:inputText>
 
 						<h:outputText value="Email" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorControllerFin.func.email}" size="40"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.func.email}"
+							size="40"></p:inputText>
 
 
 
@@ -137,15 +192,53 @@
 		<!-- Dialog Edicao dados Filial -->
 
 		<p:dialog responsive="true" widgetVar="dlgedit" header="Dados"
-			resizable="false" height="300" width="780" modal="true">
+			resizable="false" height="400" width="780" modal="true">
 			<h:form id="frmedit">
 				<br />
 				<br />
 				<p:outputPanel id="pnledit">
+					<p:panelGrid>
 
+						<p:row>
+							<p:column>
+								<p:selectOneRadio id="console" style="margin-top:0px"
+									value="#{fornecedorControllerFin.rowBean.tipoPessoa}"
+									required="true" requiredMessage="Informe o tipo de Pessoa">
+									<f:selectItem itemLabel="Física" itemValue="F" />
+									<f:selectItem itemLabel="Jurídica" itemValue="J" />
+									<p:ajax update="outedtcpf" event="click" />
+
+								</p:selectOneRadio>
+							</p:column>
+
+							<p:column colspan="1">
+								<p:outputPanel id="outedtcpf">
+									<h:outputText value="CPF/CNPJ" style="font-weight:bold;"></h:outputText>
+									<p:inputMask value="#{fornecedorControllerFin.rowBean.cpfcnpj}"
+										mask="999.999.999-99" id="cpfcampo"
+										requiredMessage="Informe o CPF" required="false"
+										rendered="#{fornecedorControllerFin.rowBean.tipoPessoa=='F'}"
+										validator="CPFValidator">
+
+
+									</p:inputMask>
+
+									<p:inputMask value="#{fornecedorControllerFin.rowBean.cpfcnpj}"
+										mask="99.999.999/9999-99" requiredMessage="Informe o CNPJ"
+										rendered="#{fornecedorControllerFin.rowBean.tipoPessoa=='J'}"
+										validator="CNPJValidator">
+
+									</p:inputMask>
+								</p:outputPanel>
+							</p:column>
+
+
+
+						</p:row>
+					</p:panelGrid>
 					<p:panelGrid columns="4" styleClass="semBorda" style="width:100%;">
 
-						<h:outputText value="Nome" style="font-weight:bold;"></h:outputText>
+						<h:outputText value="Nome/Razão Social" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe o nome"
 							size="40" value="#{fornecedorControllerFin.rowBean.nome}" />
 
@@ -153,12 +246,6 @@
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
 							size="40" value="#{fornecedorControllerFin.rowBean.fantasia}" />
 
-						<h:outputText value="cpfcnpj" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o cpfcnpj"
-							value="#{fornecedorControllerFin.rowBean.cpfcnpj}"
-							>
-							<stella:validateCNPJ  formatted="true" />
-						</p:inputMask>
 
 
 
@@ -171,7 +258,8 @@
 							value="#{fornecedorControllerFin.rowBean.endereco}"></p:inputText>
 
 						<h:outputText value="Complemento" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorControllerFin.rowBean.complemento}"></p:inputText>
+						<p:inputText
+							value="#{fornecedorControllerFin.rowBean.complemento}"></p:inputText>
 
 						<h:outputText value="CEP" style="font-weight:bold;"></h:outputText>
 						<p:inputMask mask="99999-999" maxlength="8"

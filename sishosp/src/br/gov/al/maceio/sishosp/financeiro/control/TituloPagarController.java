@@ -538,7 +538,7 @@ public class TituloPagarController implements Serializable {
 		FornecedorDAO dao = new FornecedorDAO();
 
 		lstFornecedor = (ArrayList<FornecedorBean>) dao.buscaFornecedor(this.fornecedorBean.getNome(),
-				this.fornecedorBean.getCnpj());
+				this.fornecedorBean.getCpfcnpj());
 
 	}
 
@@ -547,7 +547,7 @@ public class TituloPagarController implements Serializable {
 		FornecedorDAO dao = new FornecedorDAO();
 
 		lstFornecedorAlt = (ArrayList<FornecedorBean>) dao.buscaFornecedor(this.rowBean.getForn().getNome(),
-				this.rowBean.getForn().getCnpj());
+				this.rowBean.getForn().getCpfcnpj());
 
 	}
 

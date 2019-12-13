@@ -337,7 +337,7 @@ public class BuscaDAO {
 				forn.setCodforn(set.getInt("codforn"));
 				forn.setNome(set.getString("nome"));
 				forn.setFantasia(set.getString("fantasia"));
-				forn.setCnpj(set.getString("cnpj"));
+				forn.setCpfcnpj(set.getString("cnpj"));
 
 				lst.add(forn);
 
@@ -387,7 +387,7 @@ public class BuscaDAO {
 				forn.setCodforn(set.getInt("codforn"));
 				forn.setNome(set.getString("nome"));
 				forn.setFantasia(set.getString("fantasia"));
-				forn.setCnpj(set.getString("cnpj"));
+				forn.setCpfcnpj(set.getString("cnpj"));
 
 				lst.add(forn);
 
