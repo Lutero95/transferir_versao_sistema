@@ -113,17 +113,26 @@ public class PtsController implements Serializable {
             statusPts = pDao.verificarStatusPts(id);
             if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
                 this.pts = pDao.ptsCarregarPtsPorId(id);
+                pts.setAnaliseDosResultadosDosObjetivosGerias(null);
+                pts.setObjetivosFamiliarPaciente(null);
+                pts.setObjetivosGeraisMultidisciplinar(null);
+                pts.setData(null);
+                pts.setListaPtsArea(new ArrayList<PtsArea>());
                 existePts = true;
             } else {
                 pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+                pts.setAnaliseDosResultadosDosObjetivosGerias(null);
+                pts.setObjetivosFamiliarPaciente(null);
+                pts.setObjetivosGeraisMultidisciplinar(null);
+                pts.setData(null);
                 /*
 				Calendar c = Calendar.getInstance();
 				c.setTime(pts.getDataVencimento());
 				c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
 				c.set(Calendar.DAY_OF_MONTH, 1);
 				pts.setData(c.getTime());*/
-                Date d = new Date();
-                pts.setData(d);
+              //  Date d = new Date();
+               // pts.setData(d);
             }
             listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
 
