@@ -162,7 +162,7 @@ public class AgendaController implements Serializable {
         
     }
 
-    public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException {
+    public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
         preparaVerificarDisponibilidadeData();
         listaDiasDeAtendimentoAtuais();
     }
@@ -193,7 +193,7 @@ public class AgendaController implements Serializable {
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())
                 || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
-            gerarHorariosAtendimento();
+            //gerarHorariosAtendimento();
         }
 
     }
@@ -235,11 +235,19 @@ public class AgendaController implements Serializable {
         }
     }
 
-    private void gerarHorariosAtendimento() throws ParseException {
-        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
+    public void gerarHorarioAtendimentoAnalisandoHorariosCheios() throws ParseException {
+        if((!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()) || !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getId()))
+        && !VerificadorUtil.verificarSeObjetoNulo(agenda.getDataAtendimento())){
+            gerarHorariosAtendimento();
+            JSFUtil.atualizarComponente("opHorario");
+        }
     }
 
-    public void preparaVerificarDisponibilidadeData() throws ProjetoException {
+    private void gerarHorariosAtendimento() throws ParseException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimentoOlhandoHorariosCheios(agenda.getEquipe().getCodEquipe(), agenda.getProfissional().getId(), agenda.getDataAtendimento());
+    }
+
+    public void preparaVerificarDisponibilidadeData() throws ProjetoException, ParseException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if ((this.agenda.getAvaliacao() == null || this.agenda.getAvaliacao() == false)
                     && this.agenda.getPrograma().getIdPrograma() == null
@@ -267,6 +275,8 @@ public class AgendaController implements Serializable {
                 verificaDisponibilidadeDataUnica();
             }
         }
+
+        gerarHorarioAtendimentoAnalisandoHorariosCheios();
     }
 
     public void setarQuantidadeIhMaximoComoNulos() {

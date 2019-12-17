@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
@@ -11,8 +12,10 @@ import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.context.FacesContext;
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UnidadeDAO {
@@ -599,6 +602,51 @@ public class UnidadeDAO {
             }
         }
         return lista;
+    }
+
+    public Boolean verificarHorariosCheios(Integer codEquipe, Integer codProfissional, Date data, String horario) {
+
+        Boolean resultado = true;
+
+        String sql = "SELECT a.dtaatende " +
+                "FROM hosp.parametro p " +
+                "JOIN hosp.atendimentos a ON (p.codunidade = a.cod_unidade) " +
+                "where a.dtaatende = ? AND a.horario = ? AND ";
+
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codEquipe)) {
+                sql = sql + "a.codequipe = ? and " +
+                        "p.qtd_simultanea_atendimento_equipe > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
+            }
+            else{
+                sql = sql + "a.codmedico = ? and " +
+                        "p.qtd_simultanea_atendimento_profissional > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
+            }
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setDate(1, DataUtil.converterDateUtilParaDateSql(data));
+            ps.setTime(2, DataUtil.retornarHorarioEmTime(horario));
+            ps.setInt(3, (!VerificadorUtil.verificarSeObjetoNuloOuZero(codEquipe) ? codEquipe : codProfissional));
+            ps.setTime(4, DataUtil.retornarHorarioEmTime(horario));
+            ps.setDate(5, DataUtil.converterDateUtilParaDateSql(data));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                resultado = false;
+
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
     }
 
 }

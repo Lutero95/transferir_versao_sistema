@@ -352,7 +352,7 @@
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax"></p:ajax>
+											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax, opHorario"></p:ajax>
 
 									</p:autoComplete>
 
@@ -522,22 +522,6 @@
 						</p:outputPanel>
 					</b:row>
 
-					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<b:label value="Horário:" severity="info" class="fire-label" />
-
-								<p:selectOneMenu class="select-agendaEquipe2" required="true"
-									requiredMessage="Horário: Campo obrigatório!"
-									value="#{AgendaController.agenda.horario}">
-									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-									<f:selectItems value="#{AgendaController.listaHorarios}" />
-									<p:ajax event="change" process="@this" />
-								</p:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
 					<br></br>
 
 					<b:row rendered="false">
@@ -576,13 +560,31 @@
 									locale="pt">
 									<p:ajax event="dateSelect"
 										listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-										process="@this dtagen" update="msgPagina, outQtdIhMax"></p:ajax>
+										process="@this dtagen" update="msgPagina, outQtdIhMax, opHorario"></p:ajax>
 								</p:calendar>
 
 							</b:column>
 
 						</b:row>
 					</p:outputPanel>
+
+					<br/>
+
+					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
+						<p:outputPanel id="opHorario">
+							<b:column span="3" class="label-position">
+								<b:label value="Horário:" severity="info" class="fire-label" />
+
+								<p:selectOneMenu class="select-agendaEquipe2" required="true"
+												 requiredMessage="Horário: Campo obrigatório!"
+												 value="#{AgendaController.agenda.horario}">
+									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+									<f:selectItems value="#{AgendaController.listaHorarios}" />
+									<p:ajax event="change" process="@this" />
+								</p:selectOneMenu>
+							</b:column>
+						</p:outputPanel>
+					</b:row>
 
 					<b:row>
 

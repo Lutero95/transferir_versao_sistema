@@ -9,9 +9,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 public final class HorarioOuTurnoUtil {
 
@@ -44,6 +42,41 @@ public final class HorarioOuTurnoUtil {
             horario = DataUtil.retornarHorarioEmString(novahora);
 
             listaHorarios.add(horario);
+
+
+            gc.setTime(sdf.parse(timeAux));
+
+            gc.add(Calendar.MINUTE, parametroBean.getIntervalo());
+
+            novahora = new java.sql.Time(gc.getTime().getTime());
+
+
+        }
+
+        return listaHorarios;
+    }
+
+    public static ArrayList<String> gerarHorariosAtendimentoOlhandoHorariosCheios(Integer codEquipe, Long codProfissional, Date data) throws ParseException {
+        ParametroBean parametroBean = new ParametroBean();
+        ArrayList<String> listaHorarios = new ArrayList<>();
+        UnidadeDAO unidadeDAO = new UnidadeDAO();
+
+        parametroBean = unidadeDAO.carregarDetalhesAtendimentoDaUnidade();
+
+        java.sql.Time novahora = (Time) parametroBean.getHorarioInicial();
+        String horario = null;
+
+        while (parametroBean.getHorarioFinal().after(novahora)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+            GregorianCalendar gc = new GregorianCalendar();
+            String timeAux = sdf.format(novahora);
+
+            horario = DataUtil.retornarHorarioEmString(novahora);
+
+            if(unidadeDAO.verificarHorariosCheios(codEquipe, null, DataUtil.converterDateUtilParaDateSql(data), horario)) {
+                listaHorarios.add(horario);
+            }
 
 
             gc.setTime(sdf.parse(timeAux));
