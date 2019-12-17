@@ -143,6 +143,7 @@ public class PacienteController implements Serializable {
 			paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
 			EnderecoDAO enderecoDAO = new EnderecoDAO();
 			if (paciente.getEndereco().getCepValido() == true) {
+				if ((!paciente.getEndereco().getBairro().equals(null)) && (!paciente.getEndereco().getBairro().equals("")))
 				paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
 						paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
 				if (paciente.getEndereco().getCodbairro() != null) {
@@ -152,7 +153,10 @@ public class PacienteController implements Serializable {
 						bairroExiste = false;
 					}
 				} else {
-					bairroExiste = false;
+					if ((paciente.getEndereco().getBairro().equals(null)) || (paciente.getEndereco().getBairro().equals("")))
+					bairroExiste = true;
+					else
+						bairroExiste = false;
 				}
 				enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
 			}

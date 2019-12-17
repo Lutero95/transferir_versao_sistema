@@ -817,7 +817,7 @@ public class PacienteDAO {
                 + "pacientes.folha, pacientes.dtaregistro, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
-                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
+                + "pacientes.id_formatransporte ,coalesce(pacientes.deficiencia,'N') deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
                 + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
                 + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, "
