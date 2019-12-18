@@ -278,6 +278,35 @@
 					<b:row>
 
 						<b:column span="5" class="label-position new-col5">
+							<b:label value="Almoço Início" severity="info" />
+
+							<p:inputMask mask="99:99"
+										 class="form-control select-agendaEquipe2"
+										 value="#{UnidadeController.unidade.parametro.almocoInicio}"
+										 size="6" required="true"
+										 requiredMessage="Horário Inicial: Campo Obrigatório!">
+								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
+							</p:inputMask>
+						</b:column>
+
+						<b:column span="5" class="label-position new-col5">
+							<b:label value="Almoço Final" severity="info" />
+
+							<p:inputMask mask="99:99"
+										 class="form-control select-agendaEquipe2"
+										 value="#{UnidadeController.unidade.parametro.almocoFinal}"
+										 size="6" required="true"
+										 requiredMessage="Horário Final: Campo Obrigatório!">
+								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
+							</p:inputMask>
+						</b:column>
+
+					</b:row>
+
+
+					<b:row>
+
+						<b:column span="5" class="label-position new-col5">
 							<b:label value="Intervalo (em minutos)" severity="info" />
 
 							<b:inputText

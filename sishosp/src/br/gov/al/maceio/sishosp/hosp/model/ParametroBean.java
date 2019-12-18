@@ -11,6 +11,8 @@ public class ParametroBean implements Serializable {
     private Integer quantidadeSimultaneaEquipe;
     private Date horarioInicial;
     private Date horarioFinal;
+    private Date almocoInicio;
+    private Date almocoFinal;
     private Integer intervalo;
     private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
@@ -92,4 +94,19 @@ public class ParametroBean implements Serializable {
         this.orteseProtese = orteseProtese;
     }
 
+    public Date getAlmocoInicio() {
+        return almocoInicio;
+    }
+
+    public void setAlmocoInicio(Date almocoInicio) {
+        this.almocoInicio = almocoInicio;
+    }
+
+    public Date getAlmocoFinal() {
+        return almocoFinal;
+    }
+
+    public void setAlmocoFinal(Date almocoFinal) {
+        this.almocoFinal = almocoFinal;
+    }
 }
