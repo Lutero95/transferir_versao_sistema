@@ -275,6 +275,19 @@
                                 </p:outputPanel>
                             </b:row>
 
+                            <br/>
+
+                            <b:row>
+                                <b:column span="3" class="label-position">
+                                    <b:label value="Quantidade Máxima:" severity="info" />
+
+                                    <b:inputText class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Quantidade máxima: Campo obrigatório!"
+                                                 value="#{ConfigAgendaController.confParte1.qtdMax}" />
+
+                                </b:column>
+                            </b:row>
+
                             <b:row rendered="#{ConfigAgendaController.opcaoAtendimento == 'T'}">
 
                                 <b:column span="3" class="label-position">
