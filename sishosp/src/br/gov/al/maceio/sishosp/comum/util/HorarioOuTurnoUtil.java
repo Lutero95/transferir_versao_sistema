@@ -74,10 +74,10 @@ public final class HorarioOuTurnoUtil {
 
             horario = DataUtil.retornarHorarioEmString(novahora);
 
-            if(unidadeDAO.verificarHorariosCheios(codEquipe, null, DataUtil.converterDateUtilParaDateSql(data), horario)) {
+            if(unidadeDAO.verificarHorariosCheios(codEquipe, null, DataUtil.converterDateUtilParaDateSql(data), horario)
+            && unidadeDAO.verificarHorarioDeAlmocoUnidade(horario)) {
                 listaHorarios.add(horario);
             }
-
 
             gc.setTime(sdf.parse(timeAux));
 

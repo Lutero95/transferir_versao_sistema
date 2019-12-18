@@ -681,4 +681,37 @@ public class UnidadeDAO {
         return resultado;
     }
 
+    public Boolean verificarHorarioDeAlmocoUnidade(String horario) {
+
+        Boolean resultado = true;
+
+        String sql = "SELECT p.id " +
+                "FROM hosp.parametro p " +
+                "WHERE p.codunidade = ? AND ? >= p.almoco_inicio AND ? <= p.almoco_final;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getUnidade().getId());
+            ps.setTime(2, DataUtil.retornarHorarioEmTime(horario));
+            ps.setTime(3, DataUtil.retornarHorarioEmTime(horario));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                resultado = false;
+
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
 }
