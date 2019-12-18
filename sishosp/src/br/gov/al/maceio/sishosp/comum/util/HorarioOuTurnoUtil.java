@@ -41,8 +41,9 @@ public final class HorarioOuTurnoUtil {
             
             horario = DataUtil.retornarHorarioEmString(novahora);
 
-            listaHorarios.add(horario);
-
+            if(unidadeDAO.verificarHorarioDeAlmocoUnidade(horario)) {
+                listaHorarios.add(horario);
+            }
 
             gc.setTime(sdf.parse(timeAux));
 
