@@ -1,0 +1,179 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Afastamento Temporário</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formAfastamentoTemporario">
+
+                    <p:growl id="growlMsg"></p:growl>
+
+                    <p:outputPanel id="outProfissional">
+                        <b:row>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional" severity="info"/>
+
+                                <p:outputPanel id="outProf">
+                                    <p:autoComplete
+                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.funcionarioBean}"
+                                            id="autoCompleteProfissional" size="31"
+                                            converter="conFuncionario" required="true"
+                                            requiredMessage="Profissional: Campo obrigatório!"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.nome}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusProf" icon="ui-icon-search"
+                                                     immediate="true"
+                                                     action="#{MBFuncionarios.listarProfissionais()}"
+                                                     update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br/>
+
+                    <b:row>
+
+                        <b:column span="1" class="label-position btn-radio-table">
+                            <b:label value="Motivo Afastamento" severity="info"/>
+                            <p:selectOneRadio
+                                    value="#{AfastamentoTemporarioController.afastamentoTemporario.motivoAfastamento}"
+                                    style="margin-left:-15px;margin-top:10px" required="true"
+                                    requiredMessage="Motivo Afastamento: Campo obrigatório!">
+                                <f:selectItem itemLabel="Férias" itemValue="FE"/>
+                                <f:selectItem itemLabel="Licença Médica" itemValue="LM"/>
+                            </p:selectOneRadio>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <p:outputPanel id="datas">
+
+                            <b:column span="3" class="new-data-size2">
+
+                                <p:outputLabel value="Data Início Afastamento:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+
+                            <b:column span="3" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaInicio"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true"
+                                            requiredMessage="Data Início Afastamento: Campo obrigatório!"
+                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoInicio}"
+                                            locale="pt">
+                                    <p:ajax event="dateSelect"
+                                            listener="#{AfastamentoTemporarioController.validarDatasDeAfastamentoTemporario}"
+                                            process="@this dtaInicio" update="msgPagina, datas"></p:ajax>
+                                </p:calendar>
+
+                            </b:column>
+
+                            <b:column span="3" class="new-data-size2">
+
+                                <p:outputLabel value="Data Fim Afastamento:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+
+                            <b:column span="3" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true" requiredMessage="Data Fim Afastamento: Campo obrigatório!"
+                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoFinal}"
+                                            locale="pt">
+                                    <p:ajax event="dateSelect"
+                                            listener="#{AfastamentoTemporarioController.validarDatasDeAfastamentoTemporario}"
+                                            process="@this dtaFinal" update="msgPagina, datas"></p:ajax>
+                                </p:calendar>
+
+                            </b:column>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br/>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm"
+                                         id="bgravar" icon="ui-icon-check"
+                                         action="#{AfastamentoTemporarioController.gravarAfastamentoTemporario()}"
+                                         update=":formAfastamentoTemporario"
+                                         class="btn-incluir"/>
+
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         update=":formAfastamentoTemporario"
+                                         actionListener="#{AfastamentoTemporarioController.limparDados()}"
+                                         action="/pages/sishosp/gerenciarafastamentotemporario.xhtml?faces-redirect=true">
+                        </p:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProf">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+                             var="profi" display="Nenhum Profissional">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar" update=":formAfastamentoTemporario"
+                                         oncomplete="PF('dlgConsuProf').hide();">
+
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{AfastamentoTemporarioController.afastamentoTemporario.funcionarioBean}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
