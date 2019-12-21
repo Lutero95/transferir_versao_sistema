@@ -169,6 +169,16 @@
 						value="#{AtendimentoController.listAtendimentos}"
 						styleClass="table table-hover" paginatorPosition="bottom">
 
+						<p:column width="80">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Presença" />
+							</f:facet>
+							<h:outputText value="SIM" rendered="#{atendimento.presenca=='S'}" />
+							<h:outputText value="NÃO" rendered="#{atendimento.presenca=='N'}" />
+
+
+						</p:column>
+
 						<p:column>
 							<f:facet name="header">
                         Data

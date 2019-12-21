@@ -19,7 +19,7 @@ public class AtendimentoBean implements Serializable {
     private Boolean avaliacao;
     private String perfil;
     private String horarioAtendimento;
-
+    private String presenca;
     // HERDADOS
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
@@ -229,5 +229,13 @@ public class AtendimentoBean implements Serializable {
 
 	public void setHorarioAtendimento(String horarioAtendimento) {
 		this.horarioAtendimento = horarioAtendimento;
+	}
+
+	public String getPresenca() {
+		return presenca;
+	}
+
+	public void setPresenca(String presenca) {
+		this.presenca = presenca;
 	}
 }

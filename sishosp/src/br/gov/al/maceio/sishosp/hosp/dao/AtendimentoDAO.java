@@ -422,7 +422,7 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
+		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.avaliacao,  "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
@@ -435,14 +435,14 @@ public class AtendimentoDAO {
 				"			hosp.atendimentos1 a11\n" + 
 				"		where\n" + 
 				"			a11.id_atendimento = a.id_atendimento\n" + 
-				"			and a11.codprofissionalatendimento=255\n" + 
+				"			and a11.codprofissionalatendimento=?\n" + 
 				"			and a11.evolucao is null)  then 'Evolução Não Realizada'\n" + 
 				"		 else 'Evolução Realizada'\n" + 
 				"	end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
 				+ " JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
-				+ " left join acl.funcionarios f on (f.id_funcionario = a.codmedico)"
+				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
@@ -485,12 +485,13 @@ public class AtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			int i = 6;
-			stm.setDate(1, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
-			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
-			stm.setInt(3, user_session.getUnidade().getId());
-			stm.setLong(4, user_session.getId());
+			int i = 7;
+			stm.setLong(1, user_session.getId());
+			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
+			stm.setDate(3, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
+			stm.setInt(4, user_session.getUnidade().getId());
 			stm.setLong(5, user_session.getId());
+			stm.setLong(6, user_session.getId());
 			
             if ((atendimento.getPrograma()!=null) && (atendimento.getPrograma().getIdPrograma()!=null)) {
             stm.setInt(i, atendimento.getPrograma().getIdPrograma());
@@ -515,6 +516,7 @@ public class AtendimentoDAO {
 
 			while (rs.next()) {
 				AtendimentoBean at = new AtendimentoBean();
+				at.setPresenca(rs.getString("presenca"));
 				at.setId(rs.getInt("id_atendimento"));
 				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
