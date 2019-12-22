@@ -34,7 +34,7 @@ public class AfastamentoTemporarioDAO {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, afastamentoTemporario.getTipoAfastamento());
-            ps.setLong(2, afastamentoTemporario.getFuncionarioBean().getId());
+            ps.setLong(2, afastamentoTemporario.getFuncionario().getId());
             ps.setDate(3, DataUtil.converterDateUtilParaDateSql(afastamentoTemporario.getPeriodoInicio()));
             ps.setDate(4, DataUtil.converterDateUtilParaDateSql(afastamentoTemporario.getPeriodoFinal()));
             ps.setString(5, afastamentoTemporario.getMotivoAfastamento());
@@ -45,7 +45,7 @@ public class AfastamentoTemporarioDAO {
             retorno = true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(),"Atenção");
+            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -78,8 +78,8 @@ public class AfastamentoTemporarioDAO {
                 AfastamentoTemporario afastamentoTemporario = new AfastamentoTemporario();
                 afastamentoTemporario.setId(rs.getInt("id"));
                 afastamentoTemporario.setTipoAfastamento(rs.getString("tipo_afastamento"));
-                afastamentoTemporario.getFuncionarioBean().setId(rs.getLong("id_funcionario_afastado"));
-                afastamentoTemporario.getFuncionarioBean().setNome(rs.getString("descfuncionario"));
+                afastamentoTemporario.getFuncionario().setId(rs.getLong("id_funcionario_afastado"));
+                afastamentoTemporario.getFuncionario().setNome(rs.getString("descfuncionario"));
                 afastamentoTemporario.setPeriodoInicio(rs.getDate("inicio_afastamento"));
                 afastamentoTemporario.setPeriodoFinal(rs.getDate("fim_afastamento"));
                 afastamentoTemporario.setMotivoAfastamento(rs.getString("motivo_afastamento"));
@@ -116,7 +116,7 @@ public class AfastamentoTemporarioDAO {
                 afastamentoTemporario = new AfastamentoTemporario();
                 afastamentoTemporario.setId(rs.getInt("id"));
                 afastamentoTemporario.setTipoAfastamento(rs.getString("tipo_afastamento"));
-                afastamentoTemporario.getFuncionarioBean().setId(rs.getLong("id_funcionario_afastado"));
+                afastamentoTemporario.getFuncionario().setId(rs.getLong("id_funcionario_afastado"));
                 afastamentoTemporario.setPeriodoInicio(rs.getDate("inicio_afastamento"));
                 afastamentoTemporario.setPeriodoFinal(rs.getDate("fim_afastamento"));
                 afastamentoTemporario.setMotivoAfastamento(rs.getString("motivo_afastamento"));
@@ -159,5 +159,38 @@ public class AfastamentoTemporarioDAO {
             }
             return retorno;
         }
+    }
+
+    public FuncionarioBean carregarFuncionarioAfastado(int idAfastamento) {
+
+        FuncionarioBean funcionarioBean = new FuncionarioBean();
+
+        String sql = "SELECT a.id_funcionario_afastado, f.descfuncionario " +
+                "FROM adm.afastamento_funcionario a " +
+                "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) " +
+                "WHERE id = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idAfastamento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                funcionarioBean.setId(rs.getLong("id_funcionario_afastado"));
+                funcionarioBean.setNome(rs.getString("descfuncionario"));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return funcionarioBean;
     }
 }

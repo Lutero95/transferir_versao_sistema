@@ -1,0 +1,335 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <f:metadata>
+            <f:viewAction action="#{SubstituicaoController.carregarFuncionarioAfastamento()}"/>
+        </f:metadata>
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Afastamento Temporário</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formSubstituicao">
+
+                    <p:growl id="growlMsg"></p:growl>
+
+                    <b:row>
+                        <b:column span="12"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Profissional Afastado:" severity="info"/>
+                            <p:outputLabel
+                                    value="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.funcionario.nome}"
+                                    style="margin-left: 10px" severity="info"/>
+                        </b:column>
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <p:outputPanel id="datas">
+
+                            <b:column span="3" class="new-data-size2">
+
+                                <p:outputLabel value="Período Início Agendamento:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+
+                            <b:column span="3" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaInicio"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true"
+                                            requiredMessage="Data Início Afastamento: Campo obrigatório!"
+                                            value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.periodoInicio}"
+                                            locale="pt">
+                                </p:calendar>
+
+                            </b:column>
+
+                            <b:column span="3" class="new-data-size2">
+
+                                <p:outputLabel value="Período Fim Agendamento:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+                            <b:column span="3" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true" requiredMessage="Data Fim Afastamento: Campo obrigatório!"
+                                            value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.periodoFinal}"
+                                            locale="pt">
+                                </p:calendar>
+
+                            </b:column>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Programa" severity="info"/>
+
+                            <p:outputPanel id="outProg">
+                                <p:autoComplete
+                                        value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa}"
+                                        size="31" converter="conPrograma" required="true"
+                                        class="select-agendaEquipe4"
+                                        requiredMessage="Programa: Campo obrigatório!"
+                                        completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{SubstituicaoController.selectPrograma}"
+                                            update="outProg, outGrupo"/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusPr" immediate="true"
+                                                 icon="ui-icon-search"
+                                                 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                 update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Grupo" severity="info"/>
+
+                            <p:outputPanel id="outGrupo">
+                                <p:autoComplete
+                                        value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.grupo}"
+                                        size="31" converter="conGrupo" required="true"
+                                        requiredMessage="Grupo: Campo obrigatório!"
+                                        class="select-agendaEquipe4"
+                                        disabled="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa.idPrograma == null}"
+                                        completeMethod="#{SubstituicaoController.listaGrupoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descGrupo}">
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusGr" immediate="true"
+                                                 icon="ui-icon-search"
+                                                 disabled="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa.idPrograma == null}"
+                                                 onclick="PF('dlgConsuGrop').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <b:column span="2" class="col-md-2-new new-span1"
+                                  style="margin-bottom:10px;">
+
+                            <p:commandButton value="Buscar" icon="ui-icon-search"
+                                             class="btn-acao-table acao-buscar"
+                                             action="#{SubstituicaoController.buscarAgendamentoDoFuncionarioAfastado}"
+                                             update="msgPagina"></p:commandButton>
+
+                        </b:column>
+
+                        <b:column span="2" class="new-span1">
+
+                            <p:commandButton value="Limpar" icon="ui-icon-trash"
+                                             class="btn-acao-table acao-limpar2" immediate="true"
+                                             action="#{SubstituicaoController.limparFiltroBuscaAtendimentos()}"
+                                             update="formSubstituicao"></p:commandButton>
+                        </b:column>
+
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <p:dataTable></p:dataTable>
+
+                    </b:row>
+
+                    <br/>
+
+                </h:form>
+
+                <h:form id="formSubstituir">
+
+                    <p:outputPanel id="outProfissional">
+                        <b:row>
+                            <b:column span="12"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional para assumir atendimentos:" severity="info"/>
+
+                                <p:outputPanel id="outProf">
+                                    <p:autoComplete
+                                            value="#{SubstituicaoController.substituicaoFuncionario.funcionario}"
+                                            id="autoCompleteProfissional" size="31"
+                                            converter="conFuncionario" required="true"
+                                            requiredMessage="Profissional: Campo obrigatório!"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.nome}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusProf" icon="ui-icon-search"
+                                                     immediate="true"
+                                                     action="#{MBFuncionarios.listarProfissionais()}"
+                                                     update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br/>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm"
+                                         id="bgravar" icon="ui-icon-check"
+                                         action="#{AfastamentoTemporarioController.gravarAfastamentoTemporario()}"
+                                         update=":formSubstituicao"
+                                         class="btn-incluir"/>
+
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         update=":formSubstituicao"
+                                         actionListener="#{AfastamentoTemporarioController.limparDados()}"
+                                         action="/pages/sishosp/gerenciarafastamentotemporario.xhtml?faces-redirect=true">
+                        </p:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProf">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+                             var="profi" display="Nenhum Profissional">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar" update=":formSubstituicao"
+                                         oncomplete="PF('dlgConsuProf').hide();">
+
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{SubstituicaoController.substituicaoFuncionario.funcionario}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" responsive="true" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+                             responsive="true" save-state="false" saveState="false"
+                             value="#{SubstituicaoController.listaGruposPorProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formSubstituicao:outGrupo"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formSubstituicao:outProg, :formSubstituicao:outGrupo"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                title="Selecionar"
+                                action="#{SubstituicaoController.atualizaListaGrupos(SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa)}"
+                                oncomplete="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

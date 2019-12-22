@@ -33,7 +33,7 @@
                                  value="#{AfastamentoTemporarioController.listaAfastamentosTemporarios}">
 
                         <p:column width="40%" headerText="Profissional">
-                            <h:outputText value="#{tab.funcionarioBean.nome}"/>
+                            <h:outputText value="#{tab.funcionario.nome}"/>
                         </p:column>
 
                         <p:column width="15%" headerText="Motivo Afastamento">
@@ -57,13 +57,23 @@
                                 Ação
                             </f:facet>
 
-                            <p:commandButton tooltip="Excluir" icon="ui-icon-trash"
-                                             size="sm" ajax="true" style="margin-left:10px"
-                                             class="btn-acao-table acao-excluir"
-                                             oncomplete="PF('dlgExclusao').show()">
-                                <f:setPropertyActionListener value="#{tab}"
-                                                             target="#{AfastamentoTemporarioController.afastamentoTemporario}"/>
-                            </p:commandButton>
+                            <div align="center">
+
+                                <p:commandButton tooltip="Alterar" icon="ui-icon-refresh"
+                                                 size="sm"
+                                                 action="#{SubstituicaoController.redirectSubstituicao(tab.id)}"
+                                                 class="btn-acao-table acao-editar">
+                                </p:commandButton>
+
+                                <p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+                                                 size="sm" ajax="true" style="margin-left:10px"
+                                                 class="btn-acao-table acao-excluir"
+                                                 oncomplete="PF('dlgExclusao').show()">
+                                    <f:setPropertyActionListener value="#{tab}"
+                                                                 target="#{AfastamentoTemporarioController.afastamentoTemporario}"/>
+                                </p:commandButton>
+                            </div>
+
                         </p:column>
 
                     </p:dataTable>

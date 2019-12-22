@@ -9,7 +9,7 @@ import java.util.Date;
 public class AfastamentoTemporario implements Serializable {
 
     private Integer id;
-    private FuncionarioBean funcionarioBean;
+    private FuncionarioBean funcionario;
     private String motivoAfastamento;
     private String motivoAfastamentoPorExtenso;
     private String tipoAfastamento;
@@ -17,7 +17,7 @@ public class AfastamentoTemporario implements Serializable {
     private Date periodoFinal;
 
     public AfastamentoTemporario() {
-        funcionarioBean = new FuncionarioBean();
+        funcionario = new FuncionarioBean();
         tipoAfastamento = TipoAfastamento.TEMPORÁRIO.getSigla();
     }
 
@@ -29,12 +29,12 @@ public class AfastamentoTemporario implements Serializable {
         this.id = id;
     }
 
-    public FuncionarioBean getFuncionarioBean() {
-        return funcionarioBean;
+    public FuncionarioBean getFuncionario() {
+        return funcionario;
     }
 
-    public void setFuncionarioBean(FuncionarioBean funcionarioBean) {
-        this.funcionarioBean = funcionarioBean;
+    public void setFuncionario(FuncionarioBean funcionario) {
+        this.funcionario = funcionario;
     }
 
     public String getMotivoAfastamento() {

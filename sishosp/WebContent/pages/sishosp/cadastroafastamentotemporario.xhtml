@@ -27,7 +27,7 @@
 
                                 <p:outputPanel id="outProf">
                                     <p:autoComplete
-                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.funcionarioBean}"
+                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.funcionario}"
                                             id="autoCompleteProfissional" size="31"
                                             converter="conFuncionario" required="true"
                                             requiredMessage="Profissional: Campo obrigatório!"
@@ -166,7 +166,7 @@
                                          oncomplete="PF('dlgConsuProf').hide();">
 
                             <f:setPropertyActionListener value="#{profi}"
-                                                         target="#{AfastamentoTemporarioController.afastamentoTemporario.funcionarioBean}"/>
+                                                         target="#{AfastamentoTemporarioController.afastamentoTemporario.funcionario}"/>
                         </p:commandButton>
                     </h:column>
 
