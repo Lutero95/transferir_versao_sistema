@@ -94,9 +94,24 @@ public class AtendimentoController implements Serializable {
             }
         }
         
-        consultarAtendimentosProfissionalNaEquipe();
+        consultarAtendimentos();
 
     }
+    
+    public void carregarGerenciamentoAtendimentoProfissionalNaEquipe() throws ProjetoException{
+        BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+            if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla())) {
+                atendimento.setGrupo(buscaSessaoDTO.getGrupoBean());
+                atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
+                atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
+                atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
+            }
+        }
+        
+        consultarAtendimentosProfissionalNaEquipe();
+
+    }    
 
     public void consultarAtendimentos() throws ProjetoException {
         if (this.atendimento.getDataAtendimentoInicio() == null

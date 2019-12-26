@@ -54,7 +54,7 @@
 							
 							<b:column span="2" class="label-position5">
 
-							<p:commandButton value="Limpar" icon="glyphicon-trash"
+							<p:commandButton value="Limpar" icon="ui-icon-trash"
 								style="height:37px; margin-top:0px;"
 								class="btn-acao-table acao-limpar2"
 								actionListener="#{menuMB.limparBusca()}"
@@ -138,12 +138,12 @@
 						<p:tab title="Geral">
 
 							<p:panelGrid styleClass="semBorda">
-								<b:row>
+								<p:row>
 
-									<b:column span="5" class="label-position4">
+									<p:column span="5" class="label-position4">
 										<b:label value="Tipo do Menu: " severity="danger" />
 
-										<b:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
+										<p:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
 											class="select-agendaEquipe2 new-height"
 											requiredMessage="Informe o tipo do menu.">
 
@@ -155,10 +155,10 @@
 												itemValue="menuItemRel" />
 
 											<p:ajax update=":formCM:pnlCM" />
-										</b:selectOneMenu>
-									</b:column>
+										</p:selectOneMenu>
+									</p:column>
 
-									<b:column span="5" class="label-position4">
+									<p:column span="5" class="label-position4">
 										<b:label value="Status: " severity="danger" />
 
 										<b:selectOneMenu value="#{menuMB.statusMenu}" required="true"
@@ -168,12 +168,12 @@
 											<f:selectItem itemLabel="Habilitado" itemValue="true" />
 											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
 										</b:selectOneMenu>
-									</b:column>
+									</p:column>
 
-								</b:row>
+								</p:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
-									<b:column span="5" class="label-position4">
+								<p:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
+									<p:column span="5" class="label-position4">
 										<b:label value="Diretório: " severity="danger" />
 
 										<b:selectOneMenu value="#{menuMB.menu.diretorio}"
@@ -184,15 +184,15 @@
 											<f:selectItems value="#{menuMB.listaDiretorios}" var="dir"
 												itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
 										</b:selectOneMenu>
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
-								<b:row
+								<p:row
 									rendered="#{menuMB.menu.tipo == 'menuItem' 
                                         or menuMB.menu.tipo == 'submenu' 
                                         or menuMB.menu.tipo == 'menuItemRel'}">
 
-									<b:column span="5" class="label-position4">
+									<p:column span="5" class="label-position4">
 										<b:label value="Menu Associado	: " severity="danger" />
 
 										<b:selectOneMenu value="#{menuMB.menu.indice}" required="true"
@@ -203,31 +203,31 @@
 											<f:selectItems value="#{menuMB.listaMenus}" var="menu"
 												itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
 										</b:selectOneMenu>
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
-								<b:row >
-									<b:column span="12" class="label-position4">
+								<p:row >
+									<p:column span="12" class="label-position4">
 										<b:label value="Descrição menu: " severity="danger" />
 
 										<b:inputText id="desc" value="#{menuMB.menu.descricao}"
 											size="40" required="true"
 											class="select-agendaEquipe2 new-height"
 											requiredMessage="Informe o nome do menu." />
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
-									<b:column span="12" class="label-position4">
+								<p:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
+									<p:column span="12" class="label-position4">
 										<b:label value="Página: " severity="danger" />
 
 										<b:inputText value="#{menuMB.menu.descPagina}" required="true"
 											class="select-agendaEquipe2 new-height"
 											requiredMessage="Informe a página associada." />
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
+								<p:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
 									<p:column span="2" class="new-data-size2">
 										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
 											value="Extensão página: ">
@@ -240,9 +240,9 @@
 											<f:selectItems value="#{menuMB.listaExtensoesPag}" />
 										</p:selectOneRadio>
 									</p:column>
-								</b:row>
+								</p:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
+								<p:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
 									<p:column span="2" class="new-data-size2">
 										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
 											value="Tipo Relatório: ">
@@ -262,33 +262,33 @@
 											<p:ajax update=":formCM:pnlCM" />
 										</p:selectOneRadio>
 									</p:column>
-								</b:row>
+								</p:row>
 
-								<b:row
+								<p:row
 									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
                                         and menuMB.tipoMenuRel == 'A'}">
 
-									<b:column span="12" class="label-position4">
+									<p:column span="12" class="label-position4">
 										<b:label value="Action: " severity="danger" />
 
 										<b:inputText id="act" value="#{menuMB.menu.action}" size="40"
 											class="select-agendaEquipe2 new-height" required="true"
 											requiredMessage="Informe o valor do action." />
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
-								<b:row
+								<p:row
 									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
                                         and menuMB.tipoMenuRel == 'D'}">
 
-									<b:column span="12" class="label-position4">
+									<p:column span="12" class="label-position4">
 										<b:label value="Onclick: " severity="danger" />
 
 										<b:inputText id="onc" value="#{menuMB.menu.onclick}" size="40"
 											class="select-agendaEquipe2 new-height" required="true"
 											requiredMessage="Informe o valor do onclick." />
-									</b:column>
-								</b:row>
+									</p:column>
+								</p:row>
 
 							</p:panelGrid>
 						</p:tab>

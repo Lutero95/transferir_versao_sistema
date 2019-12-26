@@ -230,6 +230,113 @@ public class AlteracaoPacienteController implements Serializable {
         JSFUtil.fecharDialog("dlgDiasAtendimentoHorario");
     }
     
+    public void alteraDiaAtendimentoProfissionaisNaLista(Integer novoDiaSemana) {
+    	String dias = "";
+    	listaDias = new ArrayList<>();
+    	if (verificaPermissaoParaAlterarDiaAtendimentoProfissionaisNaLista()) {
+        for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+        	dias = "";
+        	listaProfissionaisAdicionados.get(i).setDiaSemana(novoDiaSemana);
+        	for (int h = 0; h < listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size(); h++) {
+        		listaProfissionaisAdicionados.get(h).setDiaSemana(novoDiaSemana);
+        		 listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).setDiaSemana(novoDiaSemana);
+         	   if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
+                   dias = dias + "Domingo " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	  if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                   dias = dias + "Segunda " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	 if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
+                   dias = dias + "Terça " +   (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
+                   dias = dias + "Quarta " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
+                   dias = dias + "Quinta " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
+                   dias = dias + "Sexta " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               }
+
+         	if (listaProfissionaisAdicionados.get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
+                   dias = dias + "Sábado " +  (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() !=null ? listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getHorario() : "") ;
+                   if (listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() > 1 && listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size() != i + 1) {
+                       dias = dias + ", ";
+                   }
+               } 
+        	}
+        	
+        	listaProfissionaisAdicionados.get(i).setDiasSemana(dias); 
+       	
+        }
+        
+        for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+        	dias = "";
+        	listaProfissionaisAdicionados.get(i).setDiaSemana(novoDiaSemana);
+        	for (int h = 0; h < listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size(); h++) {
+                if (!listaDias.contains(listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getDiaSemana())) {
+                    listaDias.add(listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getDiaSemana());
+                }
+        		
+        	}
+        }
+        
+        
+        JSFUtil.fecharDialog("dlgAlteraDiaAtendimento");
+    	}
+    	else
+    	{
+    		JSFUtil.adicionarMensagemAdvertencia("Apenas é possível alterar o dia de atendimento quando os profissionais atendem em apenas um dia!", "Atenção!");
+    	}
+    }  
+    
+    public void abreDialogAlteraDiasAtendimentoProfissionais() {
+    	insercao.getHorarioAtendimento().setDiaSemana(null);
+    	JSFUtil.abrirDialog("dlgAlteraDiaAtendimento");
+    }
+    
+
+    public Boolean verificaPermissaoParaAlterarDiaAtendimentoProfissionaisNaLista() {
+    	Integer primeirodiaSemanaNaLista = null;
+    	Boolean rst = true;
+        for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+        	for (int h = 0; h < listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().size(); h++) {
+        		if (primeirodiaSemanaNaLista==null) 
+        			primeirodiaSemanaNaLista = listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getDiaSemana();
+        		if (primeirodiaSemanaNaLista!= listaProfissionaisAdicionados.get(i).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+        			rst = false;
+        			break;
+        		}
+        	}
+        }
+        return rst;
+    }     
+    
     private void adicionarProfissionalIhHorarioNaLista() {
     	/*
     	        if (listaHorarioFinal.size() == 0) {
@@ -622,7 +729,8 @@ public class AlteracaoPacienteController implements Serializable {
     public void gravarAlteracaoPaciente() throws ProjetoException {
 
         Boolean cadastrou = null;
-
+        listAgendamentoProfissional = new ArrayList<AgendaBean>();
+        
         InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
@@ -771,12 +879,13 @@ public class AlteracaoPacienteController implements Serializable {
             if (existe == false) {
                 adicionarFuncionario();
             } else {
-                JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
+                
 
                 JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
 
         }
+        JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
         //Retirado para análise futura, retirei na véspera da apresentação para a funcionalidade ficar ok. Data: 26/03/2019
         //limparDias();
     }
@@ -866,7 +975,7 @@ public class AlteracaoPacienteController implements Serializable {
         for (int i = 0; i < listaFuncionarioAuxiliar.size(); i++) {
         	String dias = "";
         	for (int j = 0; j < listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size(); j++) {
-        		System.out.println(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size());
+        		System.out.println(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana()==Integer.valueOf(DiasDaSemana.DOMINGO.getSigla())) {
                 dias = dias + "Domingo "+" "+(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()!=null  ? listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario() : "" );
 
@@ -875,7 +984,7 @@ public class AlteracaoPacienteController implements Serializable {
                 }
             }
 
-            if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+            if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana()==(Integer.valueOf(DiasDaSemana.SEGUNDA.getSigla()))) {
                 dias = dias + "Segunda"+" "+(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()!=null  ? listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario() : "" );
                 if(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size()  > 1 && listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size()!=i+1){
                     dias = dias + ", ";
@@ -923,12 +1032,18 @@ public class AlteracaoPacienteController implements Serializable {
             listaProfissionaisAdicionados.add(listaFuncionarioAuxiliar.get(i));
         }
         
-        for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
-            if (!listaDias.contains(funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana())) {
-                listaDias.add(funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana());
-            }
+        for (int i = 0; i < listaFuncionarioAuxiliar.size(); i++) {
+        	String dias = "";
+        	for (int j = 0; j < listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+                if (!listaDias.contains(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana())) {
+                    listaDias.add(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana());
+                }        		
+        		
+        	}
+        	
         }
         
+    
         
         /*
         

@@ -7,7 +7,7 @@
 	template="../../template/template.xhtml">
 
 	<f:metadata>
-		<f:viewAction action="#{AtendimentoController.carregarGerenciamentoAtendimento()}" />
+		<f:viewAction action="#{AtendimentoController.carregarGerenciamentoAtendimentoProfissionalNaEquipe()}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -202,7 +202,7 @@
 							<p:outputLabel value="#{atendimento.paciente.cns}" />
 						</p:column>
 
-						<p:column>
+						<p:column rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
 							<f:facet name="header">
                         Turno
                     </f:facet>

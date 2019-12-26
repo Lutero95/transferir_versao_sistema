@@ -182,7 +182,7 @@
 							<p:outputLabel value="#{atendimento.paciente.cns}" />
 						</p:column>
 
-						<p:column>
+						<p:column rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
 							<f:facet name="header">
                         Turno
                     </f:facet>

@@ -47,7 +47,7 @@
                         Ação
                     </f:facet>
 
-						<p:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+						<p:commandButton tooltip="Alterar" icon="ui-icon-pencil" size="sm"
 							class="btn-acao-table acao-editar"
 							action="#{EquipamentoController.redirectEdit()}">
 							<f:setPropertyActionListener value="#{tab}"
@@ -57,7 +57,7 @@
 								target="#{EquipamentoController.tipo}" />
 						</p:commandButton>
 
-						<p:commandButton tooltip="Excluir" icon="glyphicon-trash"
+						<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
 							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dialogExclusao').show()">
 
