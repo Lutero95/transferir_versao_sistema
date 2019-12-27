@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.administrativo.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -21,7 +22,7 @@ public class SubstituicaoDAO {
     PreparedStatement ps = null;
 
 
-    public Boolean substituirFuncionario(List<SubstituicaoFuncionario> listaSubstituicao) {
+    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados, SubstituicaoFuncionario substituicaoFuncionario) {
 
         Boolean retorno = false;
 
@@ -31,13 +32,13 @@ public class SubstituicaoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            for(int i=0; i<listaSubstituicao.size(); i++) {
-                stmt.setLong(1, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
-                stmt.setInt(2, listaSubstituicao.get(i).getAtendimento().getId1());
+            for(int i=0; i<listaSelecionados.size(); i++) {
+                stmt.setLong(1, substituicaoFuncionario.getFuncionario().getId());
+                stmt.setInt(2, listaSelecionados.get(i).getId1());
 
                 stmt.executeUpdate();
 
-                gravarSubstituicao(listaSubstituicao.get(i), con);
+                gravarSubstituicao(listaSelecionados.get(i), substituicaoFuncionario, con);
 
             }
 
@@ -57,7 +58,7 @@ public class SubstituicaoDAO {
         }
     }
 
-    public boolean gravarSubstituicao(SubstituicaoFuncionario substituicaoFuncionario, Connection conAuxiliar) {
+    public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoFuncionario substituicaoFuncionario, Connection conAuxiliar) {
 
         Boolean retorno = false;
 
@@ -72,7 +73,7 @@ public class SubstituicaoDAO {
 
             ps = conAuxiliar.prepareStatement(sql);
             ps.setInt(1, substituicaoFuncionario.getAfastamentoTemporario().getId());
-            ps.setInt(2, substituicaoFuncionario.getAtendimento().getId());
+            ps.setInt(2, atendimentoBean.getId1());
             ps.setLong(3, substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId());
             ps.setLong(4, substituicaoFuncionario.getFuncionario().getId());
             ps.setLong(5, user_session.getId());
@@ -81,7 +82,7 @@ public class SubstituicaoDAO {
             retorno = true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException(ex);
+            throw new ProjetoException(ex);
         } finally {
             try {
             } catch (Exception ex) {
@@ -95,7 +96,7 @@ public class SubstituicaoDAO {
 
         List<AtendimentoBean> lista = new ArrayList<>();
 
-        String sql = "SELECT a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende " +
+        String sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende " +
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
@@ -132,6 +133,7 @@ public class SubstituicaoDAO {
 
             while (rs.next()) {
                 AtendimentoBean atendimentoBean = new AtendimentoBean();
+                atendimentoBean.setId1(rs.getInt("id_atendimentos1"));
                 atendimentoBean.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 atendimentoBean.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 atendimentoBean.getPrograma().setIdPrograma(rs.getInt("codprograma"));

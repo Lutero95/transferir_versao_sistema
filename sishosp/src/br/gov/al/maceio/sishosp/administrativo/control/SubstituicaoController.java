@@ -34,7 +34,7 @@ public class SubstituicaoController implements Serializable {
     private List<GrupoBean> listaGruposPorProgramas;
     private GrupoDAO gDao = new GrupoDAO();
     private List<AtendimentoBean> listaAtendimentos;
-    private List<SubstituicaoFuncionario> listaSubstituicao;
+    private List<AtendimentoBean> listaAtendimentosSelecionada;
 
     //CONSTANTES
     private static final String ENDERECO_SUBSTITUICAO = "substituicaofuncionarioafastado?faces-redirect=true";
@@ -45,7 +45,7 @@ public class SubstituicaoController implements Serializable {
         buscaAgendamentosParaFuncionarioAfastadoDTO = new BuscaAgendamentosParaFuncionarioAfastadoDTO();
         listaGruposPorProgramas = new ArrayList<>();
         listaAtendimentos = new ArrayList<>();
-        listaSubstituicao = new ArrayList<>();
+        listaAtendimentosSelecionada = new ArrayList<>();
     }
 
     public String redirectSubstituicao(Integer codAfastamento) {
@@ -54,18 +54,33 @@ public class SubstituicaoController implements Serializable {
 
     public void limparDados() {
         substituicaoFuncionario = new SubstituicaoFuncionario();
-
+        listaAtendimentos = new ArrayList<>();
+        listaAtendimentosSelecionada = new ArrayList<>();
     }
 
     public void gravarAfastamentoTemporario() {
-        boolean cadastrou = sDao.substituirFuncionario(listaSubstituicao);
 
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Substituição cadastrada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
+        if (validarSeAgendamentosForamSelecionados()) {
+
+            boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada, substituicaoFuncionario);
+
+            if (cadastrou == true) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Substituição cadastrada com sucesso!", "Sucesso");
+                limparDados();
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
+            }
         }
+    }
+
+    private Boolean validarSeAgendamentosForamSelecionados() {
+        if (listaAtendimentosSelecionada.isEmpty()) {
+            JSFUtil.adicionarMensagemErro("Realize uma busca e selecione agendamentos para alterar o profissional!", "Erro!");
+            return false;
+        }
+
+        return true;
     }
 
     public void carregarFuncionarioAfastamento() {
@@ -76,6 +91,7 @@ public class SubstituicaoController implements Serializable {
             idAfastamento = Integer.parseInt(params.get("id"));
             AfastamentoTemporarioDAO aDao = new AfastamentoTemporarioDAO();
             substituicaoFuncionario.getAfastamentoTemporario().setFuncionario(aDao.carregarFuncionarioAfastado(idAfastamento));
+            substituicaoFuncionario.getAfastamentoTemporario().setId(idAfastamento);
 
             if (VerificadorUtil.verificarSeObjetoNuloOuZero(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId())) {
                 JSFUtil.adicionarMensagemErro("É preciso passar um valor de afastamento válido", "Erro");
@@ -83,12 +99,12 @@ public class SubstituicaoController implements Serializable {
         }
     }
 
-    public void buscarAgendamentoDoFuncionarioAfastado(){
+    public void buscarAgendamentoDoFuncionarioAfastado() {
         buscaAgendamentosParaFuncionarioAfastadoDTO.setFuncionario(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario());
         listaAtendimentos = sDao.listarHorariosParaSeremSubstituidos(buscaAgendamentosParaFuncionarioAfastadoDTO);
     }
 
-    public void limparFiltroBuscaAtendimentos(){
+    public void limparFiltroBuscaAtendimentos() {
         buscaAgendamentosParaFuncionarioAfastadoDTO = new BuscaAgendamentosParaFuncionarioAfastadoDTO();
     }
 
@@ -143,4 +159,13 @@ public class SubstituicaoController implements Serializable {
     public void setListaAtendimentos(List<AtendimentoBean> listaAtendimentos) {
         this.listaAtendimentos = listaAtendimentos;
     }
+
+    public List<AtendimentoBean> getListaAtendimentosSelecionada() {
+        return listaAtendimentosSelecionada;
+    }
+
+    public void setListaAtendimentosSelecionada(List<AtendimentoBean> listaAtendimentosSelecionada) {
+        this.listaAtendimentosSelecionada = listaAtendimentosSelecionada;
+    }
+
 }
