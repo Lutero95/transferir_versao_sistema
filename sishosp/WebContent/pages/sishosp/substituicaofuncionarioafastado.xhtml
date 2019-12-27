@@ -173,7 +173,11 @@
                                 Atendimentos
                             </f:facet>
 
-                            <p:column selectionMode="multiple" width="15%" style="text-align:center"/>
+                            <p:column selectionMode="multiple" width="10%" style="text-align:center"/>
+
+                            <p:column headerText="Turno" width="15%">
+                                <h:outputText value="#{tab.turno}"/>
+                            </p:column>
 
                             <p:column headerText="Grupo" width="30%">
                                 <h:outputText value="#{tab.grupo.descGrupo}"/>
@@ -183,7 +187,7 @@
                                 <h:outputText value="#{tab.programa.descPrograma}"/>
                             </p:column>
 
-                            <p:column headerText="Data" width="25%">
+                            <p:column headerText="Data" width="15%">
                                 <h:outputText value="#{tab.dataAtendimentoInicio}">
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>

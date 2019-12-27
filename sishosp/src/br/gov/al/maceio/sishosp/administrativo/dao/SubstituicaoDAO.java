@@ -96,7 +96,8 @@ public class SubstituicaoDAO {
 
         List<AtendimentoBean> lista = new ArrayList<>();
 
-        String sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende " +
+        String sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende, " +
+                "CASE WHEN a.turno = 'M' THEN 'Manhã' WHEN a.turno = 'T' THEN 'Tarde' END AS turno " +
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
@@ -139,6 +140,7 @@ public class SubstituicaoDAO {
                 atendimentoBean.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 atendimentoBean.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 atendimentoBean.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+                atendimentoBean.setTurno(rs.getString("turno"));
 
                 lista.add(atendimentoBean);
             }
