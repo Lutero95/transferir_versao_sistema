@@ -3,7 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum FiltroBuscaVencimentoPTS {
 
     TODOS("T"),
-    VINGENTES("VI"),
+    VIGENTES("VI"),
     VENCIDOS("VE");
 
     private String sigla;

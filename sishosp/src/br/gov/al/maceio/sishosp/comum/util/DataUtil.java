@@ -132,6 +132,8 @@ public final class DataUtil {
         return data;
     }
     
+    
+    
     public static int calculaQuantidadeDiasEntreDuasDatas(long timestamp1, long timestamp2) {
         final int SECONDS = 60;
         final int MINUTES = 60;

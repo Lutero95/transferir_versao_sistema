@@ -479,7 +479,7 @@
                     <p:commandButton value="Adicionar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
                                      update=":formInsercao2:dtAdicionados, :msgPagina"
-                                     id="b2" icon="glyphicon-ok"
+                                     id="b2" icon="ui-icon-check"
                                      action="#{AlteracaoPacienteController.validarAdicionarFuncionario()}"/>
                 </div>
             </h:form>
@@ -549,7 +549,7 @@
                     <p:commandButton value="Fechar" class="btn-fechar"
                                      look="info" ajax="true"
                                      action="#{GerenciarPacienteController.redirectGerenciamento}"
-                                     icon="glyphicon-remove"/>
+                                     icon="ui-icon-close"/>
                 </div>
 
             </h:form>
@@ -603,7 +603,7 @@
                         <p:commandButton value="Adicionar" style="margin-top:5px;"
                                          class="btn-acao-table acao-confirmar"
                                          update="formDiasAtendimento"
-                                         id="btnAdicionarFuncionarioHorarioDia" icon="glyphicon-ok"
+                                         id="btnAdicionarFuncionarioHorarioDia" icon="ui-icon-check"
                                          action="#{AlteracaoPacienteController.adicionarFuncionarioDiaHorario()}"/>
                     </div>
                 </div>
@@ -658,7 +658,7 @@
                     <p:commandButton value="Salvar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
                                      update=":formInsercao2:dtAdicionados, :msgPagina"
-                                     id="b2" icon="glyphicon-ok" immediate="true"
+                                     id="b2" icon="ui-icon-check" immediate="true"
                                      action="#{AlteracaoPacienteController.verificarAdicionarFuncionarioHorarioDia()}"/>
                 </div>
             </h:form>

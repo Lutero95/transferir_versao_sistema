@@ -72,7 +72,7 @@
 								class="fire-label" />
 
 							<p:calendar value="#{PtsController.pts.data}" id="dtagen"
-								disabled="#{PtsController.existePts and PtsController.liberacaoAlterarDataPts == false}" locale="pt"
+								disabled="#{PtsController.existePts==true and PtsController.liberacaoAlterarDataPts == false}" locale="pt"
 								navigator="true" mask="true" required="true"
 								requiredMessage="Data do PTS: Campo obrigatório!"
 								class="select-agendaEquipe2" showOn="button"
@@ -80,7 +80,9 @@
 							</p:calendar>
 
 							<p:commandButton icon="ui-icon-calendar" style="margin-top: 10px;margin-left: 10px"
-											 value="Liberação Alterar Data" immediate="true"
+											 value="Permitir Alterar Data" immediate="true"
+											 rendered="#{(PtsController.existePts==true)}" 
+											 disabled="#{(PtsController.existePts==false)}" 
 											 class="btn-acao-table acao-confirmar"
 											 update=":frmSenhaLiberacaoPts"
 											 actionListener="#{PtsController.abrirDialogLiberacaoPts()}" />
@@ -260,7 +262,7 @@
 							icon="ui-icon-check" update=":msgPagina, formPts"
 							class="btn-incluir" action="#{PtsController.gravarPts()}" />
 
-						<p:commandButton value="Alterar" look="success" size="sm" id="b2"
+						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
 										 rendered="#{PtsController.existePts}"
 										 icon="ui-icon-check" update=":msgPagina, formPts"
 										 class="btn-incluir" action="#{PtsController.gravarAlteracaoPts()}" />
@@ -447,7 +449,7 @@
 				<div align="center">
 					<p:commandButton value="Fechar" class="btn-fechar" look="info"
 						ajax="true" action="#{PtsController.redirectGerPts}"
-						icon="glyphicon-remove" />
+						icon="ui-icon-close" />
 				</div>
 
 			</h:form>

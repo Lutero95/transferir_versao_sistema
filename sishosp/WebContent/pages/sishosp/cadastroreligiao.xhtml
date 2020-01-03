@@ -44,12 +44,12 @@
 				<div align="center">
 
 					<p:commandButton action="#{ReligiaoController.gravarReligiao()}"
-						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{ReligiaoController.tipo == 1}" />
 
 					<p:commandButton action="#{ReligiaoController.alterarReligiao()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+						icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{ReligiaoController.tipo  == 2}" />
 

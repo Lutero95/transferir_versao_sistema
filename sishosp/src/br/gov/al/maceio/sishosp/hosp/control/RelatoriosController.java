@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -437,6 +438,33 @@ public class RelatoriosController implements Serializable {
         this.executeReport(relatorio, map, "relatorio.pdf");
 // limparDados();
     }
+    
+    public void gerarMapaLaudo() throws IOException, ParseException, ProjetoException {
+    	/*
+        if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "As datas devem possuir o mesmo mÃªs.",
+                    "Datas InvÃ¡lidas!");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        */
+        final Boolean INICIO_MES = true;
+        final Boolean FIM_MES = false;
+
+        dataInicial = DataUtil.adicionarMesIhAnoEmDate(mes, ano, INICIO_MES);
+        dataFinal = DataUtil.adicionarMesIhAnoEmDate(mes, ano, FIM_MES);
+        
+        
+        String caminho = "/WEB-INF/relatorios/";
+        String relatorio = "";
+        Map<String, Object> map = new HashMap<String, Object>();
+            relatorio = caminho + "mapalaudo.jasper";
+            map.put("dt_inicial", this.dataInicial);
+            map.put("dt_final", this.dataFinal);
+            map.put("codunidade", user_session.getUnidade().getId());
+        this.executeReport(relatorio, map, "mapalaudo.pdf");
+// limparDados();
+    }    
 
     public void gerarFinanceiroOrteseProtese() throws IOException, ParseException, ProjetoException {
 

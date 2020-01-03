@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{RelatoriosController.preparaRelFrequencia()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<br />
+		<br />
+
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Frequência</h4>
+			</div>
+			<p:growl id="grw" />
+			<div class="panel-body table-body">
+				<h:form id="frm">
+
+
+					<br />
+
+					<b:row>
+						<b:column span="2"
+							class="label-position new-comple1">
+							<b:label value="Mês" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{RelatoriosController.mes}">
+								<f:selectItem itemLabel="janeiro" itemValue="1" />
+								<f:selectItem itemLabel="fevereiro" itemValue="2" />
+								<f:selectItem itemLabel="março" itemValue="3" />
+								<f:selectItem itemLabel="abril" itemValue="4" />
+								<f:selectItem itemLabel="maio" itemValue="5" />
+								<f:selectItem itemLabel="junho" itemValue="6" />
+								<f:selectItem itemLabel="julho" itemValue="7" />
+								<f:selectItem itemLabel="agosto" itemValue="8" />
+								<f:selectItem itemLabel="setembro" itemValue="9" />
+								<f:selectItem itemLabel="outubro" itemValue="10" />
+								<f:selectItem itemLabel="novembro" itemValue="11" />
+								<f:selectItem itemLabel="dezembro" itemValue="12" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="1"
+							class="label-position  new-comple1">
+							<b:label value="Ano" severity="info"								 />
+
+							<b:inputText value="#{RelatoriosController.ano}"
+								class="select-agendaEquipe2" required="true"
+								maxlength="4" 
+								requiredMessage="Ano: Campo obrigatório!"
+								/>
+								
+						</b:column>
+
+					</b:row>
+
+					
+					<br />
+
+					<p:commandButton icon="ui-icon-print" value="Gerar"
+						target="_blank" style="font-size: 12px;  text-align: right;"
+						update="grw"
+						actionListener="#{RelatoriosController.gerarMapaLaudo}"
+						ajax="false" />
+
+
+				</h:form>
+			</div>
+		</div>
+
+	
+	</ui:define>
+
+</ui:composition>
+</html>

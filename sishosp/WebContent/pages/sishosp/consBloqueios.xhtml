@@ -135,12 +135,12 @@
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{BloqueioController.excluirBloqueio()}"
-						icon="glyphicon-ok" ajax="true" class="btn-sim"
+						icon="ui-icon-check" ajax="true" class="btn-sim"
 						update=":formConsulBloqueio:msgPagina, :formConsulBloqueio:outBloq">
 					</p:commandButton>
 					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+						icon="ui-icon-close" style="margin-left:5px;float:right;" />
 
 				</div>
 			</h:form>

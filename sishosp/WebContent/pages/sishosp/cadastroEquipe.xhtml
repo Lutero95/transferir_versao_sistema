@@ -106,12 +106,12 @@
 
                     <div align="center">
                         <p:commandButton action="#{EquipeController.gravarEquipe()}"
-                                         icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
+                                         icon="ui-icon-check" size="sm" look="success" update=":frmPrincipal msgPagina"
                                          value="Incluir" class="btn-incluir"
                                          rendered="#{EquipeController.tipo == 1}"/>
 
                         <p:commandButton action="#{EquipeController.alterarEquipe()}"
-                                         icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
+                                         icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
                                          look="success" class="btn-incluir"
                                          rendered="#{EquipeController.tipo  == 2}"/>
 

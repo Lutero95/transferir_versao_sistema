@@ -50,12 +50,12 @@
 					<br></br>
 
 					<p:commandButton action="#{CidController.gravarCid()}"
-						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir"
 						rendered="#{CidController.tipo == 1}" />
 
 					<p:commandButton action="#{CidController.alterarCid()}"
-						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{CidController.tipo  == 2}" />
 

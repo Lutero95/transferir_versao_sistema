@@ -645,15 +645,15 @@ public class PtsDAO {
                 "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) " +
                 "LEFT JOIN hosp.pts p ON " +
-                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente =coalesce(laudo.codpaciente, pi.id_paciente)) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' " +
+                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente =coalesce(laudo.codpaciente, pi.id_paciente)) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' and coalesce(p.status, '')<> 'D' " +
                 " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " +
                 " (select max(id) from hosp.pts p3 " +
                 " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " +
-                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I' ) ) ptsmax on " +
+                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I'  ) ) ptsmax on " +
                 " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " +
                 "WHERE pi.status = 'A'  AND pi.codgrupo = ? AND pi.codprograma = ? and (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
         if (filtroApenasPacientesSemPTS)
-            sql = sql + " and not exists (select id from hosp.pts where pts.status='A' and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
+            sql = sql + " and not exists (select id from hosp.pts where ((pts.status='A') or (pts.status='R')) and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
 
 
         if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
@@ -669,7 +669,7 @@ public class PtsDAO {
         }
 
 
-        if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
+        if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VIGENTES.getSigla())) {
             sql = sql + " AND p.data_vencimento >= current_date";
         }
 

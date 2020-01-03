@@ -119,12 +119,12 @@
                     <div align="center">
 
                         <p:commandButton action="#{ProgramaController.gravarPrograma()}"
-                                         icon="glyphicon-ok" size="sm" look="success"
+                                         icon="ui-icon-check" size="sm" look="success"
                                          update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
                                          rendered="#{ProgramaController.tipo == 1}"/>
 
                         <p:commandButton action="#{ProgramaController.alterarPrograma()}"
-                                         icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+                                         icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
                                          class="btn-incluir" value="Alterar" look="success"
                                          rendered="#{ProgramaController.tipo  == 2}"/>
 

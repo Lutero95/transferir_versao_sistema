@@ -79,12 +79,12 @@
 
 					<div align="center">
 						<p:commandButton action="#{EnderecoController.gravarBairros()}"
-							icon="glyphicon-ok" size="sm" class="btn-incluir"
+							icon="ui-icon-check" size="sm" class="btn-incluir"
 							update=":frmPrincipal" value="Incluir"
 							rendered="#{EnderecoController.tipo == 1}" />
 
 						<p:commandButton action="#{EnderecoController.alterarBairros()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							icon="ui-icon-check" size="sm" update=":frmPrincipal"
 							value="Alterar" class="btn-incluir"
 							rendered="#{EnderecoController.tipo  == 2}" />
 

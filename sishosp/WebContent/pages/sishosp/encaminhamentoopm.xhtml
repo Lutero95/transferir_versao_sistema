@@ -107,14 +107,14 @@
                     <div align="center">
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="glyphicon-ok"
+                                         icon="ui-icon-check"
                                          update="msgPagina"
                                          class="btn-incluir"
                                          rendered="#{OrteseProteseController.renderizarBotaoAlterar == false}"
                                          action="#{OrteseProteseController.gravarEncaminhamentoOrteseIhProtese()}"/>
 
                         <p:commandButton value="Alterar" look="success" size="sm" id="b2"
-                                         icon="glyphicon-ok"
+                                         icon="ui-icon-check"
                                          update="msgPagina"
                                          class="btn-incluir"
                                          rendered="#{OrteseProteseController.renderizarBotaoAlterar == true}"
@@ -180,11 +180,11 @@
                     <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{OrteseProteseController.cancelarEncaminhamentoOrteseIhProtese}"
                                      ajax="true"
-                                     class="btn-sim" icon="glyphicon-ok"/>
+                                     class="btn-sim" icon="ui-icon-check"/>
 
                     <p:commandButton value="Não"
                                      oncomplete="PF('dlgCancelar').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     icon="ui-icon-close" style="margin-left:5px;float:right;"
                                      class="btn-nao"/>
 
                 </div>
@@ -206,7 +206,7 @@
                         <p:commandButton value="Voltar"
                                          action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"
                                          look="info" ajax="true"
-                                         icon="glyphicon-remove"
+                                         icon="ui-icon-close"
                                          class="btn-nao"/>
                     </div>
 

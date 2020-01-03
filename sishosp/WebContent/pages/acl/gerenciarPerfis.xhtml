@@ -364,7 +364,7 @@
 					<div align="center">
 						<p:separator />
 
-						<p:commandButton value="Não" icon="glyphicon-remove"
+						<p:commandButton value="Não" icon="ui-icon-close"
 						style="margin-left:5px;float:right;" class="btn-nao"
 						onclick="PF('dlgMenuPreview').hide();"
 							process="@this" />
@@ -385,11 +385,11 @@
 				<div align="center">
 
 					<p:separator />
-					<p:commandButton value="Sim" icon="glyphicon-ok" class="btn-sim"
+					<p:commandButton value="Sim" icon="ui-icon-check" class="btn-sim"
 						style="float:left;" actionListener="#{perfilMB.excluirPerfil()}"
 						update=":form:tabela, :form:growl" />
 
-					<p:commandButton value="Não" icon="glyphicon-remove"
+					<p:commandButton value="Não" icon="ui-icon-close"
 						style="margin-left:5px;float:right;" class="btn-nao"
 						onclick="PF('dlgExcPerfil').hide();" process="@this" />
 				</div>

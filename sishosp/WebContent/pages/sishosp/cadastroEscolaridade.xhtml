@@ -45,13 +45,13 @@
 
 						<p:commandButton
 							action="#{EscolaridadeController.gravarEscolaridade()}"
-							icon="glyphicon-ok" size="sm" look="success"
+							icon="ui-icon-check" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo == 1}" />
 
 						<p:commandButton
 							action="#{EscolaridadeController.alterarEscolaridade()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+							icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo  == 2}" />
 

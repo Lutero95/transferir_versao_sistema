@@ -44,13 +44,13 @@
 					<div align="center">
 						<p:commandButton
 							action="#{EspecialidadeController.gravarEspecialidade()}"
-							icon="glyphicon-ok" size="sm" look="success"
+							icon="ui-icon-check" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{EspecialidadeController.tipo == 1}" />
 
 						<p:commandButton
 							action="#{EspecialidadeController.alterarEspecialidade()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+							icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EspecialidadeController.tipo  == 2}" />
 

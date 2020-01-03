@@ -203,7 +203,7 @@
                     <div align="center">
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="glyphicon-ok"
+                                         icon="ui-icon-check"
                                          update="msgPagina"
                                          class="btn-incluir"
                                          action="#{OrteseProteseController.gravarOrteseIhProtese()}"
@@ -214,7 +214,7 @@
                                          action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"/>
 
                         <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
-                                         icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+                                         icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
                                          update="formInsercao" value="Alterar"
                                          rendered="#{OrteseProteseController.tipo  == 2}"/>
 

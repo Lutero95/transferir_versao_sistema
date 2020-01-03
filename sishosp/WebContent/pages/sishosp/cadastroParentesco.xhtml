@@ -47,12 +47,12 @@
 
                 <div align="center">
                     <p:commandButton action="#{ParentescoController.gravarParentesco()}"
-                                     icon="glyphicon-ok" size="sm" look="success"
+                                     icon="ui-icon-check" size="sm" look="success"
                                      update=":frmPrincipal, msgPagina" value="Incluir" class="btn-incluir"
                                      rendered="#{ParentescoController.tipo == 1}"/>
 
                     <p:commandButton action="#{ParentescoController.alterarParentesco()}"
-                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
+                                     icon="ui-icon-check" size="sm" update=":frmPrincipal, msgPagina"
                                      value="Alterar" look="success" class="btn-incluir"
                                      rendered="#{ParentescoController.tipo  == 2}"/>
 

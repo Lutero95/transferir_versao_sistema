@@ -44,12 +44,12 @@
 				<div align="center">
 
 					<p:commandButton action="#{OperadoraController.gravarOperadora()}"
-						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{OperadoraController.tipo == 1}" />
 
 					<p:commandButton action="#{OperadoraController.alterarOperadora()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+						icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{OperadoraController.tipo  == 2}" />
 

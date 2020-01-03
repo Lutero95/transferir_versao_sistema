@@ -47,13 +47,13 @@
 
 						<p:commandButton
 							action="#{EncaminhadoController.gravarEncaminhado()}"
-							icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+							icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
 							update=":frmPrincipal msgPagina" value="Incluir"
 							rendered="#{EncaminhadoController.tipo == 1}" />
 
 						<p:commandButton
 							action="#{EncaminhadoController.alterarEncaminhado()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+							icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EncaminhadoController.tipo  == 2}" />
 

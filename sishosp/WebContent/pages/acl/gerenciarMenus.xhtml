@@ -575,12 +575,12 @@
 
 					<p:separator />
 					<p:panelGrid columns="2" styleClass="semBorda">
-						<p:commandButton value="Sim" icon="glyphicon-ok"
+						<p:commandButton value="Sim" icon="ui-icon-check"
 							class="btn-sim" style="float:left;"
 							action="#{menuMB.excluirMenu()}"
 							update=":form:tabela, :form:growl" />
 
-						<p:commandButton value="Não" icon="glyphicon-remove"
+						<p:commandButton value="Não" icon="ui-icon-close"
 							class="btn-nao" style="margin-left:5px;float:right;"
 							onclick="PF('dlgExcMenu').hide();" process="@this" />
 					</p:panelGrid>

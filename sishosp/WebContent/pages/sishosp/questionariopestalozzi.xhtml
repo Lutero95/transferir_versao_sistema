@@ -1506,7 +1506,7 @@
                     <div align="center">
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="glyphicon-ok"
+                                         icon="ui-icon-check"
                                          update="msgPagina"
                                          class="btn-incluir"
                                          action="#{PestalozziController.gravarQuestionario()}"
@@ -1746,7 +1746,7 @@
                 </b:row>
                 <b:row>
                     <p:commandButton action="#{PestalozziController.adicionarComposicaoFamiliar()}"
-                                     icon="glyphicon-ok" size="sm" class="btn-incluir"
+                                     icon="ui-icon-check" size="sm" class="btn-incluir"
                                      update=":formInsercao:tabComposicaoFamiliar, formAddComposicaoFamiliar"
                                      value="Incluir"/>
                 </b:row>
@@ -1764,7 +1764,7 @@
                 </b:row>
                 <b:row>
                     <p:commandButton action="#{PestalozziController.deletarComposicaoFamiliar()}"
-                                     icon="glyphicon-ok" size="sm" class="btn-excluir"
+                                     icon="ui-icon-check" size="sm" class="btn-excluir"
                                      oncomplete="PF('dlgDelComposicaoFamiliar').hide();"
                                      update=":formInsercao:tabComposicaoFamiliar" value="Excluir"/>
                     <p:commandButton size="sm" class="btn-excluir" onclick="PF('dlgDelComposicaoFamiliar').hide();"

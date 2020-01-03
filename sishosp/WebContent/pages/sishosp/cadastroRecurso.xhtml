@@ -47,12 +47,12 @@
 
 				<div align="center">
 					<p:commandButton action="#{RecursoController.gravarRecurso()}"
-						icon="glyphicon-ok" size="sm" look="success"
+						icon="ui-icon-check" size="sm" look="success"
 						update=":frmPrincipal, msgPagina" value="Incluir" class="btn-incluir"
 						rendered="#{RecursoController.tipo == 1}" />
 
 					<p:commandButton action="#{RecursoController.alterarRecurso()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
+						icon="ui-icon-check" size="sm" update=":frmPrincipal, msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{RecursoController.tipo  == 2}" />
 

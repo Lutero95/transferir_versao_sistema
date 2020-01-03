@@ -94,7 +94,7 @@
 								requiredMessage="Escolha a situação!"
 								value="#{PtsController.filtroTipoVencimento}">
 								<f:selectItem itemLabel="Todos" itemValue="T" />
-								<f:selectItem itemLabel="Vingentes" itemValue="VI" />
+								<f:selectItem itemLabel="Vigentes" itemValue="VI" />
 								<f:selectItem itemLabel="Vencidos" itemValue="VE" />
 							</p:selectOneRadio>
 						</b:column>
@@ -191,15 +191,17 @@
 
 							<b:column span="2" class="new-span2">
 								<p:commandButton value="Novo" style="margin-top:5px;"
-									id="btnInserir" immediate="true"
+									id="btnInserir" immediate="true" 
 									disabled="#{PtsController.renderizarBotaoNovo == false}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
 									action="#{PtsController.redirectInsert}" />
+									
 							</b:column>
 
 							<b:column span="2" class="new-span2">
-								<p:commandButton value="Alterar" style="margin-top:5px;"
+							
+								<p:commandButton  value="Alterar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnAlterar" immediate="true"
 									class="btn-acao-table acao-altera2 btn-new-padding2"
@@ -218,12 +220,12 @@
 							</b:column>
 
 							<b:column span="2" class="new-span2">
-								<p:commandButton value="Desligar" style="margin-top:5px;"
+								<p:commandButton value="Alta" style="margin-top:5px;"
 												 disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 												 id="btnDesligar" immediate="true"
 												 class="btn-acao-table acao-desligar btn-new-padding2"
 												 update=":formGerenPaci, :msgPagina"
-												 icon="ui-icon-close"
+												 icon="ui-icon-power"
 												 action="#{PtsController.abrirDialogDesligarPts()}" />
 							</b:column>
 
@@ -411,12 +413,12 @@
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
 						action="#{PtsController.cancelarPts}" ajax="true" class="btn-sim"
-						icon="glyphicon-ok"
+						icon="ui-icon-check"
 						update=":formGerenPaci, :frmTabela, :msgPagina" />
 
 					<p:commandButton value="Não"
 						oncomplete="PF('dlgCancelarPts').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" class="btn-nao"
+						icon="ui-icon-close" class="btn-nao"
 						style="margin-left:5px;float:right;" />
 				</div>
 
@@ -459,12 +461,12 @@
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
 									 action="#{PtsController.desligarPts}" ajax="true" class="btn-sim"
-									 icon="glyphicon-ok"
+									 icon="ui-icon-check"
 									 update=":formGerenPaci, :frmTabela, :msgPagina" />
 
 					<p:commandButton value="Não"
 									 oncomplete="PF('dlgDesligarPts').hide();" look="info" ajax="true"
-									 icon="glyphicon-remove" class="btn-nao"
+									 icon="ui-icon-close" class="btn-nao"
 									 style="margin-left:5px;float:right;" />
 				</div>
 

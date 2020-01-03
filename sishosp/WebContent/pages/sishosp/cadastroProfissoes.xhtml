@@ -47,13 +47,13 @@
 					<div align="center">
 
 						<p:commandButton action="#{ProfissaoController.gravarProfissao()}"
-							icon="glyphicon-ok" size="sm" look="success"
+							icon="ui-icon-check" size="sm" look="success"
 							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{ProfissaoController.tipo == 1}" />
 
 						<p:commandButton
 							action="#{ProfissaoController.alterarProfissao()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+							icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" class="btn-incluir" look="success"
 							rendered="#{ProfissaoController.tipo  == 2}" />
 

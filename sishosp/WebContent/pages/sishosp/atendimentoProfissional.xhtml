@@ -154,7 +154,7 @@
 
                         <p:commandButton
                                 action="#{AtendimentoController.realizarAtendimentoProfissional()}"
-                                icon="glyphicon-ok" size="sm" look="success" value="Gravar"
+                                icon="ui-icon-check" size="sm" look="success" value="Gravar"
                                 update="msgPagina" class="btn-incluir" style="float:left"/>
 
                         <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -187,11 +187,11 @@
 
                     <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{AtendimentoController.limparAtendimentoProfissional()}"
-                                     ajax="true" icon="glyphicon-ok" update=":formConsAge:msgPagina"/>
+                                     ajax="true" icon="ui-icon-check" update=":formConsAge:msgPagina"/>
 
                     <p:commandButton value="Não"
                                      oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+                                     icon="ui-icon-close" style="margin-left:5px;float:right;"/>
 
                 </div>
 

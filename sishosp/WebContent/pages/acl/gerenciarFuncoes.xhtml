@@ -273,11 +273,11 @@
 
 					<p:separator />
 					<p:panelGrid columns="2" styleClass="semBorda">
-						<p:commandButton value="Sim" icon="glyphicon-ok"
+						<p:commandButton value="Sim" icon="ui-icon-check"
 							style="float:left;" action="#{funcaoMB.excluirFuncao()}"
 							update=":form:tabela, :form:growl" />
 
-						<p:commandButton value="Não" icon="glyphicon-remove"
+						<p:commandButton value="Não" icon="ui-icon-close"
 							style="margin-left:5px;float:right;" onclick="PF('dlgExcFuncao').hide();"
 							process="@this" />
 					</p:panelGrid>
