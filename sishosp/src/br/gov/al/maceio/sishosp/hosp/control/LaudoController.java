@@ -10,15 +10,16 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import org.primefaces.context.RequestContext;
 
 
 @ManagedBean(name = "LaudoController")
@@ -169,7 +170,32 @@ public class LaudoController implements Serializable {
     }
 
     public void listarLaudo(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
+
+        String campoBuscaSeTemPacienteLaudoNaSessao = verificarSeExistePacienteLaudoNaSessao();
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBuscaSeTemPacienteLaudoNaSessao)){
+          campoBusca =  campoBuscaSeTemPacienteLaudoNaSessao;
+          tipoBusca = "paciente";
+       }
+
         listaLaudo = lDao.listaLaudos(situacao, campoBusca, tipoBusca);
+    }
+
+
+    private String verificarSeExistePacienteLaudoNaSessao(){
+        PacienteBean pacienteLaudo = (PacienteBean) SessionUtil.resgatarDaSessao(DadosSessao.PACIENTE_LAUDO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudo)){
+            return pacienteLaudo.getNome();
+        }
+        else{
+            return "";
+        }
+    }
+
+    public void fecharAbaAtual(){
+        PacienteBean pacienteLaudo = (PacienteBean) SessionUtil.resgatarDaSessao(DadosSessao.PACIENTE_LAUDO);
+        if(!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudo)){
+            RequestContext.getCurrentInstance().execute("windows.close()");
+        }
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)

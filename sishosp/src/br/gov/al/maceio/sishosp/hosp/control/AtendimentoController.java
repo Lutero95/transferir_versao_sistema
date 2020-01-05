@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
@@ -239,6 +240,10 @@ public class AtendimentoController implements Serializable {
                 atendimento.setEvolucao(listAtendimentosEquipe.get(i).getEvolucao());
             }
         }
+    }
+
+    public void adicionarPacienteLaudoNaSessao(){
+        SessionUtil.adicionarNaSessao(atendimento.getPaciente(), DadosSessao.PACIENTE_LAUDO);
     }
 
     public void limparAtendimentoProfissional() throws ProjetoException {

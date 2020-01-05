@@ -10,7 +10,7 @@ public class ConexaoBuilder {
         if(propriedades.Conexao.equals(Propriedades.Conexoes.LOCALHOST)){
             conexoes.setUrlBanco("jdbc:postgresql://localhost:5432/"+nomeBanco);
             conexoes.setUsuario("postgres");
-            conexoes.setSenha("engetron");
+            conexoes.setSenha("post");
         }
         else if(propriedades.Conexao.equals(Propriedades.Conexoes.PRODUCAO)){
             conexoes.setUrlBanco("jdbc:postgresql://node39025-env-8766995.nordeste-idc.saveincloud.net:11511/"+nomeBanco);

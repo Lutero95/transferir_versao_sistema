@@ -34,6 +34,11 @@
                                                  icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
                                                  action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
                                                  oncomplete="PF('dlgConsultaPTS').show();"/>
+
+                                <h:commandLink id="linkCriarDocumentoInterno" value="Laudo"
+                                               actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}"
+                                               action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true" target="_blank" />
+
                             </p:row>
                         </div>
                     </p:row>
@@ -47,22 +52,22 @@
                     <p:row>
 
                         <p:column span="5" class="label-position">
-                            <p:outputLabel  value="Paciente" severity="info" style="font-weight:bold !important"/>
+                            <p:outputLabel value="Paciente" severity="info" style="font-weight:bold !important"/>
 
                             <p:outputLabel class="form-control select-agendaEquipe5"
-                                         value="#{AtendimentoController.atendimento.paciente.nome}"
-                                        id="inputname"/>
+                                           value="#{AtendimentoController.atendimento.paciente.nome}"
+                                           id="inputname"/>
                         </p:column>
 
                         <p:column span="5" class="label-position">
                             <p:outputLabel value="Procedimento" severity="info" style="font-weight:bold !important"/>
 
                             <p:outputPanel id="outProcP1">
-                                <p:outputLabel   class="form-control select-agendaEquipe5"
-                                                
-                                                value="#{AtendimentoController.atendimento.procedimento}"
-                                                size="31" converter="conProcedimento" id="descProc1"
-                                              />
+                                <p:outputLabel class="form-control select-agendaEquipe5"
+
+                                               value="#{AtendimentoController.atendimento.procedimento}"
+                                               size="31" converter="conProcedimento" id="descProc1"
+                                />
                             </p:outputPanel>
                         </p:column>
 
@@ -82,7 +87,6 @@
                         </p:column>
 
 
-
                     </p:row>
 
                     <br/>
@@ -90,13 +94,13 @@
                     <p:row>
 
 
-                        <p:column span="12" >
+                        <p:column span="12">
                             <p:outputLabel value="Evolução" severity="info" style="font-weight:bold !important"/>
 
                             <p:textEditor style="height:200px;margin-bottom:30px"
-                                      value="#{AtendimentoController.atendimento.evolucao}"
-                                     required="true"
-                                      requiredMessage="Evolução: Campo obrigatório!">
+                                          value="#{AtendimentoController.atendimento.evolucao}"
+                                          required="true"
+                                          requiredMessage="Evolução: Campo obrigatório!">
 
                             </p:textEditor>
                         </p:column>
@@ -196,7 +200,8 @@
 
         </p:dialog>
 
-        <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px" styleClass="topDialog">
+        <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px"
+                  styleClass="topDialog">
 
             <h:form id="frmPrincipalPts">
                 <p:row>
@@ -212,7 +217,7 @@
                     <p:column span="5" class="label-position data-size">
 
                         <p:outputLabel value="Incapacidades Funcionais:" id="incapacidadesFuncionais"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -226,7 +231,7 @@
                     <p:column span="5" class="label-position data-size">
 
                         <p:outputLabel value="Capacidades Funcionais:" id="capacidadesFuncionais"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -244,7 +249,7 @@
                     <p:column span="5" class="label-position data-size">
 
                         <p:outputLabel value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -258,7 +263,7 @@
                     <p:column span="5" class="label-position data-size">
 
                         <p:outputLabel value="Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -276,7 +281,7 @@
                     <p:column span="4" class="label-position data-size">
 
                         <p:outputLabel value="Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -288,7 +293,7 @@
                     <p:column span="4" class="label-position data-size">
 
                         <p:outputLabel value="Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -300,7 +305,7 @@
                     <p:column span="4" class="label-position data-size">
 
                         <p:outputLabel value="Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
-                                 severity="info" class="fire-label"/>
+                                       severity="info" class="fire-label"/>
 
                         <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
                                          required="true" rows="20" cols="89"
@@ -312,7 +317,6 @@
                 </p:row>
 
                 <br></br>
-
 
 
                 <p:row>
