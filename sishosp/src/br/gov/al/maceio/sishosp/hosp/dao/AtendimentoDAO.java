@@ -416,7 +416,7 @@ public class AtendimentoDAO {
 		return lista;
 	}
 	
-	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo, String buscaEvolucao)
+	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo, String buscaEvolucao, String buscaTurno)
 			throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -424,7 +424,7 @@ public class AtendimentoDAO {
 
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
-				+ " a.codequipe, e.descequipe, a.avaliacao,  "
+				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao,  "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
 
 				+ " case\n" + 
@@ -444,10 +444,13 @@ public class AtendimentoDAO {
 				+ " JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
+				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?"
-				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
+				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+			if (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().equals("S"))
+				sql = sql + " and a.presenca='S'";
+				sql = sql + " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento) and a1.codprofissionalatendimento=?";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
@@ -463,6 +466,10 @@ public class AtendimentoDAO {
 		if (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla())) {
 			sql = sql + " and a1.evolucao IS NULL ";
 		}
+		
+        if (!buscaTurno.equals("A")) {
+            sql = sql + " AND a.turno=? ";
+        }
 
 		if (tipo.equals("nome")) {
 			sql = sql + " and p.nome like ?";
@@ -500,7 +507,12 @@ public class AtendimentoDAO {
             if ((atendimento.getGrupo()!=null) && (atendimento.getGrupo().getIdGrupo()!=null)) {            
             stm.setInt(i, atendimento.getGrupo().getIdGrupo());
             i = i+1;
-            }			
+            }		
+            
+            if (!buscaTurno.equals("A")) {
+                stm.setString(i, buscaTurno);
+                i++;
+            }
             
             if (campoBusca!=null) {
 			if (!campoBusca.equals(null)) {
@@ -527,6 +539,8 @@ public class AtendimentoDAO {
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
 				at.getPrograma().setIdPrograma(rs.getInt("codprograma"));
 				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				at.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				at.setSituacao(rs.getString("situacao"));
 				at.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
 				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
@@ -599,8 +613,10 @@ public class AtendimentoDAO {
 
 		AtendimentoBean at = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, "
-				+ "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma "
-				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
+				+ "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, "
+				+ " a.codgrupo, g.descgrupo from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
+				+ " left join hosp.programa pro on (pro.id_programa = a.codprograma)"
+				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) " + "where a.id_atendimento = ? and a1.codprofissionalatendimento=?";
@@ -623,6 +639,10 @@ public class AtendimentoDAO {
 				at.setEvolucao(rs.getString("evolucao"));
 				at.setAvaliacao(rs.getBoolean("avaliacao"));
 				at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
+				at.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				at.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				at.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
 				at.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
 			}
@@ -694,12 +714,12 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregarEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
 
-		String sql = "SELECT a1.evolucao, a1.dtaatendido, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
 				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ? "
-				+ "ORDER BY a1.dtaatendido DESC ";
+				+ "ORDER BY a.dtaatende DESC ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
@@ -716,7 +736,7 @@ public class AtendimentoDAO {
 				at.getProcedimento().setNomeProc(rs.getString("nome"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
 				at.setEvolucao(rs.getString("evolucao"));
-				at.setDataAtendimentoInicio(rs.getDate("dtaatendido"));
+				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 
 				lista.add(at);
 			}

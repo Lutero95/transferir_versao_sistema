@@ -100,7 +100,7 @@
 
 					<br></br>
 
-					<b:row rendered="#{PtsController.pts.status =='R' or PtsController.pts.status =='D' or PtsController.pts.status =='I' or PtsController.pts.status =='C'}">
+					<b:row>
 
 						<b:column span="5">
 
@@ -168,6 +168,53 @@
 					<br></br>
 
 
+<b:row>
+
+						<b:column span="4">
+
+							<b:label value="Objetivos Gerias (Curto Prazo):"
+								id="objetivosGeraisCurtoPrazo" severity="info"
+								class="fire-label" />
+
+							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+								scrollHeight="100" required="false" rows="20" cols="89"
+								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+								value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
+
+						</b:column>
+
+						<b:column span="4">
+
+							<b:label value="Objetivos Gerais (Médio Prazo):"
+								id="objetivosGeraisMedioPrazo2" severity="info"
+								class="fire-label" />
+
+							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+								scrollHeight="100" required="false" rows="20" cols="89"
+								requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
+								value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
+
+						</b:column>
+
+						<b:column span="4">
+
+							<b:label value="Objetivos Gerais (Longo Prazo):"
+								id="objetivosGeraisLongoPrazo2" severity="info"
+								class="fire-label" />
+
+							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+								scrollHeight="100" required="false" rows="20" cols="89"
+								requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
+								value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
+
+						</b:column>
+
+					</b:row>
+
+					<br></br>
+					
+					
+					<br></br>
 
 					<b:row>
 

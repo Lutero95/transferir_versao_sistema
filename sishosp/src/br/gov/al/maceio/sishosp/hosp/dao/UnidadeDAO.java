@@ -106,8 +106,8 @@ public class UnidadeDAO {
 
             sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
                     "qtd_simultanea_atendimento_equipe, codunidade, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
-                    "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao) " +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -189,7 +189,14 @@ public class UnidadeDAO {
             else{
                 ps.setNull(13, Types.NULL);
             }
-
+            
+            if(unidade.getParametro().getNecessitaPresencaParaEvolucao() != null) {
+                ps.setString(14, unidade.getParametro().getNecessitaPresencaParaEvolucao());
+            }
+            else{
+                ps.setNull(14, Types.NULL);
+            }
+            
             ps.execute();
 
             con.commit();
@@ -326,8 +333,8 @@ public class UnidadeDAO {
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
                     "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
                     "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
-                    "programa_ortese_protese = ?, grupo_ortese_protese = ?, almoco_inicio = ?, almoco_final = ? " +
-                    "WHERE codunidade = ?";
+                    "programa_ortese_protese = ?, grupo_ortese_protese = ?, almoco_inicio = ?, almoco_final = ?,  " +
+                    " necessita_presenca_para_evolucao=? WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -374,7 +381,14 @@ public class UnidadeDAO {
                 ps.setNull(12, Types.NULL);
             }
 
-            ps.setInt(13, unidade.getId());
+            if ((unidade.getParametro().getNecessitaPresencaParaEvolucao() != null) ){
+                ps.setString(13, unidade.getParametro().getNecessitaPresencaParaEvolucao());
+            }
+            else{
+                ps.setNull(13, Types.NULL);
+            }              
+            
+            ps.setInt(14, unidade.getId());
             ps.executeUpdate();
 
             con.commit();
@@ -479,7 +493,7 @@ public class UnidadeDAO {
         ParametroBean parametro = new ParametroBean();
 
         String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final " +
+                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao " +
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -511,7 +525,8 @@ public class UnidadeDAO {
                 }
                 parametro.setAlmocoInicio(rs.getTime("almoco_inicio"));
                 parametro.setAlmocoFinal(rs.getTime("almoco_final"));
-
+                parametro.setNecessitaPresencaParaEvolucao(rs.getString("necessita_presenca_para_evolucao"));
+                
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -331,6 +331,20 @@
 						</b:column>
 
 					</b:row>
+					<b:row>
+					<b:column span="5" class="label-position new-col5">
+							<b:label value="Realizar Evolução SOMENTE mediante Presença" severity="info" />
+
+							<b:selectOneMenu size="10" required="true"
+								requiredMessage="Opção de atendimento: Campo obrigatório!"
+								value="#{UnidadeController.unidade.parametro.necessitaPresencaParaEvolucao}">
+								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+								<f:selectItem itemLabel="Sim" itemValue="S"></f:selectItem>
+								<f:selectItem itemLabel="Não" itemValue="N"></f:selectItem>
+							</b:selectOneMenu>
+
+						</b:column>
+					</b:row>
 
 					<br></br>
 

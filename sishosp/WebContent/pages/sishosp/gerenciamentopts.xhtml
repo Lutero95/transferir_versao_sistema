@@ -131,10 +131,26 @@
 							<b:inputText style="padding:10px;" required="false"
 								value="#{PtsController.filtroMesVencimento}" render-label="true" />
 						</b:column>
-						<b:column>
+						</b:row>
+						<b:row>
+						<b:column span="3">
 							<p:selectBooleanCheckbox
 								value="#{PtsController.filtroApenasPacientesSemPTS}"
 								itemLabel="Apenas Pacientes Sem PTS" />
+						</b:column>
+						
+						<b:column span="2" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
+						<p:outputLabel value="Turno"
+								style="margin-top: 8px;color:#2e84ce;">
+							</p:outputLabel>
+
+								<b:selectOneMenu  style="    margin-top: -20px;    margin-left: 35px;"
+									value="#{PtsController.filtroTurno}">
+									<f:selectItem itemLabel="Ambos" itemValue="A" />
+									<f:selectItem itemLabel="Manhã" itemValue="M" />
+									<f:selectItem itemLabel="Tarde" itemValue="T" />
+									
+								</b:selectOneMenu>
 						</b:column>
 					</b:row>
 
@@ -231,6 +247,7 @@
 
 							<b:column span="2" class="new-span2">
 								<p:commandButton value="Cancelar" style="margin-top:5px;"
+								rendered="false"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnExcluir" immediate="true"
 									class="btn-acao-table acao-desligar btn-new-padding2"

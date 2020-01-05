@@ -184,7 +184,7 @@ public class PtsDAO {
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
                 pts.setCondutaAlta(rs.getString("conduta_alta"));
-                pts.setListaPtsArea(carregarAreasPts(id, conexao));
+                pts.setListaPtsArea(carregarAreasPts(id, conexao, false));
 
             }
 
@@ -201,7 +201,7 @@ public class PtsDAO {
         return pts;
     }
 
-    public List<PtsArea> carregarAreasPts(Integer id, Connection conAuxiliar) {
+    public List<PtsArea> carregarAreasPts(Integer id, Connection conAuxiliar, Boolean carregaApenasAreaUsuarioLogado) {
 
         String sql = "SELECT pa.id, pa.id_area, e.descespecialidade, f.descfuncionario, pa.objetivo_curto, pa.objetivo_medio, pa.objetivo_longo, " +
                 "pa.plano_curto, pa.plano_medio, pa.plano_longo, pa.id_funcionario " +
@@ -209,14 +209,20 @@ public class PtsDAO {
                 "LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) " +
                 " left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario " +
                 " LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
-                "WHERE p.id = ? ";
+        	     " left join acl.funcionarios f2 on f2.id_funcionario = ? " ;
+              
+        sql  = sql + " WHERE p.id = ? ";
+        if (carregaApenasAreaUsuarioLogado)
+        	sql = sql + " and pa.id_area= f2.codespecialidade";
 
         List<PtsArea> lista = new ArrayList<>();
 
         try {
             PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
-            stmt.setInt(1, id);
-
+            
+            //if (carregaApenasAreaUsuarioLogado)
+            	stmt.setLong(1, user_session.getId());
+            stmt.setInt(2, id);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -630,7 +636,7 @@ public class PtsDAO {
     }
 
     public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
-                                              Integer filtroMesVencimento, Integer filtroAnoVencimento, Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca)
+                                              Integer filtroMesVencimento, Integer filtroAnoVencimento, Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca, String filtroTurno)
             throws ProjetoException {
 
         //Inicia com 2, pois é o número mínimo de parametros.
@@ -684,6 +690,10 @@ public class PtsDAO {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
             sql = sql + " AND EXTRACT(year FROM p.data_vencimento) = ? ";
         }
+        
+        if (!filtroTurno.equals("A")) {
+            sql = sql + " AND pi.turno=? ";
+        }
 
         sql = sql + " ORDER BY p.data ";
 
@@ -695,15 +705,7 @@ public class PtsDAO {
             stmt.setInt(1, codGrupo);
             stmt.setInt(2, codPrograma);
             int i = 3;
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
-                stmt.setInt(i, filtroMesVencimento);
-                i++;
-            }
-
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
-                stmt.setInt(i, filtroAnoVencimento);
-                i++;
-            }
+            
 
             if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
                 stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
@@ -719,6 +721,21 @@ public class PtsDAO {
 
             if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
                 stmt.setInt(i, Integer.valueOf(campoBusca));
+                i++;
+            }
+            
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
+                stmt.setInt(i, filtroMesVencimento);
+                i++;
+            }
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
+                stmt.setInt(i, filtroAnoVencimento);
+                i++;
+            }
+            
+            if (!filtroTurno.equals("A")) {
+                stmt.setString(i, filtroTurno);
                 i++;
             }
 
@@ -757,27 +774,75 @@ public class PtsDAO {
         return lista;
     }
 
-    public Pts carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
+    public Pts carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo, Integer codPaciente) throws ProjetoException {
 
 
-        String sql = "SELECT p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
-                "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
-                "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, conduta_alta " +
-                "FROM hosp.pts p " +
-                "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
-                "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
-                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa) " +
-                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
-                "WHERE laudo.codpaciente = ?";
+        String sql = "select\n" + 
+        		"	p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, \n" + 
+        		"p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, \n" + 
+        		"objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, \n" + 
+        		"novas_estrategias_tratamento, conduta_alta\n" + 
+        		"from\n" + 
+        		"	hosp.paciente_instituicao pi\n" + 
+        		"left join hosp.laudo on\n" + 
+        		"	(laudo.id_laudo = pi.codlaudo)\n" + 
+        		"left join hosp.programa pr on\n" + 
+        		"	(pr.id_programa = pi.codprograma)\n" + 
+        		"left join hosp.grupo g on\n" + 
+        		"	(g.id_grupo = pi.codgrupo)\n" + 
+        		"left join hosp.pacientes pa on\n" + 
+        		"	(pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) )\n" + 
+        		"left join hosp.pts p on\n" + 
+        		"	(p.cod_grupo = pi.codgrupo)\n" + 
+        		"	and (p.cod_programa = pi.codprograma)\n" + 
+        		"	and (p.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))\n" + 
+        		"	and coalesce(p.status, '')<> 'C'\n" + 
+        		"	and coalesce(p.status, '')<> 'I'\n" + 
+        		"	and coalesce(p.status, '')<> 'D'\n" + 
+        		"left join (\n" + 
+        		"	select\n" + 
+        		"		p2.id,\n" + 
+        		"		p2.cod_grupo,\n" + 
+        		"		p2.cod_programa,\n" + 
+        		"		p2.cod_paciente\n" + 
+        		"	from\n" + 
+        		"		hosp.pts p2\n" + 
+        		"	where\n" + 
+        		"		p2.id = (\n" + 
+        		"		select\n" + 
+        		"			max(id)\n" + 
+        		"		from\n" + 
+        		"			hosp.pts p3\n" + 
+        		"		where\n" + 
+        		"			(p3.cod_grupo = p2.cod_grupo)\n" + 
+        		"			and (p3.cod_programa = p2.cod_programa)\n" + 
+        		"			and (p3.cod_paciente = p2.cod_paciente)\n" + 
+        		"			and coalesce(p3.status, '')<> 'C'\n" + 
+        		"			and coalesce(p3.status, '')<> 'I' ) ) ptsmax on\n" + 
+        		"	ptsmax.cod_grupo = p.cod_grupo\n" + 
+        		"	and ptsmax.cod_programa = p.cod_programa\n" + 
+        		"	and ptsmax.cod_paciente = p.cod_paciente\n" + 
+        		"where\n" + 
+        		"	pi.status = 'A'\n" + 
+        		"	and pi.codgrupo = ?\n" + 
+        		"	and pi.codprograma = ?\n" + 
+        		"	and pa.id_paciente = ?\n" + 
+        		"	and\n" + 
+        		"	(case\n" + 
+        		"		when p.id is not null then p.id = ptsmax.id\n" + 
+        		"		else 1 = 1\n" + 
+        		"	end)\n" + 
+        		"order by\n" + 
+        		"	p.data";
 
         Pts pts = new Pts();
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, codPaciente);
+            stm.setInt(1, codGrupo);
+            stm.setInt(2, codPrograma);
+            stm.setInt(3, codPaciente);
 
             ResultSet rs = stm.executeQuery();
 
@@ -802,7 +867,7 @@ public class PtsDAO {
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
                 pts.setCondutaAlta(rs.getString("conduta_alta"));
-                pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao));
+                pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao, true));
 
             }
 

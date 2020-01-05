@@ -50,6 +50,7 @@ public class AtendimentoController implements Serializable {
     private List<GrupoBean> listaGrupos;
 	private String tipoBusca;
 	private String buscaEvolucao;
+	private String buscaTurno;
 	private String campoBusca;
 	private String opcaoAtendimento;
 
@@ -82,6 +83,7 @@ public class AtendimentoController implements Serializable {
         renderizarDialogLaudo = false;
         listaGrupos = new ArrayList<>();
         buscaEvolucao = "T";
+        buscaTurno = "A";
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -264,7 +266,7 @@ public class AtendimentoController implements Serializable {
     
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao);
+                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
@@ -434,8 +436,8 @@ public class AtendimentoController implements Serializable {
         listaEvolucoes = aDao.carregarEvolucoesDoPaciente(codPaciente);
     }
 
-    public void carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
-        pts = new PtsController().carregarPtsPaciente(codPaciente);
+    public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {
+        pts = new PtsController().carregarPtsPaciente(codPrograma, codGrupo, codPaciente);
     }
 
     public void listarLaudosVigentesPaciente()
@@ -609,4 +611,12 @@ public class AtendimentoController implements Serializable {
     public void setBuscaEvolucao(String buscaEvolucao) {
         this.buscaEvolucao = buscaEvolucao;
     }
+
+	public String getBuscaTurno() {
+		return buscaTurno;
+	}
+
+	public void setBuscaTurno(String buscaTurno) {
+		this.buscaTurno = buscaTurno;
+	}
 }
