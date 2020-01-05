@@ -47,23 +47,21 @@
 					<b:row>
 						<p:outputPanel class="data-size5">
 
-							<b:column span="2" class="label-position data-size1">
+							<b:column span="1" class="label-position data-size1">
 								<b:label value="Período de Atendimento:" severity="info" />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15" class="select-agendaEquipe2"
+									showOn="button" size="6" class="select-agendaEquipe2"
 									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
-							</b:column>
-
-							<b:column span="1" class="data-size4">
-								<p:outputLabel id="outdataa">
+									<p:outputLabel id="outdataa">
 									<h:outputLabel value="à" style="margin-left: 20px" />
 								</p:outputLabel>
 							</b:column>
 
-							<b:column span="2" class="label-position data-size3">
+							
+							<b:column span="2">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									class="select-agendaEquipe2" showOn="button" size="15"
+									class="select-agendaEquipe2" showOn="button" size="6"
 									id="dtagen3" locale="pt"
 									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
 							</b:column>
@@ -119,13 +117,23 @@
 								</p:outputPanel>
 							</b:column>
 
-							<b:column span="3" class="col-row-tabel">
+							<b:column span="1" class="label-position data-size1">
 							<b:label value="Situação Evolução" severity="info" />
-								<b:selectOneMenu size="10"
+								<b:selectOneMenu size="10" class="select-agendaEquipe2"
 												 value="#{AtendimentoController.buscaEvolucao}">
 									<f:selectItem itemLabel="Todos" itemValue="T" />
 									<f:selectItem itemLabel="Evolução Realizada" itemValue="CE" />
 									<f:selectItem itemLabel="Evolução não Realizada" itemValue="SE" />
+								</b:selectOneMenu>
+							</b:column>
+							
+							<b:column span="1" class="label-position data-size1" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
+							<b:label value="Turno" severity="info" />
+								<b:selectOneMenu size="10" class="select-agendaEquipe2"
+												 value="#{AtendimentoController.buscaTurno}">
+									<f:selectItem itemLabel="Ambos" itemValue="A" />
+									<f:selectItem itemLabel="Manhã" itemValue="M" />
+									<f:selectItem itemLabel="Tarde" itemValue="T" />
 								</b:selectOneMenu>
 							</b:column>
 

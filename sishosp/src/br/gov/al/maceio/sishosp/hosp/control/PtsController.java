@@ -34,6 +34,7 @@ public class PtsController implements Serializable {
     private List<GrupoBean> listaGrupos;
     private Boolean existePts;
     private String filtroTipoVencimento;
+    private String filtroTurno;
     private Integer filtroMesVencimento;
     private Boolean filtroApenasPacientesSemPTS;
     private Integer filtroAnoVencimento;
@@ -63,6 +64,7 @@ public class PtsController implements Serializable {
         renderizarBotaoNovo = false;
         usuarioLiberacao = new FuncionarioBean();
         liberacaoAlterarDataPts = false;
+        filtroTurno = "A";
     }
 
     public void carregarPts() throws ProjetoException {
@@ -143,7 +145,7 @@ public class PtsController implements Serializable {
 
     public void buscarPtsPacientesAtivos() throws ProjetoException {
         SessionUtil.adicionarBuscaPtsNaSessao(pts.getPrograma(), pts.getGrupo(), null, null, TelasBuscaSessao.PTS.getSigla());
-        listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,filtroApenasPacientesSemPTS, campoBusca, tipoBusca);
+        listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,filtroApenasPacientesSemPTS, campoBusca, tipoBusca, filtroTurno);
     }
 
     public void limparBusca() {
@@ -426,8 +428,8 @@ public class PtsController implements Serializable {
         JSFUtil.abrirDialog("dlgSenhaAreaPts");
     }
 
-    public Pts carregarPtsPaciente(Integer codPaciente) throws ProjetoException {
-        return pDao.carregarPtsDoPaciente(codPaciente);
+    public Pts carregarPtsPaciente(Integer codPrograma, Integer codGrupo, Integer codPaciente) throws ProjetoException {
+        return pDao.carregarPtsDoPaciente(codPrograma, codGrupo, codPaciente);
     }
 
     public void verificarSeExistePtsParaProgramaGrupoPaciente() throws ProjetoException {
@@ -577,4 +579,12 @@ public class PtsController implements Serializable {
     public void setLiberacaoAlterarDataPts(Boolean liberacaoAlterarDataPts) {
         this.liberacaoAlterarDataPts = liberacaoAlterarDataPts;
     }
+
+	public String getFiltroTurno() {
+		return filtroTurno;
+	}
+
+	public void setFiltroTurno(String filtroTurno) {
+		this.filtroTurno = filtroTurno;
+	}
 }

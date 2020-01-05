@@ -16,6 +16,7 @@ public class ParametroBean implements Serializable {
     private Integer intervalo;
     private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
+    private String necessitaPresencaParaEvolucao;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -109,4 +110,12 @@ public class ParametroBean implements Serializable {
     public void setAlmocoFinal(Date almocoFinal) {
         this.almocoFinal = almocoFinal;
     }
+
+	public String getNecessitaPresencaParaEvolucao() {
+		return necessitaPresencaParaEvolucao;
+	}
+
+	public void setNecessitaPresencaParaEvolucao(String necessitaPresencaParaEvolucao) {
+		this.necessitaPresencaParaEvolucao = necessitaPresencaParaEvolucao;
+	}
 }
