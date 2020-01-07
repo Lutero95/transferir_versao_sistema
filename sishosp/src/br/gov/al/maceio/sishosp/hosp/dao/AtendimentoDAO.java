@@ -448,8 +448,9 @@ public class AtendimentoDAO {
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
 				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
-			if (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().equals("S"))
+/*			if (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().equals("S"))
 				sql = sql + " and a.presenca='S'";
+				*/
 				sql = sql + " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento) and a1.codprofissionalatendimento=?";
 

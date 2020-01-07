@@ -7,7 +7,8 @@
 	template="../../template/template.xhtml">
 
 	<f:metadata>
-		<f:viewAction action="#{AtendimentoController.carregarGerenciamentoAtendimentoProfissionalNaEquipe()}" />
+		<f:viewAction
+			action="#{AtendimentoController.carregarGerenciamentoAtendimentoProfissionalNaEquipe()}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -30,8 +31,7 @@
 								value="#{AtendimentoController.atendimento.unidade.id}">
 								<f:selectItems
 									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
-									var="und" itemLabel="#{und.nomeUnidade}"
-									itemValue="#{und.id}" />
+									var="und" itemLabel="#{und.nomeUnidade}" itemValue="#{und.id}" />
 								<p:ajax event="change" process="@this" />
 							</b:selectOneMenu>
 
@@ -53,12 +53,12 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="6" class="select-agendaEquipe2"
 									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
-									<p:outputLabel id="outdataa">
+								<p:outputLabel id="outdataa">
 									<h:outputLabel value="à" style="margin-left: 20px" />
 								</p:outputLabel>
 							</b:column>
 
-							
+
 							<b:column span="2">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									class="select-agendaEquipe2" showOn="button" size="6"
@@ -118,19 +118,20 @@
 							</b:column>
 
 							<b:column span="1" class="label-position data-size1">
-							<b:label value="Situação Evolução" severity="info" />
+								<b:label value="Situação Evolução" severity="info" />
 								<b:selectOneMenu size="10" class="select-agendaEquipe2"
-												 value="#{AtendimentoController.buscaEvolucao}">
+									value="#{AtendimentoController.buscaEvolucao}">
 									<f:selectItem itemLabel="Todos" itemValue="T" />
 									<f:selectItem itemLabel="Evolução Realizada" itemValue="CE" />
 									<f:selectItem itemLabel="Evolução não Realizada" itemValue="SE" />
 								</b:selectOneMenu>
 							</b:column>
-							
-							<b:column span="1" class="label-position data-size1" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
-							<b:label value="Turno" severity="info" />
+
+							<b:column span="1" class="label-position data-size1"
+								rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
+								<b:label value="Turno" severity="info" />
 								<b:selectOneMenu size="10" class="select-agendaEquipe2"
-												 value="#{AtendimentoController.buscaTurno}">
+									value="#{AtendimentoController.buscaTurno}">
 									<f:selectItem itemLabel="Ambos" itemValue="A" />
 									<f:selectItem itemLabel="Manhã" itemValue="M" />
 									<f:selectItem itemLabel="Tarde" itemValue="T" />
@@ -145,7 +146,7 @@
 					<b:row class="row-table">
 
 
-					
+
 						<b:column span="2" class="col-row-tabel">
 							<b:selectOneMenu size="10"
 								value="#{AtendimentoController.tipoBusca}">
@@ -210,7 +211,8 @@
 							<p:outputLabel value="#{atendimento.paciente.cns}" />
 						</p:column>
 
-						<p:column rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
+						<p:column
+							rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
 							<f:facet name="header">
                         Turno
                     </f:facet>
@@ -248,12 +250,14 @@
 							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
 						</p:column>
 
-						
+
 						<p:column>
 							<f:facet name="header">
                         Sit. Evolução
                     </f:facet>
+
 							<p:outputLabel value="#{atendimento.situacao}" />
+							
 						</p:column>
 
 						<p:column>
@@ -261,11 +265,23 @@
                         Atendimento
                     </f:facet>
 							<div align="center">
-								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-pencil-square-o"
-									size="sm" class="btn-acao-table acao-editar"
+								<p:commandButton tooltip="Atendimento"
+									icon="fa fa-fw fa-pencil-square-o" size="sm"
+									class="btn-acao-table acao-editar" id="btnatendimento"
+									rendered="#{atendimento.presenca=='S'}"
 									action="#{AtendimentoController.redirectAtendimentoProfissional()}">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
+
+								</p:commandButton>
+
+								<p:commandButton tooltip="Atendimento"
+									icon="fa fa-fw fa-pencil-square-o" size="sm"
+									class="btn-acao-table acao-editar" id="btnatendimento2"
+									rendered="#{atendimento.presenca=='N'}"
+								>
+									<p:tooltip  for="btnatendimento2"
+										value="Não é possível evoluir este paciente pois não foi informada presença!" position="top" />
 								</p:commandButton>
 							</div>
 						</p:column>
@@ -279,8 +295,8 @@
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			draggable="false" resizable="false" closable="true" modal="true"
-			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
-			responsive="true">
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true">
 			<h:form id="formConsuProg">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
@@ -313,9 +329,9 @@
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			draggable="false" resizable="false" closable="true" modal="true"
-			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
-			responsive="true">
-			
+			styleClass="sm-size-dlg topDialog2" showEffect="fade"
+			hideEffect="clip" responsive="true">
+
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{AtendimentoController.listaGrupos}" id="dtGrupo"

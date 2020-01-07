@@ -170,7 +170,7 @@
 
 <b:row>
 
-						<b:column span="4">
+						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisCurtoPrazo==true}">
 
 							<b:label value="Objetivos Gerias (Curto Prazo):"
 								id="objetivosGeraisCurtoPrazo" severity="info"
@@ -183,7 +183,7 @@
 
 						</b:column>
 
-						<b:column span="4">
+						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisMedioPrazo==true}">
 
 							<b:label value="Objetivos Gerais (Médio Prazo):"
 								id="objetivosGeraisMedioPrazo2" severity="info"
@@ -196,7 +196,7 @@
 
 						</b:column>
 
-						<b:column span="4">
+						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisLongoPrazo==true}">
 
 							<b:label value="Objetivos Gerais (Longo Prazo):"
 								id="objetivosGeraisLongoPrazo2" severity="info"
