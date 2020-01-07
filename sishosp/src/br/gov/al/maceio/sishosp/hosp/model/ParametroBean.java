@@ -17,6 +17,7 @@ public class ParametroBean implements Serializable {
     private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
     private String necessitaPresencaParaEvolucao;
+    private boolean ptsMostrarObjGeraisCurtoPrazo, ptsMostrarObjGeraisMedioPrazo, ptsMostrarObjGeraisLongoPrazo;	
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -118,4 +119,30 @@ public class ParametroBean implements Serializable {
 	public void setNecessitaPresencaParaEvolucao(String necessitaPresencaParaEvolucao) {
 		this.necessitaPresencaParaEvolucao = necessitaPresencaParaEvolucao;
 	}
+
+	public boolean isPtsMostrarObjGeraisCurtoPrazo() {
+		return ptsMostrarObjGeraisCurtoPrazo;
+	}
+
+	public boolean isPtsMostrarObjGeraisMedioPrazo() {
+		return ptsMostrarObjGeraisMedioPrazo;
+	}
+
+	public boolean isPtsMostrarObjGeraisLongoPrazo() {
+		return ptsMostrarObjGeraisLongoPrazo;
+	}
+
+	public void setPtsMostrarObjGeraisCurtoPrazo(boolean ptsMostrarObjGeraisCurtoPrazo) {
+		this.ptsMostrarObjGeraisCurtoPrazo = ptsMostrarObjGeraisCurtoPrazo;
+	}
+
+	public void setPtsMostrarObjGeraisMedioPrazo(boolean ptsMostrarObjGeraisMedioPrazo) {
+		this.ptsMostrarObjGeraisMedioPrazo = ptsMostrarObjGeraisMedioPrazo;
+	}
+
+	public void setPtsMostrarObjGeraisLongoPrazo(boolean ptsMostrarObjGeraisLongoPrazo) {
+		this.ptsMostrarObjGeraisLongoPrazo = ptsMostrarObjGeraisLongoPrazo;
+	}
+
+	
 }

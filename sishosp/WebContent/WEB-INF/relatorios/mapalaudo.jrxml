@@ -344,7 +344,8 @@ NASCIMENTO]]></text>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<rectangle>
 				<reportElement x="770" y="0" width="33" height="15" uuid="f1bcc90b-6dfa-4fd5-93a0-3f49e548eca5"/>
 			</rectangle>
