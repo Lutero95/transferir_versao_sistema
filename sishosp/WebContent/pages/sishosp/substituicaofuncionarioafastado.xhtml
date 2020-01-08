@@ -90,7 +90,7 @@
                             <p:outputPanel id="outProg">
                                 <p:autoComplete
                                         value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa}"
-                                        size="31" converter="conPrograma" required="true"
+                                        size="31" converter="conPrograma" required="false"
                                         class="select-agendaEquipe4" id="programa"
                                         requiredMessage="Programa: Campo obrigatório!"
                                         completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -117,7 +117,7 @@
                             <p:outputPanel id="outGrupo">
                                 <p:autoComplete
                                         value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.grupo}"
-                                        size="31" converter="conGrupo" required="true"
+                                        size="31" converter="conGrupo" required="false"
                                         requiredMessage="Grupo: Campo obrigatório!"
                                         class="select-agendaEquipe4" id="grupo"
                                         disabled="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.programa.idPrograma == null}"
