@@ -193,7 +193,7 @@ public class AgendaController implements Serializable {
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())
                 || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
-            //gerarHorariosAtendimento();
+            gerarHorariosAtendimento();
         }
 
     }
