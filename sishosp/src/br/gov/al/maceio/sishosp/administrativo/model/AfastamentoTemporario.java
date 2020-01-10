@@ -15,6 +15,7 @@ public class AfastamentoTemporario implements Serializable {
     private String tipoAfastamento;
     private Date periodoInicio;
     private Date periodoFinal;
+    private String turno;
 
     public AfastamentoTemporario() {
         funcionario = new FuncionarioBean();
@@ -76,4 +77,12 @@ public class AfastamentoTemporario implements Serializable {
     public void setMotivoAfastamentoPorExtenso(String motivoAfastamentoPorExtenso) {
         this.motivoAfastamentoPorExtenso = motivoAfastamentoPorExtenso;
     }
+
+	public String getTurno() {
+		return turno;
+	}
+
+	public void setTurno(String turno) {
+		this.turno = turno;
+	}
 }

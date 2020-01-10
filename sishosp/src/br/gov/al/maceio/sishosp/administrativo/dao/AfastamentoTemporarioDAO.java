@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class AfastamentoTemporarioDAO {
         Boolean retorno = false;
 
         String sql = "insert into adm.afastamento_funcionario (tipo_afastamento, id_funcionario_afastado, inicio_afastamento, fim_afastamento, motivo_afastamento, " +
-                "operador_cadastro, data_hora_cadastro) " +
-                "values (?,?,?,?,?,?,CURRENT_TIMESTAMP );";
+                "operador_cadastro, data_hora_cadastro, turno) " +
+                "values (?,?,?,?,?,?,CURRENT_TIMESTAMP, ? );";
         try {
 
             FuncionarioBean user_session = (FuncionarioBean) FacesContext
@@ -39,6 +40,11 @@ public class AfastamentoTemporarioDAO {
             ps.setDate(4, DataUtil.converterDateUtilParaDateSql(afastamentoTemporario.getPeriodoFinal()));
             ps.setString(5, afastamentoTemporario.getMotivoAfastamento());
             ps.setLong(6, user_session.getId());
+			if (afastamentoTemporario.getTurno() != null) {
+				ps.setString(7, afastamentoTemporario.getTurno());
+			} else {
+				ps.setNull(7, Types.NULL);
+			}
 
             ps.execute();
             con.commit();
@@ -64,7 +70,7 @@ public class AfastamentoTemporarioDAO {
         String sql = "SELECT a.id, a.tipo_afastamento, a.id_funcionario_afastado, f.descfuncionario, " +
                 "a.inicio_afastamento, a.fim_afastamento, a.motivo_afastamento," +
                 "CASE WHEN a.motivo_afastamento = 'FE' THEN 'Férias' " +
-                "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' END AS motivo_afastamento_extenso " +
+                "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' WHEN a.motivo_afastamento = 'FA' THEN 'Falta' END AS motivo_afastamento_extenso " +
                 "FROM adm.afastamento_funcionario a " +
                 "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) " +
                 "ORDER BY a.inicio_afastamento ";

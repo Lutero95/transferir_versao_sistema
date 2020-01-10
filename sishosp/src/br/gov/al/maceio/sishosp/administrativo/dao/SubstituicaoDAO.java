@@ -104,13 +104,16 @@ public class SubstituicaoDAO {
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
                 "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? ";
 
+        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
+            sql = sql + "AND a.codprograma = ? ";
+        }        
+        
+        
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) {
-            sql = sql + "AND a.codprograma = ?";
+            sql = sql + "AND a.codgrupo = ?";
         }
 
-        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
-            sql = sql + "AND a.codgrupo = ? ";
-        }
+
 
         try {
             con = ConnectionFactory.getConnection();

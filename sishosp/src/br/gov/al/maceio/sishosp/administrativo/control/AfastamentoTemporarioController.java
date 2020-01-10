@@ -65,10 +65,9 @@ public class AfastamentoTemporarioController implements Serializable {
     public void validarDatasDeAfastamentoTemporario() {
         if (!VerificadorUtil.verificarSeObjetoNulo(afastamentoTemporario.getPeriodoInicio())
                 && !VerificadorUtil.verificarSeObjetoNulo(afastamentoTemporario.getPeriodoFinal())) {
-            if (afastamentoTemporario.getPeriodoFinal().before(afastamentoTemporario.getPeriodoInicio()) ||
-                    afastamentoTemporario.getPeriodoInicio().equals(afastamentoTemporario.getPeriodoFinal())) {
+            if (afastamentoTemporario.getPeriodoFinal().before(afastamentoTemporario.getPeriodoInicio()) ) {
                 limparDatas();
-                JSFUtil.adicionarMensagemErro("A data fim de afastamento deve ser maior que a data início!", "Erro");
+                JSFUtil.adicionarMensagemErro("A data de início do afastamento não pode ser maior que a data fim do afastamento!", "Erro");
             }
         }
     }

@@ -59,10 +59,29 @@
                                     requiredMessage="Motivo Afastamento: Campo obrigatório!">
                                 <f:selectItem itemLabel="Férias" itemValue="FE"/>
                                 <f:selectItem itemLabel="Licença Médica" itemValue="LM"/>
+                                <f:selectItem itemLabel="Falta" itemValue="FA"/>
+                                <p:ajax event="change" process="@this"
+									update=":formAfastamentoTemporario:outturno" />
                             </p:selectOneRadio>
 
                         </b:column>
 
+                    </b:row>
+                    
+                    <b:row>
+                    <p:outputPanel id="outturno">
+                       <b:column span="3" class="label-position" rendered="#{AfastamentoTemporarioController.afastamentoTemporario.motivoAfastamento=='FA'}">
+                                    <b:label value="Turno:" severity="info"/>
+
+                                    <b:selectOneMenu class="select-agendaEquipe2" id="cbturno" required="true" requiredMessage="Informe o Turno"
+                                                     value="#{AfastamentoTemporarioController.afastamentoTemporario.turno}">
+										<f:selectItem itemLabel="Selecione" itemValue=""/>
+                                        <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                        <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                        <f:selectItem itemLabel="Ambos" itemValue="A"/>
+                                    </b:selectOneMenu>
+                                </b:column>
+                                </p:outputPanel>
                     </b:row>
 
                     <br/>
