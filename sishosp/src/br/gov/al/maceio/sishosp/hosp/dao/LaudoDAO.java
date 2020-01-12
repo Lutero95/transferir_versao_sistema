@@ -367,22 +367,26 @@ public class LaudoDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
 			stm.setInt(1, user_session.getUnidade().getId());
-
+			int i = 2;
 			if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
-				stm.setString(2, situacao);
+				stm.setString(i, situacao);
+				i++;
 			}
 
 			if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
+				stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
+				i++;
 			}
 			
 			
 			if ( ((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
-				stm.setString(3, campoBusca.toUpperCase());
+				stm.setString(i, campoBusca.toUpperCase());
+				i++;
 			}
 
 			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stm.setInt(3, Integer.valueOf(campoBusca));
+				stm.setInt(i, Integer.valueOf(campoBusca));
+				i++;
 			}
 
 			ResultSet rs = stm.executeQuery();

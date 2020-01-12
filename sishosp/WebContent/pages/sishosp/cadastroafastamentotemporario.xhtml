@@ -60,7 +60,7 @@
                                 <f:selectItem itemLabel="Férias" itemValue="FE"/>
                                 <f:selectItem itemLabel="Licença Médica" itemValue="LM"/>
                                 <f:selectItem itemLabel="Falta" itemValue="FA"/>
-                                <p:ajax event="change" process="@this"
+                                <p:ajax event="change" process="@this" listener="#{AfastamentoTemporarioController.limpaSelecaoTurnoAfastamento()}"
 									update=":formAfastamentoTemporario:outturno" />
                             </p:selectOneRadio>
 
@@ -92,7 +92,7 @@
 
                             <b:column span="3" class="new-data-size2">
 
-                                <p:outputLabel value="Data Início Afastamento:"
+                                <p:outputLabel value="Início Afastamento:"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
@@ -103,7 +103,7 @@
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaInicio"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true"
-                                            requiredMessage="Data Início Afastamento: Campo obrigatório!"
+                                            requiredMessage="Início Afastamento: Campo obrigatório!"
                                             value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoInicio}"
                                             locale="pt">
                                     <p:ajax event="dateSelect"
@@ -115,7 +115,7 @@
 
                             <b:column span="3" class="new-data-size2">
 
-                                <p:outputLabel value="Data Fim Afastamento:"
+                                <p:outputLabel value="Fim Afastamento:"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
@@ -125,7 +125,7 @@
                             <b:column span="3" class="label-position data-size">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
                                             showOn="button" size="8" class="select-agendaEquipe2"
-                                            required="true" requiredMessage="Data Fim Afastamento: Campo obrigatório!"
+                                            required="true" requiredMessage="Fim Afastamento: Campo obrigatório!"
                                             value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoFinal}"
                                             locale="pt">
                                     <p:ajax event="dateSelect"

@@ -14,6 +14,7 @@ public class BuscaAgendamentosParaFuncionarioAfastadoDTO implements Serializable
     private GrupoBean grupo;
     private Date periodoInicio;
     private Date periodoFinal;
+    private String turno;
 
     public BuscaAgendamentosParaFuncionarioAfastadoDTO() {
         funcionario = new FuncionarioBean();
@@ -60,4 +61,12 @@ public class BuscaAgendamentosParaFuncionarioAfastadoDTO implements Serializable
     public void setPeriodoFinal(Date periodoFinal) {
         this.periodoFinal = periodoFinal;
     }
+
+	public String getTurno() {
+		return turno;
+	}
+
+	public void setTurno(String turno) {
+		this.turno = turno;
+	}
 }

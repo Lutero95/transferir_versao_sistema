@@ -484,7 +484,7 @@ public class AtendimentoDAO {
 			sql = sql + " and p.matricula like ?";
 		}
 
-		sql = sql + " order by a.dtaatende";
+		sql = sql + " order by presenca desc, a.dtaatende, p.nome";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 

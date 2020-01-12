@@ -10,7 +10,7 @@
 
 		<f:metadata>
 			<f:viewAction
-				action="#{LaudoController.listarLaudo('P', LaudoController.campoBusca, LaudoController.tipoBusca)}" />
+				action="#{LaudoController.listarLaudo('P', LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -32,7 +32,7 @@
 					</p:commandButton>
 
 					<p:selectOneRadio id="console"
-						value="#{LaudoController.laudo.situacao}" required="true"
+						value="#{LaudoController.buscaLaudoDTO.situacao}" required="true"
 						requiredMessage="Informe o tipo de Pessoa">
 						<f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Autorizados" itemValue="A" />
@@ -45,10 +45,10 @@
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
 					<p:row>
-
+				<p:autoUpdate/>
 						<p:panelGrid columns="4">
 
-							<p:selectOneMenu value="#{LaudoController.tipoBusca}"
+							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
 								style="margin-top: -13px">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
@@ -58,12 +58,12 @@
 								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
 							</p:selectOneMenu>
 
-							<p:inputText value="#{LaudoController.campoBusca}"
+							<p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
 								placeholder="Digite aqui o que deseja buscar"
 								style="margin-left: 10px;width:300px" />
 
 							<p:commandButton
-								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.campoBusca, LaudoController.tipoBusca)}"
+								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}"
 								update="tabela msgPagina" icon="ui-icon-search"
 								style="margin-left: 10px;" />
 
@@ -146,7 +146,7 @@
 
 							<p:commandButton title="Imprimir Laudo" icon="ui-icon-print"
 								size="sm" class="btn-acao-table acao-editar"
-								style="margin-left:10px"
+								style="margin-left:10px"  onclick="this.form.target='_blank'"
 								action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
 
 							</p:commandButton>

@@ -1,6 +1,16 @@
 package br.gov.al.maceio.sishosp.administrativo.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.context.FacesContext;
+
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoTemporario;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -9,24 +19,17 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 
-import javax.faces.context.FacesContext;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 public class SubstituicaoDAO {
 
     Connection con = null;
     PreparedStatement ps = null;
 
 
-    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados, SubstituicaoFuncionario substituicaoFuncionario) {
+    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados,SubstituicaoFuncionario substituicaoFuncionario) {
 
         Boolean retorno = false;
 
-        String sql = "UPDATE hosp.atendimentos1 SET codprofissionalatendimento = ? WHERE id_atendimentos1 = ?";
+        String sql = "UPDATE hosp.atendimentos1 SET codprofissionalatendimento = ? WHERE id_atendimentos1 = ? and codprofissionalatendimento=?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -35,6 +38,7 @@ public class SubstituicaoDAO {
             for(int i=0; i<listaSelecionados.size(); i++) {
                 stmt.setLong(1, substituicaoFuncionario.getFuncionario().getId());
                 stmt.setInt(2, listaSelecionados.get(i).getId1());
+                stmt.setLong(3, substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId());
 
                 stmt.executeUpdate();
 
@@ -91,6 +95,38 @@ public class SubstituicaoDAO {
             return retorno;
         }
     }
+    
+	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoTemporario afastamento, Date periodoInicioBusca, Date periodoFimBusca) {
+		boolean periodoValidoAfastamentoNaBuscaSubstituicao = false;
+		List<AfastamentoTemporario> lista = new ArrayList<>();
+
+		String sql = "select id from adm.afastamento_funcionario where id_funcionario_afastado	=?\n"
+				+ "	and ((? between inicio_afastamento and fim_afastamento)\n"
+				+ "	and (? between inicio_afastamento and fim_afastamento)) and afastamento_funcionario.id=? ";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setLong(1, afastamento.getFuncionario().getId());
+			stm.setDate(2, DataUtil.converterDateUtilParaDateSql(periodoInicioBusca));
+			stm.setDate(3, DataUtil.converterDateUtilParaDateSql(periodoFimBusca));
+			stm.setInt(4, afastamento.getId());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				periodoValidoAfastamentoNaBuscaSubstituicao = true;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return periodoValidoAfastamentoNaBuscaSubstituicao;
+	}
 
     public List<AtendimentoBean> listarHorariosParaSeremSubstituidos(BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO) {
 
@@ -103,15 +139,18 @@ public class SubstituicaoDAO {
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
                 "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? ";
-
+        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
             sql = sql + "AND a.codprograma = ? ";
         }        
         
-        
+        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) 
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) {
             sql = sql + "AND a.codgrupo = ?";
         }
+        
+        if (!buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno().equals("A"))
+            sql = sql + "AND a.turno = ?";
 
 
 
@@ -122,15 +161,22 @@ public class SubstituicaoDAO {
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio()));
             stm.setDate(3, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal()));
             int i = 3;
-
+            
+            if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
                 i = i + 1;
                 stm.setInt(i, buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma());
             }
 
+            if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo())) 
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) {
                 i = i + 1;
                 stm.setInt(i, buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo());
+            }
+            
+            if (!buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno().equals("A")) {
+                i = i + 1;
+                stm.setString(i, buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno()); 	
             }
 
             ResultSet rs = stm.executeQuery();

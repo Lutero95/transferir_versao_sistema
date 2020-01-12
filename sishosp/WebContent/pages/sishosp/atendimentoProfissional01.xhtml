@@ -35,11 +35,15 @@
                                                  icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
                                                  action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.programa.idPrograma, AtendimentoController.atendimento.grupo.idGrupo, AtendimentoController.atendimento.paciente.id_paciente)}"
                                                  oncomplete="PF('dlgConsultaPTS').show();"/>
-
-                                <h:commandLink id="linkCriarDocumentoInterno" value="Laudo"
-                                               actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}"
-                                               action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true" target="_blank" />
-
+ 
+                                <p:commandButton value="Laudo" look="success" size="sm"
+                                                 style="margin-left: 10px" 
+                                                 icon="ui-icon-document" immediate="true" update=":frmPrincipalPts" ajax="false"
+                                                 actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}" 
+                                                 onclick="this.form.target='_blank'"
+                                               action="#{LaudoController.redirectGerenciamentoComPacienteNaSessao()}"/>
+                                                 
+                              
 
                             </p:row>
                         </div>

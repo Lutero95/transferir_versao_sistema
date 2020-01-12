@@ -29,6 +29,10 @@ public class AfastamentoTemporarioController implements Serializable {
         this.afastamentoTemporario = new AfastamentoTemporario();
         listaAfastamentosTemporarios = new ArrayList<>();
     }
+    
+    public void limpaSelecaoTurnoAfastamento() {
+    	afastamentoTemporario.setTurno(null);
+    }
 
     public String redirectInsert() {
         return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_CADASTRO);
@@ -40,6 +44,7 @@ public class AfastamentoTemporarioController implements Serializable {
     }
 
     public void gravarAfastamentoTemporario() {
+    	if (!aDao.verificaSeExisteAfastamentoTemporarioFuncionarioNoPeriodo(afastamentoTemporario)) {
         boolean cadastrou = aDao.gravarAfastamentoTemporario(this.afastamentoTemporario);
 
         if (cadastrou == true) {
@@ -48,6 +53,12 @@ public class AfastamentoTemporarioController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
         }
+    	}
+    	else
+    	{
+    		JSFUtil.adicionarMensagemSucesso("Já existe Afastamento para o funcionário no período informado!", "Sucesso");
+    		
+    	}
     }
 
     public void excluirAfastamentoTemporario() {

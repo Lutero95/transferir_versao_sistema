@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.administrativo.control;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.AfastamentoTemporarioDAO;
 import br.gov.al.maceio.sishosp.administrativo.dao.SubstituicaoDAO;
+import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoTemporario;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -53,7 +55,7 @@ public class SubstituicaoController implements Serializable {
     }
 
     public void limparDados() {
-        substituicaoFuncionario = new SubstituicaoFuncionario();
+        substituicaoFuncionario.setFuncionario(new FuncionarioBean());
         listaAtendimentos = new ArrayList<>();
         listaAtendimentosSelecionada = new ArrayList<>();
     }
@@ -61,8 +63,10 @@ public class SubstituicaoController implements Serializable {
     public void gravarAfastamentoTemporario() {
 
         if (validarSeAgendamentosForamSelecionados()) {
-
-            boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada, substituicaoFuncionario);
+        	if (substituicaoFuncionario.getFuncionario().getId() != substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId())
+        	{
+        		
+            boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada,substituicaoFuncionario);
 
             if (cadastrou == true) {
                 limparDados();
@@ -71,6 +75,11 @@ public class SubstituicaoController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
             }
+        	}
+        	else
+        	{
+        		JSFUtil.adicionarMensagemErro("Para realizar substituição de atendimento, os Profissionais devem ser diferentes!", "Erro");
+        	}
         }
     }
 
@@ -90,9 +99,10 @@ public class SubstituicaoController implements Serializable {
         if (params.get("id") != null) {
             idAfastamento = Integer.parseInt(params.get("id"));
             AfastamentoTemporarioDAO aDao = new AfastamentoTemporarioDAO();
-            substituicaoFuncionario.getAfastamentoTemporario().setFuncionario(aDao.carregarFuncionarioAfastado(idAfastamento));
-            substituicaoFuncionario.getAfastamentoTemporario().setId(idAfastamento);
-
+            AfastamentoTemporario afastamento = aDao.carregarAfastamentoPeloId(idAfastamento);
+            substituicaoFuncionario.setAfastamentoTemporario(afastamento);
+            buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoInicio(afastamento.getPeriodoInicio());
+            buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoFinal(afastamento.getPeriodoFinal());
             if (VerificadorUtil.verificarSeObjetoNuloOuZero(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId())) {
                 JSFUtil.adicionarMensagemErro("É preciso passar um valor de afastamento válido", "Erro");
             }
@@ -100,12 +110,29 @@ public class SubstituicaoController implements Serializable {
     }
 
     public void buscarAgendamentoDoFuncionarioAfastado() {
+    	  if (VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno()))
+    		  JSFUtil.adicionarMensagemAdvertencia("Informe o Turno", "Atenção");
+    	  else
+    		  if (buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno().equals("S")) {
+    		JSFUtil.adicionarMensagemAdvertencia("Informe o Turno", "Atenção");
+    	}
+    	else
+    		if (sDao.validaPeriodoAfastamentoNaBuscaSubstituicao(substituicaoFuncionario.getAfastamentoTemporario(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal() ))
+    	{
         buscaAgendamentosParaFuncionarioAfastadoDTO.setFuncionario(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario());
         listaAtendimentos = sDao.listarHorariosParaSeremSubstituidos(buscaAgendamentosParaFuncionarioAfastadoDTO);
+    	}
+    		else
+    		{
+    			JSFUtil.adicionarMensagemAdvertencia("Período informado ns busca é incompatível com o período de Afastamento do Funcionário", "Atenção");
+    		}
     }
 
     public void limparFiltroBuscaAtendimentos() {
-        buscaAgendamentosParaFuncionarioAfastadoDTO = new BuscaAgendamentosParaFuncionarioAfastadoDTO();
+        buscaAgendamentosParaFuncionarioAfastadoDTO.setPrograma(new ProgramaBean());
+        buscaAgendamentosParaFuncionarioAfastadoDTO.setGrupo(new GrupoBean());
+        buscaAgendamentosParaFuncionarioAfastadoDTO.setTurno(null);
+        carregarFuncionarioAfastamento();
     }
 
     public void selectPrograma(SelectEvent event) throws ProjetoException {

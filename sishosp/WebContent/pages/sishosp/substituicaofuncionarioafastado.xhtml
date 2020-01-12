@@ -41,7 +41,7 @@
 
                             <b:column span="3" class="new-data-size2">
 
-                                <p:outputLabel value="Período Início Agendamento:"
+                                <p:outputLabel value="Início Afastamento"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
@@ -61,7 +61,7 @@
 
                             <b:column span="3" class="new-data-size2">
 
-                                <p:outputLabel value="Período Fim Agendamento:"
+                                <p:outputLabel value="Fim Afastamento"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
@@ -83,6 +83,21 @@
 
                     <b:row>
 
+  
+                       <b:column span="3" class="label-position">
+                       
+                                    <b:label value="Turno:" severity="info"/>
+
+                                    <b:selectOneMenu class="select-agendaEquipe2" id="cbturno" required="true" requiredMessage="Informe o Turno"
+                                                     value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.turno}">
+										<f:selectItem itemLabel="Selecione" itemValue="S"/>
+                                        <f:selectItem itemLabel="Manhã" itemValue="M" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno=='T'}"/>
+                                        <f:selectItem itemLabel="Tarde" itemValue="T" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno=='M'}"/>
+                                        <f:selectItem itemLabel="Ambos" itemValue="A" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno!='A'}"/>
+                                       <p:ajax event="change" process="@this cbturno"/>
+									
+                                    </b:selectOneMenu>
+                                </b:column>
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Programa" severity="info"/>
@@ -138,6 +153,8 @@
                     </b:row>
 
                     <br/>
+                    
+
 
                     <b:row>
 
@@ -166,6 +183,7 @@
                     <b:row>
 
                         <p:dataTable value="#{SubstituicaoController.listaAtendimentos}" var="tab" id="dtAtendimentos"
+                        emptyMessage="Nenhum Registro"
                                      selection="#{SubstituicaoController.listaAtendimentosSelecionada}"
                                      rowKey="#{tab.id1}">
 

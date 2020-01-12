@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -24,7 +25,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 @ManagedBean(name = "AtendimentoController")
-@ViewScoped
+@SessionScoped
 public class AtendimentoController implements Serializable {
 
     private static final long serialVersionUID = 1L;

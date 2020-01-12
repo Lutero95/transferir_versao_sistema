@@ -107,6 +107,9 @@
                                 <p:ajax event="dateSelect"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
                                         update=":formLaudo:outvalidade"/>
+                                         <p:ajax event="blur"
+                                        listener="#{LaudoController.calcularPeriodoLaudo()}"
+                                        update=":formLaudo:outvalidade"/>
                             </p:calendar>
                         </b:column>
 
@@ -757,18 +760,18 @@
 
                         <p:panelGrid columns="4">
 
-                            <p:selectOneMenu value="#{LaudoController.tipoBusca}"
+                            <p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
                                              style="margin-top: -13px">
                                 <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
                             </p:selectOneMenu>
 
-                            <p:inputText value="#{LaudoController.campoBusca}"
+                            <p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
                                          required="true"
                                          requiredMessage="Informe a descrição da doença ou o Código do CID"
                                          placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
 
                             <p:commandButton
-                                    action="#{LaudoController.listarCids(LaudoController.campoBusca)}"
+                                    action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                     update="tabelacid1 msgPagina" icon="ui-icon-search"
                                     style="margin-left: 10px;"/>
 
@@ -826,18 +829,18 @@
 
                         <p:panelGrid columns="4">
 
-                            <p:selectOneMenu value="#{LaudoController.tipoBusca}"
+                            <p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
                                              style="margin-top: -13px">
                                 <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
                             </p:selectOneMenu>
 
-                            <p:inputText value="#{LaudoController.campoBusca}"
+                            <p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
                                          required="true"
                                          requiredMessage="Informe a descrição da doença ou o Código do CID"
                                          placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
 
                             <p:commandButton
-                                    action="#{LaudoController.listarCids(LaudoController.campoBusca)}"
+                                    action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                     update="tabelacid2 msgPagina" icon="ui-icon-search"
                                     style="margin-left: 10px;"/>
 
@@ -894,17 +897,17 @@
 
                     <p:panelGrid columns="4">
 
-                        <p:selectOneMenu value="#{LaudoController.tipoBusca}"
+                        <p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
                                          style="margin-top: -13px">
                             <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
                         </p:selectOneMenu>
 
-                        <p:inputText value="#{LaudoController.campoBusca}" required="true"
+                        <p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}" required="true"
                                      requiredMessage="Informe a descrição da doença ou o Código do CID"
                                      placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
 
                         <p:commandButton
-                                action="#{LaudoController.listarCids(LaudoController.campoBusca)}"
+                                action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                 update="tabelacid3 msgPagina" icon="ui-icon-search"
                                 style="margin-left: 10px;"/>
 
@@ -968,9 +971,9 @@
                     <p:separator/>
 
                     <p:commandButton look="success" value="Imprimir"
-                                     style="float:left;"
+                                     style="float:left;"   onclick="this.form.target='_blank'"
                                      action="#{RelatoriosController.geraLaudo(LaudoController.idLaudoGerado)}"
-                                     ajax="false" class="btn-sim" icon="glyphicon-print"/>
+                                     ajax="false" class="btn-sim"  icon="glyphicon-print"/>
 
 
                     <p:commandButton value="Fechar"

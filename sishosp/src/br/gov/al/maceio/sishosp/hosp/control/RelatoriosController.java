@@ -267,7 +267,7 @@ public class RelatoriosController implements Serializable {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("codempresa", user_session.getUnidade().getCodEmpresa());
         map.put("cod_laudo", idLaudo);
-        this.executeReport(relatorio, map, "laudo.pdf");
+        this.executeReportNewTab(relatorio, "laudo.pdf", map);
 
     }
 

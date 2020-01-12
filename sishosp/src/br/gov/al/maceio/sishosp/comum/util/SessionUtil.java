@@ -45,4 +45,8 @@ public class SessionUtil {
 
         SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
+    
+    public static void removerDaSessao(String nomeObjetoSessao){
+    	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(nomeObjetoSessao);
+    }
 }
