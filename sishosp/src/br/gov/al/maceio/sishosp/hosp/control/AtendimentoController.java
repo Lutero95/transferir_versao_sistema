@@ -289,13 +289,18 @@ public class AtendimentoController implements Serializable {
             if (!atendimento.getStatus().equals("")) {
 
                 for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-
+                	System.out.println("listAtendimentosEquipe.get(i).getId1()"+listAtendimentosEquipe.get(i).getId1());
+                	System.out.println("atendimentoLista.getId1()"+atendimentoLista
+                            );
+                	if ((!VerificadorUtil.verificarSeObjetoNulo(listAtendimentosEquipe.get(i).getId1())) && (!VerificadorUtil.verificarSeObjetoNulo(atendimentoLista
+                            ))) {
                     if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
                             .getId1()) {
                         listAtendimentosEquipe.get(i).setStatus(
                                 atendimento.getStatus());
                         ;
                     }
+                }
                 }
             }
         }
