@@ -115,9 +115,16 @@ public class TransferenciaPacienteDAO {
             }
 
             for (int i = 0; i < lista.size(); i++) {
-                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+                String sql2 = "delete from adm.substituicao_funcionario where id_atendimentos1 in (select id_atendimentos1 from hosp.atendimentos1 where id_atendimento=?)";
 
                 PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();
+            	
+                sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+
+                ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, lista.get(i));
                 ps2.execute();
