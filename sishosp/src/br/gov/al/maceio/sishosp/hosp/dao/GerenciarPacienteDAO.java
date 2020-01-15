@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -349,7 +350,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente) {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -372,6 +373,15 @@ public class GerenciarPacienteDAO {
 
             while (rs.next()) {
                 lista.add(rs.getInt("id_atendimento"));
+            }
+            
+            for (int i = 0; i < listaSubstituicaoProfissional.size(); i++) {
+                String sql2 = "delete from adm.substituicao_funcionario where id_atendimentos1 = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, listaSubstituicaoProfissional.get(i).getIdAtendimentos1());
+                ps2.execute();
             }
 
             for (int i = 0; i < lista.size(); i++) {
@@ -413,6 +423,56 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+    
+    public ArrayList<SubstituicaoFuncionario> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
+
+        
+        ArrayList<SubstituicaoFuncionario> lista = new ArrayList<SubstituicaoFuncionario>();
+
+        try {
+
+            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"	where sf.id_atendimentos1 in ( " + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  " + 
+            		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  " + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  " + 
+            		")";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	SubstituicaoFuncionario substituicao = new SubstituicaoFuncionario();
+            	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
+            	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
+            	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	substituicao.getAfastamentoTemporario().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
+            	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
+            	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
+            	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+                lista.add(substituicao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }    
 
     public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar) {
 

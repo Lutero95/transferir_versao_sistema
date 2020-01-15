@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -202,7 +204,12 @@ public class AlteracaoPacienteDAO {
 			conexao = ConnectionFactory.getConnection();
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)) {
+			
+			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+
+	
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
 
 				conexao.close();
 
@@ -225,18 +232,18 @@ public class AlteracaoPacienteDAO {
             stmt.setInt(5, insercao.getId());
             stmt.executeUpdate();
 
-			String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
-			PreparedStatement ps6 = null;
-			ps6 = conexao.prepareStatement(sql6);
-
-			for (int i = 0; i < listaProfissionais.size(); i++) {
-				ps6.setLong(1, insercao.getId());
-				ps6.setLong(2, listaProfissionais.get(i).getId());
-				for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
-					ps6.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
-					ps6.executeUpdate();
+				String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+				PreparedStatement ps6 = null;
+				ps6 = conexao.prepareStatement(sql6);
+	
+				for (int i = 0; i < listaProfissionais.size(); i++) {
+					ps6.setLong(1, insercao.getId());
+					ps6.setLong(2, listaProfissionais.get(i).getId());
+					for (int j = 0; j < listaProfissionais.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+						ps6.setInt(3, listaProfissionais.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+						ps6.executeUpdate();
+					}
 				}
-			}
 
 			String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
@@ -341,6 +348,19 @@ public class AlteracaoPacienteDAO {
 					}
 				}
 			}
+			sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
+					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
+					"values (?,?,?,?,?, current_timestamp)";
+			ps6 = null;
+			ps6 = conexao.prepareStatement(sql6);
+			for (int i = 0; i < listaSubstituicao.size(); i++) {
+				ps6.setLong(1, listaSubstituicao.get(i).getIdAtendimentos1());
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(4, listaSubstituicao.get(i).getFuncionario().getId());
+				ps6.setLong(5, listaSubstituicao.get(i).getUsuarioAcao().getId());
+				ps6.execute();
+			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
@@ -371,8 +391,12 @@ public class AlteracaoPacienteDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 
+			
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)) {
+
+			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
 
 				conexao.close();
 
@@ -511,6 +535,20 @@ System.out.println("listaProfissionais.get(j).getListaDiasAtendimentoSemana().ge
 						}
 					}
 				}
+			}
+			
+			sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
+					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, current_timestamp)	\n" + 
+					"values (?,?,?,?,?,?,)";
+			ps6 = null;
+			ps6 = conexao.prepareStatement(sql6);
+			for (int i = 0; i < listaSubstituicao.size(); i++) {
+				ps6.setLong(1, listaSubstituicao.get(i).getIdAtendimentos1());
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(4, listaSubstituicao.get(i).getFuncionario().getId());
+				ps6.setLong(5, listaSubstituicao.get(i).getUsuarioAcao().getId());
+				ps6.execute();
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
