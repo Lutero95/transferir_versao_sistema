@@ -350,7 +350,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
