@@ -303,8 +303,8 @@ public class ProgramaDAO {
 
     public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
-                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
+        String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc  from hosp.programa "
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma left join hosp.proc on proc.id = programa.cod_procedimento "
                 + "where codprofissional = ? and programa.cod_unidade=? order by descprograma";
 
         try {
@@ -323,7 +323,8 @@ public class ProgramaDAO {
                 ProgramaBean programa = new ProgramaBean();
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
-                programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
+                programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
+                programa.getProcedimento().setNomeProc(rs.getString("descproc"));
 
                 lista.add(programa);
             }

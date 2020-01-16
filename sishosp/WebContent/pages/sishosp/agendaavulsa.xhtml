@@ -209,8 +209,7 @@
 										icon="ui-icon-search"
 										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 										action="#{AgendaController.limparNaBuscaTipo()}"
-										actionListener="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}"
-										update=":formAgendaMedica"
+										update=":formConsuTipoAt"
 										onclick="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
