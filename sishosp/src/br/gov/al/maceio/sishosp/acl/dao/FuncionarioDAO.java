@@ -1199,14 +1199,14 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, \n" + 
+		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.descricao desccbo, \n" + 
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
-				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo \n" + 
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE \n" + 
 				"union all\n" + 
-				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, \n" + 
+				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.descricao desccbo, \n" + 
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
-				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
+				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo\n" + 
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao \n" + 
 				"join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" + 
 				"where  fu.cod_unidade=?  AND realiza_atendimento IS TRUE \n" + 
@@ -1229,7 +1229,8 @@ public class FuncionarioDAO {
 				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getString("ativo"));
-				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setDescCbo(rs.getString("codcbo"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				prof.getProc1().setNomeProc(rs.getString("descprocpadrao"));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
