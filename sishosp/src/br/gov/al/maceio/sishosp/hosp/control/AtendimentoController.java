@@ -322,7 +322,9 @@ public class AtendimentoController implements Serializable {
         if (funcionario != null) {
 
             CboDAO cDao = new CboDAO();
-            CboBean cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
+            CboBean cbo = new CboBean();
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo()))
+            cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
 
             for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 

@@ -263,7 +263,7 @@ public class ProgramaDAO {
     public List<ProgramaBean> listarProgramasBuscaUsuario(String descricao,
                                                           Integer tipo) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
+        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "where codprofissional = ? and programa.cod_unidade=?";
 
@@ -303,7 +303,7 @@ public class ProgramaDAO {
 
     public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc  from hosp.programa "
+        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma left join hosp.proc on proc.id = programa.cod_procedimento "
                 + "where codprofissional = ? and programa.cod_unidade=? order by descprograma";
 

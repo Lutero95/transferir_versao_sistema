@@ -34,6 +34,7 @@ public final class HorarioOuTurnoUtil {
         String horario = null;
 
         while (parametroBean.getHorarioFinal().after(novahora)) {
+        	System.out.println("gerando hrario");
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
             GregorianCalendar gc = new GregorianCalendar();

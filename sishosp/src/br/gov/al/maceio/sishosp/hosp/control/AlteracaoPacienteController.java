@@ -1260,10 +1260,22 @@ public class AlteracaoPacienteController implements Serializable {
         }
         
         for (int i = 0; i < listaProfissionaisAdicionadosDuplicado.size(); i++) {
+        	for (int j = 0; j < listaProfissionaisAdicionadosDuplicado.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+                if (!listaDiasDuplicado.contains(listaProfissionaisAdicionadosDuplicado.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana())) {
+                	listaDiasDuplicado.add(listaProfissionaisAdicionadosDuplicado.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana());
+                }        		
+        		
+        	}
+        	
+        }
+        
+        /*
+        for (int i = 0; i < listaProfissionaisAdicionadosDuplicado.size(); i++) {
             if (!listaDiasDuplicado.contains(listaProfissionaisAdicionadosDuplicado.get(i).getDiaSemana())) {
             	listaDiasDuplicado.add(listaProfissionaisAdicionadosDuplicado.get(i).getDiaSemana());
             }
         }
+        */
        
 
     }
