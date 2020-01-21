@@ -160,7 +160,8 @@ public class AtendimentoDAO {
 		try {
 
 			String sql = "update hosp.atendimentos1 set codprocedimento = ?, "
-					+ "dtaatendido = current_timestamp, situacao = ?, evolucao = ? " + " where id_atendimento = ? and codprofissionalatendimento = ?";
+					+ "dtaatendido = current_timestamp, situacao = ?, evolucao = ? "
+					+ " where id_atendimento = ? and codprofissionalatendimento = ?";
 
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, atendimento.getProcedimento().getIdProc());
@@ -222,14 +223,13 @@ public class AtendimentoDAO {
 				} else {
 					stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
 				}
-				
+
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getProcedimento().getIdProc())) {
 					stmt2.setNull(4, Types.NULL);
 				} else {
 					stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
 				}
-				
-				
+
 				if ((lista.get(i).getStatus() != null) && (!lista.get(i).getStatus().equals("")))
 					stmt2.setString(5, lista.get(i).getStatus());
 				else
@@ -269,6 +269,51 @@ public class AtendimentoDAO {
 			}
 			return alterou;
 		}
+	}
+
+	public Boolean insereProfissionalParaRealizarAtendimentoNaEquipe(AtendimentoBean atendimento, FuncionarioBean novoProfissional)
+			throws ProjetoException {
+		boolean alterou = false;
+		con = ConnectionFactory.getConnection();
+		try {
+
+				String sql2 = "INSERT INTO hosp.atendimentos1( id_atendimento, codprofissionalatendimento, "
+						+ " cbo, codprocedimento) VALUES ( ?, ?, ?,(select coalesce(cod_procedimento, null) from hosp.programa where programa.id_programa=?));";
+
+				PreparedStatement stmt2 = con.prepareStatement(sql2);
+				stmt2.setLong(1, atendimento.getId());
+				stmt2.setLong(2, novoProfissional.getId());
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(novoProfissional.getCbo().getCodCbo())) {
+					stmt2.setNull(3, Types.NULL);
+				} else {
+					stmt2.setInt(3, novoProfissional.getCbo().getCodCbo());
+				}
+				
+					stmt2.setInt(4,atendimento.getPrograma().getIdPrograma());
+
+				stmt2.executeUpdate();
+
+			
+
+			con.commit();
+
+			alterou = true;
+
+		}catch(
+
+	Exception ex)
+	{
+		ex.printStackTrace();
+		throw new RuntimeException(ex);
+	}finally
+	{
+		try {
+			con.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return alterou;
+	}
 	}
 
 	public Boolean limpaAtendimentoProfissional(AtendimentoBean atendimento) throws ProjetoException {
@@ -351,8 +396,6 @@ public class AtendimentoDAO {
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
-
-
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -360,22 +403,22 @@ public class AtendimentoDAO {
 			stm.setDate(1, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
 			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
 			stm.setInt(3, user_session.getUnidade().getId());
-			
-            if ((atendimento.getPrograma()!=null) && (atendimento.getPrograma().getIdPrograma()!=null)) {
-            stm.setInt(i, atendimento.getPrograma().getIdPrograma());
-            i = i+1;
-            }
-            if ((atendimento.getGrupo()!=null) && (atendimento.getGrupo().getIdGrupo()!=null)) {            
-            stm.setInt(i, atendimento.getGrupo().getIdGrupo());
-            i = i+1;
-            }			
+
+			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
+				i = i + 1;
+			}
+			if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
+				i = i + 1;
+			}
 
 			if (!campoBusca.equals(null)) {
 				if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
 					stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
 				else
 					stm.setInt(i, Integer.valueOf(campoBusca));
-				i = i+1;
+				i = i + 1;
 			}
 
 			ResultSet rs = stm.executeQuery();
@@ -415,9 +458,9 @@ public class AtendimentoDAO {
 		}
 		return lista;
 	}
-	
-	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento, String campoBusca, String tipo, String buscaEvolucao, String buscaTurno)
-			throws ProjetoException {
+
+	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento,
+			String campoBusca, String tipo, String buscaEvolucao, String buscaTurno) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -427,18 +470,12 @@ public class AtendimentoDAO {
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao,  "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
 
-				+ " case\n" + 
-				"		when exists (\n" + 
-				"		select\n" + 
-				"			a11.id_atendimento\n" + 
-				"		from\n" + 
-				"			hosp.atendimentos1 a11\n" + 
-				"		where\n" + 
-				"			a11.id_atendimento = a.id_atendimento\n" + 
-				"			and a11.codprofissionalatendimento=?\n" + 
-				"			and a11.evolucao is null)  then 'Evolução Não Realizada'\n" + 
-				"		 else 'Evolução Realizada'\n" + 
-				"	end as situacao "
+				+ " case\n" + "		when exists (\n" + "		select\n" + "			a11.id_atendimento\n"
+				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
+				+ "			a11.id_atendimento = a.id_atendimento\n"
+				+ "			and a11.codprofissionalatendimento=?\n"
+				+ "			and a11.evolucao is null)  then 'Evolução Não Realizada'\n"
+				+ "		 else 'Evolução Realizada'\n" + "	end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
 				+ " JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
@@ -448,10 +485,12 @@ public class AtendimentoDAO {
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
 				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
-/*			if (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().equals("S"))
-				sql = sql + " and a.presenca='S'";
-				*/
-				sql = sql + " and exists (select id_atendimento from hosp.atendimentos1 a11 "
+		/*
+		 * if
+		 * (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().
+		 * equals("S")) sql = sql + " and a.presenca='S'";
+		 */
+		sql = sql + " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento) and a1.codprofissionalatendimento=?";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
@@ -467,10 +506,10 @@ public class AtendimentoDAO {
 		if (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla())) {
 			sql = sql + " and a1.evolucao IS NULL ";
 		}
-		
-        if (!buscaTurno.equals("A")) {
-            sql = sql + " AND a.turno=? ";
-        }
+
+		if (!buscaTurno.equals("A")) {
+			sql = sql + " AND a.turno=? ";
+		}
 
 		if (tipo.equals("nome")) {
 			sql = sql + " and p.nome like ?";
@@ -488,8 +527,6 @@ public class AtendimentoDAO {
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
-
-
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -500,31 +537,32 @@ public class AtendimentoDAO {
 			stm.setInt(4, user_session.getUnidade().getId());
 			stm.setLong(5, user_session.getId());
 			stm.setLong(6, user_session.getId());
-			
-            if ((atendimento.getPrograma()!=null) && (atendimento.getPrograma().getIdPrograma()!=null)) {
-            stm.setInt(i, atendimento.getPrograma().getIdPrograma());
-            i = i+1;
-            }
-            if ((atendimento.getGrupo()!=null) && (atendimento.getGrupo().getIdGrupo()!=null)) {            
-            stm.setInt(i, atendimento.getGrupo().getIdGrupo());
-            i = i+1;
-            }		
-            
-            if (!buscaTurno.equals("A")) {
-                stm.setString(i, buscaTurno);
-                i++;
-            }
-            
-            if (campoBusca!=null) {
-			if (!campoBusca.equals(null)) {
-				if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
-					stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
-				else
-					stm.setInt(i, Integer.valueOf(campoBusca));
-				i = i+1;
+
+			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
+				i = i + 1;
 			}
-            }
-			
+			if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
+				i = i + 1;
+			}
+
+			if (!buscaTurno.equals("A")) {
+				stm.setString(i, buscaTurno);
+				i++;
+			}
+
+			if (campoBusca != null) {
+				if (!campoBusca.equals(null)) {
+					if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns"))
+							|| (tipo.equals("matricula")))
+						stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
+					else
+						stm.setInt(i, Integer.valueOf(campoBusca));
+					i = i + 1;
+				}
+			}
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -564,7 +602,7 @@ public class AtendimentoDAO {
 			}
 		}
 		return lista;
-	}	
+	}
 
 	public AtendimentoBean listarAtendimentoProfissionalPorId(int id) throws ProjetoException {
 
@@ -609,18 +647,20 @@ public class AtendimentoDAO {
 		}
 		return at;
 	}
-	
+
 	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
 
 		AtendimentoBean at = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, "
 				+ "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, "
-				+ " a.codgrupo, g.descgrupo from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
+				+ " a.codgrupo, g.descgrupo from hosp.atendimentos a "
+				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ " left join hosp.programa pro on (pro.id_programa = a.codprograma)"
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
-				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) " + "where a.id_atendimento = ? and a1.codprofissionalatendimento=?";
+				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
+				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -659,7 +699,7 @@ public class AtendimentoDAO {
 			}
 		}
 		return at;
-	}	
+	}
 
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer id) throws ProjetoException {
 

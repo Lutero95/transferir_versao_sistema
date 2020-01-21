@@ -824,7 +824,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     private void gerarHorariosAtendimento() throws ParseException {
-    	System.out.println("gerarHorariosAtendimento");
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 

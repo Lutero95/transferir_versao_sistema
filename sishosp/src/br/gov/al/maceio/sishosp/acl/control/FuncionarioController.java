@@ -929,7 +929,6 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public List<UnidadeBean> listarUnidadesDoFuncionario() {
-		System.out.println("listarUnidadesDoFuncionario");
 		return fDao.listarUnidadesDoFuncionario();
 	}
 

@@ -513,9 +513,6 @@ public class AlteracaoPacienteDAO {
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
-System.out.println("marcacao "+listAgendamentoProfissional.get(i).getDataMarcacao());
-System.out.println("listAgendamentoProfissional.get(i).getDataMarcacao()"+listAgendamentoProfissional.get(i).getDataMarcacao());
-System.out.println("listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()"+listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana());
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 

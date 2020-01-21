@@ -1112,8 +1112,8 @@ public class FuncionarioDAO {
 				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
 				prof.getProc1().setNomeProc(rs.getString("nome"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				//prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				//prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
@@ -1725,6 +1725,45 @@ public class FuncionarioDAO {
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
+			}
+			return prof;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	public FuncionarioBean buscarProfissionalConverterPorId(Integer id) throws ProjetoException {
+		FuncionarioBean prof = null;
+
+		String sql = "select id_funcionario, descfuncionario, funcionarios.codespecialidade, e.descespecialidade, \n" + 
+				"funcionarios.codcbo, c.descricao desccbo from acl.funcionarios \n" + 
+				"join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade\n" + 
+				"left join hosp.cbo c on c.id = funcionarios.codcbo"
+				+ " where funcionarios.id_funcionario = ? and funcionarios.ativo = 'S' order by funcionarios.descfuncionario";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setDescCbo(rs.getString("desccbo"));
+				
 			}
 			return prof;
 

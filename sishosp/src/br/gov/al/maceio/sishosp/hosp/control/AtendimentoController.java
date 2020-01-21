@@ -33,7 +33,7 @@ public class AtendimentoController implements Serializable {
     private AtendimentoBean atendimento;
     private List<AtendimentoBean> listAtendimentos;
     private List<AtendimentoBean> listAtendimentosEquipe;
-    private FuncionarioBean funcionario;
+    private FuncionarioBean funcionario, funcionarioAux;
     private ProcedimentoBean procedimento;
     private List<ProcedimentoBean> listaProcedimentos;
     private AtendimentoBean atendimentoLista;
@@ -72,6 +72,7 @@ public class AtendimentoController implements Serializable {
         listAtendimentos = new ArrayList<AtendimentoBean>();
         listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
         funcionario = null;
+        funcionarioAux = new FuncionarioBean();
         procedimento = new ProcedimentoBean();
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
@@ -259,6 +260,23 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
         }
     }
+    
+    public void insereProfissionalParaRealizarAtendimentoNaEquipe() throws ProjetoException {
+
+        boolean gravou = aDao.insereProfissionalParaRealizarAtendimentoNaEquipe(atendimento, funcionarioAux);
+
+        if (gravou == true) {
+            JSFUtil.adicionarMensagemSucesso("Profissional inserido com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgincprof");
+            listarAtendimentosEquipe();
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a inserção!", "Erro");
+        }
+    }
+    
+    public void limpaInclusaoProfissionalAtendimento() {
+    	funcionarioAux = new FuncionarioBean();
+    }
 
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
@@ -289,9 +307,6 @@ public class AtendimentoController implements Serializable {
             if (!atendimento.getStatus().equals("")) {
 
                 for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-                	System.out.println("listAtendimentosEquipe.get(i).getId1()"+listAtendimentosEquipe.get(i).getId1());
-                	System.out.println("atendimentoLista.getId1()"+atendimentoLista
-                            );
                 	if ((!VerificadorUtil.verificarSeObjetoNulo(listAtendimentosEquipe.get(i).getId1())) && (!VerificadorUtil.verificarSeObjetoNulo(atendimentoLista
                             ))) {
                     if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
@@ -626,5 +641,13 @@ public class AtendimentoController implements Serializable {
 
 	public void setBuscaTurno(String buscaTurno) {
 		this.buscaTurno = buscaTurno;
+	}
+
+	public FuncionarioBean getFuncionarioAux() {
+		return funcionarioAux;
+	}
+
+	public void setFuncionarioAux(FuncionarioBean funcionarioAux) {
+		this.funcionarioAux = funcionarioAux;
 	}
 }

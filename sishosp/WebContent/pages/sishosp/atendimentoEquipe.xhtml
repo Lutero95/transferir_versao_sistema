@@ -81,8 +81,15 @@
 					</b:row>
 
 					<b:row class="row-table">
-						<div align="center">
 
+
+						<div align="center">
+							<p:commandButton value="Inserir Profissional" id="btnInserir" immediate="true"
+							update=":frmincprof" actionListener="#{AtendimentoController.limpaInclusaoProfissionalAtendimento()}"
+							onclick="PF('dlgincprof').show();"
+							style="float:left; margin-left:20px"
+								class="btn-prime btn-acao-table acao-confirmar btn-new-padding2" icon="ui-icon-plus"
+								/>
 							<p:commandButton value="Consultar Evolucao"
 								icon="fa fa-fw fa-file-text"
 								class="btn-prime btn-acao-table acao-agend" immediate="true"
@@ -113,8 +120,9 @@
 
 							<p:ajax event="cellEdit"
 								listener="#{AtendimentoController.onCellEdit}" />
-							
-							<p:column headerText="Horário Atendimento" width="10%" rendered="#{AtendimentoController.opcaoAtendimento=='H'}">
+
+							<p:column headerText="Horário Atendimento" width="10%"
+								rendered="#{AtendimentoController.opcaoAtendimento=='H'}">
 								<h:outputText value="#{atendimento.horarioAtendimento}">
 								</h:outputText>
 							</p:column>
@@ -168,12 +176,12 @@
 							<p:column headerText="Perfil Avaliação" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao == true}">
 
-										<b:selectOneMenu value="#{atendimento.perfil}"
-											style="color: #1d5987 !important;">
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItem itemLabel="Tem Perfil" itemValue="S" />
-											<f:selectItem itemLabel="Não tem Perfil" itemValue="N" />
-										</b:selectOneMenu>
+								<b:selectOneMenu value="#{atendimento.perfil}"
+									style="color: #1d5987 !important;">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Tem Perfil" itemValue="S" />
+									<f:selectItem itemLabel="Não tem Perfil" itemValue="N" />
+								</b:selectOneMenu>
 							</p:column>
 
 							<p:column headerText="Evolução" width="10%">
@@ -220,6 +228,7 @@
 
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
 			draggable="false" resizable="false" closable="true" modal="true"
+			dynamic="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true">
 
@@ -258,7 +267,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1"
+		<p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1" dynamic="true"
 			draggable="false" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true">
@@ -292,7 +301,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"
+		<p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"  dynamic="true"
 			draggable="false" resizable="false" closable="true" modal="true"
 			showEffect="fade" hideEffect="clip"
 			styleClass="sm-size-dlg topDialog2" responsive="true">
@@ -313,7 +322,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Evoluções"
+		<p:dialog header="Consultar Evoluções" dynamic="true"
 			widgetVar="dlgConsultaEvolucoes" draggable="false" resizable="false"
 			closable="true" modal="true" showEffect="fade" hideEffect="clip"
 			styleClass="md-size-dlg topDialog" responsive="true">
@@ -348,7 +357,7 @@
 								<p:row>
 									<p:column colspan="2">
 										<h:outputLabel styleClass="title-bold" value="Evolução:" />
-										<h:outputLabel value="#{evo.evolucao}" escape="false"/>
+										<h:outputLabel value="#{evo.evolucao}" escape="false" />
 									</p:column>
 								</p:row>
 
@@ -363,7 +372,7 @@
 
 		</p:dialog>
 
-		<p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS"
+		<p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" dynamic="true"
 			draggable="false" resizable="false" closable="true" modal="true"
 			showEffect="fade" hideEffect="clip"
 			styleClass="lg-size-dlg topDialog" responsive="true">
@@ -530,7 +539,7 @@
 
 		</p:dialog>
 
-		<p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo"
+		<p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo" dynamic="true"
 			draggable="false" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true"
@@ -596,7 +605,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop" 
 			draggable="false" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true" dynamic="true">
@@ -638,6 +647,106 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="Incluir novo Profissional para Atendimento" widgetVar="dlgincprof" width="600" dynamic="true">
+<h:form id="frmincprof">
+<p:outputPanel id="outProf">
+<b:row>
+							
+
+								<b:column span="10"
+									class="label-position new-comple1">
+									<b:label value="Profissional:" severity="info" />
+
+									
+
+										<p:autoComplete id="acpro" required="true"
+											requiredMessage="Profissional: Campo obrigatório!"
+											value="#{AtendimentoController.funcionarioAux}"
+											size="60" converter="conFuncionario"
+											class="select-agendaEquipe4"
+											completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.nome}">
+											<p:ajax event="itemSelect"
+												update=":frmincprof:outProf" />
+										</p:autoComplete>
+
+										<p:commandButton icon="ui-icon-search"
+											action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+											process="@this" update="formConsultProf2"
+											oncomplete="PF('dlgConsultaProf2').show();" />
+								
+								</b:column>
+				
+
+						</b:row>
+						
+						<b:row>
+							
+
+								<b:column span="3"
+									class="label-position new-data-size new-comple1">
+									<h:outputText rendered="#{AtendimentoController.funcionarioAux.id>0}" value="ESPECIALIDADE: #{AtendimentoController.funcionarioAux.especialidade.descEspecialidade}" />
+								</b:column>
+								
+								</b:row>
+										</p:outputPanel>	
+										
+										<div align="center">
+					<p:separator />
+					<p:commandButton look="success" value="Gravar" style="float:left;"
+						class="btn-addNovo" action="#{AtendimentoController.insereProfissionalParaRealizarAtendimentoNaEquipe()}"
+						ajax="true" icon="ui-icon-check" update="formConsAge msgPagina" />
+
+					<p:commandButton value="Fechar" class="btn-nao"
+						oncomplete="PF('dlgincprof').hide();" look="info" ajax="true"
+						icon="ui-icon-close" style="margin-left:5px;float:right;" />
+
+				</div>
+						</h:form>
+		</p:dialog>
+
+
+<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultaProf2" dynamic="true"
+			modal="true">
+			<h:form id="formConsultProf2">
+				<p:outputPanel>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						value="#{MBFuncionarios.listaProfissional}" id="dtTipoAt"
+						resizableColumns="true" var="profi" display="Nenhum Profissional">
+
+						<h:column>
+							<f:facet name="header">
+                                Profissional
+                            </f:facet>
+							<p:outputLabel value="#{profi.nome}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                                Especialidade
+                            </f:facet>
+							<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                                Adicionar
+                            </f:facet>
+							<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+								update=":frmincprof:outProf"
+								class="new-btn-acao-table acao-editar"
+								oncomplete="PF('dlgConsultaProf2').hide();">
+								<f:setPropertyActionListener value="#{profi}"
+									target="#{AtendimentoController.funcionarioAux}" />
+							</p:commandButton>
+						</h:column>
+
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 
 </ui:composition>

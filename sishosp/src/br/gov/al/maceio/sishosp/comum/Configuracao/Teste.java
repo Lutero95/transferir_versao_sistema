@@ -13,7 +13,7 @@ public class Teste {
 
          int total = list.get(1);
 
-         System.out.println(total);
+
 	}
 
 }

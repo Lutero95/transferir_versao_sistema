@@ -975,7 +975,6 @@ public class AlteracaoPacienteController implements Serializable {
         for (int i = 0; i < listaFuncionarioAuxiliar.size(); i++) {
         	String dias = "";
         	for (int j = 0; j < listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size(); j++) {
-        		System.out.println(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana()==Integer.valueOf(DiasDaSemana.DOMINGO.getSigla())) {
                 dias = dias + "Domingo "+" "+(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()!=null  ? listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario() : "" );
 
@@ -1063,7 +1062,6 @@ public class AlteracaoPacienteController implements Serializable {
                // }
             }
             
-            System.out.println(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario());
             if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
                 dias = dias + "Segunda "+" "+ (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario()!=null  ? listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario() : "" );
 
