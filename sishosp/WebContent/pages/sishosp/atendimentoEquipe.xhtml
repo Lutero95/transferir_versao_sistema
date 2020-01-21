@@ -133,6 +133,7 @@
 
 							<p:column headerText="Profissional" width="25%">
 								<p:commandButton icon="fa fa-fw fa-search"
+								disabled="#{atendimento.status!='' and atendimento.status!=null}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 									oncomplete="PF('dlgConsultProfi').show()"
@@ -149,6 +150,7 @@
 
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="fa fa-fw fa-search"
+								disabled="#{atendimento.status!='' and atendimento.status!=null}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{AtendimentoController.listarProcedimentos()}"
 									oncomplete="PF('dlgConsulProc1').show()"

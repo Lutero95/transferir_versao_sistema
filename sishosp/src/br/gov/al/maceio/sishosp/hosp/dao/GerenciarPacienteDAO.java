@@ -424,6 +424,45 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
     
+    
+    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) throws SQLException {
+
+        Boolean retorno = false;
+        try {
+            
+            for (int i = 0; i < listaSubstituicaoProfissional.size(); i++) {
+                String sql2 = "delete from adm.substituicao_funcionario where id_atendimentos1 = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, listaSubstituicaoProfissional.get(i).getIdAtendimentos1());
+                ps2.execute();
+            }
+
+                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ? and situacao is null";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, idAtendimentos);
+                ps2.execute();
+
+
+
+            retorno = true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+    
+    
     public ArrayList<SubstituicaoFuncionario> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
 
         
@@ -473,6 +512,53 @@ public class GerenciarPacienteDAO {
         }
         
     }    
+    
+    public ArrayList<SubstituicaoFuncionario> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(Integer idAtendimentos, Connection conAuxiliar) {
+
+        
+        ArrayList<SubstituicaoFuncionario> lista = new ArrayList<SubstituicaoFuncionario>();
+
+        try {
+
+            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"	where sf.id_atendimentos1 in ( " + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+            		"WHERE a.id_atendimento = ?)";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idAtendimentos);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	SubstituicaoFuncionario substituicao = new SubstituicaoFuncionario();
+            	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
+            	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
+            	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	substituicao.getAfastamentoTemporario().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
+            	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
+            	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
+            	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+                lista.add(substituicao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }        
 
     public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar) {
 

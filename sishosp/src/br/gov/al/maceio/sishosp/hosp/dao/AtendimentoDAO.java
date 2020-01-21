@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -200,21 +201,34 @@ public class AtendimentoDAO {
 			throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
+		Integer idAtendimentos = null;
+		for (int i = 0; i < lista.size(); i++) {
+			idAtendimentos = lista.get(i).getId();
+			break;
+		}
 		try {
 
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			
+			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimentos, con) ;
+
+	
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento(idAtendimentos, con,  listaSubstituicao)) {
+
+				con.close();
+
+				return alterou;
+			}			
+			
+			
+			
 			for (int i = 0; i < lista.size(); i++) {
 
-				if (i == 0) {
-					String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
-
-					PreparedStatement stmt = con.prepareStatement(sql);
-					stmt.setLong(1, lista.get(i).getId());
-					stmt.execute();
-				}
 
 				String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
 						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao, horario_atendimento) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?);";
-
+				if ((lista.get(i).getStatus() == null) || (lista.get(i).getStatus().equals(""))) {
 				PreparedStatement stmt2 = con.prepareStatement(sql2);
 				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
 				stmt2.setInt(2, lista.get(i).getId());
@@ -241,6 +255,7 @@ public class AtendimentoDAO {
 				else
 					stmt2.setNull(8, Types.NULL);
 				stmt2.executeUpdate();
+				}
 
 			}
 
@@ -252,6 +267,41 @@ public class AtendimentoDAO {
 				stmt3.setInt(2, grupoAvaliacao);
 				stmt3.setInt(3, lista.get(0).getId());
 				stmt3.executeUpdate();
+			}
+			
+			if (listaSubstituicao.size()>0) {
+			String sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
+					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
+					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+					"where aa.dtaatende=? and a11.codprofissionalatendimento=? limit 1),?,?,?,?, current_timestamp)";
+			PreparedStatement ps6 = null;
+			ps6 = con.prepareStatement(sql6);
+			for (int i = 0; i < listaSubstituicao.size(); i++) {
+				String sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
+						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
+						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
+						"where a1.id_atendimento=? and a.dtaatende=? and a1.codprofissionalatendimento = ? limit 1)";
+				PreparedStatement ps8 = null;
+				ps8 = con.prepareStatement(sql8);
+				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
+				ps8.setLong(2, idAtendimentos);
+				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps8.execute();
+				
+				ps6 = null;
+				ps6 = con.prepareStatement(sql6);
+				
+				ps6.setDate(1,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
+				ps6.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(5, listaSubstituicao.get(i).getFuncionario().getId());
+				ps6.setLong(6, listaSubstituicao.get(i).getUsuarioAcao().getId());
+				ps6.execute();
+			}
 			}
 
 			con.commit();

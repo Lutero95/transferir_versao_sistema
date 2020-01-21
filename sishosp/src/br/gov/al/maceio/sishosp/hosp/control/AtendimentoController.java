@@ -25,7 +25,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 
 @ManagedBean(name = "AtendimentoController")
-@SessionScoped
+@ViewScoped
 public class AtendimentoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -303,7 +303,8 @@ public class AtendimentoController implements Serializable {
     public List<AtendimentoBean> listarAtendimentosEquipe()
             throws ProjetoException {
 
-        if (atendimento.getStatus() != null) {
+        /*
+    	if (atendimento.getStatus() != null) {
             if (!atendimento.getStatus().equals("")) {
 
                 for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
@@ -320,6 +321,7 @@ public class AtendimentoController implements Serializable {
             }
         }
 
+        */
         if (procedimento.getIdProc() != null) {
             if (procedimento.getIdProc() > 0) {
 
