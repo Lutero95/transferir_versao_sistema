@@ -20,7 +20,7 @@ public class ProgramaConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return pDAO.listarProgramaPorId(id);
+			return pDAO.listarProgramaPorIdParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

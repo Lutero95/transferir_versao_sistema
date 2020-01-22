@@ -21,8 +21,9 @@ public class FuncionarioConverter implements Converter {
 		if (value.equals("null") || value.equals("") || value == null)
 			return null;
 		try {
+			System.out.println("confuncuonario");
 			int id = Integer.parseInt(value);
-			return f.buscarProfissionalPorId(id);
+			return f.buscarProfissionalPorIdParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

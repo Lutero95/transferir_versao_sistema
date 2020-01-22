@@ -21,7 +21,7 @@ public class PacienteConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return pDAO.listarPacientePorID(id);
+			return pDAO.listarPacientePorIDParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

@@ -438,6 +438,39 @@ public class EquipeDAO {
 			}
 		}
 	}
+	
+	public EquipeBean buscarEquipePorIDParaConverter(Integer id) throws ProjetoException {
+		EquipeBean equipe = null;
+
+		String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+				equipe.setCodUnidade(rs.getInt("cod_unidade"));
+				equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
+				equipe.setTurno(rs.getString("turno"));
+			}
+
+			return equipe;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
 
 	public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe) throws ProjetoException {
 		ArrayList<FuncionarioBean> lista = new ArrayList<>();

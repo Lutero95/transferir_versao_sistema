@@ -20,7 +20,7 @@ public class TipoAtendimentoConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return tDAO.listarTipoPorId(id);
+			return tDAO.listarTipoPorIdParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

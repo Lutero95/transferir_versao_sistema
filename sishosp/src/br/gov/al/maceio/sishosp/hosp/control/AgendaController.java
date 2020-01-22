@@ -881,6 +881,7 @@ public class AgendaController implements Serializable {
     }
 
     public void onTransferFuncionario(TransferEvent event) {
+    	System.out.println("onTransferFuncionario");
         StringBuilder builder = new StringBuilder();
 
         for (Object item : event.getItems()) {
@@ -1091,6 +1092,7 @@ public class AgendaController implements Serializable {
     }
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(String query) throws ProjetoException {
+    	System.out.println("listaProfissionalPorGrupoAutoComplete");
         List<FuncionarioBean> result = fDao.listarProfissionalBuscaPorGrupo(query, agenda.getGrupo().getIdGrupo());
         return result;
     }
@@ -1493,6 +1495,7 @@ public class AgendaController implements Serializable {
     }
 
     public DualListModel<FuncionarioBean> getListaFuncionariosDual() {
+    	System.out.println("getListaFuncionariosDual");
         return listaFuncionariosDual;
     }
 

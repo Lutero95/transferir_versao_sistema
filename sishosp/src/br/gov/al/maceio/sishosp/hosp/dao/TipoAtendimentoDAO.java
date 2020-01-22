@@ -505,6 +505,41 @@ public class TipoAtendimentoDAO {
             }
         }
     }
+    
+    public TipoAtendimentoBean listarTipoPorIdParaConverter(int id) throws ProjetoException {
+        String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
+        + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+                + " from hosp.tipoatendimento WHERE id = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            GrupoDAO gDao = new GrupoDAO();
+            ProgramaDAO pDao = new ProgramaDAO();
+            TipoAtendimentoBean tipo = null;
+            while (rs.next()) {
+                tipo = new TipoAtendimentoBean();
+                tipo.setIdTipo(rs.getInt("id"));
+                tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+                tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
+            }
+            return tipo;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }    
 
     public TipoAtendimentoBean listarInformacoesTipoAtendimentoEquieProgramaPorId(int codigo)
             throws ProjetoException {

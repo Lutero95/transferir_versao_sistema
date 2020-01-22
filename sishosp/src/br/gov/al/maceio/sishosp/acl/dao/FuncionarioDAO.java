@@ -1172,8 +1172,6 @@ public class FuncionarioDAO {
 				prof.getCbo().setDescCbo(rs.getString("desccbo"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				prof.getProc1().setNomeProc(rs.getString("descproc"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
@@ -1739,6 +1737,48 @@ public class FuncionarioDAO {
 			}
 		}
 	}
+	
+	public FuncionarioBean buscarProfissionalPorIdParaConverter(Integer id) throws ProjetoException {
+		FuncionarioBean prof = null;
+
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
+				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setCpf(rs.getString("cpf"));
+				prof.setSenha(rs.getString("senha"));
+				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.getPerfil().setId(rs.getLong("id_perfil"));
+				prof.getUnidade().setId(rs.getInt("codunidade"));
+				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+
+			}
+			return prof;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}	
 	
 	public FuncionarioBean buscarProfissionalConverterPorId(Integer id) throws ProjetoException {
 		FuncionarioBean prof = null;

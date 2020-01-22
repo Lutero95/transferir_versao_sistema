@@ -372,6 +372,37 @@ public class ProgramaDAO {
         }
         return programa;
     }
+    
+    public ProgramaBean listarProgramaPorIdParaConverter(int id) throws ProjetoException {
+
+        ProgramaBean programa = new ProgramaBean();
+        GrupoDAO gDao = new GrupoDAO();
+        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc from hosp.programa join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? order by descprograma";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
+                programa.getProcedimento().setNomeProc(rs.getString("descproc"));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return programa;
+    }    
 
     public ProgramaBean listarProgramaPorIdComConexao(int id, Connection conAuxiliar) {
 

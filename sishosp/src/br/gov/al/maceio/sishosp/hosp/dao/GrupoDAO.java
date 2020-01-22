@@ -511,6 +511,39 @@ public class GrupoDAO {
         }
         return grupo;
     }
+    
+    public GrupoBean listarGrupoPorIdParaConverter(int id) throws ProjetoException {
+
+        GrupoBean grupo = new GrupoBean();
+        String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where id_grupo = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setAuditivo(rs.getBoolean("auditivo"));
+                grupo.setinsercao_pac_institut(rs
+                        .getBoolean("insercao_pac_institut"));
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return grupo;
+    }    
 
     public GrupoBean listarGrupoPorIdComConexao(int id, Connection conAuxiliar) throws ProjetoException {
 

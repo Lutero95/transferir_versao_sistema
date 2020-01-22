@@ -21,7 +21,7 @@ public class GrupoConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return g.listarGrupoPorId(id);
+			return g.listarGrupoPorIdParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

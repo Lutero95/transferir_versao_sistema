@@ -160,7 +160,7 @@ public class RelatoriosController implements Serializable {
     
     
 
-    public void preparaRelPacientesPorModalidade() {
+    public void preparaRelPacientesPorPrograma() {
         atributoGenerico1 = "I";
     }
 
@@ -307,16 +307,17 @@ public class RelatoriosController implements Serializable {
         }
     }
 
-    public void gerarPacientesPorModalidade()
+    public void gerarPacientesPorPrograma()
             throws IOException, ParseException, ProjetoException {
 
+    	
         if (atributoGenerico1.equals("A")) {
             idadeMaxima = 200;
         }
 
         String caminho = "/WEB-INF/relatorios/";
         String relatorio = "";
-        relatorio = caminho + "pacientes_por_modalidade.jasper";
+        relatorio = caminho + "pacientes_por_programa.jasper";
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("codunidade", user_session.getUnidade().getId());
         if (pacienteInstituicao.getPrograma() != null) {
@@ -325,10 +326,19 @@ public class RelatoriosController implements Serializable {
         else{
             map.put("codprograma", 0);
         }
-        map.put("idademinima", idadeMinima);
-        map.put("idademaxima", idadeMaxima);
+        
+        if (idadeMinima == null)
+        map.put("idademinima", 0);
+        else
+        	map.put("idademinima", idadeMinima);
+        
+        if (idadeMaxima == null)
+        map.put("idademaxima", 200);
+        else
+        	map.put("idademaxima", idadeMaxima);
 
-        this.executeReport(relatorio, map, "relatorio.pdf");
+        this.executeReport(relatorio, map, "relatorioporprograma.pdf");
+
 
     }
 
