@@ -164,7 +164,7 @@
 							<p:column headerText="Status" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
 
-								<b:selectOneMenu value="#{atendimento.status}"
+								<b:selectOneMenu value="#{atendimento.status}" disabled="true"
 									style="color: #1d5987 !important;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItem itemLabel="Atendido" itemValue="A" />
@@ -189,12 +189,23 @@
 							<p:column headerText="Evolução" width="10%">
 								<div align="center">
 									<p:commandButton icon="fa fa-fw fa-edit" size="sm"
-										class="btn-acao-table acao-editar"
+										class="btn-acao-table acao-editar" disabled="true"
 										action="#{AtendimentoController.abrirDialogAtendimentoPorEquipe()}">
 										<f:setPropertyActionListener value="#{atendimento.id1}"
 											target="#{AtendimentoController.idAtendimento1}" />
 									</p:commandButton>
 								</div>
+							</p:column>
+							<p:column headerText="Excluir" width="10%">
+							
+							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+							disabled="#{atendimento.status!='' and atendimento.status!=null}"	
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
+							oncomplete="PF('dlgExclusao').show()">
+
+							<f:setPropertyActionListener value="#{atendimento}"
+								target="#{AtendimentoController.atendimentoAux}" />
+						</p:commandButton>
 							</p:column>
 
 							<f:facet name="footer">
@@ -697,9 +708,9 @@
 										
 										<div align="center">
 					<p:separator />
-					<p:commandButton look="success" value="Gravar" style="float:left;"
+					<p:commandButton look="success" value="Confirmar" style="float:left;"
 						class="btn-addNovo" action="#{AtendimentoController.insereProfissionalParaRealizarAtendimentoNaEquipe()}"
-						ajax="true" icon="ui-icon-check" update="formConsAge msgPagina" />
+						ajax="true" icon="ui-icon-check" update=":formConsAge msgPagina" />
 
 					<p:commandButton value="Fechar" class="btn-nao"
 						oncomplete="PF('dlgincprof').hide();" look="info" ajax="true"
@@ -747,6 +758,27 @@
 
 					</b:dataTable>
 				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog widgetVar="dlgExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="dlgexcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Profissional do Atendimento?</div>
+				<div align="center">
+					<p:separator />
+
+					<p:commandButton look="success" value="Sim" style="float:left;"
+						action="#{AtendimentoController.excluiProfissionalListaAtendimento(AtendimentoController.atendimentoAux)}" ajax="true"
+						class="btn-sim" icon="ui-icon-check" update=":formConsAge msgPagina" />
+
+					<p:commandButton value="Não" oncomplete="PF('dlgExclusao').hide();"
+						look="info" ajax="true" icon="ui-icon-close" class="btn-nao"
+						style="margin-left:5px;float:right;" />
+				</div>
 			</h:form>
 		</p:dialog>
 	</ui:define>
