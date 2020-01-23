@@ -112,7 +112,7 @@
               draggable="false" id="selecaoUnidade" modal="true"
               resizable="false" showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
         <h:form>
-            <p:outputPanel autoUpdate="true">
+            <p:autoUpdate/> 
                 <div align="center">
                     <p:selectOneMenu value="#{MBFuncionarios.codigoDaUnidadeSelecionada}"
                                      style="width: 10.0em;">
@@ -125,7 +125,6 @@
                     <p:commandButton value="Selecionar"
                                      action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessao()}"/>
                 </div>
-            </p:outputPanel>
         </h:form>
     </p:dialog>
 

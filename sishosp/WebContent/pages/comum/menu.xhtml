@@ -29,14 +29,14 @@
 
             <p:outputPanel rendered="#{MBFuncionarios.usuarioLogado.codigoDaUnidadeSelecionada != null}">
                 <p:separator/>
-                <p:outputPanel autoUpdate="true">
+                <p:autoUpdate/>
                     <p:outputLabel value="Unidade atual: #{MBFuncionarios.retornaTextoDaUnidadeAtual()}"
                                    class="user-index title-panel-user"/>
                 </p:outputPanel>
                 <p:commandButton value="Trocar de Unidade" icon="fa fa-fw fa-refresh"
                                  class="btn-acao-table acao-alterar-senha"
                                  action="#{MBFuncionarios.abrirDialogTrocarDeUnidade()}"/>
-            </p:outputPanel>
+
 
             <p:separator/>
 
