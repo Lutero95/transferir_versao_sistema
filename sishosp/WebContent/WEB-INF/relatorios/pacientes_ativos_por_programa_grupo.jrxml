@@ -54,6 +54,7 @@
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,codgrupo,nome), id_paciente, cns, nome, idade,
 cid, municipio, descbairro, codprograma, descprograma, codgrupo, descgrupo,  nome_principal, nome_fantasia, cnes FROM (
@@ -74,6 +75,7 @@ JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 WHERE pi.status = 'A'
 AND (($P{codprograma} IS NOT NULL AND pi.codprograma=  $P{codprograma}) OR (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+AND (($P{codgrupo} IS NOT NULL AND pi.codgrupo=  $P{codgrupo}) OR (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 AND (($P{codunidade} IS NOT NULL AND pi.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 AND (SELECT extract(year from age(p.dtanascimento))) >= $P{idademinima}
 AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima} 
@@ -144,22 +146,7 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 	<group name="grpfreq" isStartNewPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
 		<groupHeader>
-			<band height="57">
-				<textField>
-					<reportElement x="1" y="6" width="779" height="17" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12"/>
-					<textElement>
-						<font size="13" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["PROGRAMA: "+$F{descprograma}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="6" y="31" width="779" height="17" backcolor="#EBE8E8" uuid="980d3a41-99cd-4568-af34-d9fa09fa04bd"/>
-					<textElement>
-						<font size="13" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["GRUPO: "+$F{descgrupo}]]></textFieldExpression>
-				</textField>
-			</band>
+			<band height="1"/>
 		</groupHeader>
 		<groupFooter>
 			<band height="51">
@@ -173,59 +160,73 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 			</band>
 		</groupFooter>
 	</group>
-	<group name="grpgrupo">
+	<group name="grpgrupo" isReprintHeaderOnEachPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
 		<groupHeader>
-			<band height="29">
+			<band height="80">
 				<staticText>
-					<reportElement x="0" y="3" width="48" height="13" uuid="74b7f733-1bdd-4081-9b04-a4dbfcfa3af7"/>
+					<reportElement x="0" y="43" width="48" height="13" uuid="74b7f733-1bdd-4081-9b04-a4dbfcfa3af7"/>
 					<textElement textAlignment="Right">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[SEQ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="53" y="3" width="91" height="13" uuid="789361c5-1cc9-46b2-90e0-69bc1a35088d"/>
+					<reportElement x="53" y="43" width="91" height="13" uuid="789361c5-1cc9-46b2-90e0-69bc1a35088d"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CNS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="145" y="3" width="83" height="13" uuid="0f9f6b33-fe7b-47ee-8c79-d0a864536695"/>
+					<reportElement x="145" y="43" width="83" height="13" uuid="0f9f6b33-fe7b-47ee-8c79-d0a864536695"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NOME]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="394" y="3" width="73" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
+					<reportElement x="394" y="43" width="73" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[IDADE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="466" y="3" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
+					<reportElement x="466" y="43" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CID]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="538" y="-3" width="91" height="31" uuid="648ef635-ab38-4425-9fed-32915c455e08"/>
+					<reportElement x="538" y="37" width="91" height="31" uuid="648ef635-ab38-4425-9fed-32915c455e08"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[MUNICÍPIO RESIDÊNCIA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="652" y="3" width="70" height="13" uuid="cbb8e2d8-f8dd-49b8-953c-a056abe84d2f"/>
+					<reportElement x="652" y="43" width="70" height="13" uuid="cbb8e2d8-f8dd-49b8-953c-a056abe84d2f"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[BAIRRO]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="1" y="2" width="779" height="17" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROGRAMA: "+$F{descprograma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="6" y="22" width="779" height="17" backcolor="#EBE8E8" uuid="980d3a41-99cd-4568-af34-d9fa09fa04bd"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["GRUPO: "+$F{descgrupo}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>

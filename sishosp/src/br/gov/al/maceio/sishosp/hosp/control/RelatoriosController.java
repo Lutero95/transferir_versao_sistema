@@ -307,7 +307,7 @@ public class RelatoriosController implements Serializable {
         }
     }
 
-    public void gerarPacientesPorPrograma()
+    public void gerarPacientesAtivosPorPrograma()
             throws IOException, ParseException, ProjetoException {
 
     	
@@ -317,7 +317,7 @@ public class RelatoriosController implements Serializable {
 
         String caminho = "/WEB-INF/relatorios/";
         String relatorio = "";
-        relatorio = caminho + "pacientes_por_programa.jasper";
+        relatorio = caminho + "pacientes_ativos_por_programa.jasper";
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("codunidade", user_session.getUnidade().getId());
         if (pacienteInstituicao.getPrograma() != null) {
@@ -341,6 +341,40 @@ public class RelatoriosController implements Serializable {
 
 
     }
+    
+    public void gerarPacientesAtivosPorProgramaEGrupo()
+            throws IOException, ParseException, ProjetoException {
+
+    	
+        if (atributoGenerico1.equals("A")) {
+            idadeMaxima = 200;
+        }
+
+        String caminho = "/WEB-INF/relatorios/";
+        String relatorio = "";
+        relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("codunidade", user_session.getUnidade().getId());
+        if (programa != null)
+            map.put("codprograma", programa.getIdPrograma());
+
+        if (grupo != null)
+            map.put("codgrupo", grupo.getIdGrupo());
+        
+        if (idadeMinima == null)
+        map.put("idademinima", 0);
+        else
+        	map.put("idademinima", idadeMinima);
+        
+        if (idadeMaxima == null)
+        map.put("idademaxima", 200);
+        else
+        	map.put("idademaxima", idadeMaxima);
+
+        this.executeReport(relatorio, map, "relatorioporprograma.pdf");
+
+
+    }    
 
     public void geraPtsApaeMaceio(ProgramaBean programa, GrupoBean grupo)
             throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
