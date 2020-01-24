@@ -164,7 +164,8 @@
 							<p:column headerText="Status" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
 
-								<b:selectOneMenu value="#{atendimento.status}" disabled="true"
+								<b:selectOneMenu value="#{atendimento.status}" 
+						disabled="#{atendimento.statusAnterior=='A'}"
 									style="color: #1d5987 !important;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItem itemLabel="Atendido" itemValue="A" />

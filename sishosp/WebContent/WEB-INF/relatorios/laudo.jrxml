@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="pestalizzi_maceio"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -59,7 +59,9 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')   AS 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.nome AS nomeprocedimento_secundario1,
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
-prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5
+prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
+l.data_solicitacao as datainicio, 
+	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal
 FROM  hosp.laudo l  
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
@@ -252,6 +254,13 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<field name="nomeprocedimento_secundario5" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario5"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
+	</field>
+	<field name="datainicio" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="datainicio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	</field>
+	<field name="datafinal" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="datafinal"/>
 	</field>
 	<field name="tel_id2" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
@@ -772,7 +781,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5, 8) ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5, 8)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="391" y="29" width="108" height="14" uuid="baebfae5-0e9c-43c3-a53a-daaf5ec4cc0d"/>
@@ -1014,6 +1023,13 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				</textElement>
 				<text><![CDATA[CNES]]></text>
 			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="380" y="596" width="171" height="14" uuid="7a0b9b03-9e7d-4c66-a422-d8608c92e74c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{datainicio})+" a "+new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{datafinal})]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>
