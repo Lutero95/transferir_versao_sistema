@@ -13,6 +13,7 @@ public class AtendimentoBean implements Serializable {
     private Date dataAtendimentoFinal;
     private String turno;
     private String status;
+    private String statusAnterior;
     private String situacao;
     private String ehEquipe;
     private String evolucao;
@@ -237,5 +238,13 @@ public class AtendimentoBean implements Serializable {
 
 	public void setPresenca(String presenca) {
 		this.presenca = presenca;
+	}
+
+	public String getStatusAnterior() {
+		return statusAnterior;
+	}
+
+	public void setStatusAnterior(String statusAnterior) {
+		this.statusAnterior = statusAnterior;
 	}
 }

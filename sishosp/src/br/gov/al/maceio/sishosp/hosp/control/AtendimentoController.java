@@ -32,7 +32,7 @@ public class AtendimentoController implements Serializable {
 
     private AtendimentoBean atendimento, atendimentoAux;
     private List<AtendimentoBean> listAtendimentos;
-    private List<AtendimentoBean> listAtendimentosEquipe;
+    private List<AtendimentoBean> listAtendimentosEquipe, listAtendimentosEquipeParaExcluir;
     private FuncionarioBean funcionario, funcionarioAux;
     private ProcedimentoBean procedimento;
     private List<ProcedimentoBean> listaProcedimentos;
@@ -72,6 +72,7 @@ public class AtendimentoController implements Serializable {
         this.atendimentoLista = null;
         listAtendimentos = new ArrayList<AtendimentoBean>();
         listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
+        listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
         funcionario = null;
         funcionarioAux = new FuncionarioBean();
         procedimento = new ProcedimentoBean();
@@ -120,6 +121,7 @@ public class AtendimentoController implements Serializable {
     }    
     
     public void excluiProfissionalListaAtendimento(AtendimentoBean atendimento) {
+    	listAtendimentosEquipeParaExcluir.add(atendimento);
     	listAtendimentosEquipe.remove(atendimento);
     	JSFUtil.fecharDialog("dlgExclusao");
     }
@@ -186,7 +188,7 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
-
+            listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
 
             listarAtendimentosEquipe();
@@ -277,7 +279,7 @@ public class AtendimentoController implements Serializable {
     	AtendimentoBean aux = new AtendimentoBean();
     	aux.setId(atendimentoAux.getId());
     	aux.setCbo(atendimentoAux.getCbo());
-    	aux.setProcedimento(atendimentoAux.getProcedimento());
+    	aux.setProcedimento(atendimento.getProcedimento());
     	aux.setFuncionario(funcionarioAux);
     	listAtendimentosEquipe.add(aux);
             JSFUtil.adicionarMensagemSucesso("Profissional inserido com sucesso!", "Sucesso");
@@ -447,7 +449,7 @@ public class AtendimentoController implements Serializable {
 
             if (verificou) {
                 boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                        atendimento.getGrupoAvaliacao().getIdGrupo());
+                        atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
                 if (alterou) {
                     JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
                 } else {

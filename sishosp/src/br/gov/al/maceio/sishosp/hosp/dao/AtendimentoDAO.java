@@ -197,24 +197,19 @@ public class AtendimentoDAO {
 		}
 	}
 
-	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao)
+	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao,  List<AtendimentoBean> listaExcluir, Integer idAtendimento)
 			throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
-		Integer idAtendimentos = null;
-		for (int i = 0; i < lista.size(); i++) {
-			idAtendimentos = lista.get(i).getId();
-			break;
-		}
 		try {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
-			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimentos, con) ;
+			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
 
 	
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento(idAtendimentos, con,  listaSubstituicao)) {
+			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento(idAtendimento, con,  listaSubstituicao, listaExcluir)) {
 
 				con.close();
 
@@ -231,7 +226,7 @@ public class AtendimentoDAO {
 				if ((lista.get(i).getStatus() == null) || (lista.get(i).getStatus().equals(""))) {
 				PreparedStatement stmt2 = con.prepareStatement(sql2);
 				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
-				stmt2.setInt(2, lista.get(i).getId());
+				stmt2.setInt(2, idAtendimento);
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getCbo().getCodCbo())) {
 					stmt2.setNull(3, Types.NULL);
 				} else {
@@ -286,7 +281,7 @@ public class AtendimentoDAO {
 				PreparedStatement ps8 = null;
 				ps8 = con.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, idAtendimentos);
+				ps8.setLong(2, idAtendimento);
 				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
 				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
 				ps8.execute();
@@ -662,7 +657,8 @@ public class AtendimentoDAO {
 				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) "
-				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) " + "where a.id_atendimento = ?";
+				+ "left join hosp.programa on (programa.id_programa = a.codprograma) "
+				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) " + "where a.id_atendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -758,7 +754,7 @@ public class AtendimentoDAO {
 				+ " from hosp.atendimentos1 a1"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
-				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)" + " where a1.id_atendimento = ?"
+				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)" + " where a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N'"
 				+ " order by a1.id_atendimentos1";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -780,6 +776,7 @@ public class AtendimentoDAO {
 				at.getCbo().setCodCbo(rs.getInt("codcbo"));
 				at.getCbo().setDescCbo(rs.getString("descricao"));
 				at.setStatus(rs.getString("situacao"));
+				at.setStatusAnterior(rs.getString("situacao"));
 				at.getProcedimento().setCodProc(rs.getString("codprocedimento"));
 				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
 				at.getProcedimento().setIdProc(rs.getInt("id"));

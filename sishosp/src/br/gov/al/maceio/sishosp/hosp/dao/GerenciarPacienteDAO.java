@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 
@@ -425,7 +426,7 @@ public class GerenciarPacienteDAO {
     }
     
     
-    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) throws SQLException {
+    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir) throws SQLException {
 
         Boolean retorno = false;
         try {
@@ -445,6 +446,16 @@ public class GerenciarPacienteDAO {
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, idAtendimentos);
                 ps2.execute();
+                
+    			for (int i = 0; i < listaExcluir.size(); i++) {
+                     sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? where id_atendimentos1 = ?";
+
+                    ps2 = null;
+                    ps2 = conAuxiliar.prepareStatement(sql2);
+                    ps2.setLong(1, user_session.getId());
+                    ps2.setLong(2, listaExcluir.get(i).getId1());
+                    ps2.execute();
+    			}
 
 
 
