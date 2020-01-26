@@ -42,7 +42,7 @@ public class GerenciarPacienteDAO {
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
                 + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
-                + " where 1=1";
+                + " where p.cod_unidade=?";
                         if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
                         	sql = sql + " and  p.codprograma = ?";
                             }
@@ -81,7 +81,8 @@ public class GerenciarPacienteDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            int i = 1;
+            stmt.setInt(1, user_session.getUnidade().getId());
+            int i = 2;
             if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
             stmt.setInt(i, gerenciar.getPrograma().getIdPrograma());
             i = i+1;

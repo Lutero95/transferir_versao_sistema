@@ -6,6 +6,11 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 template="../../template/template.xhtml">
 
+<script>
+function openLink(){
+setTimeout("jQuery("#mylink").click();", 50);
+}
+</script>
     <ui:define name="content">
         <f:metadata>
             <f:viewAction
@@ -21,6 +26,7 @@
             <div class="panel-body table-body">
 
                 <h:form>
+<h:commandButton value="Submit" onclick="PF('ex').show(); return false;"></h:commandButton>
 
                     <p:row>
                         <div align="center">
@@ -38,10 +44,10 @@
  
                                 <p:commandButton value="Laudo" look="success" size="sm"
                                                  style="margin-left: 10px" 
-                                                 icon="ui-icon-document" immediate="true" update=":frmPrincipalPts" ajax="false"
+                                                 icon="ui-icon-document" immediate="true" update=":frmPrincipalPts" 
                                                  actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}" 
-                                                 onclick="this.form.target='_blank'"
-                                               action="#{LaudoController.redirectGerenciamentoComPacienteNaSessao()}"/>
+                                                 oncomplete="PF('dlglaudo').show();"
+                                              />
                                                  
                               
 
@@ -382,6 +388,161 @@
             </h:form>
 
         </p:dialog>
+        
+        <p:dialog widgetVar="dlglaudo" header="Gerenciamento de Laudo" dynamic="true" responsive="true" modal="true"
+        fitViewport="true" height="400px">
+			<div class="panel-body table-body">
+
+				<h:form id="frmlaudo">
+
+
+<p:commandButton id="btninc" value="Novo" title="Incluir"
+						action="#{LaudoController.redirectInsert()}" icon="ui-icon-plus"
+						class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{LaudoController.tipo}" />
+						
+					</p:commandButton>
+
+					
+
+					
+
+				
+
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+					<p:row>
+				<p:autoUpdate/>
+						<p:panelGrid columns="4">
+
+							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente"
+									itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente"
+									itemValue="matpaciente" />
+								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar"
+								style="margin-left: 10px;width:300px" />
+
+							<p:commandButton
+								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}"
+								update="tabela msgPagina" icon="ui-icon-search"
+								style="margin-left: 10px;" />
+
+
+						</p:panelGrid>
+
+					</p:row>
+
+					<p:dataTable rows="20" paginator="true" id="tabela"
+						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
+						var="tab" responsive="true">
+
+
+
+						<p:column >
+							<f:facet name="header">
+                                Paciente
+                            </f:facet>
+							<h:outputText value="#{tab.paciente.nome}" />
+						</p:column>
+
+
+						<p:column >
+							<f:facet name="header">
+                                Profissional
+                            </f:facet>
+							<h:outputText value="#{tab.profissionalLaudo.nome}" />
+						</p:column>
+						
+
+						<p:column >
+							<f:facet name="header">
+                                Procedimento Primário
+                            </f:facet>
+							<h:outputText value="#{tab.procedimentoPrimario.codProc}" />-<h:outputText
+								value="#{tab.procedimentoPrimario.nomeProc}" />
+						</p:column>
+
+
+						<p:column >
+							<f:facet name="header">
+                                Vencimento
+                            </f:facet>
+							<h:outputText value="#{tab.vencimento}" />
+						</p:column>
+
+						<p:column >
+							<f:facet name="header">
+                                Situação
+                            </f:facet>
+							<h:outputText value="#{tab.situacao}" />
+						</p:column>
+
+						<p:column >
+							<f:facet name="header">
+                                Ação
+                            </f:facet>
+
+							<p:commandButton title="Alterar" icon="ui-icon-pencil"
+								size="sm" class="btn-acao-table acao-editar"
+								action="#{LaudoController.redirectEdit()}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{LaudoController.laudo}" />
+
+								<f:setPropertyActionListener value="2"
+									target="#{LaudoController.tipo}" />
+							</p:commandButton>
+
+							<p:commandButton title="Renovar" icon="ui-icon-refresh"
+								style="margin-left:10px" size="sm"
+								class="btn-acao-table acao-editar"
+								action="#{LaudoController.redirectEdit()}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{LaudoController.laudo}" />
+
+								<f:setPropertyActionListener value="3"
+									target="#{LaudoController.tipo}" />
+							</p:commandButton>
+
+
+							<p:commandButton title="Imprimir Laudo" icon="ui-icon-print"
+								size="sm" class="btn-acao-table acao-editar"
+								style="margin-left:10px"  onclick="this.form.target='_blank'"
+								action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
+
+							</p:commandButton>
+
+
+							<p:commandButton title="Excluir" icon="ui-icon-trash"
+								class="btn-acao-table acao-excluir" size="sm" ajax="true"
+								style="margin-left:10px"
+								oncomplete="PF('dialogExclusao').show()">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{LaudoController.laudo}" />
+							</p:commandButton>
+
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+		</div>
+		</p:dialog>
+		
+		<p:dialog id="dialog1"  widgetVar="ex" onShow="openLink()">
+<p:lightBox iframe="true">
+<h:outputLink id="mylink" value="http://www.primefaces.org">
+</h:outputLink>
+</p:lightBox>
+</p:dialog>
 
     </ui:define>
 

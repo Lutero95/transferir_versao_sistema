@@ -172,6 +172,8 @@ public class GerenciarPacienteController implements Serializable {
 			dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesInicio(), laudoBean.getAnoInicio());
 		} else {
 			LaudoBean laudoBean = laudoDAO.recuperarUltimoLaudoPaciente(codPaciente, codPrograma, codGrupo);
+			System.out.println("laudoBean.getMesFinal()"+laudoBean.getMesFinal());
+			System.out.println("laudoBean.getAnoFinal()"+laudoBean.getAnoFinal());
 			dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesFinal(), laudoBean.getAnoFinal());
 			LocalDate dataAtual = LocalDate.now();
 			dataAtual =  LocalDate.now().withDayOfMonth(1).withMonth(laudoBean.getMesFinal()).withYear(laudoBean.getAnoFinal()).plusMonths(1);

@@ -46,7 +46,6 @@ public class LaudoController implements Serializable {
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
 	private static final String ENDERECO_GERENCIAMENTO = "gerenciarLaudoDigita?faces-redirect=true";
-	private static final String GERENCIAMENTO_SESSAO = "&amp;sessao=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
 	private static final String ENDERECO_ID = "&amp;id=";
 	private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
@@ -67,10 +66,6 @@ public class LaudoController implements Serializable {
 
 	public String redirectEdit() {
 		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.laudo.getId(), ENDERECO_TIPO, tipo);
-	}
-
-	public String redirectGerenciamentoComPacienteNaSessao() {
-		return ENDERECO_GERENCIAMENTO + GERENCIAMENTO_SESSAO;
 	}
 
 	public String redirectInsert() {

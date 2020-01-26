@@ -1263,7 +1263,7 @@ public class FuncionarioDAO {
 				" left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
 				" left join hosp.cbo c on c.id = funcionarios.codcbo \n" + 
 				" left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao\n" + 
-				" where coalesce(admin,false) is false and unidade.id=?\n" + 
+				" where coalesce(admin,false) is false \n" + 
 				" union\n" + 
 				" select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
 				" codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade \n" + 
@@ -1272,13 +1272,11 @@ public class FuncionarioDAO {
 				" left join hosp.cbo c on c.id = funcionarios.codcbo \n" + 
 				" left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao\n" + 
 				" join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" + 
-				" where coalesce(admin,false) is false and fu.cod_unidade=? \n" + 
+				" where coalesce(admin,false) is false \n" + 
 				" ) a order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setLong(1, user_session.getUnidade().getId());
-			stm.setLong(2, user_session.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
