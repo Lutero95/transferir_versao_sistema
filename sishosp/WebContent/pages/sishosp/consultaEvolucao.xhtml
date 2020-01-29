@@ -19,13 +19,9 @@
                 <h:form id="frmPrincipal">
 
                     <b:row>
-                        <b:column span="1"
-                                  class="label-position new-data-size new-comple1">
+                        <b:column span="6"
+							class="label-position new-data-size new-comple1">
                             <b:label value="Paciente" severity="info"/>
-                        </b:column>
-
-                        <b:column span="4">
-                        <p:outputPanel id="outPaciente">
                             <p:autoComplete value="#{AtendimentoController.paciente}"
                                             size="31" converter="conPaciente" required="true"
                                             requiredMessage="Paciente: Campo obrigatório!"
@@ -44,13 +40,19 @@
                                              icon="ui-icon-search" update=":formConsuPac"
                                              oncomplete="PF('dlgConsuPac').show();"/>
 
-                            <p:commandButton value="Consultar" look="success" size="sm" id="b1"
-                                             icon="ui-icon-check"
-                                             action="#{AtendimentoController.carregarEvolucoesPaciente()}"
-                                             update="outDtEvolucoes" class="btn-incluir"/>
 
-                        </p:outputPanel>
-                    </b:column>
+                        </b:column>
+                         <b:column span="6">
+                         
+                            <p:commandButton value="Consultar" look="success" size="sm" id="b1"
+                                             icon="ui-icon-check" style="margin-top:20px"
+                                             action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.paciente.id_paciente)}"
+                                             update="outDtEvolucoes msgPagina" class="btn-incluir"/>
+                         </b:column>
+
+                       
+                        
+                 
                 </b:row>
 
                 <p:outputPanel id="outDtEvolucoes">
@@ -72,7 +74,7 @@
                                     <h:outputLabel value="#{evo.funcionario.nome}"/>
 
                                     <h:outputLabel value="Evolução:"/>
-                                    <h:outputLabel value="#{evo.evolucao}"/>
+                                    <h:outputLabel value="#{evo.evolucao}" escape="false"/>
 
                                     <hr></hr>
                                 </p:panelGrid>

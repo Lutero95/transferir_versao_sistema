@@ -88,7 +88,14 @@ and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_la
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and ((   $P{codpaciente}   is not null and l.codpaciente=  $P{codpaciente}) or (( $P{codpaciente} =0 ) OR ( $P{codpaciente} is null )))
-and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pi.status='A') or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
+and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer} ) or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
+and ((exists (
+select pi2.id from hosp.paciente_instituicao pi2 where pi2.id_paciente = l.codpaciente and pi2.status='A'
+union
+select pi2.id from hosp.paciente_instituicao pi2 
+join hosp.laudo l2 on pi2.codlaudo = l2.id_laudo
+where l2.codpaciente = l.codpaciente and pi2.status='A'
+)) or ( pi.status='A' ))
 ) t
 )u
 )v

@@ -47,8 +47,8 @@ public class LaudoBean implements Serializable {
         procedimentoSecundario4 = new ProcedimentoBean();
         procedimentoSecundario5 = new ProcedimentoBean();
         cid1 = new CidBean();
-        cid2 = new CidBean();
-        cid3 = new CidBean();
+        cid2 = new CidBean();;
+        cid3 = new CidBean();;
         situacao = SituacaoLaudo.PENDENTE.getSigla();
             }
 

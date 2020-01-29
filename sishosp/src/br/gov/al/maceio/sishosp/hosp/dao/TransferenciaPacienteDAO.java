@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -377,6 +378,8 @@ public class TransferenciaPacienteDAO {
 
 		try {
 			conexao = ConnectionFactory.getConnection();
+			
+			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 			String sql2 = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 "
 					+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
@@ -397,6 +400,15 @@ public class TransferenciaPacienteDAO {
 				lista.add(rs.getInt("id_atendimento"));
 			}
 
+            for (int i = 0; i < listaSubstituicao.size(); i++) {
+                sql2 = "delete from adm.substituicao_funcionario where id_atendimentos1 = ?";
+
+                ps2 = null;
+                ps2 = conexao.prepareStatement(sql2);
+                ps2.setLong(1, listaSubstituicao.get(i).getIdAtendimentos1());
+                ps2.execute();
+            }
+			
 			for (int i = 0; i < lista.size(); i++) {
 				String sql3 = "delete from hosp.atendimentos1 where id_atendimento = ?";
 
@@ -564,6 +576,39 @@ public class TransferenciaPacienteDAO {
 					}
 				}
 
+			}
+			
+			sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
+					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
+					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+					"where aa.dtaatende=? and a11.codprofissionalatendimento=? limit 1),?,?,?,?, current_timestamp)";
+			ps6 = null;
+			ps6 = conexao.prepareStatement(sql6);
+			for (int i = 0; i < listaSubstituicao.size(); i++) {
+				sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
+						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
+						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
+						"where pi.id=? and a.dtaatende=? and a1.codprofissionalatendimento = ? limit 1)";
+				ps8 = null;
+				ps8 = conexao.prepareStatement(sql8);
+				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
+				ps8.setLong(2, idPacienteInstituicaoNovo);
+				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps8.execute();
+				
+				ps6 = null;
+				ps6 = conexao.prepareStatement(sql6);
+				
+				ps6.setDate(1,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
+				ps6.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(5, listaSubstituicao.get(i).getFuncionario().getId());
+				ps6.setLong(6, listaSubstituicao.get(i).getUsuarioAcao().getId());
+				ps6.execute();
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicaoNovo, insercao.getObservacao(), "IT",

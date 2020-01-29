@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="pestalizzi_maceio"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -61,7 +61,7 @@ prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.no
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
 prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
 l.data_solicitacao as datainicio, 
-	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal
+	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, c1.desccidabrev
 FROM  hosp.laudo l  
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
@@ -262,6 +262,10 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<field name="datafinal" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="datafinal"/>
 	</field>
+	<field name="desccidabrev" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="desccidabrev"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
+	</field>
 	<field name="tel_id2" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
 	</field>
@@ -395,13 +399,13 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<text><![CDATA[JUSTIFICATIVA DO(S) PROCEDIMENTO(S) SOLICITADO(S)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="351" y="361" width="1" height="24" uuid="449ce982-a5c8-4f6f-9804-6ba7fa21f94d"/>
+				<reportElement x="381" y="361" width="1" height="24" uuid="449ce982-a5c8-4f6f-9804-6ba7fa21f94d"/>
 			</line>
 			<line>
-				<reportElement x="425" y="361" width="1" height="24" uuid="cde3fe6c-1b15-491f-9e37-c9bf1e380207"/>
+				<reportElement x="443" y="361" width="1" height="24" uuid="cde3fe6c-1b15-491f-9e37-c9bf1e380207"/>
 			</line>
 			<line>
-				<reportElement x="499" y="362" width="1" height="24" uuid="1e55a69a-786e-4205-ae9a-e34be3d793dd"/>
+				<reportElement x="510" y="362" width="1" height="24" uuid="1e55a69a-786e-4205-ae9a-e34be3d793dd"/>
 			</line>
 			<rectangle>
 				<reportElement x="0" y="466" width="320" height="25" uuid="2c19c118-3444-497c-a6d4-55d32d56ee95"/>
@@ -596,21 +600,29 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<text><![CDATA[DESCRIÇÃO DO DIAGNÓSTICO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="353" y="362" width="74" height="17" uuid="8567d788-552b-4231-bf12-b0186cb82904"/>
+				<reportElement x="386" y="362" width="55" height="11" uuid="8567d788-552b-4231-bf12-b0186cb82904">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[CID PRINCIPAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="427" y="361" width="104" height="17" uuid="2018d5b7-69f6-45ba-90eb-083b79b1f79e"/>
+				<reportElement x="446" y="361" width="63" height="11" uuid="2018d5b7-69f6-45ba-90eb-083b79b1f79e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[CID SECUNDÁRIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="501" y="361" width="70" height="17" uuid="7f450346-1b72-41cc-bc26-465bce3a1318"/>
+				<reportElement x="513" y="361" width="55" height="11" uuid="7f450346-1b72-41cc-bc26-465bce3a1318">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
 					<font size="7"/>
 				</textElement>
@@ -892,28 +904,28 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textFieldExpression><![CDATA[$F{nomeprocedimento_secundario5}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="3" y="371" width="342" height="14" uuid="c80aa50c-cc6c-4126-8112-d5a8260723bb"/>
+				<reportElement x="3" y="371" width="379" height="14" uuid="c80aa50c-cc6c-4126-8112-d5a8260723bb"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{desccidabrev}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="353" y="371" width="72" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
+				<reportElement x="386" y="371" width="48" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="427" y="371" width="72" height="14" uuid="d86b4927-9325-47fb-bf3c-4f29265d6117"/>
+				<reportElement x="446" y="371" width="53" height="14" uuid="d86b4927-9325-47fb-bf3c-4f29265d6117"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cid2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="501" y="371" width="72" height="14" uuid="fc7e3d98-15ac-4b65-8a92-f95c3e03d833"/>
+				<reportElement x="514" y="371" width="50" height="14" uuid="fc7e3d98-15ac-4b65-8a92-f95c3e03d833"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>

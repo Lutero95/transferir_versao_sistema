@@ -369,7 +369,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descCid}">
+                                                itemLabel="#{theme.descCidAbrev}">
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusCid1" icon="ui-icon-search"
@@ -389,7 +389,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descCid}">
+                                                itemLabel="#{theme.descCidAbrev}">
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusCid2" icon="ui-icon-search"
@@ -408,7 +408,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descCid}">
+                                                itemLabel="#{theme.descCidAbrev}">
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusCid3" icon="ui-icon-search"
@@ -788,7 +788,7 @@
                                 Descrição
                             </f:facet>
 
-                            <h:outputText value="#{tab.descCid}"/>
+                            <h:outputText value="#{tab.descCidAbrev}"/>
                         </p:column>
 
 
@@ -857,7 +857,7 @@
                                 Descrição
                             </f:facet>
 
-                            <h:outputText value="#{tab.descCid}"/>
+                            <h:outputText value="#{tab.descCidAbrev}"/>
                         </p:column>
 
 
@@ -926,7 +926,7 @@
                                 Descrição
                             </f:facet>
 
-                            <h:outputText value="#{tab.descCid}"/>
+                            <h:outputText value="#{tab.descCidAbrev}"/>
                         </p:column>
 
 
@@ -979,7 +979,6 @@
                     <p:commandButton value="Fechar"
                                      oncomplete="PF('dlgImprimir').hide();" look="info" ajax="true"
                                      icon="ui-icon-close" class="btn-nao"
-                                     action="#{LaudoController.fecharAbaAtual()}"
                                      style="margin-left:5px;float:right;"/>
                 </div>
             </h:form>

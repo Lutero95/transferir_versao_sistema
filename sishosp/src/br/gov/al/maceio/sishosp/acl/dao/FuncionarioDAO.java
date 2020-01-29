@@ -143,15 +143,16 @@ public class FuncionarioDAO {
 				+ "then true else false end as usuarioativo, p.opcao_atendimento, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
-				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo from acl.funcionarios us "
+				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo from acl.funcionarios us "
 				+ "join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
 				+ " join hosp.empresa e on e.cod_empresa = u.cod_empresa "
-				+ "where (us.cpf = ?) and us.ativo = 'S'";
+				+ " left join hosp.proc on proc.id = us.codprocedimentopadrao"
+				+ " where (us.cpf = ?) and us.ativo = 'S'";
 
 		FuncionarioBean ub = null;
-		int count = 1;
+		int count = 1;	
 		String setoresUsuario = "";
 
 		try {
@@ -183,6 +184,11 @@ public class FuncionarioDAO {
 				ub.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
 				ub.getPerfil().setId(rs.getLong("idperfil"));
 				ub.getPerfil().setDescricao(rs.getString("descperfil"));
+				if (rs.getString("codprocedimentopadrao") != null){
+					ub.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+					ub.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
+					ub.getProc1().setValidade_laudo(rs.getInt("validade_laudo"));
+				}
 
 				count++;
 			}
@@ -247,7 +253,7 @@ public class FuncionarioDAO {
 
 	public List<Permissoes> carregarPermissoes(FuncionarioBean u) throws ProjetoException {
 
-		String sql = "select  si.id as sid, si.descricao as sdesc, pf.descricao pfdesc, "
+		String sql = "select  distinct si.id as sid, si.descricao as sdesc, pf.descricao pfdesc, "
 				+ "pm.id as pmid, pm.descricao as pmdesc, 0 as funid, '' as fundesc, '' as funcodigo, "
 				+ " false as funativa, 0 as funidsis, me.id as meid, me.descricao as medesc, me.desc_pagina, "
 				+ "me.diretorio, me.extensao, me.codigo as cod_menu, me.indice, me.tipo, me.ativo as meativo, "

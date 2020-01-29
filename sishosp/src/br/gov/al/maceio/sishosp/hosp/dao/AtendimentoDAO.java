@@ -510,7 +510,7 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
+		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao,  "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
@@ -618,6 +618,7 @@ public class AtendimentoDAO {
 				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				at.getPaciente().setNome(rs.getString("nome"));
 				at.getPaciente().setCns(rs.getString("cns"));
+				at.getPaciente().setCpf(rs.getString("cpf"));
 				at.setTurno(rs.getString("turno"));
 				at.getFuncionario().setId(rs.getLong("codmedico"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));

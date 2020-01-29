@@ -478,12 +478,19 @@ public class LaudoDAO {
 				l.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
 				l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
 				l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
+				if ((l.getCid1() != null) && ((l.getCid1().getIdCid() != null))) { 
 				l.getCid1().setIdCid(rs.getInt("cid1"));
 				l.getCid1().setDescCid(rs.getString("desccid1"));
+				}
+				if ((l.getCid2() != null) && ((l.getCid2().getIdCid() != null))) {
 				l.getCid2().setIdCid(rs.getInt("cid2"));
 				l.getCid2().setDescCid(rs.getString("desccid2"));
+				}
+				
+				if ((l.getCid3() != null) && ((l.getCid3().getIdCid() != null))) {
 				l.getCid3().setIdCid(rs.getInt("cid3"));
 				l.getCid3().setDescCid(rs.getString("desccid3"));
+				}
 				l.setObs(rs.getString("obs"));
 				l.setSituacao(rs.getString("situacao"));
 				FuncionarioBean func = new FuncionarioBean();
@@ -515,8 +522,8 @@ public class LaudoDAO {
 				+ " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
 				+ " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
 				+ " l.codprocedimento_secundario4, ps4.nome as nome4, "
-				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, "
-				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao, func.id_funcionario, func.descfuncionario  "
+				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,  c1.desccidabrev desccidabrev1, l.cid2, c2.desccid as desccid2,  c2.desccidabrev desccidabrev2, "
+				+ " l.cid3, c3.desccid as desccid3,  c3.desccidabrev desccidabrev3, l.obs, data_autorizacao, situacao, func.id_funcionario, func.descfuncionario  "
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
 				+ " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -563,10 +570,13 @@ public class LaudoDAO {
 				l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
 				l.getCid1().setIdCid(rs.getInt("cid1"));
 				l.getCid1().setDescCid(rs.getString("desccid1"));
+				l.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
 				l.getCid2().setIdCid(rs.getInt("cid2"));
 				l.getCid2().setDescCid(rs.getString("desccid2"));
+				l.getCid1().setDescCidAbrev(rs.getString("desccidabrev2"));
 				l.getCid3().setIdCid(rs.getInt("cid3"));
 				l.getCid3().setDescCid(rs.getString("desccid3"));
+				l.getCid1().setDescCidAbrev(rs.getString("desccidabrev3"));
 				l.setObs(rs.getString("obs"));
 				l.setSituacao(rs.getString("situacao"));
 				FuncionarioBean func = new FuncionarioBean();

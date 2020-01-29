@@ -9,8 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
@@ -42,6 +41,8 @@ public class LaudoController implements Serializable {
 	private Boolean renderizarDataAutorizacao;
 	private Integer idLaudoGerado = null;
 	private BuscaLaudoDTO buscaLaudoDTO;
+	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_usuario");
 
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -62,6 +63,8 @@ public class LaudoController implements Serializable {
 		buscaLaudoDTO.setSituacao("P");
 		buscaLaudoDTO.setTipoBusca("paciente");
 		buscaLaudoDTO.setCampoBusca("");
+		tipo = 0;
+		
 	}
 
 	public String redirectEdit() {
@@ -71,7 +74,29 @@ public class LaudoController implements Serializable {
 	public String redirectInsert() {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
+	
+	public void setaTipoUm() {
+		tipo = 1;
+	}
+	
+	public void setaTipoDois() {
+		tipo = 2;
+	}
+	
+	public void setaTipoTres() {
+		tipo = 3;
+	}
 
+	public void carregaLaudoPorId(Integer idLaudo) throws ProjetoException {
+		this.laudo = lDao.buscarLaudosPorId(idLaudo);
+	}
+	
+	public void carregaLaudoParaRenovacao(Integer idLaudo) throws ProjetoException {
+		this.laudo = lDao.carregaLaudoParaRenovacao(idLaudo);
+		calcularPeriodoLaudo();
+	}
+	
+	
 	public void getEditLaudo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
@@ -159,6 +184,7 @@ public class LaudoController implements Serializable {
 
 		if (alterou == true) {
 			JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
+			JSFUtil.fecharDialog("dlgcadlaudo");
 		} else {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
@@ -181,20 +207,33 @@ public class LaudoController implements Serializable {
 	public void listarLaudo(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
-		if ((params.get("sessao") != null)) {
 			Integer campoBuscaSeTemPacienteLaudoNaSessao = verificarSeExistePacienteLaudoNaSessao();
 			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBuscaSeTemPacienteLaudoNaSessao)) {
 				buscaLaudoDTO.setCampoBusca(campoBuscaSeTemPacienteLaudoNaSessao.toString());
 				buscaLaudoDTO.setTipoBusca("prontpaciente");
 				buscaLaudoDTO.setSituacao("T");
 			}
-		}
-		else
-		{
-			SessionUtil.removerDaSessao(DadosSessao.PACIENTE_LAUDO);
-		}
+		
 
 		listaLaudo = lDao.listaLaudos(buscaLaudoDTO.getSituacao(), buscaLaudoDTO.getCampoBusca(), buscaLaudoDTO.getTipoBusca());
+	}
+	
+	public void iniciaNovoLaudoTelaEvolucao() {
+		PacienteBean pacienteLaudo = (PacienteBean) SessionUtil.resgatarDaSessao(DadosSessao.PACIENTE_LAUDO);
+		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudo)) {
+			laudo.setPaciente(pacienteLaudo);
+			laudo.setProfissionalLaudo(user_session);
+			if (user_session.getProc1().getIdProc()!=null) {
+				laudo.getProcedimentoPrimario().setIdProc(user_session.getProc1().getIdProc());
+				laudo.getProcedimentoPrimario().setNomeProc(user_session.getProc1().getNomeProc());
+				laudo.setPeriodo(90); //laudo.getProcedimentoPrimario().getValidade_laudo());
+			}
+			laudo.setDataSolicitacao(new java.util.Date());
+			laudo.setCid1(null);
+
+			calcularPeriodoLaudo();
+		}
+		
 	}
 
 	private Integer verificarSeExistePacienteLaudoNaSessao() {
@@ -206,11 +245,10 @@ public class LaudoController implements Serializable {
 		}
 	}
 
-	public void fecharAbaAtual() {
-		PacienteBean pacienteLaudo = (PacienteBean) SessionUtil.resgatarDaSessao(DadosSessao.PACIENTE_LAUDO);
-		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudo)) {
-			RequestContext.getCurrentInstance().execute("window.close()");
-		}
+	public void fecharTelaLaudoEvolucao() {
+		JSFUtil.fecharDialog("dlgImprimir");
+		JSFUtil.fecharDialog("dlglaudo");
+		JSFUtil.fecharDialog("dlgcadlaudo");
 	}
 
 	public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
