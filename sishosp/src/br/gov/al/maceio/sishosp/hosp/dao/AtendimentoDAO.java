@@ -842,5 +842,47 @@ public class AtendimentoDAO {
 		}
 		return lista;
 	}
+	
+	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
+
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome FROM hosp.atendimentos1 a1 "
+				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
+				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
+				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?  "
+				+ "ORDER BY a.dtaatende DESC ";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codPaciente);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AtendimentoBean at = new AtendimentoBean();
+				at.getProcedimento().setNomeProc(rs.getString("nome"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.setEvolucao(rs.getString("evolucao"));
+				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+
+				lista.add(at);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+	
 
 }

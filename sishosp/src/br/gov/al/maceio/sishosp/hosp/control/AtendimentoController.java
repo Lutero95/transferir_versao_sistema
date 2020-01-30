@@ -469,8 +469,8 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void carregarEvolucoesPaciente(Integer codPaciente) throws ProjetoException {
-        listaEvolucoes = aDao.carregarEvolucoesDoPaciente(codPaciente);
+    public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
+        listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente);
     }
 
     public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {

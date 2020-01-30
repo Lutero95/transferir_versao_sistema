@@ -46,7 +46,7 @@
                          
                             <p:commandButton value="Consultar" look="success" size="sm" id="b1"
                                              icon="ui-icon-check" style="margin-top:20px"
-                                             action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.paciente.id_paciente)}"
+                                             action="#{AtendimentoController.carregarTodasAsEvolucoesDoPaciente(AtendimentoController.paciente.id_paciente)}"
                                              update="outDtEvolucoes msgPagina" class="btn-incluir"/>
                          </b:column>
 
@@ -58,26 +58,36 @@
                 <p:outputPanel id="outDtEvolucoes">
 
                     <b:row>
-                        <b:column span="12">
+                        <b:column span="12" style="	line-height: 1.5;margin-left: 10px;
+	color: #1d5987;border: 1px solid transparent;
+	padding: 0px;">
                             <ui:repeat var="evo"
                                        value="#{AtendimentoController.listaEvolucoes}"
                                        varStatus="status">
 
-                                <p:panelGrid columns="2" styleClass="semBorda2">
-
-                                    <h:outputLabel value="Data Atendimento:"/>
-                                    <h:outputLabel value="#{evo.dataAtendimentoInicio}">
+                               <b:row>
+ <b:column span="12">
+                                    <h:outputLabel value="Data Atendimento: "/>
+                                    <h:outputLabel value="#{evo.dataAtendimentoInicio}" style="font-weight:bold">
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputLabel>
-
-                                    <h:outputLabel value="Profissional:"/>
-                                    <h:outputLabel value="#{evo.funcionario.nome}"/>
-
+                                    </b:column>
+                                    </b:row>
+                                    <b:row>
+ <b:column span="12">
+                                    <h:outputLabel value="Profissional: "/>
+                                    <h:outputLabel value="#{evo.funcionario.nome}" style="font-weight:bold"/>
+                                    </b:column>
+</b:row>
+<b:row>
+ <b:column span="12">
                                     <h:outputLabel value="Evolução:"/>
-                                    <h:outputLabel value="#{evo.evolucao}" escape="false"/>
-
+                                    <br/>
+                                    <h:outputLabel value="#{evo.evolucao}" escape="false" style="font-weight:bold" />
+                                    </b:column>
+</b:row>
                                     <hr></hr>
-                                </p:panelGrid>
+                                
 
                             </ui:repeat>
 
@@ -133,7 +143,7 @@
                         Ação
                     </f:facet>
                     <p:commandButton
-                            update=":frmPrincipal:outPaciente"
+                            update=":frmPrincipal"
                             icon="fa fa-fw fa-check" title="Selecionar"
                             class="new-btn-acao-table acao-editar"
                             onclick="PF('dlgConsuPac').hide();">
