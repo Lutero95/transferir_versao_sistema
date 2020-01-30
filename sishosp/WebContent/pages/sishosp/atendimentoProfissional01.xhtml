@@ -476,7 +476,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 
 							<p:commandButton title="Renovar" icon="ui-icon-refresh"
 								style="margin-left:10px" size="sm"
-								class="btn-acao-table acao-editar"
+								class="btn-acao-table acao-editar" update=":formLaudo"
 					oncomplete="PF('dlgcadlaudo').show();"  action="#{LaudoController.carregaLaudoParaRenovacao(tab.id)}"
  				actionListener="#{LaudoController.setaTipoTres()}">
 
@@ -508,7 +508,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 		
 		        <p:dialog widgetVar="dlgcadlaudo" header="Inclusão de Laudo" dynamic="true" responsive="true" modal="true"
 		        style="width:100% !important"
-		        fitViewport="true" 
+		        fitViewport="true"
         height="400px">
         <div class="panel panel-primary top-primary">
             <div class="panel-body table-body sub-table-body">
