@@ -1,162 +1,180 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <div class="panel panel-primary top-primary">
-            <div class="panel-heading top-heading">
-                <h4 class="panel-title">Consultar Evolução</h4>
-            </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Consultar Evolução</h4>
+			</div>
 
-            <div class="panel-body table-body">
+			<div class="panel-body table-body">
 
-                <h:form id="frmPrincipal">
+				<h:form id="frmPrincipal">
 
-                    <b:row>
-                        <b:column span="6"
+					<b:row>
+						<b:column span="6"
 							class="label-position new-data-size new-comple1">
-                            <b:label value="Paciente" severity="info"/>
-                            <p:autoComplete value="#{AtendimentoController.paciente}"
-                                            size="31" converter="conPaciente" required="true"
-                                            requiredMessage="Paciente: Campo obrigatório!"
-                                            class="select-agendaEquipe4"
-                                            completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.nome}">
-                                <p:ajax event="itemSelect"
-                                        global="false"/>
+							<b:label value="Paciente" severity="info" />
+							<p:autoComplete value="#{AtendimentoController.paciente}"
+								size="31" converter="conPaciente" required="true"
+								requiredMessage="Paciente: Campo obrigatório!"
+								class="select-agendaEquipe4"
+								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nome}">
+								<p:ajax event="itemSelect" global="false" />
 
-                            </p:autoComplete>
+							</p:autoComplete>
 
-                            <p:commandButton id="btBPa" immediate="true" style="margin-left: 5px;"
-                                             actionListener="#{PacienteController.listarPacientes()}"
-                                             icon="ui-icon-search" update=":formConsuPac"
-                                             oncomplete="PF('dlgConsuPac').show();"/>
+							<p:commandButton id="btBPa" immediate="true"
+								style="margin-left: 5px;"
+								actionListener="#{PacienteController.listarPacientes()}"
+								icon="ui-icon-search" update=":formConsuPac"
+								oncomplete="PF('dlgConsuPac').show();" />
 
 
-                        </b:column>
-                         <b:column span="6">
-                         
-                            <p:commandButton value="Consultar" look="success" size="sm" id="b1"
-                                             icon="ui-icon-check" style="margin-top:20px"
-                                             action="#{AtendimentoController.carregarTodasAsEvolucoesDoPaciente(AtendimentoController.paciente.id_paciente)}"
-                                             update="outDtEvolucoes msgPagina" class="btn-incluir"/>
-                         </b:column>
+						</b:column>
+						<b:column span="6">
 
-                       
-                        
-                 
-                </b:row>
+							<p:commandButton value="Consultar" look="success" size="sm"
+								id="b1" icon="ui-icon-check" style="margin-top:20px"
+								action="#{AtendimentoController.carregarTodasAsEvolucoesDoPaciente(AtendimentoController.paciente.id_paciente)}"
+								update="outDtEvolucoes msgPagina" class="btn-incluir" />
+						</b:column>
 
-                <p:outputPanel id="outDtEvolucoes">
 
-                    <b:row>
-                        <b:column span="12" style="	line-height: 1.5;margin-left: 10px;
+
+
+					</b:row>
+
+					<p:outputPanel id="outDtEvolucoes">
+
+						<b:row>
+							<b:column span="12"
+								style="	line-height: 1.5;margin-left: 10px;
 	color: #1d5987;border: 1px solid transparent;
 	padding: 0px;">
-                            <ui:repeat var="evo"
-                                       value="#{AtendimentoController.listaEvolucoes}"
-                                       varStatus="status">
+								<ui:repeat var="evo"
+									value="#{AtendimentoController.listaEvolucoes}"
+									varStatus="status">
 
-                               <b:row>
- <b:column span="12">
-                                    <h:outputLabel value="Data Atendimento: "/>
-                                    <h:outputLabel value="#{evo.dataAtendimentoInicio}" style="font-weight:bold">
-                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                    </h:outputLabel>
-                                    </b:column>
-                                    </b:row>
-                                    <b:row>
- <b:column span="12">
-                                    <h:outputLabel value="Profissional: "/>
-                                    <h:outputLabel value="#{evo.funcionario.nome}" style="font-weight:bold"/>
-                                    </b:column>
-</b:row>
-<b:row>
- <b:column span="12">
-                                    <h:outputLabel value="Evolução:"/>
-                                    <br/>
-                                    <h:outputLabel value="#{evo.evolucao}" escape="false" style="font-weight:bold" />
-                                    </b:column>
-</b:row>
-                                    <hr></hr>
-                                
+									<b:row>
+										<b:column span="12">
+											<h:outputLabel value="Data Atendimento: " />
+											<h:outputLabel value="#{evo.dataAtendimentoInicio}"
+												style="font-weight:bold; margin-left:10px;">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputLabel>
+										</b:column>
+									</b:row>
+									<b:row rendered="#{evo.tipoAt.descTipoAt!=null}">
+										<b:column span="12">
+											<h:outputLabel value="Tipo de Atendimento: " />
+											<h:outputLabel value="#{evo.tipoAt.descTipoAt}"  style="margin-left:10px">
+											</h:outputLabel>
+										</b:column>
+									</b:row>
 
-                            </ui:repeat>
-
-                        </b:column>
-                    </b:row>
-                </p:outputPanel>
-
-
-            </h:form>
-        </div>
-
-    </div>
-
-    <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac" dynamic="true"
-              modal="true" width="750px" height="400px" styleClass="topDialog">
-        <h:form id="formConsuPac">
-            <p:growl id="msgC"/>
-
-            <div class="form-group row">
-                <div class="col-sm-2"></div>
-            </div>
+									<b:row rendered="#{evo.programa!=null}">
+										<b:column span="12">
+											<h:outputLabel value="Programa: " />
+											<h:outputLabel value="#{evo.programa.descPrograma} - #{evo.grupo.descGrupo}"  style="margin-left:10px">
+											</h:outputLabel>
+										</b:column>
+									</b:row>
+									<b:row>
+										<b:column span="12">
+											<h:outputLabel value="Profissional: " />
+											<h:outputLabel value="#{evo.funcionario.nome}"
+												style="font-weight:bold; margin-left:10px" />
+										</b:column>
+									</b:row>
+									<b:row>
+										<b:column span="12">
+											<h:outputLabel value="Evolução:" />
+											<br />
+											<h:outputLabel value="#{evo.evolucao}" escape="false"
+												style="font-weight:bold" />
+										</b:column>
+									</b:row>
+									<hr></hr>
 
 
-            <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-                         var="pacie" value="#{PacienteController.listaPacientes}"
-                         display="Nenhum Paciente">
+								</ui:repeat>
 
-                <h:column>
-                    <f:facet name="header">
+							</b:column>
+						</b:row>
+					</p:outputPanel>
+
+
+				</h:form>
+			</div>
+
+		</div>
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			styleClass="topDialog">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
+
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					display="Nenhum Paciente">
+
+					<h:column>
+						<f:facet name="header">
                         Código
                     </f:facet>
 
-                    <p:outputLabel value="#{pacie.id_paciente}"/>
-                </h:column>
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</h:column>
 
-                <h:column>
-                    <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Nome
                     </f:facet>
 
-                    <p:outputLabel value="#{pacie.nome}"/>
-                </h:column>
+						<p:outputLabel value="#{pacie.nome}" />
+					</h:column>
 
-                <h:column>
-                    <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Cpf
                     </f:facet>
-                    <p:outputLabel value="#{pacie.cpf}"/>
-                </h:column>
+						<p:outputLabel value="#{pacie.cpf}" />
+					</h:column>
 
-                <h:column>
-                    <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Ação
                     </f:facet>
-                    <p:commandButton
-                            update=":frmPrincipal"
-                            icon="fa fa-fw fa-check" title="Selecionar"
-                            class="new-btn-acao-table acao-editar"
-                            onclick="PF('dlgConsuPac').hide();">
-                        <f:setPropertyActionListener value="#{pacie}"
-                                                     target="#{AtendimentoController.paciente}"/>
-                    </p:commandButton>
+						<p:commandButton update=":frmPrincipal" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+								target="#{AtendimentoController.paciente}" />
+						</p:commandButton>
 
-                </h:column>
+					</h:column>
 
 
-            </b:dataTable>
-        </h:form>
-    </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-</ui:define>
-        </ui:composition>
+	</ui:define>
+</ui:composition>
