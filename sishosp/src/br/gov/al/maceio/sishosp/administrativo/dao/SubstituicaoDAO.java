@@ -10,8 +10,8 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoTemporario;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -25,7 +25,7 @@ public class SubstituicaoDAO {
     PreparedStatement ps = null;
 
 
-    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados,SubstituicaoFuncionario substituicaoFuncionario) {
+    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados,SubstituicaoProfissional substituicaoFuncionario) {
 
         Boolean retorno = false;
 
@@ -62,7 +62,7 @@ public class SubstituicaoDAO {
         }
     }
 
-    public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoFuncionario substituicaoFuncionario, Connection conAuxiliar) {
+    public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoProfissional substituicaoFuncionario, Connection conAuxiliar) {
 
         Boolean retorno = false;
 
@@ -96,9 +96,9 @@ public class SubstituicaoDAO {
         }
     }
     
-	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoTemporario afastamento, Date periodoInicioBusca, Date periodoFimBusca) {
+	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoProfissional afastamento, Date periodoInicioBusca, Date periodoFimBusca) {
 		boolean periodoValidoAfastamentoNaBuscaSubstituicao = false;
-		List<AfastamentoTemporario> lista = new ArrayList<>();
+		List<AfastamentoProfissional> lista = new ArrayList<>();
 
 		String sql = "select id from adm.afastamento_funcionario where id_funcionario_afastado	=?\n"
 				+ "	and ((? between inicio_afastamento and fim_afastamento)\n"

@@ -9,13 +9,13 @@
 
 		<f:metadata>
 			<f:viewAction
-				action="#{AfastamentoTemporarioController.listarAfastamentosTemporarios()}" />
+				action="#{afastamentoProfissionalController.listarAfastamentosProfissionais()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Afastamentos
-					Temporários</h4>
+					de Profissionais</h4>
 			</div>
 
 			<div class="panel-body table-body">
@@ -23,7 +23,7 @@
 				<h:form id="frmPrincipal">
 
 					<p:commandButton id="btninc" value="Novo" size="sm"
-						action="#{AfastamentoTemporarioController.redirectInsert()}"
+						action="#{afastamentoProfissionalController.redirectInsert()}"
 						icon="ui-icon-plus" class="btn-addNovo">
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
@@ -32,7 +32,7 @@
 					<p:dataTable id="dt" var="tab" paginator="true"
 						paginatorPosition="bottom" rows="12" resizableColumns="true"
 						responsive="true"
-						value="#{AfastamentoTemporarioController.listaAfastamentosTemporarios}">
+						value="#{afastamentoProfissionalController.listaAfastamentosProfissionais}">
 
 						<p:column width="40%" headerText="Profissional">
 							<h:outputText value="#{tab.funcionario.nome}" />
@@ -78,7 +78,7 @@
 									class="btn-acao-table acao-excluir"
 									oncomplete="PF('dlgExclusao').show()">
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{AfastamentoTemporarioController.afastamentoTemporario}" />
+										target="#{afastamentoProfissionalController.afastamentoProfissional}" />
 								</p:commandButton>
 							</div>
 
@@ -101,7 +101,7 @@
 					<p:separator />
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
-						action="#{AfastamentoTemporarioController.excluirAfastamentoTemporario()}"
+						action="#{afastamentoProfissionalController.excluirAfastamentoProfissional()}"
 						ajax="true" class="btn-sim" icon="ui-icon-check"
 						update=":frmPrincipal, msgPagina" />
 

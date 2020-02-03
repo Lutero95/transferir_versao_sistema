@@ -2,10 +2,11 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -205,7 +206,7 @@ public class AtendimentoDAO {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
-			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
 
 	
 			
@@ -843,7 +844,7 @@ public class AtendimentoDAO {
 		return lista;
 	}
 	
-	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
+	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
@@ -852,8 +853,10 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on g.id_grupo = a.codgrupo "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?  "
-				+ "ORDER BY a.dtaatende DESC ";
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?  ";
+		        if (periodoInicialEvolucao != null)
+		            sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
+		        sql = sql + "ORDER BY a.dtaatende ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
@@ -861,7 +864,13 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
-
+            int i = 2;
+            if (periodoInicialEvolucao != null) {
+                stm.setDate(i, new java.sql.Date(periodoInicialEvolucao.getTime()));
+                i = i + 1;
+                stm.setDate(i, new java.sql.Date(periodoFinalEvolucao.getTime()));
+                i = i + 1;
+            }
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

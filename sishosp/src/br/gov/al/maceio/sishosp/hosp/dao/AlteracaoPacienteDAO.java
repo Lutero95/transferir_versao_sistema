@@ -12,7 +12,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -205,7 +205,7 @@ public class AlteracaoPacienteDAO {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
-			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 	
 			
@@ -413,7 +413,7 @@ public class AlteracaoPacienteDAO {
 			
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 			
 			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
 

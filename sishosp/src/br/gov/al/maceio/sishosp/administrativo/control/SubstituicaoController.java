@@ -1,10 +1,10 @@
 package br.gov.al.maceio.sishosp.administrativo.control;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.dao.AfastamentoTemporarioDAO;
+import br.gov.al.maceio.sishosp.administrativo.dao.AfastamentoProfissionalDAO;
 import br.gov.al.maceio.sishosp.administrativo.dao.SubstituicaoDAO;
-import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoTemporario;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFuncionarioAfastadoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class SubstituicaoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private SubstituicaoFuncionario substituicaoFuncionario;
+    private SubstituicaoProfissional substituicaoFuncionario;
     private SubstituicaoDAO sDao = new SubstituicaoDAO();
     private Integer idAfastamento;
     private BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO;
@@ -43,7 +43,7 @@ public class SubstituicaoController implements Serializable {
     private static final String ENDERECO_ID = "&amp;id=";
 
     public SubstituicaoController() {
-        this.substituicaoFuncionario = new SubstituicaoFuncionario();
+        this.substituicaoFuncionario = new SubstituicaoProfissional();
         buscaAgendamentosParaFuncionarioAfastadoDTO = new BuscaAgendamentosParaFuncionarioAfastadoDTO();
         listaGruposPorProgramas = new ArrayList<>();
         listaAtendimentos = new ArrayList<>();
@@ -98,8 +98,8 @@ public class SubstituicaoController implements Serializable {
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             idAfastamento = Integer.parseInt(params.get("id"));
-            AfastamentoTemporarioDAO aDao = new AfastamentoTemporarioDAO();
-            AfastamentoTemporario afastamento = aDao.carregarAfastamentoPeloId(idAfastamento);
+            AfastamentoProfissionalDAO aDao = new AfastamentoProfissionalDAO();
+            AfastamentoProfissional afastamento = aDao.carregarAfastamentoPeloId(idAfastamento);
             substituicaoFuncionario.setAfastamentoTemporario(afastamento);
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoInicio(afastamento.getPeriodoInicio());
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoFinal(afastamento.getPeriodoFinal());
@@ -155,11 +155,11 @@ public class SubstituicaoController implements Serializable {
 
     }
 
-    public SubstituicaoFuncionario getSubstituicaoFuncionario() {
+    public SubstituicaoProfissional getSubstituicaoFuncionario() {
         return substituicaoFuncionario;
     }
 
-    public void setSubstituicaoFuncionario(SubstituicaoFuncionario substituicaoFuncionario) {
+    public void setSubstituicaoFuncionario(SubstituicaoProfissional substituicaoFuncionario) {
         this.substituicaoFuncionario = substituicaoFuncionario;
     }
 

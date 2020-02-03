@@ -27,7 +27,7 @@
 
                                 <p:outputPanel id="outProf">
                                     <p:autoComplete
-                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.funcionario}"
+                                            value="#{AfastamentoProfissionalController.afastamentoTemporario.funcionario}"
                                             id="autoCompleteProfissional" size="31"
                                             converter="conFuncionario" required="true"
                                             requiredMessage="Profissional: Campo obrigatório!"
@@ -54,13 +54,13 @@
                         <b:column span="1" class="label-position btn-radio-table">
                             <b:label value="Motivo Afastamento" severity="info"/>
                             <p:selectOneRadio
-                                    value="#{AfastamentoTemporarioController.afastamentoTemporario.motivoAfastamento}"
+                                    value="#{AfastamentoProfissionalController.afastamentoTemporario.motivoAfastamento}"
                                     style="margin-left:-15px;margin-top:10px" required="true"
                                     requiredMessage="Motivo Afastamento: Campo obrigatório!">
                                 <f:selectItem itemLabel="Férias" itemValue="FE"/>
                                 <f:selectItem itemLabel="Licença Médica" itemValue="LM"/>
                                 <f:selectItem itemLabel="Falta" itemValue="FA"/>
-                                <p:ajax event="change" process="@this" listener="#{AfastamentoTemporarioController.limpaSelecaoTurnoAfastamento()}"
+                                <p:ajax event="change" process="@this" listener="#{AfastamentoProfissionalController.limpaSelecaoTurnoAfastamento()}"
 									update=":formAfastamentoTemporario:outturno" />
                             </p:selectOneRadio>
 
@@ -70,11 +70,11 @@
                     
                     <b:row>
                     <p:outputPanel id="outturno">
-                       <b:column span="3" class="label-position" rendered="#{AfastamentoTemporarioController.afastamentoTemporario.motivoAfastamento=='FA'}">
+                       <b:column span="3" class="label-position" rendered="#{AfastamentoProfissionalController.afastamentoTemporario.motivoAfastamento=='FA'}">
                                     <b:label value="Turno:" severity="info"/>
 
                                     <b:selectOneMenu class="select-agendaEquipe2" id="cbturno" required="true" requiredMessage="Informe o Turno"
-                                                     value="#{AfastamentoTemporarioController.afastamentoTemporario.turno}">
+                                                     value="#{AfastamentoProfissionalController.afastamentoTemporario.turno}">
 										<f:selectItem itemLabel="Selecione" itemValue=""/>
                                         <f:selectItem itemLabel="Manhã" itemValue="M"/>
                                         <f:selectItem itemLabel="Tarde" itemValue="T"/>
@@ -104,10 +104,10 @@
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true"
                                             requiredMessage="Início Afastamento: Campo obrigatório!"
-                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoInicio}"
+                                            value="#{AfastamentoProfissionalController.afastamentoTemporario.periodoInicio}"
                                             locale="pt">
                                     <p:ajax event="dateSelect"
-                                            listener="#{AfastamentoTemporarioController.validarDatasDeAfastamentoTemporario}"
+                                            listener="#{AfastamentoProfissionalController.validarDatasDeAfastamentoTemporario}"
                                             process="@this dtaInicio" update="msgPagina, datas"></p:ajax>
                                 </p:calendar>
 
@@ -126,10 +126,10 @@
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true" requiredMessage="Fim Afastamento: Campo obrigatório!"
-                                            value="#{AfastamentoTemporarioController.afastamentoTemporario.periodoFinal}"
+                                            value="#{AfastamentoProfissionalController.afastamentoTemporario.periodoFinal}"
                                             locale="pt">
                                     <p:ajax event="dateSelect"
-                                            listener="#{AfastamentoTemporarioController.validarDatasDeAfastamentoTemporario}"
+                                            listener="#{AfastamentoProfissionalController.validarDatasDeAfastamentoTemporario}"
                                             process="@this dtaFinal" update="msgPagina, datas"></p:ajax>
                                 </p:calendar>
 
@@ -145,14 +145,14 @@
 
                         <p:commandButton value="Gravar" look="success" size="sm"
                                          id="bgravar" icon="ui-icon-check"
-                                         action="#{AfastamentoTemporarioController.gravarAfastamentoTemporario()}"
+                                         action="#{AfastamentoProfissionalController.gravarAfastamentoTemporario()}"
                                          update=":formAfastamentoTemporario"
                                          class="btn-incluir"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
                                          update=":formAfastamentoTemporario"
-                                         actionListener="#{AfastamentoTemporarioController.limparDados()}"
+                                         actionListener="#{AfastamentoProfissionalController.limparDados()}"
                                          action="/pages/sishosp/gerenciarafastamentotemporario.xhtml?faces-redirect=true">
                         </p:commandButton>
 
@@ -185,7 +185,7 @@
                                          oncomplete="PF('dlgConsuProf').hide();">
 
                             <f:setPropertyActionListener value="#{profi}"
-                                                         target="#{AfastamentoTemporarioController.afastamentoTemporario.funcionario}"/>
+                                                         target="#{AfastamentoProfissionalController.afastamentoTemporario.funcionario}"/>
                         </p:commandButton>
                     </h:column>
 

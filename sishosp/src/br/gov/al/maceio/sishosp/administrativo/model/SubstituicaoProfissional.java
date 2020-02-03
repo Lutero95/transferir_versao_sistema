@@ -6,10 +6,10 @@ import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SubstituicaoFuncionario implements Serializable {
+public class SubstituicaoProfissional implements Serializable {
 
     private Integer id;
-    private AfastamentoTemporario afastamentoTemporario;
+    private AfastamentoProfissional afastamentoTemporario;
     private FuncionarioBean funcionario;
     private AtendimentoBean atendimento;
     private Integer idAtendimentos1;
@@ -18,8 +18,8 @@ public class SubstituicaoFuncionario implements Serializable {
     private FuncionarioBean usuarioAcao;
     private Date dataHoraAcao;
     
-    public SubstituicaoFuncionario() {
-        afastamentoTemporario = new AfastamentoTemporario();
+    public SubstituicaoProfissional() {
+        afastamentoTemporario = new AfastamentoProfissional();
         funcionario = new FuncionarioBean();
         usuarioAcao = new FuncionarioBean();
         atendimento = new AtendimentoBean();
@@ -33,11 +33,11 @@ public class SubstituicaoFuncionario implements Serializable {
         this.id = id;
     }
 
-    public AfastamentoTemporario getAfastamentoTemporario() {
+    public AfastamentoProfissional getAfastamentoTemporario() {
         return afastamentoTemporario;
     }
 
-    public void setAfastamentoTemporario(AfastamentoTemporario afastamentoTemporario) {
+    public void setAfastamentoTemporario(AfastamentoProfissional afastamentoTemporario) {
         this.afastamentoTemporario = afastamentoTemporario;
     }
 

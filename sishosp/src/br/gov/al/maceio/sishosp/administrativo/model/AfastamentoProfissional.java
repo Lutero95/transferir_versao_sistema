@@ -6,7 +6,7 @@ import br.gov.al.maceio.sishosp.administrativo.enums.TipoAfastamento;
 import java.io.Serializable;
 import java.util.Date;
 
-public class AfastamentoTemporario implements Serializable {
+public class AfastamentoProfissional implements Serializable {
 
     private Integer id;
     private FuncionarioBean funcionario;
@@ -17,7 +17,7 @@ public class AfastamentoTemporario implements Serializable {
     private Date periodoFinal;
     private String turno;
 
-    public AfastamentoTemporario() {
+    public AfastamentoProfissional() {
         funcionario = new FuncionarioBean();
         tipoAfastamento = TipoAfastamento.TEMPORÁRIO.getSigla();
     }

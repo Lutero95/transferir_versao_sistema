@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
@@ -155,7 +155,7 @@ public class GerenciarPacienteDAO {
 
         String sql = "select distinct p.id \n" + 
         		" from hosp.paciente_instituicao p \n" + 
-        		" join hosp.profissional_dia_atendimento d on d.id_paciente_instituicao = p.id " ;
+        		" join hosp.profissional_dia_atendimento d on d.id_paciente_instituicao = p.id where p.cod_unidade=2 " ;
 
                       
 
@@ -352,7 +352,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional) throws SQLException {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -427,7 +427,7 @@ public class GerenciarPacienteDAO {
     }
     
     
-    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoFuncionario> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir) throws SQLException {
+    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir) throws SQLException {
 
         Boolean retorno = false;
         try {
@@ -475,10 +475,10 @@ public class GerenciarPacienteDAO {
     }
     
     
-    public ArrayList<SubstituicaoFuncionario> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
 
         
-        ArrayList<SubstituicaoFuncionario> lista = new ArrayList<SubstituicaoFuncionario>();
+        ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
 
         try {
 
@@ -501,7 +501,7 @@ public class GerenciarPacienteDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-            	SubstituicaoFuncionario substituicao = new SubstituicaoFuncionario();
+            	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
             	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
             	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
             	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
@@ -525,10 +525,10 @@ public class GerenciarPacienteDAO {
         
     }    
     
-    public ArrayList<SubstituicaoFuncionario> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(Integer idAtendimentos, Connection conAuxiliar) {
+    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(Integer idAtendimentos, Connection conAuxiliar) {
 
         
-        ArrayList<SubstituicaoFuncionario> lista = new ArrayList<SubstituicaoFuncionario>();
+        ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
 
         try {
 
@@ -548,7 +548,7 @@ public class GerenciarPacienteDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-            	SubstituicaoFuncionario substituicao = new SubstituicaoFuncionario();
+            	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
             	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
             	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
             	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));

@@ -1,7 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoFuncionario;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -379,7 +379,7 @@ public class TransferenciaPacienteDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			
-			ArrayList<SubstituicaoFuncionario> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 			String sql2 = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 "
 					+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "

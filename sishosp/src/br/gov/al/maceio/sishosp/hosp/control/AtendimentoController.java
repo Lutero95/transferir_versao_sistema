@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,8 @@ public class AtendimentoController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private AtendimentoBean atendimento, atendimentoAux;
+    private Date periodoInicialEvolucao;
+    private Date periodoFinalEvolucao;
     private List<AtendimentoBean> listAtendimentos;
     private List<AtendimentoBean> listAtendimentosEquipe, listAtendimentosEquipeParaExcluir;
     private FuncionarioBean funcionario, funcionarioAux;
@@ -65,6 +68,9 @@ public class AtendimentoController implements Serializable {
     public AtendimentoController() {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
+        this.periodoInicialEvolucao = null;
+        this.periodoFinalEvolucao = null;
+
         tipoBusca = "nome";
         campoBusca = "";
         this.atendimento = new AtendimentoBean();
@@ -470,7 +476,16 @@ public class AtendimentoController implements Serializable {
     }
 
     public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
-        listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente);
+    	if ((periodoFinalEvolucao!=null) || (periodoInicialEvolucao!=null)) {
+    		if ((periodoFinalEvolucao==null) || (periodoInicialEvolucao==null)) {
+    			JSFUtil.adicionarMensagemAdvertencia("Informe o período Inicial e Final da Evolução", "Atenção!");
+    			return;
+    		}
+    		else
+    			 listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    	}
+    	else
+        listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
     }
 
     public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {
@@ -671,5 +686,37 @@ public class AtendimentoController implements Serializable {
 
 	public void setAtendimentoAux(AtendimentoBean atendimentoAux) {
 		this.atendimentoAux = atendimentoAux;
+	}
+
+	public Date getDataAtendimentoC() {
+		return periodoInicialEvolucao;
+	}
+
+	public Date getDataAtendimentoFinalC() {
+		return periodoFinalEvolucao;
+	}
+
+	public void setDataAtendimentoC(Date dataAtendimentoC) {
+		this.periodoInicialEvolucao = dataAtendimentoC;
+	}
+
+	public void setDataAtendimentoFinalC(Date dataAtendimentoFinalC) {
+		this.periodoFinalEvolucao = dataAtendimentoFinalC;
+	}
+
+	public Date getPeriodoInicialEvolucao() {
+		return periodoInicialEvolucao;
+	}
+
+	public Date getPeriodoFinalEvolucao() {
+		return periodoFinalEvolucao;
+	}
+
+	public void setPeriodoInicialEvolucao(Date periodoInicialEvolucao) {
+		this.periodoInicialEvolucao = periodoInicialEvolucao;
+	}
+
+	public void setPeriodoFinalEvolucao(Date periodoFinalEvolucao) {
+		this.periodoFinalEvolucao = periodoFinalEvolucao;
 	}
 }

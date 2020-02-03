@@ -19,7 +19,7 @@
 				<h:form id="frmPrincipal">
 
 					<b:row>
-						<b:column span="6"
+						<b:column span="4"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Paciente" severity="info" />
 							<p:autoComplete value="#{AtendimentoController.paciente}"
@@ -36,24 +36,53 @@
 
 							<p:commandButton id="btBPa" immediate="true"
 								style="margin-left: 5px;"
-								actionListener="#{PacienteController.listarPacientes()}"
 								icon="ui-icon-search" update=":formConsuPac"
 								oncomplete="PF('dlgConsuPac').show();" />
 
 
 						</b:column>
-						<b:column span="6">
+						
+
+
+							<b:column span="1" class="label-position" style="width: 150px;">
+								<b:label value="Período da Evolução:" severity="info" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="7" class="select-agendaEquipe2"
+									value="#{AtendimentoController.periodoInicialEvolucao}" />
+							</b:column>
+
+
+							<b:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="a" />
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="1" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									class="select-agendaEquipe2" showOn="button" size="7"
+									id="dtagen3" locale="pt"
+									value="#{AtendimentoController.periodoFinalEvolucao}">
+
+								</p:calendar>
+							</b:column>
+<b:column span="1">
 
 							<p:commandButton value="Consultar" look="success" size="sm"
 								id="b1" icon="ui-icon-check" style="margin-top:20px"
 								action="#{AtendimentoController.carregarTodasAsEvolucoesDoPaciente(AtendimentoController.paciente.id_paciente)}"
 								update="outDtEvolucoes msgPagina" class="btn-incluir" />
 						</b:column>
-
-
-
-
 					</b:row>
+
+		<b:row>
+						
+						
+
+						
+
+					</b:row>					
 
 					<p:outputPanel id="outDtEvolucoes">
 
@@ -120,61 +149,96 @@
 
 		</div>
 
-		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
-			dynamic="true" modal="true" width="750px" height="400px"
-			styleClass="topDialog">
-			<h:form id="formConsuPac">
-				<p:growl id="msgC" />
+<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+                  dynamic="true" modal="true" width="750px" height="400px"
+                  responsive="true">
+            <h:form id="formConsuPac">
+                <p:growl id="msgC"/>
 
-				<div class="form-group row">
-					<div class="col-sm-2"></div>
-				</div>
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                </div>
 
+                <p:row>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="pacie" value="#{PacienteController.listaPacientes}"
-					display="Nenhum Paciente">
+                    <p:panelGrid columns="4">
 
-					<h:column>
-						<f:facet name="header">
-                        Código
-                    </f:facet>
+                        <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <f:selectItem itemLabel="Prontuário" itemValue="prontuario"/>
+                            <f:selectItem itemLabel="Matrícula" itemValue="matricula"/>
+                            <f:selectItem itemLabel="CPF" itemValue="cpf"/>
+                            <f:selectItem itemLabel="CNS" itemValue="cns"/>
+                        </p:selectOneMenu>
 
-						<p:outputLabel value="#{pacie.id_paciente}" />
-					</h:column>
+                        <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca"
+                                     style="margin-left: 10px;"/>
 
-					<h:column>
-						<f:facet name="header">
-                        Nome
-                    </f:facet>
+                        <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}"
+                                         update="tabelapacientes"
+                                         icon="ui-icon-search" style="margin-left: 10px;"/>
 
-						<p:outputLabel value="#{pacie.nome}" />
-					</h:column>
+                        <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                         icon="limpar" style="margin-left: 10px;"/>
 
-					<h:column>
-						<f:facet name="header">
-                        Cpf
-                    </f:facet>
-						<p:outputLabel value="#{pacie.cpf}" />
-					</h:column>
+                    </p:panelGrid>
 
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
-						<p:commandButton update=":frmPrincipal" icon="fa fa-fw fa-check"
-							title="Selecionar" class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuPac').hide();">
-							<f:setPropertyActionListener value="#{pacie}"
+                </p:row>
+                <p:dataTable paginator="true" rows="10" id="tabelapacientes"
+                             var="pacie" value="#{PacienteController.listaPacientes}"
+                             emptyMessage="Nenhum Paciente">
+
+                    <p:column width="100">
+                        <f:facet name="header">
+                            Prontuário
+                        </f:facet>
+
+                        <p:outputLabel value="#{pacie.id_paciente}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            Nome
+                        </f:facet>
+
+                        <p:outputLabel value="#{pacie.nome}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            Matrícula
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.matricula}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            CNS
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.cns}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            Selecionar
+                        </f:facet>
+                        <p:commandButton
+                               update=":frmPrincipal"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuPac').hide();">
+                           <f:setPropertyActionListener value="#{pacie}"
 								target="#{AtendimentoController.paciente}" />
-						</p:commandButton>
+                        </p:commandButton>
 
-					</h:column>
+                    </p:column>
 
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+	
 
 	</ui:define>
 </ui:composition>
