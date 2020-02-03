@@ -123,7 +123,11 @@ public class AfastamentoProfissionalDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setLong(1, afastamento.getFuncionario().getId());
-			stm.setDate(2, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoInicio()));
+			if (afastamento.getPeriodoInicio() != null) {
+				stm.setDate(2, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoInicio()));
+            } else {
+                ps.setNull(2, Types.NULL);
+            }
 			stm.setDate(3, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoFinal()));
 			ResultSet rs = stm.executeQuery();
 
@@ -131,6 +135,7 @@ public class AfastamentoProfissionalDAO {
 				existeAfastamentoProfissionalNoPeriodo = true;
 			}
 		} catch (Exception ex) {
+			JSFUtil.adicionarMensagemErro("Erro: ", "Atenção");
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
