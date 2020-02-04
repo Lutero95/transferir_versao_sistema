@@ -74,7 +74,7 @@ public class AfastamentoProfissionalDAO {
 		String sql = "SELECT a.id, a.tipo_afastamento, a.id_funcionario_afastado, f.descfuncionario, "
 				+ "a.inicio_afastamento, a.fim_afastamento, a.motivo_afastamento, a.turno, "
 				+ "CASE WHEN a.motivo_afastamento = 'FE' THEN 'Férias' "
-				+ "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' WHEN a.motivo_afastamento = 'FA' THEN 'Falta' END AS motivo_afastamento_extenso "
+				+ "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' WHEN a.motivo_afastamento = 'DE' THEN 'Desligamento' WHEN a.motivo_afastamento = 'FA' THEN 'Falta' END AS motivo_afastamento_extenso "
 				+ "FROM adm.afastamento_funcionario a "
 				+ "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) "
 				+ "ORDER BY a.inicio_afastamento ";

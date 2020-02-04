@@ -22,7 +22,7 @@
 
 				<h:form id="frmPrincipal">
 
-					<p:commandButton id="btninc" value="Novo" size="sm"
+					<p:commandButton id="btninc" value="Novo" size="sm" 
 						action="#{afastamentoProfissionalController.redirectInsert()}"
 						icon="ui-icon-plus" class="btn-addNovo">
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
@@ -30,7 +30,7 @@
 
 
 					<p:dataTable id="dt" var="tab" paginator="true"
-						paginatorPosition="bottom" rows="12" resizableColumns="true"
+						paginatorPosition="bottom" rows="6" resizableColumns="true"
 						responsive="true"
 						value="#{afastamentoProfissionalController.listaAfastamentosProfissionais}">
 
@@ -96,7 +96,7 @@
 
 			<h:form id="dlgexcluir">
 				<div class="alert alert-warning" role="alert">Deseja excluir
-					este Afastamento Temporário?</div>
+					este Afastamento?</div>
 				<div align="center">
 					<p:separator />
 

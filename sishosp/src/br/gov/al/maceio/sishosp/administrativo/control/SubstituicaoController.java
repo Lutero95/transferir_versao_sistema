@@ -101,6 +101,10 @@ public class SubstituicaoController implements Serializable {
             AfastamentoProfissionalDAO aDao = new AfastamentoProfissionalDAO();
             AfastamentoProfissional afastamento = aDao.carregarAfastamentoPeloId(idAfastamento);
             substituicaoFuncionario.setAfastamentoProfissional(afastamento);
+            if (substituicaoFuncionario.getAfastamentoProfissional().getMotivoAfastamento().equals("DE"))
+            	buscaAgendamentosParaFuncionarioAfastadoDTO.setTurno("A");
+            else
+            	buscaAgendamentosParaFuncionarioAfastadoDTO.setTurno("");
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoInicio(afastamento.getPeriodoInicio());
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoFinal(afastamento.getPeriodoFinal());
             if (VerificadorUtil.verificarSeObjetoNuloOuZero(substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())) {

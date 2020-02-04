@@ -28,7 +28,7 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Profissional Afastado:" severity="info"/>
                             <p:outputLabel
-                                    value="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.funcionario.nome}"
+                                    value="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.funcionario.nome}"
                                     style="margin-left: 10px" severity="info"/>
                         </b:column>
                     </b:row>
@@ -42,12 +42,12 @@
                             <b:column span="3" class="new-data-size2">
 
                                 <p:outputLabel value="Início Afastamento"
-                                rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}"
+                                rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.motivoAfastamento!='DE'}"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"/>
     									
     									<p:outputLabel value="Data do Desligamento"
-    									rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento=='DE'}"
+    									rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.motivoAfastamento=='DE'}"
                                                style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"/>
 
@@ -65,7 +65,7 @@
 
                             </b:column>
 
-                            <b:column span="3" class="new-data-size2"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}">
+                            <b:column span="3" class="new-data-size2"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.motivoAfastamento!='DE'}">
 
                                 <p:outputLabel value="Fim Afastamento"
                                                style="margin-top: 8px;
@@ -73,7 +73,7 @@
 
                             </b:column>
 
-                            <b:column span="3" class="label-position data-size"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}">
+                            <b:column span="3" class="label-position data-size"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.motivoAfastamento!='DE'}">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true" requiredMessage="Data Fim Afastamento: Campo obrigatório!"
@@ -90,16 +90,16 @@
                     <b:row>
 
   
-                       <b:column span="3" class="label-position">
+                       <b:column span="3" class="label-position" rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.motivoAfastamento!='DE'}">
                        
                                     <b:label value="Turno:" severity="info"/>
 
                                     <b:selectOneMenu class="select-agendaEquipe2" id="cbturno" required="true" requiredMessage="Informe o Turno"
                                                      value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.turno}">
 										<f:selectItem itemLabel="Selecione" itemValue="S"/>
-                                        <f:selectItem itemLabel="Manhã" itemValue="M" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno=='T'}"/>
-                                        <f:selectItem itemLabel="Tarde" itemValue="T" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno=='M'}"/>
-                                        <f:selectItem itemLabel="Ambos" itemValue="A" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.turno!='A'}"/>
+                                        <f:selectItem itemLabel="Manhã" itemValue="M" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno=='T'}"/>
+                                        <f:selectItem itemLabel="Tarde" itemValue="T" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno=='M'}"/>
+                                        <f:selectItem itemLabel="Ambos" itemValue="A" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno!='A'}"/>
                                        <p:ajax event="change" process="@this cbturno"/>
 									
                                     </b:selectOneMenu>
@@ -189,7 +189,7 @@
                     <b:row>
 
                         <p:dataTable value="#{SubstituicaoController.listaAtendimentos}" var="tab" id="dtAtendimentos"
-                        emptyMessage="Nenhum Registro"
+                        emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200px"
                                      selection="#{SubstituicaoController.listaAtendimentosSelecionada}"
                                      rowKey="#{tab.id1}">
 
@@ -264,7 +264,7 @@
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
                                          update=":formSubstituicao"
-                                         action="/pages/sishosp/gerenciarafastamentotemporario.xhtml?faces-redirect=true">
+                                         action="/pages/sishosp/gerenciarafastamentoprofissional.xhtml?faces-redirect=true">
                         </p:commandButton>
 
                     </div>
