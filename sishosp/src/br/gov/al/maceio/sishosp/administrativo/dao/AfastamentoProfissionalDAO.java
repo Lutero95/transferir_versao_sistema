@@ -36,7 +36,12 @@ public class AfastamentoProfissionalDAO {
 			ps.setString(1, afastamentoProfissional.getTipoAfastamento());
 			ps.setLong(2, afastamentoProfissional.getFuncionario().getId());
 			ps.setDate(3, DataUtil.converterDateUtilParaDateSql(afastamentoProfissional.getPeriodoInicio()));
-			ps.setDate(4, DataUtil.converterDateUtilParaDateSql(afastamentoProfissional.getPeriodoFinal()));
+			if (afastamentoProfissional.getPeriodoFinal()!= null) {
+				ps.setDate(4, DataUtil.converterDateUtilParaDateSql(afastamentoProfissional.getPeriodoFinal()));
+            } else {
+            	ps.setDate(4, DataUtil.converterDateUtilParaDateSql(afastamentoProfissional.getPeriodoInicio()));
+            }
+			
 			ps.setString(5, afastamentoProfissional.getMotivoAfastamento());
 			ps.setLong(6, user_session.getId());
 			if (afastamentoProfissional.getTurno() != null) {
@@ -123,12 +128,14 @@ public class AfastamentoProfissionalDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setLong(1, afastamento.getFuncionario().getId());
-			if (afastamento.getPeriodoInicio() != null) {
-				stm.setDate(2, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoInicio()));
+			stm.setDate(2, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoInicio()));
+            
+			if (afastamento.getPeriodoFinal() != null) {
+				stm.setDate(3, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoFinal()));
             } else {
-                ps.setNull(2, Types.NULL);
+            	stm.setNull(3, Types.NULL);
             }
-			stm.setDate(3, DataUtil.converterDateUtilParaDateSql(afastamento.getPeriodoFinal()));
+			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -214,7 +221,7 @@ public class AfastamentoProfissionalDAO {
 
 		AfastamentoProfissional afastamento = new AfastamentoProfissional();
 
-		String sql = "SELECT a.id, a.id_funcionario_afastado, f.descfuncionario, a.inicio_afastamento, a.fim_afastamento, a.turno "
+		String sql = "SELECT a.id, a.id_funcionario_afastado, f.descfuncionario, a.inicio_afastamento, a.fim_afastamento, a.turno, a.motivo_afastamento "
 				+ "FROM adm.afastamento_funcionario a "
 				+ "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) " + "WHERE id = ?;";
 
@@ -231,6 +238,7 @@ public class AfastamentoProfissionalDAO {
 				afastamento.getFuncionario().setId(rs.getLong("id_funcionario_afastado"));
 				afastamento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				afastamento.setTurno(rs.getString("turno"));
+				afastamento.setMotivoAfastamento(rs.getString("motivo_afastamento"));
 			}
 
 		} catch (Exception ex) {

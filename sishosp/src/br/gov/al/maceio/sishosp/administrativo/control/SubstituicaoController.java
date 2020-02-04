@@ -60,10 +60,10 @@ public class SubstituicaoController implements Serializable {
         listaAtendimentosSelecionada = new ArrayList<>();
     }
 
-    public void gravarAfastamentoTemporario() {
+    public void gravarAfastamentoProfissional() {
 
         if (validarSeAgendamentosForamSelecionados()) {
-        	if (substituicaoFuncionario.getFuncionario().getId() != substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId())
+        	if (substituicaoFuncionario.getFuncionario().getId() != substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())
         	{
         		
             boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada,substituicaoFuncionario);
@@ -100,10 +100,10 @@ public class SubstituicaoController implements Serializable {
             idAfastamento = Integer.parseInt(params.get("id"));
             AfastamentoProfissionalDAO aDao = new AfastamentoProfissionalDAO();
             AfastamentoProfissional afastamento = aDao.carregarAfastamentoPeloId(idAfastamento);
-            substituicaoFuncionario.setAfastamentoTemporario(afastamento);
+            substituicaoFuncionario.setAfastamentoProfissional(afastamento);
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoInicio(afastamento.getPeriodoInicio());
             buscaAgendamentosParaFuncionarioAfastadoDTO.setPeriodoFinal(afastamento.getPeriodoFinal());
-            if (VerificadorUtil.verificarSeObjetoNuloOuZero(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId())) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuZero(substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())) {
                 JSFUtil.adicionarMensagemErro("É preciso passar um valor de afastamento válido", "Erro");
             }
         }
@@ -117,10 +117,10 @@ public class SubstituicaoController implements Serializable {
     		JSFUtil.adicionarMensagemAdvertencia("Informe o Turno", "Atenção");
     	}
     	else
-    		if (sDao.validaPeriodoAfastamentoNaBuscaSubstituicao(substituicaoFuncionario.getAfastamentoTemporario(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal() ))
+    		if (sDao.validaPeriodoAfastamentoNaBuscaSubstituicao(substituicaoFuncionario.getAfastamentoProfissional(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio(), buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal() ))
     	{
-        buscaAgendamentosParaFuncionarioAfastadoDTO.setFuncionario(substituicaoFuncionario.getAfastamentoTemporario().getFuncionario());
-        listaAtendimentos = sDao.listarHorariosParaSeremSubstituidos(buscaAgendamentosParaFuncionarioAfastadoDTO);
+        buscaAgendamentosParaFuncionarioAfastadoDTO.setFuncionario(substituicaoFuncionario.getAfastamentoProfissional().getFuncionario());
+        listaAtendimentos = sDao.listarHorariosParaSeremSubstituidos(buscaAgendamentosParaFuncionarioAfastadoDTO, substituicaoFuncionario.getAfastamentoProfissional().getMotivoAfastamento());
     	}
     		else
     		{

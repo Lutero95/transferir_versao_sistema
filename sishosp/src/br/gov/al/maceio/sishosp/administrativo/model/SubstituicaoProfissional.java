@@ -9,7 +9,7 @@ import java.util.Date;
 public class SubstituicaoProfissional implements Serializable {
 
     private Integer id;
-    private AfastamentoProfissional afastamentoTemporario;
+    private AfastamentoProfissional afastamentoProfissional;
     private FuncionarioBean funcionario;
     private AtendimentoBean atendimento;
     private Integer idAtendimentos1;
@@ -19,7 +19,7 @@ public class SubstituicaoProfissional implements Serializable {
     private Date dataHoraAcao;
     
     public SubstituicaoProfissional() {
-        afastamentoTemporario = new AfastamentoProfissional();
+        afastamentoProfissional = new AfastamentoProfissional();
         funcionario = new FuncionarioBean();
         usuarioAcao = new FuncionarioBean();
         atendimento = new AtendimentoBean();
@@ -33,13 +33,7 @@ public class SubstituicaoProfissional implements Serializable {
         this.id = id;
     }
 
-    public AfastamentoProfissional getAfastamentoTemporario() {
-        return afastamentoTemporario;
-    }
-
-    public void setAfastamentoTemporario(AfastamentoProfissional afastamentoTemporario) {
-        this.afastamentoTemporario = afastamentoTemporario;
-    }
+    
 
     public FuncionarioBean getFuncionario() {
         return funcionario;
@@ -95,6 +89,14 @@ public class SubstituicaoProfissional implements Serializable {
 
 	public void setDataHoraAcao(Date dataHoraAcao) {
 		this.dataHoraAcao = dataHoraAcao;
+	}
+
+	public AfastamentoProfissional getAfastamentoProfissional() {
+		return afastamentoProfissional;
+	}
+
+	public void setAfastamentoProfissional(AfastamentoProfissional afastamentoProfissional) {
+		this.afastamentoProfissional = afastamentoProfissional;
 	}
 
 	

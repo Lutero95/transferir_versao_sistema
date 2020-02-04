@@ -366,16 +366,16 @@ public class AlteracaoPacienteDAO {
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
 				ps8.setLong(2, id_paciente);
 				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
 				ps8.execute();
 				
 				ps6 = null;
 				ps6 = conexao.prepareStatement(sql6);
 				
 				ps6.setDate(1,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
-				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
-				ps6.setLong(4, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoProfissional().getId());
+				ps6.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
 				ps6.setLong(5, listaSubstituicao.get(i).getFuncionario().getId());
 				ps6.setLong(6, listaSubstituicao.get(i).getUsuarioAcao().getId());
 				ps6.execute();
@@ -560,8 +560,8 @@ public class AlteracaoPacienteDAO {
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
 				ps6.setLong(1, listaSubstituicao.get(i).getIdAtendimentos1());
-				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoTemporario().getId());
-				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoTemporario().getFuncionario().getId());
+				ps6.setLong(2, listaSubstituicao.get(i).getAfastamentoProfissional().getId());
+				ps6.setLong(3, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
 				ps6.setLong(4, listaSubstituicao.get(i).getFuncionario().getId());
 				ps6.setLong(5, listaSubstituicao.get(i).getUsuarioAcao().getId());
 				ps6.execute();

@@ -503,9 +503,9 @@ public class GerenciarPacienteDAO {
             while (rs.next()) {
             	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
             	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
-            	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
+            	substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
             	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
-            	substituicao.getAfastamentoTemporario().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
+            	substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
             	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
             	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
             	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
@@ -550,9 +550,9 @@ public class GerenciarPacienteDAO {
             while (rs.next()) {
             	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
             	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
-            	substituicao.getAfastamentoTemporario().setId(rs.getInt("id_afastamento_funcionario"));
+            	substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
             	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
-            	substituicao.getAfastamentoTemporario().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
+            	substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
             	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
             	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
             	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));

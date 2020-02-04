@@ -106,7 +106,7 @@
 
 
                             <b:column span="3" class="label-position data-size"
-                              rendered="#{afastamentoProfissionalController.afastamentoProfissional.motivoAfastamento!='DE'}">
+                              >
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaInicio"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true"
@@ -130,7 +130,7 @@
                             </b:column>
 
 
-                            <b:column span="3" class="label-position data-size">
+                            <b:column span="3" class="label-position data-size" rendered="#{afastamentoProfissionalController.afastamentoProfissional.motivoAfastamento!='DE'}">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true" requiredMessage="Fim Afastamento: Campo obrigatório!"

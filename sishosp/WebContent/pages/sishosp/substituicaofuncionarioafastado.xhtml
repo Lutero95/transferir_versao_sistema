@@ -14,7 +14,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Afastamento Temporário</h4>
+                <h4 class="panel-title">Afastamento de Profissional</h4>
             </div>
 
             <div class="panel-body table-body">
@@ -42,8 +42,14 @@
                             <b:column span="3" class="new-data-size2">
 
                                 <p:outputLabel value="Início Afastamento"
+                                rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}"
                                                style="margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+    									margin-bottom: 15px;color:#2e84ce;"/>
+    									
+    									<p:outputLabel value="Data do Desligamento"
+    									rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento=='DE'}"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"/>
 
                             </b:column>
 
@@ -59,7 +65,7 @@
 
                             </b:column>
 
-                            <b:column span="3" class="new-data-size2">
+                            <b:column span="3" class="new-data-size2"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}">
 
                                 <p:outputLabel value="Fim Afastamento"
                                                style="margin-top: 8px;
@@ -67,7 +73,7 @@
 
                             </b:column>
 
-                            <b:column span="3" class="label-position data-size">
+                            <b:column span="3" class="label-position data-size"  rendered="#{SubstituicaoController.substituicaoFuncionario.afastamentoTemporario.motivoAfastamento!='DE'}">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaFinal"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             required="true" requiredMessage="Data Fim Afastamento: Campo obrigatório!"
@@ -251,7 +257,7 @@
 
                         <p:commandButton value="Gravar" look="success" size="sm"
                                          id="bgravar" icon="ui-icon-check"
-                                         action="#{SubstituicaoController.gravarAfastamentoTemporario()}"
+                                         action="#{SubstituicaoController.gravarAfastamentoProfissional()}"
                                          update=":formSubstituicao:dtAtendimentos, msgPagina"
                                          class="btn-incluir"/>
 

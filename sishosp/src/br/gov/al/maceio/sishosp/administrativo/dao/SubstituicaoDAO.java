@@ -38,7 +38,7 @@ public class SubstituicaoDAO {
             for(int i=0; i<listaSelecionados.size(); i++) {
                 stmt.setLong(1, substituicaoFuncionario.getFuncionario().getId());
                 stmt.setInt(2, listaSelecionados.get(i).getId1());
-                stmt.setLong(3, substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId());
+                stmt.setLong(3, substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId());
 
                 stmt.executeUpdate();
 
@@ -76,9 +76,9 @@ public class SubstituicaoDAO {
                     .get("obj_usuario");
 
             ps = conAuxiliar.prepareStatement(sql);
-            ps.setInt(1, substituicaoFuncionario.getAfastamentoTemporario().getId());
+            ps.setInt(1, substituicaoFuncionario.getAfastamentoProfissional().getId());
             ps.setInt(2, atendimentoBean.getId1());
-            ps.setLong(3, substituicaoFuncionario.getAfastamentoTemporario().getFuncionario().getId());
+            ps.setLong(3, substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId());
             ps.setLong(4, substituicaoFuncionario.getFuncionario().getId());
             ps.setLong(5, user_session.getId());
 
@@ -128,17 +128,27 @@ public class SubstituicaoDAO {
 		return periodoValidoAfastamentoNaBuscaSubstituicao;
 	}
 
-    public List<AtendimentoBean> listarHorariosParaSeremSubstituidos(BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO) {
+    public List<AtendimentoBean> listarHorariosParaSeremSubstituidos(BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO, String motivoAfastamento) {
 
         List<AtendimentoBean> lista = new ArrayList<>();
-
-        String sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende, " +
+        String sql = "";
+        if (!motivoAfastamento.equals("DE"))
+        sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende, " +
                 "CASE WHEN a.turno = 'M' THEN 'Manhã' WHEN a.turno = 'T' THEN 'Tarde' END AS turno " +
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
                 "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? ";
+        else
+            sql = "SELECT a1.id_atendimentos1, a.codgrupo, g.descgrupo, a.codprograma, p.descprograma, a.dtaatende, " +
+                    "CASE WHEN a.turno = 'M' THEN 'Manhã' WHEN a.turno = 'T' THEN 'Tarde' END AS turno " +
+                    "FROM hosp.atendimentos1 a1 " +
+                    "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
+                    "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
+                    "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
+                    "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ?";
+        
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
             sql = sql + "AND a.codprograma = ? ";
@@ -159,9 +169,13 @@ public class SubstituicaoDAO {
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setLong(1, buscaAgendamentosParaFuncionarioAfastadoDTO.getFuncionario().getId());
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio()));
-            stm.setDate(3, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal()));
+            
             int i = 3;
             
+            if (!motivoAfastamento.equals("DE")) {
+            stm.setDate(i, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal()));
+            i = i + 1;
+            }
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {
                 i = i + 1;
