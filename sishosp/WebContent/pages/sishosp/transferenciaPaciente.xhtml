@@ -233,11 +233,11 @@
                                             itemLabel="#{theme.descEquipe}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
-                                                update="dtEquipe, :formInsercao2:msgPagina, opturno"/>
+                                                update="dtEquipe, :msgPagina, opturno"/>
                                     </p:autoComplete>
 
                                     <p:commandButton icon="ui-icon-search"
-                                                     update="dtEquipe, :formInsercao2:msgPagina :formConsuEquipe"
+                                                     update="dtEquipe, :msgPagina :formConsuEquipe"
                                                      oncomplete="PF('dlgConsuEquipe').show();"
                                                      process="@this"
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
@@ -249,7 +249,7 @@
                                                      value="Carregar Profissionais"
                                                      style="margin-top:20px; margin-bottom:10px;"
                                                      class="btn-acao-table acao-confirmar"
-                                                     update="dtEquipe, :formInsercao2:msgPagina"
+                                                     update="dtEquipe, :msgPagina"
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
                                                      action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"/>
                                 </b:column>
@@ -312,7 +312,7 @@
                                             <p:commandButton icon="fa fa-fw fa-check" immediate="true"
                                                              title="Selecionar" class="new-btn-acao-table acao-editar"
                                                              actionListener="#{TransferenciaPacienteController.abrirDialog}"
-                                                             update=":formDiasAtendimentoTurno :formDiasAtendimentoHorario">
+                                                             update=":formQtdAgendamentos">
                                                 <f:setPropertyActionListener value="#{func}"
                                                                              target="#{TransferenciaPacienteController.funcionario}"/>
                                             </p:commandButton>
@@ -406,16 +406,13 @@
                         </p:outputPanel>
                     </b:row>
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
 
                     <br></br>
 
                     <div align="center">
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="ui-icon-check" update=":formInsercao2:msgPagina"
+                                         icon="ui-icon-check" update=":msgPagina"
                                          class="btn-incluir"
                                          action="#{TransferenciaPacienteController.gravarAlteracaoPaciente()}"/>
 
@@ -450,7 +447,7 @@
                 <div align="center">
                     <p:commandButton value="Adicionar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
-                                     update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
+                                     update=":formInsercao2:dtAdicionados, :msgPagina"
                                      id="b2" icon="ui-icon-check"
                                      action="#{TransferenciaPacienteController.validarAdicionarFuncionario()}"/>
                 </div>
@@ -533,7 +530,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :formInsercao2:msgPagina, :formInsercao2:opturno"
+                                update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina, :formInsercao2:opturno"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
@@ -547,7 +544,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoHorario" width="600px"
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoHorario" width="600px" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimentoHorario">
 

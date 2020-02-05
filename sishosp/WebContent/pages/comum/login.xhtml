@@ -77,8 +77,9 @@
 			closable="false" draggable="false" id="selecaoUnidade"
 			responsive="true" resizable="false">
 
-			<p:outputPanel autoUpdate="true">
+			
 			<h:form>
+			<p:autoUpdate/>
 				<div align="center">
 					<p:selectOneMenu
 						value="#{MBFuncionarios.codigoDaUnidadeSelecionada}"
@@ -92,7 +93,7 @@
 						action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin()}" />
 				</div>
 				</h:form>
-			</p:outputPanel>
+			
 
 		</p:dialog>
 
@@ -100,8 +101,9 @@
 			widgetVar="selecaoEmpresa" closable="false" draggable="false"
 			id="selecaoEmpresa" responsive="true" resizable="false">
 
-			<p:outputPanel autoUpdate="true">
+			
 			<h:form>
+			<p:autoUpdate/>
 				<div align="center">
 					<p:selectOneMenu value="#{MBFuncionarios.empresa.bancoAcesso}"
 						style="width: 100%;">
@@ -114,7 +116,7 @@
 						action="#{MBFuncionarios.autenticarUsuario()}" />
 				</div>
 				</h:form>
-			</p:outputPanel>
+			
 
 		</p:dialog>
 

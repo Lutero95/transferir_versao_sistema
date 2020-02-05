@@ -632,7 +632,7 @@
 	<h:form id="formDlgProd">
 		<p:growl id="msgGrow" />
 		<p:panel id="panelProduto" style="font-size:10px;">
-			<p:outputPanel autoUpdate="false" id="outdlgprod">
+			<p:outputPanel id="outdlgprod">
 				<h:panelGrid id="pnlVenda2">
 					<p:row>
 						<p:column>
@@ -655,13 +655,13 @@
 					<div style="height: 10px" />
 					<p:row>
 						<p:column>
-							<p:outputPanel autoUpdate="true">
+							<p:autoUpdate/>
 								<h:outputText value="Valor Unitário:"
 									style="margin-left:22px;font-weight:bold;"></h:outputText>
 								<h:outputText
 									value="#{agendaController.orc.estoqueBean.tabela.valorvenda}"
 									style="font-size:10px;margin-left:35px" />
-							</p:outputPanel>
+							
 						</p:column>
 					</p:row>
 					<div style="height: 10px" />
@@ -917,8 +917,7 @@
 				onclick="PF('dlgConfOrcamento').hide();" icon="ui-icon-closethick" />
 		</center>
 		<center>
-			<br></br>
-			<p:outputPanel autoUpdate="true">
+			
 				<br></br>
 
 				<br></br>
@@ -1038,8 +1037,7 @@
 				onclick="PF('dlgConfOrcamento').hide();" icon="ui-icon-closethick" />
 		</center>
 		<center>
-			<br></br>
-			<p:outputPanel autoUpdate="true">
+		
 				<br></br>
 
 				<br></br>
@@ -1639,9 +1637,7 @@
 				</p:panelGrid>
 			</center>
 			<center>
-				<p:outputPanel autoUpdate="true"
-					rendered="#{agendaController.orc.rendererCredito == 'NAO'}">
-
+				<p:autoUpdate/>
 					<br></br>
 
 					<h:outputText value="Cliente"></h:outputText>
@@ -1686,7 +1682,7 @@
 							</center>
 						</p:column>
 					</p:dataTable>
-				</p:outputPanel>
+				
 			</center>
 			<hr />
 			<p:dataTable id="dtPagamento"
@@ -1728,7 +1724,7 @@
 		</p:outputPanel>
 		<hr />
 		<center>
-			<p:outputPanel autoUpdate="true">
+			<p:autoUpdate/>
 				<p:commandButton value="Pagar" icon="ui-icon-check" id="btnPaga"
 					disabled="#{agendaController.orc.valorEmAberto != 0}"
 					action="#{agendaController.orc.inserirVenda2()}"
@@ -1737,7 +1733,7 @@
 				</p:commandButton>
 				<p:commandButton value="Cancelar" icon="ui-icon-closethick"
 					onclick="PF('dlgPagamento').hide();"></p:commandButton>
-			</p:outputPanel>
+			
 		</center>
 	</h:form>
 </p:dialog>
@@ -1745,7 +1741,7 @@
 <p:dialog responsive="true"    widgetVar="dlgTipoCartao" height="120" width="500"
 	modal="true" resizable="false" header="Bandeira Cartão">
 	<h:form id="frmTipoCartao">
-		<p:outputPanel autoUpdate="true">
+		<p:autoUpdate/>
 			<p:panelGrid columns="2" styleClass="semBorda">
 				<h:outputText value="Deseja adicionar a bandeira:"
 					style="font-size:20px;font-wight:bold" />
@@ -1761,14 +1757,14 @@
 				<p:commandButton value="Não" onclick="PF('dlgTipoCartao')hide"
 					style="margin-left:20px" />
 			</center>
-		</p:outputPanel>
+		
 	</h:form>
 </p:dialog>
 
 <p:dialog responsive="true"    widgetVar="dlgdesconto" height="200" width="300" modal="true"
 	resizable="false" header="Desconto Pagamento">
 	<h:form id="frmdesc">
-		<p:outputPanel autoUpdate="true">
+		<p:autoUpdate/>
 			<p:panelGrid columns="2">
 				<h:outputText value="Em Aberto"
 					style="font-size:14px;font-wight:bold" />
@@ -1801,7 +1797,7 @@
 				<p:commandButton value="Desistir" onclick="PF('dlgdesconto')hide"
 					style="margin-left:20px" />
 			</center>
-		</p:outputPanel>
+	
 	</h:form>
 </p:dialog>
 <p:dialog responsive="true"    widgetVar="dlgBuscaInd" modal="true" resizable="false"
@@ -1873,7 +1869,7 @@
 <p:dialog responsive="true"    widgetVar="creditoVenda" header="Utilizar Créditos"
 	dynamic="true" modal="false" resizable="false">
 	<h:form id="formCredito">
-		<p:outputPanel autoUpdate="true">
+		<p:autoUpdate/>
 			<h:panelGrid columns="2" id="panelcredito">
 				<h:outputText value="Saldo:" style="font-size:12px !important;" />
 				<h:outputText value="#{agendaController.orc.vendaCreditoBean.valor}"
@@ -1892,7 +1888,7 @@
 				<h:outputText value="Valor: R$" style="font-size:14px !important;"></h:outputText>
 				<p:inputText value="#{agendaController.orc.pagamentoBean.valor}" />
 			</h:panelGrid>
-		</p:outputPanel>
+		
 		<hr />
 		<center>
 			<p:commandButton value="Usar"
@@ -1931,7 +1927,7 @@
 
 		</center>
 
-		<p:outputPanel autoUpdate="true" style="margin-top:20px">
+		<p:autoUpdate/>
 
 			<p:dataTable id="dtCredito2"
 				value="#{agendaController.orc.listarVendasCredito()}"
@@ -1961,7 +1957,7 @@
 					</center>
 				</p:column>
 			</p:dataTable>
-		</p:outputPanel>
+		
 	</h:form>
 </p:dialog>
 

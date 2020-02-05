@@ -7,7 +7,29 @@
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
-
+<style type="text/css">
+    .value {
+        font-weight: bold;
+    }
+     
+    .ui-datatable {
+        margin-bottom: 25px
+    }
+     
+    .ui-datatable .ui-datatable-footer {
+        text-align:left;
+    }
+     
+    .ui-datalist ul {
+        padding: 0 0 0 10px;
+        margin: 5px 0;
+    }
+     
+    .ui-datatable .ui-button-icon-only .ui-button-text {
+        padding: 0;
+        line-height: 1.2;
+    }
+    </style>
         <f:metadata>
             <f:viewAction action="#{SubstituicaoController.carregarFuncionarioAfastamento()}"/>
         </f:metadata>
@@ -189,7 +211,7 @@
                     <b:row>
 
                         <p:dataTable value="#{SubstituicaoController.listaAtendimentos}" var="tab" id="dtAtendimentos"
-                        emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200px"
+                        emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
                                      selection="#{SubstituicaoController.listaAtendimentosSelecionada}"
                                      rowKey="#{tab.id1}">
 
@@ -197,8 +219,10 @@
                                 Atendimentos
                             </f:facet>
 
-                            <p:column selectionMode="multiple" width="10%" style="text-align:center"/>
-
+                            <p:column selectionMode="multiple"  style="width:16px;text-align:center"/>
+ <p:column headerText="Turno" width="15%">
+                                <h:outputText value="#{tab.id1}"/>
+                            </p:column>
                             <p:column headerText="Turno" width="15%">
                                 <h:outputText value="#{tab.turno}"/>
                             </p:column>

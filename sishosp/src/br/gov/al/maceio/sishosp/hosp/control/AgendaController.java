@@ -914,6 +914,12 @@ public class AgendaController implements Serializable {
                 dataAtendimentoFinalC = buscaSessaoDTO.getPeriodoFinal();
             }
         }
+        else
+        {
+        	dataAtendimentoC = new Date();
+        	dataAtendimentoFinalC = new Date();
+        	
+        }
 
     }
 

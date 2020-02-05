@@ -13,7 +13,7 @@
 			<h3 style="font-size: 20px; font-weight: bold">Planilha de
 				Atividades</h3>
 
-			<p:outputPanel autoUpdate="true">
+			<p:autoUpdate/>
 				<p:toolbar>
 					<p:toolbarGroup>
 						<p:commandButton value="Atendimento"
@@ -49,7 +49,7 @@
 					</p:toolbarGroup>
 
 				</p:toolbar>
-			</p:outputPanel>
+		
 		</h:form>
 
 		<p:layout style="min-width:400px;height:480px;margin-top:5px;">
@@ -87,7 +87,7 @@
 			<p:layoutUnit position="center">
 				<h:form id="frmhorarios1">
 
-					<p:outputPanel autoUpdate="true">
+					<p:autoUpdate/>
 						<p:dataTable id="tabela1" emptyMessage="Horários indisponíveis"
 							value="#{planilhaAtividadesController.listahorariosagendadia}"
 							var="m" style="width:95%" selectionMode="single"
@@ -137,7 +137,7 @@
 								<h:outputText value="#{m.evento.nome}" />
 							</p:column>
 						</p:dataTable>
-					</p:outputPanel>
+				
 				</h:form>
 			</p:layoutUnit>
 		</p:layout>
@@ -189,7 +189,7 @@
 			</h:form>
 
 			<h:form id="aberto">
-				<p:outputPanel autoUpdate="true">
+				<p:autoUpdate/>
 					<p:panelGrid styleClass="semBorda"
 						rendered="#{planilhaAtividadesController.aberto}"
 						style="width:30%;float:left;">
@@ -240,8 +240,7 @@
 							value="#{planilhaAtividadesController.cli.profissao.descricao}" />
 
 					</p:panelGrid>
-				</p:outputPanel>
-
+			
 			</h:form>
 
 			<h:form id="formTabelas">
@@ -927,7 +926,7 @@
 						</p:panel>
 					</p:outputPanel>
 
-					<p:outputPanel autoUpdate="true">
+					<p:autoUpdate/>
 						<p:panel id="pnlScript" header="Script de Atendimento"
 							style="width:59%;height:151px;float:right;">
 							<div class="row">
@@ -939,9 +938,9 @@
 								</div>
 							</div>
 						</p:panel>
-					</p:outputPanel>
+					
 
-					<p:outputPanel autoUpdate="true">
+					<p:autoUpdate/>
 						<p:panel id="pnlDados" header="Resumo do Último Atendimento"
 							style="width:59%;height:190px;float:right;">
 							<p:panelGrid columns="4" styleClass="semBorda" style="width:99%">
@@ -970,9 +969,9 @@
 								value="#{planilhaAtividadesController.historico.ultimoAtendimento}" />
 
 						</p:panel>
-					</p:outputPanel>
+					
 
-					<p:outputPanel autoUpdate="true">
+					<p:autoUpdate/>
 						<p:panel id="pnlAtendimento" header="Opções"
 							style="width:59%;height:110px;float:right;">
 
@@ -1004,7 +1003,7 @@
 
 
 						</p:panel>
-					</p:outputPanel>
+					
 
 				</p:growl>
 			</h:form>
@@ -1018,7 +1017,7 @@
 				<h:outputText value="Agendamento" />
 			</f:facet>
 			<h:form id="frmdlgtransf">
-				<p:outputPanel autoUpdate="false">
+				
 					<p:panelGrid columns="2" styleClass="semBorda" id="pnlAgendar">
 
 						<h:outputText value="Data" />
@@ -1094,7 +1093,7 @@
 							style="font-size: 14px;margin-left:20px"
 							icon="ui-icon-closethick" onclick="PF('dlgAgenda').hide();" />
 					</center>
-				</p:outputPanel>
+				
 			</h:form>
 		</p:dialog>
 
@@ -1106,7 +1105,7 @@
 			</f:facet>
 
 			<h:form id="frmdlgremarcar">
-				<p:outputPanel autoUpdate="false">
+				<p:outputPanel>
 					<p:panelGrid columns="2" styleClass="semBorda">
 						<h:outputText value="Data:" />
 						<p:calendar
@@ -1116,7 +1115,7 @@
 						</p:calendar>
 					</p:panelGrid>
 
-					<p:outputPanel autoUpdate="true">
+					<p:autoUpdate/>
 						<p:panel>
 							<div class="row">
 								<div class="col-md-4">
@@ -1126,7 +1125,7 @@
 								</div>
 							</div>
 						</p:panel>
-					</p:outputPanel>
+					
 
 					<center style="margin-top: 25px">
 						<p:commandButton value="Sim"
@@ -1151,7 +1150,7 @@
 			</f:facet>
 			<h:form id="frmAteFech">
 
-				<p:outputPanel autoUpdate="true">
+				<p:autoUpdate/>
 					<p:panel id="pnlAtendimento">
 						<div class="row">
 							<div class="col-md-4">
@@ -1162,12 +1161,12 @@
 							</div>
 						</div>
 					</p:panel>
-				</p:outputPanel>
+				
 
 				<p:panel styleClass="semBorda" id="pnlBotao">
 					<div class="row">
 						<div class="col-md-4">
-							<p:outputPanel autoUpdate="true">
+						<p:autoUpdate/>
 								<p:panelGrid columns="3" styleClass="semBorda">
 									<p:outputLabel value="Fechamento" />
 									<p:selectOneMenu filter="true" filterMatchMode="startsWith"
@@ -1183,7 +1182,7 @@
 										action="#{planilhaAtividadesController.finalizaAtendimento}"
 										update=":frmdlgtransf:pnlAgendar, :grwgeral, :frmdlgremarcar, :frmbotoes " />
 								</p:panelGrid>
-							</p:outputPanel>
+							
 						</div>
 					</div>
 				</p:panel>
@@ -1210,7 +1209,7 @@
 
 				<div class="row">
 					<div class="col-md-4">
-						<p:outputPanel autoUpdate="true">
+						<p:autoUpdate/>
 							<p:panelGrid columns="3" styleClass="semBorda">
 								<p:outputLabel value="Tipo:"></p:outputLabel>
 								<p:selectOneRadio id="console2" style="margin-top:0px"
@@ -1237,7 +1236,7 @@
 							<p:commandButton value="SALVAR" icon="ui-icon-check"
 								action="#{planilhaAtividadesController.salvaOpiniao}"
 								update="growlOpiniao" />
-						</p:outputPanel>
+						
 					</div>
 				</div>
 			</h:form>
@@ -1249,7 +1248,7 @@
 			<h:form id="frmaltc">
 				<p:growl id="growlalt" showDetail="false" />
 				<p:panel id="pnlalt" style="border:none; ">
-					<p:outputPanel autoUpdate="false" id="outaltcl">
+					<p:outputPanel  id="outaltcl">
 						<p:tabView activeIndex="0" tabindex="0" widgetVar="tabvi">
 							<p:tab title="Dados Gerais">
 								<h:panelGrid columns="2"></h:panelGrid>
@@ -1938,7 +1937,7 @@
 												target="#{agendaController.evolucaoselecionada.tipo}" />
 										</p:commandButton>
 
-										<p:outputPanel autoUpdate="true">
+										<p:autoUpdate/>
 											<p:dataTable id="tabelaevolu" emptyMessage="Nenhuma Evolução"
 												scrollable="true" scrollRows="2" scrollHeight="160"
 												value="#{planilhaAtividadesController.listaevolucao}"
@@ -1994,7 +1993,7 @@
 													</center>
 												</p:column>
 											</p:dataTable>
-										</p:outputPanel>
+										
 									</p:panel>
 								</p:column>
 							</p:row>
