@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.administrativo.control;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.InsercaoProfissionalEquipeDAO;
+import br.gov.al.maceio.sishosp.administrativo.enums.RetornoGravarInsercaoProfissionalAtendimento;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -56,17 +57,22 @@ public class InsercaoProfissionalEquipeController implements Serializable {
 
     public void limparDados() {
         insercaoProfissionalEquipe = new InsercaoProfissionalEquipe();
+        tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
 
     }
 
     public void gravarInsercaoProfissionalEquipe() {
         setarDataUnica();
-        boolean cadastrou = iDao.gravarInsercaoGeral(this.insercaoProfissionalEquipe);
+        String retornoCadastro = iDao.gravarInsercaoGeral(this.insercaoProfissionalEquipe);
 
-        if (cadastrou == true) {
+        if (retornoCadastro.equals(RetornoGravarInsercaoProfissionalAtendimento.SUCESSO_GRAVACAO.getSigla())) {
             limparDados();
             JSFUtil.adicionarMensagemSucesso("Inserção de profisisonal na equipe cadastrado com sucesso!", "Sucesso");
-        } else {
+        }
+        else if (retornoCadastro.equals(RetornoGravarInsercaoProfissionalAtendimento.FALHA_PROFISSIONAL.getSigla())){
+            JSFUtil.adicionarMensagemErro("Operação não permitida para esse profissional!", "Erro");
+        }
+        else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
         }
 
@@ -82,13 +88,13 @@ public class InsercaoProfissionalEquipeController implements Serializable {
         }
     }
 
-    public void setarDataUnica(){
+    private void setarDataUnica(){
         if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())){
             insercaoProfissionalEquipe.setPeriodoFinal(insercaoProfissionalEquipe.getPeriodoInicio());
         }
     }
 
-    public void limparDatas() {
+    private void limparDatas() {
         insercaoProfissionalEquipe.setPeriodoInicio(null);
         insercaoProfissionalEquipe.setPeriodoFinal(null);
     }
@@ -132,9 +138,9 @@ public class InsercaoProfissionalEquipeController implements Serializable {
         return result;
     }
 
-    public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(String query) throws ProjetoException {
+    public List<FuncionarioBean> listaProfissionalAutoComplete(String query) throws ProjetoException {
         FuncionarioDAO fDao = new FuncionarioDAO();
-        List<FuncionarioBean> result = fDao.listarProfissionalBuscaPorGrupo(query, insercaoProfissionalEquipe.getGrupo().getIdGrupo());
+        List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
         return result;
     }
 

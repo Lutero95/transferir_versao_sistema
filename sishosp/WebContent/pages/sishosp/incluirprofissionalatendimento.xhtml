@@ -131,7 +131,7 @@
                                             converter="conFuncionario" required="true"
                                             requiredMessage="Profissional: Campo obrigatório!"
                                             class="select-agendaEquipe4"
-                                            completeMethod="#{insercaoProfissionalEquipeController.listaProfissionalPorGrupoAutoComplete}"
+                                            completeMethod="#{insercaoProfissionalEquipeController.listaProfissionalAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.nome}">
@@ -265,7 +265,7 @@
                         <p:commandButton value="Gravar" look="success" size="sm"
                                          id="bgravar" icon="ui-icon-check"
                                          action="#{insercaoProfissionalEquipeController.gravarInsercaoProfissionalEquipe()}"
-                                         update=""
+                                         update="formAgendaMedica"
                                          class="btn-incluir"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"

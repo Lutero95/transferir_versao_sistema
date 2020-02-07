@@ -1098,7 +1098,7 @@ public class AgendaController implements Serializable {
     }
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(String query) throws ProjetoException {
-    	System.out.println("listaProfissionalPorGrupoAutoComplete");
+    	System.out.println("listaProfissionalAutoComplete");
         List<FuncionarioBean> result = fDao.listarProfissionalBuscaPorGrupo(query, agenda.getGrupo().getIdGrupo());
         return result;
     }
