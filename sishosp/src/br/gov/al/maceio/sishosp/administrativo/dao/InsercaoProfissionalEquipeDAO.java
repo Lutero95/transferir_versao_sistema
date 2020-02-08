@@ -261,5 +261,50 @@ public class InsercaoProfissionalEquipeDAO {
         }
     }
 
+    public List<InsercaoProfissionalEquipe> listarInsercoesRealizadas() {
+
+        List<InsercaoProfissionalEquipe> lista = new ArrayList<>();
+
+        String sql = "SELECT f.descfuncionario, a.data_inicio, a.data_final, p.descprograma, g.descgrupo, e.descequipe, " +
+                "CASE WHEN a.turno = 'A' THEN 'AMBOS' WHEN a.turno = 'T' THEN 'TARDE' " +
+                "WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno " +
+                "FROM adm.insercao_profissional_equipe_atendimento a " +
+                "JOIN adm.insercao_profissional_equipe_atendimento_1 a1 ON (a.id = a1.id_insercao_profissional_equipe_atendimento) " +
+                "JOIN acl.funcionarios f ON (a1.id_profissional = f.id_funcionario) " +
+                "LEFT JOIN hosp.programa p ON (a.cod_programa = p.id_programa) " +
+                "LEFT JOIN hosp.grupo g ON (a.cod_grupo = g.id_grupo) " +
+                "LEFT JOIN hosp.equipe e ON (a.cod_equipe = e.id_equipe);";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                InsercaoProfissionalEquipe insercaoProfissionalEquipe = new InsercaoProfissionalEquipe();
+                insercaoProfissionalEquipe.getFuncionario().setNome(rs.getString("descfuncionario"));
+                insercaoProfissionalEquipe.setPeriodoInicio(rs.getDate("data_inicio"));
+                insercaoProfissionalEquipe.setPeriodoFinal(rs.getDate("data_final"));
+                insercaoProfissionalEquipe.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                insercaoProfissionalEquipe.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                insercaoProfissionalEquipe.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                insercaoProfissionalEquipe.setTurno(rs.getString("turno"));
+
+                lista.add(insercaoProfissionalEquipe);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
 }

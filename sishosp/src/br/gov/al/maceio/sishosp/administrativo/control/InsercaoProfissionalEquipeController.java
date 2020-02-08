@@ -37,6 +37,7 @@ public class InsercaoProfissionalEquipeController implements Serializable {
     private GrupoBean grupoSelecionado;
     private String tipoData;
     private List<EquipeBean> listaEquipePorGrupo;
+    private List<InsercaoProfissionalEquipe> listaInseridos;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "incluirprofissionalatendimento?faces-redirect=true";
@@ -48,6 +49,7 @@ public class InsercaoProfissionalEquipeController implements Serializable {
         listaGruposProgramas = new ArrayList<>();
         listaEquipePorGrupo = new ArrayList<>();
         tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
+        listaInseridos = new ArrayList<>();
     }
 
 
@@ -59,6 +61,10 @@ public class InsercaoProfissionalEquipeController implements Serializable {
         insercaoProfissionalEquipe = new InsercaoProfissionalEquipe();
         tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
 
+    }
+
+    public void listarInseridos() {
+        listaInseridos = iDao.listarInsercoesRealizadas();
     }
 
     public void gravarInsercaoProfissionalEquipe() {
@@ -197,5 +203,13 @@ public class InsercaoProfissionalEquipeController implements Serializable {
 
     public void setListaEquipePorGrupo(List<EquipeBean> listaEquipePorGrupo) {
         this.listaEquipePorGrupo = listaEquipePorGrupo;
+    }
+
+    public List<InsercaoProfissionalEquipe> getListaInseridos() {
+        return listaInseridos;
+    }
+
+    public void setListaInseridos(List<InsercaoProfissionalEquipe> listaInseridos) {
+        this.listaInseridos = listaInseridos;
     }
 }

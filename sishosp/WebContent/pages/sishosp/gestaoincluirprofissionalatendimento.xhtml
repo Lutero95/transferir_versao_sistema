@@ -7,6 +7,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{insercaoProfissionalEquipeController.listarInseridos}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Inserção de Profissionais na Equipe</h4>
@@ -21,6 +25,72 @@
 						icon="ui-icon-plus" class="btn-addNovo">
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
+
+
+					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
+								 value="#{insercaoProfissionalEquipeController.listaInseridos}" paginator="true">
+
+						<p:column width="20%">
+							<f:facet name="header">
+								Profissional
+							</f:facet>
+
+							<h:outputText value="#{tab.funcionario.nome}" />
+						</p:column>
+
+						<p:column width="10%">
+							<f:facet name="header">
+								Período Início
+							</f:facet>
+
+							<h:outputText value="#{tab.periodoInicio}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="10%">
+							<f:facet name="header">
+								Período Final
+							</f:facet>
+
+							<h:outputText value="#{tab.periodoFinal}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="17%">
+							<f:facet name="header">
+								Programa
+							</f:facet>
+
+							<h:outputText value="#{tab.programa.descPrograma}" />
+						</p:column>
+
+						<p:column width="17%">
+							<f:facet name="header">
+								Grupo
+							</f:facet>
+
+							<h:outputText value="#{tab.grupo.descGrupo}" />
+						</p:column>
+
+						<p:column width="17%">
+							<f:facet name="header">
+								Equipe
+							</f:facet>
+
+							<h:outputText value="#{tab.equipe.descEquipe}" />
+						</p:column>
+
+						<p:column width="9%">
+							<f:facet name="header">
+								Turno
+							</f:facet>
+
+							<h:outputText value="#{tab.turno}" />
+						</p:column>
+
+					</p:dataTable>
 
 
 				</h:form>
