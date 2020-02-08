@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -207,6 +208,8 @@ public class AtendimentoDAO {
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
+			
+		//	ArrayList<InsercaoProfissionalEquipe> listaInsercaoProfEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
 
 	
 			

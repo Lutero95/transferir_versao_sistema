@@ -10,7 +10,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Inserção de Profissional na Equipe</h4>
+                <h4 class="panel-title">Inserção de Profissional em Equipe</h4>
             </div>
 
             <div class="panel-body table-body">
@@ -45,6 +45,7 @@
 
                                     <p:commandButton id="btBusPr" immediate="true"
                                                      icon="ui-icon-search"
+                                                     
                                                      action="#{insercaoProfissionalEquipeController.limparNaBuscaPrograma()}"
                                                      actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
@@ -73,9 +74,10 @@
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusGr" immediate="true"
-                                                     icon="ui-icon-search"
+                                                     icon="ui-icon-search" update=":formConsuGrop"
                                                      disabled="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.programa.idPrograma == null}"
                                                      action="#{insercaoProfissionalEquipeController.limparNaBuscaGrupo()}"
+                                                     actionListener="#{insercaoProfissionalEquipeController.atualizaListaGrupos(insercaoProfissionalEquipeController.insercaoProfissionalEquipe.programa)}"
                                                      onclick="PF('dlgConsuGrop').show();"/>
                                 </p:outputPanel>
                             </b:column>
@@ -95,7 +97,7 @@
 
                                     <p:autoComplete
                                             value="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.equipe}"
-                                            size="31" converter="conEquipe" required="true"
+                                            size="31" converter="conEquipe" required="false"
                                             requiredMessage="Equipe: Campo obrigatório!"
                                             disabled="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.grupo.idGrupo==null}"
                                             class="select-agendaEquipe4"

@@ -33,8 +33,8 @@ public class InsercaoProfissionalEquipeDAO {
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "WHERE a.codprograma = ? " +
-                "AND NOT EXISTS (SELECT aa1.codprofissionalatendimento FROM hosp.atendimentos1 aa1 WHERE codprofissionalatendimento IN (?)) " +
-                "AND a.dtaatende >= ? AND a.dtaatende <= ? ";
+                "AND NOT EXISTS (SELECT aa1.codprofissionalatendimento FROM hosp.atendimentos1 aa1 WHERE codprofissionalatendimento IN (?) and coalesce(aa1.excluido,'N')='N') " +
+                "AND a.dtaatende >= ? AND a.dtaatende <= ? and a.codequipe is not null and coalesce(a1.excluido,'N')='N' ";
 
         if(!insercaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())){
             sql = sql + "AND a.turno = ? ";
@@ -242,9 +242,10 @@ public class InsercaoProfissionalEquipeDAO {
                 ps.setInt(1, gravarInsercao1.getListaInsercao().get(i).getAtendimentoBean().getId1());
                 ps.setInt(2, gravarInsercao1.getCodInsercaoProfissionalEquipeAtendimento());
                 ps.setLong(3, gravarInsercao1.getListaInsercao().get(i).getFuncionario().getId());
+                ps.execute();
             }
 
-            ps.execute();
+
 
             retorno = true;
         } catch (Exception ex) {

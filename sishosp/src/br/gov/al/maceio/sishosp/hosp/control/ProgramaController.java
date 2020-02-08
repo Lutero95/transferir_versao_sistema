@@ -148,7 +148,7 @@ public class ProgramaController implements Serializable {
 
     public void setProg(ProgramaBean prog) {
         this.prog = prog;
-    }
+    } 
 
 
 

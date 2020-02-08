@@ -70,7 +70,7 @@ public class InsercaoProfissionalEquipeController implements Serializable {
             JSFUtil.adicionarMensagemSucesso("Inserção de profisisonal na equipe cadastrado com sucesso!", "Sucesso");
         }
         else if (retornoCadastro.equals(RetornoGravarInsercaoProfissionalAtendimento.FALHA_PROFISSIONAL.getSigla())){
-            JSFUtil.adicionarMensagemErro("Operação não permitida para esse profissional!", "Erro");
+            JSFUtil.adicionarMensagemErro("Operação não permitida para esse profissional! Não existe nenhum agendamento neste período!", "Erro");
         }
         else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");

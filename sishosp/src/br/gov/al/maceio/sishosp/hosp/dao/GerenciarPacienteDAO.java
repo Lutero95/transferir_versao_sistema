@@ -441,7 +441,9 @@ public class GerenciarPacienteDAO {
                 ps2.execute();
             }
 
-                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ? and situacao is null";
+                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ? and situacao is null and id_atendimentos1 not in (\n" + 
+                		"	select  ipe1.id_atendimentos1  from adm.insercao_profissional_equipe_atendimento_1 ipe1\n" + 
+                		"	)";
 
                 PreparedStatement ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
@@ -570,7 +572,54 @@ public class GerenciarPacienteDAO {
             }
         }
         
-    }        
+    }   
+    
+    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramInsercaoProfissionalEmEquipe(Integer idAtendimentos, Connection conAuxiliar) {
+
+        
+        ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
+
+        try {
+
+            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"	where sf.id_atendimentos1 in ( " + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+            		"WHERE a.id_atendimento = ?)";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idAtendimentos);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
+            	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
+            	substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
+            	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
+            	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
+            	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
+            	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+                lista.add(substituicao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }     
 
     public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar) {
 
