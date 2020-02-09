@@ -1685,7 +1685,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
-                + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + " WHERE a.cod_unidade = ? ";
+                + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + " WHERE a.cod_unidade = ? and coalesce(a.situacao,'')<>'C' ";
         if (dataAgenda != null)
             sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
         if (!situacao.equals("T"))

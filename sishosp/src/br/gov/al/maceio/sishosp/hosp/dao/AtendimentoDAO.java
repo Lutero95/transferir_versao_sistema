@@ -856,7 +856,7 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on g.id_grupo = a.codgrupo "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?  ";
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' ";
 		        if (periodoInicialEvolucao != null)
 		            sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
 		        sql = sql + "ORDER BY a.dtaatende ";
