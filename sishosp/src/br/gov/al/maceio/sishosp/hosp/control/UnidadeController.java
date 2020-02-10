@@ -17,6 +17,8 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 @ManagedBean(name = "UnidadeController")
@@ -25,11 +27,12 @@ public class UnidadeController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private UnidadeBean unidade;
+    private ProgramaGrupoEvolucaoBean evolucaoAux;
     private Integer tipo;
     private String cabecalho;
     private UnidadeDAO eDao = new UnidadeDAO();
     private ArrayList<String> listaEstados;
-    private List<GrupoBean> listaGruposProgramas;
+    private List<GrupoBean> listaGruposProgramasOpm, listaGruposProgramasEvolucao;
     private GrupoDAO gDao = new GrupoDAO();
     private List<UnidadeBean> listaUnidades;
 
@@ -41,10 +44,12 @@ public class UnidadeController implements Serializable {
     private static final String CABECALHO_ALTERACAO = "Alteração de Unidade";
 
     public UnidadeController() {
+    	evolucaoAux = new ProgramaGrupoEvolucaoBean();
         this.unidade = new UnidadeBean();
         this.cabecalho = "";
         listaUnidades = new ArrayList<>();
-        listaGruposProgramas = new ArrayList<>();
+        listaGruposProgramasOpm = new ArrayList<>();
+        listaGruposProgramasEvolucao = new ArrayList<>();
         listaEstados = new ArrayList<>();
         listaEstados.add("AC");
         listaEstados.add("AL");
@@ -153,7 +158,7 @@ public class UnidadeController implements Serializable {
         return eDao.carregarUnidadesDoFuncionario();
     }
 
-    public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
+    public List<GrupoBean> listaGrupoAutoCompleteComProgramaOPM(String query)
             throws ProjetoException {
         List<GrupoBean> listaGrupo = new ArrayList<>();
 
@@ -163,15 +168,35 @@ public class UnidadeController implements Serializable {
 
         return listaGrupo;
     }
+    
+    public List<GrupoBean> listaGrupoAutoCompleteComProgramaEvolucao(String query)
+            throws ProjetoException {
+        List<GrupoBean> listaGrupo = new ArrayList<>();
 
-    public void listaGrupoPorPrograma(Integer codPrograma)
+        if(verificarProgramaPreenchido(evolucaoAux.getPrograma().getIdPrograma())) {
+            listaGrupo = gDao.listarGruposNoAutoComplete(query, evolucaoAux.getPrograma().getIdPrograma());
+        }
+
+        return listaGrupo;
+    }    
+
+    public void listaGrupoPorProgramaOPM(Integer codPrograma)
             throws ProjetoException {
 
         if(verificarProgramaPreenchido(codPrograma)) {
-            listaGruposProgramas = gDao.listarGruposPorPrograma(codPrograma);
+            listaGruposProgramasOpm = gDao.listarGruposPorPrograma(codPrograma);
         }
 
     }
+    
+    public void listaGrupoPorProgramaEvolucao(Integer codPrograma)
+            throws ProjetoException {
+
+        if(verificarProgramaPreenchido(codPrograma)) {
+            listaGruposProgramasEvolucao = gDao.listarGruposPorPrograma(codPrograma);
+        }
+
+    }    
 
     private Boolean verificarProgramaPreenchido(Integer idPrograma){
         Boolean retorno = false;
@@ -214,13 +239,7 @@ public class UnidadeController implements Serializable {
         this.listaEstados = listaEstados;
     }
 
-    public List<GrupoBean> getListaGruposProgramas() {
-        return listaGruposProgramas;
-    }
-
-    public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
-        this.listaGruposProgramas = listaGruposProgramas;
-    }
+  
 
    
 
@@ -258,5 +277,29 @@ public class UnidadeController implements Serializable {
 
 	public void setListaUnidades(List<UnidadeBean> listaUnidades) {
 		this.listaUnidades = listaUnidades;
+	}
+
+	public ProgramaGrupoEvolucaoBean getEvolucaoAux() {
+		return evolucaoAux;
+	}
+
+	public void setEvolucaoAux(ProgramaGrupoEvolucaoBean evolucaoAux) {
+		this.evolucaoAux = evolucaoAux;
+	}
+
+	public List<GrupoBean> getListaGruposProgramasOpm() {
+		return listaGruposProgramasOpm;
+	}
+
+	public List<GrupoBean> getListaGruposProgramasEvolucao() {
+		return listaGruposProgramasEvolucao;
+	}
+
+	public void setListaGruposProgramasOpm(List<GrupoBean> listaGruposProgramasOpm) {
+		this.listaGruposProgramasOpm = listaGruposProgramasOpm;
+	}
+
+	public void setListaGruposProgramasEvolucao(List<GrupoBean> listaGruposProgramasEvolucao) {
+		this.listaGruposProgramasEvolucao = listaGruposProgramasEvolucao;
 	}
 }

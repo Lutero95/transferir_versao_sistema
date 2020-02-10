@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ParametroBean implements Serializable {
@@ -17,11 +18,13 @@ public class ParametroBean implements Serializable {
     private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
     private String necessitaPresencaParaEvolucao;
-    private boolean ptsMostrarObjGeraisCurtoPrazo, ptsMostrarObjGeraisMedioPrazo, ptsMostrarObjGeraisLongoPrazo;	
+    private boolean ptsMostrarObjGeraisCurtoPrazo, ptsMostrarObjGeraisMedioPrazo, ptsMostrarObjGeraisLongoPrazo;
+    private ArrayList<ProgramaGrupoEvolucaoBean> listaProgramasGruposComEvolucao;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
         orteseProtese = new OrteseProtese();
+        listaProgramasGruposComEvolucao = new ArrayList<>();
     }
 
     public Integer getMotivoDesligamento() {
@@ -142,6 +145,14 @@ public class ParametroBean implements Serializable {
 
 	public void setPtsMostrarObjGeraisLongoPrazo(boolean ptsMostrarObjGeraisLongoPrazo) {
 		this.ptsMostrarObjGeraisLongoPrazo = ptsMostrarObjGeraisLongoPrazo;
+	}
+
+	public ArrayList<ProgramaGrupoEvolucaoBean> getListaProgramasGruposComEvolucao() {
+		return listaProgramasGruposComEvolucao;
+	}
+
+	public void setListaProgramasGruposComEvolucao(ArrayList<ProgramaGrupoEvolucaoBean> listaProgramasGruposComEvolucao) {
+		this.listaProgramasGruposComEvolucao = listaProgramasGruposComEvolucao;
 	}
 
 	

@@ -21,419 +21,566 @@
 			<div class="panel-body table-body sub-table-body">
 
 				<h:form class="form-horizontal" id="frmPrincipal">
+					<p:tabView style="height:auto; width:auto;border-bottom:none;"
+						id="tbview">
+						<p:tab title="Dados Gerais">
 
+							<b:row>
 
-					<b:row>
+								<b:column span="12" class="label-position new-col12">
+									<b:label value="Nome Unidade" severity="info" />
 
-						<b:column span="12" class="label-position new-col12">
-							<b:label value="Nome Unidade" severity="info" />
+									<b:inputText value="#{UnidadeController.unidade.nomeUnidade}"
+										validator="CaractereEmBrancoValidator" class="form-control"
+										required="true"
+										requiredMessage="Nome Unidade Campo obrigatório!"
+										validatorMessage="Nome Unidade deve conter entre 2 e 100 caracteres.">
+										<f:validateLength minimum="2" maximum="100" />
+									</b:inputText>
+								</b:column>
+							</b:row>
+							<b:row>
+								<b:column span="4" class="label-position new-col4">
+									<b:label value="Empresa" severity="info" />
 
-							<b:inputText value="#{UnidadeController.unidade.nomeUnidade}"
-								validator="CaractereEmBrancoValidator" class="form-control"
-								required="true"
-								requiredMessage="Nome Unidade Campo obrigatório!"
-								validatorMessage="Nome Unidade deve conter entre 2 e 100 caracteres.">
-								<f:validateLength minimum="2" maximum="100" />
-							</b:inputText>
-						</b:column>
-					</b:row>
-					<b:row>
-						<b:column span="4" class="label-position new-col4">
-							<b:label value="Empresa" severity="info" />
+									<b:selectOneMenu
+										value="#{UnidadeController.unidade.codEmpresa}"
+										required="true" requiredMessage="Informe a Empresa">
 
-							<b:selectOneMenu
-								value="#{UnidadeController.unidade.codEmpresa}"
-								required="true" requiredMessage="Informe a Empresa">
+										<f:selectItem itemLabel="Selecione" />
+										<f:selectItems
+											value="#{EmpresaController.listarTodasAsEmpresa()}" var="emp"
+											itemLabel="#{emp.nomeEmpresa}" itemValue="#{emp.codEmpresa}" />
+									</b:selectOneMenu>
 
-								<f:selectItem itemLabel="Selecione" />
-								<f:selectItems
-									value="#{EmpresaController.listarTodasAsEmpresa()}" var="emp"
-									itemLabel="#{emp.nomeEmpresa}" itemValue="#{emp.codEmpresa}" />
-							</b:selectOneMenu>
+								</b:column>
 
-						</b:column>
 
 
 
+							</b:row>
 
-					</b:row>
 
+							<b:row>
 
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Rua" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.rua}"
-								class="form-control" required="false"
-								requiredMessage="Rua: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="Número" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.numero}"
-								class="form-control" required="false"
-								requiredMessage="Número: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="4" class="label-position new-col4">
-							<b:label value="Complemento" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.complemento}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-					</b:row>
-					<b:row>
-						<b:column span="3" class="label-position new-col3">
-							<b:label value="Bairro" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.bairro}"
-								class="form-control" required="false"
-								requiredMessage="Bairro: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-						<b:column span="3" class="label-position new-col3">
-							<b:label value="Cidade" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.cidade}"
-								class="form-control" required="false"
-								requiredMessage="Cidade: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="Estado" severity="info" />
-
-							<b:selectOneMenu size="10" required="false"
-								requiredMessage="Estado: Campo obrigatório!"
-								value="#{UnidadeController.unidade.estado}">
-								<f:selectItems value="#{UnidadeController.listaEstados}"></f:selectItems>
-							</b:selectOneMenu>
-
-						</b:column>
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="CEP" severity="info" />
-
-							<p:inputMask mask="99999-999"
-								style="margin-left:-15px; width:150px"
-								value="#{UnidadeController.unidade.cep}" class="form-control">
-							</p:inputMask>
-
-
-						</b:column>
-					</b:row>
-
-
-
-
-
-
-					<b:row>
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="DDD 1" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.ddd1}"
-								class="form-control" required="false"
-								requiredMessage="DDD1: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="Telefone 1" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.telefone1}"
-								required="false"
-								requiredMessage="Telefone 1: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="DDD 2" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.ddd2}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="Telefone 2" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.telefone2}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Email" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.email}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Site" severity="info" />
-
-							<b:inputText value="#{UnidadeController.unidade.site}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-					</b:row>
-
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Motivo padrão de Desligamento" severity="info" />
-
-							<b:selectOneMenu size="10" required="true"
-								requiredMessage="Motivo padrão de Desligamento: Campo obrigatório!"
-								value="#{UnidadeController.unidade.parametro.motivoDesligamento}">
-								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-								<f:selectItems value="#{MotivoController.listarMotivos()}"
-									var="sis" itemLabel="#{sis.motivo_desligamento}"
-									itemValue="#{sis.id_motivo}" />
-							</b:selectOneMenu>
-
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Opção de Atendimento" severity="info" />
-
-							<b:selectOneMenu size="10" required="true"
-								requiredMessage="Opção de atendimento: Campo obrigatório!"
-								value="#{UnidadeController.unidade.parametro.opcaoAtendimento}">
-								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-								<f:selectItem itemLabel="Somente Turno" itemValue="T"></f:selectItem>
-								<f:selectItem itemLabel="Somente Horário" itemValue="H"></f:selectItem>
-								<f:selectItem itemLabel="Ambos" itemValue="A"></f:selectItem>
-							</b:selectOneMenu>
-
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Quantidade Simultânea Profissional"
-								severity="info" />
-
-							<b:inputText
-								value="#{UnidadeController.unidade.parametro.quantidadeSimultaneaProfissional}"
-								required="true"
-								requiredMessage="Quantidade Simultânea Profissional: Campo obrigatório!"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Quantidade Simultânea Equipe" severity="info" />
-
-							<b:inputText
-								value="#{UnidadeController.unidade.parametro.quantidadeSimultaneaEquipe}"
-								required="true"
-								requiredMessage="Quantidade Simultânea Equipe: Campo obrigatório!"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Horário Inicial" severity="info" />
-
-							<p:inputMask mask="99:99"
-								class="form-control select-agendaEquipe2"
-								value="#{UnidadeController.unidade.parametro.horarioInicial}"
-								size="6" required="true"
-								requiredMessage="Horário Inicial: Campo Obrigatório!">
-								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
-							</p:inputMask>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Horário Final" severity="info" />
-
-							<p:inputMask mask="99:99"
-								class="form-control select-agendaEquipe2"
-								value="#{UnidadeController.unidade.parametro.horarioFinal}"
-								size="6" required="true"
-								requiredMessage="Horário Final: Campo Obrigatório!">
-								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
-							</p:inputMask>
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Almoço Início" severity="info" />
-
-							<p:inputMask mask="99:99"
-										 class="form-control select-agendaEquipe2"
-										 value="#{UnidadeController.unidade.parametro.almocoInicio}"
-										 size="6" required="true"
-										 requiredMessage="Horário Inicial: Campo Obrigatório!">
-								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
-							</p:inputMask>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Almoço Final" severity="info" />
-
-							<p:inputMask mask="99:99"
-										 class="form-control select-agendaEquipe2"
-										 value="#{UnidadeController.unidade.parametro.almocoFinal}"
-										 size="6" required="true"
-										 requiredMessage="Horário Final: Campo Obrigatório!">
-								<f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3" />
-							</p:inputMask>
-						</b:column>
-
-					</b:row>
-
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Intervalo (em minutos)" severity="info" />
-
-							<b:inputText
-								value="#{UnidadeController.unidade.parametro.intervalo}"
-								required="true" requiredMessage="Intervalo: Campo obrigatório!"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Tipo de Atendimento para Terapia" severity="info" />
-
-							<b:selectOneMenu size="10" required="false"
-								requiredMessage="Opção de atendimento: Campo obrigatório!"
-								value="#{UnidadeController.unidade.parametro.tipoAtendimento.idTipo}">
-								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-								<f:selectItems
-									value="#{TipoAtendimentoController.listarTipos()}" var="tipo"
-									itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}" />
-							</b:selectOneMenu>
-
-						</b:column>
-
-					</b:row>
-					<b:row>
-					<b:column span="5" class="label-position new-col5">
-							<b:label value="Realizar Evolução SOMENTE mediante Presença" severity="info" />
-
-							<b:selectOneMenu size="10" required="true"
-								requiredMessage="Opção de atendimento: Campo obrigatório!"
-								value="#{UnidadeController.unidade.parametro.necessitaPresencaParaEvolucao}">
-								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-								<f:selectItem itemLabel="Sim" itemValue="S"></f:selectItem>
-								<f:selectItem itemLabel="Não" itemValue="N"></f:selectItem>
-							</b:selectOneMenu>
-
-						</b:column>
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-
-						<p:fieldset legend="Órtese e Prótese">
-
-							<p:outputPanel id="idOrteseProtese">
 								<b:column span="5" class="label-position new-col5">
-									<b:label value="Programa Padrão" class="fire-label"
+									<b:label value="Rua" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.rua}"
+										class="form-control" required="false"
+										requiredMessage="Rua: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="Número" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.numero}"
+										class="form-control" required="false"
+										requiredMessage="Número: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="4" class="label-position new-col4">
+									<b:label value="Complemento" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.complemento}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+							</b:row>
+							<b:row>
+								<b:column span="3" class="label-position new-col3">
+									<b:label value="Bairro" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.bairro}"
+										class="form-control" required="false"
+										requiredMessage="Bairro: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+								<b:column span="3" class="label-position new-col3">
+									<b:label value="Cidade" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.cidade}"
+										class="form-control" required="false"
+										requiredMessage="Cidade: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="Estado" severity="info" />
+
+									<b:selectOneMenu size="10" required="false"
+										requiredMessage="Estado: Campo obrigatório!"
+										value="#{UnidadeController.unidade.estado}">
+										<f:selectItems value="#{UnidadeController.listaEstados}"></f:selectItems>
+									</b:selectOneMenu>
+
+								</b:column>
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="CEP" severity="info" />
+
+									<p:inputMask mask="99999-999"
+										style="margin-left:-15px; width:150px"
+										value="#{UnidadeController.unidade.cep}" class="form-control">
+									</p:inputMask>
+
+
+								</b:column>
+							</b:row>
+
+
+
+
+
+
+							<b:row>
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="DDD 1" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.ddd1}"
+										class="form-control" required="false"
+										requiredMessage="DDD1: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="Telefone 1" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.telefone1}"
+										required="false"
+										requiredMessage="Telefone 1: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="DDD 2" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.ddd2}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="Telefone 2" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.telefone2}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+							</b:row>
+
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Email" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.email}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Site" severity="info" />
+
+									<b:inputText value="#{UnidadeController.unidade.site}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+							</b:row>
+
+
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Motivo padrão de Desligamento" severity="info" />
+
+									<b:selectOneMenu size="10" required="true"
+										requiredMessage="Motivo padrão de Desligamento: Campo obrigatório!"
+										value="#{UnidadeController.unidade.parametro.motivoDesligamento}">
+										<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+										<f:selectItems value="#{MotivoController.listarMotivos()}"
+											var="sis" itemLabel="#{sis.motivo_desligamento}"
+											itemValue="#{sis.id_motivo}" />
+									</b:selectOneMenu>
+
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Opção de Atendimento" severity="info" />
+
+									<b:selectOneMenu size="10" required="true"
+										requiredMessage="Opção de atendimento: Campo obrigatório!"
+										value="#{UnidadeController.unidade.parametro.opcaoAtendimento}">
+										<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Somente Turno" itemValue="T"></f:selectItem>
+										<f:selectItem itemLabel="Somente Horário" itemValue="H"></f:selectItem>
+										<f:selectItem itemLabel="Ambos" itemValue="A"></f:selectItem>
+									</b:selectOneMenu>
+
+								</b:column>
+
+							</b:row>
+
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Quantidade Simultânea Profissional"
 										severity="info" />
 
-									<p:autoComplete
-										value="#{UnidadeController.unidade.parametro.orteseProtese.programa}"
-										size="31" converter="conPrograma" class="select-agendaEquipe4"
-										completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descPrograma}">
-										<p:ajax event="itemSelect" update="grupo" />
-
-									</p:autoComplete>
-
-									<p:commandButton id="btBusPr" immediate="true"
-										style="margin-left: 5px" icon="ui-icon-search"
-										actionListener="#{ProgramaController.carregaListaProgramas()}"
-										update=":formConsuProg"
-										oncomplete="PF('dlgConsuProg').show();" />
+									<b:inputText
+										value="#{UnidadeController.unidade.parametro.quantidadeSimultaneaProfissional}"
+										required="true"
+										requiredMessage="Quantidade Simultânea Profissional: Campo obrigatório!"
+										class="form-control">
+									</b:inputText>
 								</b:column>
 
 								<b:column span="5" class="label-position new-col5">
-									<b:label value="Grupo Padrão" severity="info"
-										class="fire-label" />
+									<b:label value="Quantidade Simultânea Equipe" severity="info" />
 
-									<p:autoComplete
-										value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
-										size="31" id="grupo" converter="conGrupo"
-										class="select-agendaEquipe4"
-										completeMethod="#{UnidadeController.listaGrupoAutoCompleteComPrograma}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descGrupo}">
-										<p:ajax event="itemSelect" />
+									<b:inputText
+										value="#{UnidadeController.unidade.parametro.quantidadeSimultaneaEquipe}"
+										required="true"
+										requiredMessage="Quantidade Simultânea Equipe: Campo obrigatório!"
+										class="form-control">
+									</b:inputText>
+								</b:column>
 
-									</p:autoComplete>
+							</b:row>
 
-									<p:commandButton id="btBusGr" immediate="true"
-										style="margin-left: 5px" icon="ui-icon-search"
-										action="#{UnidadeController.listaGrupoPorPrograma(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
-										update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Horário Inicial" severity="info" />
+
+									<p:inputMask mask="99:99"
+										class="form-control select-agendaEquipe2"
+										value="#{UnidadeController.unidade.parametro.horarioInicial}"
+										size="6" required="true"
+										requiredMessage="Horário Inicial: Campo Obrigatório!">
+										<f:convertDateTime type="time" pattern="HH:mm"
+											timeZone="GMT-3" />
+									</p:inputMask>
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Horário Final" severity="info" />
+
+									<p:inputMask mask="99:99"
+										class="form-control select-agendaEquipe2"
+										value="#{UnidadeController.unidade.parametro.horarioFinal}"
+										size="6" required="true"
+										requiredMessage="Horário Final: Campo Obrigatório!">
+										<f:convertDateTime type="time" pattern="HH:mm"
+											timeZone="GMT-3" />
+									</p:inputMask>
+								</b:column>
+
+							</b:row>
+
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Almoço Início" severity="info" />
+
+									<p:inputMask mask="99:99"
+										class="form-control select-agendaEquipe2"
+										value="#{UnidadeController.unidade.parametro.almocoInicio}"
+										size="6" required="true"
+										requiredMessage="Horário Inicial: Campo Obrigatório!">
+										<f:convertDateTime type="time" pattern="HH:mm"
+											timeZone="GMT-3" />
+									</p:inputMask>
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Almoço Final" severity="info" />
+
+									<p:inputMask mask="99:99"
+										class="form-control select-agendaEquipe2"
+										value="#{UnidadeController.unidade.parametro.almocoFinal}"
+										size="6" required="true"
+										requiredMessage="Horário Final: Campo Obrigatório!">
+										<f:convertDateTime type="time" pattern="HH:mm"
+											timeZone="GMT-3" />
+									</p:inputMask>
+								</b:column>
+
+							</b:row>
+
+
+							<b:row>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Intervalo (em minutos)" severity="info" />
+
+									<b:inputText
+										value="#{UnidadeController.unidade.parametro.intervalo}"
+										required="true"
+										requiredMessage="Intervalo: Campo obrigatório!"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Tipo de Atendimento para Terapia"
+										severity="info" />
+
+									<b:selectOneMenu size="10" required="false"
+										requiredMessage="Opção de atendimento: Campo obrigatório!"
+										value="#{UnidadeController.unidade.parametro.tipoAtendimento.idTipo}">
+										<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+										<f:selectItems
+											value="#{TipoAtendimentoController.listarTipos()}" var="tipo"
+											itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}" />
+									</b:selectOneMenu>
 
 								</b:column>
+
+							</b:row>
+							<b:row>
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Realizar Evolução SOMENTE mediante Presença"
+										severity="info" />
+
+									<b:selectOneMenu size="10" required="true"
+										requiredMessage="Opção de atendimento: Campo obrigatório!"
+										value="#{UnidadeController.unidade.parametro.necessitaPresencaParaEvolucao}">
+										<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+										<f:selectItem itemLabel="Sim" itemValue="S"></f:selectItem>
+										<f:selectItem itemLabel="Não" itemValue="N"></f:selectItem>
+									</b:selectOneMenu>
+
+								</b:column>
+							</b:row>
+
+							<br></br>
+
+							<b:row>
+
+								<p:fieldset legend="Órtese e Prótese">
+
+									<p:outputPanel id="idOrteseProtese">
+										<b:column span="5" class="label-position new-col5">
+											<b:label value="Programa Padrão" class="fire-label"
+												severity="info" />
+
+											<p:autoComplete
+												value="#{UnidadeController.unidade.parametro.orteseProtese.programa}"
+												size="31" converter="conPrograma"
+												class="select-agendaEquipe4"
+												completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descPrograma}">
+												<p:ajax event="itemSelect" update="grupo" />
+
+											</p:autoComplete>
+
+											<p:commandButton id="btBusPr" immediate="true"
+												style="margin-left: 5px" icon="ui-icon-search"
+												actionListener="#{ProgramaController.carregaListaProgramas()}"
+												update=":formConsuProg"
+												oncomplete="PF('dlgConsuProg').show();" />
+										</b:column>
+
+										<b:column span="5" class="label-position new-col5">
+											<b:label value="Grupo Padrão" severity="info"
+												class="fire-label" />
+
+											<p:autoComplete
+												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
+												size="31" id="grupo" converter="conGrupo"
+												class="select-agendaEquipe4"
+												completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaOPM}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descGrupo}">
+												<p:ajax event="itemSelect" />
+
+											</p:autoComplete>
+
+											<p:commandButton id="btBusGr" immediate="true"
+												style="margin-left: 5px" icon="ui-icon-search"
+												action="#{UnidadeController.listaGrupoPorPrograma(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
+												update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
+
+										</b:column>
+
+									</p:outputPanel>
+
+								</p:fieldset>
+
+							</b:row>
+
+							<br></br>
+
+							<b:row>
+
+								<p:fieldset legend="PTS">
+
+									<b:column span="6" class="label-position new-col6">
+										<p:selectBooleanCheckbox
+											value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisCurtoPrazo}"
+											itemLabel="Mostrar Observações Gerais - Curto Prazo" />
+										<p:selectBooleanCheckbox
+											value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisMedioPrazo}"
+											itemLabel="Mostrar Observações Gerais - Médio Prazo" />
+										<p:selectBooleanCheckbox
+											value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisLongoPrazo}"
+											itemLabel="Mostrar Observações Gerais - Longo Prazo" />
+									</b:column>
+
+
+								</p:fieldset>
+
+							</b:row>
+
+							<br></br>
+
+							<b:row>
+
+								<b:column span="5">
+
+									<p:selectBooleanCheckbox label="Matriz" itemLabel="Matriz"
+										value="#{UnidadeController.unidade.matriz}"
+										style="margin-rigth: 10px;color:#2e84ce;">
+									</p:selectBooleanCheckbox>
+								</b:column>
+
+							</b:row>
+
+						</p:tab>
+
+						<p:tab title="Evolução">
+							<p:growl id="msgEvolucao" />
+
+							<p:outputPanel id="rowEvolucao">
+								<b:row>
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="Programa:" severity="info" />
+
+										<p:outputPanel id="outProg">
+											<p:autoComplete
+												value="#{UnidadeController.evolucaoAux.programa}" size="31"
+												converter="conPrograma" class="select-agendaEquipe4"
+												completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descPrograma}">
+												<p:ajax event="itemSelect" update="grupoEvolucao" />
+
+											</p:autoComplete>
+
+											<p:commandButton id="btBusPr2" immediate="true"
+												style="margin-left: 5px" icon="ui-icon-search"
+												actionListener="#{ProgramaController.carregaListaProgramas()}"
+												update=":formConsuProg2"
+												oncomplete="PF('dlgConsultProg').show();" />
+
+										</p:outputPanel>
+									</b:column>
+
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="Grupo:" severity="info" />
+
+										<p:outputPanel id="outGrupo">
+											<p:autoComplete
+												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
+												size="31" id="grupoEvolucao" converter="conGrupo"
+												class="select-agendaEquipe4"
+												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
+												completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaEvolucao}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descGrupo}">
+												<p:ajax event="itemSelect" />
+
+											</p:autoComplete>
+
+											<p:commandButton id="btBusGr2" immediate="true"
+												style="margin-left: 5px" icon="ui-icon-search"
+												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
+												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(evolucaoAux.programa.idPrograma)}"
+												update=":formConsuGropEvo" onclick="PF('dlgConsultGropEvo').show();" />
+
+										</p:outputPanel>
+									</b:column>
+
+
+
+								</b:row>
 
 							</p:outputPanel>
 
-						</p:fieldset>
+							<p:outputPanel id="rowdataEvolucao">
+								<b:row>
 
-					</b:row>
+									<b:column span="2" class="label-position">
+										<b:label value="Data de Início da Evolução" severity="info" />
 
-					<br></br>
-					
-					<b:row>
+										<b:inputText class="select-agendaEquipe2"
+											value="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO.quantidade}"
+											id="idQtdEsp" required="false"
+											requiredMessage="Informe a Quantidade" />
+									</b:column>
 
-						<p:fieldset legend="PTS">
+								</b:row>
+							</p:outputPanel>
 
-								<b:column span="6" class="label-position new-col6">
-									<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisCurtoPrazo}" itemLabel="Mostrar Observações Gerais - Curto Prazo"/>
-									<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisMedioPrazo}" itemLabel="Mostrar Observações Gerais - Médio Prazo"/>
-									<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisLongoPrazo}" itemLabel="Mostrar Observações Gerais - Longo Prazo"/>
-								</b:column>
+							<b:row>
 
-						
-						</p:fieldset>
+								<p:commandButton icon="ui-icon-plus"
+									style="margin-top: 10px;margin-left: 10px" value="Adicionar"
+									update="dtprogramagrupoevolucao rowEvolucao, rowdataEvolucao, msgEvolucao"
+									class="btn-acao-table acao-confirmar"
+									action="#{ConfigAgendaController.validarAdicionarEspecialidadeComQuantidade}" />
 
-					</b:row>
+							</b:row>
 
-					<br></br>
+							<br></br>
 
-					<b:row>
+							<b:row>
 
-						<b:column span="5">
+								<p:dataTable id="dtprogramagrupoevolucao"
+									value="#{UnidadeController.unidade.parametro.listaProgramasGruposComEvolucao}"
+									var="evolucao" emptyMessage="Sem registros.">
 
-							<p:selectBooleanCheckbox label="Matriz" itemLabel="Matriz"
-								value="#{UnidadeController.unidade.matriz}"
-								style="margin-rigth: 10px;color:#2e84ce;">
-							</p:selectBooleanCheckbox>
-						</b:column>
+									<p:column headerText="Programa" width="150">
+										<h:outputLabel value="#{evolucao.programa.descPrograma}">
+										</h:outputLabel>
+									</p:column>
 
-					</b:row>
+									<p:column headerText="Grupo" width="10%">
+										<h:outputLabel value="#{evolucao.grupo.descGrupo}" />
+									</p:column>
+
+									<p:column headerText="Início da Evolução" width="10%">
+										<h:outputLabel value="#{evolucao.dataInicioEvolucao}" />
+									</p:column>
+
+									<p:column headerText="Ação" width="9%">
+										<div align="center">
+											<p:commandButton process="@this"
+												class="new-btn-acao-table acao-excluir"
+												action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
+												icon="ui-icon-trash" update="dtEspecialidadeComQuantidade">
+												<f:setPropertyActionListener value="#{var}"
+													target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
+
+											</p:commandButton>
+										</div>
+									</p:column>
+
+								</p:dataTable>
+
+							</b:row>
+
+						</p:tab>
+					</p:tabView>
 
 					<br></br>
 
@@ -495,7 +642,7 @@
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
 					responsive="true" save-state="false" saveState="false"
-					value="#{UnidadeController.listaGruposProgramas}" id="dtGrupo"
+					value="#{UnidadeController.listaGruposProgramasOpm}" id="dtGrupo"
 					var="grupo" display="Nenhum Grupo">
 
 					<h:column>
@@ -528,6 +675,78 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
+
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsultProg"
+			dynamic="true" modal="true">
+			<h:form id="formConsuProg2">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramas}" var="prog"
+					display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                            Programa
+                        </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo, :frmPrincipal:tbview:btBusGr2"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsultProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{UnidadeController.evolucaoAux.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsultGropEvo"
+			dynamic="true" modal="true">
+			<h:form id="formConsuGropEvo">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{UnidadeController.listaGruposProgramasEvolucao}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
+                            Grupo
+                        </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo, :frmPrincipal:tbview:btBusGr2"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsultGropEvo').hide();">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{UnidadeController.evolucaoAux.grupo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
 
 	</ui:define>
 </ui:composition>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Pacientes Pendencia Evolucao" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="2" bottomMargin="2" uuid="24cc471e-33e0-448f-ae71-d324a5b957fb">
+	<property name="ireport.zoom" value="1.1269722013523664"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="647"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="353"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="e08b16db-6f68-4f1d-831a-24d608be135e">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="e04944b5-b42a-43a7-a01e-db6baaaa7826">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="idademinima" class="java.lang.Integer"/>
+	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="codgrupolista" class="java.lang.Collection"/>
+	<queryString>
+		<![CDATA[select a.dtaatende,case when a.turno='M' then 'MANHÃ' when a.turno='T' then 'TARDE' end turno  ,p.id_programa codprograma, p.descprograma, g.id_grupo codgrupo,  g.descgrupo, pac.nome nomepaciente,f.descfuncionario nomeprofissional,
+e.descespecialidade, emp.nome_principal, emp.nome_fantasia, emp.cnes from hosp.atendimentos1 a1
+join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento
+join hosp.programa p on p.id_programa = a.codprograma
+join hosp.grupo g on g.id_grupo = a.codgrupo
+join hosp.pacientes pac on pac.id_paciente = a.codpaciente
+join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento
+join hosp.especialidade e on e.id_especialidade = f.codespecialidade
+JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa
+where a.presenca='S' and a1.evolucao is null
+and $X{IN, a.codgrupo, codgrupolista}
+and a.dtaatende>='2020-02-03'
+and a.dtaatende<='2020-02-06'
+order by  p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
+	</queryString>
+	<field name="dtaatende" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="dtaatende"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="turno" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="turno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="codprograma" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="codgrupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="nomepaciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomepaciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="nomeprofissional" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeprofissional"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<field name="descespecialidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="especialidade"/>
+	</field>
+	<field name="nome_principal" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="nome_fantasia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_fantasia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="cnes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<group name="grpfreq" isStartNewPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
+		<groupHeader>
+			<band height="1"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="51">
+				<textField>
+					<reportElement x="1" y="10" width="559" height="30" uuid="b7026d5d-689a-4b10-8298-f4df26600af4"/>
+					<textFieldExpression><![CDATA["TOTAL "+$F{descprograma}+": "+$V{grpfreq_COUNT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grpgrupo" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
+		<groupHeader>
+			<band height="80">
+				<staticText>
+					<reportElement x="0" y="43" width="48" height="13" uuid="74b7f733-1bdd-4081-9b04-a4dbfcfa3af7"/>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="56" y="43" width="91" height="13" uuid="789361c5-1cc9-46b2-90e0-69bc1a35088d"/>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Turno]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="95" y="43" width="83" height="13" uuid="0f9f6b33-fe7b-47ee-8c79-d0a864536695"/>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="330" y="43" width="73" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
+					<textElement textAlignment="Left">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Profissional]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="492" y="43" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Especialidade]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="1" y="2" width="549" height="17" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROGRAMA: "+$F{descprograma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="6" y="22" width="549" height="17" backcolor="#EBE8E8" uuid="980d3a41-99cd-4568-af34-d9fa09fa04bd"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["GRUPO: "+$F{descgrupo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="73">
+				<textField>
+					<reportElement x="1" y="26" width="439" height="30" uuid="5ebf9730-532f-4528-9bff-c5f404ac4559"/>
+					<textFieldExpression><![CDATA["TOTAL "+$F{descgrupo}+": "+$V{grpgrupo_COUNT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<pageHeader>
+		<band height="73">
+			<staticText>
+				<reportElement x="1" y="40" width="549" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PACIENTES COM PENDÊNCIA DE EVOLUÇÃO POR PROGRAMA E GRUPO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="14" width="549" height="16" uuid="593e972c-38ad-4b9c-84c4-7d44eb4540ff"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome_principal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="52" height="13" uuid="f34914ee-10b0-4b63-b91d-6af2b9a5c2b5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{dtaatende}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
+				<reportElement x="56" y="2" width="45" height="13" uuid="75112c1b-bcbd-43e8-82f2-11261e8e896d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="95" y="2" width="230" height="13" isPrintWhenDetailOverflows="true" uuid="ac6d3627-08c0-4ade-9724-490311256ef9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{nomepaciente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
+				<reportElement x="330" y="2" width="153" height="13" uuid="77f0bdb5-3418-4b44-9b02-1087caba3623">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
+				<reportElement x="492" y="2" width="97" height="13" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="50">
+			<staticText>
+				<reportElement x="1" y="10" width="100" height="30" uuid="61e12546-2ed1-4c45-ab1c-1172cc95dbc8"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GERAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="10" width="100" height="30" uuid="cdaf47f4-3045-4823-8d62-52f767fb758c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -375,6 +375,32 @@ public class RelatoriosController implements Serializable {
 
 
     }    
+    
+    public void gerarPendenciasEvolucaoPorProgramaEGrupo()
+            throws IOException, ParseException, ProjetoException {
+
+
+        String caminho = "/WEB-INF/relatorios/";
+        String relatorio = "";
+        relatorio = caminho + "pendencias_evolucao_por_programa_grupo.jasper";
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("codunidade", user_session.getUnidade().getId());
+        if (programa != null)
+            map.put("codprograma", programa.getIdPrograma());
+
+        if (grupo != null)
+            map.put("codgrupo", grupo.getIdGrupo());
+        
+        ArrayList<Integer> listaGrupos = new ArrayList<>();
+        listaGrupos.add(2);
+        listaGrupos.add(3);
+        listaGrupos.add(8);
+
+        map.put("codgrupolista", listaGrupos);
+        this.executeReport(relatorio, map, "relatorioporprograma.pdf");
+
+
+    }        
 
     public void geraPtsApaeMaceio(ProgramaBean programa, GrupoBean grupo)
             throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
