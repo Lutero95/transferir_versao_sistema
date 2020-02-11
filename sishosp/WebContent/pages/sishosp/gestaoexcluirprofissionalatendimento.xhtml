@@ -8,12 +8,12 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{insercaoProfissionalEquipeController.listarInseridos}"/>
+			<f:viewAction action="#{remocaoProfissionalEquipeController.listarRemovidos}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Inserção de Profissionais na Equipe</h4>
+				<h4 class="panel-title">Gerenciamento de Exclusão de Profissionais na Equipe</h4>
 			</div>
 
 			<div class="panel-body table-body">
@@ -21,14 +21,14 @@
 				<h:form id="frmPrincipal">
 
 					<p:commandButton id="btninc" value="Novo" size="sm"
-						action="#{insercaoProfissionalEquipeController.redirectInsert()}"
+						action="#{remocaoProfissionalEquipeController.redirectNovo()}"
 						icon="ui-icon-plus" class="btn-addNovo">
-						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+						<p:tooltip for="btninc" value="Novo"></p:tooltip>
 					</p:commandButton>
 
 
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
-								 value="#{insercaoProfissionalEquipeController.listaSeremRemovidos}" paginator="true">
+								 value="#{remocaoProfissionalEquipeController.listaRemovidos}" paginator="true">
 
 						<p:column width="20%">
 							<f:facet name="header">

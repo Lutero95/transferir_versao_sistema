@@ -1,0 +1,481 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Exclusão de Profissional em Equipe</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formAgendaMedica">
+
+                    <p:growl id="growlMsg"></p:growl>
+
+                    <p:outputPanel id="rowProgramaIhGrupo">
+                        <b:row>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Programa" severity="info"/>
+
+                                <p:outputPanel id="outProg">
+                                    <p:autoComplete
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.programa}"
+                                            size="31" converter="conPrograma" required="true"
+                                            class="select-agendaEquipe4"
+                                            requiredMessage="Programa: Campo obrigatório!"
+                                            completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{remocaoProfissionalEquipeController.selectPrograma}"
+                                                update="outProg, outGrupo"/>
+
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusPr" immediate="true"
+                                                     icon="ui-icon-search"
+
+                                                     action="#{remocaoProfissionalEquipeController.limparNaBuscaPrograma()}"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Grupo" severity="info"/>
+
+                                <p:outputPanel id="outGrupo">
+                                    <p:autoComplete
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.grupo}"
+                                            size="31" converter="conGrupo" required="false"
+                                            requiredMessage="Grupo: Campo obrigatório!"
+                                            class="select-agendaEquipe4"
+                                            disabled="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.programa.idPrograma == null}"
+                                            completeMethod="#{remocaoProfissionalEquipeController.listaGrupoAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descGrupo}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{remocaoProfissionalEquipeController.selectGrupo}"
+                                                update="outGrupo, outEquipeRow"/>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusGr" immediate="true"
+                                                     icon="ui-icon-search" update=":formConsuGrop"
+                                                     disabled="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.programa.idPrograma == null}"
+                                                     action="#{remocaoProfissionalEquipeController.limparNaBuscaGrupo()}"
+                                                     actionListener="#{remocaoProfissionalEquipeController.atualizaListaGrupos(remocaoProfissionalEquipeController.remocaoProfissionalEquipe.programa)}"
+                                                     onclick="PF('dlgConsuGrop').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outEquipeRow">
+                        <b:row>
+
+                            <b:column span="2"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Equipe" severity="info"/>
+
+                                <p:outputPanel id="outEquipe">
+
+                                    <p:autoComplete
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.equipe}"
+                                            size="31" converter="conEquipe" required="false"
+                                            requiredMessage="Equipe: Campo obrigatório!"
+                                            disabled="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.grupo.idGrupo==null}"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{remocaoProfissionalEquipeController.listaEquipeAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descEquipe}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusEqui" immediate="true"
+                                                     disabled="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.grupo.idGrupo==null}"
+                                                     action="#{remocaoProfissionalEquipeController.carregaListaEquipePorGrupo}"
+                                                     icon="ui-icon-search"
+                                                     oncomplete="PF('dlgConsuEquipe').show();"
+                                                     update=":formConsuEquipe"/>
+                                </p:outputPanel>
+                            </b:column>
+
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outProfissional">
+                        <b:row>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional" severity="info"/>
+
+                                <p:outputPanel id="outProf">
+                                    <p:autoComplete
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.funcionario}"
+                                            id="autoCompleteProfissional" size="31"
+                                            converter="conFuncionario" required="true"
+                                            requiredMessage="Profissional: Campo obrigatório!"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{remocaoProfissionalEquipeController.listaProfissionalAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.nome}">
+                                        <p:ajax event="itemSelect"
+                                                update="growlMsg"/>
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusProf" icon="ui-icon-search"
+                                                     immediate="true"
+                                                     action="#{MBFuncionarios.listarProfissionais()}"
+                                                     update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+
+                    <b:row>
+
+                        <p:outputPanel>
+                            <b:column span="2" class="new-data-size2">
+
+                                <p:outputLabel value="Turno:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+                            <b:column span="3" class="btn-radio-table">
+
+                                <p:selectOneRadio
+                                        value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.turno}">
+                                    <f:selectItem itemLabel="Ambos" itemValue="A"/>
+                                    <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                </p:selectOneRadio>
+
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="2" class="new-data-size2">
+
+                            <p:outputLabel value="Data para Atendimento:"
+                                           style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                        </b:column>
+
+                        <b:column span="3" class="btn-radio-table">
+                            <p:selectOneRadio requiredMessage="Escolha o tipo de período"
+                                              value="#{remocaoProfissionalEquipeController.tipoData}">
+                                <f:selectItem itemLabel="Data única" itemValue="U"/>
+                                <f:selectItem itemLabel="Intervalo de datas" itemValue="I"/>
+                                <p:ajax update="outdata, outIntervaloDatas"></p:ajax>
+                            </p:selectOneRadio>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <!-- DATA ÚNICA -->
+                    <p:outputPanel id="outdata">
+                        <b:row rendered="#{remocaoProfissionalEquipeController.tipoData == 'U'}">
+                            <b:column span="2" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true" requiredMessage="Data: Campo obrigatório!"
+                                            rendered="#{remocaoProfissionalEquipeController.tipoData == 'U'}"
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.periodoInicio}"
+                                            id="dtagen"
+                                            locale="pt">
+                                </p:calendar>
+
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <!-- INTERVALO DE DATAS -->
+                    <p:outputLabel id="outIntervaloDatas">
+                        <b:row rendered="#{remocaoProfissionalEquipeController.tipoData == 'I'}">
+
+                            <b:column span="2" class="label-position data-size">
+                                <p:calendar rendered="#{remocaoProfissionalEquipeController.tipoData == 'I'}"
+                                            class="select-agendaEquipe2" required="true"
+                                            requiredMessage="Data Inicial: Campo obrigatório!"
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.periodoInicio}"
+                                            id="dtagen2"
+                                            locale="pt" navigator="true" mask="true" showOn="button"
+                                            pattern="dd/MM/yyyy" size="15">
+                                    <p:ajax event="dateSelect"
+                                            listener="#{remocaoProfissionalEquipeController.validarDatasInicioIhFim}"
+                                            update="outIntervaloDatas, growlMsg"/>
+                                </p:calendar>
+                            </b:column>
+
+                            <b:column span="1" class="data-size6">
+                                <h:outputLabel value=" a "
+                                               rendered="#{remocaoProfissionalEquipeController.tipoData == 'I'}"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position data-size bottom-size2">
+
+                                <p:calendar rendered="#{remocaoProfissionalEquipeController.tipoData == 'I'}"
+                                            class="select-agendaEquipe2" required="true"
+                                            requiredMessage="Data Final: Campo obrigatório!"
+                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.periodoFinal}"
+                                            id="dtagen3" locale="pt" navigator="true" mask="true"
+                                            showOn="button" pattern="dd/MM/yyyy" size="15">
+                                    <p:ajax event="dateSelect"
+                                            listener="#{remocaoProfissionalEquipeController.validarDatasInicioIhFim}"
+                                            update="outIntervaloDatas, growlMsg"/>
+                                </p:calendar>
+
+                            </b:column>
+
+                        </b:row>
+                    </p:outputLabel>
+
+                    <br/>
+
+                    <b:row>
+                        <p:commandButton value="Buscar" look="success" size="sm"
+                                         id="bgbuscar" icon="ui-icon-search"
+                                         action="#{remocaoProfissionalEquipeController.listarSeremRemovidos()}"
+                                         update="growlMsg, tabela"
+                                         class="btn-incluir"/>
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <p:outputPanel id="tabela">
+                            <p:dataTable value="#{remocaoProfissionalEquipeController.listaSeremRemovidos}" var="tab"
+                                         id="dtAtendimentos"
+                                         emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
+                                         selection="#{remocaoProfissionalEquipeController.listaSelecaoSeremRemovidos}"
+                                         rowKey="#{tab.atendimentoBean.id1}">
+
+                                <f:facet name="header">
+                                    Atendimentos
+                                </f:facet>
+
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center" width="5%"/>
+
+                                <p:column headerText="Código" width="10%">
+                                    <h:outputText value="#{tab.atendimentoBean.id1}"/>
+                                </p:column>
+
+                                <p:column headerText="Data" width="15%">
+                                    <h:outputText value="#{tab.atendimentoBean.dataAtendimentoInicio}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Turno" width="10%">
+                                    <h:outputText value="#{tab.turno}"/>
+                                </p:column>
+
+                                <p:column headerText="Grupo" width="30%">
+                                    <h:outputText value="#{tab.atendimentoBean.grupo.descGrupo}"/>
+                                </p:column>
+
+                                <p:column headerText="Equipe" width="30%">
+                                    <h:outputText value="#{tab.atendimentoBean.equipe.descEquipe}"/>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br/>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm"
+                                         id="bgravar" icon="ui-icon-check"
+                                         action="#{remocaoProfissionalEquipeController.gravarRemocaoProfissionalEquipe()}"
+                                         update="formAgendaMedica"
+                                         class="btn-incluir"/>
+
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         update=":formAgendaMedica"
+                                         actionListener="#{remocaoProfissionalEquipeController.limparDados()}"
+                                         action="/pages/sishosp/gestaoincluirprofissionalatendimento.xhtml?faces-redirect=true">
+                        </p:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica:outProg, :formAgendaMedica:outGrupo"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                title="Selecionar"
+                                oncomplete="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" responsive="true" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+                             responsive="true" save-state="false" saveState="false"
+                             value="#{remocaoProfissionalEquipeController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica:outGrupo :formAgendaMedica:outEquipeRow"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{remocaoProfissionalEquipeController.listaEquipePorGrupo}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica" icon="fa fa-fw fa-check"
+                                title="Selecionar" class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProf">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+                             var="profi" display="Nenhum Profissional">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar" update=":formAgendaMedica"
+                                         oncomplete="PF('dlgConsuProf').hide();">
+
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.funcionario}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
