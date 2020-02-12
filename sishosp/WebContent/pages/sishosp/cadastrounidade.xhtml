@@ -463,7 +463,7 @@
 										<b:label value="Programa:" severity="info" />
 
 										<p:outputPanel id="outProg">
-											<p:autoComplete
+											<p:autoComplete id="programaEvolucao"
 												value="#{UnidadeController.evolucaoAux.programa}" size="31"
 												converter="conPrograma" class="select-agendaEquipe4"
 												completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -488,7 +488,7 @@
 										<b:label value="Grupo:" severity="info" />
 
 										<p:outputPanel id="outGrupo">
-											<p:autoComplete
+											<p:autoComplete 
 												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
 												size="31" id="grupoEvolucao" converter="conGrupo"
 												class="select-agendaEquipe4"
@@ -504,7 +504,7 @@
 											<p:commandButton id="btBusGr2" immediate="true"
 												style="margin-left: 5px" icon="ui-icon-search"
 												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
-												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(evolucaoAux.programa.idPrograma)}"
+												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(UnidadeController.evolucaoAux.programa.idPrograma)}"
 												update=":formConsuGropEvo" onclick="PF('dlgConsultGropEvo').show();" />
 
 										</p:outputPanel>
@@ -522,10 +522,10 @@
 									<b:column span="2" class="label-position">
 										<b:label value="Data de Início da Evolução" severity="info" />
 
-										<b:inputText class="select-agendaEquipe2"
-											value="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO.quantidade}"
-											id="idQtdEsp" required="false"
-											requiredMessage="Informe a Quantidade" />
+										<p:calendar class="select-agendaEquipe2"
+											value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
+											id="inicioevolucao" required="false"
+											requiredMessage="Informe o início da eovlução" />
 									</b:column>
 
 								</b:row>
@@ -536,8 +536,8 @@
 								<p:commandButton icon="ui-icon-plus"
 									style="margin-top: 10px;margin-left: 10px" value="Adicionar"
 									update="dtprogramagrupoevolucao rowEvolucao, rowdataEvolucao, msgEvolucao"
-									class="btn-acao-table acao-confirmar"
-									action="#{ConfigAgendaController.validarAdicionarEspecialidadeComQuantidade}" />
+									class="btn-acao-table acao-confirmar" process="@this inicioevolucao grupoEvolucao programaEvolucao"
+									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucavalidarAdicionarProgramaGrupoEvolucaoo()}" />
 
 							</b:row>
 
@@ -734,10 +734,10 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo, :frmPrincipal:tbview:btBusGr2"
+							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo" 
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsultGropEvo').hide();">
+							oncomplete="PF('dlgConsultGropEvo').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{UnidadeController.evolucaoAux.grupo}" />
 						</p:commandButton>
