@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.RemocaoProfissionalEquipeDAO;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
+import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarRemocaoAtendimentoDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -63,11 +64,12 @@ public class RemocaoProfissionalEquipeController implements Serializable {
     public void limparDados() {
         remocaoProfissionalEquipe = new RemocaoProfissionalEquipe();
         tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
-
+        listaSeremRemovidos = new ArrayList<>();
+        listaSelecaoSeremRemovidos = new ArrayList<>();
     }
 
     public void listarRemovidos() {
-        listaSeremRemovidos = rDao.listarRemovidos();
+        listaRemovidos = rDao.listarRemovidos();
     }
 
     public void listarSeremRemovidos() {
@@ -77,7 +79,17 @@ public class RemocaoProfissionalEquipeController implements Serializable {
 
     public void gravarRemocaoProfissionalEquipe() {
         setarDataUnica();
-        Boolean removeu = rDao.gravarRemocao(this.remocaoProfissionalEquipe, listaSelecaoSeremRemovidos);
+        tratarGrupo();
+
+        if(listaSelecaoSeremRemovidos.isEmpty()){
+            JSFUtil.adicionarMensagemErro("Selecione ao menos 1 atendimento", "Erro");
+            return;
+        }
+
+        GravarRemocaoAtendimentoDTO gravarRemocaoAtendimentoDTO = new GravarRemocaoAtendimentoDTO(remocaoProfissionalEquipe, listaSelecaoSeremRemovidos,
+                null, null);
+
+        Boolean removeu = rDao.gravarRemocao(gravarRemocaoAtendimentoDTO);
 
         if (removeu) {
             limparDados();
