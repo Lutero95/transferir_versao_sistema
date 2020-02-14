@@ -79,6 +79,8 @@
 
 			
 			<h:form>
+
+				<p:growl id="growlUnidade"></p:growl>
 			<p:autoUpdate/>
 				<div align="center">
 					<p:selectOneMenu
@@ -90,7 +92,8 @@
 					</p:selectOneMenu>
 					<br></br> <br></br>
 					<p:commandButton value="Selecionar"
-						action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin()}" />
+						action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin()}"
+					update="growlUnidade"/>
 				</div>
 				</h:form>
 			

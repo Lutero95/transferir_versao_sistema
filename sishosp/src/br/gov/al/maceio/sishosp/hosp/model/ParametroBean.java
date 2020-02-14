@@ -20,6 +20,9 @@ public class ParametroBean implements Serializable {
     private String necessitaPresencaParaEvolucao;
     private boolean ptsMostrarObjGeraisCurtoPrazo, ptsMostrarObjGeraisMedioPrazo, ptsMostrarObjGeraisLongoPrazo;
     private ArrayList<ProgramaGrupoEvolucaoBean> listaProgramasGruposComEvolucao;
+    private Boolean usaHorarioLimiteParaAcesso;
+    private Date horarioInicioFuncionamento;
+    private Date horarioFinalFuncionamento;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -155,5 +158,27 @@ public class ParametroBean implements Serializable {
 		this.listaProgramasGruposComEvolucao = listaProgramasGruposComEvolucao;
 	}
 
-	
+    public Boolean getUsaHorarioLimiteParaAcesso() {
+        return usaHorarioLimiteParaAcesso;
+    }
+
+    public void setUsaHorarioLimiteParaAcesso(Boolean usaHorarioLimiteParaAcesso) {
+        this.usaHorarioLimiteParaAcesso = usaHorarioLimiteParaAcesso;
+    }
+
+    public Date getHorarioInicioFuncionamento() {
+        return horarioInicioFuncionamento;
+    }
+
+    public void setHorarioInicioFuncionamento(Date horarioInicioFuncionamento) {
+        this.horarioInicioFuncionamento = horarioInicioFuncionamento;
+    }
+
+    public Date getHorarioFinalFuncionamento() {
+        return horarioFinalFuncionamento;
+    }
+
+    public void setHorarioFinalFuncionamento(Date horarioFinalFuncionamento) {
+        this.horarioFinalFuncionamento = horarioFinalFuncionamento;
+    }
 }

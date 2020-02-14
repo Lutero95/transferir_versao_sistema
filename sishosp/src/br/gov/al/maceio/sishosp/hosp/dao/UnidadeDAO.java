@@ -106,8 +106,10 @@ public class UnidadeDAO {
 
             sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
                     "qtd_simultanea_atendimento_equipe, codunidade, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
-                    "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao, pts_mostra_obs_gerais_curto=? , pts_mostra_obs_gerais_medio=?, pts_mostra_obs_gerais_longo=? ) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao, " +
+                    "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
+                    "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -202,6 +204,22 @@ public class UnidadeDAO {
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisMedioPrazo());
             
             ps.setBoolean(17, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
+
+            ps.setBoolean(18, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
+
+            if(unidade.getParametro().getHorarioInicioFuncionamento() != null) {
+                ps.setTime(19, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioInicioFuncionamento()));
+            }
+            else{
+                ps.setNull(19, Types.NULL);
+            }
+
+            if(unidade.getParametro().getHorarioFinalFuncionamento() != null) {
+                ps.setTime(20, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioFinalFuncionamento()));
+            }
+            else{
+                ps.setNull(20, Types.NULL);
+            }
             
             ps.execute();
 
@@ -340,7 +358,9 @@ public class UnidadeDAO {
                     "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
                     "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
                     "programa_ortese_protese = ?, grupo_ortese_protese = ?, almoco_inicio = ?, almoco_final = ?,  " +
-                    " necessita_presenca_para_evolucao=?, pts_mostra_obs_gerais_curto=? , pts_mostra_obs_gerais_medio=?, pts_mostra_obs_gerais_longo=? WHERE codunidade = ?";
+                    " necessita_presenca_para_evolucao=?, pts_mostra_obs_gerais_curto=? , pts_mostra_obs_gerais_medio=?, " +
+                    "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ? " +
+                    "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -400,7 +420,24 @@ public class UnidadeDAO {
             
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
             
-            ps.setInt(17, unidade.getId());
+            ps.setBoolean(17, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
+
+            if(unidade.getParametro().getHorarioInicioFuncionamento() != null) {
+                ps.setTime(18, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioInicioFuncionamento()));
+            }
+            else{
+                ps.setNull(18, Types.NULL);
+            }
+
+            if(unidade.getParametro().getHorarioFinalFuncionamento() != null) {
+                ps.setTime(19, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioFinalFuncionamento()));
+            }
+            else{
+                ps.setNull(19, Types.NULL);
+            }
+
+            ps.setInt(20, unidade.getId());
+
             ps.executeUpdate();
 
             con.commit();
@@ -505,7 +542,10 @@ public class UnidadeDAO {
         ParametroBean parametro = new ParametroBean();
 
         String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo " +
+                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, " +
+                "necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, " +
+                "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
+                "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento " +
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -541,6 +581,9 @@ public class UnidadeDAO {
                 parametro.setPtsMostrarObjGeraisCurtoPrazo(rs.getBoolean("pts_mostra_obs_gerais_curto"));
                 parametro.setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
                 parametro.setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
+                parametro.setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
+                parametro.setHorarioInicioFuncionamento(rs.getTime("horario_inicio_funcionamento"));
+                parametro.setHorarioFinalFuncionamento(rs.getTime("horario_final_funcionamento"));
                 
             }
         } catch (Exception ex) {

@@ -190,11 +190,25 @@ public class FuncionarioController implements Serializable {
 			}
 
 			else{
-				retorno = autenticarUsuario();
+				if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf())){
+					JSFUtil.adicionarMensagemErro("Acesso bloqueada a esta unidade nesse horário!", "");
+					retorno = null;
+				}
+				else {
+					retorno = autenticarUsuario();
+				}
 			}
 
 			return retorno;
 		}
+	}
+
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf){
+		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf());
+	}
+
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade){
+		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(codigoUnidade);
 	}
 
 	public String autenticarUsuario() throws ProjetoException {
@@ -227,9 +241,15 @@ public class FuncionarioController implements Serializable {
 		UnidadeDAO uDao = new UnidadeDAO();
 		UnidadeBean unidade = uDao.buscarUnidadePorId(codigoDaUnidadeSelecionada);
 		usuarioLogado.setUnidade(unidade);
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", usuarioLogado);
-		String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
-		return url;
+
+		if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(unidade.getId())){
+			JSFUtil.adicionarMensagemErro("Acesso bloqueada a esta unidade nesse horário!", "");
+			return null;
+		}
+		else {
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", usuarioLogado);
+			return carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+		}
 	}
 
 	public void associarUnidadeSelecionadaAoUsuarioDaSessao() throws ProjetoException {

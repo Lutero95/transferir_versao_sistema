@@ -355,6 +355,58 @@
 								</b:column>
 							</b:row>
 
+							<p:outputPanel id="horarioDeAcesso">
+
+								<p:fieldset legend="Restrição de acesso ao sistema">
+
+							<b:row>
+
+								<b:column span="12" class="label-position new-col6">
+								    <p:selectBooleanCheckbox
+										    value="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+										    itemLabel="Unidade irá restringir o acesso ao sistema apenas durante horário de funcionamento">
+										<p:ajax update="horarioDeAcesso"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</b:column>
+
+							</b:row>
+
+                            <b:row>
+
+                                <b:column span="5" class="label-position new-col5">
+                                    <b:label value="Horário Início de acesso" severity="info" rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"/>
+
+                                    <p:inputMask mask="99:99"
+                                                 class="form-control select-agendaEquipe2"
+												 rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+                                                 value="#{UnidadeController.unidade.parametro.horarioInicioFuncionamento}"
+                                                 size="6" required="true"
+                                                 requiredMessage="Horário Início de acesso: Campo Obrigatório!">
+                                        <f:convertDateTime type="time" pattern="HH:mm"
+                                                           timeZone="GMT-3" />
+                                    </p:inputMask>
+                                </b:column>
+
+                                <b:column span="5" class="label-position new-col5">
+                                    <b:label value="Horário Final de acesso" severity="info" rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"/>
+
+                                    <p:inputMask mask="99:99"
+                                                 class="form-control select-agendaEquipe2"
+												 rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+                                                 value="#{UnidadeController.unidade.parametro.horarioFinalFuncionamento}"
+                                                 size="6" required="true"
+                                                 requiredMessage="Horário Final de acesso: Campo Obrigatório!">
+                                        <f:convertDateTime type="time" pattern="HH:mm"
+                                                           timeZone="GMT-3" />
+                                    </p:inputMask>
+                                </b:column>
+
+                            </b:row>
+
+							</p:fieldset>
+
+							</p:outputPanel>
+
 							<br></br>
 
 							<b:row>
@@ -488,7 +540,7 @@
 										<b:label value="Grupo:" severity="info" />
 
 										<p:outputPanel id="outGrupo">
-											<p:autoComplete 
+											<p:autoComplete
 												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
 												size="31" id="grupoEvolucao" converter="conGrupo"
 												class="select-agendaEquipe4"
@@ -734,7 +786,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo" 
+							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							oncomplete="PF('dlgConsultGropEvo').hide();">

@@ -2220,4 +2220,79 @@ public class FuncionarioDAO {
         }
     }
 
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf) {
+
+		String sql = "SELECT " +
+				"CASE WHEN p.horario_limite_acesso = FALSE THEN TRUE " +
+				"WHEN p.horario_limite_acesso = TRUE AND p.horario_inicio_funcionamento <= current_time " +
+				"AND p.horario_final_funcionamento >= current_time THEN TRUE " +
+				"ELSE FALSE " +
+				"END AS acesso_permitido " +
+				"FROM hosp.parametro p " +
+				"WHERE p.codunidade = " +
+				"(SELECT f.codunidade FROM acl.funcionarios f WHERE f.cpf = ?)";
+
+		Boolean acessoPermitido = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, cpf.replaceAll("[^0-9]", ""));
+
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				acessoPermitido = rs.getBoolean("acesso_permitido");
+			}
+
+			return acessoPermitido;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) {
+
+		String sql = "SELECT " +
+				"CASE WHEN p.horario_limite_acesso = FALSE THEN TRUE " +
+				"WHEN p.horario_limite_acesso = TRUE AND p.horario_inicio_funcionamento <= current_time " +
+				"AND p.horario_final_funcionamento >= current_time THEN TRUE " +
+				"ELSE FALSE " +
+				"END AS acesso_permitido " +
+				"FROM hosp.parametro p " +
+				"WHERE p.codunidade = ?";
+
+		Boolean acessoPermitido = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, codigoUnidade);
+
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				acessoPermitido = rs.getBoolean("acesso_permitido");
+			}
+
+			return acessoPermitido;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 }
