@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum TipoDataAgenda {
 
     DATA_UNICA("U"),
-    INTERVALO_DE_DATAS("I");
+    INTERVALO_DE_DATAS("I"),
+    A_PARTIR_DA_DATA("A");
 
     private String sigla;
 

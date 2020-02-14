@@ -191,7 +191,8 @@
                                               value="#{insercaoProfissionalEquipeController.tipoData}">
                                 <f:selectItem itemLabel="Data única" itemValue="U"/>
                                 <f:selectItem itemLabel="Intervalo de datas" itemValue="I"/>
-                                <p:ajax update="outdata, outIntervaloDatas"></p:ajax>
+                                <f:selectItem itemLabel="A partir da data" itemValue="A"/>
+                                <p:ajax update="outdata, outIntervaloDatas, outapartir"></p:ajax>
                             </p:selectOneRadio>
                         </b:column>
 
@@ -209,6 +210,26 @@
                                             rendered="#{insercaoProfissionalEquipeController.tipoData == 'U'}"
                                             value="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.periodoInicio}"
                                             id="dtagen"
+                                            locale="pt">
+                                </p:calendar>
+
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <!-- A PARTIR DA DATA -->
+                    <p:outputPanel id="outapartir">
+                        <b:row rendered="#{insercaoProfissionalEquipeController.tipoData == 'A'}">
+                            <b:column span="2" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            required="true" requiredMessage="Data: Campo obrigatório!"
+                                            rendered="#{insercaoProfissionalEquipeController.tipoData == 'A'}"
+                                            value="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.periodoInicio}"
+                                            id="dtapartir"
                                             locale="pt">
                                 </p:calendar>
 

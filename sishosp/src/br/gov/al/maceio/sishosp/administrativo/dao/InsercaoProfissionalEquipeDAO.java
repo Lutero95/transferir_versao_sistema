@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,15 @@ public class InsercaoProfissionalEquipeDAO {
     private List<Integer> buscarAtendimentosParaAdicionarProfissional(InsercaoProfissionalEquipe insercaoProfissionalEquipe) {
 
         List<Integer> lista = new ArrayList<>();
-        int i = 4;
+        int i = 2;
 
         String sql = "SELECT DISTINCT a1.id_atendimento, a.turno " +
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "WHERE a.codprograma = ? " +
                 "AND NOT EXISTS (SELECT aa1.codprofissionalatendimento FROM hosp.atendimentos1 aa1 WHERE codprofissionalatendimento IN (?) and coalesce(aa1.excluido,'N')='N') " +
-                "AND a.dtaatende >= ? AND a.dtaatende <= ? and a.codequipe is not null and coalesce(a1.excluido,'N')='N' ";
+                "AND a.codequipe is not null and coalesce(a1.excluido,'N')='N' ";
+
 
         if(!insercaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())){
             sql = sql + "AND a.turno = ? ";
@@ -45,6 +47,12 @@ public class InsercaoProfissionalEquipeDAO {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getEquipe().getCodEquipe())) {
             sql = sql + "AND a.codequipe = ? ";
         }
+        if(VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
+            sql = sql + "AND a.dtaatende >= ?";
+        }
+        if(!VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
+            sql = sql + "AND a.dtaatende >= ? AND a.dtaatende <= ?";
+        }
 
 
         try {
@@ -53,8 +61,6 @@ public class InsercaoProfissionalEquipeDAO {
 
             stm.setInt(1, insercaoProfissionalEquipe.getPrograma().getIdPrograma());
             stm.setLong(2, insercaoProfissionalEquipe.getFuncionario().getId());
-            stm.setDate(3, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoInicio()));
-            stm.setDate(4, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoFinal()));
 
             if(!insercaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())) {
                 i++;
@@ -65,9 +71,19 @@ public class InsercaoProfissionalEquipeDAO {
                 i++;
                 stm.setInt(i, insercaoProfissionalEquipe.getGrupo().getIdGrupo());
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getEquipe().getCodEquipe())) {
                 i++;
                 stm.setInt(i, insercaoProfissionalEquipe.getEquipe().getCodEquipe());
+            }
+            if(VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoInicio()));
+            }
+            if(!VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoInicio()));
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoFinal()));
             }
 
             ResultSet rs = stm.executeQuery();
@@ -109,7 +125,6 @@ public class InsercaoProfissionalEquipeDAO {
             return RetornoGravarInsercaoProfissionalAtendimento.FALHA_PROFISSIONAL.getSigla();
         }
 
-
     }
 
     private boolean gravarInsercaoProfissionalEquipeAtendimento(GravarInsercaoProfissionalEquipeAtendimentoDTO gravarInsercaoDTO) {
@@ -130,9 +145,19 @@ public class InsercaoProfissionalEquipeDAO {
             ps.setLong(1, user_session.getId());
             ps.setInt(2, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPrograma().getIdPrograma());
             ps.setInt(3, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getGrupo().getIdGrupo());
-            ps.setInt(4, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe().getCodEquipe());
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe().getCodEquipe())){
+                ps.setNull(4, Types.NULL);
+            }
+            else {
+                ps.setInt(4, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe().getCodEquipe());
+            }
             ps.setDate(5, DataUtil.converterDateUtilParaDateSql(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPeriodoInicio()));
-            ps.setDate(6, DataUtil.converterDateUtilParaDateSql(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPeriodoFinal()));
+            if(VerificadorUtil.verificarSeObjetoNulo(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPeriodoFinal())){
+                ps.setNull(6, Types.DATE);
+            }
+            else {
+                ps.setDate(6, DataUtil.converterDateUtilParaDateSql(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPeriodoFinal()));
+            }
             ps.setString(7, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getTurno());
 
             ResultSet rs = ps.executeQuery();

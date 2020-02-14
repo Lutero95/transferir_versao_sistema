@@ -68,7 +68,8 @@ public class InsercaoProfissionalEquipeController implements Serializable {
     }
 
     public void gravarInsercaoProfissionalEquipe() {
-        setarDataUnica();
+        tratarCasoDatas();
+        tratarEquipe();
         String retornoCadastro = iDao.gravarInsercaoGeral(this.insercaoProfissionalEquipe);
 
         if (retornoCadastro.equals(RetornoGravarInsercaoProfissionalAtendimento.SUCESSO_GRAVACAO.getSigla())) {
@@ -94,9 +95,15 @@ public class InsercaoProfissionalEquipeController implements Serializable {
         }
     }
 
-    private void setarDataUnica(){
+    private void tratarCasoDatas(){
         if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())){
             insercaoProfissionalEquipe.setPeriodoFinal(insercaoProfissionalEquipe.getPeriodoInicio());
+        }
+    }
+
+    public void tratarEquipe(){
+        if(VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getEquipe())){
+            insercaoProfissionalEquipe.setEquipe(new EquipeBean());
         }
     }
 
