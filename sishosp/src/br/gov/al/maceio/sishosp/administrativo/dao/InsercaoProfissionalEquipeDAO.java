@@ -34,17 +34,24 @@ public class InsercaoProfissionalEquipeDAO {
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "WHERE a.codprograma = ? " +
-                "AND NOT EXISTS (SELECT aa1.codprofissionalatendimento FROM hosp.atendimentos1 aa1 WHERE codprofissionalatendimento IN (?) and coalesce(aa1.excluido,'N')='N') " +
+                " 	and a1.id_atendimento not in (\n" + 
+                "	select\n" + 
+                "		aa1.id_atendimento\n" + 
+                "	from\n" + 
+                "		hosp.atendimentos1 aa1\n" + 
+                "	where\n" + 
+                "		codprofissionalatendimento  =?\n" + 
+                "		and coalesce(aa1.excluido, 'N')= 'N') " +
                 "AND a.codequipe is not null and coalesce(a1.excluido,'N')='N' ";
 
 
         if(!insercaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())){
             sql = sql + "AND a.turno = ? ";
         }
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo().getIdGrupo()))) {
             sql = sql + "AND a.codgrupo = ? ";
         }
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getEquipe().getCodEquipe())) {
+        if ( (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getEquipe())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
             sql = sql + "AND a.codequipe = ? ";
         }
         if(VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
@@ -67,7 +74,7 @@ public class InsercaoProfissionalEquipeDAO {
                 stm.setString(i, insercaoProfissionalEquipe.getTurno());
             }
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+            if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoProfissionalEquipe.getGrupo().getIdGrupo()))) {
                 i++;
                 stm.setInt(i, insercaoProfissionalEquipe.getGrupo().getIdGrupo());
             }
@@ -144,8 +151,16 @@ public class InsercaoProfissionalEquipeDAO {
             ps = con.prepareStatement(sql);
             ps.setLong(1, user_session.getId());
             ps.setInt(2, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getPrograma().getIdPrograma());
-            ps.setInt(3, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getGrupo().getIdGrupo());
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe().getCodEquipe())){
+            
+            
+            if((VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getGrupo())) || (VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getGrupo().getIdGrupo()))){
+                ps.setNull(3, Types.NULL);
+            }
+            else {
+            	ps.setInt(3, gravarInsercaoDTO.getInsercaoProfissionalEquipe().getGrupo().getIdGrupo());
+            }            
+            
+            if ((VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe())) || (VerificadorUtil.verificarSeObjetoNuloOuZero(gravarInsercaoDTO.getInsercaoProfissionalEquipe().getEquipe().getCodEquipe()))){
                 ps.setNull(4, Types.NULL);
             }
             else {
@@ -227,8 +242,9 @@ public class InsercaoProfissionalEquipeDAO {
                 if (rs.next()) {
                     gravarAtendimento1.getInsercaoProfissionalEquipe().getAtendimentoBean().setId1(rs.getInt("id_atendimentos1"));
                 }
-
-                listaInsercaoProfissionalEquipes.add(gravarAtendimento1.getInsercaoProfissionalEquipe());
+                InsercaoProfissionalEquipe insercaoProfEquipeAux = new InsercaoProfissionalEquipe();;
+                insercaoProfEquipeAux = gravarAtendimento1.getInsercaoProfissionalEquipe();
+                listaInsercaoProfissionalEquipes.add(insercaoProfEquipeAux);
 
             }
 
@@ -264,6 +280,7 @@ public class InsercaoProfissionalEquipeDAO {
             ps = gravarInsercao1.getConexaoAuxiliar().prepareStatement(sql);
 
             for (int i = 0; i < gravarInsercao1.getListaInsercao().size(); i++) {
+            	//a merda esta nesse loop
                 ps.setInt(1, gravarInsercao1.getListaInsercao().get(i).getAtendimentoBean().getId1());
                 ps.setInt(2, gravarInsercao1.getCodInsercaoProfissionalEquipeAtendimento());
                 ps.setLong(3, gravarInsercao1.getListaInsercao().get(i).getFuncionario().getId());

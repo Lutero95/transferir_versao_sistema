@@ -73,6 +73,7 @@ public class RemocaoProfissionalEquipeController implements Serializable {
     }
 
     public void listarSeremRemovidos() {
+        setarDataUnica();
         tratarGrupo();
         listaSeremRemovidos = rDao.listarSeremRemovidos(remocaoProfissionalEquipe);
     }

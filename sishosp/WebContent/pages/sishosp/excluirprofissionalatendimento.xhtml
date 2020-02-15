@@ -289,8 +289,8 @@
 
                                 <p:column selectionMode="multiple" style="width:16px;text-align:center" width="5%"/>
 
-                                <p:column headerText="Código" width="10%">
-                                    <h:outputText value="#{tab.atendimentoBean.id1}"/>
+                                <p:column headerText="Paciente" width="10%">
+                                    <h:outputText value="#{tab.atendimentoBean.paciente.nome}"/>
                                 </p:column>
 
                                 <p:column headerText="Data" width="15%">
@@ -300,7 +300,7 @@
                                 </p:column>
 
                                 <p:column headerText="Turno" width="10%">
-                                    <h:outputText value="#{tab.turno}"/>
+                                    <h:outputText value="#{tab.atendimentoBean.turno}"/>
                                 </p:column>
 
                                 <p:column headerText="Grupo" width="30%">

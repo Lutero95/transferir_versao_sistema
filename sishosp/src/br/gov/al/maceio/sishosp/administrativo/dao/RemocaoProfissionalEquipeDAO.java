@@ -29,9 +29,10 @@ public class RemocaoProfissionalEquipeDAO {
 
         String sql = "SELECT a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " +
                 "a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, " +
-                "CASE WHEN a.turno = 'A' THEN 'AMBOS' WHEN a.turno = 'T' THEN 'TARDE' " +
-                "WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno " +
+                "CASE WHEN a.turno = 'T' THEN 'TARDE' " +
+                "WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno, pa.nome nomepaciente " +
                 "FROM hosp.atendimentos a " +
+                " join hosp.pacientes pa on pa.id_paciente = a.codpaciente " +
                 "JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " +
                 "JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " +
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
@@ -43,10 +44,10 @@ public class RemocaoProfissionalEquipeDAO {
         if (!RemocaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())) {
             sql = sql + "AND a.turno = ? ";
         }
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo()))) {
             sql = sql + "AND a.codgrupo = ? ";
         }
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe())) {
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
             sql = sql + "AND a.codequipe = ? ";
         }
 
@@ -90,6 +91,7 @@ public class RemocaoProfissionalEquipeDAO {
                 remocaoProfissionalEquipe.getAtendimentoBean().getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 remocaoProfissionalEquipe.getAtendimentoBean().getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 remocaoProfissionalEquipe.getAtendimentoBean().getEquipe().setDescEquipe(rs.getString("descequipe"));
+                remocaoProfissionalEquipe.getAtendimentoBean().getPaciente().setNome(rs.getString("nomepaciente"));
 
                 lista.add(remocaoProfissionalEquipe);
             }
@@ -254,7 +256,7 @@ public class RemocaoProfissionalEquipeDAO {
 
         List<RemocaoProfissionalEquipe> lista = new ArrayList<>();
 
-        String sql = "SELECT DISTINCT a1.id_atendimentos1, f.descfuncionario, a.data_inicio, a.data_final, " +
+        String sql = "SELECT DISTINCT  f.descfuncionario, a.data_inicio, a.data_final, " +
                 "p.descprograma, g.descgrupo, e.descequipe, " +
                 "CASE WHEN a.turno = 'A' THEN 'AMBOS' WHEN a.turno = 'T' THEN 'TARDE' " +
                 "WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno " +
