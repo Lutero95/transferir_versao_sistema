@@ -8,7 +8,9 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class InsercaoProfissionalEquipe implements Serializable {
@@ -22,6 +24,7 @@ public class InsercaoProfissionalEquipe implements Serializable {
     private String turno;
     private Date periodoInicio;
     private Date periodoFinal;
+    private List<String> diasSemana;
 
     public InsercaoProfissionalEquipe() {
         funcionario = new FuncionarioBean();
@@ -30,6 +33,7 @@ public class InsercaoProfissionalEquipe implements Serializable {
         equipe = new EquipeBean();
         atendimentoBean = new AtendimentoBean();
         turno = Turno.AMBOS.getSigla();
+        diasSemana = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -104,6 +108,14 @@ public class InsercaoProfissionalEquipe implements Serializable {
         this.periodoFinal = periodoFinal;
     }
 
+    public List<String> getDiasSemana() {
+        return diasSemana;
+    }
+
+    public void setDiasSemana(List<String> diasSemana) {
+        this.diasSemana = diasSemana;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,12 +129,13 @@ public class InsercaoProfissionalEquipe implements Serializable {
                 Objects.equals(atendimentoBean, that.atendimentoBean) &&
                 Objects.equals(turno, that.turno) &&
                 Objects.equals(periodoInicio, that.periodoInicio) &&
-                Objects.equals(periodoFinal, that.periodoFinal);
+                Objects.equals(periodoFinal, that.periodoFinal) &&
+                Objects.equals(diasSemana, that.diasSemana);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, funcionario, programa, grupo, equipe, atendimentoBean, turno, periodoInicio, periodoFinal);
+        return Objects.hash(id, funcionario, programa, grupo, equipe, atendimentoBean, turno, periodoInicio, periodoFinal, diasSemana);
     }
 
     @Override
@@ -137,6 +150,7 @@ public class InsercaoProfissionalEquipe implements Serializable {
                 ", turno='" + turno + '\'' +
                 ", periodoInicio=" + periodoInicio +
                 ", periodoFinal=" + periodoFinal +
+                ", diasSemana=" + diasSemana +
                 '}';
     }
 }

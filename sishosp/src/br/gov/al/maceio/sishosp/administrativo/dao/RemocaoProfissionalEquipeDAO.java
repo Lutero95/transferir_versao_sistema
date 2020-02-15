@@ -51,6 +51,19 @@ public class RemocaoProfissionalEquipeDAO {
             sql = sql + "AND a.codequipe = ? ";
         }
 
+        if(RemocaoProfissionalEquipe.getDiasSemana().size() > 0){
+            sql = sql + " AND ( ";
+            for(int j=0; j<RemocaoProfissionalEquipe.getDiasSemana().size(); j++) {
+                if(j == 0){
+                    sql = sql + "EXTRACT(DOW FROM a.dtaatende) = ? ";
+                }
+                else{
+                    sql = sql + "OR EXTRACT(DOW FROM a.dtaatende) = ? ";
+                }
+            }
+            sql = sql + " ) ";
+        }
+
 
         try {
             con = ConnectionFactory.getConnection();
@@ -73,6 +86,12 @@ public class RemocaoProfissionalEquipeDAO {
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo())) {
                 i++;
                 stm.setInt(i, RemocaoProfissionalEquipe.getEquipe().getCodEquipe());
+            }
+            if(RemocaoProfissionalEquipe.getDiasSemana().size() > 0){
+                for(int j=0; j<RemocaoProfissionalEquipe.getDiasSemana().size(); j++) {
+                    i++;
+                    stm.setInt(i, Integer.parseInt(RemocaoProfissionalEquipe.getDiasSemana().get(j)));
+                }
             }
 
             ResultSet rs = stm.executeQuery();

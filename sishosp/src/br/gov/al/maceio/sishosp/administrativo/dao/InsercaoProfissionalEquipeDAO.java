@@ -34,13 +34,13 @@ public class InsercaoProfissionalEquipeDAO {
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
                 "WHERE a.codprograma = ? " +
-                " 	and a1.id_atendimento not in (\n" + 
-                "	select\n" + 
-                "		aa1.id_atendimento\n" + 
-                "	from\n" + 
-                "		hosp.atendimentos1 aa1\n" + 
-                "	where\n" + 
-                "		codprofissionalatendimento  =?\n" + 
+                " 	and a1.id_atendimento not in ( " +
+                "	select " +
+                "		aa1.id_atendimento " +
+                "	from " +
+                "		hosp.atendimentos1 aa1 " +
+                "	where " +
+                "		codprofissionalatendimento = ? " +
                 "		and coalesce(aa1.excluido, 'N')= 'N') " +
                 "AND a.codequipe is not null and coalesce(a1.excluido,'N')='N' ";
 
@@ -59,6 +59,19 @@ public class InsercaoProfissionalEquipeDAO {
         }
         if(!VerificadorUtil.verificarSeObjetoNulo(insercaoProfissionalEquipe.getPeriodoFinal())){
             sql = sql + "AND a.dtaatende >= ? AND a.dtaatende <= ?";
+        }
+
+        if(insercaoProfissionalEquipe.getDiasSemana().size() > 0){
+            sql = sql + " AND ( ";
+            for(int j=0; j<insercaoProfissionalEquipe.getDiasSemana().size(); j++) {
+                if(j == 0){
+                    sql = sql + "EXTRACT(DOW FROM a.dtaatende) = ? ";
+                }
+                else{
+                    sql = sql + "OR EXTRACT(DOW FROM a.dtaatende) = ? ";
+                }
+            }
+            sql = sql + " ) ";
         }
 
 
@@ -91,6 +104,12 @@ public class InsercaoProfissionalEquipeDAO {
                 stm.setDate(i, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoInicio()));
                 i++;
                 stm.setDate(i, DataUtil.converterDateUtilParaDateSql(insercaoProfissionalEquipe.getPeriodoFinal()));
+            }
+            if(insercaoProfissionalEquipe.getDiasSemana().size() > 0){
+                for(int j=0; j<insercaoProfissionalEquipe.getDiasSemana().size(); j++) {
+                    i++;
+                    stm.setInt(i, Integer.parseInt(insercaoProfissionalEquipe.getDiasSemana().get(j)));
+                }
             }
 
             ResultSet rs = stm.executeQuery();
