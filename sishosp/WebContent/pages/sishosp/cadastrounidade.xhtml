@@ -359,51 +359,53 @@
 
 								<p:fieldset legend="Restrição de acesso ao sistema">
 
-							<b:row>
+									<b:row>
 
-								<b:column span="12" class="label-position new-col6">
-								    <p:selectBooleanCheckbox
-										    value="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
-										    itemLabel="Unidade irá restringir o acesso ao sistema apenas durante horário de funcionamento">
-										<p:ajax update="horarioDeAcesso"></p:ajax>
-									</p:selectBooleanCheckbox>
-								</b:column>
+										<b:column span="12" class="label-position new-col6">
+											<p:selectBooleanCheckbox
+												value="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+												itemLabel="Unidade irá restringir o acesso ao sistema apenas durante horário de funcionamento">
+												<p:ajax update="horarioDeAcesso"></p:ajax>
+											</p:selectBooleanCheckbox>
+										</b:column>
 
-							</b:row>
+									</b:row>
 
-                            <b:row>
+									<b:row>
 
-                                <b:column span="5" class="label-position new-col5">
-                                    <b:label value="Horário Início de acesso" severity="info" rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"/>
+										<b:column span="5" class="label-position new-col5">
+											<b:label value="Horário Início de acesso" severity="info"
+												rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}" />
 
-                                    <p:inputMask mask="99:99"
-                                                 class="form-control select-agendaEquipe2"
-												 rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
-                                                 value="#{UnidadeController.unidade.parametro.horarioInicioFuncionamento}"
-                                                 size="6" required="true"
-                                                 requiredMessage="Horário Início de acesso: Campo Obrigatório!">
-                                        <f:convertDateTime type="time" pattern="HH:mm"
-                                                           timeZone="GMT-3" />
-                                    </p:inputMask>
-                                </b:column>
+											<p:inputMask mask="99:99"
+												class="form-control select-agendaEquipe2"
+												rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+												value="#{UnidadeController.unidade.parametro.horarioInicioFuncionamento}"
+												size="6" required="true"
+												requiredMessage="Horário Início de acesso: Campo Obrigatório!">
+												<f:convertDateTime type="time" pattern="HH:mm"
+													timeZone="GMT-3" />
+											</p:inputMask>
+										</b:column>
 
-                                <b:column span="5" class="label-position new-col5">
-                                    <b:label value="Horário Final de acesso" severity="info" rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"/>
+										<b:column span="5" class="label-position new-col5">
+											<b:label value="Horário Final de acesso" severity="info"
+												rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}" />
 
-                                    <p:inputMask mask="99:99"
-                                                 class="form-control select-agendaEquipe2"
-												 rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
-                                                 value="#{UnidadeController.unidade.parametro.horarioFinalFuncionamento}"
-                                                 size="6" required="true"
-                                                 requiredMessage="Horário Final de acesso: Campo Obrigatório!">
-                                        <f:convertDateTime type="time" pattern="HH:mm"
-                                                           timeZone="GMT-3" />
-                                    </p:inputMask>
-                                </b:column>
+											<p:inputMask mask="99:99"
+												class="form-control select-agendaEquipe2"
+												rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
+												value="#{UnidadeController.unidade.parametro.horarioFinalFuncionamento}"
+												size="6" required="true"
+												requiredMessage="Horário Final de acesso: Campo Obrigatório!">
+												<f:convertDateTime type="time" pattern="HH:mm"
+													timeZone="GMT-3" />
+											</p:inputMask>
+										</b:column>
 
-                            </b:row>
+									</b:row>
 
-							</p:fieldset>
+								</p:fieldset>
 
 							</p:outputPanel>
 
@@ -455,7 +457,7 @@
 
 											<p:commandButton id="btBusGr" immediate="true"
 												style="margin-left: 5px" icon="ui-icon-search"
-												action="#{UnidadeController.listaGrupoPorPrograma(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
+												action="#{UnidadeController.listaGrupoPorProgramaOPM(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
 												update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
 
 										</b:column>
@@ -541,7 +543,7 @@
 
 										<p:outputPanel id="outGrupo">
 											<p:autoComplete
-												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
+												value="#{UnidadeController.evolucaoAux.grupo}"
 												size="31" id="grupoEvolucao" converter="conGrupo"
 												class="select-agendaEquipe4"
 												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
@@ -557,7 +559,8 @@
 												style="margin-left: 5px" icon="ui-icon-search"
 												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
 												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(UnidadeController.evolucaoAux.programa.idPrograma)}"
-												update=":formConsuGropEvo" onclick="PF('dlgConsultGropEvo').show();" />
+												update=":formConsuGropEvo"
+												onclick="PF('dlgConsultGropEvo').show();" />
 
 										</p:outputPanel>
 									</b:column>
@@ -574,7 +577,7 @@
 									<b:column span="2" class="label-position">
 										<b:label value="Data de Início da Evolução" severity="info" />
 
-										<p:calendar class="select-agendaEquipe2"
+										<p:calendar class="select-agendaEquipe2" mask="99/99/9999" showOn="button"
 											value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
 											id="inicioevolucao" required="false"
 											requiredMessage="Informe o início da eovlução" />
@@ -588,46 +591,48 @@
 								<p:commandButton icon="ui-icon-plus"
 									style="margin-top: 10px;margin-left: 10px" value="Adicionar"
 									update="dtprogramagrupoevolucao rowEvolucao, rowdataEvolucao, msgEvolucao"
-									class="btn-acao-table acao-confirmar" process="@this inicioevolucao grupoEvolucao programaEvolucao"
-									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucavalidarAdicionarProgramaGrupoEvolucaoo()}" />
+									class="btn-acao-table acao-confirmar"
+									process="@this inicioevolucao grupoEvolucao programaEvolucao"
+									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucaoo()}" />
 
 							</b:row>
 
 							<br></br>
 
 							<b:row>
+								<p:outputPanel id="dtprogramagrupoevolucao">
+									<p:dataTable
+										value="#{UnidadeController.listaProgramasGrupoEvolucao}"
+										var="evolucao" emptyMessage="Sem registros.">
 
-								<p:dataTable id="dtprogramagrupoevolucao"
-									value="#{UnidadeController.unidade.parametro.listaProgramasGruposComEvolucao}"
-									var="evolucao" emptyMessage="Sem registros.">
+										<p:column headerText="Programa" width="150">
+											<h:outputLabel value="#{evolucao.programa.descPrograma}">
+											</h:outputLabel>
+										</p:column>
 
-									<p:column headerText="Programa" width="150">
-										<h:outputLabel value="#{evolucao.programa.descPrograma}">
-										</h:outputLabel>
-									</p:column>
+										<p:column headerText="Grupo" width="10%">
+											<h:outputLabel value="#{evolucao.grupo.descGrupo}" />
+										</p:column>
 
-									<p:column headerText="Grupo" width="10%">
-										<h:outputLabel value="#{evolucao.grupo.descGrupo}" />
-									</p:column>
+										<p:column headerText="Início da Evolução" width="10%">
+											<h:outputLabel value="#{evolucao.dataInicioEvolucao}" />
+										</p:column>
 
-									<p:column headerText="Início da Evolução" width="10%">
-										<h:outputLabel value="#{evolucao.dataInicioEvolucao}" />
-									</p:column>
+										<p:column headerText="Ação" width="9%">
+											<div align="center">
+												<p:commandButton process="@this"
+													class="new-btn-acao-table acao-excluir"
+													action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
+													icon="ui-icon-trash" update="dtEspecialidadeComQuantidade">
+													<f:setPropertyActionListener value="#{var}"
+														target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
 
-									<p:column headerText="Ação" width="9%">
-										<div align="center">
-											<p:commandButton process="@this"
-												class="new-btn-acao-table acao-excluir"
-												action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
-												icon="ui-icon-trash" update="dtEspecialidadeComQuantidade">
-												<f:setPropertyActionListener value="#{var}"
-													target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
+												</p:commandButton>
+											</div>
+										</p:column>
 
-											</p:commandButton>
-										</div>
-									</p:column>
-
-								</p:dataTable>
+									</p:dataTable>
+								</p:outputPanel>
 
 							</b:row>
 
@@ -677,7 +682,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":frmPrincipal:idOrteseProtese"
+						<p:commandButton update=":frmPrincipal:tbview:idOrteseProtese"
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
@@ -715,7 +720,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":frmPrincipal:idOrteseProtese"
+						<p:commandButton update=":frmPrincipal:tbview:idOrteseProtese"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();">
@@ -764,8 +769,8 @@
 			dynamic="true" modal="true">
 			<h:form id="formConsuGropEvo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{UnidadeController.listaGruposProgramasEvolucao}" id="dtGrupo"
-					var="grupo" display="Nenhum Grupo">
+					value="#{UnidadeController.listaGruposProgramasEvolucao}"
+					id="dtGrupo" var="grupo" display="Nenhum Grupo">
 
 					<h:column>
 						<f:facet name="header">

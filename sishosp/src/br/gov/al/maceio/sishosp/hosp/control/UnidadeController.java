@@ -117,8 +117,8 @@ public class UnidadeController implements Serializable {
     
     public Boolean validarProgramaGrupoDataInicioEvolucao() {
         Boolean retorno = true;
-        if ((VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getPrograma().getIdPrograma())) ||
-        		(VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getGrupo().getIdGrupo())) ||
+        if ((VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getPrograma()) || (VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getPrograma().getIdPrograma()))) ||
+        		((VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getGrupo()))  || (VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getGrupo().getIdGrupo()))) ||
         (VerificadorUtil.verificarSeObjetoNuloOuZero(evolucaoAux.getDataInicioEvolucao()))){
             retorno = false;
         }

@@ -96,8 +96,11 @@ public class InsercaoProfissionalEquipeController implements Serializable {
     }
 
     private void tratarCasoDatas(){
-        if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())){
+        if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())){
             insercaoProfissionalEquipe.setPeriodoFinal(insercaoProfissionalEquipe.getPeriodoInicio());
+        }
+        if (tipoData.equals(TipoDataAgenda.A_PARTIR_DA_DATA.getSigla())){
+        	insercaoProfissionalEquipe.setPeriodoFinal(null);
         }
     }
 
