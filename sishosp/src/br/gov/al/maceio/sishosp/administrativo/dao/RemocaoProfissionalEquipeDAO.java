@@ -25,7 +25,7 @@ public class RemocaoProfissionalEquipeDAO {
     public List<RemocaoProfissionalEquipe> listarSeremRemovidos(RemocaoProfissionalEquipe RemocaoProfissionalEquipe) {
 
         List<RemocaoProfissionalEquipe> lista = new ArrayList<>();
-        int i = 4;
+        int i = 2;
 
         String sql = "SELECT a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " +
                 "a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, " +
@@ -38,8 +38,8 @@ public class RemocaoProfissionalEquipeDAO {
                 "JOIN hosp.programa p ON (a.codprograma = p.id_programa) " +
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                 "JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " +
-                "WHERE a.codprograma = ? AND a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? " +
-                "AND a.situacao = 'A' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null";
+                "WHERE a.codprograma = ? AND a1.codprofissionalatendimento = ?  " +
+                "AND a.situacao = 'A' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null ";
 
         if (!RemocaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())) {
             sql = sql + "AND a.turno = ? ";
@@ -49,6 +49,14 @@ public class RemocaoProfissionalEquipeDAO {
         }
         if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
             sql = sql + "AND a.codequipe = ? ";
+        }
+
+        if(VerificadorUtil.verificarSeObjetoNulo(RemocaoProfissionalEquipe.getPeriodoFinal())){
+            sql = sql + "AND a.dtaatende >= ?";
+        }
+
+        if(!VerificadorUtil.verificarSeObjetoNulo(RemocaoProfissionalEquipe.getPeriodoFinal())){
+            sql = sql + "AND a.dtaatende >= ? AND a.dtaatende <= ?";
         }
 
         if(RemocaoProfissionalEquipe.getDiasSemana().size() > 0){
@@ -71,8 +79,6 @@ public class RemocaoProfissionalEquipeDAO {
 
             stm.setInt(1, RemocaoProfissionalEquipe.getPrograma().getIdPrograma());
             stm.setLong(2, RemocaoProfissionalEquipe.getFuncionario().getId());
-            stm.setDate(3, DataUtil.converterDateUtilParaDateSql(RemocaoProfissionalEquipe.getPeriodoInicio()));
-            stm.setDate(4, DataUtil.converterDateUtilParaDateSql(RemocaoProfissionalEquipe.getPeriodoFinal()));
 
             if (!RemocaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())) {
                 i++;
@@ -86,6 +92,16 @@ public class RemocaoProfissionalEquipeDAO {
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo())) {
                 i++;
                 stm.setInt(i, RemocaoProfissionalEquipe.getEquipe().getCodEquipe());
+            }
+            if(VerificadorUtil.verificarSeObjetoNulo(RemocaoProfissionalEquipe.getPeriodoFinal())){
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(RemocaoProfissionalEquipe.getPeriodoInicio()));
+            }
+            if(!VerificadorUtil.verificarSeObjetoNulo(RemocaoProfissionalEquipe.getPeriodoFinal())){
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(RemocaoProfissionalEquipe.getPeriodoInicio()));
+                i++;
+                stm.setDate(i, DataUtil.converterDateUtilParaDateSql(RemocaoProfissionalEquipe.getPeriodoFinal()));
             }
             if(RemocaoProfissionalEquipe.getDiasSemana().size() > 0){
                 for(int j=0; j<RemocaoProfissionalEquipe.getDiasSemana().size(); j++) {
