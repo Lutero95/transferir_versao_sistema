@@ -10,7 +10,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Inserção de Profissional em Equipe</h4>
+                <h4 class="panel-title">Inclusão de Profissional em Atendimento</h4>
             </div>
 
             <div class="panel-body table-body">
@@ -59,7 +59,7 @@
                                 <p:outputPanel id="outGrupo">
                                     <p:autoComplete
                                             value="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.grupo}"
-                                            size="31" converter="conGrupo" required="true"
+                                            size="31" converter="conGrupo" required="false"
                                             requiredMessage="Grupo: Campo obrigatório!"
                                             class="select-agendaEquipe4"
                                             disabled="#{insercaoProfissionalEquipeController.insercaoProfissionalEquipe.programa.idPrograma == null}"

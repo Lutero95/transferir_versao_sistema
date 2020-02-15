@@ -125,9 +125,10 @@ public class UnidadeController implements Serializable {
         return retorno;
     }    
     
-    public void validarAdicionarProgramaGrupoEvolucavalidarAdicionarProgramaGrupoEvolucaoo() throws ProjetoException {
+    public void validarAdicionarProgramaGrupoEvolucaoo() throws ProjetoException {
 
         if(!validarProgramaGrupoDataInicioEvolucao()){
+        	JSFUtil.adicionarMensagemAdvertencia("Informe o Programa, Grupo e a data de início da evolução", "Atenção");
             return;
         }
 

@@ -190,13 +190,8 @@ public class FuncionarioController implements Serializable {
 			}
 
 			else{
-				if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf())){
-					JSFUtil.adicionarMensagemErro("Acesso bloqueada a esta unidade nesse horário!", "");
-					retorno = null;
-				}
-				else {
-					retorno = autenticarUsuario();
-				}
+				retorno = autenticarUsuario();
+
 			}
 
 			return retorno;
@@ -231,8 +226,15 @@ public class FuncionarioController implements Serializable {
 
 				return null;
 			}else{
+				if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf())){
+					JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
+					return  null;
+				}
+				else 
+				{
 				String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
 				return url;
+				}
 			}
 		}
 	}
@@ -243,7 +245,7 @@ public class FuncionarioController implements Serializable {
 		usuarioLogado.setUnidade(unidade);
 
 		if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(unidade.getId())){
-			JSFUtil.adicionarMensagemErro("Acesso bloqueada a esta unidade nesse horário!", "");
+			JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
 			return null;
 		}
 		else {

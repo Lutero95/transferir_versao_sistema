@@ -290,7 +290,7 @@ public class InsercaoProfissionalEquipeDAO {
 
         List<InsercaoProfissionalEquipe> lista = new ArrayList<>();
 
-        String sql = "SELECT f.descfuncionario, a.data_inicio, a.data_final, p.descprograma, g.descgrupo, e.descequipe, " +
+        String sql = "SELECT distinct f.descfuncionario, a.data_inicio, a.data_final, p.descprograma, g.descgrupo, e.descequipe, " +
                 "CASE WHEN a.turno = 'A' THEN 'AMBOS' WHEN a.turno = 'T' THEN 'TARDE' " +
                 "WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno " +
                 "FROM adm.insercao_profissional_equipe_atendimento a " +

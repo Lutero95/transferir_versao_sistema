@@ -75,7 +75,20 @@
 					<p:dataTable rows="20" paginator="true" id="tabela"
 						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
 						var="tab" responsive="true">
+						
+						<p:column >
+							<f:facet name="header">
+                                Prontuário
+                            </f:facet>
+							<h:outputText value="#{tab.paciente.id_paciente}" />
+						</p:column>						
 
+						<p:column>
+							<f:facet name="header">
+                                Matrícula
+                            </f:facet>
+							<h:outputText value="#{tab.paciente.matricula}" />
+						</p:column>
 
 
 						<p:column width="250">

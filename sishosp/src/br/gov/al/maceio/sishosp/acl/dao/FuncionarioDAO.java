@@ -2223,9 +2223,9 @@ public class FuncionarioDAO {
 	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf) {
 
 		String sql = "SELECT " +
-				"CASE WHEN p.horario_limite_acesso = FALSE THEN TRUE " +
-				"WHEN p.horario_limite_acesso = TRUE AND p.horario_inicio_funcionamento <= current_time " +
-				"AND p.horario_final_funcionamento >= current_time THEN TRUE " +
+				"CASE WHEN coalesce(p.horario_limite_acesso,false) = FALSE THEN TRUE " +
+				"WHEN ((coalesce(p.horario_limite_acesso,false) is true) AND  (current_time between\n" + 
+				"p.horario_inicio_funcionamento  AND p.horario_final_funcionamento ))  THEN TRUE  " +
 				"ELSE FALSE " +
 				"END AS acesso_permitido " +
 				"FROM hosp.parametro p " +
@@ -2261,8 +2261,8 @@ public class FuncionarioDAO {
 	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) {
 
 		String sql = "SELECT " +
-				"CASE WHEN p.horario_limite_acesso = FALSE THEN TRUE " +
-				"WHEN p.horario_limite_acesso = TRUE AND p.horario_inicio_funcionamento <= current_time " +
+				"CASE WHEN coalesce(p.horario_limite_acesso,false) = FALSE THEN TRUE " +
+				"WHEN coalesce(p.horario_limite_acesso,false) = TRUE AND p.horario_inicio_funcionamento <= current_time " +
 				"AND p.horario_final_funcionamento >= current_time THEN TRUE " +
 				"ELSE FALSE " +
 				"END AS acesso_permitido " +
