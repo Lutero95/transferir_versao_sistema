@@ -10,21 +10,25 @@ import java.util.Objects;
 
 public class GravarInsercaoProfissionalEquipeAtendimento1DTO implements Serializable {
 
-    private List<InsercaoProfissionalEquipe> listaInsercao;
+    private List<Integer> listaInsercao;
     private Integer codInsercaoProfissionalEquipeAtendimento;
     private Connection conexaoAuxiliar;
+    private InsercaoProfissionalEquipe insercaoProfissionalEquipe;
 
     public GravarInsercaoProfissionalEquipeAtendimento1DTO() {
         listaInsercao = new ArrayList<>();
+        insercaoProfissionalEquipe = new InsercaoProfissionalEquipe();
     }
 
-    public GravarInsercaoProfissionalEquipeAtendimento1DTO(List<InsercaoProfissionalEquipe> listaInsercao, Integer codInsercaoProfissionalEquipeAtendimento, Connection conexaoAuxiliar) {
+    public GravarInsercaoProfissionalEquipeAtendimento1DTO(List<Integer> listaInsercao, Integer codInsercaoProfissionalEquipeAtendimento,
+                                                           Connection conexaoAuxiliar, InsercaoProfissionalEquipe insercaoProfissionalEquipe) {
         this.listaInsercao = listaInsercao;
         this.codInsercaoProfissionalEquipeAtendimento = codInsercaoProfissionalEquipeAtendimento;
         this.conexaoAuxiliar = conexaoAuxiliar;
+        this.insercaoProfissionalEquipe = insercaoProfissionalEquipe;
     }
 
-    public List<InsercaoProfissionalEquipe> getListaInsercao() {
+    public List<Integer> getListaInsercao() {
         return listaInsercao;
     }
 
@@ -36,6 +40,10 @@ public class GravarInsercaoProfissionalEquipeAtendimento1DTO implements Serializ
         return conexaoAuxiliar;
     }
 
+    public InsercaoProfissionalEquipe getInsercaoProfissionalEquipe() {
+        return insercaoProfissionalEquipe;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,12 +51,13 @@ public class GravarInsercaoProfissionalEquipeAtendimento1DTO implements Serializ
         GravarInsercaoProfissionalEquipeAtendimento1DTO that = (GravarInsercaoProfissionalEquipeAtendimento1DTO) o;
         return Objects.equals(listaInsercao, that.listaInsercao) &&
                 Objects.equals(codInsercaoProfissionalEquipeAtendimento, that.codInsercaoProfissionalEquipeAtendimento) &&
-                Objects.equals(conexaoAuxiliar, that.conexaoAuxiliar);
+                Objects.equals(conexaoAuxiliar, that.conexaoAuxiliar) &&
+                Objects.equals(insercaoProfissionalEquipe, that.insercaoProfissionalEquipe);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(listaInsercao, codInsercaoProfissionalEquipeAtendimento, conexaoAuxiliar);
+        return Objects.hash(listaInsercao, codInsercaoProfissionalEquipeAtendimento, conexaoAuxiliar, insercaoProfissionalEquipe);
     }
 
     @Override
@@ -57,6 +66,7 @@ public class GravarInsercaoProfissionalEquipeAtendimento1DTO implements Serializ
                 "listaInsercao=" + listaInsercao +
                 ", codInsercaoProfissionalEquipeAtendimento=" + codInsercaoProfissionalEquipeAtendimento +
                 ", conexaoAuxiliar=" + conexaoAuxiliar +
+                ", insercaoProfissionalEquipe=" + insercaoProfissionalEquipe +
                 '}';
     }
 }

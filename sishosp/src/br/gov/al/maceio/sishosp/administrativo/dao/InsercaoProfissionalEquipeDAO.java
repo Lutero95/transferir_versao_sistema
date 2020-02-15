@@ -218,7 +218,8 @@ public class InsercaoProfissionalEquipeDAO {
 
             ps = gravarAtendimento1.getConexaoAuxiliar().prepareStatement(sql);
 
-            List<InsercaoProfissionalEquipe> listaInsercaoProfissionalEquipes = new ArrayList<>();
+            List<Integer> listaInsercaoProfissionalEquipes = new ArrayList<>();
+            int codigoAtendimento1 = 0;
 
             for (int i = 0; i < gravarAtendimento1.getListaAtendimentos().size(); i++) {
                 ps.setLong(1, gravarAtendimento1.getInsercaoProfissionalEquipe().getFuncionario().getId());
@@ -240,16 +241,16 @@ public class InsercaoProfissionalEquipeDAO {
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()) {
-                    gravarAtendimento1.getInsercaoProfissionalEquipe().getAtendimentoBean().setId1(rs.getInt("id_atendimentos1"));
+                    codigoAtendimento1 = rs.getInt("id_atendimentos1");
                 }
-                InsercaoProfissionalEquipe insercaoProfEquipeAux = new InsercaoProfissionalEquipe();;
-                insercaoProfEquipeAux = gravarAtendimento1.getInsercaoProfissionalEquipe();
-                listaInsercaoProfissionalEquipes.add(insercaoProfEquipeAux);
+
+                listaInsercaoProfissionalEquipes.add(codigoAtendimento1);
 
             }
 
             GravarInsercaoProfissionalEquipeAtendimento1DTO gravarInsercao1 = new GravarInsercaoProfissionalEquipeAtendimento1DTO(
-                    listaInsercaoProfissionalEquipes, gravarAtendimento1.getCodInsercaoProfissionalEquipeAtendimento(), con);
+                    listaInsercaoProfissionalEquipes, gravarAtendimento1.getCodInsercaoProfissionalEquipeAtendimento(), con,
+                    gravarAtendimento1.getInsercaoProfissionalEquipe());
 
             retorno = gravarInsercaoProfissionalEquipeAtendimento1(gravarInsercao1);
 
@@ -281,9 +282,9 @@ public class InsercaoProfissionalEquipeDAO {
 
             for (int i = 0; i < gravarInsercao1.getListaInsercao().size(); i++) {
             	//a merda esta nesse loop
-                ps.setInt(1, gravarInsercao1.getListaInsercao().get(i).getAtendimentoBean().getId1());
+                ps.setInt(1, gravarInsercao1.getListaInsercao().get(i));
                 ps.setInt(2, gravarInsercao1.getCodInsercaoProfissionalEquipeAtendimento());
-                ps.setLong(3, gravarInsercao1.getListaInsercao().get(i).getFuncionario().getId());
+                ps.setLong(3, gravarInsercao1.getInsercaoProfissionalEquipe().getFuncionario().getId());
                 ps.execute();
             }
 
