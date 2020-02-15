@@ -39,7 +39,7 @@ public class RemocaoProfissionalEquipeDAO {
                 "JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " +
                 "JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " +
                 "WHERE a.codprograma = ? AND a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.dtaatende <= ? " +
-                "AND a.situacao = 'A' AND coalesce(a1.excluido,'N')='N' ";
+                "AND a.situacao = 'A' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null";
 
         if (!RemocaoProfissionalEquipe.getTurno().equals(Turno.AMBOS.getSigla())) {
             sql = sql + "AND a.turno = ? ";

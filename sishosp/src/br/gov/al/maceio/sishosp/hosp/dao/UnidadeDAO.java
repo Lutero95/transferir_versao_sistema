@@ -1,22 +1,26 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-
-import javax.faces.context.FacesContext;
-import javax.xml.crypto.Data;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 public class UnidadeDAO {
 
@@ -222,6 +226,24 @@ public class UnidadeDAO {
             }
             
             ps.execute();
+            
+            
+            sql = "INSERT INTO hosp.config_evolucao_unidade_programa_grupo " +
+                    "(codunidade, codprograma, codgrupo, inicio_evolucao, usuario_cadastro, data_hora_cadastro ) " +
+                    "VALUES(?, ?, ?, ?,?, current_timestamp);";
+
+            	ps = null;
+                ps = con.prepareStatement(sql);
+
+                for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
+                    ps.setInt(1, codUnidade);
+                    ps.setInt(2, unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
+                    ps.setInt(3, unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
+                    ps.setDate(4, DataUtil.converterDateUtilParaDateSql(unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
+                    ps.setLong(5, user_session.getId());
+                    ps.execute();
+                }
+
 
             con.commit();
             retorno = true;
@@ -439,6 +461,31 @@ public class UnidadeDAO {
             ps.setInt(20, unidade.getId());
 
             ps.executeUpdate();
+            
+                sql = "delete from hosp.config_evolucao_unidade_programa_grupo where codunidade = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = con.prepareStatement(sql);
+                ps2.setLong(1,unidade.getId());
+                ps2.execute();
+          
+            
+            
+            sql = "INSERT INTO hosp.config_evolucao_unidade_programa_grupo " +
+                    "(codunidade, codprograma, codgrupo, inicio_evolucao, usuario_cadastro, data_hora_cadastro ) " +
+                    "VALUES(?, ?, ?, ?,?, current_timestamp);";
+
+            	ps = null;
+                ps = con.prepareStatement(sql);
+
+                for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
+                    ps.setInt(1, unidade.getId());
+                    ps.setInt(2,  unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
+                    ps.setInt(3,  unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
+                    ps.setDate(4, DataUtil.converterDateUtilParaDateSql( unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
+                    ps.setLong(5, user_session.getId());
+                    ps.execute();
+                }            
 
             con.commit();
             retorno = true;
@@ -521,6 +568,7 @@ public class UnidadeDAO {
                 unidade.setMatriz(rs.getBoolean("matriz"));
                 unidade.setAtivo(rs.getBoolean("ativo"));
                 unidade.setParametro(carregarParametro(id, con));
+                unidade.setListaProgramasGrupoEvolucao(carregarProgramasEGruposEmEvolucao(id, con));
                 unidade.setNomeUnidade(rs.getString("nome"));
 
             }
@@ -597,6 +645,44 @@ public class UnidadeDAO {
         }
         return parametro;
     }
+    
+    public List<ProgramaGrupoEvolucaoBean> carregarProgramasEGruposEmEvolucao(Integer id, Connection conAuxiliar) throws ProjetoException {
+
+        List<ProgramaGrupoEvolucaoBean> listaProgramasGruposEvolucao = new ArrayList<ProgramaGrupoEvolucaoBean>();
+
+        String sql = "select cev.codunidade,cev.codprograma, p.descprograma, cev.codgrupo, g.descgrupo , cev.inicio_evolucao\n" + 
+        		"from hosp.config_evolucao_unidade_programa_grupo cev\n" + 
+        		"left join hosp.programa p on (p.id_programa = cev.codprograma) \n" + 
+        		"left join hosp.grupo g on (g.id_grupo = cev.codgrupo) where cev.codunidade = ?";
+
+        try {
+            PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	ProgramaGrupoEvolucaoBean programaGrupoEvolucao = new ProgramaGrupoEvolucaoBean();
+            	programaGrupoEvolucao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+            	programaGrupoEvolucao.getPrograma().setDescPrograma(rs.getString("descprograma"));
+            	programaGrupoEvolucao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+            	programaGrupoEvolucao.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+            	programaGrupoEvolucao.setDataInicioEvolucao(rs.getDate("inicio_evolucao"));
+            	programaGrupoEvolucao.getUnidade().setId(rs.getInt("codunidade"));
+            	listaProgramasGruposEvolucao.add(programaGrupoEvolucao);
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaProgramasGruposEvolucao;
+    }
+    
 
     public String carregarOpcaoAtendimentoDaUnidade() throws ProjetoException {
 

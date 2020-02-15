@@ -6,10 +6,12 @@ public class ProgramaGrupoEvolucaoBean {
 	public ProgramaGrupoEvolucaoBean() {
 		programa = new ProgramaBean();
 		grupo = new GrupoBean();
+		unidade = new UnidadeBean();
 	}
 	private ProgramaBean programa;
 	private GrupoBean grupo;
 	private Date dataInicioEvolucao;
+	private UnidadeBean unidade;
 	
 	
 	
@@ -30,6 +32,12 @@ public class ProgramaGrupoEvolucaoBean {
 	}
 	public void setDataInicioEvolucao(Date dataInicioEvolucao) {
 		this.dataInicioEvolucao = dataInicioEvolucao;
+	}
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
 	}
 
 }

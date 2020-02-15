@@ -281,7 +281,6 @@ public class InsercaoProfissionalEquipeDAO {
             ps = gravarInsercao1.getConexaoAuxiliar().prepareStatement(sql);
 
             for (int i = 0; i < gravarInsercao1.getListaInsercao().size(); i++) {
-            	//a merda esta nesse loop
                 ps.setInt(1, gravarInsercao1.getListaInsercao().get(i));
                 ps.setInt(2, gravarInsercao1.getCodInsercaoProfissionalEquipeAtendimento());
                 ps.setLong(3, gravarInsercao1.getInsercaoProfissionalEquipe().getFuncionario().getId());

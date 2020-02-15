@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -19,9 +20,11 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ConfiguracaoAgendaEquipeEspecialidadeDTO;
 
@@ -37,7 +40,6 @@ public class UnidadeController implements Serializable {
     private UnidadeDAO eDao = new UnidadeDAO();
     private ArrayList<String> listaEstados;
     private List<GrupoBean> listaGruposProgramasOpm, listaGruposProgramasEvolucao;
-    private List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao;
     private GrupoDAO gDao = new GrupoDAO();
     private List<UnidadeBean> listaUnidades;
 
@@ -49,7 +51,6 @@ public class UnidadeController implements Serializable {
     private static final String CABECALHO_ALTERACAO = "Alteração de Unidade";
 
     public UnidadeController() {
-    	listaProgramasGrupoEvolucao = new ArrayList<>();
     	evolucaoAux = new ProgramaGrupoEvolucaoBean();
         this.unidade = new UnidadeBean();
         this.cabecalho = "";
@@ -115,6 +116,10 @@ public class UnidadeController implements Serializable {
 
     }
     
+    public void limparGrupoNaBuscaEvolucao() {
+        evolucaoAux.setGrupo(new GrupoBean());
+    }
+    
     public Boolean validarProgramaGrupoDataInicioEvolucao() {
         Boolean retorno = true;
         if ((VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getPrograma()) || (VerificadorUtil.verificarSeObjetoNulo(evolucaoAux.getPrograma().getIdPrograma()))) ||
@@ -133,12 +138,12 @@ public class UnidadeController implements Serializable {
         }
 
         boolean existe = false;
-        if (listaProgramasGrupoEvolucao.size() == 0) {
+        if (unidade.getListaProgramasGrupoEvolucao().size() == 0) {
         	adicionarProgramaGrupoInicioEvolucao();
         } else {
 
-            for (int i = 0; i < listaProgramasGrupoEvolucao.size(); i++) {
-                if ((listaProgramasGrupoEvolucao.get(i).getPrograma().getIdPrograma() == evolucaoAux.getPrograma().getIdPrograma()) && (listaProgramasGrupoEvolucao.get(i).getGrupo().getIdGrupo() == evolucaoAux.getGrupo().getIdGrupo())) {
+            for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
+                if ((unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma() == evolucaoAux.getPrograma().getIdPrograma()) && (unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo() == evolucaoAux.getGrupo().getIdGrupo())) {
                     existe = true;
                 }
             }
@@ -155,7 +160,7 @@ public class UnidadeController implements Serializable {
     }    
 
     private void adicionarProgramaGrupoInicioEvolucao() throws ProjetoException {
-        listaProgramasGrupoEvolucao.add(evolucaoAux);
+        unidade.getListaProgramasGrupoEvolucao().add(evolucaoAux);
         evolucaoAux = new ProgramaGrupoEvolucaoBean();
     }    
     public void gravarUnidade() {
@@ -352,11 +357,5 @@ public class UnidadeController implements Serializable {
 		this.listaGruposProgramasEvolucao = listaGruposProgramasEvolucao;
 	}
 
-	public List<ProgramaGrupoEvolucaoBean> getListaProgramasGrupoEvolucao() {
-		return listaProgramasGrupoEvolucao;
-	}
 
-	public void setListaProgramasGrupoEvolucao(List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao) {
-		this.listaProgramasGrupoEvolucao = listaProgramasGrupoEvolucao;
-	}
 }

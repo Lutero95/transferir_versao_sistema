@@ -524,7 +524,7 @@
 												effect="fade" var="theme" forceSelection="true"
 												minQueryLength="1" itemValue="#{theme}"
 												itemLabel="#{theme.descPrograma}">
-												<p:ajax event="itemSelect" update="grupoEvolucao" />
+												<p:ajax event="itemSelect" update="grupoEvolucao" listener="#{UnidadeController.limparGrupoNaBuscaEvolucao}" />
 
 											</p:autoComplete>
 
@@ -558,6 +558,7 @@
 											<p:commandButton id="btBusGr2" immediate="true"
 												style="margin-left: 5px" icon="ui-icon-search"
 												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
+												actionListener="#{UnidadeController.limparGrupoNaBuscaEvolucao}"
 												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(UnidadeController.evolucaoAux.programa.idPrograma)}"
 												update=":formConsuGropEvo"
 												onclick="PF('dlgConsultGropEvo').show();" />
@@ -578,8 +579,9 @@
 										<b:label value="Data de Início da Evolução" severity="info" />
 
 										<p:calendar class="select-agendaEquipe2" mask="99/99/9999" showOn="button"
+										size="5"
 											value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
-											id="inicioevolucao" required="false"
+											id="inicioevolucao" required="false" pattern="dd/MM/yyyy"
 											requiredMessage="Informe o início da eovlução" />
 									</b:column>
 
@@ -590,7 +592,7 @@
 
 								<p:commandButton icon="ui-icon-plus"
 									style="margin-top: 10px;margin-left: 10px" value="Adicionar"
-									update="dtprogramagrupoevolucao rowEvolucao, rowdataEvolucao, msgEvolucao"
+									update=":frmPrincipal:tbview:dtprogramagrupoevolucao :frmPrincipal:tbview:rowEvolucao, :frmPrincipal:tbview:rowdataEvolucao, :frmPrincipal:tbview:msgEvolucao"
 									class="btn-acao-table acao-confirmar"
 									process="@this inicioevolucao grupoEvolucao programaEvolucao"
 									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucaoo()}" />
@@ -601,8 +603,9 @@
 
 							<b:row>
 								<p:outputPanel id="dtprogramagrupoevolucao">
+								<p:panel header="Programas com Evolução no Sistema">
 									<p:dataTable
-										value="#{UnidadeController.listaProgramasGrupoEvolucao}"
+										value="#{UnidadeController.unidade.listaProgramasGrupoEvolucao}"
 										var="evolucao" emptyMessage="Sem registros.">
 
 										<p:column headerText="Programa" width="150">
@@ -615,7 +618,9 @@
 										</p:column>
 
 										<p:column headerText="Início da Evolução" width="10%">
-											<h:outputLabel value="#{evolucao.dataInicioEvolucao}" />
+											<h:outputLabel value="#{evolucao.dataInicioEvolucao}" >
+											<f:convertDateTime pattern="dd/MM/yyyy"/>
+											</h:outputLabel>
 										</p:column>
 
 										<p:column headerText="Ação" width="9%">
@@ -623,7 +628,7 @@
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
 													action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
-													icon="ui-icon-trash" update="dtEspecialidadeComQuantidade">
+													icon="ui-icon-trash" update=":frmPrincipal:tbview:dtprogramagrupoevolucao :frmPrincipal:tbview:rowEvolucao, :frmPrincipal:tbview:rowdataEvolucao, :frmPrincipal:tbview:msgEvolucao">
 													<f:setPropertyActionListener value="#{var}"
 														target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
 
@@ -632,6 +637,7 @@
 										</p:column>
 
 									</p:dataTable>
+									</p:panel>
 								</p:outputPanel>
 
 							</b:row>
@@ -755,7 +761,7 @@
 							update=":frmPrincipal:tbview:outProg, :frmPrincipal:tbview:outGrupo, :frmPrincipal:tbview:btBusGr2"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsultProg').hide();">
+							onclick="PF('dlgConsultProg').hide();" actionListener="#{UnidadeController.limparGrupoNaBuscaEvolucao}">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{UnidadeController.evolucaoAux.programa}" />
 						</p:commandButton>

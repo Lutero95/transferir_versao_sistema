@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class UnidadeBean extends EmpresaBean{
 
@@ -23,12 +25,13 @@ public class UnidadeBean extends EmpresaBean{
     private Integer codEmpresa;
     private String nomeFantasia;
     private String nomeEmpresa;
+    private List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao;
 
 
     public UnidadeBean() {
         orteseProtese = new OrteseProtese();
         parametro = new ParametroBean();
-    //    empresa = new EmpresaBean();
+        listaProgramasGrupoEvolucao =  new ArrayList<>();
     }
 
 	public Integer getId() {
@@ -159,6 +162,14 @@ public class UnidadeBean extends EmpresaBean{
 
 	public void setNomeEmpresa(String nomeEmpresa) {
 		this.nomeEmpresa = nomeEmpresa;
+	}
+
+	public List<ProgramaGrupoEvolucaoBean> getListaProgramasGrupoEvolucao() {
+		return listaProgramasGrupoEvolucao;
+	}
+
+	public void setListaProgramasGrupoEvolucao(List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao) {
+		this.listaProgramasGrupoEvolucao = listaProgramasGrupoEvolucao;
 	}
 
 	
