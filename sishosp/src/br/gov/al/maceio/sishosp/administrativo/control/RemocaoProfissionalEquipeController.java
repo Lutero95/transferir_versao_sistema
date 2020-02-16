@@ -73,13 +73,13 @@ public class RemocaoProfissionalEquipeController implements Serializable {
     }
 
     public void listarSeremRemovidos() {
-        setarDataUnica();
+        tratarCasoDatas();
         tratarGrupo();
         listaSeremRemovidos = rDao.listarSeremRemovidos(remocaoProfissionalEquipe);
     }
 
     public void gravarRemocaoProfissionalEquipe() {
-        setarDataUnica();
+        tratarCasoDatas();
         tratarGrupo();
 
         if(listaSelecaoSeremRemovidos.isEmpty()){
@@ -112,9 +112,12 @@ public class RemocaoProfissionalEquipeController implements Serializable {
         }
     }
 
-    private void setarDataUnica(){
+    private void tratarCasoDatas(){
         if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())){
             remocaoProfissionalEquipe.setPeriodoFinal(remocaoProfissionalEquipe.getPeriodoInicio());
+        }
+        if (tipoData.equals(TipoDataAgenda.A_PARTIR_DA_DATA.getSigla())){
+            remocaoProfissionalEquipe.setPeriodoFinal(null);
         }
     }
 
