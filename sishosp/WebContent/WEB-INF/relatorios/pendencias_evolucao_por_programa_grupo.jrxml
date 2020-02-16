@@ -59,17 +59,21 @@
 		<![CDATA[select a.dtaatende,case when a.turno='M' then 'MANHÃ' when a.turno='T' then 'TARDE' end turno  ,p.id_programa codprograma, p.descprograma, g.id_grupo codgrupo,  g.descgrupo, pac.nome nomepaciente,f.descfuncionario nomeprofissional,
 e.descespecialidade, emp.nome_principal, emp.nome_fantasia, emp.cnes from hosp.atendimentos1 a1
 join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento
-join hosp.programa p on p.id_programa = a.codprograma
-join hosp.grupo g on g.id_grupo = a.codgrupo
 join hosp.pacientes pac on pac.id_paciente = a.codpaciente
 join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento
 join hosp.especialidade e on e.id_especialidade = f.codespecialidade
-JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.unidade u ON u.id =1
 JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa
+join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id
+join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa
+join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo
 where a.presenca='S' and a1.evolucao is null
 and $X{IN, a.codgrupo, codgrupolista}
-and a.dtaatende>='2020-02-03'
-and a.dtaatende<='2020-02-06'
+and a.dtaatende>='2000-01-07'
+and a.dtaatende<='2020-02-15'
+and a.codprograma = ceu.codprograma
+and a.codgrupo = ceu.codgrupo
+and a.dtaatende>=ceu.inicio_evolucao
 order by  p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">

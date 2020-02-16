@@ -53,7 +53,7 @@ public class RelatoriosController implements Serializable {
     private PacienteBean paciente;
     private GrupoBean grupo;
     private GerenciarPacienteBean pacienteInstituicao;
-    private TipoAtendimentoBean tipo;
+    private TipoAtendimentoBean tipoAtendimento;
     private EquipeBean equipe;
     private ProcedimentoBean procedimento;
     private FuncionarioBean prof;
@@ -89,7 +89,7 @@ public class RelatoriosController implements Serializable {
         this.programa = new ProgramaBean();
         agendaController =  new AgendaController();
         this.grupo = new GrupoBean();
-        this.tipo = new TipoAtendimentoBean();
+        this.tipoAtendimento = new TipoAtendimentoBean();
         this.prof = new FuncionarioBean();
         this.listaGrupos = new ArrayList<GrupoBean>();
         this.listaTipos = new ArrayList<TipoAtendimentoBean>();
@@ -113,7 +113,7 @@ public class RelatoriosController implements Serializable {
         this.listaTipos = new ArrayList<TipoAtendimentoBean>();
         this.programa = new ProgramaBean();
         this.grupo = new GrupoBean();
-        this.tipo = new TipoAtendimentoBean();
+        this.tipoAtendimento = new TipoAtendimentoBean();
         this.prof = new FuncionarioBean();
         this.dataInicial = null;
         this.dataFinal = null;
@@ -213,7 +213,7 @@ public class RelatoriosController implements Serializable {
     }
 
     public void carregaListaEquipePorTipoAtendimento() throws ProjetoException {
-        if (tipo != null) {
+        if (tipoAtendimento != null) {
             if (grupo.getIdGrupo() != null) {
                 EquipeDAO eDao = new EquipeDAO();
                 listaEquipePorTipoAtendimento = eDao.listarEquipePorGrupo(grupo.getIdGrupo());
@@ -582,10 +582,9 @@ public class RelatoriosController implements Serializable {
 
     public void gerarAgendamentosPorProfissional() throws IOException, ParseException, ProjetoException {
 
-        if (this.dataFinal == null || this.dataInicial == null || this.programa == null || this.grupo == null
-                || this.tipo == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Todos os campos devem ser preenchidos.",
-                    "Campos invÃ¡lidos!");
+        if (this.dataFinal == null || this.dataInicial == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Informe o Período Inicial e Final do Agendamento.",
+                    "Campos inválidos!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
@@ -593,18 +592,18 @@ public class RelatoriosController implements Serializable {
         String caminho = "/WEB-INF/relatorios/";
         String relatorio = caminho + "agendamentosProfissional.jasper";
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("img_adefal", this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
         map.put("dt_inicial", this.dataInicial);
         map.put("dt_final", this.dataFinal);
-        map.put("cod_tipo_atend", this.tipo.getIdTipo());
-        if (this.prof == null) {
-            map.put("cod_medico", null);
-        } else {
-            map.put("cod_medico", this.prof.getId());
-        }
-        map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+        if ((tipoAtendimento != null) && (tipoAtendimento.getIdTipo() != null)) 
+        map.put("cod_tipo_atend", this.tipoAtendimento.getIdTipo());
+        map.put("codunidade", user_session.getUnidade().getId());
+        if ((programa != null) && (programa.getIdPrograma() != null)) 
+        map.put("codprograma", this.programa.getIdPrograma());
+        if ((grupo != null) && (grupo.getIdGrupo() != null))
+        map.put("codgrupo", this.grupo.getIdGrupo());        
 
-        this.executeReport(relatorio, map, "relatorio.pdf");
+
+        this.executeReport(relatorio, map, "agendamentos_profissional.pdf");
         // limparDados();
     }
 
@@ -906,11 +905,11 @@ public class RelatoriosController implements Serializable {
     }
 
     public void addTipoLst() {
-        this.listaTipos.add(this.tipo);
+        this.listaTipos.add(this.tipoAtendimento);
     }
 
     public void rmvTipoLst() {
-        this.listaTipos.remove(this.tipo);
+        this.listaTipos.remove(this.tipoAtendimento);
     }
 
     public String strIdGrupos() {
@@ -952,12 +951,17 @@ public class RelatoriosController implements Serializable {
         Map<String, Object> map = new HashMap<String, Object>();
 
         relatorio = caminho + "agendamentosEquipe.jasper";
-        map.put("img_adefal", this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
         map.put("dt_inicial", this.dataInicial);
         map.put("dt_final", this.dataFinal);
-        map.put("cod_tipo_atend", this.tipo.getIdTipo());
+        if ((tipoAtendimento != null) && (tipoAtendimento.getIdTipo() != null)) 
+        map.put("cod_tipo_atend", this.tipoAtendimento.getIdTipo());
+        if ((equipe != null) && (equipe.getCodEquipe() != null))
         map.put("cod_equipe", this.equipe.getCodEquipe());
-        map.put("cod_empresa", this.unidade.getId());
+        map.put("codunidade", user_session.getUnidade().getId());
+        if ((programa != null) && (programa.getIdPrograma() != null)) 
+        map.put("codprograma", this.programa.getIdPrograma());
+        if ((grupo != null) && (grupo.getIdGrupo() != null))
+        map.put("codgrupo", this.grupo.getIdGrupo());        
 
         this.executeReport(relatorio, map, "Agendamentos por Equipe.pdf");
     }
@@ -1020,14 +1024,7 @@ public class RelatoriosController implements Serializable {
         this.tipoExameAuditivo = tipoExameAuditivo;
     }
 
-    public TipoAtendimentoBean getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoAtendimentoBean tipo) {
-        this.tipo = tipo;
-    }
-
+  
     public FuncionarioBean getProf() {
         return prof;
     }
@@ -1202,5 +1199,13 @@ public class RelatoriosController implements Serializable {
 
 	public void setAgendaController(AgendaController agendaController) {
 		this.agendaController = agendaController;
+	}
+
+	public TipoAtendimentoBean getTipoAtendimento() {
+		return tipoAtendimento;
+	}
+
+	public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
+		this.tipoAtendimento = tipoAtendimento;
 	}
 }
