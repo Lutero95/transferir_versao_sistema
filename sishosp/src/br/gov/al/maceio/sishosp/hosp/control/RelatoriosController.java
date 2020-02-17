@@ -560,17 +560,21 @@ public class RelatoriosController implements Serializable {
 	public void gerarAgendamentosPorProfissional() throws IOException, ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Informe o Período Inicial e Final do Agendamento.", "Campos inválidos!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.adicionarMensagemErro("Informe o Período Inicial e Final do Agendamento.", "Campos inválidos!");
+			return;
+		}
+		
+		else if(this.prof.getId().equals(null)){
+			JSFUtil.adicionarMensagemErro("Informe o Profissional do Agendamento.", "Campo inválido!");
 			return;
 		}
 
 		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = caminho + "agendamentosProfissional.jasper";
+		String relatorio = caminho + "agendamentosPorProfissional.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
+		map.put("cod_profissional", this.prof.getId());
 		if ((tipoAtendimento != null) && (tipoAtendimento.getIdTipo() != null))
 			map.put("cod_tipo_atend", this.tipoAtendimento.getIdTipo());
 		map.put("codunidade", user_session.getUnidade().getId());
