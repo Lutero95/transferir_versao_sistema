@@ -330,7 +330,7 @@ public class LaudoDAO {
 	public ArrayList<LaudoBean> listaLaudos(String situacao, String campoBusca, String tipoBusca)
 			throws ProjetoException {
 
-		String sql = "select id_laudo, p.nome, "
+		String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
 				+ "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
 				+ "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "
 				+ "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
@@ -395,6 +395,8 @@ public class LaudoDAO {
 				LaudoBean l = new LaudoBean();
 
 				l.setId(rs.getInt("id_laudo"));
+				l.getPaciente().setId_paciente(rs.getInt("id_paciente"));
+				l.getPaciente().setMatricula(rs.getString("matricula"));
 				l.getPaciente().setNome(rs.getString("nome"));
 				l.setMesFinal(rs.getInt("mes_final"));
 				l.setAnoFinal(rs.getInt("ano_final"));

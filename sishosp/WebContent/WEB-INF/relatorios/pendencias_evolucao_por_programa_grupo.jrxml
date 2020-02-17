@@ -51,10 +51,10 @@
 		</queryString>
 	</subDataset>
 	<parameter name="codunidade" class="java.lang.Integer"/>
-	<parameter name="codprograma" class="java.lang.Integer"/>
-	<parameter name="idademinima" class="java.lang.Integer"/>
-	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="codgrupolista" class="java.lang.Collection"/>
+	<parameter name="data_inicio_atendimento" class="java.sql.Date"/>
+	<parameter name="data_fim_atendimento" class="java.sql.Date"/>
+	<parameter name="codprogramalista" class="java.lang.Collection"/>
 	<queryString>
 		<![CDATA[select a.dtaatende,case when a.turno='M' then 'MANHÃ' when a.turno='T' then 'TARDE' end turno  ,p.id_programa codprograma, p.descprograma, g.id_grupo codgrupo,  g.descgrupo, pac.nome nomepaciente,f.descfuncionario nomeprofissional,
 e.descespecialidade, emp.nome_principal, emp.nome_fantasia, emp.cnes from hosp.atendimentos1 a1
@@ -62,18 +62,21 @@ join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento
 join hosp.pacientes pac on pac.id_paciente = a.codpaciente
 join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento
 join hosp.especialidade e on e.id_especialidade = f.codespecialidade
-JOIN hosp.unidade u ON u.id =1
+JOIN hosp.unidade u ON u.id = $P{codunidade} 
 JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa
 join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id
 join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa
 join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo
 where a.presenca='S' and a1.evolucao is null
+and $X{IN, a.codprograma, codprogramalista}
 and $X{IN, a.codgrupo, codgrupolista}
-and a.dtaatende>='2000-01-07'
-and a.dtaatende<='2020-02-15'
+and a.dtaatende>= $P{data_inicio_atendimento} 
+and a.dtaatende<= $P{data_fim_atendimento} 
 and a.codprograma = ceu.codprograma
 and a.codgrupo = ceu.codgrupo
 and a.dtaatende>=ceu.inicio_evolucao
+and coalesce(a.situacao,'A')<>'C'
+and coalesce(a1.excluido,'N' )='N'
 order by  p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">
@@ -130,9 +133,11 @@ order by  p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]
 			<band height="1"/>
 		</groupHeader>
 		<groupFooter>
-			<band height="51">
+			<band height="35">
 				<textField>
-					<reportElement x="1" y="10" width="559" height="30" uuid="b7026d5d-689a-4b10-8298-f4df26600af4"/>
+					<reportElement x="1" y="10" width="559" height="14" uuid="b7026d5d-689a-4b10-8298-f4df26600af4">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textFieldExpression><![CDATA["TOTAL "+$F{descprograma}+": "+$V{grpfreq_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
@@ -194,9 +199,9 @@ order by  p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="73">
+			<band height="51">
 				<textField>
-					<reportElement x="1" y="26" width="439" height="30" uuid="5ebf9730-532f-4528-9bff-c5f404ac4559"/>
+					<reportElement x="1" y="26" width="439" height="14" uuid="5ebf9730-532f-4528-9bff-c5f404ac4559"/>
 					<textFieldExpression><![CDATA["TOTAL "+$F{descgrupo}+": "+$V{grpgrupo_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>

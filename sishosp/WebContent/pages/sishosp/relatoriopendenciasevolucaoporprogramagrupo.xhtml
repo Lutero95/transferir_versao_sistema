@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction
+			action="#{RelatoriosController.preparaRelPacientesPorPrograma()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<br />
+		<br />
+
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Pendências de Evolução  por
+					Programa e Grupo</h4>
+			</div>
+			<p:growl id="grw" />
+			<div class="panel-body table-body">
+				<h:form id="frm">
+
+					<b:row>
+						<b:column span="1" class="label-position data-size1">
+							<b:label value="Período de Atendimento:" severity="info" />
+
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+								showOn="button" size="6" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período inicial de atendimento"
+								value="#{RelatoriosController.dataInicial}" />
+							<p:outputLabel id="outdataa">
+								<h:outputLabel value="à" style="margin-left: 20px" />
+							</p:outputLabel>
+						</b:column>
+						<b:column span="2" class="label-position data-size1">
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" required="true" requiredMessage="Informe o período final de atendimento"
+								showOn="button" size="6" id="dtagen3" locale="pt"
+								value="#{RelatoriosController.dataFinal}" />
+						</b:column>
+
+
+
+					</b:row>
+
+
+					<p:outputPanel id="outProgramaGrupo">
+
+						<b:row>
+
+							<b:column span="2" class="label-position">
+								<p:outputLabel value="Programa/Grupo:"
+									style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+								<p:commandButton process="@this" size="sm" immediate="true"
+									tooltip="Incluir Profissional" icon="ui-icon-plus"
+									class="new-btn-acao-table acao-editar"
+									style="margin-left: 20px;"
+									actionListener="#{GrupoController.listarProgramasEGrupos}"
+									oncomplete="PF('dlgConsuProgsGrupos').show();" />
+							</b:column>
+
+							<b:column span="6" class="label-position">
+
+								<p:dataTable emptyMessage="Nenhum Programa/Grupo"
+									styleClass="table table-hover" id="tabelagrupo"
+									value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
+									var="programa" paginator="true" paginatorPosition="bottom"
+									rows="12" resizableColumns="true">
+
+									<p:column headerText="Programa">
+										<p:outputLabel value="#{programa.descPrograma}" />
+									</p:column>
+
+									<p:column headerText="Grupo">
+										<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
+									</p:column>
+
+									<p:column headerText="Ação">
+										<div align="center">
+											<p:commandButton immediate="true"
+												action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
+												icon="ui-icon-trash" update="tabelagrupo"
+												class="new-btn-acao-table acao-excluir">
+												<f:setPropertyActionListener value="#{programa}"
+													target="#{MBFuncionarios.profissional.progAdd}" />
+											</p:commandButton>
+										</div>
+									</p:column>
+								</p:dataTable>
+
+							</b:column>
+
+						</b:row>
+
+					</p:outputPanel>
+
+
+
+
+
+
+
+					<br />
+
+					<p:commandButton icon="ui-icon-print" value="Imprimir"
+						target="_blank" style="font-size: 12px;  text-align: right;"
+						update="grw"
+						actionListener="#{RelatoriosController.gerarPendenciasEvolucaoPorProgramaEGrupo(MBFuncionarios.listaGruposEProgramasProfissional)}"
+						ajax="false" />
+
+
+				</h:form>
+			</div>
+		</div>
+
+
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuProgsGrupos"
+			dynamic="true" modal="true" styleClass="topDialog">
+			<h:form id="formConsuGrops">
+				<p:outputPanel>
+					<p:autoUpdate />
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
+						var="programa">
+
+
+						<h:column>
+							<f:facet name="header">
+                                Programa
+                            </f:facet>
+							<p:outputLabel value="#{programa.descPrograma}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                                Grupo
+                            </f:facet>
+							<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
+						</h:column>
+
+
+						<h:column>
+							<f:facet name="header">
+                                Adicionar
+                            </f:facet>
+							<p:commandButton update=":frm:tabelagrupo :msgPagina"
+								icon="fa fa-fw fa-check" title="Selecionar"
+								class="new-btn-acao-table acao-editar"
+								oncomplete="PF('dlgConsuProgsGrupos').hide();"
+								action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
+								<f:setPropertyActionListener value="#{programa}"
+									target="#{MBFuncionarios.profissional.progAdd}" />
+							</p:commandButton>
+						</h:column>
+
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>
