@@ -304,4 +304,33 @@ public class BloqueioDAO {
         return lista;
     }
 
+    public Date verificarBloqueioProfissionalDeData(Date data, Long codigoProfissional, Connection conAuxiliar) {
+
+        String sql = "SELECT dataagenda FROM hosp.bloqueio_agenda WHERE codmedico = ? AND dataagenda = ? ";
+
+        Date dataSemBloqueio = null;
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setLong(1, codigoProfissional);
+            stm.setDate(2, DataUtil.converterDateUtilParaDateSql(data));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                dataSemBloqueio = rs.getDate("dataagenda");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return dataSemBloqueio;
+    }
+
 }

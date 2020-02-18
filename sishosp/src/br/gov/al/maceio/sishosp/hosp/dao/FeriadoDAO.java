@@ -219,4 +219,32 @@ public class FeriadoDAO {
         return lista;
     }
 
+    public Date verificarFeriadoDeData(Date data, Connection conAuxiliar) {
+
+        String sql = "SELECT dataferiado FROM hosp.feriado WHERE dataferiado = ? ";
+
+        Date dataSemBloqueio = null;
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setDate(1, DataUtil.converterDateUtilParaDateSql(data));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                dataSemBloqueio = rs.getDate("dataferiado");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return dataSemBloqueio;
+    }
+
 }

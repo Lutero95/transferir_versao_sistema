@@ -3,7 +3,6 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +12,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
@@ -548,15 +548,6 @@ public class LaudoDAO {
             while (rs.next()) {
 
                 l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                l.getPaciente().setNome(rs.getString("nome"));
-                Date d = DataUtil.montarDataCompleta(1, rs.getInt("mes_final"), rs.getInt("ano_final"));
-
-                Calendar c = Calendar.getInstance();
-                c.setTime(d);
-                c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
-
-
-                l.setDataSolicitacao(c.getTime());
                 l.setDataAutorizacao(rs.getDate("data_autorizacao"));
                 l.setMesInicio(rs.getInt("mes_final"));
                 l.setAnoInicio(rs.getInt("ano_final"));
@@ -587,6 +578,7 @@ public class LaudoDAO {
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));
+                l.setDataSolicitacao(prepararDataVencimentoApenasComDiasUteis(rs.getInt("mes_final"), rs.getInt("ano_final"), func.getId()));
                 l.setProfissionalLaudo(func);
 
             }
@@ -601,6 +593,33 @@ public class LaudoDAO {
             }
         }
         return l;
+    }
+
+    private Date prepararDataVencimentoApenasComDiasUteis(int mesFinal, int anoFInal, Long codigoFuncionario) {
+        Date d = DataUtil.montarDataCompleta(1, mesFinal, anoFInal);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+        Date dataMontada = c.getTime();
+
+        Date dataSemFinalDeSemana = dataMontada;
+        while(!VerificadorUtil.verificarSeObjetoNulo(DataUtil.proximaDataRetirandoFinalDeSemana(dataSemFinalDeSemana))){
+            dataSemFinalDeSemana = DataUtil.adicionarDiasAData(dataSemFinalDeSemana, 1);
+        }
+
+        BloqueioDAO bDao = new BloqueioDAO();
+        Date dataSemBloqueio = dataSemFinalDeSemana;
+        while(!VerificadorUtil.verificarSeObjetoNulo(bDao.verificarBloqueioProfissionalDeData(dataSemBloqueio, codigoFuncionario, conexao))){
+            dataSemBloqueio = DataUtil.adicionarDiasAData(dataSemBloqueio, 1);
+        }
+
+        FeriadoDAO fDao = new FeriadoDAO();
+        Date dataSemFeriado = dataSemBloqueio;
+        while(!VerificadorUtil.verificarSeObjetoNulo(fDao.verificarFeriadoDeData(dataSemFeriado, conexao))){
+            dataSemFeriado = DataUtil.adicionarDiasAData(dataSemFeriado, 1);
+        }
+        return dataSemFeriado;
     }
 
 

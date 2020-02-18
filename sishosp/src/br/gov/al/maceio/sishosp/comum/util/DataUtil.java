@@ -1,5 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
+import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -7,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
@@ -242,6 +243,35 @@ public final class DataUtil {
             return null;
         }
         return horarioComSegundos.substring(0, 5);
+    }
+
+    public static Date proximaDataRetirandoFinalDeSemana(Date data){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+
+        if(day == 1){
+            data = adicionarDiasAData(data, 1);
+            return data;
+        }
+        if(day == 7){
+            data = adicionarDiasAData(data, 1);
+            return data;
+        }
+        else{
+            return null;
+        }
+
+    }
+
+    public static int pegarDiaDaSemana(Date data){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+
+        return day;
     }
 
 }
