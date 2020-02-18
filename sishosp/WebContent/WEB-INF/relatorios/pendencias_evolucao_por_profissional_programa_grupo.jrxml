@@ -77,7 +77,7 @@ and a.codgrupo = ceu.codgrupo
 and a.dtaatende>=ceu.inicio_evolucao
 and coalesce(a.situacao,'A')<>'C'
 and coalesce(a1.excluido,'N' )='N'
-order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
+order by f.id_funcionario,f.descfuncionario, p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.label" value="dtaatende"/>
@@ -131,10 +131,42 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
-	<group name="grpfreq" isStartNewPage="true" keepTogether="true">
+	<variable name="nomepaciente1" class="java.lang.Integer" resetType="Group" resetGroup="grpfuncionario" calculation="Count">
+		<variableExpression><![CDATA[$F{nomepaciente}]]></variableExpression>
+	</variable>
+	<group name="grpfuncionario" isStartNewPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{id_funcionario}]]></groupExpression>
+		<groupHeader>
+			<band height="55">
+				<textField>
+					<reportElement x="0" y="0" width="584" height="17" uuid="e282914f-ff81-4c89-9258-df2bb59f3515"/>
+					<textElement>
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROFISSIONAL: "+$F{nomeprofissional}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
+					<reportElement x="0" y="19" width="577" height="17" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d"/>
+					<textElement textAlignment="Left">
+						<font size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ESPECIALIDADE:"+$F{descespecialidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50">
+				<textField>
+					<reportElement x="0" y="0" width="577" height="30" uuid="b5dba4d0-2850-47f0-9f5c-ed5a81bed0d6"/>
+					<textFieldExpression><![CDATA["TOTAL "+$F{nomeprofissional}+" :"+$V{nomepaciente1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grpfreq">
 		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
 		<groupHeader>
-			<band height="1"/>
+			<band/>
 		</groupHeader>
 		<groupFooter>
 			<band height="35">
@@ -150,7 +182,7 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 	<group name="grpgrupo" isReprintHeaderOnEachPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
 		<groupHeader>
-			<band height="80">
+			<band height="61">
 				<staticText>
 					<reportElement x="0" y="43" width="48" height="13" uuid="74b7f733-1bdd-4081-9b04-a4dbfcfa3af7"/>
 					<textElement textAlignment="Left">
@@ -171,20 +203,6 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Paciente]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="330" y="43" width="73" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
-					<textElement textAlignment="Left">
-						<font size="10" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Profissional]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="492" y="43" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
-					<textElement textAlignment="Center">
-						<font size="10" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Especialidade]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="1" y="2" width="549" height="17" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12"/>
@@ -211,20 +229,6 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 			</band>
 		</groupFooter>
 	</group>
-	<group name="grpfuncionario">
-		<groupExpression><![CDATA[$F{id_funcionario}]]></groupExpression>
-		<groupHeader>
-			<band height="50"/>
-		</groupHeader>
-		<groupFooter>
-			<band height="50">
-				<textField>
-					<reportElement x="0" y="0" width="420" height="30" uuid="b5dba4d0-2850-47f0-9f5c-ed5a81bed0d6"/>
-					<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupFooter>
-	</group>
 	<pageHeader>
 		<band height="73">
 			<staticText>
@@ -232,7 +236,7 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[PACIENTES COM PENDÊNCIA DE EVOLUÇÃO POR PROGRAMA E GRUPO]]></text>
+				<text><![CDATA[PACIENTES COM PENDÊNCIA DE EVOLUÇÃO POR PROFISSIONAL]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="1" y="14" width="549" height="16" uuid="593e972c-38ad-4b9c-84c4-7d44eb4540ff"/>
@@ -265,20 +269,6 @@ order by f.id_funcionario,f.nome, p.descprograma, g.descgrupo, a.dtaatende, pac.
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$F{nomepaciente}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-				<reportElement x="330" y="2" width="153" height="13" uuid="77f0bdb5-3418-4b44-9b02-1087caba3623">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-				<reportElement x="492" y="2" width="97" height="13" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
