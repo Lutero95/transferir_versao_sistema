@@ -91,7 +91,7 @@ public class PacienteDAO {
             if (paciente.getEndereco().getCep() == null) {
                 stmt.setNull(10, Types.INTEGER);
             } else {
-                stmt.setString(10, paciente.getEndereco().getCep());
+                stmt.setString(10, paciente.getEndereco().getCep().replaceAll("[^0-9]", ""));
             }
             if (paciente.getEndereco().getUf() == null) {
                 stmt.setNull(11, Types.CHAR);
@@ -409,7 +409,7 @@ public class PacienteDAO {
             stmt.setString(7, paciente.getNomeMae().toUpperCase());
             stmt.setString(8, paciente.getConjuge().toUpperCase());
             stmt.setInt(9, paciente.getCodRaca());
-            stmt.setString(10, paciente.getEndereco().getCep());
+            stmt.setString(10, paciente.getEndereco().getCep().replaceAll("[^0-9]", ""));
             stmt.setString(11, paciente.getEndereco().getUf());
             stmt.setString(12, paciente.getEndereco().getLogradouro().toUpperCase());
             stmt.setString(13, paciente.getEndereco().getNumero().toUpperCase());

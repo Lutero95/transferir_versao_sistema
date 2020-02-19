@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apaemaceio"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -61,7 +61,7 @@ prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.no
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
 prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
 l.data_solicitacao as datainicio, 
-	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, c1.desccidabrev
+	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, c1.desccid
 FROM  hosp.laudo l  
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
@@ -262,8 +262,8 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<field name="datafinal" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="datafinal"/>
 	</field>
-	<field name="desccidabrev" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="desccidabrev"/>
+	<field name="desccid" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="desccid"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
 	</field>
 	<field name="tel_id2" class="java.lang.Integer">
@@ -908,7 +908,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{desccidabrev}.toUpperCase()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{desccid}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="386" y="371" width="48" height="14" uuid="6a0a0c76-729d-4e76-b805-38881bec6cc1"/>
