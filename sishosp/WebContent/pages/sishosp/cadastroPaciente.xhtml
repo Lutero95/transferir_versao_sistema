@@ -519,8 +519,8 @@
 								<p:inputMask mask="999.999.999-99"
 									value="#{PacienteController.paciente.cpf}"
 									class="form-control select-agendaEquipe2" id="cpf"
-									required="false" validator="CPFPacienteValidator"
-									requiredMessage="CPF do Paciente: Campo obrigatório!">
+									required="false" validator="CPFPacienteValidator">
+									<p:ajax process="@this :frmPrincipal:tbv:cpf" update="msgPagina" event="blur" listener="#{PacienteController.verificaExisteCPFDoPacienteCadastrado(PacienteController.paciente.cpf)}"/>
 								</p:inputMask>
 							</b:column>
 						</b:row>

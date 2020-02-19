@@ -223,7 +223,6 @@ public class PacienteController implements Serializable {
 	}
 	
 	public void verificaExisteCNSDoPacienteCadastrado(String cns) {
-		//String cns = paciente.getCns();
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cns)) {
 			if (!DocumentosUtil.validaCNS(cns)) {
@@ -249,8 +248,7 @@ public class PacienteController implements Serializable {
 		}
 	}
 	
-	public void verificaExisteCPFDoPacienteCadastrado() {
-		String cpf = this.paciente.getCpf();
+	public void verificaExisteCPFDoPacienteCadastrado(String cpf) {
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cpf)) {
 			cpf = cpf.replaceAll(" ", "").replaceAll("[^0-9]", "");
