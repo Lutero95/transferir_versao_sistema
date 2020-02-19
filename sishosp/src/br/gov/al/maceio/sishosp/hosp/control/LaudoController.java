@@ -181,7 +181,7 @@ public class LaudoController implements Serializable {
 
     public void alterarLaudo() throws ProjetoException {
 
-        if(verificarSeLaudoAssociadoPacienteTerapia()) {
+      //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
 
             boolean alterou = lDao.alterarLaudo(laudo);
 
@@ -191,7 +191,7 @@ public class LaudoController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
             }
-        }
+     //   }
     }
 
 
