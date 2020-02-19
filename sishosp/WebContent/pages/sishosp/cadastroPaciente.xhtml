@@ -11,8 +11,8 @@
 		<f:metadata>
 			<f:viewAction action="#{PacienteController.getEditPaciente()}" />
 		</f:metadata>
-
 		<h:form class="form-horizontal" id="frmPrincipal">
+		
 
 			<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
@@ -535,12 +535,13 @@
 
 								<p:inputText value="#{PacienteController.paciente.cns}"
 									style="margin-left:-15px" maxlength="15" class="form-control"
-									id="cns" required="true"
+									id="idcns" required="true"
 									requiredMessage="CNS: Campo obrigatório!"
 									validator="CNSValidator">
-									<p:ajax immediate="true" process="@this cns" event="blur" listener="#{PacienteController.verificaExisteCNSDoPacienteCadastrado()}"/>
+									<p:ajax process="@this :frmPrincipal:tbv:idcns" update="msgPagina" event="blur" listener="#{PacienteController.verificaExisteCNSDoPacienteCadastrado(PacienteController.paciente.cns)}"/>
 									<f:validateLength minimum="15" maximum="15" />
 								</p:inputText>
+								
 							</b:column>
 							
 							<b:column span="2" class="label-position">

@@ -222,8 +222,8 @@ public class PacienteController implements Serializable {
 		listaPacientes = pDao.listaPacientes();
 	}
 	
-	public void verificaExisteCNSDoPacienteCadastrado() {
-		String cns = paciente.getCns();
+	public void verificaExisteCNSDoPacienteCadastrado(String cns) {
+		//String cns = paciente.getCns();
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cns)) {
 			if (!DocumentosUtil.validaCNS(cns)) {
