@@ -118,7 +118,7 @@
 
                                     <b:selectOneMenu class="select-agendaEquipe2" id="cbturno" required="true" requiredMessage="Informe o Turno"
                                                      value="#{SubstituicaoController.buscaAgendamentosParaFuncionarioAfastadoDTO.turno}">
-										<f:selectItem itemLabel="Selecione" itemValue="S"/>
+										<f:selectItem itemLabel="Selecione" itemValue=""/>
                                         <f:selectItem itemLabel="Manhã" itemValue="M" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno=='T'}"/>
                                         <f:selectItem itemLabel="Tarde" itemValue="T" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno=='M'}"/>
                                         <f:selectItem itemLabel="Ambos" itemValue="A" itemDisabled="#{SubstituicaoController.substituicaoFuncionario.afastamentoProfissional.turno!='A'}"/>

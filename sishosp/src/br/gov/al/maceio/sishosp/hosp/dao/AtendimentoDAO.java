@@ -533,7 +533,7 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a1.excluido,'N')='N' and coalesce(a.situacao,'A')<>'C'";
 		/*
 		 * if
 		 * (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().

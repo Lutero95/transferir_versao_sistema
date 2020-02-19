@@ -154,7 +154,7 @@ public class SubstituicaoDAO {
             sql = sql + "AND a.codprograma = ? ";
         }        
         
-        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) 
+        if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo())) 
         if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getGrupo().getIdGrupo())) {
             sql = sql + "AND a.codgrupo = ?";
         }
@@ -170,11 +170,12 @@ public class SubstituicaoDAO {
             stm.setLong(1, buscaAgendamentosParaFuncionarioAfastadoDTO.getFuncionario().getId());
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoInicio()));
             
-            int i = 3;
+            int i = 2;
             
             if (!motivoAfastamento.equals("DE")) {
+            	i = i + 1;
             stm.setDate(i, DataUtil.converterDateUtilParaDateSql(buscaAgendamentosParaFuncionarioAfastadoDTO.getPeriodoFinal()));
-            i = i + 1;
+            
             }
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma())) 
             if (!VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getPrograma().getIdPrograma())) {

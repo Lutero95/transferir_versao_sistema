@@ -47,7 +47,7 @@ public class RemocaoProfissionalEquipeDAO {
         if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo()))) {
             sql = sql + "AND a.codgrupo = ? ";
         }
-        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
             sql = sql + "AND a.codequipe = ? ";
         }
 
@@ -85,11 +85,11 @@ public class RemocaoProfissionalEquipeDAO {
                 stm.setString(i, RemocaoProfissionalEquipe.getTurno());
             }
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+            if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo()))) {
                 i++;
                 stm.setInt(i, RemocaoProfissionalEquipe.getGrupo().getIdGrupo());
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getGrupo().getIdGrupo())) {
+            if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(RemocaoProfissionalEquipe.getEquipe().getCodEquipe()))) {
                 i++;
                 stm.setInt(i, RemocaoProfissionalEquipe.getEquipe().getCodEquipe());
             }
@@ -181,7 +181,15 @@ public class RemocaoProfissionalEquipeDAO {
             }
 
             ps.setDate(5, DataUtil.converterDateUtilParaDateSql(gravarRemocaoAtendimentoDTO.getRemocaoProfissionalEquipe().getPeriodoInicio()));
-            ps.setDate(6, DataUtil.converterDateUtilParaDateSql(gravarRemocaoAtendimentoDTO.getRemocaoProfissionalEquipe().getPeriodoFinal()));
+            
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(gravarRemocaoAtendimentoDTO.getRemocaoProfissionalEquipe().getPeriodoFinal())){
+            	ps.setDate(6, DataUtil.converterDateUtilParaDateSql(gravarRemocaoAtendimentoDTO.getRemocaoProfissionalEquipe().getPeriodoFinal()));
+            }
+            else {
+                ps.setNull(6, Types.NULL);
+            }
+            
+            
             ps.setString(7, gravarRemocaoAtendimentoDTO.getRemocaoProfissionalEquipe().getTurno());
 
             ResultSet rs = ps.executeQuery();

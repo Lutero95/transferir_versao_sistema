@@ -191,7 +191,7 @@
 
 						</p:column>
 
-						<p:column width="50">
+						<p:column width="60">
 							<f:facet name="header">
 								<h:outputText style="font-size: 14px;" value="Data" />
 							</f:facet>
@@ -210,14 +210,14 @@
 							
 						</p:column>			
 						
-						<p:column width="50">
+						<p:column width="75">
 							<f:facet name="header">
 								<h:outputText style="font-size: 14px;" value="Prontuário" />
 							</f:facet>
 							<h:outputText value="#{agenda.paciente.id_paciente}"></h:outputText>
 						</p:column>	
 						
-						<p:column width="50">
+						<p:column width="70">
 							<f:facet name="header">
 								<h:outputText style="font-size: 14px;" value="Matrícula" />
 							</f:facet>
@@ -283,7 +283,7 @@
 					<p:separator />
 					<p:commandButton look="success" value="Sim" style="float:left;"
 									 action="#{AgendaController.cancelarAgendamento()}" ajax="true"
-									 class="btn-sim" icon="ui-icon-check" update=":formConsAge:mensagem, :formConsAge:botoes"/>
+									 class="btn-sim" icon="ui-icon-check" update=":formConsAge:mensagem, :formConsAge:botoes :formConsAge:dtConsultas"/>
 
 					<p:commandButton value="Não"
 									 oncomplete="PF('dialogCancelamento').hide();" look="info" ajax="true"

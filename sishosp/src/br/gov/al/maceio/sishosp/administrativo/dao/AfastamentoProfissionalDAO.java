@@ -77,7 +77,7 @@ public class AfastamentoProfissionalDAO {
 				+ "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' WHEN a.motivo_afastamento = 'DE' THEN 'Desligamento' WHEN a.motivo_afastamento = 'FA' THEN 'Falta' END AS motivo_afastamento_extenso "
 				+ "FROM adm.afastamento_funcionario a "
 				+ "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) "
-				+ "ORDER BY a.inicio_afastamento ";
+				+ "ORDER BY a.inicio_afastamento desc";
 
 		try {
 			con = ConnectionFactory.getConnection();
