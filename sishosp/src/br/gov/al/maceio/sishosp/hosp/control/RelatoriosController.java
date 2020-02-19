@@ -370,8 +370,9 @@ public class RelatoriosController implements Serializable {
 	public void gerarPendenciasEvolucaoPorProgramaEGrupo(ArrayList<ProgramaBean> listaProgramasGrupos)
 			throws IOException, ParseException, ProjetoException {
 		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = "";
-		relatorio = caminho + "pendencias_evolucao_por_programa_grupo.jasper";
+		
+		String relatorio = retornaTipoDoRelatorioPendenciasEvolucao(caminho);
+		
 		ArrayList<Integer> listaProgramas = new ArrayList<>();
 		ArrayList<Integer> listaGrupos = new ArrayList<>();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -386,8 +387,25 @@ public class RelatoriosController implements Serializable {
 
 		map.put("codgrupolista", listaProgramas);
 		map.put("codgrupolista", listaGrupos);
-		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
+		this.executeReport(relatorio, map, retornaNomeDoRelatorioPendenciasEvolucaoPeloTipo());
 
+	}
+
+	private String retornaTipoDoRelatorioPendenciasEvolucao(String caminho) {		
+		if(atributoGenerico1.equalsIgnoreCase("PG"))
+			caminho += "pendencias_evolucao_por_programa_grupo.jasper";
+		else
+			caminho += "pendencias_evolucao_por_profissional_programa_grupo.jasper";
+		return caminho;
+	}
+	
+	private String retornaNomeDoRelatorioPendenciasEvolucaoPeloTipo() {
+		String nomeRelatorio;
+		if(atributoGenerico1.equalsIgnoreCase("PG"))
+			nomeRelatorio = "relatorio_pendencias_evolucao_por_progama.pdf";
+		else
+			nomeRelatorio = "relatorio_pendencias_evolucao_por_profissional_progama.pdf";
+		return nomeRelatorio;
 	}
 
 	public void geraPtsApaeMaceio(ProgramaBean programa, GrupoBean grupo)

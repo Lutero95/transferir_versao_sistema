@@ -20,12 +20,25 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Pendências de Evolução  por
-					Programa e Grupo</h4>
+				<h4 class="panel-title">Relatório: Pendências de Evolução</h4>
 			</div>
 			<p:growl id="grw" />
 			<div class="panel-body table-body">
 				<h:form id="frm">
+
+					<b:row>
+						<b:column>
+							<p:selectOneRadio required="true"
+								requiredMessage="Informe o Tipo da Geração" id="console"
+								value="#{RelatoriosController.atributoGenerico1}"
+								unselectable="true">
+								<f:selectItem itemLabel="Por Programa e Grupo" itemValue="PG" />
+								<f:selectItem itemLabel="Por Profissional" itemValue="PR" />
+								<p:ajax update="frm" event="valueChange" />
+							</p:selectOneRadio>
+							<hr />
+						</b:column>
+					</b:row>
 
 					<b:row>
 						<b:column span="1" class="label-position data-size1">
