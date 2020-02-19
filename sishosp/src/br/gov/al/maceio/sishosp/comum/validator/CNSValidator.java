@@ -33,8 +33,8 @@ public class CNSValidator implements Validator {
 			Integer idPaciente = null;
 			if (PacienteController.getParamIdPaciente()!=null) 
 				 idPaciente =  PacienteController.getParamIdPaciente();
-				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(valorTelaString,idPaciente); // se tiver retorno entao existe
-																						// cpf
+				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(valorTelaString,idPaciente); 
+																					
 			if (pacienteRetorno != null) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);

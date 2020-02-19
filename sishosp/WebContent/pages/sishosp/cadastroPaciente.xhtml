@@ -538,6 +538,7 @@
 									id="cns" required="true"
 									requiredMessage="CNS: Campo obrigatório!"
 									validator="CNSValidator">
+									<p:ajax immediate="true" process="@this cns" event="blur" listener="#{PacienteController.verificaExisteCNSDoPacienteCadastrado()}"/>
 									<f:validateLength minimum="15" maximum="15" />
 								</p:inputText>
 							</b:column>
