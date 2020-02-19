@@ -137,18 +137,22 @@ order by f.id_funcionario,f.descfuncionario, p.descprograma, g.descgrupo, a.dtaa
 	<group name="grpfuncionario" isStartNewPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{id_funcionario}]]></groupExpression>
 		<groupHeader>
-			<band height="55">
+			<band height="47">
 				<textField>
-					<reportElement x="0" y="0" width="584" height="17" uuid="e282914f-ff81-4c89-9258-df2bb59f3515"/>
+					<reportElement x="0" y="0" width="584" height="16" uuid="e282914f-ff81-4c89-9258-df2bb59f3515">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font size="13" isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["PROFISSIONAL: "+$F{nomeprofissional}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-					<reportElement x="0" y="19" width="577" height="17" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d"/>
+					<reportElement x="0" y="19" width="577" height="16" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement textAlignment="Left">
-						<font size="13" isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["ESPECIALIDADE:"+$F{descespecialidade}]]></textFieldExpression>
 				</textField>
@@ -205,16 +209,20 @@ order by f.id_funcionario,f.descfuncionario, p.descprograma, g.descgrupo, a.dtaa
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="1" y="2" width="549" height="17" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12"/>
+					<reportElement x="1" y="2" width="549" height="16" backcolor="#EBE8E8" uuid="5f2ed4fe-fab5-4a1e-9d90-a44cb4641d12">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font size="13" isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["PROGRAMA: "+$F{descprograma}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="6" y="22" width="549" height="17" backcolor="#EBE8E8" uuid="980d3a41-99cd-4568-af34-d9fa09fa04bd"/>
+					<reportElement x="6" y="22" width="549" height="16" backcolor="#EBE8E8" uuid="980d3a41-99cd-4568-af34-d9fa09fa04bd">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font size="13" isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["GRUPO: "+$F{descgrupo}]]></textFieldExpression>
 				</textField>
