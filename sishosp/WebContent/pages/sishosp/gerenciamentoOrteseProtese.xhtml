@@ -63,7 +63,7 @@
                                 </p:commandButton>
                             </b:column>
 
-                            <b:column span="2" class="new-span2">
+                            <b:column span="1" class="new-span2">
                                 <p:commandButton value="Alterar" style="margin-top:5px;"
                                                  id="btnAlterar" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
@@ -88,8 +88,20 @@
                                                  action="#{OrteseProteseController.redirectEncaminhar}">
                                 </p:commandButton>
                             </b:column>
-
+                            
                             <b:column span="2" class="new-span2">
+                                <p:commandButton value="Termo de Compromisso" style="margin-top:5px;"
+                                                 id="btnTermoCompromisso" immediate="true"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
+                                                 class="btn-acao-table acao-limpar btn-new-padding2"
+                                                 icon="glyphicon-share-alt"
+                                                 >
+                                </p:commandButton>
+                            </b:column>
+
+                            <b:column span="1" class="new-span2">
                                 <p:commandButton value="Medição" style="margin-top:5px;"
                                                  id="btnMedicao" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null
@@ -112,7 +124,7 @@
                                 </p:commandButton>
                             </b:column>
 
-                            <b:column span="2" class="new-span2">
+                            <b:column span="1" class="new-span2">
                                 <p:commandButton value="Entrega" style="margin-top:5px;"
                                                  id="btnEntrega" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
@@ -138,7 +150,7 @@
 
                             <p:ajax event="rowSelect"
                                     update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar, formGerenOrteseEProtese:btnMedicao,
-                                    formGerenOrteseEProtese:btnEntrega, formGerenOrteseEProtese:btnRecebimento"/>
+                                    formGerenOrteseEProtese:btnEntrega, formGerenOrteseEProtese:btnRecebimento, formGerenOrteseEProtese:btnTermoCompromisso"/>
 
                             <p:column width="20%">
                                 <f:facet name="header">

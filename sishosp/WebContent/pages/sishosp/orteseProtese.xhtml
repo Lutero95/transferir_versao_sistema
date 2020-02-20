@@ -223,64 +223,119 @@
             </div>
         </div>
 
+		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+			dynamic="true" modal="true" width="900" responsive="true"
+			height="400">
+			<h:form id="formConsuLaudo">
+				<p:row>
 
-        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-                  modal="true" id="laudo-id">
-            <h:form id="formConsuLaudo">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
-                             var="insercao" display="Nenhum Laudo">
+					<p:panelGrid columns="4">
 
-                    <h:column>
-                        <f:facet name="header">
+						<h:selectOneMenu value="#{InsercaoController.tipoBusca}"
+							style="padding:10px">
+							<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
+							<f:selectItem itemLabel="Protuário Paciente"
+								itemValue="prontpaciente" />
+							<f:selectItem itemLabel="Matrícula Paciente"
+								itemValue="matpaciente" />
+							<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+						</h:selectOneMenu>
+
+						<p:inputText value="#{InsercaoController.campoBusca}"
+							placeholder="Digite aqui o que deseja buscar"
+							style="margin-left: 10px;width:300px" />
+
+						<p:commandButton
+							action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
+							update="dtLaudo msgPagina" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+
+					</p:panelGrid>
+
+				</p:row>
+				<p:dataTable rows="6" paginator="true" style="font-size:13px"
+					value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
+					var="insercao" emptyMessage="Nenhum Laudo">
+
+					<p:column width="80">
+						<f:facet name="header">
+                            Prontuário
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.id_paciente}" />
+					</p:column>
+
+					<p:column width="200">
+						<f:facet name="header">
                             Paciente
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.paciente.nome}"/>
-                    </h:column>
+						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
+					</p:column>
 
-                    <h:column>
-                        <f:facet name="header">
-                            CNS
+					<p:column width="80">
+						<f:facet name="header">
+                            Matrícula
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.paciente.cns}"/>
-                    </h:column>
+						<p:outputLabel value="#{insercao.laudo.paciente.matricula}" />
+					</p:column>
 
-                    <h:column>
-                        <f:facet name="header">
-                            Vigência Inicial
+					<p:column width="200">
+						<f:facet name="header">
+                            Procedimento Primário
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
-                            <f:convertDateTime pattern="dd/MM/yyyy"/>
-                        </p:outputLabel>
-                    </h:column>
+						<h:outputText
+							value="#{insercao.laudo.procedimentoPrimario.codProc}" />-<h:outputText
+							value="#{insercao.laudo.procedimentoPrimario.nomeProc}" />
+					</p:column>
 
-                    <h:column>
-                        <f:facet name="header">
-                            Vigência Final
+
+					<p:column width="100">
+						<f:facet name="header">
+                            Vencimento
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
-                            <f:convertDateTime pattern="dd/MM/yyyy"/>
-                        </p:outputLabel>
-                    </h:column>
+						<h:outputLabel value="Janeiro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 1}" />
+						<h:outputLabel value="Fevereiro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 2}" />
+						<h:outputLabel value="Março/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 3}" />
+						<h:outputLabel value="Abril/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 4}" />
+						<h:outputLabel value="Maio/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 5}" />
+						<h:outputLabel value="Junho/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 6}" />
+						<h:outputLabel value="Julho/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 7}" />
+						<h:outputLabel value="Agosto/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 8}" />
+						<h:outputLabel value="Setembro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 9}" />
+						<h:outputLabel value="Outubro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 10}" />
+						<h:outputLabel value="Novembro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 11}" />
+						<h:outputLabel value="Dezembro/#{insercao.laudo.anoFinal}"
+							rendered="#{insercao.laudo.mesFinal == 12}" />
+					</p:column>
 
-                    <h:column>
-                        <f:facet name="header">
-                            Adicionar
+					<p:column width="80">
+						<f:facet name="header">
+                            Selecionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao"
-                                         icon="fa fa-fw fa-check" title="Selecionar"
-                                         onclick="PF('dlgConsuLaudo').hide();"
-                                         class="new-btn-acao-table acao-editar">
-                            <f:setPropertyActionListener value="#{insercao.laudo}"
-                                                         target="#{OrteseProteseController.orteseProtese.laudo}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":formInsercao msgPagina" icon="fa fa-fw fa-check"
+							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+							class="new-btn-acao-table acao-editar"
+							action="#{OrteseProteseController.validarCarregarLaudoPaciente()}">
+							<f:setPropertyActionListener value="#{insercao.laudo}"
+								target="#{OrteseProteseController.orteseProtese.laudo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
-
-        <p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
+		<p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuEquip">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"

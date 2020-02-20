@@ -5,14 +5,17 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.OrteseProteseDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusMovimentacaoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
+import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.OrteseProtese;
+import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -218,6 +221,20 @@ public class OrteseProteseController implements Serializable {
         } else {
             JSFUtil.abrirDialog("dlgEntrega");
         }
+    }
+    
+    public void validarCarregarLaudoPaciente() throws ProjetoException {
+        int id = orteseProtese.getLaudo().getId();
+
+        if (new InsercaoPacienteController().validarCarregamentoDoLaudo(id)) {
+            carregarLaudoPaciente(id);
+        }
+
+    }
+
+    private void carregarLaudoPaciente(int id) throws ProjetoException {
+        InsercaoPacienteBean insercao =  new InsercaoPacienteDAO().carregarLaudoPaciente(id);
+        orteseProtese.setLaudo(insercao.getLaudo());
     }
 
     public void gravarEntregaOrteseIhProtese() {
