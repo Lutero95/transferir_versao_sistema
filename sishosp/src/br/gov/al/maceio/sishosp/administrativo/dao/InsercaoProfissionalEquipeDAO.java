@@ -231,7 +231,9 @@ public class InsercaoProfissionalEquipeDAO {
 
         String sql = "INSERT INTO hosp.atendimentos1 " +
                 "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
-                "VALUES (?, ?, ?, ?) RETURNING id_atendimentos1";
+                "VALUES (?, ?, ?, (select cod_procedimento from hosp.programa\n" + 
+                "where programa.id_programa =\n" + 
+                "(select codprograma from hosp.atendimentos where atendimentos.id_atendimento = ? ))) RETURNING id_atendimentos1";
 
         try {
 
@@ -251,11 +253,7 @@ public class InsercaoProfissionalEquipeDAO {
                 }
 
 
-                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(gravarAtendimento1.getInsercaoProfissionalEquipe().getFuncionario().getProc1().getIdProc())) {
-                    ps.setInt(4, gravarAtendimento1.getInsercaoProfissionalEquipe().getFuncionario().getProc1().getIdProc());
-                } else {
-                    ps.setNull(4, java.sql.Types.NULL);
-                }
+                ps.setInt(4, gravarAtendimento1.getListaAtendimentos().get(i));
 
                 ResultSet rs = ps.executeQuery();
 

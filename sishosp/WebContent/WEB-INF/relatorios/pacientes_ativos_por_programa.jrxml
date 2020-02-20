@@ -63,9 +63,9 @@ p.cns, p.nome,
 cid.cid, m.nome AS municipio, b.descbairro, pi.codprograma, pr.descprograma,
 e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2
 FROM hosp.paciente_instituicao pi
-JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
-join hosp.cid on cid.cod = l.cid1
-JOIN hosp.pacientes p ON (l.codpaciente = p.id_paciente)
+left JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
+left join hosp.cid on cid.cod = l.cid1
+left join hosp.pacientes p on (coalesce(l.codpaciente, pi.id_paciente) = p.id_paciente)
 JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
 LEFT JOIN hosp.municipio m ON (p.codmunicipio = m.id_municipio)
 LEFT JOIN hosp.bairros b ON (p.codbairro = b.id_bairro)
