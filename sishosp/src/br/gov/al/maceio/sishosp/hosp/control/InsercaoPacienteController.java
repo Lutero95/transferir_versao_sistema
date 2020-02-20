@@ -482,14 +482,17 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void excluirFuncionarioIhDiasDeAtendimento() {
         //funcionario.getListaDiasAtendimentoSemana().remove(funcionario);
-    	
+
+        funcionario.setDiasSemana("");
+        funcionario.setListDiasSemana(new ArrayList<>());
+        funcionario.setListaDiasAtendimentoSemana(new ArrayList<>());
         listaProfissionaisAdicionados.remove(funcionario);
         funcionario =  new FuncionarioBean();
     }
 
     public void adicionarFuncionarioTurno() {
         String dias = "";
-        
+
         for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
         	HorarioAtendimento horarioAtendimento = new HorarioAtendimento();
         	horarioAtendimento.setDiaSemana(Integer.parseInt(funcionario.getListDiasSemana().get(i)));
