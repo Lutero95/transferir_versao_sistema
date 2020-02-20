@@ -603,22 +603,40 @@ public class LaudoDAO {
         c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
         Date dataMontada = c.getTime();
 
+        Boolean revalidar = true;
+
+        Date dataSemFeriado=null;
+
         Date dataSemFinalDeSemana = dataMontada;
-        while(!VerificadorUtil.verificarSeObjetoNulo(DataUtil.proximaDataRetirandoFinalDeSemana(dataSemFinalDeSemana))){
-            dataSemFinalDeSemana = DataUtil.adicionarDiasAData(dataSemFinalDeSemana, 1);
+
+        while (revalidar) {
+            revalidar = false;
+
+            while (!VerificadorUtil.verificarSeObjetoNulo(DataUtil.proximaDataRetirandoFinalDeSemana(dataSemFinalDeSemana))) {
+                dataSemFinalDeSemana = DataUtil.adicionarDiasAData(dataSemFinalDeSemana, 1);
+                revalidar = true;
+            }
+
+            revalidar = false;
+            BloqueioDAO bDao = new BloqueioDAO();
+            Date dataSemBloqueio = dataSemFinalDeSemana;
+            while (!VerificadorUtil.verificarSeObjetoNulo(bDao.verificarBloqueioProfissionalDeData(dataSemBloqueio, codigoFuncionario, conexao))) {
+                dataSemBloqueio = DataUtil.adicionarDiasAData(dataSemBloqueio, 1);
+                revalidar = true;
+            }
+
+            revalidar = false;
+            FeriadoDAO fDao = new FeriadoDAO();
+            dataSemFeriado = dataSemBloqueio;
+            while (!VerificadorUtil.verificarSeObjetoNulo(fDao.verificarFeriadoDeData(dataSemFeriado, conexao))) {
+                dataSemFeriado = DataUtil.adicionarDiasAData(dataSemFeriado, 1);
+                revalidar = true;
+            }
+
+            dataSemFinalDeSemana = dataSemFeriado;
+
         }
 
-        BloqueioDAO bDao = new BloqueioDAO();
-        Date dataSemBloqueio = dataSemFinalDeSemana;
-        while(!VerificadorUtil.verificarSeObjetoNulo(bDao.verificarBloqueioProfissionalDeData(dataSemBloqueio, codigoFuncionario, conexao))){
-            dataSemBloqueio = DataUtil.adicionarDiasAData(dataSemBloqueio, 1);
-        }
-
-        FeriadoDAO fDao = new FeriadoDAO();
-        Date dataSemFeriado = dataSemBloqueio;
-        while(!VerificadorUtil.verificarSeObjetoNulo(fDao.verificarFeriadoDeData(dataSemFeriado, conexao))){
-            dataSemFeriado = DataUtil.adicionarDiasAData(dataSemFeriado, 1);
-        }
         return dataSemFeriado;
     }
 
