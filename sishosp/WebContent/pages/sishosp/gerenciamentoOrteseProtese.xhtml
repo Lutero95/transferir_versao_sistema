@@ -97,7 +97,8 @@
                                                  or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
                                                  icon="glyphicon-share-alt"
-                                                 >
+                                                 ajax="false"
+                                                 action="#{RelatoriosController.gerarRelatorioTermoCompromissoOrteseProtese(OrteseProteseController.orteseProtese)}">
                                 </p:commandButton>
                             </b:column>
 
