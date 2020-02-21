@@ -448,6 +448,17 @@ public class RelatoriosController implements Serializable {
 		}
 	}
 	
+	public void gerarRelatorioEncaminhamentoOrteseProtese(OrteseProtese orteseProtese)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "encaminhamentoopm.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("id_encaminhamento", orteseProtese.getIdEncaminhamento());
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		this.executeReport(relatorio, map, "encaminhamento_ortese_protese.pdf");
+	}
+	
 	public void gerarRelatorioTermoCompromissoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
 		String caminho = "/WEB-INF/relatorios/";

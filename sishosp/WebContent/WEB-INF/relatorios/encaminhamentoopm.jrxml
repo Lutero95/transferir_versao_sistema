@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -37,35 +37,32 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<parameter name="cod_laudo" class="java.lang.Integer"/>
-	<parameter name="codempresa" class="java.lang.Integer"/>
-	<parameter name="codprograma" class="java.lang.Integer"/>
-	<parameter name="codgrupo" class="java.lang.Integer"/>
-	<parameter name="periodolaudovencer" class="java.lang.String"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="id_encaminhamento" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select e.id protocolo,
 prog.descprograma,	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,
 p.id_paciente, p.nome, p.cpf, p.cep,p.cns, 
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS enderecopaciente, 
-  fornecedor.endereco AS enderecofornecedor, fornecedor.bairrofornecedor, fornecedor.cepfornecedor, fornecedor.cidadefornecedor,
-  fornecedor.estadofornecedor, p.uf ufpaciente,
+  fornecedor.endereco AS enderecofornecedor, fornecedor.bairro, fornecedor.cep, m.nome cidade,
+  fornecedor.estado, p.uf ufpaciente,
  m.nome municipiopaciente, b.descbairro bairropaciente,
 l.codprocedimento_primario, prp.nome AS nomeprocedimento, fornecedor.descfornecedor, fornecedor.cnpj, p.rg, e.especificacao, 
-empresa.cidade cidadeempresa, e.dataencaminhamento, fornecedor.tel1, fornecedor.tel2
+empresa.cidade cidadeempresa, e.data_encaminhamento, fornecedor.telefone1, fornecedor.telefone2
 FROM hosp.encaminhamento_opm e 
 join hosp.ortese_protese op on op.id = e.id_ortese_protese
 join hosp.laudo l on op.cod_laudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
-LEFT JOIN acl.funcionarios f ON f.id_funcionario = e.usuarioencaminhamento
-join acl.funcionarios funclogado on funclogado.id_funcionario =  1
-join hosp.empresa on empresa.cod_empresa = funclogado.cod_empresa
+LEFT JOIN acl.funcionarios f ON f.id_funcionario = e.usuario_encaminhamento
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
 join hosp.programa prog on prog.id_programa = op.cod_programa
-join hosp.fornecedor on fornecedor.id_fornecedor = e.codfornecedor
-WHERE 1=1]]>
+join hosp.fornecedor on fornecedor.id_fornecedor = e.cod_fornecedor
+JOIN hosp.unidade u ON u.id =  $P{codunidade} 
+JOIN hosp.empresa  ON empresa.cod_empresa = u.cod_empresa
+WHERE e.id= $P{id_encaminhamento} ]]>
 	</queryString>
 	<field name="protocolo" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="protocolo"/>
@@ -122,20 +119,20 @@ WHERE 1=1]]>
 		<property name="com.jaspersoft.studio.field.label" value="enderecofornecedor"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="bairrofornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="bairrofornecedor"/>
+	<field name="bairro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bairro"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="cepfornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="cepfornecedor"/>
+	<field name="COLUMN_16" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cep"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="cidadefornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="cidadefornecedor"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="municipio"/>
 	</field>
-	<field name="estadofornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="estadofornecedor"/>
+	<field name="estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="estado"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
 	<field name="ufpaciente" class="java.lang.String">
@@ -178,16 +175,16 @@ WHERE 1=1]]>
 		<property name="com.jaspersoft.studio.field.label" value="cidadeempresa"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
-	<field name="dataencaminhamento" class="java.sql.Timestamp">
-		<property name="com.jaspersoft.studio.field.label" value="dataencaminhamento"/>
+	<field name="data_encaminhamento" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="data_encaminhamento"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="encaminhamento_opm"/>
 	</field>
-	<field name="tel1" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel1"/>
+	<field name="telefone1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefone1"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="tel2" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel2"/>
+	<field name="telefone2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefone2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
 	<pageHeader>
@@ -304,7 +301,7 @@ WHERE 1=1]]>
 			<textField>
 				<reportElement positionType="Float" x="13" y="516" width="193" height="12" uuid="2754e858-8447-442f-9a97-1c7644e46b9e"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{cidadeempresa}+", "+new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{dataencaminhamento})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cidadeempresa}+", "+new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{data_encaminhamento})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="381" y="535" width="100" height="13" uuid="8049c72e-b8f1-4628-94fe-36f51017876e"/>
@@ -430,7 +427,7 @@ WHERE 1=1]]>
 					<textElement>
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{bairrofornecedor}+" "+$F{cidadefornecedor}+" - "+$F{estadofornecedor}+" "+$F{cepfornecedor}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{bairro}+" "+$F{cidade}+" - "+$F{estado}+" "+$F{cep}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement positionType="Float" x="337" y="12" width="116" height="12" uuid="d730205d-4c36-4eb7-8962-23d8091f3cab"/>
@@ -458,7 +455,7 @@ WHERE 1=1]]>
 					<textElement>
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tel1}+" "+$F{tel2}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{telefone1}+" "+$F{telefone2}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
