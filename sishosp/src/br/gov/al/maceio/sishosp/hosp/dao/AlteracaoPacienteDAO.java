@@ -209,12 +209,13 @@ public class AlteracaoPacienteDAO {
 
 	
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
+		/*	if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
 
 				conexao.close();
 
 				return retorno;
 			}
+			*/
 			
 			 
 	        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, turno=?, codlaudo=? "
@@ -415,13 +416,14 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
+		/*	if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
 
 				conexao.close();
 
 				return retorno;
 			}
 			
+			*/
 			
 			String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=? "
 	                + " where id = ?";

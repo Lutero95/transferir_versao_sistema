@@ -565,11 +565,11 @@ public class GerenciarPacienteDAO {
 
             while (rs.next()) {
             	InsercaoProfissionalEquipe insercao = new InsercaoProfissionalEquipe();
-            	insercao.getAtendimentoBean().setd (dataAtendimentoFinal);(rs.getDate("dtaatende"));
+            //	insercao.getAtendimentoBean().setd (dataAtendimentoFinal);(rs.getDate("dtaatende"));
             	insercao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
             	insercao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
             	insercao.getFuncionario().setId(rs.getLong("id_profissional"));
-                lista.add(substituicao);
+            //    lista.add(substituicao);
             }
 
             return lista;
