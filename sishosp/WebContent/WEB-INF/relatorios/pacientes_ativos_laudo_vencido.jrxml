@@ -5,27 +5,23 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
-	<parameter name="periodolaudovencer" class="java.lang.String">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
-	<parameter name="codempresa" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apaemaceio"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select --distinct   
+		<![CDATA[select  
+ (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) vencimento_laudo, 
+empresa.nome_principal nomeinstituicao,
 programa.id_programa,
 programa.descprograma, 
 grupo.id_grupo,
 grupo.descgrupo,
 l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
-    p.id_paciente
+    p.id_paciente, p.nome nomepaciente
  	from hosp.paciente_instituicao pl
       join hosp.laudo l on l.id_laudo = pl.codlaudo
-     left join hosp.pacientes p on (coalesce(l.codpaciente, pl.id_paciente) = p.id_paciente)    
+      join hosp.pacientes p on (coalesce(l.codpaciente, pl.id_paciente) = p.id_paciente)    
     left join hosp.proc on proc.id = l.codprocedimento_primario
     left join hosp.programa on (pl.codprograma = programa.id_programa)
     left join hosp.grupo on (pl.codgrupo = grupo.id_grupo)
@@ -34,10 +30,17 @@ join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
     where  pl.cod_unidade = $P{codunidade}
     and ((   $P{codprograma}   is not null and pl.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pl.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
-and (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))<current_date
+and  (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))<current_date
 and pl.status='A'
 order by programa.id_programa, grupo.id_grupo, p.nome]]>
 	</queryString>
+	<field name="vencimento_laudo" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="vencimento_laudo"/>
+	</field>
+	<field name="nomeinstituicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
 	<field name="id_programa" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="id_programa"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
@@ -66,6 +69,10 @@ order by programa.id_programa, grupo.id_grupo, p.nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="id_paciente"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
+	<field name="nomepaciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomepaciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -86,7 +93,7 @@ order by programa.id_programa, grupo.id_grupo, p.nome]]>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[LAUDOS A VENCER - RELAÇÃO NOMINAL]]></text>
+				<text><![CDATA[PACIENTES ATIVOS COM LAUDO VENCIDO]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -112,10 +119,10 @@ order by programa.id_programa, grupo.id_grupo, p.nome]]>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Procedimento]]></text>
+				<text><![CDATA[Programa/Grupo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="655" y="0" width="100" height="16" uuid="10911a72-01a5-4cf0-8a6c-89e277604318"/>
+				<reportElement x="696" y="0" width="100" height="16" uuid="10911a72-01a5-4cf0-8a6c-89e277604318"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -143,34 +150,34 @@ order by programa.id_programa, grupo.id_grupo, p.nome]]>
 				<textFieldExpression><![CDATA[$F{nomepaciente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="390" y="0" width="250" height="18" uuid="96202ce0-1c2b-4311-80a7-32be72138755"/>
+				<reportElement x="390" y="0" width="290" height="18" uuid="96202ce0-1c2b-4311-80a7-32be72138755"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{codproced}+" - "+$F{nomeprocedimento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="655" y="0" width="147" height="18" uuid="03eeeb79-11fa-47d8-bdd5-6b5f3698b84c"/>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="696" y="0" width="79" height="18" uuid="03eeeb79-11fa-47d8-bdd5-6b5f3698b84c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{vencto}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{vencimento_laudo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="54" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="671" y="34" width="23" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<reportElement x="580" y="10" width="84" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="694" y="34" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<reportElement x="664" y="10" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement x="734" y="34" width="68" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+			<textField pattern="dd/MM/yyyy hh:mm">
+				<reportElement x="704" y="10" width="98" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
