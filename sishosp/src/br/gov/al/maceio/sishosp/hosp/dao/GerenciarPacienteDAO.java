@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -352,7 +353,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional) throws SQLException {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -385,6 +386,15 @@ public class GerenciarPacienteDAO {
                 ps2.setLong(1, listaSubstituicaoProfissional.get(i).getIdAtendimentos1());
                 ps2.execute();
             }
+            
+            for (int i = 0; i < listaProfissionaisInseridosNaEquipeAtendimento.size(); i++) {
+                String sql2 = "delete from adm.insercao_profissional_equipe_atendimento_1 where id_atendimentos1 = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, listaProfissionaisInseridosNaEquipeAtendimento.get(i).getIdAtendimentos1());
+                ps2.execute();
+            }            
 
             for (int i = 0; i < lista.size(); i++) {
                 String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
@@ -526,6 +536,55 @@ public class GerenciarPacienteDAO {
         }
         
     }    
+    
+    
+    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(Integer idPacienteInstituicao, Connection conAuxiliar) {
+
+        
+        ArrayList<InsercaoProfissionalEquipe> lista = new ArrayList<InsercaoProfissionalEquipe>();
+
+        try {
+
+            String sql = "select distinct a.dtaatende, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
+            		"	where ipe.id_atendimentos1 in ( \n" + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  \n" + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  \n" + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  \n" + 
+            		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
+            		")";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	InsercaoProfissionalEquipe insercao = new InsercaoProfissionalEquipe();
+            	insercao.getAtendimentoBean().setd (dataAtendimentoFinal);(rs.getDate("dtaatende"));
+            	insercao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	insercao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
+            	insercao.getFuncionario().setId(rs.getLong("id_profissional"));
+                lista.add(substituicao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }    
+    
     
     public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(Integer idAtendimentos, Connection conAuxiliar) {
 

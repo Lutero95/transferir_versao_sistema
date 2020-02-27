@@ -21,6 +21,7 @@ public class InsercaoProfissionalEquipe implements Serializable {
     private GrupoBean grupo;
     private EquipeBean equipe;
     private AtendimentoBean atendimentoBean;
+    private Integer idAtendimentos1;
     private String turno;
     private Date periodoInicio;
     private Date periodoFinal;
@@ -153,4 +154,12 @@ public class InsercaoProfissionalEquipe implements Serializable {
                 ", diasSemana=" + diasSemana +
                 '}';
     }
+
+	public Integer getIdAtendimentos1() {
+		return idAtendimentos1;
+	}
+
+	public void setIdAtendimentos1(Integer idAtendimentos1) {
+		this.idAtendimentos1 = idAtendimentos1;
+	}
 }
