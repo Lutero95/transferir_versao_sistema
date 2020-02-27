@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="laudosvencernominal" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoPages" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<parameter name="periodolaudovencer" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codempresa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select --distinct   
+programa.id_programa,
+programa.descprograma, 
+grupo.id_grupo,
+grupo.descgrupo,
+l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
+    p.id_paciente
+ 	from hosp.paciente_instituicao pl
+      join hosp.laudo l on l.id_laudo = pl.codlaudo
+     left join hosp.pacientes p on (coalesce(l.codpaciente, pl.id_paciente) = p.id_paciente)    
+    left join hosp.proc on proc.id = l.codprocedimento_primario
+    left join hosp.programa on (pl.codprograma = programa.id_programa)
+    left join hosp.grupo on (pl.codgrupo = grupo.id_grupo)
+join hosp.unidade u on u.id =  pl.cod_unidade 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
+    where  pl.cod_unidade = $P{codunidade}
+    and ((   $P{codprograma}   is not null and pl.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and pl.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))<current_date
+and pl.status='A'
+order by programa.id_programa, grupo.id_grupo, p.nome]]>
+	</queryString>
+	<field name="id_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="id_grupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="codproced" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codproced"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	</field>
+	<field name="nomeprocedimento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
+	</field>
+	<field name="id_paciente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_paciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="801" height="20" uuid="20d70d68-4614-4c10-982c-3eb36d1af65e"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="20" width="801" height="14" uuid="a0e3e4ca-992e-4476-b3fe-e8e819f3213b"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[LAUDOS A VENCER - RELAÇÃO NOMINAL]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="66" height="16" uuid="6a4ff42a-7c84-42be-a4d8-159d138e5633"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prontuário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="16" uuid="9e0105c5-17a1-4ee4-aa15-a0a64e0b3738"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Paciente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="0" width="100" height="16" uuid="a486337b-97ac-42d4-beb9-fd8d846723d8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Procedimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="655" y="0" width="100" height="16" uuid="10911a72-01a5-4cf0-8a6c-89e277604318"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="800" height="1" uuid="f9e031ea-cf81-4cfe-8a53-17e6c7eea6d9"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="66" height="16" uuid="ca480de8-8e32-40b9-926d-c3c66016cf76"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_paciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="300" height="18" uuid="7677cc95-193a-42db-b4d0-0deaa5da1e49"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomepaciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="250" height="18" uuid="96202ce0-1c2b-4311-80a7-32be72138755"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codproced}+" - "+$F{nomeprocedimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="655" y="0" width="147" height="18" uuid="03eeeb79-11fa-47d8-bdd5-6b5f3698b84c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vencto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="671" y="34" width="23" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="694" y="34" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="734" y="34" width="68" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="142" y="16" width="100" height="30" uuid="19b0205f-b06f-497d-9a27-85201d3fc3dc"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="16" width="142" height="30" uuid="840e2cd9-de34-4637-8379-7556d09cbdc6"/>
+				<text><![CDATA[TOTAL DE PACIENTES:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="5" width="800" height="1" uuid="7125f3ef-f678-43d8-87a6-66cef30d6d77"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>
