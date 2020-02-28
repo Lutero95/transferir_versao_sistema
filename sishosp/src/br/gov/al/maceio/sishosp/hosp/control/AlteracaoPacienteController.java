@@ -725,57 +725,66 @@ public class AlteracaoPacienteController implements Serializable {
         }
 
     }
+    
+    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() {
+    	boolean dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao()); 
+    	if(!dataValida)
+    		JSFUtil.adicionarMensagemErro("Data de Inclusão não está dentro do intervalo da data do laudo", "Erro!");
+    	return dataValida; 
+    }
 
     public void gravarAlteracaoPaciente() throws ProjetoException {
+    	
+    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
+			Boolean cadastrou = null;
+			listAgendamentoProfissional = new ArrayList<AgendaBean>();
 
-        Boolean cadastrou = null;
-        listAgendamentoProfissional = new ArrayList<AgendaBean>();
-        
-        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+			InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
-        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-        insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+			GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+			Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
+					insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
+					insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+			insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
-        ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = new ArrayList<AgendaBean>();
-        
-        if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+			ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = new ArrayList<AgendaBean>();
 
-            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
-            	gerarListaAgendamentosEquipeTurno();	
-            }
-            
-            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
-            	gerarListaAgendamentosEquipeDiaHorario();
-            }
-            
-            listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                    listAgendamentoProfissional, insercao.getTurno());
-            
-            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-            	cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
-                        listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
-            	else
-                    cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, 
-                            listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+			if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
+				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+					gerarListaAgendamentosEquipeTurno();
+				}
 
-        }
-        if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
+				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+					gerarListaAgendamentosEquipeDiaHorario();
+				}
 
-            gerarListaAgendamentosProfissional();
+				listaAgendamentosProfissionalFinal = insercaoPacienteController
+						.validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
-            cadastrou = aDao.gravarAlteracaoProfissional(insercao,
-                    insercaoParaLaudo, listaAgendamentosProfissionalFinal,
-                    id_paciente_insituicao);
-        }
+				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+					cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
+							listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+				else
+					cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, listaAgendamentosProfissionalFinal,
+							id_paciente_insituicao, listaProfissionaisAdicionados);
 
-        if (cadastrou) {
-            JSFUtil.adicionarMensagemSucesso("Alteração de Equipe cadastrada com sucesso!", "Sucesso");
-            JSFUtil.abrirDialog("dlgAlteracaoEfetuada");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-        }
+			}
+			if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
+
+				gerarListaAgendamentosProfissional();
+
+				cadastrou = aDao.gravarAlteracaoProfissional(insercao, insercaoParaLaudo,
+						listaAgendamentosProfissionalFinal, id_paciente_insituicao);
+			}
+
+			if (cadastrou) {
+				JSFUtil.adicionarMensagemSucesso("Alteração de Equipe cadastrada com sucesso!", "Sucesso");
+				JSFUtil.abrirDialog("dlgAlteracaoEfetuada");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
+    	}
     }
     
     public static void gravarAlteracaoPacienteDuplicado() throws ProjetoException {
