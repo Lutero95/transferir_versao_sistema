@@ -52,7 +52,9 @@
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="6" class="select-agendaEquipe2"
-									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
+									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}"
+									disabled="#{AtendimentoController.listarEvolucoesPendentes == true}"
+									id="dataInicio" />
 								<p:outputLabel id="outdataa">
 									<h:outputLabel value="à" style="margin-left: 20px" />
 								</p:outputLabel>
@@ -63,7 +65,8 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									class="select-agendaEquipe2" showOn="button" size="6"
 									id="dtagen3" locale="pt"
-									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
+									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" 
+									disabled="#{AtendimentoController.listarEvolucoesPendentes == true}" />
 							</b:column>
 
 							<b:column span="3"
@@ -80,7 +83,7 @@
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
 											update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
-							:formConsAge:btBusGr, :formConsAge:outGrupo" />
+											:formConsAge:btBusGr, :formConsAge:outGrupo" />
 
 									</p:autoComplete>
 
@@ -137,6 +140,12 @@
 									<f:selectItem itemLabel="Tarde" itemValue="T" />
 								</b:selectOneMenu>
 							</b:column>
+							
+						<b:column span="3">
+							<p:selectBooleanCheckbox immediate="true" value="#{AtendimentoController.listarEvolucoesPendentes}" itemLabel="Listar Evoluções Pendentes">
+								<p:ajax update=":formConsAge:dataInicio :formConsAge:dtagen3" listener="#{AtendimentoController.zeraDatasDeAtendimentoQuandoCondicaoListarEvolucoesPendentesEhAlterada()}" />
+							</p:selectBooleanCheckbox>
+						</b:column>
 
 						</p:outputPanel>
 

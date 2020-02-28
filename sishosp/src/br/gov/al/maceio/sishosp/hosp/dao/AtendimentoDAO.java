@@ -509,7 +509,7 @@ public class AtendimentoDAO {
 	}
 
 	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento,
-			String campoBusca, String tipo, String buscaEvolucao, String buscaTurno) throws ProjetoException {
+			String campoBusca, String tipo, String buscaEvolucao, String buscaTurno, boolean listaEvolucoesPendentes) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -532,14 +532,22 @@ public class AtendimentoDAO {
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
-				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a1.excluido,'N')='N' and coalesce(a.situacao,'A')<>'C'";
+				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)";
 		/*
 		 * if
 		 * (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().
 		 * equals("S")) sql = sql + " and a.presenca='S'";
 		 */
-		sql = sql + " and exists (select id_atendimento from hosp.atendimentos1 a11 "
+		if(listaEvolucoesPendentes) {
+			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade "
+					+ " where a.dtaatende >= ceu.inicio_evolucao ";
+		}
+		
+		else
+			sql += " where a.dtaatende >= ? and a.dtaatende <= ? ";
+		
+		sql = sql + " and a.cod_unidade = ? and coalesce(a1.excluido,'N')='N' and coalesce(a.situacao,'A')<>'C'"
+				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento) and a1.codprofissionalatendimento=?";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
@@ -579,13 +587,23 @@ public class AtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			int i = 7;
-			stm.setLong(1, user_session.getId());
-			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
-			stm.setDate(3, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
-			stm.setInt(4, user_session.getUnidade().getId());
-			stm.setLong(5, user_session.getId());
-			stm.setLong(6, user_session.getId());
+			int i;
+			if(listaEvolucoesPendentes) {
+				stm.setLong(1, user_session.getId());
+				stm.setInt(2, user_session.getUnidade().getId());
+				stm.setLong(3, user_session.getId());
+				stm.setLong(4, user_session.getId());
+				i = 5;
+			}
+			else {
+				stm.setLong(1, user_session.getId());
+				stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoInicio().getTime()));
+				stm.setDate(3, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
+				stm.setInt(4, user_session.getUnidade().getId());
+				stm.setLong(5, user_session.getId());
+				stm.setLong(6, user_session.getId());
+				i = 7;
+			}
 
 			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());

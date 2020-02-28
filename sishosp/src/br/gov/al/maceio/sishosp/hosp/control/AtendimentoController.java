@@ -57,6 +57,7 @@ public class AtendimentoController implements Serializable {
 	private String buscaTurno;
 	private String campoBusca;
 	private String opcaoAtendimento;
+	private boolean listarEvolucoesPendentes;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -143,11 +144,21 @@ public class AtendimentoController implements Serializable {
         listarAtendimentos(campoBusca, tipoBusca);
     }
     
+    public void zeraDatasDeAtendimentoQuandoCondicaoListarEvolucoesPendentesEhAlterada() throws ProjetoException {
+    	this.atendimento.setDataAtendimentoInicio(null);
+    	this.atendimento.setDataAtendimentoFinal(null);
+    	if(listarEvolucoesPendentes) {
+    		carregarGerenciamentoAtendimentoProfissionalNaEquipe();
+    	}
+    }
+    
     public void consultarAtendimentosProfissionalNaEquipe() throws ProjetoException {
-        if (this.atendimento.getDataAtendimentoInicio() == null
-                || this.atendimento.getDataAtendimentoFinal() == null) {
-            JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
-            return;
+    	if(!listarEvolucoesPendentes) {
+			if (this.atendimento.getDataAtendimentoInicio() == null
+					|| this.atendimento.getDataAtendimentoFinal() == null) {
+				JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
+				return;
+			}
         }
         SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
@@ -303,7 +314,7 @@ public class AtendimentoController implements Serializable {
     
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno);
+                .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno, listarEvolucoesPendentes);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
@@ -718,5 +729,13 @@ public class AtendimentoController implements Serializable {
 
 	public void setPeriodoFinalEvolucao(Date periodoFinalEvolucao) {
 		this.periodoFinalEvolucao = periodoFinalEvolucao;
+	}
+
+	public boolean getListarEvolucoesPendentes() {
+		return listarEvolucoesPendentes;
+	}
+
+	public void setListarEvolucoesPendentes(boolean listarEvolucoesPendentes) {
+		this.listarEvolucoesPendentes = listarEvolucoesPendentes;
 	}
 }
