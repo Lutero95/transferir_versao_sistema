@@ -72,6 +72,17 @@
 									target="#{EquipeController.equipe}" />
 							</p:commandButton>
 
+							<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+											 id="btnRetirarProfissionalEquipe"
+											 style="margin-left:10px" title="Retirar profissional da equipe"
+											 oncomplete="PF('dlgRetirarProfissional').show()"
+											 action="#{EquipeController.listarProfissionaisDaEquipe()}"
+											 update=":frmRetirarProfissional"
+											 icon="ui-icon-minusthick">
+								<f:setPropertyActionListener value="#{tab}"
+															 target="#{EquipeController.equipe}" />
+							</p:commandButton>
+
 						</h:column>
 					</b:dataTable>
 				</h:form>
@@ -99,6 +110,165 @@
 
 				</div>
 			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Retirar Profissional da Equipe" widgetVar="dlgRetirarProfissional" modal="true" responsive="true">
+
+			<h:form id="frmRetirarProfissional">
+
+				<b:row>
+					<b:column span="2" class="label-position">
+						<p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+					</b:column>
+
+					<b:column span="9">
+						<p:dataTable emptyMessage="Nenhum Profissional na Equipe"
+									 styleClass="table table-hover" id="tabela"
+									 value="#{EquipeController.equipe.profissionais}" var="tab"
+									 paginator="true" paginatorPosition="bottom" rows="12"
+									 resizableColumns="false">
+
+							<p:column headerText="Nome" style="font-weight:bold;" width="80%">
+								<h:outputText value="#{tab.nome}"/>
+							</p:column>
+
+							<p:column headerText="Ação">
+								<div align="center">
+
+									<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+													 id="btnExcluirAlteracao"
+													 oncomplete="PF('dlgExcluirProfissional').show()"
+													 icon="ui-icon-trash">
+										<f:setPropertyActionListener value="#{tab.id}"
+																	 target="#{EquipeController.codigoProfissional}"/>
+									</p:commandButton>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+
+
+					</b:column>
+
+
+				</b:row>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProfE"
+				  modal="true" responsive="true">
+			<h:form id="formConsuProfE">
+
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{MBFuncionarios.listaProfissional}"
+							 id="dtTipoAt" var="profi">
+
+					<h:column>
+						<f:facet name="header">
+							Profissional
+						</f:facet>
+						<p:outputLabel value="#{profi.nome}"/>
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							Especialidade
+						</f:facet>
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							Adicionar
+						</f:facet>
+						<p:commandButton process="@this" class="new-btn-acao-table acao-editar"
+										 update=":frmRetirarProfissional, msgPagina"
+										 icon="fa fa-fw fa-check" title="Selecionar"
+										 action="#{EquipeController.equipe.addProfList()}"
+										 onclick="PF('dlgConsuProfE').hide();">
+							<f:setPropertyActionListener value="#{profi}"
+														 target="#{EquipeController.equipe.profAdd}"/>
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Excluir Profissional" widgetVar="dlgExcluirProfissional"
+				  modal="true" responsive="true">
+			<h:form id="formExcluirProfissional">
+
+				<b:row>
+					<b:column span="12" class="label-position data-size new-comple1">
+						<b:label value="Data da saída:" severity="info" />
+						<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="9" class="select-agendaEquipe2"
+									required="true" requiredMessage="Data: Campo obrigatório!"
+									value="#{EquipeController.equipe.dataExclusao}" id="dtagen"
+									locale="pt" style="margin-left:10px;"/>
+					</b:column>
+				</b:row>
+
+				<p:commandButton action="#{EquipeController.removerProfissionalAlteracaoEquipe()}"
+								 icon="ui-icon-check" size="sm" update=":frmRetirarProfissional msgPagina" value="Remover"
+								 look="success" class="btn-incluir"/>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Retirar Profissional da Equipe" widgetVar="dlgRetirarProfissionalA" modal="true" responsive="true">
+
+			<h:form id="frmRetirarProfissionalA">
+
+				<b:row>
+					<b:column span="2" class="label-position">
+						<p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+						<p:commandButton process="@this" style="margin-left: 20px;"
+										 class="btn-acao-table acao-editar"
+										 action="#{MBFuncionarios.ListarTodosProfissionais()}"
+										 title="Incluir Profissional" icon="ui-icon-plus"
+										 oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
+					</b:column>
+
+					<b:column span="9">
+						<p:dataTable emptyMessage="Nenhum Profissional na Equipe"
+									 styleClass="table table-hover" id="tabelaA"
+									 value="#{EquipeController.equipe.profissionais}" var="tab"
+									 paginator="true" paginatorPosition="bottom" rows="12"
+									 resizableColumns="false">
+
+							<p:column headerText="Nome" style="font-weight:bold;" width="80%">
+								<h:outputText value="#{tab.nome}"/>
+							</p:column>
+
+							<p:column headerText="Ação">
+								<div align="center">
+
+									<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+													 id="btnExcluirAlteracaoA"
+													 oncomplete="PF('dlgExcluirProfissional').show()"
+													 icon="ui-icon-trash">
+										<f:setPropertyActionListener value="#{tab.id}"
+																	 target="#{EquipeController.codigoProfissional}"/>
+									</p:commandButton>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+
+
+					</b:column>
+
+
+				</b:row>
+
+			</h:form>
+
 		</p:dialog>
 
 	</ui:define>

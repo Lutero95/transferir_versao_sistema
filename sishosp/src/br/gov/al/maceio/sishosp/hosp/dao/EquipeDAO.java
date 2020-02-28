@@ -5,12 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
 import javax.faces.context.FacesContext;
@@ -559,6 +561,231 @@ public class EquipeDAO {
 			}
 		}
 		return lista;
+	}
+
+	public Boolean removerProfissionalEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida) {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
+		Boolean retorno = false;
+		String sql = "insert into logs.remocao_profissional_equipe " +
+				"(cod_equipe, cod_profissional, data_saida, usuario_acao, data_hora_acao) " +
+				"values (?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, codigoEquipe);
+			ps.setLong(2, codigoProfissional);
+			ps.setDate(3, DataUtil.converterDateUtilParaDateSql(dataSaida));
+			ps.setLong(4, user_session.getId());
+			ResultSet rs = ps.executeQuery();
+
+			Integer id = null;
+
+			if (rs.next()) {
+				id = rs.getInt("id");
+			}
+
+			if (excluirProfissionalDeEquipe(codigoEquipe, codigoProfissional, dataSaida, id, con)) {
+				con.commit();
+				retorno = true;
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public Boolean excluirProfissionalDeEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+
+		Boolean retorno = false;
+
+		String sql = "delete from hosp.equipe_medico where equipe = ? and medico = ?";
+
+		try {
+			ps = conAuxiliar.prepareStatement(sql);
+			ps.setLong(1, codigoEquipe);
+			ps.setLong(2, codigoProfissional);
+			ps.execute();
+
+			retorno = excluirAtendimentosProfissionalRemovidoEquipe(
+					listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), codigoProfissional, idRemocaoProfissionalEquipe, con);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar) {
+
+		ArrayList<Integer> lista = new ArrayList<>();
+
+		String sql = "SELECT a1.id_atendimentos1  " +
+				"FROM hosp.atendimentos1 a1 " +
+				"JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
+				"WHERE a1.codprofissionalatendimento = ? AND a.dtamarcacao >= ? AND a.codequipe = ?;";
+
+		try {
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+			stm.setLong(1, codigoProfissional);
+			stm.setDate(2, DataUtil.converterDateUtilParaDateSql(dataSaida));
+			stm.setInt(3, codigoEquipe);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				int idAtendimento1 = rs.getInt("id_atendimentos1");
+				lista.add(idAtendimento1);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public Boolean excluirAtendimentosProfissionalRemovidoEquipe(List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+
+		Boolean retorno = false;
+
+		String sql = "UPDATE hosp.atendimentos1 SET excluido = 'S' WHERE id_atendimentos1 = ?";
+
+		try {
+			for(int i=0; i<listaAtendimentos1.size(); i++) {
+				ps = conAuxiliar.prepareStatement(sql);
+				ps.setLong(1, listaAtendimentos1.get(i));
+				ps.execute();
+			}
+
+			retorno = gravarLogRemocaoProfissionalEquipePacienteInstituicao(
+					listarIdPacienteInstituicaoAhSeremApagados(
+							codigoProfissional, listaAtendimentos1, conAuxiliar), codigoProfissional, idRemocaoProfissionalEquipe, conAuxiliar);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, List<Integer> listaAtendimentos1, Connection conAuxiliar) {
+
+		ArrayList<Integer> lista = new ArrayList<>();
+
+		String sql = "SELECT DISTINCT pda.id_paciente_instituicao " +
+				"FROM hosp.profissional_dia_atendimento pda " +
+				"JOIN hosp.atendimentos a ON (pda.id_paciente_instituicao = a.id_paciente_instituicao) " +
+				"WHERE pda.id_profissional = ? " +
+				"AND a.id_atendimento = " +
+				"(SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 WHERE a1.id_atendimentos1 = ?);";
+
+		try {
+			for(int i=0; i<listaAtendimentos1.size(); i++) {
+				PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+				stm.setLong(1, codigoProfissional);
+				stm.setInt(2, listaAtendimentos1.get(i));
+				ResultSet rs = stm.executeQuery();
+
+				while (rs.next()) {
+					int idPacienteInstituicao = rs.getInt("id_paciente_instituicao");
+					lista.add(idPacienteInstituicao);
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public Boolean gravarLogRemocaoProfissionalEquipePacienteInstituicao(
+			List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+
+		Boolean retorno = false;
+		String sql = "insert into logs.remocao_profissional_equipe_paciente_instituicao " +
+				"(id_remocao_profissional_equipe, id_paciente_instituicao, id_funcionario) " +
+				"values (?, ?, ?);";
+
+		try {
+			for(int i=0; i<listaIdPacienteInstituicao.size(); i++) {
+				ps = conAuxiliar.prepareStatement(sql);
+				ps.setInt(1, idRemocaoProfissionalEquipe);
+				ps.setLong(2, listaIdPacienteInstituicao.get(i));
+				ps.setLong(3, codigoProfissional);
+				ps.execute();
+			}
+
+			retorno = excluirProfissionalDiaAtendimento(listaIdPacienteInstituicao, codigoProfissional, conAuxiliar);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public Boolean excluirProfissionalDiaAtendimento(List<Integer> listaIdPacienteInstituicao, Long codigoProfissional,  Connection conAuxiliar) {
+
+		Boolean retorno = false;
+
+		String sql = "delete from hosp.profissional_dia_atendimento where id_paciente_instituicao = ? and id_profissional = ?";
+
+		try {
+			for(int i=0; i<listaIdPacienteInstituicao.size(); i++) {
+				ps = conAuxiliar.prepareStatement(sql);
+				ps.setLong(1, listaIdPacienteInstituicao.get(i));
+				ps.setLong(2, codigoProfissional);
+				ps.execute();
+			}
+
+			retorno = true;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
 	}
 
 }

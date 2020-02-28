@@ -66,11 +66,6 @@
                             <p:outputLabel value="Profissionais:" style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                            <p:commandButton process="@this" style="margin-left: 20px;"
-                                             class="btn-acao-table acao-editar"
-                                             action="#{MBFuncionarios.ListarTodosProfissionais()}"
-                                             title="Incluir Profissional" icon="ui-icon-plus"
-                                             oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
                         </b:column>
 
                         <b:column span="9">
@@ -82,17 +77,6 @@
 
                                 <p:column headerText="Nome" style="font-weight:bold;" width="80%">
                                     <h:outputText value="#{tab.nome}"/>
-                                </p:column>
-
-                                <p:column headerText="Ação">
-                                    <div align="center">
-                                        <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-                                                         action="#{EquipeController.equipe.removeProfList()}"
-                                                         icon="ui-icon-trash" update=":frmPrincipal">
-                                            <f:setPropertyActionListener value="#{tab}"
-                                                                         target="#{EquipeController.equipe.profAdd}"/>
-                                        </p:commandButton>
-                                    </div>
                                 </p:column>
 
                             </p:dataTable>

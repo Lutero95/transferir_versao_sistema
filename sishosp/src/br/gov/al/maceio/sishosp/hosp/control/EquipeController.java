@@ -20,151 +20,174 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 @ViewScoped
 public class EquipeController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private EquipeBean equipe;
-	private List<EquipeBean> listaEquipe;
-	private Integer tipo;
-	private String cabecalho;
-	private EquipeDAO eDao = new EquipeDAO();
+    private static final long serialVersionUID = 1L;
+    private EquipeBean equipe;
+    private List<EquipeBean> listaEquipe;
+    private Integer tipo;
+    private String cabecalho;
+    private EquipeDAO eDao = new EquipeDAO();
+    private Long codigoProfissional;
 
-	//CONSTANTES
-	private static final String ENDERECO_CADASTRO = "cadastroEquipe?faces-redirect=true";
-	private static final String ENDERECO_TIPO = "&amp;tipo=";
-	private static final String ENDERECO_ID = "&amp;id=";
-	private static final String CABECALHO_INCLUSAO = "Inclusão de Equipe";
-	private static final String CABECALHO_ALTERACAO = "Alteração de Equipe";
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroEquipe?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Equipe";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Equipe";
 
-	public EquipeController() {
-		this.equipe = new EquipeBean();
-		this.listaEquipe = null;
-	}
+    public EquipeController() {
+        this.equipe = new EquipeBean();
+        this.listaEquipe = null;
+    }
 
-	public void limparDados() throws ProjetoException {
-		equipe = new EquipeBean();
-		this.listaEquipe = eDao.listarEquipe();
-	}
+    public void limparDados() throws ProjetoException {
+        equipe = new EquipeBean();
+        this.listaEquipe = eDao.listarEquipe();
+    }
 
-	public String redirectEdit() {
-		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.equipe.getCodEquipe(), ENDERECO_TIPO, tipo);
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.equipe.getCodEquipe(), ENDERECO_TIPO, tipo);
+    }
 
-	public String redirectInsert() {
-		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
-	}
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-	public void getEditEquipe() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
-			EquipeDAO cDao = new EquipeDAO();
-			this.equipe = cDao.buscarEquipePorID(id);
+    public void getEditEquipe() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
+            EquipeDAO cDao = new EquipeDAO();
+            this.equipe = cDao.buscarEquipePorID(id);
 
-		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
 
-		}
-	}
+        }
+    }
 
-	public void ListarTodasEquipes() throws ProjetoException {
-		this.listaEquipe = eDao.listarEquipe();
-	}
+    public void ListarTodasEquipes() throws ProjetoException {
+        this.listaEquipe = eDao.listarEquipe();
+    }
 
 
-	public void gravarEquipe() throws ProjetoException {
-		if (this.equipe.getProfissionais().isEmpty()) {
-			JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
-		}
+    public void gravarEquipe() throws ProjetoException {
+        if (this.equipe.getProfissionais().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
+        } else {
+            boolean cadastrou = eDao.gravarEquipe(this.equipe);
 
-		else {
-			boolean cadastrou = eDao.gravarEquipe(this.equipe);
+            if (cadastrou == true) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Equipe cadastrada com sucesso!", "Sucesso");
+                JSFUtil.atualizarComponente("msgPagina");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+        }
+    }
 
-			if (cadastrou == true) {	
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Equipe cadastrada com sucesso!", "Sucesso");
-				JSFUtil.atualizarComponente("msgPagina");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-			}
-		}
-	}
+    public void alterarEquipe() {
 
-	public void alterarEquipe() {
+        if (this.equipe.getProfissionais().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
+        } else {
 
-		if (this.equipe.getProfissionais().isEmpty()) {
-			JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
-		}
+            boolean alterou = eDao.alterarEquipe(equipe);
 
-		else {
+            if (alterou == true) {
+                JSFUtil.adicionarMensagemSucesso("Equipe alterada com sucesso!", "Sucesso");
+                JSFUtil.atualizarComponente("msgPagina");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            }
+        }
+    }
 
-			boolean alterou = eDao.alterarEquipe(equipe);
+    public void excluirEquipe() throws ProjetoException {
 
-			if (alterou == true) {
-				JSFUtil.adicionarMensagemSucesso("Equipe alterada com sucesso!", "Sucesso");
-				JSFUtil.atualizarComponente("msgPagina");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-			}
-		}
-	}
+        boolean excluiu = eDao.excluirEquipe(equipe);
 
-	public void excluirEquipe() throws ProjetoException {
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Equipe excluída com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        ListarTodasEquipes();
+    }
 
-		boolean excluiu = eDao.excluirEquipe(equipe);
+    public void removerProfissionalAlteracaoEquipe() throws ProjetoException {
 
-		if (excluiu == true) {
-			JSFUtil.adicionarMensagemSucesso("Equipe excluída com sucesso!", "Sucesso");
-			JSFUtil.fecharDialog("dialogExclusao");
-		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-			JSFUtil.fecharDialog("dialogExclusao");
-		}
-		ListarTodasEquipes();
-	}
+        boolean removeu = eDao.removerProfissionalEquipe(equipe.getCodEquipe(), codigoProfissional, equipe.getDataExclusao());
 
-	public List<EquipeBean> listaEquipeAutoComplete(String query)
-			throws ProjetoException {
-		List<EquipeBean> result = eDao.listarEquipeBusca(query);
-		return result;
-	}
+        if (removeu == true) {
+            JSFUtil.adicionarMensagemSucesso("Profissional removido com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgExcluirProfissional");
+            JSFUtil.atualizarComponente("msgPagina");
+            this.equipe = eDao.buscarEquipePorID(equipe.getCodEquipe());
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+        }
 
-	public String getCabecalho() {
-		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
-			cabecalho = CABECALHO_INCLUSAO;
-		} else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
-			cabecalho = CABECALHO_ALTERACAO;
-		}
-		return cabecalho;
-	}
+    }
 
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
+    public List<EquipeBean> listaEquipeAutoComplete(String query)
+            throws ProjetoException {
+        List<EquipeBean> result = eDao.listarEquipeBusca(query);
+        return result;
+    }
 
-	public void setListaEquipe(List<EquipeBean> listaEquipe) {
-		this.listaEquipe = listaEquipe;
-	}
+    public void listarProfissionaisDaEquipe() throws ProjetoException {
+        this.equipe = eDao.buscarEquipePorID(equipe.getCodEquipe());
+    }
 
-	public int getTipo() {
-		return tipo;
-	}
+    public String getCabecalho() {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-	public List<EquipeBean> getListaEquipe() {
-		return listaEquipe;
-	}
+    public void setListaEquipe(List<EquipeBean> listaEquipe) {
+        this.listaEquipe = listaEquipe;
+    }
 
-	public EquipeBean getEquipe() {
-		return equipe;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public void setEquipe(EquipeBean equipe) {
-		this.equipe = equipe;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 
+    public List<EquipeBean> getListaEquipe() {
+        return listaEquipe;
+    }
+
+    public EquipeBean getEquipe() {
+        return equipe;
+    }
+
+    public void setEquipe(EquipeBean equipe) {
+        this.equipe = equipe;
+    }
+
+    public Long getCodigoProfissional() {
+        return codigoProfissional;
+    }
+
+    public void setCodigoProfissional(Long codigoProfissional) {
+        this.codigoProfissional = codigoProfissional;
+    }
 }

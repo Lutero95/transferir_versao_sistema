@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -17,6 +18,7 @@ public class EquipeBean implements Serializable {
 	private Integer codUnidade;
 	private Boolean realizaAvaliacao;
 	private String turno;
+	private Date dataExclusao;
 
 	// LISTAS
 	private List<FuncionarioBean> profissionais;
@@ -123,5 +125,13 @@ public class EquipeBean implements Serializable {
 
 	public void setTurno(String turno) {
 		this.turno = turno;
+	}
+
+	public Date getDataExclusao() {
+		return dataExclusao;
+	}
+
+	public void setDataExclusao(Date dataExclusao) {
+		this.dataExclusao = dataExclusao;
 	}
 }
