@@ -26,6 +26,7 @@ public class InsercaoProfissionalEquipe implements Serializable {
     private Date periodoInicio;
     private Date periodoFinal;
     private List<String> diasSemana;
+    private Date dataAtendimento;
 
     public InsercaoProfissionalEquipe() {
         funcionario = new FuncionarioBean();
@@ -161,5 +162,13 @@ public class InsercaoProfissionalEquipe implements Serializable {
 
 	public void setIdAtendimentos1(Integer idAtendimentos1) {
 		this.idAtendimentos1 = idAtendimentos1;
+	}
+
+	public Date getDataAtendimento() {
+		return dataAtendimento;
+	}
+
+	public void setDataAtendimento(Date dataAtendimento) {
+		this.dataAtendimento = dataAtendimento;
 	}
 }

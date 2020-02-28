@@ -12,6 +12,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -206,16 +207,18 @@ public class AlteracaoPacienteDAO {
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			
+			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
 	
 			
-		/*	if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe)) {
 
 				conexao.close();
 
 				return retorno;
 			}
-			*/
+			
 			
 			 
 	        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, turno=?, codlaudo=? "
@@ -381,6 +384,36 @@ public class AlteracaoPacienteDAO {
 				ps6.setLong(6, listaSubstituicao.get(i).getUsuarioAcao().getId());
 				ps6.execute();
 			}
+			
+			sql6 = "insert into adm.insercao_profissional_equipe_atendimento_1 (id_atendimentos1,id_insercao_profissional_equipe_atendimento, id_profissional) "+ 
+					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+					"where aa.dtaatende=? and a11.codprofissionalatendimento=? limit 1),?,?)";
+			ps6 = null;
+			ps6 = conexao.prepareStatement(sql6);
+			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
+			/*	String sql8 = "insert hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
+						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
+						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
+						"where pi.id=? and a.dtaatende=? and a1.codprofissionalatendimento = ? limit 1)";
+				PreparedStatement ps8 = null;
+				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
+				ps8.setLong(2, id_paciente);
+				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps8.execute();
+				*/
+				ps6 = null;
+				ps6 = conexao.prepareStatement(sql6);
+				
+				ps6.setDate(1,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+				ps6.setLong(2, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps6.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getId());
+				ps6.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps6.execute();
+			}
+			
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
@@ -416,14 +449,16 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 			
-		/*	if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao)) {
+			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe)) {
 
 				conexao.close();
 
 				return retorno;
 			}
 			
-			*/
+		
 			
 			String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=? "
 	                + " where id = ?";
