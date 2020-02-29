@@ -23,6 +23,7 @@ public class ParametroBean implements Serializable {
     private Boolean usaHorarioLimiteParaAcesso;
     private Date horarioInicioFuncionamento;
     private Date horarioFinalFuncionamento;
+    private boolean bloqueiaPorPendenciaEvolucaoAnterior;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -181,4 +182,13 @@ public class ParametroBean implements Serializable {
     public void setHorarioFinalFuncionamento(Date horarioFinalFuncionamento) {
         this.horarioFinalFuncionamento = horarioFinalFuncionamento;
     }
+
+	public boolean isBloqueiaPorPendenciaEvolucaoAnterior() {
+		return bloqueiaPorPendenciaEvolucaoAnterior;
+	}
+
+	public void setBloqueiaPorPendenciaEvolucaoAnterior(boolean bloqueiaPorPendenciaEvolucaoAnterior) {
+		this.bloqueiaPorPendenciaEvolucaoAnterior = bloqueiaPorPendenciaEvolucaoAnterior;
+	}
+    
 }

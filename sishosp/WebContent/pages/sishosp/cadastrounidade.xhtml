@@ -353,7 +353,14 @@
 									</b:selectOneMenu>
 
 								</b:column>
+								
+								<b:column span="5" class="label-position new-col5">
+									<p:selectBooleanCheckbox itemLabel="Bloquear Evolução caso exista Atendimento Anterior Pendente de Evolução" 
+										value="#{UnidadeController.unidade.parametro.bloqueiaPorPendenciaEvolucaoAnterior}">
+									</p:selectBooleanCheckbox>
+								</b:column>
 							</b:row>
+							
 
 							<p:outputPanel id="horarioDeAcesso">
 
