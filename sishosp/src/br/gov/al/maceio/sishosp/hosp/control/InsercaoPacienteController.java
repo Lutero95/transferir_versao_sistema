@@ -705,37 +705,50 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 
     }
-
-
+    
+    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() {
+    	boolean dataValida =  iDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercao.getLaudo().getId(), insercao.getDataSolicitacao()); 
+    	if(!dataValida)
+    		JSFUtil.adicionarMensagemErro("Data de Inclusão não está dentro do intervalo da data do laudo", "Erro!");
+    	return dataValida; 
+    }
+    
     public void validarInsercaoPaciente() throws ProjetoException {
-        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-     //   insercao.setDataSolicitacao(dataSolicitacaoCorreta);
-        if (insercao.getTurno()==null) {
-        	 JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório",
-                     "Erro");
-        }
-        else if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())){
-            JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo",
-                    "Erro");
-        }
-        else if (insercao.getEncaixe()) {
-            gravarInsercaoPaciente();
-        } else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-            if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
-                gravarInsercaoPaciente();
-            } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
-                        "Erro");
-            }
-        } else {
-            if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
-                gravarInsercaoPaciente();
-            } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!",
-                        "Erro");
-            }
-        }
+    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
+			/* EXCLUIR ESSE CAMPO CASO ELE NÃO SEJA MAIS NECESSÁRIO
+			 * 
+			 * GerenciarPacienteController gerenciarPacienteController = new
+			 * GerenciarPacienteController(); Date dataSolicitacaoCorreta =
+			 * gerenciarPacienteController.ajustarDataDeSolicitacao(
+			 * insercao.getDataSolicitacao(), insercao.getLaudo().getId(),
+			 * insercao.getPaciente().getId_paciente(),
+			 * insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+			 */
+			// insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+			if (insercao.getTurno() == null) {
+				JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
+			} else if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+					insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())) {
+				JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
+			} else if (insercao.getEncaixe()) {
+				gravarInsercaoPaciente();
+			} else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+				if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
+					gravarInsercaoPaciente();
+				} else {
+					JSFUtil.adicionarMensagemErro(
+							"Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
+							"Erro");
+				}
+			} else {
+				if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
+					gravarInsercaoPaciente();
+				} else {
+					JSFUtil.adicionarMensagemErro(
+							"Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!", "Erro");
+				}
+			}
+    	}
     }
 
     public ArrayList<AgendaBean> validarDatas(ArrayList<AgendaBean> listaAgendamentos, String turno) throws ProjetoException {
