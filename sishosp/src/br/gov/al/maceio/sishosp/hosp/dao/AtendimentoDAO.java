@@ -533,14 +533,10 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)";
-		/*
-		 * if
-		 * (user_session.getUnidade().getParametro().getNecessitaPresencaParaEvolucao().
-		 * equals("S")) sql = sql + " and a.presenca='S'";
-		 */
+
 		if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade "
-					+ " where a.dtaatende >= ceu.inicio_evolucao ";
+					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S'";
 		}
 		
 		else
