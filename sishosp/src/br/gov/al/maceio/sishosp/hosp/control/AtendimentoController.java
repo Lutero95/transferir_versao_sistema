@@ -174,9 +174,35 @@ public class AtendimentoController implements Serializable {
     }
     
     public String redirectAtendimentoProfissional() {
+    	if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
+    		
+    		if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
+    			return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
+    		return null;
+    	}
+    	else {
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
-       
+        }
     }
+
+	private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		try {
+			Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
+					atendimento.getUnidade().getId(), user_session.getId());
+			
+			if (quantidadePendenciaEvolucaoAnterior == 0)
+				return true;
+			else 
+				JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
+			
+		} catch (ProjetoException e) {
+			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
+			e.printStackTrace();
+		}
+		return false;
+	}
 
     public void getCarregaAtendimentoProfissional() throws ProjetoException {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext

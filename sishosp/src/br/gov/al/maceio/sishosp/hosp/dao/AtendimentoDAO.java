@@ -507,6 +507,52 @@ public class AtendimentoDAO {
 		}
 		return lista;
 	}
+	
+	
+	public Integer retornaQuantidadeDePendenciasAnterioresDeEvolucao
+		(Integer idUnidade, Long codigoProfissionalAtendimento) throws ProjetoException {
+
+		Integer quantidadeDePendenciasAnterioresDeEvolucao = 0;
+		String sql = "select count(*) qtd from hosp.atendimentos1 a1 " + 
+				"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+				"join hosp.pacientes pac on pac.id_paciente = a.codpaciente " + 
+				"join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " + 
+				"join hosp.especialidade e on e.id_especialidade = f.codespecialidade " + 
+				"JOIN hosp.unidade u ON u.id = ? " + 
+				"JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa " + 
+				"join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id " + 
+				"join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa " + 
+				"join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo " + 
+				"where a.presenca='S' and a1.evolucao is null " + 
+				"and a.codprograma = ceu.codprograma " + 
+				"and a.codgrupo = ceu.codgrupo " + 
+				"and a.dtaatende>=ceu.inicio_evolucao " + 
+				"and a.dtaatende<current_date " + 
+				"and a1.codprofissionalatendimento = ?" + 
+				"and coalesce(a.situacao,'A')<>'C'" + 
+				"and coalesce(a1.excluido,'N' )='N'";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setInt(1, idUnidade);
+			preparedStatement.setLong(2, codigoProfissionalAtendimento);
+			ResultSet rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				quantidadeDePendenciasAnterioresDeEvolucao = rs.getInt("qtd");
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return quantidadeDePendenciasAnterioresDeEvolucao;
+	}
 
 	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento,
 			String campoBusca, String tipo, String buscaEvolucao, String buscaTurno, boolean listaEvolucoesPendentes) throws ProjetoException {
@@ -516,8 +562,8 @@ public class AtendimentoDAO {
 
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
-				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao,  "
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
+				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, "
 
 				+ " case\n" + "		when exists (\n" + "		select\n" + "			a11.id_atendimento\n"
 				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
@@ -532,7 +578,8 @@ public class AtendimentoDAO {
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
-				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)";
+				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
+				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) ";
 
 		if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade "
@@ -629,30 +676,33 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				AtendimentoBean at = new AtendimentoBean();
-				at.setPresenca(rs.getString("presenca"));
-				at.setId(rs.getInt("id_atendimento"));
-				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
-				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-				at.getPaciente().setNome(rs.getString("nome"));
-				at.getPaciente().setCns(rs.getString("cns"));
-				at.getPaciente().setCpf(rs.getString("cpf"));
-				at.setTurno(rs.getString("turno"));
-				at.getFuncionario().setId(rs.getLong("codmedico"));
-				at.getFuncionario().setNome(rs.getString("descfuncionario"));
-				at.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
-				at.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				at.setSituacao(rs.getString("situacao"));
-				at.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
-				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
-				at.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-				at.getEquipe().setDescEquipe(rs.getString("descequipe"));
-				at.setEhEquipe(rs.getString("ehEquipe"));
-				at.setAvaliacao(rs.getBoolean("avaliacao"));
+				AtendimentoBean atendimentoBean = new AtendimentoBean();
+				atendimentoBean.setPresenca(rs.getString("presenca"));
+				atendimentoBean.setId(rs.getInt("id_atendimento"));
+				atendimentoBean.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				atendimentoBean.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				atendimentoBean.getPaciente().setNome(rs.getString("nome"));
+				atendimentoBean.getPaciente().setCns(rs.getString("cns"));
+				atendimentoBean.getPaciente().setCpf(rs.getString("cpf"));
+				atendimentoBean.setTurno(rs.getString("turno"));
+				atendimentoBean.getFuncionario().setId(rs.getLong("codmedico"));
+				atendimentoBean.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimentoBean.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				atendimentoBean.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				atendimentoBean.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				atendimentoBean.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				atendimentoBean.setSituacao(rs.getString("situacao"));
+				atendimentoBean.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
+				atendimentoBean.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
+				atendimentoBean.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				atendimentoBean.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				atendimentoBean.setEhEquipe(rs.getString("ehEquipe"));
+				atendimentoBean.setAvaliacao(rs.getBoolean("avaliacao"));
+				atendimentoBean.getUnidade().setId(rs.getInt("cod_unidade"));
+				atendimentoBean.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior
+					(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
 
-				lista.add(at);
+				lista.add(atendimentoBean);
 			}
 
 		} catch (Exception ex) {

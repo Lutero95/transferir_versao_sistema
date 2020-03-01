@@ -43,7 +43,6 @@
 				</h:form>
 
 				<h:form id="formConsAge">
-
 					<b:row>
 						<p:outputPanel class="data-size5">
 
@@ -153,8 +152,6 @@
 
 
 					<b:row class="row-table">
-
-
 
 						<b:column span="2" class="col-row-tabel">
 							<b:selectOneMenu size="10"
@@ -287,8 +284,7 @@
 								<p:commandButton tooltip="Atendimento"
 									icon="fa fa-fw fa-pencil-square-o" size="sm"
 									class="btn-acao-table acao-editar" id="btnatendimento2"
-									rendered="#{atendimento.presenca=='N'}"
-								>
+									rendered="#{atendimento.presenca=='N'}">
 									<p:tooltip  for="btnatendimento2"
 										value="Não é possível evoluir este paciente pois não foi informada presença!" position="top" />
 								</p:commandButton>
@@ -300,6 +296,19 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="ERRO!" widgetVar="dlgErroBloqueioPorPendenciaAnterior"
+			closable="true" modal="true" draggable="false" resizable="false">
+			<h:form>
+				<p>Não é possível evoluir este atendimento pois existe(m) pendência(s) anterior(es) de evolução.</p>
+				<br />
+				<p>Verifique a opção 'Listar Evoluções Pendentes' para verificar as evoluções pendentes</p>
+				<br />
+				<p:commandButton value="Fechar" ajax="true"
+					onclick="PF('dlgErroBloqueioPorPendenciaAnterior').hide();"
+					style="margin-left:40%;" />
+			</h:form>
+		</p:dialog>
 
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
