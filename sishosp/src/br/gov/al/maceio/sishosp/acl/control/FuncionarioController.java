@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -53,6 +54,8 @@ public class FuncionarioController implements Serializable {
 	private Integer codigoDaUnidadeSelecionada = null;
 	private List<Empresa> listaEmpresaFuncionario;
 	private Empresa empresa;
+	private List<UnidadeBean> listaUnidadesDoUsuario;
+	private UnidadeBean unidadeParaProgramasIhGrupos;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -110,6 +113,8 @@ public class FuncionarioController implements Serializable {
 		unidadesDoUsuarioLogado = new ArrayList<>();
 		listaEmpresaFuncionario = new ArrayList<>();
 		empresa = new Empresa();
+		listaUnidadesDoUsuario = new ArrayList<>();
+		unidadeParaProgramasIhGrupos = new UnidadeBean();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -230,7 +235,7 @@ public class FuncionarioController implements Serializable {
 					JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
 					return  null;
 				}
-				else 
+				else
 				{
 				String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
 				return url;
@@ -352,8 +357,8 @@ public class FuncionarioController implements Serializable {
 				}
 
 				return url;
-			
-		
+
+
 	}
 
 	public void carregarAtalhosPaginaInicial(List<Permissoes> permissoes){
@@ -393,7 +398,7 @@ public class FuncionarioController implements Serializable {
 			listaSistemasSoucerNaInclusao();
 			listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
 	}
-	
+
 	public void carregaListaSistemasDualAlteracao() throws ProjetoException {
 		listaSistemasSoucer = null;
 		listaSistemasTarget = new ArrayList<>();
@@ -481,7 +486,7 @@ public class FuncionarioController implements Serializable {
 					&& (p.getMenu().getTipo().equals("submenu")) // compara o
 					// tipo para
 					// verificar
-					// se 
+					// se
 					// submenu
 					&& (p.getIdSistema().equals(sistema.getId())) // compara os
 					// ids
@@ -659,13 +664,77 @@ public class FuncionarioController implements Serializable {
 		renderizarPermissoes = false;
 	}
 
+	private List<UnidadeBean> tratarUnidadesRepetidasNaListaDoFuncionario(){
+	    List<UnidadeBean> listaAposTratamento = new ArrayList<>();
+
+        boolean existe = false;
+
+	    for(int i=0; i<listaUnidadesDoUsuario.size(); i++){
+	        existe = false;
+
+	        if(listaAposTratamento.size() == 0){
+                listaAposTratamento.add(listaUnidadesDoUsuario.get(i));
+            }
+
+	        else {
+
+                for (int j = 0; j < listaAposTratamento.size(); j++) {
+
+                    if (listaAposTratamento.get(j).getId().equals(listaUnidadesDoUsuario.get(i).getId())) {
+                        existe = true;
+                    }
+                }
+
+                if (existe == false) {
+                    listaAposTratamento.add(listaUnidadesDoUsuario.get(i));
+                }
+            }
+        }
+
+	    return listaAposTratamento;
+    }
+
+	public Boolean validarProgramasDeAcordoComAsUnidadesDoProfissional(){
+		Boolean retorno = false;
+
+		ProgramaDAO pDao = new ProgramaDAO();
+		List<Integer> listaUnidadesDosProgramas = pDao.verificarUnidadesDosProgramas(listaGruposEProgramasProfissional);
+		List<Integer> listaVerificadoraDeUnidades = new ArrayList<>();
+		listaUnidadesDoUsuario = tratarUnidadesRepetidasNaListaDoFuncionario();
+
+		for(int i=0; i<listaUnidadesDoUsuario.size(); i++){
+			for(int j=0; j<listaUnidadesDosProgramas.size(); j++){
+				if(listaUnidadesDoUsuario.get(i).getId().equals(listaUnidadesDosProgramas.get(j))){
+					listaVerificadoraDeUnidades.add(listaUnidadesDosProgramas.get(j));
+				}
+			}
+		}
+
+		if(listaVerificadoraDeUnidades.size() == listaUnidadesDosProgramas.size()){
+			retorno = true;
+		}
+
+		return retorno;
+	}
+
 	public void gravarProfissional() throws ProjetoException {
-/*
+
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
-		} else 
-			*/
+
+			return;
+		}
+
+		else if(!validarProgramasDeAcordoComAsUnidadesDoProfissional()){
+            JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que não tem correlação com as unidades associadas a este funcionário!",
+                    "Erro");
+
+            return;
+        }
+
+		else
+
 			if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
@@ -734,7 +803,15 @@ public class FuncionarioController implements Serializable {
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
+
+			return;
 		}
+        else if(!validarProgramasDeAcordoComAsUnidadesDoProfissional()){
+            JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que não tem correlação com as unidades associadas a este funcionário!",
+                    "Erro");
+
+            return;
+        }
 		else
 		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
@@ -862,7 +939,7 @@ public class FuncionarioController implements Serializable {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
 		return result;
 	}
-	
+
 	public List<FuncionarioBean> listaTodosProfissionaisAutoComplete(String query) throws ProjetoException {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 2);
 		return result;
@@ -984,6 +1061,22 @@ public class FuncionarioController implements Serializable {
 		profissional.getListaUnidades().remove(unidadeBean);
 	}
 
+	public void montarListaDeUnidadesDoUsuario() throws ProjetoException {
+		listaUnidadesDoUsuario = new ArrayList<>();
+		UnidadeDAO unidadeDAO = new UnidadeDAO();
+		listaUnidadesDoUsuario.add(unidadeDAO.buscarUnidadePorId(profissional.getUnidade().getId()));
+
+		for (int i=0; i<profissional.getListaUnidades().size(); i++){
+			listaUnidadesDoUsuario.add(profissional.getListaUnidades().get(i));
+		}
+
+	}
+
+	public void acoesAposEscolherUnidadeParaCarregarProgramasIhGrupos(){
+		JSFUtil.fecharDialog("dlgUnidadesParaProgramaGrupo");
+		JSFUtil.abrirDialog("dlgConsuGrupos");
+	}
+
 	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
@@ -1022,7 +1115,7 @@ public class FuncionarioController implements Serializable {
 		JSFUtil.abrirDialog("dlgAlterarSenha");
 		JSFUtil.atualizarComponente("frmAlterarSenha");
 	}
-	
+
 		public void abrirDialogTrocarDeUnidade(){
 		JSFUtil.abrirDialog("selecaoUnidade");
 	}
@@ -1327,12 +1420,12 @@ public class FuncionarioController implements Serializable {
 		}
 		return listaSistemasSoucer;
 	}
-	
+
 	public List<Sistema> listaSistemasSoucerNaAlteracao() throws ProjetoException {
 			FuncionarioDAO udao = new FuncionarioDAO();
 			listaSistemasSoucer = udao.carregaSistemasListaSourceAlteracao(profissional.getId());
 		return listaSistemasSoucer;
-	}	
+	}
 
 	public List<Sistema> listaSistemasTargetNaAlteracao() throws ProjetoException {
 			FuncionarioDAO udao = new FuncionarioDAO();
@@ -1433,5 +1526,21 @@ public class FuncionarioController implements Serializable {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+
+	public List<UnidadeBean> getListaUnidadesDoUsuario() {
+		return listaUnidadesDoUsuario;
+	}
+
+	public void setListaUnidadesDoUsuario(List<UnidadeBean> listaUnidadesDoUsuario) {
+		this.listaUnidadesDoUsuario = listaUnidadesDoUsuario;
+	}
+
+	public UnidadeBean getUnidadeParaProgramasIhGrupos() {
+		return unidadeParaProgramasIhGrupos;
+	}
+
+	public void setUnidadeParaProgramasIhGrupos(UnidadeBean unidadeParaProgramasIhGrupos) {
+		this.unidadeParaProgramasIhGrupos = unidadeParaProgramasIhGrupos;
 	}
 }

@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 public class ProgramaDAO {
 
@@ -468,6 +469,43 @@ public class ProgramaDAO {
         return lista;
     }
 
+    public List<ProgramaBean> listarProgramasEGruposPorUnidade(int codigoUnidade) throws ProjetoException {
+        List<ProgramaBean> lista = new ArrayList<>();
+        String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo, p.cod_procedimento "
+                + "from hosp.grupo_programa gp "
+                + "left join hosp.programa p on (gp.codprograma = p.id_programa) "
+                + "left join hosp.grupo g on (gp.codgrupo = g.id_grupo) "
+                + "where p.cod_unidade = ? order by p.descprograma";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codigoUnidade);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("codprograma"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
+                programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+                programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+
+                lista.add(programa);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public List<ProgramaBean> listarProgramasBuscaUsuarioOutraUnidade(String descricao, Integer codEmpresa) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento from hosp.programa "
@@ -540,6 +578,38 @@ public class ProgramaDAO {
             }
         }
         return lista;
+    }
+
+    public List<Integer> verificarUnidadesDosProgramas(List<ProgramaBean> listaProgramas) {
+
+        List<Integer> listaUnidades = new ArrayList<>();
+
+        String sql = "SELECT cod_unidade FROM hosp.programa WHERE id_programa = ?;";
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+
+            for(int i=0; i<listaProgramas.size(); i++) {
+                PreparedStatement stm = con.prepareStatement(sql);
+                stm.setInt(1, listaProgramas.get(i).getIdPrograma());
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    listaUnidades.add(rs.getInt("cod_unidade"));
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaUnidades;
     }
 
 }

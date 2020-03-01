@@ -136,6 +136,7 @@
 									<f:selectItems
 										value="#{UnidadeController.listarTodasAsUnidades()}" var="emp"
 										itemLabel="#{emp.nomeUnidade}" itemValue="#{emp.id}" />
+									<p:ajax event="change" process="@this" />
 								</b:selectOneMenu>
 							</b:column>
 
@@ -223,8 +224,8 @@
 										tooltip="Incluir Profissional" icon="ui-icon-plus"
 										class="new-btn-acao-table acao-editar"
 										style="margin-left: 20px;"
-										actionListener="#{GrupoController.listarProgramasEGrupos}"
-										oncomplete="PF('dlgConsuGrupos').show();" />
+													 action="#{MBFuncionarios.montarListaDeUnidadesDoUsuario}"
+										oncomplete="PF('dlgUnidadesParaProgramaGrupo').show();" update=":frmUnidadesParaProgramaGrupo"/>
 								</b:column>
 
 								<b:column span="6" class="label-position">
@@ -735,6 +736,39 @@
 					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Unidades permitidas para o usuário" widgetVar="dlgUnidadesParaProgramaGrupo" dynamic="true"
+				  modal="true" styleClass="topDialog">
+
+			<h:form id="frmUnidadesParaProgramaGrupo">
+
+				<p:dataTable emptyMessage="Nenhuma unidade adicionada"
+							 styleClass="table table-hover" id="dtUnidadesParaProgramaGrupo"
+							 value="#{MBFuncionarios.listaUnidadesDoUsuario}"
+							 var="unidade" paginator="true" paginatorPosition="bottom"
+							 rows="12" resizableColumns="true">
+
+					<p:column headerText="Unidade">
+						<p:outputLabel value="#{unidade.nomeUnidade}" />
+					</p:column>
+
+					<p:column headerText="Selecionar">
+						<div align="center">
+							<p:commandButton immediate="true"
+											 action="#{GrupoController.listarProgramasEGruposPorUnidade(unidade.id)}"
+											 actionListener="#{MBFuncionarios.acoesAposEscolherUnidadeParaCarregarProgramasIhGrupos}"
+											 oncomplete="PF('dlgConsuGrupos').show();"
+											 icon="ui-icon-check">
+								<f:setPropertyActionListener value="#{unidade}"
+															 target="#{MBFuncionarios.unidadeParaProgramasIhGrupos}" />
+							</p:commandButton>
+						</div>
+					</p:column>
+				</p:dataTable>
+
+			</h:form>
+
 		</p:dialog>
 
 	</ui:define>

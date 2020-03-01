@@ -147,6 +147,12 @@ public class GrupoController implements Serializable {
 
     }
 
+    public void listarProgramasEGruposPorUnidade(int codigoUnidade) throws ProjetoException {
+        ProgramaDAO pDao = new ProgramaDAO();
+        listaProgramasEGrupos = pDao.listarProgramasEGruposPorUnidade(codigoUnidade);
+
+    }
+
     public GrupoBean getGrupo() {
         return grupo;
     }
