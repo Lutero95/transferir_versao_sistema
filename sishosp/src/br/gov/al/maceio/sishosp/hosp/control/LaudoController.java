@@ -166,17 +166,32 @@ public class LaudoController implements Serializable {
     }
 
     public void gravarLaudo() {
-        idLaudoGerado = null;
-        idLaudoGerado = lDao.cadastrarLaudo(laudo);
+    	if(!existeLaudoComMesmosDados()) {
+			idLaudoGerado = null;
+			idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-        if (idLaudoGerado != null) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
-            JSFUtil.abrirDialog("dlgImprimir");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			if (idLaudoGerado != null) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+				JSFUtil.abrirDialog("dlgImprimir");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
         }
-
+    }
+    
+    public boolean existeLaudoComMesmosDados() {
+    	try {
+			if(lDao.existeLaudoComMesmosDados(laudo)) {
+				JSFUtil.adicionarMensagemErro
+				("Já existe laudo para este Paciente, com as mesmas condições digitadas!", "Erro");
+				return true;
+			}
+		} catch (ProjetoException e) {
+			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+			e.printStackTrace();
+		}
+    	return false;
     }
 
     public void alterarLaudo() throws ProjetoException {
