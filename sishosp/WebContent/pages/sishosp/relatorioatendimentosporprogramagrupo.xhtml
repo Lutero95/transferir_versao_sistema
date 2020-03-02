@@ -18,7 +18,7 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Atendimento</h4>
+				<h4 class="panel-title">Relatório: Atendimentos por Programa/Grupo</h4>
 			</div>
 			<p:growl id="grw" />
 			<div class="panel-body table-body">
@@ -39,31 +39,30 @@
 
 					</b:row>
 
-					<br />
-					
-					<b:row rendered="#{RelatoriosController.atributoGenerico1=='A'}">
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Data Inicial" severity="info" />
-							<p:calendar id="dataInicial" value="#{RelatoriosController.dataInicial}"
-							required="true" requiredMessage="Insira a data inicial"
-							locale="pt" navigator="true" mask="true" showOn="button"
-							pattern="dd/MM/yyyy" size="31" style="margin-left: -5%" />
-						</b:column>
-					</b:row>
-					
-					<b:row rendered="#{RelatoriosController.atributoGenerico1=='A'}">
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Data Final" severity="info" />
-							<p:calendar id="dataFinal" value="#{RelatoriosController.dataFinal}"
-							required="true" requiredMessage="Insira a data final" 
-							locale="pt" navigator="true" mask="true" showOn="button"
-							pattern="dd/MM/yyyy" size="31" style="margin-left: -5%"/>
-						</b:column>
-					</b:row>
+					<b:row>
+						<b:column span="1" class="label-position data-size1">
+							<b:label value="Período de Atendimento:" severity="info" />
 
-					<b:row rendered="#{RelatoriosController.atributoGenerico1=='A'}">
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+								showOn="button" size="6" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período inicial de atendimento"
+								value="#{RelatoriosController.dataInicial}" />
+							<p:outputLabel id="outdataa">
+								<h:outputLabel value="à" style="margin-left: 20px" />
+							</p:outputLabel>
+						</b:column>
+						<b:column span="2" class="label-position data-size1" style="margin-top: 12px;">
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" required="true" requiredMessage="Informe o período final de atendimento"
+								showOn="button" size="6" id="dtagen3" locale="pt"
+								value="#{RelatoriosController.dataFinal}" />
+						</b:column>
+
+
+
+					</b:row>
+					
+					
+					
+					<b:row >
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Programa:" severity="info" />
@@ -95,7 +94,7 @@
 
 					</b:row>
 
-					<b:row rendered="#{RelatoriosController.atributoGenerico1=='A'}">
+					<b:row >
 
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
