@@ -27,6 +27,41 @@ public class LaudoDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
 
+    public boolean existeLaudoComMesmosDados(LaudoBean laudo) throws ProjetoException {
+
+    	boolean existeLaudoComMesmosDados = true;
+        String sql = "select exists ( " + 
+        		"	select l.id_laudo from hosp.laudo l " + 
+        		"		where l.codpaciente = ? and l.mes_inicio = ? and l.ano_inicio = ? " + 
+        		"		and l.mes_final = ? and l.ano_final = ? and l.codprocedimento_primario = ?) existe_laudo_com_mesmos_dados";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, laudo.getPaciente().getId_paciente());
+            stm.setInt(2, laudo.getMesInicio());
+            stm.setInt(3, laudo.getAnoInicio());
+            stm.setInt(4, laudo.getMesFinal());
+            stm.setInt(5, laudo.getAnoFinal());
+            stm.setInt(6, laudo.getProcedimentoPrimario().getIdProc());
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) 
+            	existeLaudoComMesmosDados = rs.getBoolean("existe_laudo_com_mesmos_dados");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existeLaudoComMesmosDados;
+    }
+    
     public Integer cadastrarLaudo(LaudoBean laudo) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
