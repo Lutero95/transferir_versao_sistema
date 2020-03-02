@@ -32,7 +32,7 @@
 							<b:label value="Período de Atendimento:" severity="info" />
 
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="6" class="select-agendaEquipe2"
+								showOn="button" size="6" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período Inicial"
 								value="#{RelatoriosController.dataInicial}" />
 							<p:outputLabel id="outdataa">
 								<h:outputLabel value="à" style="margin-left: 20px" />
@@ -40,7 +40,7 @@
 						</b:column>
 						<b:column span="2" class="label-position data-size1">
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="6"
+								showOn="button" size="6" required="true" requiredMessage="Informe o período Final"
 								id="dtagen3" locale="pt" 
 								value="#{RelatoriosController.dataFinal}" />
 						</b:column>

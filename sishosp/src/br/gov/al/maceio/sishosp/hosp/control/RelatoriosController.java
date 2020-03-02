@@ -582,16 +582,14 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 		
-		else if(this.prof.getId().equals(null)){
-			JSFUtil.adicionarMensagemErro("Informe o Profissional do Agendamento.", "Campo inválido!");
-			return;
-		}
+
 
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = caminho + "agendamentosPorProfissional.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
+		if ((prof != null) && (prof.getId() != null))
 		map.put("cod_profissional", this.prof.getId());
 		if ((tipoAtendimento != null) && (tipoAtendimento.getIdTipo() != null))
 			map.put("cod_tipo_atend", this.tipoAtendimento.getIdTipo());

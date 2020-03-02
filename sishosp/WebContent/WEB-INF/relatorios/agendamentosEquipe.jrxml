@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -138,7 +147,7 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 			<band height="24">
 				<textField>
 					<reportElement x="0" y="2" width="580" height="20" uuid="7c7e1f03-be50-4f97-bb77-05dd3564bf49"/>
-					<textFieldExpression><![CDATA["TOTAL GRUPO:"+$V{grpgrupo_COUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["TOTAL NO GRUPO:"+$V{grpgrupo_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -161,8 +170,8 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 		<groupFooter>
 			<band height="24">
 				<textField>
-					<reportElement x="4" y="0" width="436" height="20" uuid="86c17a98-dab0-42cb-bca4-e77089e6cb8a"/>
-					<textFieldExpression><![CDATA["TOTAL EQUIPE:"+$V{grpequipe_COUNT}]]></textFieldExpression>
+					<reportElement x="0" y="0" width="436" height="20" uuid="86c17a98-dab0-42cb-bca4-e77089e6cb8a"/>
+					<textFieldExpression><![CDATA["TOTAL NA EQUIPE:"+$V{grpequipe_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -170,7 +179,7 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 	<group name="grpdata">
 		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
 		<groupHeader>
-			<band height="53">
+			<band height="39">
 				<textField pattern="dd/MM/yyyy">
 					<reportElement x="4" y="0" width="166" height="13" uuid="f44d4a37-7088-46e3-bac7-728c51ace0be">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -181,39 +190,32 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 					<textFieldExpression><![CDATA[$F{dt_atend}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="82" y="20" width="143" height="16" uuid="4d91ccdc-db2c-4881-aef6-8e1e3c7c36c4"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<reportElement x="3" y="20" width="229" height="16" uuid="4d91ccdc-db2c-4881-aef6-8e1e3c7c36c4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
 					<text><![CDATA[NOME]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="235" y="20" width="100" height="16" uuid="58b0e7dd-78e1-4329-8881-833369e7bc20"/>
+					<reportElement x="290" y="20" width="76" height="16" uuid="58b0e7dd-78e1-4329-8881-833369e7bc20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
 					<text><![CDATA[CNS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="343" y="20" width="100" height="16" uuid="2bba0ab0-211a-4933-8c8a-82a5bd8b5330"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<reportElement x="370" y="20" width="50" height="16" uuid="2bba0ab0-211a-4933-8c8a-82a5bd8b5330"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
 					<text><![CDATA[TURNO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="453" y="20" width="147" height="16" uuid="54320ce7-8478-4e38-bbc0-427c69c5f209"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<reportElement x="424" y="20" width="147" height="16" uuid="54320ce7-8478-4e38-bbc0-427c69c5f209"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
 					<text><![CDATA[TIPO DE ATENDIMENTO]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="0" y="20" width="66" height="16" uuid="27eee2ab-a60b-496e-be87-5171f7522b9b"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="10" isBold="false"/>
-					</textElement>
-					<text><![CDATA[PRONT.]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -221,7 +223,7 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 			<band height="23">
 				<textField>
 					<reportElement x="0" y="0" width="350" height="20" uuid="396da2fb-4b55-406d-9677-7e0da0545f4f"/>
-					<textFieldExpression><![CDATA["TOTAL DATA:"+$V{grpdata_COUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["TOTAL NA DATA:"+$V{grpdata_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -233,65 +235,49 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="99" splitType="Stretch">
+		<band height="65" splitType="Stretch">
 			<textField>
-				<reportElement x="100" y="0" width="577" height="20" uuid="d6536674-de12-488f-ba56-dfbe859f5cf3"/>
+				<reportElement x="4" y="0" width="556" height="20" uuid="d6536674-de12-488f-ba56-dfbe859f5cf3"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="0" y="0" width="100" height="90" uuid="663d055f-51d7-484b-8dc6-ed298dda47ad"/>
-				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
-			</image>
 			<staticText>
-				<reportElement x="100" y="30" width="577" height="25" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
+				<reportElement x="4" y="30" width="556" height="20" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[AGENDAMENTOS POR EQUIPE]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="23" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</band>
-	</columnHeader>
 	<detail>
 		<band height="18">
 			<textField>
-				<reportElement x="0" y="0" width="66" height="18" uuid="ca480de8-8e32-40b9-926d-c3c66016cf76"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{pront}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="82" y="0" width="143" height="18" uuid="7677cc95-193a-42db-b4d0-0deaa5da1e49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="3" y="0" width="274" height="18" uuid="7677cc95-193a-42db-b4d0-0deaa5da1e49"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="235" y="0" width="100" height="18" uuid="2cd381cf-8a4f-4f98-a163-ad68f2c37f3e"/>
+				<reportElement x="290" y="0" width="76" height="18" uuid="2cd381cf-8a4f-4f98-a163-ad68f2c37f3e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="343" y="0" width="100" height="18" uuid="96202ce0-1c2b-4311-80a7-32be72138755"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="370" y="0" width="50" height="18" uuid="96202ce0-1c2b-4311-80a7-32be72138755"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="453" y="0" width="147" height="18" uuid="03eeeb79-11fa-47d8-bdd5-6b5f3698b84c"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="424" y="0" width="147" height="18" uuid="03eeeb79-11fa-47d8-bdd5-6b5f3698b84c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_tipo_atend}]]></textFieldExpression>
