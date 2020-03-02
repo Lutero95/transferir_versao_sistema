@@ -381,7 +381,8 @@ public class UnidadeDAO {
                     "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
                     "programa_ortese_protese = ?, grupo_ortese_protese = ?, almoco_inicio = ?, almoco_final = ?,  " +
                     " necessita_presenca_para_evolucao=?, pts_mostra_obs_gerais_curto=? , pts_mostra_obs_gerais_medio=?, " +
-                    "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ? " +
+                    "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ?, " +
+                    "bloqueia_por_pendencia_evolucao_anterior = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -458,7 +459,8 @@ public class UnidadeDAO {
                 ps.setNull(19, Types.NULL);
             }
 
-            ps.setInt(20, unidade.getId());
+            ps.setBoolean(20, unidade.getParametro().isBloqueiaPorPendenciaEvolucaoAnterior());
+            ps.setInt(21, unidade.getId());
 
             ps.executeUpdate();
             
