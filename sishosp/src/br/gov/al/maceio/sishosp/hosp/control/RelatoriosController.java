@@ -146,6 +146,10 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelFrequencia() {
 		atributoGenerico1 = "P";
 	}
+	
+	public void preparaRelatorioAgendamentos() {
+		atributoGenerico1 = "A";
+	}
 
 	public void setaOpcaoRelLaudoVencer() {
 		atributoGenerico2 = "P";
@@ -321,6 +325,40 @@ public class RelatoriosController implements Serializable {
 //                    map);
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 
+		}
+	}
+	
+	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+		
+		pacienteInstituicao.setPrograma(programa);
+		pacienteInstituicao.setGrupo(grupo);
+		int randomico = JSFUtil.geraNumeroRandomico();
+		RelatorioDAO rDao = new RelatorioDAO();
+		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
+
+		if (atributoGenerico1.equalsIgnoreCase("A")) {
+			String caminho = "/WEB-INF/relatorios/";
+			String relatorio = "";
+			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("dt_inicial", dataInicial);
+			map.put("dt_final", dataFinal);
+			if (pacienteInstituicao.getPrograma() != null)
+				map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+
+			if (pacienteInstituicao.getGrupo() != null)
+				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
+
+			rDao.limparTabelaTemporariaFrequencia(randomico);
+		}
+		else {
+			//TODO 
+			//CHAMADA DO RELATÓRIO DE ANTENDIMENTO SINTÉTICO
+			//this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 	}
 
