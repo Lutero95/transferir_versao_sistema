@@ -569,7 +569,7 @@ public class AtendimentoDAO {
 				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
 				+ "			a11.id_atendimento = a.id_atendimento\n"
 				+ "			and a11.codprofissionalatendimento=?\n"
-				+ "			and a11.evolucao is null)  then 'Evolução Não Realizada'\n"
+				+ "			and a11.evolucao is null and coalesce(a11.excluido,'N')='N')  then 'Evolução Não Realizada'\n"
 				+ "		 else 'Evolução Realizada'\n" + "	end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
@@ -582,8 +582,8 @@ public class AtendimentoDAO {
 				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) ";
 
 		if(listaEvolucoesPendentes) {
-			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade "
-					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S'";
+			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade and ceu.codprograma = a.codprograma and ceu.codgrupo = a.codgrupo  "
+					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.evolucao is null";
 		}
 		
 		else
@@ -591,7 +591,7 @@ public class AtendimentoDAO {
 		
 		sql = sql + " and a.cod_unidade = ? and coalesce(a1.excluido,'N')='N' and coalesce(a.situacao,'A')<>'C'"
 				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
-				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento) and a1.codprofissionalatendimento=?";
+				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento and coalesce(a11.excluido,'N')='N') and a1.codprofissionalatendimento=?";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
