@@ -268,6 +268,25 @@ public class RelatoriosController implements Serializable {
 		this.executeReportNewTab(relatorio, "laudo.pdf", map);
 
 	}
+	
+	public void gerarRelatorioPacientesAtivosLaudoVencido(ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		relatorio = caminho + "pacientes_ativos_laudo_vencido.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("codunidade", user_session.getUnidade().getId());
+		if (pacienteInstituicao.getPrograma() != null)
+			map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+
+		if (pacienteInstituicao.getGrupo() != null)
+			map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+		this.executeReport(relatorio, map, "relatorio_pacientes_ativos_laudo_vencido.pdf");
+	}
+
 
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
