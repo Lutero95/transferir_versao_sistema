@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
@@ -218,6 +220,61 @@ public class PacienteController implements Serializable {
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
 		listaPacientes = pDao.listaPacientes();
+	}
+	
+	public void verificaExisteCNSDoPacienteCadastrado(String cns) {
+		
+		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cns)) {
+			if (!DocumentosUtil.validaCNS(cns)) {
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("CNS não válida!");
+				throw new ValidatorException(message);
+			}
+			
+			PacienteDAO pDAo = new PacienteDAO();
+			PacienteBean pacienteRetorno;
+			Integer idPaciente = null;
+			if (PacienteController.getParamIdPaciente()!=null) 
+				 idPaciente =  PacienteController.getParamIdPaciente();
+				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(cns, idPaciente); 
+																					
+			if (pacienteRetorno != null) {
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("Já existe cns cadastrado para o paciente " + pacienteRetorno.getNome());
+				throw new ValidatorException(message);
+			}
+		}
+	}
+	
+	public void verificaExisteCPFDoPacienteCadastrado(String cpf) {
+		
+		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cpf)) {
+			cpf = cpf.replaceAll(" ", "").replaceAll("[^0-9]", "");
+
+			if (!DocumentosUtil.validaCPF(cpf)) {
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("CPF não válido!");
+				throw new ValidatorException(message);
+			} else {
+				PacienteDAO pDAo = new PacienteDAO();
+				PacienteBean pacienteRetorno;
+				Integer idPaciente = null;
+				if (PacienteController.getParamIdPaciente() != null) 
+					idPaciente = PacienteController.getParamIdPaciente();
+					pacienteRetorno = pDAo.verificaExisteCpfCadastrado(cpf, idPaciente); 
+
+					if (pacienteRetorno != null) {
+						FacesMessage message = new FacesMessage();
+						message.setSeverity(FacesMessage.SEVERITY_ERROR);
+						message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
+						throw new ValidatorException(message);
+					}
+				
+			}
+		}
 	}
 
 	public void buscaProfissaoCod(Integer codprofissao) throws Exception {

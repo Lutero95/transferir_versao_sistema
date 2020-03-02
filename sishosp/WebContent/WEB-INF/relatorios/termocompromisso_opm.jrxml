@@ -38,26 +38,28 @@
 		</box>
 	</style>
 	<parameter name="opm_id" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT  distinct l.codpaciente, pacientes.nome, pacientes.cpf, pacientes.rg, 
              pacientes.cns,pacientes.mae, pacientes.oe, 
              pacientes.nomeresp, f.descfuncionario,
              municipio.nome descmunicipio, l.codprocedimento_primario, proc.nome nomeprocedimento, fornecedor.descfornecedor, 
-             fornecedor.endereco, fornecedor.cnpj, f.descfuncionario nomeprofissional, f.cns cnsprofissional, fornecedor.bairrofornecedor, 
-             fornecedor.estadofornecedor, fornecedor.cepfornecedor, fornecedor.cidadefornecedor, 
-             fornecedor.tel1, fornecedor.tel2, fornecedor.ie,  tipoaparelho.desctipoaparelho, empresa.nome_principal nomeinstituicao, 
+             fornecedor.endereco, fornecedor.cnpj, f.descfuncionario nomeprofissional, f.cns cnsprofissional, fornecedor.bairro, 
+             fornecedor.estado , fornecedor.cep, municipio.nome municipio , 
+             fornecedor.telefone1, fornecedor.telefone2, fornecedor.ie,  tipoaparelho.desctipoaparelho, empresa.nome_principal nomeinstituicao, 
               empresa.nome_fantasia, empresa.responsavel, empresa.cidade cidadeempresa, op.data_chegada,op.data_entrega, pacientes.pai
               FROM hosp.ortese_protese op
-             join hosp.laudo l on l.id_laudo = op.cod_laudo
-             join hosp.pacientes on (l.codpaciente = pacientes.id_paciente)
-             join acl.funcionarios f on (l.cod_profissional = f.id_funcionario)
-             join hosp.programa on (op.cod_programa = programa.id_programa)
-             join hosp.proc on (proc.id = l.codprocedimento_primario)
-             join hosp.fornecedor on (fornecedor.id_fornecedor = op.cod_fornecedor)
+             left join hosp.laudo l on l.id_laudo = op.cod_laudo
+             left join hosp.pacientes on (l.codpaciente = pacientes.id_paciente)
+             left join acl.funcionarios f on (l.cod_profissional = f.id_funcionario)
+             left join hosp.programa on (op.cod_programa = programa.id_programa)
+             left join hosp.proc on (proc.id = l.codprocedimento_primario)
+             left join hosp.fornecedor on (fornecedor.id_fornecedor = op.cod_fornecedor)
              left join hosp.municipio on municipio.id_municipio = pacientes.codmunicipio
-             join hosp.tipoaparelho on op.cod_equipamento = tipoaparelho.id
-             join hosp.empresa on empresa.cod_empresa = 1
-             where op.id=1]]>
+             left join hosp.tipoaparelho on op.cod_equipamento = tipoaparelho.id
+JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.empresa ON empresa.cod_empresa = u.cod_empresa
+             where op.id= $P{opm_id} ]]>
 	</queryString>
 	<field name="codpaciente" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="codpaciente"/>
@@ -127,28 +129,28 @@
 		<property name="com.jaspersoft.studio.field.label" value="cnsprofissional"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
 	</field>
-	<field name="bairrofornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="bairrofornecedor"/>
+	<field name="bairro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bairro"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="estadofornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="estadofornecedor"/>
+	<field name="estado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="estado"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="cepfornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="cepfornecedor"/>
+	<field name="cep" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cep"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="cidadefornecedor" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="cidadefornecedor"/>
+	<field name="municipio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="municipio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="municipio"/>
+	</field>
+	<field name="telefone1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefone1"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
-	<field name="tel1" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel1"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
-	</field>
-	<field name="tel2" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel2"/>
+	<field name="telefone2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefone2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="fornecedor"/>
 	</field>
 	<field name="ie" class="java.lang.String">
@@ -482,8 +484,7 @@
 
 "Ao aceitar e testar sua satisfação com o equipamento destinado a melhorar sua audição, o Sr.(a) <b>"+$F{nome}+
 
-"</b> compromete-se a zelar pelo referido equipamento, preservando-o por, no mínimo 2 (dois) anos. Para isso contará com o apoio da Empresa / Instituição fornecedora (acima) e da Intituição responsável pela prescrição, adequação e treinamento do equipamento ao paciente."
-]]></textFieldExpression>
+"</b> compromete-se a zelar pelo referido equipamento, preservando-o por, no mínimo 2 (dois) anos. Para isso contará com o apoio da Empresa / Instituição fornecedora (acima) e da Intituição responsável pela prescrição, adequação e treinamento do equipamento ao paciente."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="ElementGroupHeight" x="280" y="666" width="282" height="13" uuid="414b1640-8068-45eb-a5dd-32f75a5f8731"/>
@@ -544,19 +545,19 @@
 			</textField>
 			<textField>
 				<reportElement x="51" y="130" width="149" height="13" uuid="6f272157-2f0d-40a7-8df7-4b7461fe57bd"/>
-				<textFieldExpression><![CDATA[$F{bairrofornecedor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{bairro}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="242" y="130" width="189" height="13" uuid="c3ca1abc-1593-4e3b-aebb-0ebb4dcacb1c"/>
-				<textFieldExpression><![CDATA[$F{cidadefornecedor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{municipio}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="470" y="130" width="100" height="13" uuid="48a251f1-8092-4330-b153-5eb4c1ff9f93"/>
-				<textFieldExpression><![CDATA[$F{cepfornecedor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="67" y="146" width="149" height="13" uuid="ec7aa9b8-36cf-462f-a7cd-e94287890a34"/>
-				<textFieldExpression><![CDATA[$F{tel1}+" "+$F{tel2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{telefone1}+" "+$F{telefone2}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="119" y="163" width="149" height="13" uuid="a6e5b3a5-1147-4969-9d21-b6fa9975658f"/>

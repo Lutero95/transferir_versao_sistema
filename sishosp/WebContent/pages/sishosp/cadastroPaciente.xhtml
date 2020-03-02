@@ -11,8 +11,8 @@
 		<f:metadata>
 			<f:viewAction action="#{PacienteController.getEditPaciente()}" />
 		</f:metadata>
-
 		<h:form class="form-horizontal" id="frmPrincipal">
+		
 
 			<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
@@ -519,8 +519,8 @@
 								<p:inputMask mask="999.999.999-99"
 									value="#{PacienteController.paciente.cpf}"
 									class="form-control select-agendaEquipe2" id="cpf"
-									required="false" validator="CPFPacienteValidator"
-									requiredMessage="CPF do Paciente: Campo obrigatório!">
+									required="false" validator="CPFPacienteValidator">
+									<p:ajax process="@this :frmPrincipal:tbv:cpf" update="msgPagina" event="blur" listener="#{PacienteController.verificaExisteCPFDoPacienteCadastrado(PacienteController.paciente.cpf)}"/>
 								</p:inputMask>
 							</b:column>
 						</b:row>
@@ -535,11 +535,13 @@
 
 								<p:inputText value="#{PacienteController.paciente.cns}"
 									style="margin-left:-15px" maxlength="15" class="form-control"
-									id="cns" required="true"
+									id="idcns" required="true"
 									requiredMessage="CNS: Campo obrigatório!"
 									validator="CNSValidator">
+									<p:ajax process="@this :frmPrincipal:tbv:idcns" update="msgPagina" event="blur" listener="#{PacienteController.verificaExisteCNSDoPacienteCadastrado(PacienteController.paciente.cns)}"/>
 									<f:validateLength minimum="15" maximum="15" />
 								</p:inputText>
+								
 							</b:column>
 							
 							<b:column span="2" class="label-position">
