@@ -1,13 +1,19 @@
 package br.gov.al.maceio.sishosp.administrativo.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bridj.jawt.JAWT.GetComponent_callback;
+
 import br.gov.al.maceio.sishosp.administrativo.model.GestaoAbonoFaltaPaciente;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 
 public class GestaoAbonoFaltaPacienteDAO {
 
@@ -60,5 +66,97 @@ public class GestaoAbonoFaltaPacienteDAO {
 			}
 		}
 		return listaAbonosFaltaPaciente;
+	}
+	
+	public List<AtendimentoBean> listarAtendimentosParaAbono(GestaoAbonoFaltaPaciente abonoFaltaPaciente) {
+
+		List<AtendimentoBean> listaAtendimentosParaAbono = new ArrayList<>();
+
+		String sql = "SELECT a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " + 
+        		"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, " + 
+        		"CASE WHEN a.turno = 'T' THEN 'TARDE' " + 
+        		"WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno, pa.nome nomepaciente " + 
+        		"FROM hosp.atendimentos a " + 
+        		" join hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
+        		"JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " + 
+        		"JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " + 
+        		"JOIN hosp.programa p ON (a.codprograma = p.id_programa) " + 
+        		"JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " + 
+        		"JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " + 
+        		"WHERE a.codpaciente = ?  AND a.dtaatende = ? " + 
+        		"AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null ";
+		
+		if (!abonoFaltaPaciente.getTurno().equals(Turno.AMBOS.getSigla())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(abonoFaltaPaciente.getTurno())) 
+            sql = sql + "AND a.turno = ? ";
+        
+        
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getPrograma())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getPrograma().getIdPrograma()))) 
+            sql = sql + "AND a.codprograma = ? ";
+        
+        
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getGrupo().getIdGrupo()))) 
+            sql = sql + "AND a.codgrupo = ? ";
+        
+        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getEquipe())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getEquipe().getCodEquipe()))) 
+            sql = sql + "AND a.codequipe = ? ";
+        
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, abonoFaltaPaciente.getPaciente().getId_paciente());
+			stm.setDate(2, new Date(abonoFaltaPaciente.getDataAbono().getTime()));
+			Integer proximoParametroStatment = 3;
+			if (!abonoFaltaPaciente.getTurno().equals(Turno.AMBOS.getSigla())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(abonoFaltaPaciente.getTurno())) {
+	            stm.setString(proximoParametroStatment, abonoFaltaPaciente.getTurno());
+	            proximoParametroStatment++;
+			}
+	        
+	        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getPrograma())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getPrograma().getIdPrograma()))) { 
+	            stm.setInt(proximoParametroStatment, abonoFaltaPaciente.getPrograma().getIdPrograma());
+	            proximoParametroStatment++;
+	        }
+	        
+	        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getGrupo())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getGrupo().getIdGrupo()))) { 
+	        	stm.setInt(proximoParametroStatment, abonoFaltaPaciente.getGrupo().getIdGrupo());
+	        	proximoParametroStatment++;
+	        }
+	        if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getEquipe())) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(abonoFaltaPaciente.getEquipe().getCodEquipe()))) { 
+	        	stm.setInt(proximoParametroStatment, abonoFaltaPaciente.getEquipe().getCodEquipe());
+	        	proximoParametroStatment++;
+	        }    
+	            
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AtendimentoBean atendimentoParaAbono = new AtendimentoBean();
+				atendimentoParaAbono.setId(rs.getInt("id_atendimento"));
+				atendimentoParaAbono.setId1(rs.getInt("id_atendimentos1"));
+				atendimentoParaAbono.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				atendimentoParaAbono.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				atendimentoParaAbono.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				atendimentoParaAbono.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
+				atendimentoParaAbono.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimentoParaAbono.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				atendimentoParaAbono.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				atendimentoParaAbono.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				atendimentoParaAbono.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				atendimentoParaAbono.setTurno(rs.getString("turno"));
+				atendimentoParaAbono.getPaciente().setNome(rs.getString("nomepaciente"));
+				listaAtendimentosParaAbono.add(atendimentoParaAbono);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaAtendimentosParaAbono;
 	}
 }

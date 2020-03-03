@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.GestaoAbonoFaltaPaciente;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
 @ViewScoped
@@ -22,6 +23,9 @@ public class GestaoAbonoFaltaPacienteController {
 	private GestaoAbonoFaltaPaciente abonoFaltaPaciente;
 	private List<EquipeBean> listaEquipePorGrupo;
 	private EquipeDAO equipeDao;
+	private String tipoData;
+	private List<AtendimentoBean> listaAtendimentosParaAbono;
+	private List<AtendimentoBean> listaAtendimentosSelecionadosParaAbono;
 	
 	private static final String ENDERECO_CADASTRO = "abonarfaltapaciente?faces-redirect=true";
 	
@@ -29,8 +33,10 @@ public class GestaoAbonoFaltaPacienteController {
 		this.listaAbonosFaltaPaciente = new ArrayList<GestaoAbonoFaltaPaciente>();
 		this.gestaoAbonoFaltaPacienteDAO = new GestaoAbonoFaltaPacienteDAO();
 		this.abonoFaltaPaciente = new GestaoAbonoFaltaPaciente();
-		listaEquipePorGrupo = new ArrayList<EquipeBean>();
+		this.listaEquipePorGrupo = new ArrayList<EquipeBean>();
 		this.equipeDao = new EquipeDAO();
+		this.listaAtendimentosParaAbono = new ArrayList<AtendimentoBean>();
+		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<AtendimentoBean>();
 	}
 	
     public String redirectNovo() {
@@ -45,6 +51,10 @@ public class GestaoAbonoFaltaPacienteController {
 	
 	public void listarAbonosFaltaPaciente() {
 		this.listaAbonosFaltaPaciente = gestaoAbonoFaltaPacienteDAO.listarAfastamentoProfissionais();
+	}
+	
+	public void listarAtendimentosParaAbono() {
+		this.listaAtendimentosParaAbono = gestaoAbonoFaltaPacienteDAO.listarAtendimentosParaAbono(abonoFaltaPaciente);
 	}
 
 	public List<GestaoAbonoFaltaPaciente> getListaAbonosFaltaPaciente() {
@@ -70,4 +80,29 @@ public class GestaoAbonoFaltaPacienteController {
 	public void setListaEquipePorGrupo(List<EquipeBean> listaEquipePorGrupo) {
 		this.listaEquipePorGrupo = listaEquipePorGrupo;
 	}
+
+	public String getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(String tipoData) {
+		this.tipoData = tipoData;
+	}
+
+	public List<AtendimentoBean> getListaAtendimentosParaAbono() {
+		return listaAtendimentosParaAbono;
+	}
+
+	public void setListaAtendimentosParaAbono(List<AtendimentoBean> listaAtendimentosParaAbono) {
+		this.listaAtendimentosParaAbono = listaAtendimentosParaAbono;
+	}
+
+	public List<AtendimentoBean> getListaAtendimentosSelecionadosParaAbono() {
+		return listaAtendimentosSelecionadosParaAbono;
+	}
+
+	public void setListaAtendimentosSelecionadosParaAbono(List<AtendimentoBean> listaAtendimentosSelecionadosParaAbono) {
+		this.listaAtendimentosSelecionadosParaAbono = listaAtendimentosSelecionadosParaAbono;
+	}
+
 }

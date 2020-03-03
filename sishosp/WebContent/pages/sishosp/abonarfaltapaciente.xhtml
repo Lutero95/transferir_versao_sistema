@@ -164,7 +164,7 @@
                             <b:column span="3" class="btn-radio-table">
 
                                 <p:selectOneRadio
-                                        value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.turno}">
+                                        value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.turno}">
                                     <f:selectItem itemLabel="Ambos" itemValue="A"/>
                                     <f:selectItem itemLabel="Manhã" itemValue="M"/>
                                     <f:selectItem itemLabel="Tarde" itemValue="T"/>
@@ -187,7 +187,7 @@
                         </b:column>
 
                         <b:column span="3" class="btn-radio-table">
-                            <p:selectOneRadio value="#{remocaoProfissionalEquipeController.tipoData}"
+                            <p:selectOneRadio value="#{gestaoAbonoFaltaPacienteController.tipoData}"
                             required="true" requiredMessage="Data Abono: Campo obrigatório!">
                                 <f:selectItem itemLabel="Data única" itemValue="U"/>
                                 <p:ajax update="outdata"></p:ajax>
@@ -200,12 +200,11 @@
 
                     <!-- DATA ÚNICA -->
                     <p:outputPanel id="outdata">
-                        <b:row rendered="#{remocaoProfissionalEquipeController.tipoData == 'U'}">
+                        <b:row rendered="#{gestaoAbonoFaltaPacienteController.tipoData == 'U'}">
                             <b:column span="2" class="label-position data-size">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
                                             showOn="button" size="8" class="select-agendaEquipe2"
-                                            rendered="#{remocaoProfissionalEquipeController.tipoData == 'U'}"
-                                            value="#{remocaoProfissionalEquipeController.remocaoProfissionalEquipe.periodoInicio}"
+                                            value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.dataAbono}"
                                             id="dtagen"
                                             locale="pt">
                                 </p:calendar>
@@ -221,7 +220,7 @@
                     <b:row>
                         <p:commandButton value="Buscar" look="success" size="sm"
                                          id="bgbuscar" icon="ui-icon-search"
-                                         action="#{remocaoProfissionalEquipeController.listarSeremRemovidos()}"
+                                         action="#{gestaoAbonoFaltaPacienteController.listarAtendimentosParaAbono()}"
                                          update="growlMsg, tabela"
                                          class="btn-incluir"/>
                     </b:row>
@@ -231,11 +230,11 @@
                     <b:row>
 
                         <p:outputPanel id="tabela">
-                            <p:dataTable value="#{remocaoProfissionalEquipeController.listaSeremRemovidos}" var="tab"
+                            <p:dataTable value="#{gestaoAbonoFaltaPacienteController.listaAtendimentosParaAbono}" var="tab"
                                          id="dtAtendimentos"
                                          emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
-                                         selection="#{remocaoProfissionalEquipeController.listaSelecaoSeremRemovidos}"
-                                         rowKey="#{tab.atendimentoBean.id1}">
+                                         selection="#{gestaoAbonoFaltaPacienteController.listaAtendimentosSelecionadosParaAbono}"
+                                         rowKey="#{tab.id}">
 
                                 <f:facet name="header">
                                     Atendimentos
@@ -244,25 +243,25 @@
                                 <p:column selectionMode="multiple" style="width:16px;text-align:center" width="5%"/>
 
                                 <p:column headerText="Paciente" width="10%">
-                                    <h:outputText value="#{tab.atendimentoBean.paciente.nome}"/>
+                                    <h:outputText value="#{tab.paciente.nome}"/>
                                 </p:column>
 
                                 <p:column headerText="Data" width="15%">
-                                    <h:outputText value="#{tab.atendimentoBean.dataAtendimentoInicio}">
+                                    <h:outputText value="#{tab.dataAtendimentoInicio}">
                                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                                     </h:outputText>
                                 </p:column>
 
                                 <p:column headerText="Turno" width="10%">
-                                    <h:outputText value="#{tab.atendimentoBean.turno}"/>
+                                    <h:outputText value="#{tab.turno}"/>
                                 </p:column>
 
                                 <p:column headerText="Grupo" width="30%">
-                                    <h:outputText value="#{tab.atendimentoBean.grupo.descGrupo}"/>
+                                    <h:outputText value="#{tab.grupo.descGrupo}"/>
                                 </p:column>
 
                                 <p:column headerText="Equipe" width="30%">
-                                    <h:outputText value="#{tab.atendimentoBean.equipe.descEquipe}"/>
+                                    <h:outputText value="#{tab.equipe.descEquipe}"/>
                                 </p:column>
 
                             </p:dataTable>

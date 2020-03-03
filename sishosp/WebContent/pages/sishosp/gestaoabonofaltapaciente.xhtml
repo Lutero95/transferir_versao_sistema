@@ -28,7 +28,8 @@
 
 
 					<p:dataTable id="dataTablePrincipal" var="abono" responsive="true" rows="20" style="margin-top: 10px"
-								 value="#{gestaoAbonoFaltaPacienteController.listaAbonosFaltaPaciente}" paginator="true">
+								 value="#{gestaoAbonoFaltaPacienteController.listaAbonosFaltaPaciente}" paginator="true"
+								 emptyMessage="Nenhum abono encontrado.">
 
 						<p:column width="20%">
 							<f:facet name="header">
