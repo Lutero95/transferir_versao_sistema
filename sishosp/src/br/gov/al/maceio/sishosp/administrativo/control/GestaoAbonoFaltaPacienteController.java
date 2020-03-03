@@ -1,15 +1,20 @@
 package br.gov.al.maceio.sishosp.administrativo.control;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.GestaoAbonoFaltaPacienteDAO;
 import br.gov.al.maceio.sishosp.administrativo.model.GestaoAbonoFaltaPaciente;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -30,13 +35,13 @@ public class GestaoAbonoFaltaPacienteController {
 	private static final String ENDERECO_CADASTRO = "abonarfaltapaciente?faces-redirect=true";
 	
 	public GestaoAbonoFaltaPacienteController() {
-		this.listaAbonosFaltaPaciente = new ArrayList<GestaoAbonoFaltaPaciente>();
+		this.listaAbonosFaltaPaciente = new ArrayList<>();
 		this.gestaoAbonoFaltaPacienteDAO = new GestaoAbonoFaltaPacienteDAO();
 		this.abonoFaltaPaciente = new GestaoAbonoFaltaPaciente();
-		this.listaEquipePorGrupo = new ArrayList<EquipeBean>();
+		this.listaEquipePorGrupo = new ArrayList<>();
 		this.equipeDao = new EquipeDAO();
-		this.listaAtendimentosParaAbono = new ArrayList<AtendimentoBean>();
-		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<AtendimentoBean>();
+		this.listaAtendimentosParaAbono = new ArrayList<>();
+		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<>();
 	}
 	
     public String redirectNovo() {
@@ -55,6 +60,37 @@ public class GestaoAbonoFaltaPacienteController {
 	
 	public void listarAtendimentosParaAbono() {
 		this.listaAtendimentosParaAbono = gestaoAbonoFaltaPacienteDAO.listarAtendimentosParaAbono(abonoFaltaPaciente);
+	}
+	
+	public void gravaAbonos() throws SQLException {
+		if(haAtendimentoSelecionadoParaAbono()) {
+			FuncionarioBean userSession = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().get("obj_usuario");
+			
+			boolean inseriuAbonos = gestaoAbonoFaltaPacienteDAO.inserirAbonoFaltaPaciente
+					(this.listaAtendimentosSelecionadosParaAbono, userSession.getId(), this.abonoFaltaPaciente.getJustificativa());
+			if(inseriuAbonos) {
+				JSFUtil.adicionarMensagemSucesso("Abonos Gravados com sucesso!", "");
+				limparDados();
+			}
+		}
+	}
+
+	private boolean haAtendimentoSelecionadoParaAbono() {
+		if(listaAtendimentosSelecionadosParaAbono.isEmpty()
+				|| VerificadorUtil.verificarSeObjetoNulo(listaAtendimentosSelecionadosParaAbono)) {
+			JSFUtil.adicionarMensagemErro("Selecione pelo menos um atendimento", "Erro");
+			return false;
+		}
+		return true;
+	}
+	
+	private void limparDados() {
+		this.listaAbonosFaltaPaciente = new ArrayList<GestaoAbonoFaltaPaciente>();
+		this.abonoFaltaPaciente = new GestaoAbonoFaltaPaciente();
+		this.listaEquipePorGrupo = new ArrayList<EquipeBean>();
+		this.listaAtendimentosParaAbono = new ArrayList<AtendimentoBean>();
+		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<AtendimentoBean>();
 	}
 
 	public List<GestaoAbonoFaltaPaciente> getListaAbonosFaltaPaciente() {

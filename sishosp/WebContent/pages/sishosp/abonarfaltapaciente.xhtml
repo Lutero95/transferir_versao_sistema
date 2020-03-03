@@ -112,7 +112,16 @@
                                                      update=":formConsuEquipe"/>
                                 </p:outputPanel>
                             </b:column>
-
+                            
+                            <b:column span="2"
+                            	class="label-position new-data-size new-comple1">
+                            	<b:label value="Justificativa" severity="info"/>
+                            	
+                            	<p:outputPanel id="outJustificativa">
+                            		<p:inputTextarea value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.justificativa}"
+                            			 rows="6" cols="33" autoResize="false"  class="select-agendaEquipe4" style="margin-top: 1%;" />
+                            	</p:outputPanel>
+                            </b:column>
 
                         </b:row>
                     </p:outputPanel>
@@ -278,15 +287,14 @@
 
                         <p:commandButton value="Gravar" look="success" size="sm"
                                          id="bgravar" icon="ui-icon-check"
-                                         action="#{remocaoProfissionalEquipeController.gravarRemocaoProfissionalEquipe()}"
+                                         action="#{gestaoAbonoFaltaPacienteController.gravaAbonos()}"
                                          update=":formAbonoFaltaPaciente"
                                          class="btn-incluir"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
                                          update=":formAbonoFaltaPaciente"
-                                         actionListener="#{remocaoProfissionalEquipeController.limparDados()}"
-                                         action="/pages/sishosp/gestaoexcluirprofissionalatendimento.xhtml?faces-redirect=true">
+                                         action="/pages/sishosp/gestaoabonofaltapaciente.xhtml?faces-redirect=true">
                         </p:commandButton>
 
                     </div>
