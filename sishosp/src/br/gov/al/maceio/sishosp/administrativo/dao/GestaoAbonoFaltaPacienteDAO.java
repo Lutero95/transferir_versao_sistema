@@ -11,6 +11,7 @@ import java.util.List;
 import org.bridj.jawt.JAWT.GetComponent_callback;
 
 import br.gov.al.maceio.sishosp.administrativo.model.GestaoAbonoFaltaPaciente;
+import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarInsercaoAbonoFaltaPacienteDTO;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarRemocaoAtendimentoDTO;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -77,19 +78,21 @@ public class GestaoAbonoFaltaPacienteDAO {
 
 		List<AtendimentoBean> listaAtendimentosParaAbono = new ArrayList<>();
 
-		String sql = "SELECT a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " + 
-        		"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, " + 
+		String sql = "SELECT distinct a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " + 
+        		"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, profissional.descfuncionario, " + 
         		"CASE WHEN a.turno = 'T' THEN 'TARDE' " + 
         		"WHEN a.turno = 'M' THEN 'MANHÃ' END AS turno, pa.nome nomepaciente, pa.id_paciente " + 
         		"FROM hosp.atendimentos a " + 
-        		" join hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
+        		"JOIN hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
         		"JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " + 
         		"JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " + 
         		"JOIN hosp.programa p ON (a.codprograma = p.id_programa) " + 
         		"JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " + 
-        		"JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " + 
+        		"LEFT JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " +
+        		"LEFT JOIN acl.funcionarios profissional ON (profissional.id_funcionario = a.codmedico) " +
         		"WHERE a.codpaciente = ?  AND a.dtaatende = ? " + 
-        		"AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null ";
+        		"AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null " +
+        		"AND NOT EXISTS (SELECT afp1.id FROM adm.abono_falta_paciente_1 afp1 WHERE afp1.id_atendimentos1 = a1.id_atendimentos1 ) ";
 		
 		if (!abonoFaltaPaciente.getTurno().equals(Turno.AMBOS.getSigla())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(abonoFaltaPaciente.getTurno())) 
@@ -166,7 +169,7 @@ public class GestaoAbonoFaltaPacienteDAO {
 		return listaAtendimentosParaAbono;
 	}
 	
-    public boolean inserirAbonoFaltaPaciente(List<AtendimentoBean> atendimentosParaAbono, Long idUsuarioOperacao, String justificativa) throws SQLException {
+    public boolean inserirAbonoFaltaPaciente(GravarInsercaoAbonoFaltaPacienteDTO gravarInsercaoAbonoFaltaPacienteDTO) throws SQLException {
 
         Boolean retorno = false;
         String sql = "INSERT INTO adm.abono_falta_paciente " + 
@@ -176,10 +179,10 @@ public class GestaoAbonoFaltaPacienteDAO {
 
         	con = ConnectionFactory.getConnection();
 
-            for (AtendimentoBean atendimento : atendimentosParaAbono) {
+            for (AtendimentoBean atendimento : gravarInsercaoAbonoFaltaPacienteDTO.getAtendimentosParaAbono()) {
                 ps = con.prepareStatement(sql);
 
-            	ps.setLong(1, idUsuarioOperacao);
+            	ps.setLong(1, gravarInsercaoAbonoFaltaPacienteDTO.getIdUsuarioOperacao());
             	ps.setInt(2, atendimento.getPrograma().getIdPrograma());
             	ps.setInt(3, atendimento.getGrupo().getIdGrupo());
             	ps.setInt(4, atendimento.getEquipe().getCodEquipe());
@@ -190,7 +193,7 @@ public class GestaoAbonoFaltaPacienteDAO {
             		ps.setString(6, Turno.TARDE.getSigla());
             	
             	ps.setInt(7, atendimento.getPaciente().getId_paciente());
-            	ps.setString(8, justificativa);
+            	ps.setString(8, gravarInsercaoAbonoFaltaPacienteDTO.getJustificativa());
                 ResultSet rs = ps.executeQuery();
                 
                 if(rs.next()) {

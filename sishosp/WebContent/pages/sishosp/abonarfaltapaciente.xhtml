@@ -119,7 +119,9 @@
                             	
                             	<p:outputPanel id="outJustificativa">
                             		<p:inputTextarea value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.justificativa}"
-                            			 rows="6" cols="33" autoResize="false"  class="select-agendaEquipe4" style="margin-top: 1%;" />
+                            			 rows="6" cols="33" scrollHeight="200"
+                            			 autoResize="false"  class="select-agendaEquipe4" 
+                            			 style="margin-top: 1%;" />
                             	</p:outputPanel>
                             </b:column>
 
@@ -243,7 +245,7 @@
                                          id="dtAtendimentos"
                                          emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
                                          selection="#{gestaoAbonoFaltaPacienteController.listaAtendimentosSelecionadosParaAbono}"
-                                         rowKey="#{tab.id}">
+                                         rowKey="#{tab.id1}">
 
                                 <f:facet name="header">
                                     Atendimentos

@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.GestaoAbonoFaltaPacienteDAO;
 import br.gov.al.maceio.sishosp.administrativo.model.GestaoAbonoFaltaPaciente;
+import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarInsercaoAbonoFaltaPacienteDTO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -41,7 +42,7 @@ public class GestaoAbonoFaltaPacienteController {
 		this.listaEquipePorGrupo = new ArrayList<>();
 		this.equipeDao = new EquipeDAO();
 		this.listaAtendimentosParaAbono = new ArrayList<>();
-		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<>();
+		listaAtendimentosSelecionadosParaAbono = new ArrayList<>();
 	}
 	
     public String redirectNovo() {
@@ -63,12 +64,13 @@ public class GestaoAbonoFaltaPacienteController {
 	}
 	
 	public void gravaAbonos() throws SQLException {
-		if(haAtendimentoSelecionadoParaAbono()) {
+		if(haAtendimentoSelecionadoParaAbono() && !quantidadeDeCaracteresDaJustificativaEhMaiorQue500()) {
 			FuncionarioBean userSession = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_usuario");
-			
-			boolean inseriuAbonos = gestaoAbonoFaltaPacienteDAO.inserirAbonoFaltaPaciente
-					(this.listaAtendimentosSelecionadosParaAbono, userSession.getId(), this.abonoFaltaPaciente.getJustificativa());
+			GravarInsercaoAbonoFaltaPacienteDTO gravarInsercaoAbonoFaltaPacienteDTO = 
+					new GravarInsercaoAbonoFaltaPacienteDTO(listaAtendimentosSelecionadosParaAbono, userSession.getId(), this.abonoFaltaPaciente.getJustificativa());
+			boolean inseriuAbonos = gestaoAbonoFaltaPacienteDAO.inserirAbonoFaltaPaciente(gravarInsercaoAbonoFaltaPacienteDTO);
+					
 			if(inseriuAbonos) {
 				JSFUtil.adicionarMensagemSucesso("Abonos Gravados com sucesso!", "");
 				limparDados();
@@ -83,6 +85,14 @@ public class GestaoAbonoFaltaPacienteController {
 			return false;
 		}
 		return true;
+	}
+	
+	private boolean quantidadeDeCaracteresDaJustificativaEhMaiorQue500() {
+		if(this.abonoFaltaPaciente.getJustificativa().length() > 500) {
+			JSFUtil.adicionarMensagemErro("O campo justificativa não pode exceder 500 caracteres", "Erro");
+			return true;
+		}
+		return false;
 	}
 	
 	private void limparDados() {
