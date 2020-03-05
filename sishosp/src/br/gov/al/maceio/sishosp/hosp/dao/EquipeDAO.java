@@ -618,7 +618,7 @@ public class EquipeDAO {
 			ps.setLong(2, codigoProfissional);
 			ps.execute();
 
-			retorno = excluirAtendimentosProfissionalRemovidoEquipe(
+			retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(
 					listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), codigoProfissional, idRemocaoProfissionalEquipe, con);
 
 		} catch (Exception ex) {
@@ -665,7 +665,40 @@ public class EquipeDAO {
 		return lista;
 	}
 
-	public Boolean excluirAtendimentosProfissionalRemovidoEquipe(List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+	public Boolean gravarLogRemocaoProfissionalEquipeAtendimentos1(
+			List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+
+		Boolean retorno = false;
+		String sql = "insert into logs.remocao_profissional_equipe_atendimentos1 " +
+				"(id_remocao_profissional_equipe, id_atendimentos1, id_funcionario) " +
+				"values (?, ?, ?);";
+
+		try {
+			for(int i=0; i<listaAtendimentos1.size(); i++) {
+				ps = conAuxiliar.prepareStatement(sql);
+				ps.setInt(1, idRemocaoProfissionalEquipe);
+				ps.setLong(2, listaAtendimentos1.get(i));
+				ps.setLong(3, codigoProfissional);
+				ps.execute();
+			}
+
+			retorno = excluirAtendimentosProfissionalRemovidoEquipe(
+					listaAtendimentos1, codigoProfissional, idRemocaoProfissionalEquipe, con);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public Boolean excluirAtendimentosProfissionalRemovidoEquipe(
+			List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
 
 		Boolean retorno = false;
 
@@ -733,17 +766,23 @@ public class EquipeDAO {
 			List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
 
 		Boolean retorno = false;
-		String sql = "insert into logs.remocao_profissional_equipe_paciente_instituicao " +
-				"(id_remocao_profissional_equipe, id_paciente_instituicao, id_funcionario) " +
-				"values (?, ?, ?);";
+		String sql = "insert into logs.remocao_profissional_equipe_profissional_dia_atendimento " +
+				"(id_remocao_profissional_equipe, id_paciente_instituicao, id_funcionario, dia_semana) " +
+				"values (?, ?, ?, ?);";
 
 		try {
 			for(int i=0; i<listaIdPacienteInstituicao.size(); i++) {
-				ps = conAuxiliar.prepareStatement(sql);
-				ps.setInt(1, idRemocaoProfissionalEquipe);
-				ps.setLong(2, listaIdPacienteInstituicao.get(i));
-				ps.setLong(3, codigoProfissional);
-				ps.execute();
+
+				List<Integer> listaDias = listarDiasDaSemanaAtendimentoProfissional(codigoProfissional, listaIdPacienteInstituicao.get(i), conAuxiliar);
+
+				for (int j = 0; j < listaDias.size(); i++) {
+					ps = conAuxiliar.prepareStatement(sql);
+					ps.setInt(1, idRemocaoProfissionalEquipe);
+					ps.setLong(2, listaIdPacienteInstituicao.get(i));
+					ps.setLong(3, codigoProfissional);
+					ps.setInt(4, listaDias.get(j));
+					ps.execute();
+				}
 			}
 
 			retorno = excluirProfissionalDiaAtendimento(listaIdPacienteInstituicao, codigoProfissional, conAuxiliar);
@@ -768,11 +807,12 @@ public class EquipeDAO {
 
 		try {
 			for(int i=0; i<listaIdPacienteInstituicao.size(); i++) {
-				ps = conAuxiliar.prepareStatement(sql);
-				ps.setLong(1, listaIdPacienteInstituicao.get(i));
-				ps.setLong(2, codigoProfissional);
-				ps.execute();
-			}
+
+					ps = conAuxiliar.prepareStatement(sql);
+					ps.setLong(1, listaIdPacienteInstituicao.get(i));
+					ps.setLong(2, codigoProfissional);
+					ps.execute();
+				}
 
 			retorno = true;
 
@@ -786,6 +826,35 @@ public class EquipeDAO {
 			}
 			return retorno;
 		}
+	}
+
+	public List<Integer> listarDiasDaSemanaAtendimentoProfissional(Long idProfissional, int idPacienteInstituicao, Connection conAuxiliar) {
+
+		ArrayList<Integer> lista = new ArrayList<>();
+
+		String sql = "SELECT dia_semana FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?;";
+
+		try {
+				PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+				stm.setLong(1, idProfissional);
+				stm.setInt(2, idPacienteInstituicao);
+				ResultSet rs = stm.executeQuery();
+
+				while (rs.next()) {
+					int diaSemana = rs.getInt("id_paciente_instituicao");
+					lista.add(diaSemana);
+				}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
 	}
 
 }
