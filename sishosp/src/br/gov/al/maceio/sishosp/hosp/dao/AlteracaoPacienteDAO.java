@@ -394,14 +394,18 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
 				String sql8 = "INSERT INTO hosp.atendimentos1 " +
 		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
-		                "VALUES (?, ?, ?, (select cod_procedimento from hosp.programa\n" + 
-		                "where programa.id_programa = ? ))) RETURNING id_atendimentos1";
+		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
+		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? limit 1), ?, (select cod_procedimento from hosp.programa " + 
+		                "where programa.id_programa = ? )) RETURNING id_atendimentos1";
 
 				PreparedStatement ps8 = null;
-				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, id_paciente);
-				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps8 = conexao.prepareStatement(sql8);
+				ps8.setLong(1, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps8.setDate(2,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				ps8.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+				ps8.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
 				ps8.execute();
 				
 				ps6 = null;

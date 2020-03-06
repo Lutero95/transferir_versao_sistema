@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -188,6 +190,10 @@ public class AtendimentoController implements Serializable {
 	private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_usuario");
+		Calendar calendar = Calendar.getInstance();
+    	calendar.setTime(atendimento.getDataAtendimentoInicio());
+		LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
+		LocalDate dataAtual = LocalDate.now();
 		try {
 			Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
 					atendimento.getUnidade().getId(), user_session.getId());
@@ -195,7 +201,10 @@ public class AtendimentoController implements Serializable {
 			if (quantidadePendenciaEvolucaoAnterior == 0)
 				return true;
 			else 
+				if ((dataAtendimento.isAfter(dataAtual)) || (dataAtendimento.isEqual(dataAtual)))
 				JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
+				else
+					return true;
 			
 		} catch (ProjetoException e) {
 			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
