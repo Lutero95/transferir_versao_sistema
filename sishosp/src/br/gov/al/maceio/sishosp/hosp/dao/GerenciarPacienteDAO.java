@@ -437,9 +437,10 @@ public class GerenciarPacienteDAO {
     }
     
     
-    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir) throws SQLException {
+    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento) throws SQLException {
 
         Boolean retorno = false;
+        String sql2 = "";
         try {
             
             for (int i = 0; i < listaSubstituicaoProfissional.size(); i++) {
@@ -450,8 +451,17 @@ public class GerenciarPacienteDAO {
                 ps2.setLong(1, listaSubstituicaoProfissional.get(i).getIdAtendimentos1());
                 ps2.execute();
             }
+            
+            for (int i = 0; i < listaProfissionaisInseridosNaEquipeAtendimento.size(); i++) {
+                sql2 = "delete from adm.insercao_profissional_equipe_atendimento_1 where id_atendimentos1 = ?";
 
-                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ? and situacao is null and id_atendimentos1 not in (\n" + 
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, listaProfissionaisInseridosNaEquipeAtendimento.get(i).getIdAtendimentos1());
+                ps2.execute();
+            }                 
+            
+                sql2 = "delete from hosp.atendimentos1  where id_atendimento = ? and situacao is null and id_atendimentos1 not in (\n" + 
                 		"	select  ipe1.id_atendimentos1  from adm.insercao_profissional_equipe_atendimento_1 ipe1\n" + 
                 		"	)";
 
