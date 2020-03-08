@@ -181,7 +181,7 @@ public class FuncionarioController implements Serializable {
 			return null;
 
 		} else {
-
+			
 			Integer quantidadeEmpresas = fDao.verificarSeTrabalhaEmMaisDeUmaEmpresa(usuario.getCpf());
 
 			if(quantidadeEmpresas > 1){

@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
+import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -209,11 +210,24 @@ public class AtendimentoDAO {
 			
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
 			
-		//	ArrayList<InsercaoProfissionalEquipe> listaInsercaoProfEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
+			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe = new ArrayList<>();
+			
+			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe = new ArrayList<>();
+			
+			
+			for (int i = 0; i < lista.size(); i++) {
+				ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
+				listaProfissionaisInseridosAtendimentoEquipe.addAll(listaProfissionaisInseridosAtendimentoEquipeAux);
+				
+				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
+				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);				
+			}
+			
+			
 
 	
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento(idAtendimento, con,  listaSubstituicao, listaExcluir)) {
+			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
 
 				con.close();
 
@@ -225,8 +239,8 @@ public class AtendimentoDAO {
 			for (int i = 0; i < lista.size(); i++) {
 
 
-				String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
-						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao, horario_atendimento) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?);";
+				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
+						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao, horario_atendimento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);";
 				if ((lista.get(i).getStatus() == null) || (lista.get(i).getStatus().equals(""))) {
 				PreparedStatement stmt2 = con.prepareStatement(sql2);
 				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
@@ -302,6 +316,83 @@ public class AtendimentoDAO {
 				ps6.execute();
 			}
 			}
+			
+			if (listaProfissionaisInseridosAtendimentoEquipe.size()>0) {			
+			String sql6 = "insert into adm.insercao_profissional_equipe_atendimento_1 (id_atendimentos1,id_insercao_profissional_equipe_atendimento, id_profissional) "+ 
+					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1),?,?)";
+			PreparedStatement ps6 = null;
+			ps6 = null;
+			ps6 = con.prepareStatement(sql6);
+			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
+				/*
+				String sql8 = "INSERT INTO hosp.atendimentos1 " +
+		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
+		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
+		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? limit 1), ?, (select cod_procedimento from hosp.programa " + 
+		                "where programa.id_programa = ? )) RETURNING id_atendimentos1";
+
+				PreparedStatement ps8 = null;
+				ps8 = con.prepareStatement(sql8);
+				ps8.setLong(1, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps8.setDate(2,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				ps8.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+				ps8.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				ps8.execute();
+				*/
+				ps6 = null;
+				ps6 = con.prepareStatement(sql6);
+				
+				ps6.setDate(1,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+				ps6.setLong(2, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				ps6.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+				ps6.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps6.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getId());
+				ps6.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				ps6.execute();
+			}
+			}
+			
+			
+			if (listaProfissionaisRemovidosAtendimentoEquipe.size()>0) {			
+				String sql6 = "insert into adm.remocao_profissional_equipe_atendimento_1 (id_atendimentos1,id_remocao_profissional_equipe_atendimento, id_profissional) "+ 
+						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1),?,?)";
+				PreparedStatement ps6 = null;
+				ps6 = null;
+				ps6 = con.prepareStatement(sql6);
+				for (int i = 0; i < listaProfissionaisRemovidosAtendimentoEquipe.size(); i++) {
+					
+					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
+							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
+							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1)" ;
+			               
+
+					PreparedStatement ps8 = null;
+					ps8 = con.prepareStatement(sql8);
+					ps8.setLong(1, user_session.getId());
+					ps8.setDate(2,new java.sql.Date( listaProfissionaisRemovidosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+					ps8.setLong(3, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					ps8.setLong(4, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					ps8.setLong(5, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps8.execute();
+					listaProfissionaisRemovidosAtendimentoEquipe = null;
+					ps6 = con.prepareStatement(sql6);
+					
+					ps6.setDate(1,new java.sql.Date( listaProfissionaisRemovidosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+					ps6.setLong(2, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					ps6.setLong(3, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					ps6.setLong(4, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps6.setLong(5, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getId());
+					ps6.setLong(6, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps6.execute();
+				}
+				}			
+			
 
 			con.commit();
 

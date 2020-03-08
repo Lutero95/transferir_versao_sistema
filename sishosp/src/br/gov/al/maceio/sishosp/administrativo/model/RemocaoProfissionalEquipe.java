@@ -25,6 +25,8 @@ public class RemocaoProfissionalEquipe implements Serializable {
     private Date periodoInicio;
     private Date periodoFinal;
     private List<String> diasSemana;
+    private Integer idAtendimentos1;
+    private Date dataAtendimento;
 
     public RemocaoProfissionalEquipe() {
         funcionario = new FuncionarioBean();
@@ -153,4 +155,20 @@ public class RemocaoProfissionalEquipe implements Serializable {
                 ", diasSemana=" + diasSemana +
                 '}';
     }
+
+	public Integer getIdAtendimentos1() {
+		return idAtendimentos1;
+	}
+
+	public Date getDataAtendimento() {
+		return dataAtendimento;
+	}
+
+	public void setIdAtendimentos1(Integer idAtendimentos1) {
+		this.idAtendimentos1 = idAtendimentos1;
+	}
+
+	public void setDataAtendimento(Date dataAtendimento) {
+		this.dataAtendimento = dataAtendimento;
+	}
 }
