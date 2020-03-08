@@ -83,6 +83,17 @@
 															 target="#{EquipeController.equipe}" />
 							</p:commandButton>
 
+							<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+											 id="btnSubstituirProfissionalEquipe"
+											 style="margin-left:10px" title="Substituir profissional da equipe"
+											 oncomplete="PF('dlgSubstituirProfissionalA').show()"
+											 action="#{EquipeController.listarRemocoes()}"
+											 update=":frmSubstituirProfissional"
+											 icon="ui-icon-plus">
+								<f:setPropertyActionListener value="#{tab}"
+															 target="#{EquipeController.equipe}" />
+							</p:commandButton>
+
 						</h:column>
 					</b:dataTable>
 				</h:form>
@@ -256,6 +267,58 @@
 										<f:setPropertyActionListener value="#{tab.id}"
 																	 target="#{EquipeController.codigoProfissional}"/>
 									</p:commandButton>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+
+
+					</b:column>
+
+
+				</b:row>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog header="Substituir Profissional da Equipe" widgetVar="dlgSubstituirProfissionalA" modal="true" responsive="true">
+
+			<h:form id="frmSubstituirProfissional">
+
+				<b:row>
+
+					<b:column span="12">
+						<p:dataTable emptyMessage="Nenhum Profissional a ser substituído"
+									 styleClass="table table-hover" id="tabelaB"
+									 value="#{EquipeController.listaRemocoes}" var="tab"
+									 paginator="true" paginatorPosition="bottom" rows="12"
+									 resizableColumns="false">
+
+							<p:column headerText="Profissional" style="font-weight:bold;" width="36%">
+								<h:outputText value="#{tab.funcionario.nome}"/>
+							</p:column>
+
+							<p:column headerText="Equipe" style="font-weight:bold;" width="36%">
+								<h:outputText value="#{tab.equipe.descEquipe}"/>
+							</p:column>
+
+							<p:column headerText="Data Saída" style="font-weight:bold;" width="18%">
+								<h:outputText value="#{tab.dataSaida}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ação" width="10%">
+								<div align="center">
+
+									<p:commandButton tooltip="Substituir" icon="ui-icon-refresh"
+													 size="sm" class="btn-acao-table acao-editar"
+													 action="#{EquipeController.redirectSubstituir()}">
+										<f:setPropertyActionListener value="#{tab.id}"
+																	 target="#{EquipeController.remocaoProfissionalEquipe.id}" />
+									</p:commandButton>
+
 								</div>
 							</p:column>
 

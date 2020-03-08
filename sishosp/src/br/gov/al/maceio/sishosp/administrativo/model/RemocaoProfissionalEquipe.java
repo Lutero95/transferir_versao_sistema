@@ -25,6 +25,9 @@ public class RemocaoProfissionalEquipe implements Serializable {
     private Date periodoInicio;
     private Date periodoFinal;
     private List<String> diasSemana;
+    private Date dataSaida;
+    private Integer idPacienteInstituicao;
+    private Integer diaSemana;
 
     public RemocaoProfissionalEquipe() {
         funcionario = new FuncionarioBean();
@@ -116,41 +119,27 @@ public class RemocaoProfissionalEquipe implements Serializable {
         this.diasSemana = diasSemana;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RemocaoProfissionalEquipe that = (RemocaoProfissionalEquipe) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(funcionario, that.funcionario) &&
-                Objects.equals(programa, that.programa) &&
-                Objects.equals(grupo, that.grupo) &&
-                Objects.equals(equipe, that.equipe) &&
-                Objects.equals(atendimentoBean, that.atendimentoBean) &&
-                Objects.equals(turno, that.turno) &&
-                Objects.equals(periodoInicio, that.periodoInicio) &&
-                Objects.equals(periodoFinal, that.periodoFinal) &&
-                Objects.equals(diasSemana, that.diasSemana);
+    public Date getDataSaida() {
+        return dataSaida;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, funcionario, programa, grupo, equipe, atendimentoBean, turno, periodoInicio, periodoFinal, diasSemana);
+    public void setDataSaida(Date dataSaida) {
+        this.dataSaida = dataSaida;
     }
 
-    @Override
-    public String toString() {
-        return "RemocaoProfissionalEquipe{" +
-                "id=" + id +
-                ", funcionario=" + funcionario +
-                ", programa=" + programa +
-                ", grupo=" + grupo +
-                ", equipe=" + equipe +
-                ", atendimentoBean=" + atendimentoBean +
-                ", turno='" + turno + '\'' +
-                ", periodoInicio=" + periodoInicio +
-                ", periodoFinal=" + periodoFinal +
-                ", diasSemana=" + diasSemana +
-                '}';
+    public Integer getIdPacienteInstituicao() {
+        return idPacienteInstituicao;
+    }
+
+    public void setIdPacienteInstituicao(Integer idPacienteInstituicao) {
+        this.idPacienteInstituicao = idPacienteInstituicao;
+    }
+
+    public Integer getDiaSemana() {
+        return diaSemana;
+    }
+
+    public void setDiaSemana(Integer diaSemana) {
+        this.diaSemana = diaSemana;
     }
 }

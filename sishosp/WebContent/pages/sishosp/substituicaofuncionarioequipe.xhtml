@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <f:metadata>
+            <f:viewAction action="#{EquipeController.carregarSubstituicaoProfissionalAfastadoEquipe()}"/>
+        </f:metadata>
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Afastamento de Profissional</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formSubstituicao">
+
+                    <p:growl id="growlMsg"></p:growl>
+
+                    <b:row>
+                        <b:column span="12"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Profissional Afastado:" severity="info"/>
+                            <p:outputLabel
+                                    value="#{EquipeController.substituicaoProfissionalEquipeDTO.funcionarioRemovido.nome}"
+                                    style="margin-left: 10px" severity="info"/>
+                        </b:column>
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+                        <b:column span="12"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Equipe:" severity="info"/>
+                            <p:outputLabel
+                                    value="#{EquipeController.substituicaoProfissionalEquipeDTO.equipe.descEquipe}"
+                                    style="margin-left: 10px" severity="info"/>
+                        </b:column>
+                    </b:row>
+
+                    <br/>
+
+                    <p:outputPanel id="outProfissional">
+                        <b:row>
+                            <b:column span="12"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional para assumir atendimentos:" severity="info"/>
+
+                                <p:outputPanel id="outProf">
+                                    <p:autoComplete
+                                            value="#{EquipeController.substituicaoProfissionalEquipeDTO.funcionarioAssumir}"
+                                            id="autoCompleteProfissional" size="31"
+                                            converter="conFuncionario" required="true"
+                                            requiredMessage="Profissional: Campo obrigatório!"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.nome}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusProf" icon="ui-icon-search"
+                                                     immediate="true"
+                                                     action="#{MBFuncionarios.listarProfissionais()}"
+                                                     update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br/>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm"
+                                         id="bgravar" icon="ui-icon-check"
+                                         action="#{EquipeController.gravarSubstituicaoProfissionalEquipe()}"
+                                         update="msgPagina"
+                                         class="btn-incluir"/>
+
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         update=":formSubstituicao"
+                                         action="/pages/sishosp/gerenciarEquipe.xhtml?faces-redirect=true">
+                        </p:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProf">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+                             var="profi" display="Nenhum Profissional">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar" update=":formSubstituicao"
+                                         oncomplete="PF('dlgConsuProf').hide();">
+
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{EquipeController.substituicaoProfissionalEquipeDTO.funcionarioAssumir}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
