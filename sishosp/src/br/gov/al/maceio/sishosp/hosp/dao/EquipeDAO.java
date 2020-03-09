@@ -643,7 +643,7 @@ public class EquipeDAO {
         String sql = "SELECT a1.id_atendimentos1  " +
                 "FROM hosp.atendimentos1 a1 " +
                 "JOIN hosp.atendimentos a ON (a1.id_atendimento = a.id_atendimento) " +
-                "WHERE a1.codprofissionalatendimento = ? AND a.dtamarcacao >= ? AND a.codequipe = ?;";
+                "WHERE a1.codprofissionalatendimento = ? AND a.dtaatende >= ? AND a.codequipe = ?;";
 
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
@@ -705,12 +705,13 @@ public class EquipeDAO {
 
         Boolean retorno = false;
 
-        String sql = "UPDATE hosp.atendimentos1 SET excluido = 'S' WHERE id_atendimentos1 = ?";
+        String sql = "UPDATE hosp.atendimentos1 SET excluido = 'S', usuario_exclusao=?, data_hora_exclusao=current_timestamp WHERE id_atendimentos1 = ?";
 
         try {
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
                 ps = conAuxiliar.prepareStatement(sql);
-                ps.setLong(1, listaAtendimentos1.get(i));
+                ps.setLong(1, user_session.getId());
+                ps.setLong(2, listaAtendimentos1.get(i));
                 ps.execute();
             }
 
@@ -747,9 +748,11 @@ public class EquipeDAO {
                 stm.setLong(1, codigoProfissional);
                 stm.setInt(2, listaAtendimentos1.get(i));
                 ResultSet rs = stm.executeQuery();
-
+                
                 while (rs.next()) {
-                    int idPacienteInstituicao = rs.getInt("id_paciente_instituicao");
+                    Integer idPacienteInstituicao = null;
+                    idPacienteInstituicao =  rs.getInt("id_paciente_instituicao");
+                    if (!lista.contains(idPacienteInstituicao))
                     lista.add(idPacienteInstituicao);
                 }
             }
@@ -778,7 +781,7 @@ public class EquipeDAO {
 
                 List<Integer> listaDias = listarDiasDaSemanaAtendimentoProfissional(codigoProfissional, listaIdPacienteInstituicao.get(i), conAuxiliar);
 
-                for (int j = 0; j < listaDias.size(); i++) {
+                for (int j = 0; j < listaDias.size(); j++) {
                     ps = conAuxiliar.prepareStatement(sql);
                     ps.setInt(1, idRemocaoProfissionalEquipe);
                     ps.setLong(2, listaIdPacienteInstituicao.get(i));
@@ -839,12 +842,12 @@ public class EquipeDAO {
 
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-            stm.setLong(1, idProfissional);
-            stm.setInt(2, idPacienteInstituicao);
+            stm.setInt(1, idPacienteInstituicao);
+            stm.setLong(2, idProfissional);
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                int diaSemana = rs.getInt("id_paciente_instituicao");
+                int diaSemana = rs.getInt("dia_semana");
                 lista.add(diaSemana);
             }
 
