@@ -499,11 +499,11 @@ public class AtendimentoDAO {
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
 
 				+ " case when "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null) =  "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null and coalesce(a1.excluido,'N')='N') =  "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
 				+ " then 'Atendimento Não Informado' " + " when "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is not null) = "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is not null and coalesce(a1.excluido,'N')='N') = "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
 				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
