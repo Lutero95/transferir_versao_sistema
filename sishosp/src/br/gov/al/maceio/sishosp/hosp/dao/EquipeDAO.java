@@ -964,7 +964,7 @@ public class EquipeDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                int idAtendimentos1 = rs.getInt("a1.id_atendimentos1");
+                int idAtendimentos1 = rs.getInt("id_atendimentos1");
                 lista.add(idAtendimentos1);
             }
 
@@ -1074,7 +1074,7 @@ public class EquipeDAO {
                 ps = conAuxiliar.prepareStatement(sql);
                 ps.setInt(1, substituicao.getId());
                 ps.setLong(2, substituicao.getListaAtendimentos1().get(i));
-                ps.executeQuery();
+                ps.execute();
             }
 
             retorno = gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(substituicao, conAuxiliar);
@@ -1107,7 +1107,7 @@ public class EquipeDAO {
                 ps.setInt(1, substituicao.getId());
                 ps.setInt(2, substituicao.getListaRemocoes().get(i).getIdPacienteInstituicao());
                 ps.setInt(3, substituicao.getListaRemocoes().get(i).getDiaSemana());
-                ps.executeQuery();
+                ps.execute();
             }
 
             retorno = gravarProfissionalProfissionalDiaAtendimento(substituicao, conAuxiliar);
@@ -1138,9 +1138,9 @@ public class EquipeDAO {
             for(int i=0; i<substituicao.getListaRemocoes().size(); i++) {
                 ps = conAuxiliar.prepareStatement(sql);
                 ps.setInt(1, substituicao.getListaRemocoes().get(i).getIdPacienteInstituicao());
-                ps.setLong(3, substituicao.getFuncionarioAssumir().getId());
+                ps.setLong(2, substituicao.getFuncionarioAssumir().getId());
                 ps.setInt(3, substituicao.getListaRemocoes().get(i).getDiaSemana());
-                ps.executeQuery();
+                ps.execute();
             }
 
             retorno = true;

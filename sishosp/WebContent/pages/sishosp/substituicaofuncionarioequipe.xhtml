@@ -32,6 +32,18 @@
                                     style="margin-left: 10px" severity="info"/>
                         </b:column>
                     </b:row>
+                    <br/>
+                    <b:row>
+                        <b:column span="12"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Data Saída:" severity="info"/>
+                            <p:outputLabel
+                                    value="#{EquipeController.substituicaoProfissionalEquipeDTO.remocaoProfissionalEquipe.dataSaida}"
+                                    style="margin-left: 10px" severity="info">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </p:outputLabel>
+                        </b:column>
+                    </b:row>                    
 
                     <br/>
 
