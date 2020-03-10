@@ -991,24 +991,30 @@ public class EquipeDAO {
         Boolean retorno = false;
 
         try {
-
+            con = ConnectionFactory.getConnection();
+            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ?;";
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
 
-                String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ?;";
 
-                con = ConnectionFactory.getConnection();
+
+
+                ps = null;
                 ps = con.prepareStatement(sql);
 
                 ps.setLong(1, substituicao.getFuncionarioAssumir().getId());
                 ps.setInt(2, listaAtendimentos1.get(i));
 
-                ps.executeUpdate();
+                ps.execute();
 
-                retorno = gravarLogSubstituicaoProfissionalEquipe(substituicao, con);
-
-                con.commit();
-
+                
             }
+            
+            retorno = gravarLogSubstituicaoProfissionalEquipe(substituicao, con);
+            if (retorno)
+            	con.commit();
+            else
+            	con.rollback();
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1042,6 +1048,14 @@ public class EquipeDAO {
             ps.setLong(4, user_session.getId());
 
             ResultSet rs = ps.executeQuery();
+            
+            sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
+
+                ps = con.prepareStatement(sql);
+                    ps.setInt(1, substituicao.getEquipe().getCodEquipe());
+                    ps.setLong(2, substituicao.getFuncionarioAssumir().getId());
+                    ps.execute();
+
 
             if (rs.next()) {
                 substituicao.setId(rs.getInt("id"));
@@ -1067,7 +1081,6 @@ public class EquipeDAO {
 
         String sql = "insert into logs.substituicao_profissional_equipe_atendimentos1 " +
                 "(id_substituicao_profissional_equipe, id_atendimentos1) values (?, ?)";
-
         try {
 
             for(int i=0; i<substituicao.getListaAtendimentos1().size(); i++) {
