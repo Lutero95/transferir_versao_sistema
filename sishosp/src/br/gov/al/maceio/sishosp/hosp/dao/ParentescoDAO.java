@@ -17,13 +17,13 @@ public class ParentescoDAO {
     public Boolean cadastrar(Parentesco parentesco) {
         boolean retorno = false;
 
-        String sql = "insert into hosp.parentesco (descparentesco) values (?)";
+        String sql = "insert into hosp.parentesco (descparentesco, tipo) values (?, ?)";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, parentesco.getDescParentesco().toUpperCase().trim());
-
+            stmt.setString(2, parentesco.getTipoParentesco());
             stmt.execute();
             conexao.commit();
             retorno = true;
@@ -42,12 +42,13 @@ public class ParentescoDAO {
 
     public Boolean alterar(Parentesco parentesco) {
         boolean retorno = false;
-        String sql = "update hosp.parentesco set descparentesco = ? where id_parentesco = ?";
+        String sql = "update hosp.parentesco set descparentesco = ?, tipo = ? where id_parentesco = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, parentesco.getDescParentesco().toUpperCase());
-            stmt.setInt(2, parentesco.getCodParentesco());
+            stmt.setString(2, parentesco.getTipoParentesco());
+            stmt.setInt(3, parentesco.getCodParentesco());
             stmt.executeUpdate();
 
             conexao.commit();
@@ -93,7 +94,7 @@ public class ParentescoDAO {
 
     public ArrayList<Parentesco> listaParentescos() throws ProjetoException {
 
-        String sql = "select id_parentesco, descparentesco from hosp.parentesco order by descparentesco";
+        String sql = "select id_parentesco, descparentesco, tipo from hosp.parentesco order by descparentesco";
 
         ArrayList<Parentesco> lista = new ArrayList();
 
@@ -103,12 +104,12 @@ public class ParentescoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                Parentesco p = new Parentesco();
+                Parentesco parentesco = new Parentesco();
 
-                p.setCodParentesco(rs.getInt("id_parentesco"));
-                p.setDescParentesco(rs.getString("descparentesco"));
-
-                lista.add(p);
+                parentesco.setCodParentesco(rs.getInt("id_parentesco"));
+                parentesco.setDescParentesco(rs.getString("descparentesco"));
+                parentesco.setTipoParentesco(rs.getString("tipo"));
+                lista.add(parentesco);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -163,7 +164,7 @@ public class ParentescoDAO {
         try {
             List<Parentesco> listaParentescos = new ArrayList<Parentesco>();
 
-            String sql = "select id_parentesco, descparentesco from hosp.parentesco "
+            String sql = "select id_parentesco, descparentesco, tipo from hosp.parentesco "
                     + " where upper(descparentesco) like ? order by descparentesco";
 
             ps = conexao.prepareStatement(sql);
@@ -177,6 +178,7 @@ public class ParentescoDAO {
                 Parentesco parentesco = new Parentesco();
                 parentesco.setCodParentesco(rs.getInt("id_parentesco"));
                 parentesco.setDescParentesco(rs.getString("descparentesco"));
+                parentesco.setTipoParentesco(rs.getString("tipo"));
                 colecao.add(parentesco);
 
             }
@@ -192,5 +194,39 @@ public class ParentescoDAO {
             }
         }
     }
+    
+    public boolean existeParentescoCadastrado(Parentesco parentesco, boolean editarParentesco) throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
+        boolean existeParentescoCadastrado = true;
+        try {
+        	String sql = "";
+        	if(!editarParentesco)
+        		sql = "select exists (select p.id_parentesco from hosp.parentesco p where tipo = ?) existe_este_parentesco";
+        	else
+        		sql = "select exists (select p.id_parentesco from hosp.parentesco p "
+        				+ "where tipo = ? and p.id_parentesco != ?) existe_este_parentesco";
 
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, parentesco.getTipoParentesco());
+            if(editarParentesco)
+            	ps.setInt(2, parentesco.getCodParentesco());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existeParentescoCadastrado = rs.getBoolean("existe_este_parentesco");
+            }
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existeParentescoCadastrado;
+    }
 }

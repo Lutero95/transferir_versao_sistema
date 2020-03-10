@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoParentesco;
 import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 
 import javax.faces.bean.ManagedBean;
@@ -61,28 +62,40 @@ public class ParentescoController implements Serializable {
 
     }
 
-    public void gravarParentesco() {
-
-        boolean cadastrou = pDao.cadastrar(parentesco);
-
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Parentesco cadastrado com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-        }
+    public void gravarParentesco() throws ProjetoException {
+    	if(!existeParentescoDoMesmoTipoCadastrado(false)) {
+			boolean cadastrou = pDao.cadastrar(parentesco);
+			if (cadastrou == true) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Parentesco cadastrado com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
+    	}
     }
 
-    public void alterarParentesco() {
-
-        boolean alterou = pDao.alterar(parentesco);
-        listaParentescos = null;
-        if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Parentesco alterado com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-        }
-
+    public void alterarParentesco() throws ProjetoException {
+    	if(!existeParentescoDoMesmoTipoCadastrado(true)) {
+			boolean alterou = pDao.alterar(parentesco);
+			listaParentescos = null;
+			if (alterou == true) {
+				JSFUtil.adicionarMensagemSucesso("Parentesco alterado com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+			}
+    	}
+    }
+    
+    public boolean existeParentescoDoMesmoTipoCadastrado(boolean acaoEditar) throws ProjetoException {
+    	if(parentesco.getTipoParentesco().equals(TipoParentesco.OUTROS.getSigla()))
+    		return false;
+    	else {
+    		boolean existeParentesco = pDao.existeParentescoCadastrado(parentesco, acaoEditar);
+			
+    		if(existeParentesco)
+    			JSFUtil.adicionarMensagemErro("Parentesco já existe, todos os parentescos exceto 'OUTROS' são unicos", "Erro");
+    		return existeParentesco;	
+    	}
     }
 
     public void excluirParentesco() throws ProjetoException {

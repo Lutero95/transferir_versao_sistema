@@ -37,6 +37,16 @@
                             </b:inputText>
                         </b:column>
 
+						<b:column span="12" class="label-position">
+							<b:selectOneMenu value="#{ParentescoController.parentesco.tipoParentesco}" 
+							required="true" requiredMessage="Por favor selecione um tipo de parentesco">
+								<f:selectItem noSelectionOption="true" itemLabel="Selecione o tipo"></f:selectItem>
+								<f:selectItem itemLabel="Mãe" itemValue="M"></f:selectItem>
+								<f:selectItem itemLabel="Pai" itemValue="P"></f:selectItem>
+								<f:selectItem itemLabel="Responsável" itemValue="R"></f:selectItem>
+								<f:selectItem itemLabel="Outros" itemValue="O"></f:selectItem>
+							</b:selectOneMenu>
+						</b:column>
                     </b:row>
 
 
