@@ -43,16 +43,7 @@
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="periodolaudovencer" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
-select u.*
-	, (select min(t1.id) from hosp.telefone_paciente t1
-	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
-	from (
-	select t.*, (select min(t1.id) from hosp.telefone_paciente t1
-	where t1.id_paciente = t.id_paciente and t1.id<>t.tel_id1  ) tel_id2 from (
-select
-	(select t1.id from hosp.telefone_paciente t1
-	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
+		<![CDATA[select
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomemedico,
 p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
 p.logradouro|| ' '||COALESCE(p.numero,'')|| ' '||COALESCE(b.descbairro,'')   AS endereco,  p.uf, 
@@ -61,9 +52,15 @@ prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.no
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
 prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
 l.data_solicitacao as datainicio, 
-	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, c1.desccid
+	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, c1.desccid,
+    (select tp.telefone from hosp.telefone_paciente tp 
+    	join hosp.parentesco p3 on tp.id_parentesco = p3.id_parentesco and tp.id_paciente = p.id_paciente
+    	where p3.tipo = 'M' limit 1) telefone_mae,
+    (select tp.telefone from hosp.telefone_paciente tp 
+    	join hosp.parentesco p3 on tp.id_parentesco = p3.id_parentesco and tp.id_paciente = p.id_paciente 
+    	where p3.tipo = 'R' limit 1) telefone_responsavel
 FROM  hosp.laudo l  
-JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
+ JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
 LEFT JOIN hosp.proc prs1 ON prs1.id = l.codprocedimento_secundario1
 LEFT JOIN hosp.proc prs2 ON prs2.id = l.codprocedimento_secundario2
@@ -71,7 +68,7 @@ LEFT JOIN hosp.proc prs3 ON prs3.id = l.codprocedimento_secundario3
 LEFT JOIN hosp.proc prs4 ON prs4.id = l.codprocedimento_secundario4
 LEFT JOIN hosp.proc prs5 ON prs5.id = l.codprocedimento_secundario5
 LEFT JOIN acl.funcionarios f ON f.id_funcionario = l.cod_profissional
-join hosp.empresa on empresa.cod_empresa = $P{codempresa} 
+join hosp.empresa on empresa.cod_empresa =  $P{codempresa} 
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
@@ -80,18 +77,8 @@ LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
 WHERE 1=1
-and l.id_laudo= $P{cod_laudo}
-
-) t
-)u
-)v
-left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
-left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
-left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
+and l.id_laudo=  $P{cod_laudo} ]]>
 	</queryString>
-	<field name="tel_id1" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
-	</field>
 	<field name="codibgemun" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="codibgemun"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="municipio"/>
@@ -262,25 +249,9 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="desccid"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
 	</field>
-	<field name="tel_id2" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
-	</field>
-	<field name="tel_id3" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="tel_id3"/>
-	</field>
-	<field name="tel1" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel1"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
-	</field>
-	<field name="tel2" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel2"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
-	</field>
-	<field name="tel3" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="tel3"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
-	</field>
 	<field name="uf" class="java.lang.String"/>
+	<field name="telefone_mae" class="java.lang.String"/>
+	<field name="telefone_responsavel" class="java.lang.String"/>
 	<variable name="fem" class="java.lang.String">
 		<variableExpression><![CDATA[$F{sexo} == "F" ? "X" : ""]]></variableExpression>
 	</variable>
@@ -669,7 +640,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tel1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{telefone_mae}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="384" y="123" width="121" height="12" uuid="a8a766f0-a42d-418b-aca8-b9936d0a4a5c">
@@ -678,7 +649,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tel2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{telefone_responsavel}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="4" y="206" width="174" height="16" uuid="1954f693-586c-43a2-863e-7de8283f4bd5">
