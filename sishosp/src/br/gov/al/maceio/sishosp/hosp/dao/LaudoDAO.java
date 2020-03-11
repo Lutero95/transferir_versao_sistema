@@ -558,7 +558,7 @@ public class LaudoDAO {
 
         LaudoBean l = new LaudoBean();
 
-        String sql = "select l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
+        String sql = "select l.codpaciente, p.nome, p.cns, p.cpf,p.cns,  l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
                 + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
                 + " l.codprocedimento_secundario4, ps4.nome as nome4, "
@@ -583,6 +583,9 @@ public class LaudoDAO {
             while (rs.next()) {
 
                 l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                l.getPaciente().setNome(rs.getString("nome"));
+                l.getPaciente().setCpf(rs.getString("cpf"));
+                l.getPaciente().setCns(rs.getString("cns"));
                 l.setDataAutorizacao(rs.getDate("data_autorizacao"));
                 l.setMesInicio(rs.getInt("mes_final"));
                 l.setAnoInicio(rs.getInt("ano_final"));
