@@ -25,6 +25,9 @@ public class RemocaoProfissionalEquipe implements Serializable {
     private Date periodoInicio;
     private Date periodoFinal;
     private List<String> diasSemana;
+    private Date dataSaida;
+    private Integer idPacienteInstituicao;
+    private Integer diaSemana;
     private Integer idAtendimentos1;
     private Date dataAtendimento;
 
@@ -171,4 +174,28 @@ public class RemocaoProfissionalEquipe implements Serializable {
 	public void setDataAtendimento(Date dataAtendimento) {
 		this.dataAtendimento = dataAtendimento;
 	}
+	
+	    public Date getDataSaida() {
+        return dataSaida;
+    }
+
+    public void setDataSaida(Date dataSaida) {
+        this.dataSaida = dataSaida;
+    }
+
+    public Integer getIdPacienteInstituicao() {
+        return idPacienteInstituicao;
+    }
+
+    public void setIdPacienteInstituicao(Integer idPacienteInstituicao) {
+        this.idPacienteInstituicao = idPacienteInstituicao;
+    }
+
+    public Integer getDiaSemana() {
+        return diaSemana;
+    }
+
+    public void setDiaSemana(Integer diaSemana) {
+        this.diaSemana = diaSemana;
+    }
 }

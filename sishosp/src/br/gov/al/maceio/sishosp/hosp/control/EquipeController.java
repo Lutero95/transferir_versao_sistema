@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,13 +9,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
+import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 @ManagedBean(name = "EquipeController")
 @ViewScoped
@@ -27,9 +32,13 @@ public class EquipeController implements Serializable {
     private String cabecalho;
     private EquipeDAO eDao = new EquipeDAO();
     private Long codigoProfissional;
+    private List<RemocaoProfissionalEquipe> listaRemocoes;
+    private SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO;
+    private RemocaoProfissionalEquipe remocaoProfissionalEquipe;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroEquipe?faces-redirect=true";
+    private static final String ENDERECO_SUBSTITUIR = "substituicaofuncionarioequipe?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO = "Inclusão de Equipe";
@@ -38,6 +47,9 @@ public class EquipeController implements Serializable {
     public EquipeController() {
         this.equipe = new EquipeBean();
         this.listaEquipe = null;
+        listaRemocoes = new ArrayList<>();
+        substituicaoProfissionalEquipeDTO = new SubstituicaoProfissionalEquipeDTO();
+        remocaoProfissionalEquipe = new RemocaoProfissionalEquipe();
     }
 
     public void limparDados() throws ProjetoException {
@@ -53,6 +65,10 @@ public class EquipeController implements Serializable {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
+    public String redirectSubstituir() {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_SUBSTITUIR, ENDERECO_ID, remocaoProfissionalEquipe.getId());
+    }
+
     public void getEditEquipe() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
@@ -66,6 +82,16 @@ public class EquipeController implements Serializable {
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
+        }
+    }
+
+    public void carregarSubstituicaoProfissionalAfastadoEquipe() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            this.setSubstituicaoProfissionalEquipeDTO(eDao.listarRemocaoPorId(id));
         }
     }
 
@@ -146,6 +172,22 @@ public class EquipeController implements Serializable {
         this.equipe = eDao.buscarEquipePorID(equipe.getCodEquipe());
     }
 
+    public void listarRemocoes() {
+        listaRemocoes = eDao.listarProfissionaisDaEquipeRemovidos(equipe.getCodEquipe());
+    }
+
+    public void gravarSubstituicaoProfissionalEquipe() throws ProjetoException {
+
+        boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
+
+        if (cadastrou == true) {
+            limparDados();
+            JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+        }
+    }
+
     public String getCabecalho() {
         if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
@@ -189,5 +231,29 @@ public class EquipeController implements Serializable {
 
     public void setCodigoProfissional(Long codigoProfissional) {
         this.codigoProfissional = codigoProfissional;
+    }
+
+    public List<RemocaoProfissionalEquipe> getListaRemocoes() {
+        return listaRemocoes;
+    }
+
+    public void setListaRemocoes(List<RemocaoProfissionalEquipe> listaRemocoes) {
+        this.listaRemocoes = listaRemocoes;
+    }
+
+    public SubstituicaoProfissionalEquipeDTO getSubstituicaoProfissionalEquipeDTO() {
+        return substituicaoProfissionalEquipeDTO;
+    }
+
+    public void setSubstituicaoProfissionalEquipeDTO(SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO) {
+        this.substituicaoProfissionalEquipeDTO = substituicaoProfissionalEquipeDTO;
+    }
+
+    public RemocaoProfissionalEquipe getRemocaoProfissionalEquipe() {
+        return remocaoProfissionalEquipe;
+    }
+
+    public void setRemocaoProfissionalEquipe(RemocaoProfissionalEquipe remocaoProfissionalEquipe) {
+        this.remocaoProfissionalEquipe = remocaoProfissionalEquipe;
     }
 }

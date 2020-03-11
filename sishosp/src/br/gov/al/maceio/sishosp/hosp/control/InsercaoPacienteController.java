@@ -634,7 +634,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
                         if (!listaDatasDeAtendimento.contains(c.getTime())) {
                             if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
-                                AgendaBean agenda = new AgendaBean();
+                              0  AgendaBean agenda = new AgendaBean();
 
                                 agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
