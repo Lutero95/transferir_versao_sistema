@@ -213,7 +213,9 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaProfissionaisRemovidosEquipe)) {
 
 				conexao.close();
 
@@ -456,6 +458,41 @@ public class AlteracaoPacienteDAO {
 					ps6.execute();
 				}
 				}	
+			
+			if (listaProfissionaisRemovidosEquipe.size()>0) {			
+				sql6 = "insert into logs.remocao_profissional_equipe_atendimentos1 (id_atendimentos1,id_remocao_profissional_equipe, id_funcionario) "+ 
+						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
+						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
+						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1),?,?)";
+				ps6 = null;
+				ps6 = null;
+				ps6 = conexao.prepareStatement(sql6);
+				for (int i = 0; i < listaProfissionaisRemovidosEquipe.size(); i++) {
+					
+					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
+							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
+							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1)" ;
+			               
+
+					PreparedStatement ps8 = null;
+					ps8 = conexao.prepareStatement(sql8);
+					ps8.setLong(1, user_session.getId());
+					ps8.setDate(2,new java.sql.Date( listaProfissionaisRemovidosEquipe.get(i).getDataAtendimento().getTime()));
+					ps8.setLong(3, listaProfissionaisRemovidosEquipe.get(i).getPrograma().getIdPrograma());
+					ps8.setLong(4, listaProfissionaisRemovidosEquipe.get(i).getGrupo().getIdGrupo());
+					ps8.setLong(5, listaProfissionaisRemovidosEquipe.get(i).getFuncionario().getId());
+					ps8.execute();
+					ps6 = conexao.prepareStatement(sql6);
+					
+					ps6.setDate(1,new java.sql.Date( listaProfissionaisRemovidosEquipe.get(i).getDataAtendimento().getTime()));
+					ps6.setLong(2, listaProfissionaisRemovidosEquipe.get(i).getPrograma().getIdPrograma());
+					ps6.setLong(3, listaProfissionaisRemovidosEquipe.get(i).getGrupo().getIdGrupo());
+					ps6.setLong(4, listaProfissionaisRemovidosEquipe.get(i).getFuncionario().getId());
+					ps6.setLong(5, listaProfissionaisRemovidosEquipe.get(i).getId());
+					ps6.setLong(6, listaProfissionaisRemovidosEquipe.get(i).getFuncionario().getId());
+					ps6.execute();
+				}
+				}			
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
@@ -495,7 +532,9 @@ public class AlteracaoPacienteDAO {
 			
 			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;			
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaProfissionaisRemovidosEquipe)) {
 
 				conexao.close();
 

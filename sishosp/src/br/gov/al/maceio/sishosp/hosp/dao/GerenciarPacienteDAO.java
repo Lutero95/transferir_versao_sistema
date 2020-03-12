@@ -354,7 +354,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento, ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -404,7 +404,16 @@ public class GerenciarPacienteDAO {
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, listaProfissionaisRemovidosNaEquipeAtendimento.get(i).getIdAtendimentos1());
                 ps2.execute();
-            }             
+            }   
+            
+            for (int i = 0; i < listaProfissionaisRemovidosEquipe.size(); i++) {
+                String sql2 = "delete from logs.remocao_profissional_equipe_atendimentos1 where id_atendimentos1 = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, listaProfissionaisRemovidosEquipe.get(i).getIdAtendimentos1());
+                ps2.execute();
+            }              
 
             for (int i = 0; i < lista.size(); i++) {
                 String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
@@ -666,6 +675,57 @@ public class GerenciarPacienteDAO {
         }
         
     }        
+    
+    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+
+        
+        ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
+
+        try {
+
+            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, ipe.id_remocao_profissional_equipe, ipe.id_funcionario id_profissional, f.codcbo from logs.remocao_profissional_equipe_atendimentos1 ipe \n" + 
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
+            		" join acl.funcionarios f on f.id_funcionario = ipe.id_funcionario \n" + 
+            		"	where ipe.id_atendimentos1 in ( \n" + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  \n" + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  \n" + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  \n" + 
+            		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
+            		")";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	RemocaoProfissionalEquipe remocao = new RemocaoProfissionalEquipe();
+            	remocao.setDataAtendimento(rs.getDate("dtaatende"));
+            	remocao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	remocao.setId(rs.getInt("id_remocao_profissional_equipe"));
+            	remocao.getFuncionario().setId(rs.getLong("id_profissional"));
+            	remocao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+            	remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+            	remocao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+                lista.add(remocao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }         
     
 
     public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) {
