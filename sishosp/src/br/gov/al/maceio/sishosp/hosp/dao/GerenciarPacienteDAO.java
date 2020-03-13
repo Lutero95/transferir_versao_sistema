@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
+import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 public class GerenciarPacienteDAO {
 
@@ -354,7 +355,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento, ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe) throws SQLException {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -406,6 +407,7 @@ public class GerenciarPacienteDAO {
                 ps2.execute();
             }   
             
+            /*
             for (int i = 0; i < listaProfissionaisRemovidosEquipe.size(); i++) {
                 String sql2 = "delete from logs.remocao_profissional_equipe_atendimentos1 where id_atendimentos1 = ?";
 
@@ -413,25 +415,70 @@ public class GerenciarPacienteDAO {
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, listaProfissionaisRemovidosEquipe.get(i).getIdAtendimentos1());
                 ps2.execute();
-            }              
+            }       */
+            
+             
 
             for (int i = 0; i < lista.size(); i++) {
-                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+                String sql2 = "delete from hosp.atendimentos1 where atendimentos1.id_atendimento = ? and (atendimentos1.id_atendimentos1 not in (select distinct sp.id_atendimentos1 from \n" + 
+                		"logs.substituicao_profissional_equipe_atendimentos1  sp\n" + 
+                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = sp.id_atendimentos1 \n" + 
+                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )) \n" + 
+                		"and\n" + 
+                		"( atendimentos1.id_atendimentos1 not in (select distinct rpea.id_atendimentos1 from \n" + 
+                		"logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
+                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = rpea.id_atendimentos1 \n" + 
+                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )\n" + 
+                		")";
 
                 PreparedStatement ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, lista.get(i));
+                ps2.setLong(2, lista.get(i));
+                ps2.setLong(3, lista.get(i)); 
+                System.out.println(ps2.toString());
                 ps2.execute();
             }
 
             for (int i = 0; i < lista.size(); i++) {
-                String sql3 = "delete from hosp.atendimentos where id_atendimento = ?";
+                String sql3 = "delete from hosp.atendimentos where id_atendimento = ? and (atendimentos.id_atendimento not in (select distinct a.id_atendimento from \n" + 
+                		"logs.substituicao_profissional_equipe_atendimentos1  sp\n" + 
+                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = sp.id_atendimentos1 \n" + 
+                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )) \n" + 
+                		"and\n" + 
+                		"(atendimentos.id_atendimento not in (select distinct a.id_atendimento from \n" + 
+                		"logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
+                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = rpea.id_atendimentos1 \n" + 
+                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )\n" + 
+                		")";
 
                 PreparedStatement ps3 = null;
                 ps3 = conAuxiliar.prepareStatement(sql3);
                 ps3.setLong(1, lista.get(i));
+                ps3.setLong(2, lista.get(i));
+                ps3.setLong(3, lista.get(i));
                 ps3.execute();
             }
+            
+            for (int i = 0; i < lista.size(); i++) {
+                String sql3 = "update  hosp.atendimentos set situacao='C' where id_atendimento = ? and ((atendimentos.id_atendimento  in (select distinct a.id_atendimento from \n" + 
+                		"                		logs.substituicao_profissional_equipe_atendimentos1  sp \n" + 
+                		"                		join hosp.atendimentos1 a1 on a1.id_atendimentos1  = sp.id_atendimentos1  \n" + 
+                		"                		join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )) \n" + 
+                		"                		or \n" + 
+                		"                		(atendimentos.id_atendimento in (select distinct a.id_atendimento from \n" + 
+                		"                		logs.remocao_profissional_equipe_atendimentos1 rpea \n" + 
+                		"                		join hosp.atendimentos1 a1 on a1.id_atendimentos1  = rpea.id_atendimentos1 \n" + 
+                		"                		join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? ) \n" + 
+                		"                		))";
+
+                PreparedStatement ps3 = null;
+                ps3 = conAuxiliar.prepareStatement(sql3);
+                ps3.setLong(1, lista.get(i));
+                ps3.setLong(2, lista.get(i));
+                ps3.setLong(3, lista.get(i));
+                ps3.execute();
+            }            
 
             if (alteracaoDePaciente) {
             String sql4 = "delete from hosp.profissional_dia_atendimento where id_paciente_instituicao = ?";
@@ -581,7 +628,7 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
+            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
             		" join acl.funcionarios f on f.id_funcionario = ipe.id_profissional " + 
@@ -604,6 +651,7 @@ public class GerenciarPacienteDAO {
             	InsercaoProfissionalEquipe insercao = new InsercaoProfissionalEquipe();
             	insercao.setDataAtendimento(rs.getDate("dtaatende"));
             	insercao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	insercao.getAtendimentoBean().getPaciente().setId_paciente(rs.getInt("codpaciente"));
             	insercao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
             	insercao.getFuncionario().setId(rs.getLong("id_profissional"));
             	insercao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
@@ -726,6 +774,56 @@ public class GerenciarPacienteDAO {
         }
         
     }         
+    
+    
+    public ArrayList<SubstituicaoProfissionalEquipeDTO> listaAtendimentosQueTiveramSubstituicaoProfissionalEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+
+        
+        ArrayList<SubstituicaoProfissionalEquipeDTO> lista = new ArrayList<SubstituicaoProfissionalEquipeDTO>();
+        try {
+
+            String sql = "select a.dtaatende, sf.*, spe.cod_profissional_substituido , spe.cod_profissional_substituto  from logs.substituicao_profissional_equipe_atendimentos1 sf \n" + 
+            		" join logs.substituicao_profissional_equipe  spe on spe.id  = sf.id_substituicao_profissional_equipe"+
+            		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 \n" + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
+            		"	where sf.id_atendimentos1 in ( \n" + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  \n" + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  \n" + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  \n" + 
+            		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
+            		")";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	SubstituicaoProfissionalEquipeDTO substituicao = new SubstituicaoProfissionalEquipeDTO();
+            	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
+            	substituicao.setId(rs.getInt("id_substituicao_profissional_equipe"));
+            	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	substituicao.getFuncionarioRemovido().setId(rs.getLong("cod_profissional_substituido"));
+            	substituicao.getFuncionarioAssumir().setId(rs.getLong("cod_profissional_substituto"));
+                lista.add(substituicao);
+            }
+
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }         
+    
     
 
     public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) {

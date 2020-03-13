@@ -3,9 +3,12 @@ package br.gov.al.maceio.sishosp.hosp.model.dto;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SubstituicaoProfissionalEquipeDTO implements Serializable {
@@ -17,12 +20,18 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
     private List<Integer> listaAtendimentos1;
     private RemocaoProfissionalEquipe remocaoProfissionalEquipe;
     private List<RemocaoProfissionalEquipe> listaRemocoes;
+    private Integer idAtendimentos1;
+    private Date dataAtendimento;
+    private ProgramaBean programa;
+    private GrupoBean grupo;
 
     public SubstituicaoProfissionalEquipeDTO() {
         funcionarioRemovido = new FuncionarioBean();
         funcionarioAssumir = new FuncionarioBean();
         equipe = new EquipeBean();
         listaAtendimentos1 = new ArrayList<>();
+        programa = new ProgramaBean();
+        grupo = new GrupoBean();
         remocaoProfissionalEquipe = new RemocaoProfissionalEquipe();
         listaRemocoes = new ArrayList<>();
     }
@@ -82,4 +91,36 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
     public void setListaRemocoes(List<RemocaoProfissionalEquipe> listaRemocoes) {
         this.listaRemocoes = listaRemocoes;
     }
+
+	public Integer getIdAtendimentos1() {
+		return idAtendimentos1;
+	}
+
+	public Date getDataAtendimento() {
+		return dataAtendimento;
+	}
+
+	public void setIdAtendimentos1(Integer idAtendimentos1) {
+		this.idAtendimentos1 = idAtendimentos1;
+	}
+
+	public void setDataAtendimento(Date dataAtendimento) {
+		this.dataAtendimento = dataAtendimento;
+	}
+
+	public ProgramaBean getPrograma() {
+		return programa;
+	}
+
+	public GrupoBean getGrupo() {
+		return grupo;
+	}
+
+	public void setPrograma(ProgramaBean programa) {
+		this.programa = programa;
+	}
+
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
 }
