@@ -420,43 +420,125 @@ public class GerenciarPacienteDAO {
              
 
             for (int i = 0; i < lista.size(); i++) {
-                String sql2 = "delete from hosp.atendimentos1 where atendimentos1.id_atendimento = ? and (atendimentos1.id_atendimentos1 not in (select distinct sp.id_atendimentos1 from \n" + 
-                		"logs.substituicao_profissional_equipe_atendimentos1  sp\n" + 
-                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = sp.id_atendimentos1 \n" + 
-                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )) \n" + 
-                		"and\n" + 
-                		"( atendimentos1.id_atendimentos1 not in (select distinct rpea.id_atendimentos1 from \n" + 
-                		"logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
-                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = rpea.id_atendimentos1 \n" + 
-                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )\n" + 
-                		")";
+                String sql2 = "delete\n" + 
+                		"from\n" + 
+                		"	hosp.atendimentos1\n" + 
+                		"where\n" + 
+                		"	atendimentos1.id_atendimento = ?\n" + 
+                		"	and (atendimentos1.id_atendimentos1 not in (\n" + 
+                		"	select\n" + 
+                		"		distinct sp.id_atendimentos1\n" + 
+                		"	from\n" + 
+                		"		logs.substituicao_profissional_equipe_atendimentos1 sp\n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = sp.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento = ? ))\n" + 
+                		"	and ( atendimentos1.id_atendimentos1 not in (\n" + 
+                		"	select\n" + 
+                		"		distinct rpea.id_atendimentos1\n" + 
+                		"	from\n" + 
+                		"		logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = rpea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento = ? ) )\n" + 
+                		"and ( atendimentos1.id_atendimentos1 not in (\n" + 
+                		"	select\n" + 
+                		"		distinct ipea.id_atendimentos1\n" + 
+                		"	from\n" + 
+                		"		adm.insercao_profissional_equipe_atendimento_1 ipea \n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = ipea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento = ? ) )\n" + 
+                		"and ( atendimentos1.id_atendimentos1 not in (\n" + 
+                		"	select\n" + 
+                		"		distinct ipea.id_atendimentos1\n" + 
+                		"	from\n" + 
+                		"		adm.remocao_profissional_equipe_atendimento_1 ipea\n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = ipea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento = ? ) )";
 
                 PreparedStatement ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, lista.get(i));
                 ps2.setLong(2, lista.get(i));
-                ps2.setLong(3, lista.get(i)); 
+                ps2.setLong(3, lista.get(i));
+                ps2.setLong(4, lista.get(i));
+                ps2.setLong(5, lista.get(i));
                 System.out.println(ps2.toString());
                 ps2.execute();
             }
 
             for (int i = 0; i < lista.size(); i++) {
-                String sql3 = "delete from hosp.atendimentos where id_atendimento = ? and (atendimentos.id_atendimento not in (select distinct a.id_atendimento from \n" + 
-                		"logs.substituicao_profissional_equipe_atendimentos1  sp\n" + 
-                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = sp.id_atendimentos1 \n" + 
-                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )) \n" + 
-                		"and\n" + 
-                		"(atendimentos.id_atendimento not in (select distinct a.id_atendimento from \n" + 
-                		"logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
-                		"join hosp.atendimentos1 a1 on a1.id_atendimentos1  = rpea.id_atendimentos1 \n" + 
-                		"join hosp.atendimentos  a on a.id_atendimento  = a1.id_atendimento where a.id_atendimento=? )\n" + 
-                		")";
+                String sql3 = "delete\n" + 
+                		"from\n" + 
+                		"	hosp.atendimentos\n" + 
+                		"where\n" + 
+                		"	id_atendimento = ?\n" + 
+                		"	and (atendimentos.id_atendimento not in (\n" + 
+                		"	select\n" + 
+                		"		distinct a.id_atendimento\n" + 
+                		"	from\n" + 
+                		"		logs.substituicao_profissional_equipe_atendimentos1 sp\n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = sp.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento =? ))\n" + 
+                		"	and (atendimentos.id_atendimento not in (\n" + 
+                		"	select\n" + 
+                		"		distinct a.id_atendimento\n" + 
+                		"	from\n" + 
+                		"		logs.remocao_profissional_equipe_atendimentos1 rpea\n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = rpea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento =? ) )		\n" + 
+                		"	and (atendimentos.id_atendimento not in (\n" + 
+                		"	select\n" + 
+                		"		distinct a.id_atendimento\n" + 
+                		"	from\n" + 
+                		"		adm.insercao_profissional_equipe_atendimento_1 ipea \n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = ipea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento =? ) )	\n" + 
+                		"	and (atendimentos.id_atendimento not in (\n" + 
+                		"	select\n" + 
+                		"		distinct a.id_atendimento\n" + 
+                		"	from\n" + 
+                		"		adm.remocao_profissional_equipe_atendimento_1 rpea \n" + 
+                		"	join hosp.atendimentos1 a1 on\n" + 
+                		"		a1.id_atendimentos1 = rpea.id_atendimentos1\n" + 
+                		"	join hosp.atendimentos a on\n" + 
+                		"		a.id_atendimento = a1.id_atendimento\n" + 
+                		"	where\n" + 
+                		"		a.id_atendimento =? ) )	";
 
                 PreparedStatement ps3 = null;
                 ps3 = conAuxiliar.prepareStatement(sql3);
                 ps3.setLong(1, lista.get(i));
                 ps3.setLong(2, lista.get(i));
                 ps3.setLong(3, lista.get(i));
+                ps3.setLong(4, lista.get(i));
+                ps3.setLong(5, lista.get(i));
                 ps3.execute();
             }
             
@@ -577,7 +659,7 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            String sql = "select a.codpaciente,a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
             		"	where sf.id_atendimentos1 in ( " + 
@@ -598,6 +680,7 @@ public class GerenciarPacienteDAO {
             while (rs.next()) {
             	SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
             	substituicao.setDataAtendimento(rs.getDate("dtaatende"));
+            	substituicao.getAtendimento().getPaciente().setId_paciente(rs.getInt("codpaciente"));
             	substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
             	substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
             	substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
@@ -635,9 +718,9 @@ public class GerenciarPacienteDAO {
             		"	where ipe.id_atendimentos1 in ( \n" + 
             		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  \n" + 
             		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  \n" +
-            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  \n" + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date   \n" + 
             		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
-            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL  )  \n" + 
             		")";
 
 
@@ -687,9 +770,9 @@ public class GerenciarPacienteDAO {
             		"	where ipe.id_atendimentos1 in ( \n" + 
             		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  \n" + 
             		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  \n" + 
-            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  \n" + 
+            		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date   \n" + 
             		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
-            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL  )  \n" + 
             		")";
 
 
