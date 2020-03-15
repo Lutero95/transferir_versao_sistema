@@ -192,7 +192,7 @@ public class AtendimentoController implements Serializable {
 				.getSessionMap().get("obj_usuario");
 		Calendar calendar = Calendar.getInstance();
     	calendar.setTime(atendimento.getDataAtendimentoInicio());
-		LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
+		LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
 		LocalDate dataAtual = LocalDate.now();
 		try {
 			Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
