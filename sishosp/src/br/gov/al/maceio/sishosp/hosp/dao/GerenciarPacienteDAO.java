@@ -763,7 +763,7 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 ipe \n" + 
+            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
             		" join acl.funcionarios f on f.id_funcionario = ipe.id_profissional \n" + 
@@ -773,7 +773,7 @@ public class GerenciarPacienteDAO {
             		"WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date   \n" + 
             		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL  )  \n" + 
-            		")";
+            		") and ipe.id_profissional in (select medico from hosp.equipe_medico em  where em.equipe =a.codequipe )";
 
 
             ps = null;
@@ -786,11 +786,13 @@ public class GerenciarPacienteDAO {
             	RemocaoProfissionalEquipe remocao = new RemocaoProfissionalEquipe();
             	remocao.setDataAtendimento(rs.getDate("dtaatende"));
             	remocao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
+            	remocao.getAtendimentoBean().getPaciente().setId_paciente(rs.getInt("codpaciente"));
             	remocao.setId(rs.getInt("id_remocao_profissional_equipe_atendimento"));
             	remocao.getFuncionario().setId(rs.getLong("id_profissional"));
             	remocao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
             	remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
             	remocao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+            	remocao.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 lista.add(remocao);
             }
 

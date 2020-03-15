@@ -1207,4 +1207,32 @@ public class EquipeDAO {
         }
         return lista;
     }
+    
+    public boolean verificaSeProfissionalEstaNaEquipe(Integer codequipe, Long codProfissional) throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+        String sql = "select equipe_medico.medico  "
+                + "from hosp.equipe_medico where equipe_medico.equipe = ? and equipe_medico.medico=?";
+        boolean rst = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codequipe);
+            stm.setLong(2, codProfissional);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+               rst = true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return rst;
+    }    
 }

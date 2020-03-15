@@ -357,6 +357,9 @@ public class AlteracaoPacienteDAO {
 					}
 				}
 			}
+			
+			
+			EquipeDAO eDAo = new EquipeDAO();
 			sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
 					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
@@ -429,8 +432,9 @@ public class AlteracaoPacienteDAO {
 				ps6.execute();
 			}
 			
-
-			if (listaProfissionaisRemovidosAtendimentoEquipe.size()>0) {			
+			
+			if (listaProfissionaisRemovidosAtendimentoEquipe.size()>0) {		
+				
 				sql6 = "insert into adm.remocao_profissional_equipe_atendimento_1 (id_atendimentos1,id_remocao_profissional_equipe_atendimento, id_profissional) "+ 
 						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
@@ -439,7 +443,7 @@ public class AlteracaoPacienteDAO {
 				ps6 = null;
 				ps6 = conexao.prepareStatement(sql6);
 				for (int i = 0; i < listaProfissionaisRemovidosAtendimentoEquipe.size(); i++) {
-					
+					if (eDAo.verificaSeProfissionalEstaNaEquipe(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getEquipe().getCodEquipe(), listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId())) {					
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
 							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?    limit 1)" ;
@@ -452,7 +456,7 @@ public class AlteracaoPacienteDAO {
 					ps8.setLong(3, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
 					ps8.setLong(4, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
 					ps8.setLong(5, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
-					ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
+					ps8.setLong(6, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
 					ps8.execute();
 					ps6 = conexao.prepareStatement(sql6);
 					
@@ -460,13 +464,14 @@ public class AlteracaoPacienteDAO {
 					ps6.setLong(2, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
 					ps6.setLong(3, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
 					ps6.setLong(4, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
-					ps6.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
+					ps6.setLong(5, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
 					ps6.setLong(6, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getId());
 					ps6.setLong(7, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
-					
 					ps6.execute();
 				}
 				}	
+		}
+		
 			
 			/*
 			if (listaProfissionaisRemovidosEquipe.size()>0) {			
