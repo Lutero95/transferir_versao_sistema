@@ -445,14 +445,14 @@ public class UnidadeDAO {
             
             ps.setBoolean(17, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
 
-            if(unidade.getParametro().getHorarioInicioFuncionamento() != null) {
+            if(unidade.getParametro().getHorarioInicioFuncionamento() != null && unidade.getParametro().getUsaHorarioLimiteParaAcesso()) {
                 ps.setTime(18, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioInicioFuncionamento()));
             }
             else{
                 ps.setNull(18, Types.NULL);
             }
 
-            if(unidade.getParametro().getHorarioFinalFuncionamento() != null) {
+            if(unidade.getParametro().getHorarioFinalFuncionamento() != null && unidade.getParametro().getUsaHorarioLimiteParaAcesso()) {
                 ps.setTime(19, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioFinalFuncionamento()));
             }
             else{
@@ -595,7 +595,7 @@ public class UnidadeDAO {
                 "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, " +
                 "necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, " +
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
-                "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento " +
+                "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso " +
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -634,7 +634,8 @@ public class UnidadeDAO {
                 parametro.setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
                 parametro.setHorarioInicioFuncionamento(rs.getTime("horario_inicio_funcionamento"));
                 parametro.setHorarioFinalFuncionamento(rs.getTime("horario_final_funcionamento"));
-                
+                parametro.setBloqueiaPorPendenciaEvolucaoAnterior(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
+                parametro.setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
