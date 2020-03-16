@@ -20,6 +20,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -359,7 +360,7 @@ public class AlteracaoPacienteDAO {
 			}
 			
 			
-			EquipeDAO eDAo = new EquipeDAO();
+			AtendimentoDAO aDAo = new AtendimentoDAO();
 			sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
 					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
@@ -443,7 +444,13 @@ public class AlteracaoPacienteDAO {
 				ps6 = null;
 				ps6 = conexao.prepareStatement(sql6);
 				for (int i = 0; i < listaProfissionaisRemovidosAtendimentoEquipe.size(); i++) {
-					if (eDAo.verificaSeProfissionalEstaNaEquipe(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getEquipe().getCodEquipe(), listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId())) {					
+					AtendimentoBean atendimento = new AtendimentoBean();
+					atendimento.setDataAtendimentoInicio( listaProfissionaisRemovidosAtendimentoEquipe.get(i).getDataAtendimento());
+					atendimento.getPrograma().setIdPrograma(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					atendimento.getGrupo().setIdGrupo(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					atendimento.getEquipe().setCodEquipe(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getEquipe().getCodEquipe());
+					atendimento.getFuncionario().setId(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
+					if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {					
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
 							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?    limit 1)" ;

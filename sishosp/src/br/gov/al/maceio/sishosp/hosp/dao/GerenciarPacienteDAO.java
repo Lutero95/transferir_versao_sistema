@@ -477,7 +477,6 @@ public class GerenciarPacienteDAO {
                 ps2.setLong(3, lista.get(i));
                 ps2.setLong(4, lista.get(i));
                 ps2.setLong(5, lista.get(i));
-                System.out.println(ps2.toString());
                 ps2.execute();
             }
 
@@ -607,8 +606,8 @@ public class GerenciarPacienteDAO {
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, listaProfissionaisInseridosNaEquipeAtendimento.get(i).getIdAtendimentos1());
                 ps2.execute();
-            }          
-            /*
+            }       
+            
             for (int i = 0; i < listaProfissionaisRemovidosNaEquipeAtendimento.size(); i++) {
                 sql2 = "delete from adm.remocao_profissional_equipe_atendimento_1 where id_atendimentos1 = ?";
 
@@ -617,13 +616,67 @@ public class GerenciarPacienteDAO {
                 ps2.setLong(1, listaProfissionaisRemovidosNaEquipeAtendimento.get(i).getIdAtendimentos1());
                 ps2.execute();
             }                    
-            */
-                sql2 = "delete from hosp.atendimentos1  where id_atendimento = ? and situacao is null and coalesce(excluido,'N')='N'";
 
+            //    sql2 = "delete from hosp.atendimentos1  where id_atendimento = ? and situacao is null and coalesce(excluido,'N')='N'";
+
+                sql2 =  "delete " + 
+        		"from " + 
+        		"	hosp.atendimentos1 " + 
+        		"where " + 
+        		"	atendimentos1.id_atendimento = ? and situacao is null and coalesce(excluido,'N')='N' " + 
+        		"	and (atendimentos1.id_atendimentos1 not in ( " + 
+        		"	select " + 
+        		"		distinct sp.id_atendimentos1 " + 
+        		"	from " + 
+        		"		logs.substituicao_profissional_equipe_atendimentos1 sp " + 
+        		"	join hosp.atendimentos1 a1 on " + 
+        		"		a1.id_atendimentos1 = sp.id_atendimentos1 " + 
+        		"	join hosp.atendimentos a on " + 
+        		"		a.id_atendimento = a1.id_atendimento " + 
+        		"	where " + 
+        		"		a.id_atendimento = ? )) " + 
+        		"	and ( atendimentos1.id_atendimentos1 not in ( " + 
+        		"	select " + 
+        		"		distinct rpea.id_atendimentos1 " + 
+        		"	from " + 
+        		"		logs.remocao_profissional_equipe_atendimentos1 rpea " + 
+        		"	join hosp.atendimentos1 a1 on " + 
+        		"		a1.id_atendimentos1 = rpea.id_atendimentos1 " + 
+        		"	join hosp.atendimentos a on " + 
+        		"		a.id_atendimento = a1.id_atendimento " + 
+        		"	where " + 
+        		"		a.id_atendimento = ? ) ) " + 
+        		"and ( atendimentos1.id_atendimentos1 not in ( " + 
+        		"	select " + 
+        		"		distinct ipea.id_atendimentos1 " + 
+        		"	from " + 
+        		"		adm.insercao_profissional_equipe_atendimento_1 ipea  " + 
+        		"	join hosp.atendimentos1 a1 on " + 
+        		"		a1.id_atendimentos1 = ipea.id_atendimentos1 " + 
+        		"	join hosp.atendimentos a on " + 
+        		"		a.id_atendimento = a1.id_atendimento " + 
+        		"	where " + 
+        		"		a.id_atendimento = ? ) ) " + 
+        		"and ( atendimentos1.id_atendimentos1 not in ( " + 
+        		"	select " + 
+        		"		distinct ipea.id_atendimentos1 " + 
+        		"	from " + 
+        		"		adm.remocao_profissional_equipe_atendimento_1 ipea " + 
+        		"	join hosp.atendimentos1 a1 on " + 
+        		"		a1.id_atendimentos1 = ipea.id_atendimentos1 " + 
+        		"	join hosp.atendimentos a on " + 
+        		"		a.id_atendimento = a1.id_atendimento " + 
+        		"	where " + 
+        		"		a.id_atendimento = ? ) )";
+                
                 PreparedStatement ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, idAtendimentos);
-                ps2.execute();
+                ps2.setLong(2, idAtendimentos);
+                ps2.setLong(3, idAtendimentos);
+                ps2.setLong(4, idAtendimentos);
+                ps2.setLong(5, idAtendimentos);
+                ps2.execute(); 
                 
     			for (int i = 0; i < listaExcluir.size(); i++) {
                      sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? where id_atendimentos1 = ?";

@@ -282,6 +282,7 @@ public class AtendimentoDAO {
 				stmt3.executeUpdate();
 			}
 			
+			AtendimentoDAO aDao = new AtendimentoDAO();
 			if (listaSubstituicao.size()>0) {
 			String sql6 = "insert into adm.substituicao_funcionario (id_atendimentos1,id_afastamento_funcionario,\n" + 
 					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
@@ -366,7 +367,13 @@ public class AtendimentoDAO {
 				ps6 = null;
 				ps6 = con.prepareStatement(sql6);
 				for (int i = 0; i < listaProfissionaisRemovidosAtendimentoEquipe.size(); i++) {
-					
+					AtendimentoBean atendimento = new AtendimentoBean();
+					atendimento.setDataAtendimentoInicio( listaProfissionaisRemovidosAtendimentoEquipe.get(i).getDataAtendimento());
+					atendimento.getPrograma().setIdPrograma(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					atendimento.getGrupo().setIdGrupo(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					atendimento.getEquipe().setCodEquipe(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getEquipe().getCodEquipe());
+					atendimento.getFuncionario().setId(listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
+					if (aDao.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {	
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
 							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1)" ;
@@ -392,6 +399,7 @@ public class AtendimentoDAO {
 					ps6.execute();
 				}
 				}			
+		}
 			
 
 			con.commit();
@@ -1056,6 +1064,42 @@ public class AtendimentoDAO {
 		}
 		return lista;
 	}
+	
+    public boolean verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(AtendimentoBean atendimento) throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+        String sql = "select a.id_atendimento from hosp.atendimentos a  " + 
+        		"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " + 
+        		"where dtaatende=? " + 
+        		"and a.codprograma=? and a.codgrupo=? and a.codequipe=? " + 
+        		"and a1.codprofissionalatendimento=? and coalesce(a.situacao,'A')<>'C' " + 
+        		" and coalesce(a1.excluido,'N' )='N'" +
+        		"";
+        boolean rst = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setDate(1,new java.sql.Date( atendimento.getDataAtendimentoInicio().getTime()));
+            stm.setInt(2,  atendimento.getPrograma().getIdPrograma());
+            stm.setInt(3,  atendimento.getGrupo().getIdGrupo());
+            stm.setInt(4,  atendimento.getEquipe().getCodEquipe());
+            stm.setLong(5,  atendimento.getFuncionario().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+               rst = true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return rst;
+    }	
 	
 
 }
