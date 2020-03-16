@@ -992,7 +992,15 @@ public class EquipeDAO {
 
         try {
             con = ConnectionFactory.getConnection();
-            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ?;";
+            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos \n" + 
+            		"join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento\n" + 
+            		"where atendimentos.id_atendimento=(\n" + 
+            		"select a1.id_atendimento from hosp.atendimentos1 a1 \n" + 
+            		"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento\n" + 
+            		"where a1.id_atendimentos1=? )\n" + 
+            		"and coalesce(atendimentos.situacao,'A')<>'C'\n" + 
+            		"and coalesce(atendimentos1.excluido,'N' )='N'\n" + 
+            		"and atendimentos1.codprofissionalatendimento=? )";
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
 
 
@@ -1003,7 +1011,8 @@ public class EquipeDAO {
 
                 ps.setLong(1, substituicao.getFuncionarioAssumir().getId());
                 ps.setInt(2, listaAtendimentos1.get(i));
-
+                ps.setInt(3, listaAtendimentos1.get(i));
+                ps.setLong(4, substituicao.getFuncionarioAssumir().getId());
                 ps.execute();
 
                 
