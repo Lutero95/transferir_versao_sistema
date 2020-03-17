@@ -24,6 +24,7 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
     private Date dataAtendimento;
     private ProgramaBean programa;
     private GrupoBean grupo;
+    private Date dataDeSubstituicao;
 
     public SubstituicaoProfissionalEquipeDTO() {
         funcionarioRemovido = new FuncionarioBean();
@@ -122,5 +123,13 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
 
 	public void setGrupo(GrupoBean grupo) {
 		this.grupo = grupo;
+	}
+
+	public Date getDataDeSubstituicao() {
+		return dataDeSubstituicao;
+	}
+
+	public void setDataDeSubstituicao(Date dataDeSubstituicao) {
+		this.dataDeSubstituicao = dataDeSubstituicao;
 	}
 }
