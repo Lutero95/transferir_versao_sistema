@@ -727,7 +727,11 @@ public class AlteracaoPacienteController implements Serializable {
     }
     
     public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() {
-    	boolean dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao()); 
+    	Boolean dataValida = null;
+    	if (insercaoParaLaudo.getLaudo().getId()!=null)
+    	dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    	else
+    		dataValida = true;
     	if(!dataValida)
     		JSFUtil.adicionarMensagemErro("Data de Inclusão não está dentro do intervalo da data do laudo", "Erro!");
     	return dataValida; 

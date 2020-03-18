@@ -764,7 +764,7 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
+            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
             		" join acl.funcionarios f on f.id_funcionario = ipe.id_profissional " + 
@@ -793,6 +793,7 @@ public class GerenciarPacienteDAO {
             	insercao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
             	insercao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
             	insercao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+            	insercao.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 lista.add(insercao);
             }
 

@@ -405,6 +405,13 @@ public class AlteracaoPacienteDAO {
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
+				AtendimentoBean atendimento = new AtendimentoBean();
+				atendimento.setDataAtendimentoInicio( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento());
+				atendimento.getPrograma().setIdPrograma(listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				atendimento.getGrupo().setIdGrupo(listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+				atendimento.getEquipe().setCodEquipe(listaProfissionaisInseridosAtendimentoEquipe.get(i).getEquipe().getCodEquipe());
+				atendimento.getFuncionario().setId(listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {
 				String sql8 = "INSERT INTO hosp.atendimentos1 " +
 		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
 		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
@@ -433,6 +440,7 @@ public class AlteracaoPacienteDAO {
 				ps6.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getId());
 				ps6.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
 				ps6.execute();
+			}
 			}
 			
 			
