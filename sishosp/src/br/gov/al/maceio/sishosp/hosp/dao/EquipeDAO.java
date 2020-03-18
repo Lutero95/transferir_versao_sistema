@@ -941,7 +941,7 @@ public class EquipeDAO {
         return substituicao;
     }
 
-    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido(long codigoProfissional, int codigoEquipe) {
+    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido(long codigoProfissional, int codigoEquipe, Date dataDeSubstituicao) {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -953,13 +953,14 @@ public class EquipeDAO {
                 "join hosp.programa p on p.id_programa = a.codprograma " +
                 "join hosp.grupo g on g.id_grupo = a.codgrupo " +
                 "join hosp.pacientes on pacientes.id_paciente = a.codpaciente " +
-                "where rpe.cod_equipe = ? and rpe.cod_profissional = ?";
+                "where rpe.cod_equipe = ? and rpe.cod_profissional = ? and a.dtaatende>=?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, codigoEquipe);
             stm.setLong(2, codigoProfissional);
+            stm.setDate(3, new java.sql.Date(dataDeSubstituicao.getTime()));
 
             ResultSet rs = stm.executeQuery();
 
@@ -984,7 +985,7 @@ public class EquipeDAO {
     public boolean gravarSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao) {
 
         List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
-                substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe());
+                substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(), substituicao.getDataDeSubstituicao());
 
         substituicao.setListaAtendimentos1(listaAtendimentos1);
 

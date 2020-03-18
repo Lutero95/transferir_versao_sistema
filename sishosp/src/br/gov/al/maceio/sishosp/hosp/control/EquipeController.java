@@ -15,7 +15,7 @@ import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -176,17 +176,27 @@ public class EquipeController implements Serializable {
         listaRemocoes = eDao.listarProfissionaisDaEquipeRemovidos(equipe.getCodEquipe());
     }
 
-    public void gravarSubstituicaoProfissionalEquipe() throws ProjetoException {
-
-        boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
-
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
-        }
+    public void gravarSubstituicaoProfissionalEquipe(){
+        try {
+			dataDeSubstituicaoEhAnteriorAhDataDeSaida();
+	        boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
+			if (cadastrou == true) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+			}
+		} catch (ProjetoException e) {
+			e.printStackTrace();
+		} 
     }
+	
+	private void dataDeSubstituicaoEhAnteriorAhDataDeSaida() throws ProjetoException{
+		if(substituicaoProfissionalEquipeDTO.getDataDeSubstituicao().before(
+				substituicaoProfissionalEquipeDTO.getRemocaoProfissionalEquipe().getDataSaida())) {
+        	throw new ProjetoException("A data de substituição não pode ser anterior a data de saída");
+        }
+	}
 
     public String getCabecalho() {
         if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {

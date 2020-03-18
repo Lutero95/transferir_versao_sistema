@@ -86,6 +86,21 @@
                             </b:column>
                         </b:row>
                     </p:outputPanel>
+                    
+                    <p:outputPanel id="outDataSubstituicao">
+                        <b:row>
+                            <b:column span="12"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Data de Substituição:" severity="info"/>
+
+                                <p:outputPanel id="outDataSubs">
+                                	<p:calendar id="dataSubstituicai" value="#{EquipeController.substituicaoProfissionalEquipeDTO.dataDeSubstituicao}"
+                                		style="margin-left: -14px" pattern="dd/MM/yyyy" 
+                                		required="true" requiredMessage="Digite a data de substituição" showOn="button" />
+                                </p:outputPanel>
+                            </b:column>
+                        </b:row>
+                    </p:outputPanel>
 
                     <br/>
 
