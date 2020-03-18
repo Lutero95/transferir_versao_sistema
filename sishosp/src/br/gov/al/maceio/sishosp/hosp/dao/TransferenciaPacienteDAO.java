@@ -122,6 +122,28 @@ public class TransferenciaPacienteDAO {
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, lista.get(i));
                 ps2.execute();
+                
+                sql2 = "delete from logs.remocao_profissional_equipe_atendimentos1 where id_atendimentos1 in (select id_atendimentos1 from hosp.atendimentos1 where id_atendimento=?)";
+
+                ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();
+                
+                sql2 = "delete from logs.substituicao_profissional_equipe_atendimentos1 where id_atendimentos1 in (select id_atendimentos1 from hosp.atendimentos1 where id_atendimento=?)";
+
+                ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();  
+                
+                sql2 = "delete from adm.remocao_profissional_equipe_atendimento_1 where id_atendimentos1 in (select id_atendimentos1 from hosp.atendimentos1 where id_atendimento=?)";
+
+                ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();                  
+            	
             	
                 sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
 
