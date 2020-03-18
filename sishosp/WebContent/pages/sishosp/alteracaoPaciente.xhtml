@@ -213,7 +213,7 @@
                                 </p:autoComplete>
 
                                 <p:commandButton icon="ui-icon-search"
-                                                 update="dtEquipe, :formInsercao2:msgPagina"
+                                                 update="dtEquipe, :msgPagina"
                                                  rendered="false"
                                                  action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
                                 <!-- rendered="#{AlteracaoPacienteController.tipo == 'E'}" -->
@@ -224,7 +224,7 @@
                                                  value="Carregar Profissionais"
                                                  style="margin-top:20px; margin-bottom:10px;"
                                                  class="btn-acao-table acao-confirmar"
-                                                 update="dtEquipe, :formInsercao2:msgPagina"
+                                                 update="dtEquipe, :msgPagina"
                                                  rendered="false"
                                                  action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
                                 <!--rendered="#{AlteracaoPacienteController.tipo == 'E'}"-->
@@ -434,16 +434,13 @@
 
 
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
 
                     <br></br>
 
                     <div align="center">
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="ui-icon-check" update=":formInsercao2:msgPagina"
+                                         icon="ui-icon-check" update=":msgPagina"
                                          class="btn-incluir"
                                          action="#{AlteracaoPacienteController.gravarAlteracaoPaciente()}"/>
 
