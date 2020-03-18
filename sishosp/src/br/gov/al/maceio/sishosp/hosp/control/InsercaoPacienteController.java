@@ -124,7 +124,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.insercao = new InsercaoPacienteBean();
         renderizarAposLaudo = false;
         listaProfissionaisEquipe = new ArrayList<>();
-        listaProfissionaisAdicionados = new ArrayList<>();
+        this.listaProfissionaisAdicionados = new ArrayList<>();
+        this.listAgendamentoProfissional = new ArrayList<>();
         limparDias();
     }
 
@@ -715,10 +716,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         	 JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório",
                      "Erro");
         }
-        else if(iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())){
-            JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo",
-                    "Erro");
-        }
+		
+		else if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+				insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())) {
+			JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
+		}
+
         else if (insercao.getEncaixe()) {
             gravarInsercaoPaciente();
         } else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
