@@ -179,11 +179,19 @@ public class UnidadeController implements Serializable {
         boolean alterou = eDao.alterarUnidade(unidade);
 
         if (alterou == true) {
+        	limpaHorarioDeInicioIhFimDeFuncionamento();
             JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
     }
+
+	private void limpaHorarioDeInicioIhFimDeFuncionamento() {
+		if(!unidade.getParametro().getUsaHorarioLimiteParaAcesso()) {
+			unidade.getParametro().setHorarioInicioFuncionamento(null);
+			unidade.getParametro().setHorarioFinalFuncionamento(null);
+		}
+	}
 
     public void desativarUnidade() {
         boolean desativou = eDao.desativarUnidade(unidade);
