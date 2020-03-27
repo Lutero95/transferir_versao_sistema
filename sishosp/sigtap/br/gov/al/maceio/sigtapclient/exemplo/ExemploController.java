@@ -35,7 +35,7 @@ public class ExemploController {
 	
 	public void testarRequestsProcedimentos() {
 		pesquisarProcedimentosExemplo();
-		detalharProcedimento();
+		//detalharProcedimento();
 	}
 
 	private static void pesquisarProcedimentosExemplo() {
@@ -69,12 +69,12 @@ public class ExemploController {
 		DetalhesAdicionais detalhesAdicionais = new DetalhesAdicionais();
 		
 		DetalheAdicionalType detalheAdicionalType = new DetalheAdicionalType();
-		detalheAdicionalType.setCategoriaDetalheAdicional(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES);
+		detalheAdicionalType.setCategoriaDetalheAdicional(CategoriaDetalheAdicionalType.CIDS);
 		
 		PaginacaoType paginacaoType = new PaginacaoType();
 		paginacaoType.setRegistroInicial(new BigInteger("1"));
 		paginacaoType.setQuantidadeRegistros(20);
-		paginacaoType.setTotalRegistros(new BigInteger("100"));
+		paginacaoType.setTotalRegistros(new BigInteger("0")); //PARAMETRO NAO USADO
 		
 		detalheAdicionalType.setPaginacao(paginacaoType);
 		
@@ -106,6 +106,7 @@ public class ExemploController {
 				System.out.println("NOME DA CLASSIFICACAO: "+servico.getNomeClassificacao());
 				System.out.println("CODIGO DA CLASSIFICACAO: "+servico.getCodigoClassificacao());
 			}
+			System.out.println(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getQuantidadeRegistros());
 		} catch (SIGTAPFault e) {
 			e.printStackTrace();
 		}

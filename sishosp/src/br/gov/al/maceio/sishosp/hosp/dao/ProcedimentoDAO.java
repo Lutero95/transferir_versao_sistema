@@ -3,7 +3,6 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,6 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 import javax.faces.context.FacesContext;
@@ -634,6 +632,74 @@ public class ProcedimentoDAO {
             }
         }
         return proc;
+    }
+    
+    public Boolean gravarHistoricoConsumoSigtap(Long idFuncionario)
+            throws ProjetoException {
+        boolean gravado = false;
+        String sql = "INSERT INTO hosp.historico_consumo_sigtap " + 
+        		"(mes, ano, data_registro, id_funcionario) " + 
+        		"VALUES(?, ?, current_timestamp, ?);";
+        
+        Integer mesAtual = buscaMesAtual();
+        Integer anoAtual = buscaAnoAtual();
+        try {
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, mesAtual);
+            stm.setInt(2, anoAtual);
+            stm.setLong(3, idFuncionario);
+            stm.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return gravado;
+    }
+    
+
+    public Integer buscaMesAtual() throws ProjetoException {
+        Integer anoAtual = null;
+        String sql = "select extract(month from current_date) as mes_atual";
+        try {
+            PreparedStatement stm = con.prepareStatement(sql);          
+            ResultSet rs = stm.executeQuery();
+            if(rs.next())
+            	anoAtual = rs.getInt("mes_atual");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return anoAtual;
+    }
+    
+    public Integer buscaAnoAtual() throws ProjetoException {
+        Integer anoAtual = null;
+        String sql = "select extract(year from current_date) as ano_atual";
+        try {
+            PreparedStatement stm = con.prepareStatement(sql);          
+            ResultSet rs = stm.executeQuery();
+            if(rs.next())
+            	anoAtual = rs.getInt("ano_atual");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return anoAtual;
     }
 
 }
