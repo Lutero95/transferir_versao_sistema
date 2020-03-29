@@ -13,6 +13,13 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.CboDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.CidDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.InstrumentoRegistroDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ModalidadeAtendimentoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ServicoClassificacaoDTO;
+import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
 
 import javax.faces.context.FacesContext;
 
@@ -666,8 +673,9 @@ public class ProcedimentoDAO {
         Integer anoAtual = null;
         String sql = "select extract(month from current_date) as mes_atual";
         try {
-            PreparedStatement stm = con.prepareStatement(sql);          
-            ResultSet rs = stm.executeQuery();
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);          
+            ResultSet rs = ps.executeQuery();
             if(rs.next())
             	anoAtual = rs.getInt("mes_atual");
         } catch (Exception ex) {
@@ -675,6 +683,7 @@ public class ProcedimentoDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
+            	con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -686,8 +695,9 @@ public class ProcedimentoDAO {
         Integer anoAtual = null;
         String sql = "select extract(year from current_date) as ano_atual";
         try {
-            PreparedStatement stm = con.prepareStatement(sql);          
-            ResultSet rs = stm.executeQuery();
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);          
+            ResultSet rs = ps.executeQuery();
             if(rs.next())
             	anoAtual = rs.getInt("ano_atual");
         } catch (Exception ex) {
@@ -695,11 +705,159 @@ public class ProcedimentoDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
+                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         return anoAtual;
     }
-
+    
+    public List<String> buscaCodigoModalidadeAtendimento(Integer procedimentoId) throws ProjetoException {
+        List<String> listaCodigoModaliadeAtendimento = new ArrayList();
+        String sql = "SELECT ma.codigo " + 
+        			 "FROM hosp.modalidade_atendimento ma "
+        			 + "JOIN hosp.procedimento_mensal pm ON ma.id_procedimento_mensal = pm.id "
+        			 + "AND pm.id_procedimento = ? ";
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, procedimentoId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	listaCodigoModaliadeAtendimento.add(rs.getString("codigo"));
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaCodigoModaliadeAtendimento;
+    }
+    
+    public List<String> buscaCodigoInstrumentosRegistro(Integer procedimentoId) throws ProjetoException {
+        List<String> listaCodigoInstrumentoRegistro = new ArrayList();
+        String sql = "SELECT ir.codigo " + 
+        			 "FROM hosp.instrumento_registro ir "
+        			 + "JOIN hosp.procedimento_mensal pm ON ir.id_procedimento_mensal = pm.id "
+        			 + "AND pm.id_procedimento = ? ";
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, procedimentoId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	listaCodigoInstrumentoRegistro.add(rs.getString("codigo"));
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaCodigoInstrumentoRegistro;
+    }
+    
+    public List<String> buscaCodigoCbos(Integer procedimentoId) throws ProjetoException {
+        List<String> listaCodigoCbo = new ArrayList();
+        String sql = "SELECT cbo.codigo " + 
+        			 "FROM hosp.cbo_procedimento_mensal cbo "
+        			 + "JOIN hosp.procedimento_mensal pm ON cbo.id_procedimento_mensal = pm.id "
+        			 + "AND pm.id_procedimento = ? ";
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, procedimentoId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	listaCodigoCbo.add(rs.getString("codigo"));
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaCodigoCbo;
+    }
+    
+    public List<String> buscaCodigoCids(Integer procedimentoId) throws ProjetoException {
+        List<String> listaCodigoCid = new ArrayList();
+        String sql = "SELECT cid.codigo " + 
+        			 "FROM hosp.cid_procedimento_mensal cid "
+        			 + "JOIN hosp.procedimento_mensal pm ON cid.id_procedimento_mensal = pm.id "
+        			 + "AND pm.id_procedimento = ? ";
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, procedimentoId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	listaCodigoCid.add(rs.getString("codigo"));
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaCodigoCid;
+    }
+    
+    public List<ServicoClassificacaoType> buscarServicosClassificacao(Integer procedimentoId) throws ProjetoException {
+        List<ServicoClassificacaoType> listaServicoClassificacao = new ArrayList();
+        String sql = "SELECT cm.nome nome_classificacao, cm.codigo codigo_classificacao, "+
+        		"sm.codigo codigo_servico, sm.nome nome_servico " + 
+        		"FROM hosp.servico_classificacao_mensal sc " + 
+        		"JOIN hosp.procedimento_mensal pm ON sc.id_procedimento_mensal = pm.id " + 
+        		"join hosp.classificacao_mensal cm on cm.id = sc.id_classificacao " + 
+        		"join hosp.servico_mensal sm on sm.id = sc.id_servico " + 
+        		"AND pm.id_procedimento = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);          
+            ps.setInt(1, procedimentoId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	ServicoClassificacaoType servicoClassificacao = new ServicoClassificacaoType();
+            	servicoClassificacao.setNomeClassificacao(rs.getString("nome_classificacao"));
+            	servicoClassificacao.setCodigoClassificacao(rs.getString("codigo_classificacao"));
+            	servicoClassificacao.getServico().setNome(rs.getString("nome_servico"));
+            	servicoClassificacao.getServico().setCodigo(rs.getString("codigo_servico"));
+            	listaServicoClassificacao.add(servicoClassificacao);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaServicoClassificacao;
+    }
 }

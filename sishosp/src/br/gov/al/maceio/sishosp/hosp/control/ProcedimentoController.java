@@ -17,7 +17,18 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.CboDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.CidDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.InstrumentoRegistroDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ModalidadeAtendimentoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoMensalDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ServicoClassificacaoDTO;
+import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados.CIDVinculado;
 import br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento;
 import br.gov.saude.servicos.sigtap.v1.procedimentoservice.SIGTAPFault;
 import br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento.DetalhesAdicionais;
@@ -46,7 +57,7 @@ public class ProcedimentoController implements Serializable {
     private ProcedimentoDAO procedimentoDao = new ProcedimentoDAO();
     private String tipoBusca;
     private String campoBusca;
-
+    
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
@@ -59,13 +70,44 @@ public class ProcedimentoController implements Serializable {
     private static final Integer QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA = 20; 
     private static final BigInteger REGISTRO_INICIAL = BigInteger.ONE;
     
+    private List<String> listaCodigoModalidadeAtendimento;
+    private List<String> listaCodigoInstrumentosRegistro;
+    private List<String> listaCodigoCBOs;
+    private List<String> listaCodigoCids;
+    private List<ServicoClassificacaoType> listaServicoClassificacao;
+    
+    private List<ProcedimentoMensalDTO> listaProcedimentosMensalDTO;
+    private ProcedimentoMensalDTO procedimentoMensalDTO;
+    
+    private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoNaoGravadosNoBanco;
+    private List<InstrumentoRegistroType> listaInstrumentosRegistroNaoGravadosNoBanco;
+    private List<CBOType> listaCBOsNaoGravadosNoBanco;
+    private List<CIDType> listaCidsNaoGravadosNoBanco;
+    private List<ServicoClassificacaoType> listaServicoClassificacaoNaoGravadosNoBanco;
+    
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
         this.listaProcedimentos = null;
         cid = new CidBean();
         cbo = new CboBean();
         recurso = new RecursoBean();
+        this.listaCodigoModalidadeAtendimento = new ArrayList();
+        this.listaCodigoInstrumentosRegistro = new ArrayList();
+        this.listaCodigoCBOs = new ArrayList();
+        this.listaCodigoCids = new ArrayList();
+        this.listaServicoClassificacao = new ArrayList();
+        this.listaProcedimentosMensalDTO = new ArrayList();
+        this.procedimentoMensalDTO = new ProcedimentoMensalDTO();
+        limparListasDadosProcedimentos();
     }
+
+	private void limparListasDadosProcedimentos() {
+		this.listaModalidadeAtendimentoNaoGravadosNoBanco = new ArrayList();
+        this.listaInstrumentosRegistroNaoGravadosNoBanco = new ArrayList();
+        this.listaCBOsNaoGravadosNoBanco = new ArrayList();
+        this.listaCidsNaoGravadosNoBanco = new ArrayList();
+        this.listaServicoClassificacaoNaoGravadosNoBanco = new ArrayList();
+	}
 
     public String redirectEdit() {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.proc.getIdProc(), ENDERECO_TIPO, tipo);
@@ -255,12 +297,58 @@ public class ProcedimentoController implements Serializable {
         campoBusca = "";
     }
     
-    public void novaCargaSigtap() {
-    	for(ProcedimentoBean procedimento : listaProcedimentos) {
+    public void novaCargaSigtap() throws ProjetoException {
+    	for(ProcedimentoBean procedimento : this.listaProcedimentos) {
     		int detalheAdicional = 0;
+    		buscaIdsDeDetalhamentosExistentesNoProcedimento(procedimento.getIdProc());
     		selecionaDetalheAdicionalEmSequencia(procedimento, detalheAdicional);
+    		
+    		//TESTE
+        	System.out.println("QTD PROCEDIMENTOS SIGTAP :\n\n\n"+ listaProcedimentosMensalDTO.size());
+        	for (CBOType cboType : listaCBOsNaoGravadosNoBanco) {
+    			System.out.println("CBO: "+cboType.getNome());
+    			System.out.println("Codigo: "+cboType.getCodigo());
+    		}
+        	System.out.println("SIZE:" +listaCBOsNaoGravadosNoBanco.size());
+        	
+    		for (CIDType cidType : listaCidsNaoGravadosNoBanco) {
+    			System.out.println("\nCID: "+cidType.getNome());
+    			System.out.println("Codigo: "+cidType.getCodigo());
+    		}
+    		System.out.println("SIZE:" +listaCidsNaoGravadosNoBanco.size());
+    		
+    		for (ServicoClassificacaoType servicoClassificacaoType : listaServicoClassificacaoNaoGravadosNoBanco) {
+    			System.out.println("\nServico: "+servicoClassificacaoType.getServico().getNome());
+    			System.out.println("Codigo Servico: "+servicoClassificacaoType.getServico().getCodigo());
+    			System.out.println("Classificacao: "+servicoClassificacaoType.getNomeClassificacao());
+    			System.out.println("Codigo Classificacao: "+servicoClassificacaoType.getCodigoClassificacao());
+    		}
+    		System.out.println("SIZE:" +listaServicoClassificacaoNaoGravadosNoBanco.size());
+    		
+    		for (ModalidadeAtendimentoType modalidadeAtendimentoType : listaModalidadeAtendimentoNaoGravadosNoBanco) {
+    			System.out.println("\nMODALIDADE ATENDIMENTO: "+modalidadeAtendimentoType.getNome());
+    			System.out.println("Codigo: "+modalidadeAtendimentoType.getCodigo());
+    		}
+    		System.out.println("Modalidade SIZE:" +listaModalidadeAtendimentoNaoGravadosNoBanco.size());
+    		
+    		for (InstrumentoRegistroType instrumentoRegistroType : listaInstrumentosRegistroNaoGravadosNoBanco) {
+    			System.out.println("\nINSTRUMENTO REGISTRO: "+instrumentoRegistroType.getNome());
+    			System.out.println("Codigo: "+instrumentoRegistroType.getCodigo());
+    		}
+    		System.out.println("Instrumento SIZE:" +listaInstrumentosRegistroNaoGravadosNoBanco.size());
+    		
+    		limparListasDadosProcedimentos();
     	}
     }
+
+	private void buscaIdsDeDetalhamentosExistentesNoProcedimento(Integer idProcedimento)
+			throws ProjetoException {
+		listaCodigoModalidadeAtendimento = procedimentoDao.buscaCodigoModalidadeAtendimento(idProcedimento);
+		listaCodigoInstrumentosRegistro = procedimentoDao.buscaCodigoInstrumentosRegistro(idProcedimento);
+		listaCodigoCBOs = procedimentoDao.buscaCodigoCbos(idProcedimento);
+		listaCodigoCids = procedimentoDao.buscaCodigoCids(idProcedimento);
+		listaServicoClassificacao = procedimentoDao.buscarServicosClassificacao(idProcedimento);
+	}
 
 	private void selecionaDetalheAdicionalEmSequencia(ProcedimentoBean procedimento, int detalheAdicional) {
 		//CBOS, CIDS, DESCRICAO, RENASES, SERVICO_CLASSIFICACAO
@@ -285,13 +373,15 @@ public class ProcedimentoController implements Serializable {
 	private int buscaTodosRegistrosDeUmProcedimentoSeguindoAhRegraDeVinteRegistrosPorVez(ProcedimentoBean procedimento,
 			int detalheAdicional, CategoriaDetalheAdicionalType categoriaDetalheAdicional) {
 		try {
-			BigInteger totalRegistros = detalharProcedimento(procedimento, REGISTRO_INICIAL, categoriaDetalheAdicional);
+			BigInteger totalRegistros = detalharProcedimento
+					(procedimento, REGISTRO_INICIAL, categoriaDetalheAdicional);
 			Long registroInicialLong = REGISTRO_INICIAL.longValue();
 			registroInicialLong += QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA;
 			
 			if(totalRegistros.longValue() > QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA) {
 				while (registroInicialLong < totalRegistros.longValue()) {
-					detalharProcedimento(procedimento, new BigInteger(registroInicialLong.toString()), categoriaDetalheAdicional);
+					detalharProcedimento
+						(procedimento, new BigInteger(registroInicialLong.toString()), categoriaDetalheAdicional);
 					registroInicialLong += QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA;
 				}
 			}
@@ -303,7 +393,8 @@ public class ProcedimentoController implements Serializable {
 		return detalheAdicional;
 	}
     
-    private BigInteger detalharProcedimento(ProcedimentoBean procedimento, BigInteger registroInicial, CategoriaDetalheAdicionalType categoriaDetalheAdicional) throws SIGTAPFault {
+    private BigInteger detalharProcedimento(ProcedimentoBean procedimento, BigInteger registroInicial, 
+    		CategoriaDetalheAdicionalType categoriaDetalheAdicional) throws SIGTAPFault {
     	RequestDetalharProcedimento requestDetalharProcedimento = new RequestDetalharProcedimento();
 		requestDetalharProcedimento.setCodigoProcedimento(procedimento.getCodProc());
 		
@@ -325,6 +416,10 @@ public class ProcedimentoController implements Serializable {
 		
 		ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType = 
 			ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
+		
+		adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
+		adicionaListaCidsCbosIhServicoClassificacaoAoEmListasSeparadasParaUmInsertPosterior(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
+		
 		System.out.println("Detalhamento:" +categoriaDetalheAdicional.name());
 		System.out.println("Procedimento:" +resultadosDetalhaProcedimentosType.getProcedimento().getNome());
 		if (resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao() != null) {
@@ -334,6 +429,71 @@ public class ProcedimentoController implements Serializable {
 		else
 			return new BigInteger(BigInteger.ZERO.toString());
 		return resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getTotalRegistros();	
+	}
+    
+	private void adicionaProcedimentoParaListaProcedimentoMensalDTO(ProcedimentoBean procedimento,
+			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
+		Integer ultimoIndiceDaListaProcedimentosMensalDTO = listaProcedimentosMensalDTO.size() - 1;
+		
+		if(listaProcedimentosMensalDTO.isEmpty()) {
+			procedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+			procedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
+			listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
+		}
+		
+		else if(listaProcedimentosMensalDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento() != procedimento.getIdProc()){
+			procedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+			procedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
+			listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
+		}
+
+		/*
+		 * if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
+		 * 
+		 * procedimentoMensalDTO.setListaCBOs(resultadosDetalhaProcedimentosType.
+		 * getProcedimento().getCBOsVinculados().getCBO()); }
+		 */
+	}
+
+	private void adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(
+			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
+		for(ModalidadeAtendimentoType modalidadeAtendimentoType : 
+			resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento()) {
+			if(!listaCodigoModalidadeAtendimento.contains(modalidadeAtendimentoType.getCodigo()))
+				listaModalidadeAtendimentoNaoGravadosNoBanco.add(modalidadeAtendimentoType);
+		}
+		
+		for(InstrumentoRegistroType instrumentoRegistroType : 
+			resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro()) {
+			if(!listaCodigoInstrumentosRegistro.contains(instrumentoRegistroType.getCodigo()))
+				listaInstrumentosRegistroNaoGravadosNoBanco.add(instrumentoRegistroType);
+		}
+	}
+
+	private void adicionaListaCidsCbosIhServicoClassificacaoAoEmListasSeparadasParaUmInsertPosterior(
+			CategoriaDetalheAdicionalType categoriaDetalheAdicional,
+			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
+		if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
+			for (CBOType cboType : resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO()) {
+				if(!listaCodigoCBOs.contains(cbo.getCodigo()))
+					listaCBOsNaoGravadosNoBanco.add(cboType);
+			}
+		}
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
+			for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
+				if(!listaCodigoCids.contains(cidVinculado.getCID().getCodigo()))
+					listaCidsNaoGravadosNoBanco.add(cidVinculado.getCID());
+			}			
+		}
+		else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
+			for (ServicoClassificacaoType servicoClassificacaoType :
+					resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao()) {
+				if(!listaServicoClassificacao.contains(servicoClassificacaoType))
+					listaServicoClassificacaoNaoGravadosNoBanco.add(servicoClassificacaoType);
+			}
+		}
 	}
 
 	public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
