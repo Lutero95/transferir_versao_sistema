@@ -21,10 +21,11 @@ import br.gov.al.maceio.sishosp.hosp.model.dto.CboDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.CidDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.InstrumentoRegistroDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ModalidadeAtendimentoDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoMensalDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ServicoClassificacaoDTO;
 import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
@@ -76,14 +77,16 @@ public class ProcedimentoController implements Serializable {
     private List<String> listaCodigoCids;
     private List<ServicoClassificacaoType> listaServicoClassificacao;
     
-    private List<ProcedimentoMensalDTO> listaProcedimentosMensalDTO;
-    private ProcedimentoMensalDTO procedimentoMensalDTO;
+    private List<GravarProcedimentoMensalDTO> listaGravarProcedimentosMensaisDTO;
+    private GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO;
     
     private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoNaoGravadosNoBanco;
     private List<InstrumentoRegistroType> listaInstrumentosRegistroNaoGravadosNoBanco;
     private List<CBOType> listaCBOsNaoGravadosNoBanco;
-    private List<CIDType> listaCidsNaoGravadosNoBanco;
+    private List<CIDVinculado> listaCidsNaoGravadosNoBanco;
     private List<ServicoClassificacaoType> listaServicoClassificacaoNaoGravadosNoBanco;
+    private RENASESType renases;
+    private String descricaoProcedimentoMensal;
     
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -96,17 +99,19 @@ public class ProcedimentoController implements Serializable {
         this.listaCodigoCBOs = new ArrayList();
         this.listaCodigoCids = new ArrayList();
         this.listaServicoClassificacao = new ArrayList();
-        this.listaProcedimentosMensalDTO = new ArrayList();
+        this.listaGravarProcedimentosMensaisDTO = new ArrayList();
         limparListasDadosProcedimentos();
     }
 
 	private void limparListasDadosProcedimentos() {
-        this.procedimentoMensalDTO = new ProcedimentoMensalDTO();
+        this.gravarProcedimentoMensalDTO = new GravarProcedimentoMensalDTO();
 		this.listaModalidadeAtendimentoNaoGravadosNoBanco = new ArrayList();
         this.listaInstrumentosRegistroNaoGravadosNoBanco = new ArrayList();
         this.listaCBOsNaoGravadosNoBanco = new ArrayList();
         this.listaCidsNaoGravadosNoBanco = new ArrayList();
         this.listaServicoClassificacaoNaoGravadosNoBanco = new ArrayList();
+        this.renases = new RENASESType();
+        this.descricaoProcedimentoMensal = new String();
 	}
 
     public String redirectEdit() {
@@ -298,22 +303,22 @@ public class ProcedimentoController implements Serializable {
     }
     
     public void novaCargaSigtap() throws ProjetoException {
-    	for(ProcedimentoBean procedimento : this.listaProcedimentos) {
-    		int detalheAdicional = 0;
-    		buscaIdsDeDetalhamentosExistentesNoProcedimento(procedimento.getIdProc());
-    		selecionaDetalheAdicionalEmSequencia(procedimento, detalheAdicional);
+    	for(int i = 0; i < this.listaProcedimentos.size(); i++) {
     		
-    		//TESTE
-        	System.out.println("QTD PROCEDIMENTOS SIGTAP :\n\n\n"+ listaProcedimentosMensalDTO.size());
+    		buscaIdsDeDetalhamentosExistentesNoProcedimento(this.listaProcedimentos.get(i).getIdProc());
+    		selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
+    		
+    		//TESTE 
+        	System.out.println("QTD PROCEDIMENTOS SIGTAP :\n\n\n"+ listaGravarProcedimentosMensaisDTO.size());
         	for (CBOType cboType : listaCBOsNaoGravadosNoBanco) {
     			System.out.println("CBO: "+cboType.getNome());
     			System.out.println("Codigo: "+cboType.getCodigo());
     		}
         	System.out.println("SIZE:" +listaCBOsNaoGravadosNoBanco.size());
         	
-    		for (CIDType cidType : listaCidsNaoGravadosNoBanco) {
-    			System.out.println("\nCID: "+cidType.getNome());
-    			System.out.println("Codigo: "+cidType.getCodigo());
+    		for (CIDVinculado cidVinculado : listaCidsNaoGravadosNoBanco) {
+    			System.out.println("\nCID: "+cidVinculado.getCID().getNome());
+    			System.out.println("Codigo: "+cidVinculado.getCID().getCodigo());
     		}
     		System.out.println("SIZE:" +listaCidsNaoGravadosNoBanco.size());
     		
@@ -337,21 +342,51 @@ public class ProcedimentoController implements Serializable {
     		}
     		System.out.println("Instrumento SIZE:" +listaInstrumentosRegistroNaoGravadosNoBanco.size());
     		
-    		setaDadosParaListaProcedimentosMensalDTO();
+    		setaDadosParaListaProcedimentosMensalDTO(i);
     		
     		limparListasDadosProcedimentos();
     		fecharDialogAvisoCargaSigtap();
+    		
+    		System.out.println("CIDs no procedimento "+
+    		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCodigo() +" da lista: "+
+    				listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
+    					getCIDVinculado().size());
+    		System.out.println("Forma organização: "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getFormaOrganizacao().getNome());
+    		System.out.println("Tipo financiamento "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getTipoFinanciamento().getNome());
     	}
     }
 
-	private void setaDadosParaListaProcedimentosMensalDTO() {
-		procedimentoMensalDTO.setListaModalidadeAtendimento(listaModalidadeAtendimentoNaoGravadosNoBanco);
-		procedimentoMensalDTO.setListaInstrumentosRegistro(listaInstrumentosRegistroNaoGravadosNoBanco);
-		procedimentoMensalDTO.setListaCBOs(listaCBOsNaoGravadosNoBanco);
-		procedimentoMensalDTO.setListaCids(listaCidsNaoGravadosNoBanco);
-		procedimentoMensalDTO.setListaServicoClassificacao(listaServicoClassificacaoNaoGravadosNoBanco);
+	private void setaDadosParaListaProcedimentosMensalDTO(int i) {
 		
-		listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getModalidadesAtendimento().
+			getModalidadeAtendimento().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getModalidadesAtendimento().
+			getModalidadeAtendimento().addAll(listaModalidadeAtendimentoNaoGravadosNoBanco);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getInstrumentosRegistro().
+			getInstrumentoRegistro().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getInstrumentosRegistro().
+			getInstrumentoRegistro().addAll(listaInstrumentosRegistroNaoGravadosNoBanco);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCBOsVinculados().getCBO().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCBOsVinculados().getCBO()
+			.addAll(listaCBOsNaoGravadosNoBanco);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
+			getCIDVinculado().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
+			getCIDVinculado().addAll(listaCidsNaoGravadosNoBanco);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().add(renases);
+		
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setDescricao(descricaoProcedimentoMensal);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().
+			getServicoClassificacao().clear();
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().
+			getServicoClassificacao().addAll(listaServicoClassificacaoNaoGravadosNoBanco);
 	}
 	
 	private void fecharDialogAvisoCargaSigtap() {
@@ -367,7 +402,8 @@ public class ProcedimentoController implements Serializable {
 		listaServicoClassificacao = procedimentoDao.buscarServicosClassificacao(idProcedimento);
 	}
 
-	private void selecionaDetalheAdicionalEmSequencia(ProcedimentoBean procedimento, int detalheAdicional) {
+	private void selecionaDetalheAdicionalEmSequencia(ProcedimentoBean procedimento) {
+		int detalheAdicional = 0;
 		//CBOS, CIDS, DESCRICAO, RENASES, SERVICO_CLASSIFICACAO
 		while (detalheAdicional < QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO) {
 			CategoriaDetalheAdicionalType categoriaDetalheAdicional;
@@ -435,7 +471,7 @@ public class ProcedimentoController implements Serializable {
 			ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
 		
 		adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
-		adicionaListaCidsCbosIhServicoClassificacaoAoEmListasSeparadasParaUmInsertPosterior(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
+		adicionaDadosFiltradosEmSuaRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
 		
 		System.out.println("Detalhamento:" +categoriaDetalheAdicional.name());
 		System.out.println("Procedimento:" +resultadosDetalhaProcedimentosType.getProcedimento().getNome());
@@ -450,19 +486,19 @@ public class ProcedimentoController implements Serializable {
     
 	private void adicionaProcedimentoParaListaProcedimentoMensalDTO(ProcedimentoBean procedimento,
 			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-		Integer ultimoIndiceDaListaProcedimentosMensalDTO = listaProcedimentosMensalDTO.size() - 1;
+		Integer ultimoIndiceDaListaProcedimentosMensalDTO = listaGravarProcedimentosMensaisDTO.size() - 1;
 		
-		if(listaProcedimentosMensalDTO.isEmpty()) {
-			procedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
-			procedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
-			listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+		if(listaGravarProcedimentosMensaisDTO.isEmpty()) {
+			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
+			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
 		}
 		
-		else if(listaProcedimentosMensalDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento() != procedimento.getIdProc()){
-			procedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
-			procedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
-			listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+		else if(listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento() != procedimento.getIdProc()){
+			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
+			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
 		}
 
@@ -489,7 +525,7 @@ public class ProcedimentoController implements Serializable {
 		}
 	}
 
-	private void adicionaListaCidsCbosIhServicoClassificacaoAoEmListasSeparadasParaUmInsertPosterior(
+	private void adicionaDadosFiltradosEmSuaRespectivasVariaveis(
 			CategoriaDetalheAdicionalType categoriaDetalheAdicional,
 			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
 		if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
@@ -500,10 +536,17 @@ public class ProcedimentoController implements Serializable {
 		}
 		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
 			for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
-				if(!listaCodigoCids.contains(cidVinculado.getCID().getCodigo()))
-					listaCidsNaoGravadosNoBanco.add(cidVinculado.getCID());
+				if(!listaCodigoCids.contains(cidVinculado.getCID().getCodigo())) 
+					listaCidsNaoGravadosNoBanco.add(cidVinculado);
 			}			
 		}
+		
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.DESCRICAO))
+			this.descricaoProcedimentoMensal = resultadosDetalhaProcedimentosType.getProcedimento().getDescricao();
+		
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES))
+			this.renases = resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES().get(0);
+		
 		else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
 			for (ServicoClassificacaoType servicoClassificacaoType :
 					resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao()) {
