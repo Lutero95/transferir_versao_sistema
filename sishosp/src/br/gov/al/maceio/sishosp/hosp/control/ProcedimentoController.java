@@ -97,11 +97,11 @@ public class ProcedimentoController implements Serializable {
         this.listaCodigoCids = new ArrayList();
         this.listaServicoClassificacao = new ArrayList();
         this.listaProcedimentosMensalDTO = new ArrayList();
-        this.procedimentoMensalDTO = new ProcedimentoMensalDTO();
         limparListasDadosProcedimentos();
     }
 
 	private void limparListasDadosProcedimentos() {
+        this.procedimentoMensalDTO = new ProcedimentoMensalDTO();
 		this.listaModalidadeAtendimentoNaoGravadosNoBanco = new ArrayList();
         this.listaInstrumentosRegistroNaoGravadosNoBanco = new ArrayList();
         this.listaCBOsNaoGravadosNoBanco = new ArrayList();
@@ -337,9 +337,26 @@ public class ProcedimentoController implements Serializable {
     		}
     		System.out.println("Instrumento SIZE:" +listaInstrumentosRegistroNaoGravadosNoBanco.size());
     		
+    		setaDadosParaListaProcedimentosMensalDTO();
+    		
     		limparListasDadosProcedimentos();
+    		fecharDialogAvisoCargaSigtap();
     	}
     }
+
+	private void setaDadosParaListaProcedimentosMensalDTO() {
+		procedimentoMensalDTO.setListaModalidadeAtendimento(listaModalidadeAtendimentoNaoGravadosNoBanco);
+		procedimentoMensalDTO.setListaInstrumentosRegistro(listaInstrumentosRegistroNaoGravadosNoBanco);
+		procedimentoMensalDTO.setListaCBOs(listaCBOsNaoGravadosNoBanco);
+		procedimentoMensalDTO.setListaCids(listaCidsNaoGravadosNoBanco);
+		procedimentoMensalDTO.setListaServicoClassificacao(listaServicoClassificacaoNaoGravadosNoBanco);
+		
+		listaProcedimentosMensalDTO.add(procedimentoMensalDTO);
+	}
+	
+	private void fecharDialogAvisoCargaSigtap() {
+		JSFUtil.fecharDialog("dlg-aviso");
+	}
 
 	private void buscaIdsDeDetalhamentosExistentesNoProcedimento(Integer idProcedimento)
 			throws ProjetoException {

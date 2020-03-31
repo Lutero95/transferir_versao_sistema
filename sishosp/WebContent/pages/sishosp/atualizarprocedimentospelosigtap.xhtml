@@ -12,9 +12,8 @@
     <ui:define name="content">
 
         <h:form id="frmPrincipal">
-                <p:commandButton id="btninc" value="Nova carga do Sigtap" size="sm"
-                                 action="#{ProcedimentoController.novaCargaSigtap()}"
-                                 icon="glyphicon-plus" class="btn-addNovo">
+                <p:commandButton id="btninc" value="Nova carga do Sigtap" size="sm" ajax="true"
+                                 icon="glyphicon-plus" class="btn-addNovo" onclick="PF('dlg-aviso').show();">
                     <p:tooltip for="btninc" value="Atualiza dados de procedimentos pelo SIGTAP"></p:tooltip>
                 </p:commandButton>
 
@@ -80,5 +79,24 @@
                 </p:dataTable>
             </h:form>
 
-    </ui:define>
+		<p:dialog header="Aviso!" widgetVar="dlg-aviso" modal="true" height="150" resizable="false">
+			<h:form id="form-aviso">
+				<div align="center">
+					<h:outputLabel value="VOCÊ DESEJA MESMO DAR UMA NOVA CARGA NO SISTEMA PELO SIGTAP?"/>
+					<br/>
+					<h:outputLabel value="ISSO ATUALIZA OS DADOS DOS PROCEDIMENTOS DO SISTEMA DE ACORDO COM OS DADOS DO SIGTAP"/>
+					<br/>
+					<h:outputLabel value="E SÓ PODE SER FEITO MENSALMENTE CASO NÃO SEJA ADICIONADO NENHUM PROCEDIMENTO."/>
+					<br/>
+					<br/>
+					<h:outputLabel value="O PROCESSO DE ATUALIZAÇÃO DOS DADOS LEVA ALGUNS MINUTOS NÃO FECHE A PÁGINA."/>
+					<br/>
+					<br/>
+					<br/>
+					<p:commandButton value="Continuar" ajax="true" action="#{ProcedimentoController.novaCargaSigtap()}" style="margin-right:5%;"/>
+					<p:commandButton value="Fechar" ajax="true" onclick="PF('dlg-aviso').hide();" style="margin-left:5%;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>

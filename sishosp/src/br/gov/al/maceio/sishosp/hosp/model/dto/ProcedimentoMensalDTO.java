@@ -2,17 +2,22 @@ package br.gov.al.maceio.sishosp.hosp.model.dto;
 
 import java.util.List;
 
+import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 
 public class ProcedimentoMensalDTO {
 	private Long idProcedimentoMensal;
 	private Integer idProcedimento;
 	private ProcedimentoType procedimentoMensal;
-    private List<ModalidadeAtendimentoDTO> listaModalidadeAtendimento;
-    private List<InstrumentoRegistroDTO> listaInstrumentosRegistro;
-    private List<CboDTO> listaCBOs;
-    private List<CidDTO> listaCids;
-    private List<ServicoClassificacaoDTO> listaServicoClassificacao;
+    private List<ModalidadeAtendimentoType> listaModalidadeAtendimento;
+    private List<InstrumentoRegistroType> listaInstrumentosRegistro;
+    private List<CBOType> listaCBOs;
+    private List<CIDType> listaCids;
+    private List<ServicoClassificacaoType> listaServicoClassificacao;
 	
 	public Long getIdProcedimentoMensal() {
 		return idProcedimentoMensal;
@@ -32,35 +37,35 @@ public class ProcedimentoMensalDTO {
 	public void setProcedimentoMensal(ProcedimentoType procedimentoMensal) {
 		this.procedimentoMensal = procedimentoMensal;
 	}
-	public List<ModalidadeAtendimentoDTO> getListaModalidadeAtendimento() {
+	public List<ModalidadeAtendimentoType> getListaModalidadeAtendimento() {
 		return listaModalidadeAtendimento;
 	}
-	public void setListaModalidadeAtendimento(List<ModalidadeAtendimentoDTO> listaModalidadeAtendimento) {
+	public void setListaModalidadeAtendimento(List<ModalidadeAtendimentoType> listaModalidadeAtendimento) {
 		this.listaModalidadeAtendimento = listaModalidadeAtendimento;
 	}
-	public List<InstrumentoRegistroDTO> getListaInstrumentosRegistro() {
+	public List<InstrumentoRegistroType> getListaInstrumentosRegistro() {
 		return listaInstrumentosRegistro;
 	}
-	public void setListaInstrumentosRegistro(List<InstrumentoRegistroDTO> listaInstrumentosRegistro) {
+	public void setListaInstrumentosRegistro(List<InstrumentoRegistroType> listaInstrumentosRegistro) {
 		this.listaInstrumentosRegistro = listaInstrumentosRegistro;
 	}
-	public List<CboDTO> getListaCBOs() {
+	public List<CBOType> getListaCBOs() {
 		return listaCBOs;
 	}
-	public void setListaCBOs(List<CboDTO> listaCBOs) {
+	public void setListaCBOs(List<CBOType> listaCBOs) {
 		this.listaCBOs = listaCBOs;
 	}
-	public List<CidDTO> getListaCids() {
+	public List<CIDType> getListaCids() {
 		return listaCids;
 	}
-	public void setListaCids(List<CidDTO> listaCids) {
+	public void setListaCids(List<CIDType> listaCids) {
 		this.listaCids = listaCids;
 	}
-	public List<ServicoClassificacaoDTO> getListaServicoClassificacao() {
+	public List<ServicoClassificacaoType> getListaServicoClassificacao() {
 		return listaServicoClassificacao;
 	}
-	public void setListaServicoClassificacao(List<ServicoClassificacaoDTO> listaServicoClassificacao) {
+	public void setListaServicoClassificacao(List<ServicoClassificacaoType> listaServicoClassificacao) {
 		this.listaServicoClassificacao = listaServicoClassificacao;
 	}
-    
+	    
 }
