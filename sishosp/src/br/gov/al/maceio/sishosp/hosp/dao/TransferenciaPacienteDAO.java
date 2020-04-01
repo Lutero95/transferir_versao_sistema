@@ -293,7 +293,7 @@ public class TransferenciaPacienteDAO {
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps9.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps9.setDate(2, new Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
+				ps9.setDate(2, new Date(listaAgendamento.get(i).getDataAtendimento().getTime()));
 				ps9.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
@@ -331,7 +331,7 @@ public class TransferenciaPacienteDAO {
 					for (int l = 0; l < listaProfissionais.get(h).getListaDiasAtendimentoSemana().size(); l++) {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
-								.getDataMarcacao()) == listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
+								.getDataAtendimento()) == listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
 							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
@@ -529,7 +529,7 @@ public class TransferenciaPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				ps9.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getDataMarcacao().getTime()));
+				ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getDataAtendimento().getTime()));
 				ps9.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
@@ -568,7 +568,7 @@ public class TransferenciaPacienteDAO {
 					for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 						if (DataUtil.extrairDiaDeData(
-								listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 

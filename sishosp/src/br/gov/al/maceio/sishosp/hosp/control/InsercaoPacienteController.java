@@ -594,7 +594,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                         agenda.setPaciente(
                                 insercao.getLaudo().getPaciente());
 
-                        agenda.setDataMarcacao(c.getTime());
+                        agenda.setDataAtendimento(c.getTime());
 
                         listAgendamentoProfissional.add(agenda);
 
@@ -640,7 +640,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                                 agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                agenda.setDataMarcacao(c.getTime());
+                                agenda.setDataAtendimento(c.getTime());
 
                                 agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
@@ -692,7 +692,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                             agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            agenda.setDataMarcacao(c.getTime());
+                            agenda.setDataAtendimento(c.getTime());
 
                             listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
@@ -745,7 +745,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         ArrayList<AgendaBean> listaAgendamentosAux = new ArrayList<>();
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-            if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getDataMarcacao())) {
+            if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getDataAtendimento())) {
                 listaAgendamentosAux.add(listaAgendamentos.get(i));
             }
             //else if (verificarSeTemBloqueioData(listaAgendamentos.get(i), turno)) {

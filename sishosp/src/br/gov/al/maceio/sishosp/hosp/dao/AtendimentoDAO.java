@@ -288,7 +288,7 @@ public class AtendimentoDAO {
 					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-					"where aa.dtaatende=? and a11.codprofissionalatendimento=? limit 1),?,?,?,?, current_timestamp)";
+					"where aa.dtaatende=? and a11.codprofissionalatendimento=? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N' limit 1),?,?,?,?, current_timestamp)";
 			PreparedStatement ps6 = null;
 			ps6 = con.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
@@ -296,7 +296,7 @@ public class AtendimentoDAO {
 						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
 						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
 						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
-						"where a1.id_atendimento=? and a.dtaatende=? and a1.codprofissionalatendimento = ? limit 1)";
+						"where a1.id_atendimento=? and a.dtaatende=? and a1.codprofissionalatendimento = ? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' limit 1)";
 				PreparedStatement ps8 = null;
 				ps8 = con.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
@@ -322,7 +322,7 @@ public class AtendimentoDAO {
 			String sql6 = "insert into adm.insercao_profissional_equipe_atendimento_1 (id_atendimentos1,id_insercao_profissional_equipe_atendimento, id_profissional) "+ 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1),?,?)";
+					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'  limit 1),?,?)";
 			PreparedStatement ps6 = null;
 			ps6 = null;
 			ps6 = con.prepareStatement(sql6);
@@ -362,7 +362,7 @@ public class AtendimentoDAO {
 				String sql6 = "insert into adm.remocao_profissional_equipe_atendimento_1 (id_atendimentos1,id_remocao_profissional_equipe_atendimento, id_profissional) "+ 
 						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1),?,?)";
+						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N' limit 1),?,?)";
 				PreparedStatement ps6 = null;
 				ps6 = null;
 				ps6 = con.prepareStatement(sql6);
@@ -376,7 +376,7 @@ public class AtendimentoDAO {
 					if (aDao.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {	
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
-							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =?  limit 1)" ;
+							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'  limit 1)" ;
 			               
 
 					PreparedStatement ps8 = null;
@@ -519,7 +519,7 @@ public class AtendimentoDAO {
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+				+ " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C'";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
@@ -678,7 +678,7 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) ";
+				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 
 		if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade and ceu.codprograma = a.codprograma and ceu.codgrupo = a.codgrupo  "
@@ -826,7 +826,7 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) "
 				+ "left join hosp.programa on (programa.id_programa = a.codprograma) "
-				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) " + "where a.id_atendimento = ?";
+				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) " + "where a.id_atendimento = ? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -874,7 +874,7 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
-				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=?";
+				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -974,7 +974,7 @@ public class AtendimentoDAO {
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ? "
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ?  and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'"
 				+ "ORDER BY a.dtaatende DESC ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();

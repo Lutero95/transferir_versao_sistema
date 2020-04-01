@@ -72,7 +72,6 @@
 								class="fire-label" />
 
 							<p:calendar value="#{PtsController.pts.data}" id="dtagen"
-							
 								locale="pt" navigator="true" mask="true" required="true"
 								requiredMessage="Data do PTS: Campo obrigatório!"
 								class="select-agendaEquipe2" showOn="button"
@@ -143,8 +142,8 @@
 
 					<br></br>
 
-					
-					
+
+
 
 					<b:row>
 
@@ -424,6 +423,37 @@
 					<p:commandButton value="Fechar" class="btn-fechar" look="info"
 						ajax="true" action="#{PtsController.redirectGerPts}"
 						icon="ui-icon-close" />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Digite a senha para a liberação"
+			widgetVar="dlgSenhaLiberacaoPtsVenctoAnterior" modal="true" styleClass="topDialog"
+			draggable="false" position="center">
+			<h:form id="frmSenhaLiberacaoPtsVenctoAnterior">
+			<p:outputLabel value="A data do vencimento do PTS atual é anterior ao Vencimento do PTs anterior"></p:outputLabel>
+				<p:growl id="grwSenhaLiberacao" />
+				<h:panelGrid columns="1" cellpadding="3">
+
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true" value="#{PtsController.usuarioLiberacao.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{PtsController.usuarioLiberacao.senha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+				</h:panelGrid>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px" icon="fa fa-fw fa-check"
+						update=":formPts:dtagen, :msgPagina"
+						action="#{PtsController.validarSenhaLiberacaoInclusaoPtsVencimentoAnteriorAoAtual()}" />
 				</div>
 
 			</h:form>

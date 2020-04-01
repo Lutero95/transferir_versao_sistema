@@ -268,7 +268,7 @@ public class RenovacaoPacienteDAO {
 				else
 					ps3.setInt(1, insercaoParaLaudo.getPaciente().getId_paciente());
 				ps3.setDate(2,
-						new java.sql.Date(listAgendamentoProfissional.get(i).getDataMarcacao().getTime()));
+						new java.sql.Date(listAgendamentoProfissional.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
@@ -319,7 +319,7 @@ public class RenovacaoPacienteDAO {
 					for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 						if (DataUtil.extrairDiaDeData(
-								listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -438,7 +438,7 @@ public class RenovacaoPacienteDAO {
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps3.setDate(2, new java.sql.Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
+				ps3.setDate(2, new java.sql.Date(listaAgendamento.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
@@ -488,7 +488,7 @@ public class RenovacaoPacienteDAO {
 					for (int l = 0; l < listaProfissionais.get(h).getListaDiasAtendimentoSemana().size(); l++) {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
-								.getDataMarcacao()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
+								.getDataAtendimento()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
@@ -609,7 +609,7 @@ public class RenovacaoPacienteDAO {
 				ps4.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
 				ps4.setLong(2, insercao.getFuncionario().getId());
 				ps4.setDate(3,
-						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataMarcacao()));
+						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataAtendimento()));
 				ps4.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 				ps4.setString(5, insercao.getTurno());
 				ps4.setString(6, insercao.getObservacao());

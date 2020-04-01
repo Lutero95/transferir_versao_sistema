@@ -435,10 +435,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             if (insercao.getFuncionario().getId() != null
                     && insercao.getFuncionario().getId() > 0) {
-              //  funcionario.setListDiasSemana(agendaDAO.listaDiasDeAtendimetoParaPacienteInstituicao(id));
                 tipo = TipoAtendimento.PROFISSIONAL.getSigla();
-            //    insercao.getFuncionario().setListDiasSemana(
-              //          aDao.listarDiasAtendimentoProfissional(id));
             }
 
         } else {
@@ -532,7 +529,7 @@ public class AlteracaoPacienteController implements Serializable {
                                 agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                agenda.setDataMarcacao(c.getTime());
+                                agenda.setDataAtendimento(c.getTime());
 
                                 agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
@@ -594,7 +591,7 @@ public class AlteracaoPacienteController implements Serializable {
                             agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            agenda.setDataMarcacao(c.getTime());
+                            agenda.setDataAtendimento(c.getTime());
 
                             listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
@@ -642,7 +639,7 @@ public class AlteracaoPacienteController implements Serializable {
                             agenda.setPaciente(
                                     insercaoDuplicado.getLaudo().getPaciente());
 
-                            agenda.setDataMarcacao(c.getTime());
+                            agenda.setDataAtendimento(c.getTime());
 
                             listAgendamentoProfissionalDuplicado.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
@@ -714,7 +711,7 @@ public class AlteracaoPacienteController implements Serializable {
                         agenda.setPaciente(
                                 insercao.getLaudo().getPaciente());
 
-                        agenda.setDataMarcacao(c.getTime());
+                        agenda.setDataAtendimento(c.getTime());
 
                         listAgendamentoProfissional.add(agenda);
 

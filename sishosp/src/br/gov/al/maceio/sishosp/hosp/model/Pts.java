@@ -22,6 +22,7 @@ public class Pts implements Serializable {
     private String condutaAlta;
     private Timestamp dataHoraOperacao;
     private Date dataVencimento;
+    private Date ultimaDataVencimento;
     private Date dataDesligamento;
     private String status;
     private String statusPorExtenso;
@@ -238,4 +239,12 @@ public class Pts implements Serializable {
     public void setDataDesligamento(Date dataDesligamento) {
         this.dataDesligamento = dataDesligamento;
     }
+
+	public Date getUltimaDataVencimento() {
+		return ultimaDataVencimento;
+	}
+
+	public void setUltimaDataVencimento(Date ultimaDataVencimento) {
+		this.ultimaDataVencimento = ultimaDataVencimento;
+	}
 }

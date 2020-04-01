@@ -4,8 +4,8 @@
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apaemaceio"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
@@ -26,6 +26,7 @@ join hosp.pacientes on pacientes.id_paciente= l.codpaciente
 join hosp.unidade u on u.id =  $P{codunidade} 
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 where pi.status='A'  
+and pi.cod_unidade = u.id
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and exists (
@@ -153,7 +154,7 @@ and p.id=(select max(id) from hosp.pts p2 where pi.codprograma = p2.cod_programa
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RELATÓRIO PTS - ESPECIALIDADES PENDENTES]]></text>
+				<text><![CDATA[PTS - ESPECIALIDADES PENDENTES]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="0" y="0" width="802" height="16" uuid="c063c9bc-f9c7-4d8f-adfe-147e9c8db719"/>

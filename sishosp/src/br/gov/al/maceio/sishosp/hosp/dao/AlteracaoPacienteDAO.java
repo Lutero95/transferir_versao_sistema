@@ -257,7 +257,7 @@ public class AlteracaoPacienteDAO {
 					}
 				}
 
-			String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+				String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
 					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
@@ -274,13 +274,13 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getDataMarcacao(),
+						listAgendamentoProfissional.get(i).getDataAtendimento(),
 						codPaciente, conexao)) {
 
 					ps7.setInt(1, codPaciente);
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
-							listAgendamentoProfissional.get(i).getDataMarcacao()));
+							listAgendamentoProfissional.get(i).getDataAtendimento()));
 					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 					if (insercao.getTurno() != null) {
@@ -331,7 +331,7 @@ public class AlteracaoPacienteDAO {
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -401,7 +401,7 @@ public class AlteracaoPacienteDAO {
 			sql6 = "insert into adm.insercao_profissional_equipe_atendimento_1 (id_atendimentos1,id_insercao_profissional_equipe_atendimento, id_profissional) "+ 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and a11.codprofissionalatendimento =? and aa.codpaciente  = ?  limit 1),?,?)";
+					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and a11.codprofissionalatendimento =? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N' limit 1),?,?)";
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
@@ -415,7 +415,7 @@ public class AlteracaoPacienteDAO {
 				String sql8 = "INSERT INTO hosp.atendimentos1 " +
 		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
 		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
-		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ?   limit 1), ?, (select cod_procedimento from hosp.programa " + 
+		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	  limit 1), ?, (select cod_procedimento from hosp.programa " + 
 		                "where programa.id_programa = ? )) RETURNING id_atendimentos1";
 
 				PreparedStatement ps8 = null;
@@ -449,7 +449,7 @@ public class AlteracaoPacienteDAO {
 				sql6 = "insert into adm.remocao_profissional_equipe_atendimento_1 (id_atendimentos1,id_remocao_profissional_equipe_atendimento, id_profissional) "+ 
 						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?   limit 1),?,?)";
+						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'  limit 1),?,?)";
 				ps6 = null;
 				ps6 = null;
 				ps6 = conexao.prepareStatement(sql6);
@@ -463,7 +463,7 @@ public class AlteracaoPacienteDAO {
 					if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {					
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
-							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?    limit 1)" ;
+							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'    limit 1)" ;
 			               
 
 					PreparedStatement ps8 = null;
@@ -615,13 +615,13 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getDataMarcacao(),
+						listAgendamentoProfissional.get(i).getDataAtendimento(),
 						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
-							listAgendamentoProfissional.get(i).getDataMarcacao()));
+							listAgendamentoProfissional.get(i).getDataAtendimento()));
 					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 					if (insercao.getTurno() != null) {
@@ -671,7 +671,7 @@ public class AlteracaoPacienteDAO {
 
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
@@ -715,7 +715,7 @@ public class AlteracaoPacienteDAO {
 					"id_funcionario_substituido, id_funcionario_substituto, usuario_acao, data_hora_acao)	\n" + 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-					"where aa.dtaatende=? and a11.codprofissionalatendimento=? and aa.codpaciente  = ? limit 1),?,?,?,?, current_timestamp)";
+					"where aa.dtaatende=? and a11.codprofissionalatendimento=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N' limit 1),?,?,?,?, current_timestamp)";
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
@@ -749,14 +749,14 @@ public class AlteracaoPacienteDAO {
 			sql6 = "insert into adm.insercao_profissional_equipe_atendimento_1 (id_atendimentos1,id_insercao_profissional_equipe_atendimento, id_profissional) "+ 
 					"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 					"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and a11.codprofissionalatendimento =? and aa.codpaciente  = ?  limit 1),?,?)";
+					"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and a11.codprofissionalatendimento =? and aa.codpaciente  = ?  and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N' limit 1),?,?)";
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
 				String sql8 = "INSERT INTO hosp.atendimentos1 " +
 		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
 		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
-		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ?   limit 1), ?, (select cod_procedimento from hosp.programa " + 
+		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'  limit 1), ?, (select cod_procedimento from hosp.programa " + 
 		                "where programa.id_programa = ? )) RETURNING id_atendimentos1";
 
 				PreparedStatement ps8 = null;
@@ -794,7 +794,7 @@ public class AlteracaoPacienteDAO {
 				sql6 = "insert into adm.remocao_profissional_equipe_atendimento_1 (id_atendimentos1,id_remocao_profissional_equipe_atendimento, id_profissional) "+ 
 						"values ((select id_atendimentos1 from hosp.atendimentos1\n" + 
 						"a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento\n" + 
-						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?   limit 1),?,?)";
+						"where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'  limit 1),?,?)";
 				ps6 = null;
 				ps6 = null;
 				ps6 = conexao.prepareStatement(sql6);
@@ -808,7 +808,7 @@ public class AlteracaoPacienteDAO {
 					if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {					
 					String sql8 = "update hosp.atendimentos1 set excluido='S', usuario_exclusao=?, data_hora_exclusao=current_timestamp where id_atendimentos1=(select id_atendimentos1 from hosp.atendimentos1 " + 
 							"	a11 join hosp.atendimentos aa on aa.id_atendimento = a11.id_atendimento " + 
-							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ?    limit 1)" ;
+							"	 where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=?  and a11.codprofissionalatendimento =? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	and coalesce(a11.excluido, 'N' )= 'N'    limit 1)" ;
 			               
 
 					PreparedStatement ps8 = null;
@@ -885,13 +885,13 @@ public class AlteracaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
-						listAgendamentoProfissional.get(i).getDataMarcacao(),
+						listAgendamentoProfissional.get(i).getDataAtendimento(),
 						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
 
 					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
-							listAgendamentoProfissional.get(i).getDataMarcacao()));
+							listAgendamentoProfissional.get(i).getDataAtendimento()));
 					ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 					if (insercao.getTurno() != null) {
@@ -942,7 +942,7 @@ public class AlteracaoPacienteDAO {
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
-									listAgendamentoProfissional.get(i).getDataMarcacao()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
@@ -1049,7 +1049,7 @@ public class AlteracaoPacienteDAO {
 
 			}
 
-				String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
+				String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
 						+ "observacao, ativo, id_paciente_instituicao, cod_unidade)"
 						+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
 
@@ -1060,7 +1060,7 @@ public class AlteracaoPacienteDAO {
 
 					ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 					ps6.setLong(2, insercao.getFuncionario().getId());
-					ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i).getDataMarcacao().getTime()));
+					ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i).getDataAtendimento().getTime()));
 					ps6.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 					ps6.setString(5, insercao.getTurno());
 					ps6.setString(6, insercao.getObservacao());
@@ -1112,7 +1112,7 @@ public class AlteracaoPacienteDAO {
 
 		ArrayList<AgendaBean> lista = new ArrayList<>();
 
-		String sql = "select id_atendimento, codpaciente, situacao, dtamarcacao from hosp.atendimentos "
+		String sql = "select id_atendimento, codpaciente, situacao, dtaatende from hosp.atendimentos "
 				+ "where id_paciente_instituicao = ? and situacao = 'F' order by id_atendimento desc limit 1";
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -1127,7 +1127,7 @@ public class AlteracaoPacienteDAO {
 				ge.setIdAgenda(rs.getInt("id_atendimento"));
 				ge.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				ge.setSituacao(rs.getString("situacao"));
-				ge.setDataAtendimento(rs.getDate("dtamarcacao"));
+				ge.setDataAtendimento(rs.getDate("dtaatende"));
 
 				lista.add(ge);
 			}
@@ -1149,7 +1149,7 @@ public class AlteracaoPacienteDAO {
 
 		Boolean retorno = false;
 
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ? and codpaciente=?;";
+		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ? and codpaciente=? and coalesce(situacao,'')<>'C'";
 
 		try {
 			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
@@ -1178,12 +1178,12 @@ public class AlteracaoPacienteDAO {
 		return retorno;
 	}
 
-	public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean, Date dataMarcacao,
+	public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean, Date dataAtendimento,
 			Connection conAuxiliar) {
 
 		Boolean retorno = false;
 
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codmedico = ? AND dtaatende = ?;";
+		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codmedico = ? AND dtaatende = ? and coalesce(situacao, 'A')<> 'C'";
 
 		try {
 			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
@@ -1191,7 +1191,7 @@ public class AlteracaoPacienteDAO {
 			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
 			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
 			stm.setLong(3, insercaoPacienteBean.getFuncionario().getId());
-			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataMarcacao));
+			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
 
 			ResultSet rs = stm.executeQuery();
 

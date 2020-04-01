@@ -45,7 +45,7 @@ public class PtsController implements Serializable {
     private String campoBusca;
     private String tipoBusca;
     private FuncionarioBean usuarioLiberacao;
-    private Boolean liberacaoAlterarDataPts;
+    private Boolean liberacaoAlterarDataPts, liberacaoIncluirPtsVencimentoAnteriorAtualPts;
     //CONSTANTES
     private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_GERENCIAMENTOPTS = "gerenciamentopts.?faces-redirect=true";
@@ -65,6 +65,7 @@ public class PtsController implements Serializable {
         usuarioLiberacao = new FuncionarioBean();
         liberacaoAlterarDataPts = false;
         filtroTurno = "A";
+        liberacaoIncluirPtsVencimentoAnteriorAtualPts = false;
     }
 
     public void carregarPts() throws ProjetoException {
@@ -113,29 +114,14 @@ public class PtsController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             idParametroEndereco = id;
             statusPts = pDao.verificarStatusPts(id);
-            if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
-                this.pts = pDao.ptsCarregarPtsPorId(id);
-                pts.setAnaliseDosResultadosDosObjetivosGerias(null);
-                pts.setObjetivosFamiliarPaciente(null);
-                pts.setObjetivosGeraisMultidisciplinar(null);
-                pts.setData(null);
-                pts.setListaPtsArea(new ArrayList<PtsArea>());
-                existePts = true;
-            } else {
-                pts = (Pts) SessionUtil.resgatarDaSessao("pts");
-                pts.setAnaliseDosResultadosDosObjetivosGerias(null);
-                pts.setObjetivosFamiliarPaciente(null);
-                pts.setObjetivosGeraisMultidisciplinar(null);
-                pts.setData(null);
-                /*
-				Calendar c = Calendar.getInstance();
-				c.setTime(pts.getDataVencimento());
-				c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
-				c.set(Calendar.DAY_OF_MONTH, 1);
-				pts.setData(c.getTime());*/
-              //  Date d = new Date();
-               // pts.setData(d);
-            }
+            
+            pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+            pts.setUltimaDataVencimento(pts.getDataVencimento());
+            pts.setAnaliseDosResultadosDosObjetivosGerias(null);
+            pts.setObjetivosFamiliarPaciente(null);
+            pts.setObjetivosGeraisMultidisciplinar(null);
+            pts.setData(null);
+            
             listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
 
         } else {
@@ -343,18 +329,18 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
-            existePts = true;
-        } else {
-            existePts = false;
+    	if ((pts.getData().before(pts.getUltimaDataVencimento())) && (!liberacaoIncluirPtsVencimentoAnteriorAtualPts)){
+            JSFUtil.abrirDialog("dlgSenhaLiberacaoPtsVenctoAnterior");
+            return null;
         }
 
-        Integer novoIdPts = pDao.gravarPts(pts, existePts, StatusPTS.RENOVADO.getSigla());
+        Integer novoIdPts = pDao.gravarPts(pts, false, StatusPTS.RENOVADO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
             JSFUtil.adicionarMensagemSucesso("PTS renovado com sucesso!", "Sucesso");
             JSFUtil.abrirDialog("dlgPtsGravado");
+            liberacaoIncluirPtsVencimentoAnteriorAtualPts = false;
 
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a renovacao!", "Erro");
@@ -397,17 +383,36 @@ public class PtsController implements Serializable {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(usuarioLiberacao.getCpf(),
-                usuarioLiberacao.getSenha(), ValidacaoSenha.LIBERACAO_ALTERAR_DATA_PTS.getSigla());
+                usuarioLiberacao.getSenha(), ValidacaoSenha.LIBERACAO.getSigla());
 
-        usuarioLiberacao.setId(func.getId());
+        
 
         if (func!=null) {
+        	usuarioLiberacao.setId(func.getId());
             JSFUtil.fecharDialog("dlgSenhaLiberacaoPts");
             liberacaoAlterarDataPts = true;
         } else {
-            JSFUtil.adicionarMensagemErro("Funcionário com senha errada!", "Erro!");
+        	JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou Sem Permissão para liberação!", "Erro!");
         }
     }
+    
+    public void validarSenhaLiberacaoInclusaoPtsVencimentoAnteriorAoAtual() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(usuarioLiberacao.getCpf(),
+                usuarioLiberacao.getSenha(), ValidacaoSenha.LIBERACAO.getSigla());
+
+        
+
+        if (func!=null) {
+        	usuarioLiberacao.setId(func.getId());
+            JSFUtil.fecharDialog("dlgSenhaLiberacaoPtsVenctoAnterior");
+            liberacaoIncluirPtsVencimentoAnteriorAtualPts = true;
+            gravarRenovacaoPts();
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou Sem Permissão para liberação!", "Erro!");
+        }
+    }    
 
     public void validarSenhaAdicionarAreaPts() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();

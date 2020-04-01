@@ -148,7 +148,7 @@ public class TransferenciaPacienteController implements Serializable {
                                 agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                agenda.setDataMarcacao(c.getTime());
+                                agenda.setDataAtendimento(c.getTime());
 
                                 agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
@@ -199,7 +199,7 @@ public class TransferenciaPacienteController implements Serializable {
                             agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            agenda.setDataMarcacao(c.getTime());
+                            agenda.setDataAtendimento(c.getTime());
 
                             listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());

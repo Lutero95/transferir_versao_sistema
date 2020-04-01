@@ -20,6 +20,7 @@ join hosp.pacientes on pacientes.id_paciente= l.codpaciente
 join hosp.unidade u on u.id =  $P{codunidade} 
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 where pi.status='A'  
+and pi.cod_unidade = u.id
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and not exists (
