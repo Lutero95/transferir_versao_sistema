@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -72,7 +73,7 @@ public class OrteseProteseController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
-
+        temOrteseIhProteseCadastrado = false;
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
@@ -305,6 +306,15 @@ public class OrteseProteseController implements Serializable {
 
     public void listarOrteseIhProtese() {
         listOrteseProtese = oDao.listarOrteseIhProtese();
+        temOrteseIhProteseCadastrado = false;
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    			.getSessionMap().get("obj_usuario");
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(user_session.getUnidade().getParametro().getOrteseProtese().getGrupo().getIdGrupo())
+                || !VerificadorUtil.verificarSeObjetoNuloOuZero(user_session.getUnidade().getParametro().getOrteseProtese().getPrograma().getIdPrograma())) {
+            temOrteseIhProteseCadastrado = true;
+        } else {
+            JSFUtil.abrirDialog("dlgAviso");
+        }
         atualizarTabelaPrincipalIhBotoesOrteseIhProtese();
     }
 

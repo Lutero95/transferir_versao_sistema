@@ -143,7 +143,7 @@ public class FuncionarioDAO {
 				+ "then true else false end as usuarioativo, p.opcao_atendimento, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
-				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo from acl.funcionarios us "
+				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese from acl.funcionarios us "
 				+ "join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
@@ -179,6 +179,8 @@ public class FuncionarioDAO {
 				ub.getUnidade().getParametro().setPtsMostrarObjGeraisCurtoPrazo(rs.getBoolean("pts_mostra_obs_gerais_curto"));
 				ub.getUnidade().getParametro().setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
 				ub.getUnidade().getParametro().setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
+				ub.getUnidade().getParametro().getOrteseProtese().getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
+				ub.getUnidade().getParametro().getOrteseProtese().getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
 				// ACL
 				ub.setId(rs.getLong("id_funcionario"));
 				ub.setUsuarioAtivo(rs.getBoolean("usuarioativo"));

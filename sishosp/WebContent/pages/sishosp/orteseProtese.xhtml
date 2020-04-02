@@ -1,227 +1,226 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <f:metadata>
-            <f:viewAction
-                    action="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
-        </f:metadata>
+		<f:metadata>
+		<f:event type="preRenderView" listener="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
+		</f:metadata>
 
-        <div class="panel panel-primary top-primary">
-            <div class="panel-heading top-heading">
-                <h:outputText value="#{OrteseProteseController.cabecalho}"
-                              class="panel-title"></h:outputText>
-            </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{OrteseProteseController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-            <div class="panel-body table-body sub-table-body">
+			<div class="panel-body table-body sub-table-body">
 
-                <h:form id="formInsercao">
+				<h:form id="formInsercao">
 
-                    <b:row rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
+					<b:row
+						rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Programa" severity="info"/>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Programa" severity="info" />
 
-                            <p:outputLabel style="margin-left: 15px"
-                                           value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
+							<p:outputLabel style="margin-left: 15px"
+								value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
 
-                        </b:column>
+						</b:column>
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Grupo" severity="info"/>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Grupo" severity="info" />
 
-                            <p:outputLabel style="margin-left: 15px"
-                                           value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
+							<p:outputLabel style="margin-left: 15px"
+								value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
 
-                        </b:column>
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <br></br>
+					<br></br>
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="2" class="label-position">
-                            <p:outputLabel value="Laudo:"
-                                           style="margin-left:-15px; margin-top: 8px;
+						<b:column span="2" class="label-position">
+							<p:outputLabel value="Laudo:"
+								style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                            <p:commandButton size="sm" style="margin-left: 20px;"
-                                             class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-                                             update=":formConsuLaudo" immediate="true"
-                                             onclick="PF('dlgConsuLaudo').show();"
-                                             action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"/>
-                        </b:column>
+							<p:commandButton size="sm" style="margin-left: 20px;"
+								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+								update=":formConsuLaudo" immediate="true"
+								onclick="PF('dlgConsuLaudo').show();"
+								action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}" />
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Paciente:" class="fire-label" severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Paciente:" class="fire-label" severity="info" />
 
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<h:outputLabel
+								value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
+								class="campo-laudoDig3" />
+						</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Procedimento:" class="fire-label" severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Procedimento:" class="fire-label" severity="info" />
 
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<h:outputLabel
+								value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
+								class="campo-laudoDig3" />
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="CID:" class="fire-label" severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="CID:" class="fire-label" severity="info" />
 
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<h:outputLabel
+								value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
+								class="campo-laudoDig3" />
+						</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Inicial:" class="fire-label"
-                                     severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Vigência Inicial:" class="fire-label"
+								severity="info" />
 
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
+							<h:outputLabel
+								value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
+								class="campo-laudoDig3">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Final" class="fire-label"
-                                     severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Vigência Final" class="fire-label"
+								severity="info" />
 
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
+							<h:outputLabel
+								value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
+								class="campo-laudoDig3">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <br></br>
+					<br></br>
 
-                    <b:row>
+					<b:row>
 
-                        <p:outputPanel id="outEquipamento">
+						<p:outputPanel id="outEquipamento">
 
-                            <b:column span="3"
-                                      class="label-position new-data-size new-comple1">
-                                <b:label id="idEquipamento" value="Equipamento:" class="fire-label"
-                                         severity="info"/>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label id="idEquipamento" value="Equipamento:"
+									class="fire-label" severity="info" />
 
-                                <p:autoComplete required="true" class="select-agendaEquipe4"
-                                                requiredMessage="Equipamento: Campo obrigatório!"
-                                                value="#{OrteseProteseController.orteseProtese.equipamento}"
-                                                size="31" converter="conEquipamento"
-                                                completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descEquipamento}">
-                                    <p:ajax event="itemSelect" update=""/>
+								<p:autoComplete required="true" class="select-agendaEquipe4"
+									requiredMessage="Equipamento: Campo obrigatório!"
+									value="#{OrteseProteseController.orteseProtese.equipamento}"
+									size="31" converter="conEquipamento"
+									completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descEquipamento}">
+									<p:ajax event="itemSelect" update="" />
 
-                                </p:autoComplete>
+								</p:autoComplete>
 
-                                <p:commandButton id="btBusEquip" icon="ui-icon-search"
-                                                 immediate="true" style="margin-left: 5px"
-                                                 action="#{EquipamentoController.listarEquipamentos()}"
-                                                 update=":formConsuEquip" onclick="PF('dlgConsuEquip').show();"/>
-                            </b:column>
+								<p:commandButton id="btBusEquip" icon="ui-icon-search"
+									immediate="true" style="margin-left: 5px"
+									action="#{EquipamentoController.listarEquipamentos()}"
+									update=":formConsuEquip" onclick="PF('dlgConsuEquip').show();" />
+							</b:column>
 
-                        </p:outputPanel>
-                    </b:row>
+						</p:outputPanel>
+					</b:row>
 
-                    <b:row>
+					<b:row>
 
-                        <p:outputPanel id="outFornecedor">
+						<p:outputPanel id="outFornecedor">
 
-                            <b:column span="3"
-                                      class="label-position new-data-size new-comple1">
-                                <b:label id="idFornecedor" value="Fornecedor:" class="fire-label"
-                                         severity="info"/>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label id="idFornecedor" value="Fornecedor:"
+									class="fire-label" severity="info" />
 
-                                <p:autoComplete required="false" class="select-agendaEquipe4"
-                                                requiredMessage="Fornecedor: Campo obrigatório!"
-                                                value="#{OrteseProteseController.orteseProtese.fornecedor}"
-                                                size="31" converter="conFornecedor"
-                                                completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descricao}">
-                                    <p:ajax event="itemSelect" update=""/>
+								<p:autoComplete required="false" class="select-agendaEquipe4"
+									requiredMessage="Fornecedor: Campo obrigatório!"
+									value="#{OrteseProteseController.orteseProtese.fornecedor}"
+									size="31" converter="conFornecedor"
+									completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descricao}">
+									<p:ajax event="itemSelect" update="" />
 
-                                </p:autoComplete>
+								</p:autoComplete>
 
-                                <p:commandButton id="btBusForn" icon="ui-icon-search"
-                                                 immediate="true" style="margin-left: 5px"
-                                                 action="#{FornecedorController.listarFornecedores()}"
-                                                 update=":formConsuForn" onclick="PF('dlgConsuForn').show();"/>
-                            </b:column>
+								<p:commandButton id="btBusForn" icon="ui-icon-search"
+									immediate="true" style="margin-left: 5px"
+									action="#{FornecedorController.listarFornecedores()}"
+									update=":formConsuForn" onclick="PF('dlgConsuForn').show();" />
+							</b:column>
 
-                        </p:outputPanel>
-                    </b:row>
+						</p:outputPanel>
+					</b:row>
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Nota Fiscal:" class="fire-label" severity="info"/>
+						<b:column span="2" class="label-position inserPacient">
+							<b:label value="Nota Fiscal:" class="fire-label" severity="info" />
 
-                            <h:inputText
-                                    value="#{OrteseProteseController.orteseProtese.notaFiscal}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<h:inputText
+								value="#{OrteseProteseController.orteseProtese.notaFiscal}"
+								class="campo-laudoDig3" />
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-                    <br></br>
+					<br></br>
 
 
-                    <br></br>
+					<br></br>
 
-                    <div align="center">
+					<div align="center">
 
-                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="ui-icon-check"
-                                         update="msgPagina"
-                                         class="btn-incluir"
-                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"
-                                         rendered="#{OrteseProteseController.tipo == 1}"/>
+						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
+							icon="ui-icon-check" update="msgPagina" class="btn-incluir"
+							action="#{OrteseProteseController.gravarOrteseIhProtese()}"
+							rendered="#{OrteseProteseController.tipo == 1}" />
 
-                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                         size="sm" immediate="true" look="info" class="btn-voltar"
-                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"/>
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true" />
 
-                        <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
-                                         icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
-                                         update="formInsercao" value="Alterar"
-                                         rendered="#{OrteseProteseController.tipo  == 2}"/>
+						<p:commandButton
+							action="#{OrteseProteseController.alterarOrteseIhProtese()}"
+							icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+							update="formInsercao" value="Alterar"
+							rendered="#{OrteseProteseController.tipo  == 2}" />
 
-                    </div>
-                </h:form>
-            </div>
-        </div>
+					</div>
+				</h:form>
+			</div>
+		</div>
 
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
 			dynamic="true" modal="true" width="900" responsive="true"
@@ -323,8 +322,9 @@
 						<f:facet name="header">
                             Selecionar
                         </f:facet>
-						<p:commandButton update=":formInsercao msgPagina" icon="fa fa-fw fa-check"
-							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+						<p:commandButton update=":formInsercao msgPagina"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar"
 							action="#{OrteseProteseController.validarCarregarLaudoPaciente()}">
 							<f:setPropertyActionListener value="#{insercao.laudo}"
@@ -336,76 +336,86 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
-                  modal="true" styleClass="topDialog">
-            <h:form id="formConsuEquip">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{EquipamentoController.listEquipamentos}" var="equi"
-                             display="Nenhum Equipamento">
+			modal="true" styleClass="topDialog">
+			<h:form id="formConsuEquip">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{EquipamentoController.listEquipamentos}" var="equi"
+					display="Nenhum Equipamento">
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Descrição
                         </f:facet>
-                        <p:outputLabel value="#{equi.descEquipamento}"/>
-                    </h:column>
+						<p:outputLabel value="#{equi.descEquipamento}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":formInsercao:outEquipamento"
-                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-                                title="Selecionar"
-                                onclick="PF('dlgConsuEquip').hide();">
-                            <f:setPropertyActionListener value="#{equi}"
-                                                         target="#{OrteseProteseController.orteseProtese.equipamento}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":formInsercao:outEquipamento"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar" onclick="PF('dlgConsuEquip').hide();">
+							<f:setPropertyActionListener value="#{equi}"
+								target="#{OrteseProteseController.orteseProtese.equipamento}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
-                  modal="true" styleClass="topDialog">
-            <h:form id="formConsuForn">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{FornecedorController.listaFornecedores}" var="forn"
-                             display="Nenhum Fornecedor">
+		<p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
+			modal="true" styleClass="topDialog">
+			<h:form id="formConsuForn">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{FornecedorController.listaFornecedores}" var="forn"
+					display="Nenhum Fornecedor">
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Descrição
                         </f:facet>
-                        <p:outputLabel value="#{forn.descricao}"/>
-                    </h:column>
+						<p:outputLabel value="#{forn.descricao}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             CNPJ
                         </f:facet>
-                        <p:outputLabel value="#{forn.cnpj}"/>
-                    </h:column>
+						<p:outputLabel value="#{forn.cnpj}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":formInsercao:outFornecedor"
-                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-                                title="Selecionar"
-                                onclick="PF('dlgConsuForn').hide();">
-                            <f:setPropertyActionListener value="#{forn}"
-                                                         target="#{OrteseProteseController.orteseProtese.fornecedor}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":formInsercao:outFornecedor"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar" onclick="PF('dlgConsuForn').hide();">
+							<f:setPropertyActionListener value="#{forn}"
+								target="#{OrteseProteseController.orteseProtese.fornecedor}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+		<p:dialog widgetVar="dlgAviso" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="frmExcluir">
+				<div class="alert alert-warning" role="alert">Parâmetros incompletos para Órtese e Prótese</div>
+				<div align="center">
+					<p:separator />
+					<p:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dlgAviso').hide();" look="info" ajax="true"
+						icon="ui-icon-close" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
 
 </ui:composition>
