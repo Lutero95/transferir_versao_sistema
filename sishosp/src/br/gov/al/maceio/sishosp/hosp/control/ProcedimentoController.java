@@ -12,19 +12,17 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sigtapclient.util.ProcedimentoUtil;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
-import br.gov.al.maceio.sishosp.hosp.model.dto.CboDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.CidDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.InstrumentoRegistroDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.ModalidadeAtendimentoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.ServicoClassificacaoDTO;
 import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
+import br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.formaorganizacao.FormaOrganizacaoType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
 import br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
@@ -71,11 +69,15 @@ public class ProcedimentoController implements Serializable {
     private static final Integer QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA = 20; 
     private static final BigInteger REGISTRO_INICIAL = BigInteger.ONE;
     
-    private List<String> listaCodigoModalidadeAtendimento;
-    private List<String> listaCodigoInstrumentosRegistro;
-    private List<String> listaCodigoCBOs;
-    private List<String> listaCodigoCids;
-    private List<ServicoClassificacaoType> listaServicoClassificacao;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModalidadeAtendimentoExistente;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentosRegistroExistentes;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCBOsExistentes;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidsExistentes;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormasDeOrganizacaoExistentes;
+    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaTipoFinanciamentoExistente;
+//    private List<String> listaCodigoServicos;
+//    private List<String> listaCodigoClassificacao;
     
     private List<GravarProcedimentoMensalDTO> listaGravarProcedimentosMensaisDTO;
     private GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO;
@@ -84,9 +86,21 @@ public class ProcedimentoController implements Serializable {
     private List<InstrumentoRegistroType> listaInstrumentosRegistroNaoGravadosNoBanco;
     private List<CBOType> listaCBOsNaoGravadosNoBanco;
     private List<CIDVinculado> listaCidsNaoGravadosNoBanco;
-    private List<ServicoClassificacaoType> listaServicoClassificacaoNaoGravadosNoBanco;
-    private RENASESType renases;
+    private FormaOrganizacaoType formaOrganizacaoNaoGravadaNoBanco;
+    private List<RENASESType> listaRenasesNaoGravadosNoBanco;
+    private TipoFinanciamentoType tipoFinanciamentoNaoGravadoNoBanco;
+    private List<ServicoClassificacaoType> listaServicosClassificacao;
+    //private List<ServicoType> listaServicosNaoGravadosNoBanco;
+    //private List<GravarClassificacaoDTO> listaClassificacoesNaoGravadasNoBanco;
     private String descricaoProcedimentoMensal;
+    
+    private List<Integer> listaIdModalidadeAtendimentoExistente;
+    private List<Integer> listaIdInstrumentosRegistroExistente;
+    private List<Integer> listaIdCBOsExistente;
+    private List<Integer> listaIdCidsExistente;
+    private List<Integer> listaIdRenasesExistente;
+    private Integer idFormasDeOrganizacaoExistente;
+    private Integer idTipoFinanciamentoExistente;
     
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -94,11 +108,15 @@ public class ProcedimentoController implements Serializable {
         cid = new CidBean();
         cbo = new CboBean();
         recurso = new RecursoBean();
-        this.listaCodigoModalidadeAtendimento = new ArrayList();
-        this.listaCodigoInstrumentosRegistro = new ArrayList();
-        this.listaCodigoCBOs = new ArrayList();
-        this.listaCodigoCids = new ArrayList();
-        this.listaServicoClassificacao = new ArrayList();
+        
+        //SIGTAP
+        this.listaModalidadeAtendimentoExistente = new ArrayList();
+        this.listaInstrumentosRegistroExistentes = new ArrayList();
+        this.listaCBOsExistentes = new ArrayList();
+        this.listaCidsExistentes = new ArrayList();
+        this.listaFormasDeOrganizacaoExistentes = new ArrayList();
+        this.listaRenasesExistentes = new ArrayList();
+        this.listaTipoFinanciamentoExistente = new ArrayList();
         this.listaGravarProcedimentosMensaisDTO = new ArrayList();
         limparListasDadosProcedimentos();
     }
@@ -109,9 +127,18 @@ public class ProcedimentoController implements Serializable {
         this.listaInstrumentosRegistroNaoGravadosNoBanco = new ArrayList();
         this.listaCBOsNaoGravadosNoBanco = new ArrayList();
         this.listaCidsNaoGravadosNoBanco = new ArrayList();
-        this.listaServicoClassificacaoNaoGravadosNoBanco = new ArrayList();
-        this.renases = new RENASESType();
+        this.formaOrganizacaoNaoGravadaNoBanco = new FormaOrganizacaoType();
+        this.listaRenasesNaoGravadosNoBanco = new ArrayList();
+        this.tipoFinanciamentoNaoGravadoNoBanco = new TipoFinanciamentoType();
+        this.listaServicosClassificacao = new ArrayList();
         this.descricaoProcedimentoMensal = new String();
+        this.listaIdModalidadeAtendimentoExistente = new ArrayList();
+        this.listaIdInstrumentosRegistroExistente = new ArrayList();
+        this.listaIdCBOsExistente = new ArrayList();
+        this.listaIdCidsExistente = new ArrayList();
+        this.listaIdRenasesExistente = new ArrayList();
+        this.idFormasDeOrganizacaoExistente = null;
+        this.idTipoFinanciamentoExistente = null;
 	}
 
     public String redirectEdit() {
@@ -302,10 +329,18 @@ public class ProcedimentoController implements Serializable {
         campoBusca = "";
     }
     
+    private FuncionarioBean obterUsuarioDaSessao() {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		return user_session;
+	}
+    
     public void novaCargaSigtap() throws ProjetoException {
-    	for(int i = 0; i < this.listaProcedimentos.size(); i++) {
-    		
-    		buscaIdsDeDetalhamentosExistentesNoProcedimento(this.listaProcedimentos.get(i).getIdProc());
+    	
+		FuncionarioBean user_session = obterUsuarioDaSessao();
+    	
+    	for(int i = 0; i < this.listaProcedimentos.size(); i++) {		
+    		buscaCodigosDeDadosExistentesNoBanco();
     		selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
     		
     		//TESTE 
@@ -321,14 +356,6 @@ public class ProcedimentoController implements Serializable {
     			System.out.println("Codigo: "+cidVinculado.getCID().getCodigo());
     		}
     		System.out.println("SIZE:" +listaCidsNaoGravadosNoBanco.size());
-    		
-    		for (ServicoClassificacaoType servicoClassificacaoType : listaServicoClassificacaoNaoGravadosNoBanco) {
-    			System.out.println("\nServico: "+servicoClassificacaoType.getServico().getNome());
-    			System.out.println("Codigo Servico: "+servicoClassificacaoType.getServico().getCodigo());
-    			System.out.println("Classificacao: "+servicoClassificacaoType.getNomeClassificacao());
-    			System.out.println("Codigo Classificacao: "+servicoClassificacaoType.getCodigoClassificacao());
-    		}
-    		System.out.println("SIZE:" +listaServicoClassificacaoNaoGravadosNoBanco.size());
     		
     		for (ModalidadeAtendimentoType modalidadeAtendimentoType : listaModalidadeAtendimentoNaoGravadosNoBanco) {
     			System.out.println("\nMODALIDADE ATENDIMENTO: "+modalidadeAtendimentoType.getNome());
@@ -353,7 +380,16 @@ public class ProcedimentoController implements Serializable {
     					getCIDVinculado().size());
     		System.out.println("Forma organização: "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getFormaOrganizacao().getNome());
     		System.out.println("Tipo financiamento "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getTipoFinanciamento().getNome());
+    		
+    		try {
+    			procedimentoDao.executaRotinaNovaCargaSigtap(listaGravarProcedimentosMensaisDTO.get(i), user_session.getId());
+    		} catch (Exception e) {
+    			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+    			e.printStackTrace();
+    		}
     	}
+    	
+    	this.listaGravarProcedimentosMensaisDTO.clear();
     }
 
 	private void setaDadosParaListaProcedimentosMensalDTO(int i) {
@@ -378,28 +414,41 @@ public class ProcedimentoController implements Serializable {
 			getCIDVinculado().addAll(listaCidsNaoGravadosNoBanco);
 		
 		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().clear();
-		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().add(renases);
-		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().
+			addAll(listaRenasesNaoGravadosNoBanco);
 		
 		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setDescricao(descricaoProcedimentoMensal);
 		
 		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().
 			getServicoClassificacao().clear();
-		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().
-			getServicoClassificacao().addAll(listaServicoClassificacaoNaoGravadosNoBanco);
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().getServicoClassificacao()
+			.addAll(listaServicosClassificacao);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setFormaOrganizacao(formaOrganizacaoNaoGravadaNoBanco);
+		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setTipoFinanciamento(tipoFinanciamentoNaoGravadoNoBanco);
+		
+		listaGravarProcedimentosMensaisDTO.get(i).getListaIdModalidadeAtendimentoExistente().addAll(listaIdModalidadeAtendimentoExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).getListaIdInstrumentosRegistroExistente().addAll(listaIdInstrumentosRegistroExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).getListaIdCBOsExistente().addAll(listaIdCBOsExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).getListaIdCidsExistente().addAll(listaIdCidsExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).getListaIdRenasesExistente().addAll(listaIdRenasesExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).setIdFormasDeOrganizacaoExistente(idFormasDeOrganizacaoExistente);
+		listaGravarProcedimentosMensaisDTO.get(i).setIdTipoFinanciamentoExistente(idTipoFinanciamentoExistente);
 	}
 	
 	private void fecharDialogAvisoCargaSigtap() {
 		JSFUtil.fecharDialog("dlg-aviso");
 	}
 
-	private void buscaIdsDeDetalhamentosExistentesNoProcedimento(Integer idProcedimento)
+	private void buscaCodigosDeDadosExistentesNoBanco()
 			throws ProjetoException {
-		listaCodigoModalidadeAtendimento = procedimentoDao.buscaCodigoModalidadeAtendimento(idProcedimento);
-		listaCodigoInstrumentosRegistro = procedimentoDao.buscaCodigoInstrumentosRegistro(idProcedimento);
-		listaCodigoCBOs = procedimentoDao.buscaCodigoCbos(idProcedimento);
-		listaCodigoCids = procedimentoDao.buscaCodigoCids(idProcedimento);
-		listaServicoClassificacao = procedimentoDao.buscarServicosClassificacao(idProcedimento);
+		this.listaModalidadeAtendimentoExistente = procedimentoDao.buscaModalidadeAtendimentoExistente();
+		this.listaInstrumentosRegistroExistentes = procedimentoDao.buscaInstrumentosRegistroExistente();
+		this.listaCBOsExistentes = procedimentoDao.buscaCbosExistentes();
+		this.listaCidsExistentes = procedimentoDao.buscaCidsExistentes();
+		this.listaFormasDeOrganizacaoExistentes = procedimentoDao.buscaFormasOrganizacaoExistentes();
+		this.listaRenasesExistentes = procedimentoDao.buscaRenasesExistentes();
+		this.listaTipoFinanciamentoExistente = procedimentoDao.buscaTiposFinanciamentoExistentes();
 	}
 
 	private void selecionaDetalheAdicionalEmSequencia(ProcedimentoBean procedimento) {
@@ -418,6 +467,7 @@ public class ProcedimentoController implements Serializable {
 				categoriaDetalheAdicional = CategoriaDetalheAdicionalType.RENASES;
 			else
 				categoriaDetalheAdicional = CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES;
+			
 			detalheAdicional = buscaTodosRegistrosDeUmProcedimentoSeguindoAhRegraDeVinteRegistrosPorVez(procedimento,
 					detalheAdicional, categoriaDetalheAdicional);	
 		}
@@ -426,15 +476,13 @@ public class ProcedimentoController implements Serializable {
 	private int buscaTodosRegistrosDeUmProcedimentoSeguindoAhRegraDeVinteRegistrosPorVez(ProcedimentoBean procedimento,
 			int detalheAdicional, CategoriaDetalheAdicionalType categoriaDetalheAdicional) {
 		try {
-			BigInteger totalRegistros = detalharProcedimento
-					(procedimento, REGISTRO_INICIAL, categoriaDetalheAdicional);
+			BigInteger totalRegistros = detalharProcedimento(procedimento, REGISTRO_INICIAL, categoriaDetalheAdicional);
 			Long registroInicialLong = REGISTRO_INICIAL.longValue();
 			registroInicialLong += QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA;
 			
 			if(totalRegistros.longValue() > QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA) {
 				while (registroInicialLong < totalRegistros.longValue()) {
-					detalharProcedimento
-						(procedimento, new BigInteger(registroInicialLong.toString()), categoriaDetalheAdicional);
+					detalharProcedimento(procedimento, new BigInteger(registroInicialLong.toString()), categoriaDetalheAdicional);
 					registroInicialLong += QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA;
 				}
 			}
@@ -471,7 +519,7 @@ public class ProcedimentoController implements Serializable {
 			ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
 		
 		adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
-		adicionaDadosFiltradosEmSuaRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
+		adicionaDadosFiltradosEmSuasRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
 		
 		System.out.println("Detalhamento:" +categoriaDetalheAdicional.name());
 		System.out.println("Procedimento:" +resultadosDetalhaProcedimentosType.getProcedimento().getNome());
@@ -492,67 +540,158 @@ public class ProcedimentoController implements Serializable {
 			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
 			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
 			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
-			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
+			adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
 		}
 		
-		else if(listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento() != procedimento.getIdProc()){
+		else if(!listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento().equals(procedimento.getIdProc())){
 			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
 			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
 			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
-			adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(resultadosDetalhaProcedimentosType);
+			adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
 		}
-
-		/*
-		 * if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
-		 * 
-		 * procedimentoMensalDTO.setListaCBOs(resultadosDetalhaProcedimentosType.
-		 * getProcedimento().getCBOsVinculados().getCBO()); }
-		 */
 	}
 
-	private void adicionaModalidadeIhInstrumentoRegistroParaListasAuxiliares(
+	private void adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(
 			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-		for(ModalidadeAtendimentoType modalidadeAtendimentoType : 
-			resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento()) {
-			if(!listaCodigoModalidadeAtendimento.contains(modalidadeAtendimentoType.getCodigo()))
-				listaModalidadeAtendimentoNaoGravadosNoBanco.add(modalidadeAtendimentoType);
+		//MODALIDADE ATENDIMENTO
+		if(listaModalidadeAtendimentoExistente.isEmpty()) {
+			listaModalidadeAtendimentoNaoGravadosNoBanco.
+			addAll(resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento());
+		}else {
+			
+			for(ModalidadeAtendimentoType modalidadeAtendimento : 
+				resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento()) {				
+				Boolean valorExistenteAdicionado = false;
+				for (PropriedadeDeProcedimentoMensalExistenteDTO modalidadeExistente : listaModalidadeAtendimentoExistente) {
+					if (modalidadeExistente.getCodigo().equals(modalidadeAtendimento.getCodigo())) {
+						this.listaIdModalidadeAtendimentoExistente.add(modalidadeExistente.getId());
+						valorExistenteAdicionado = true;
+					}
+				}
+				if(!valorExistenteAdicionado)
+					listaModalidadeAtendimentoNaoGravadosNoBanco.add(modalidadeAtendimento);	
+			}
 		}
 		
-		for(InstrumentoRegistroType instrumentoRegistroType : 
-			resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro()) {
-			if(!listaCodigoInstrumentosRegistro.contains(instrumentoRegistroType.getCodigo()))
-				listaInstrumentosRegistroNaoGravadosNoBanco.add(instrumentoRegistroType);
+		//INSTRUMENTO DE REGISTRO
+		if(listaInstrumentosRegistroExistentes.isEmpty()) {
+			listaInstrumentosRegistroNaoGravadosNoBanco.
+			addAll(resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro());
+		}else {
+			
+			for(InstrumentoRegistroType instrumentoRegistroType : 
+				resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro()) {
+				Boolean valorExistente = false;
+				for(PropriedadeDeProcedimentoMensalExistenteDTO instrumentoRegistroExistente : listaInstrumentosRegistroExistentes) {
+					if(instrumentoRegistroExistente.getCodigo().equals(instrumentoRegistroType.getCodigo())) {
+						listaIdInstrumentosRegistroExistente.add(instrumentoRegistroExistente.getId());
+						valorExistente = true;
+					}
+				}
+				if(!valorExistente)
+					listaInstrumentosRegistroNaoGravadosNoBanco.add(instrumentoRegistroType);
+			}
+		}		
+		
+		//FORMA ORGANIZAÇÃO
+		if(listaFormasDeOrganizacaoExistentes.isEmpty()) {
+			formaOrganizacaoNaoGravadaNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao();
+		}else {
+			String codigoFormaOrganizacao = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao().getCodigo();
+			Boolean valorExistente = false;
+			for(PropriedadeDeProcedimentoMensalExistenteDTO formaOrganizacaoExistente : listaFormasDeOrganizacaoExistentes) {
+				if (formaOrganizacaoExistente.getCodigo().equals(codigoFormaOrganizacao)) {
+					idFormasDeOrganizacaoExistente = formaOrganizacaoExistente.getId();
+					valorExistente = true;
+				}
+			}
+			if(!valorExistente)
+				formaOrganizacaoNaoGravadaNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao();
+		}
+		
+		//TIPO FINANCIAMENTO
+		if(listaTipoFinanciamentoExistente.isEmpty()) {
+			tipoFinanciamentoNaoGravadoNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento();
+		}else {
+			String codigoTipoFinanciamento = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento().getCodigo();
+			Boolean valorExistente = false;
+			for(PropriedadeDeProcedimentoMensalExistenteDTO tipoFinanciamentoExistente : listaTipoFinanciamentoExistente) {
+				if (tipoFinanciamentoExistente.getCodigo().equals(codigoTipoFinanciamento)) {
+					idTipoFinanciamentoExistente = tipoFinanciamentoExistente.getId();
+					valorExistente = true;
+				}
+			}
+			if (!valorExistente)
+				tipoFinanciamentoNaoGravadoNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento();
 		}
 	}
+	
 
-	private void adicionaDadosFiltradosEmSuaRespectivasVariaveis(
+	private void adicionaDadosFiltradosEmSuasRespectivasVariaveis(
 			CategoriaDetalheAdicionalType categoriaDetalheAdicional,
 			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
 		if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
-			for (CBOType cboType : resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO()) {
-				if(!listaCodigoCBOs.contains(cbo.getCodigo()))
-					listaCBOsNaoGravadosNoBanco.add(cboType);
+			if(listaCBOsExistentes.isEmpty()) {
+				listaCBOsNaoGravadosNoBanco.addAll(resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO());
+			}else {
+				for (CBOType cboType : resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO()) {
+					Boolean valorExistente = false;
+					for(PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO : listaCBOsExistentes) {
+						if(cboExistenteDTO.getCodigo().equals(cboType.getCodigo())) {
+							listaIdCBOsExistente.add(cboExistenteDTO.getId());
+							valorExistente = true;
+						}
+					}
+					if (!valorExistente)
+						listaCBOsNaoGravadosNoBanco.add(cboType);
+				}
 			}
 		}
 		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
-			for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
-				if(!listaCodigoCids.contains(cidVinculado.getCID().getCodigo())) 
-					listaCidsNaoGravadosNoBanco.add(cidVinculado);
+			
+			if(listaCidsExistentes.isEmpty()) {
+				listaCidsNaoGravadosNoBanco.addAll
+					(resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado());
+			}else {
+				for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
+					Boolean valorExistente = false;
+					for(PropriedadeDeProcedimentoMensalExistenteDTO cidExistenteDTO : listaCidsExistentes) {
+						if(cidExistenteDTO.getCodigo().equals(cidVinculado.getCID().getCodigo())) { 
+							listaIdCidsExistente.add(cidExistenteDTO.getId());
+							valorExistente = true;
+						}
+					}
+					if(!valorExistente)
+						listaCidsNaoGravadosNoBanco.add(cidVinculado);
+				}
 			}			
 		}
 		
 		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.DESCRICAO))
 			this.descricaoProcedimentoMensal = resultadosDetalhaProcedimentosType.getProcedimento().getDescricao();
 		
-		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES))
-			this.renases = resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES().get(0);
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES)) {
+			if(listaRenasesExistentes.isEmpty()) {
+				listaRenasesNaoGravadosNoBanco.
+					addAll(resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES());
+			}else {
+				for (RENASESType renasesType : resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES()) {
+					Boolean valorExitente = false;
+					for(PropriedadeDeProcedimentoMensalExistenteDTO renasesExistenteDTO : listaRenasesExistentes) {
+						if(renasesExistenteDTO.getCodigo().equals(renasesType.getCodigo())) {
+							listaIdRenasesExistente.add(renasesExistenteDTO.getId());
+							valorExitente = true;
+						}	
+					}
+					if(!valorExitente)
+						listaRenasesNaoGravadosNoBanco.add(renasesType);
+				}
+			}
+		}
 		
 		else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
-			for (ServicoClassificacaoType servicoClassificacaoType :
-					resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao()) {
-				if(!listaServicoClassificacao.contains(servicoClassificacaoType))
-					listaServicoClassificacaoNaoGravadosNoBanco.add(servicoClassificacaoType);
-			}
+			listaServicosClassificacao.addAll
+				(resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao());		
 		}
 	}
 

@@ -93,7 +93,8 @@
 					<br/>
 					<br/>
 					<br/>
-					<p:commandButton value="Continuar" ajax="true" action="#{ProcedimentoController.novaCargaSigtap()}" style="margin-right:5%;"/>
+					<p:commandButton value="Continuar" ajax="true" update=":frmPrincipal"
+						action="#{ProcedimentoController.novaCargaSigtap()}" style="margin-right:5%;"/>
 					<p:commandButton value="Fechar" ajax="true" onclick="PF('dlg-aviso').hide();" style="margin-left:5%;"/>
 				</div>
 			</h:form>
