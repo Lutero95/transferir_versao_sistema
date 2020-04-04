@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
@@ -68,6 +69,7 @@ public class ProcedimentoController implements Serializable {
     private static final Integer QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO = 5;
     private static final Integer QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA = 20; 
     private static final BigInteger REGISTRO_INICIAL = BigInteger.ONE;
+    private static final Integer VALOR_ZERO = 0;
     
     private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModalidadeAtendimentoExistente;
     private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentosRegistroExistentes;
@@ -76,8 +78,6 @@ public class ProcedimentoController implements Serializable {
     private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes;
     private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormasDeOrganizacaoExistentes;
     private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaTipoFinanciamentoExistente;
-//    private List<String> listaCodigoServicos;
-//    private List<String> listaCodigoClassificacao;
     
     private List<GravarProcedimentoMensalDTO> listaGravarProcedimentosMensaisDTO;
     private GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO;
@@ -90,8 +90,6 @@ public class ProcedimentoController implements Serializable {
     private List<RENASESType> listaRenasesNaoGravadosNoBanco;
     private TipoFinanciamentoType tipoFinanciamentoNaoGravadoNoBanco;
     private List<ServicoClassificacaoType> listaServicosClassificacao;
-    //private List<ServicoType> listaServicosNaoGravadosNoBanco;
-    //private List<GravarClassificacaoDTO> listaClassificacoesNaoGravadasNoBanco;
     private String descricaoProcedimentoMensal;
     
     private List<Integer> listaIdModalidadeAtendimentoExistente;
@@ -338,57 +336,23 @@ public class ProcedimentoController implements Serializable {
     public void novaCargaSigtap() throws ProjetoException {
     	
 		FuncionarioBean user_session = obterUsuarioDaSessao();
+    	Integer idHistoricoConsumoSigtap = VALOR_ZERO;
     	
     	for(int i = 0; i < this.listaProcedimentos.size(); i++) {		
     		buscaCodigosDeDadosExistentesNoBanco();
-    		selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
-    		
-    		//TESTE 
-        	System.out.println("QTD PROCEDIMENTOS SIGTAP :\n\n\n"+ listaGravarProcedimentosMensaisDTO.size());
-        	for (CBOType cboType : listaCBOsNaoGravadosNoBanco) {
-    			System.out.println("CBO: "+cboType.getNome());
-    			System.out.println("Codigo: "+cboType.getCodigo());
-    		}
-        	System.out.println("SIZE:" +listaCBOsNaoGravadosNoBanco.size());
-        	
-    		for (CIDVinculado cidVinculado : listaCidsNaoGravadosNoBanco) {
-    			System.out.println("\nCID: "+cidVinculado.getCID().getNome());
-    			System.out.println("Codigo: "+cidVinculado.getCID().getCodigo());
-    		}
-    		System.out.println("SIZE:" +listaCidsNaoGravadosNoBanco.size());
-    		
-    		for (ModalidadeAtendimentoType modalidadeAtendimentoType : listaModalidadeAtendimentoNaoGravadosNoBanco) {
-    			System.out.println("\nMODALIDADE ATENDIMENTO: "+modalidadeAtendimentoType.getNome());
-    			System.out.println("Codigo: "+modalidadeAtendimentoType.getCodigo());
-    		}
-    		System.out.println("Modalidade SIZE:" +listaModalidadeAtendimentoNaoGravadosNoBanco.size());
-    		
-    		for (InstrumentoRegistroType instrumentoRegistroType : listaInstrumentosRegistroNaoGravadosNoBanco) {
-    			System.out.println("\nINSTRUMENTO REGISTRO: "+instrumentoRegistroType.getNome());
-    			System.out.println("Codigo: "+instrumentoRegistroType.getCodigo());
-    		}
-    		System.out.println("Instrumento SIZE:" +listaInstrumentosRegistroNaoGravadosNoBanco.size());
-    		
+    		selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));    		
     		setaDadosParaListaProcedimentosMensalDTO(i);
-    		
     		limparListasDadosProcedimentos();
-    		fecharDialogAvisoCargaSigtap();
-    		
-    		System.out.println("CIDs no procedimento "+
-    		listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCodigo() +" da lista: "+
-    				listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
-    					getCIDVinculado().size());
-    		System.out.println("Forma organização: "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getFormaOrganizacao().getNome());
-    		System.out.println("Tipo financiamento "+ listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getTipoFinanciamento().getNome());
-    		
     		try {
-    			procedimentoDao.executaRotinaNovaCargaSigtap(listaGravarProcedimentosMensaisDTO.get(i), user_session.getId());
+    			idHistoricoConsumoSigtap = 
+    					procedimentoDao.executaRotinaNovaCargaSigtap(listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(), idHistoricoConsumoSigtap);
     		} catch (Exception e) {
+    			fecharDialogAvisoCargaSigtap();
     			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
     			e.printStackTrace();
     		}
     	}
-    	
+    	fecharDialogAvisoCargaSigtap();
     	this.listaGravarProcedimentosMensaisDTO.clear();
     }
 
@@ -521,14 +485,9 @@ public class ProcedimentoController implements Serializable {
 		adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
 		adicionaDadosFiltradosEmSuasRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
 		
-		System.out.println("Detalhamento:" +categoriaDetalheAdicional.name());
-		System.out.println("Procedimento:" +resultadosDetalhaProcedimentosType.getProcedimento().getNome());
-		if (resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao() != null) {
-			System.out.println("Registro Inicial:" +resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getRegistroInicial());
-			System.out.println("Total de registros:" +resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getTotalRegistros());
-		}
-		else
+		if (VerificadorUtil.verificarSeObjetoNulo(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao())) 
 			return new BigInteger(BigInteger.ZERO.toString());
+		
 		return resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getTotalRegistros();	
 	}
     
