@@ -14,6 +14,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
@@ -1452,5 +1453,38 @@ public class ProcedimentoDAO {
             }
         }
         return houveCargaDoSigtap;
+    }
+    
+    public List<HistoricoSigtapBean> listaHistoricoCargasDoSigtap() {
+    	
+    	List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList();
+        String sql = "select hcs.data_registro, hcs.ano, " + 
+        		"to_char(to_timestamp (hcs.mes::text, 'MM'), 'TMMONTH') as mes " + 
+        		"from hosp.historico_consumo_sigtap hcs " + 
+        		"order by hcs.data_registro desc";
+        
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	HistoricoSigtapBean historicoSigtap = new HistoricoSigtapBean();
+            	historicoSigtap.setAno(rs.getInt("ano"));
+            	historicoSigtap.setMesString(rs.getString("mes"));
+            	historicoSigtap.setDataIhHoraRegistro(rs.getTimestamp("data_registro"));
+            	listaHistoricosSigtap.add(historicoSigtap);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaHistoricosSigtap;
     }
 }

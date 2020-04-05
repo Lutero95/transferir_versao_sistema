@@ -40,6 +40,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name = "ProcedimentoController")
@@ -99,6 +100,7 @@ public class ProcedimentoController implements Serializable {
     private List<Integer> listaIdRenasesExistente;
     private Integer idFormasDeOrganizacaoExistente;
     private Integer idTipoFinanciamentoExistente;
+	private List<HistoricoSigtapBean> listaHistoricoDoSigtap;
     
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -116,6 +118,7 @@ public class ProcedimentoController implements Serializable {
         this.listaRenasesExistentes = new ArrayList();
         this.listaTipoFinanciamentoExistente = new ArrayList();
         this.listaGravarProcedimentosMensaisDTO = new ArrayList();
+        this.listaHistoricoDoSigtap = new ArrayList();
         limparListasDadosProcedimentos();
     }
 
@@ -334,29 +337,36 @@ public class ProcedimentoController implements Serializable {
 	}
     
     public void novaCargaSigtap() throws ProjetoException {
-    	if(!verificaSeHouveCargaDoSigtapEsteMes()) {
-    		
-			FuncionarioBean user_session = obterUsuarioDaSessao();
-			Integer idHistoricoConsumoSigtap = VALOR_ZERO;
+    	listarProcedimentos();
+    	if(this.listaProcedimentos.isEmpty())
+    		JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
+		else {
+			if (!verificaSeHouveCargaDoSigtapEsteMes()) {
 
-			for (int i = 0; i < this.listaProcedimentos.size(); i++) {
-				buscaCodigosDeDadosExistentesNoBanco();
-				selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
-				setaDadosParaListaProcedimentosMensalDTO(i);
-				limparListasDadosProcedimentos();
-				try {
-					idHistoricoConsumoSigtap = procedimentoDao.executaRotinaNovaCargaSigtap(
-							listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(), idHistoricoConsumoSigtap);
-				} catch (Exception e) {
-					fecharDialogAvisoCargaSigtap();
-					JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-					e.printStackTrace();
+				FuncionarioBean user_session = obterUsuarioDaSessao();
+				Integer idHistoricoConsumoSigtap = VALOR_ZERO;
+
+				for (int i = 0; i < this.listaProcedimentos.size(); i++) {
+					buscaCodigosDeDadosExistentesNoBanco();
+					selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
+					setaDadosParaListaProcedimentosMensalDTO(i);
+					limparListasDadosProcedimentos();
+					try {
+						idHistoricoConsumoSigtap = procedimentoDao.executaRotinaNovaCargaSigtap(
+								listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(),
+								idHistoricoConsumoSigtap);
+					} catch (Exception e) {
+						fecharDialogAvisoCargaSigtap();
+						JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+						e.printStackTrace();
+					}
 				}
+				listaHistoricoSigtap();
+				fecharDialogAvisoCargaSigtap();
+				JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
+				this.listaGravarProcedimentosMensaisDTO.clear();
 			}
-			fecharDialogAvisoCargaSigtap();
-			JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
-			this.listaGravarProcedimentosMensaisDTO.clear();
-    	}
+		}
     }
     
     private Boolean verificaSeHouveCargaDoSigtapEsteMes() {
@@ -672,6 +682,10 @@ public class ProcedimentoController implements Serializable {
 				(resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao());		
 		}
 	}
+	
+	public void listaHistoricoSigtap() {
+		this.listaHistoricoDoSigtap = procedimentoDao.listaHistoricoCargasDoSigtap();
+	}
 
 	public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
         this.listaProcedimentos = procedimentoDao.listarProcedimentoLaudo();
@@ -741,4 +755,12 @@ public class ProcedimentoController implements Serializable {
     public void setCampoBusca(String campoBusca) {
         this.campoBusca = campoBusca;
     }
+
+	public List<HistoricoSigtapBean> getListaHistoricoDoSigtap() {
+		return listaHistoricoDoSigtap;
+	}
+
+	public void setListaHistoricoDoSigtap(List<HistoricoSigtapBean> listaHistoricoDoSigtap) {
+		this.listaHistoricoDoSigtap = listaHistoricoDoSigtap;
+	}
 }

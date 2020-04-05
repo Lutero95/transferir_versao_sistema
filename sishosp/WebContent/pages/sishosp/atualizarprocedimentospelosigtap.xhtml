@@ -6,13 +6,13 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="../../template/template.xhtml">
 	<f:metadata>
-        <f:viewAction action="#{ProcedimentoController.buscarProcedimentos()}"/>
+        <f:viewAction action="#{ProcedimentoController.listaHistoricoSigtap()}"/>
     </f:metadata>
     
     <ui:define name="content">
 
         <h:form id="frmPrincipal">
-                <p:commandButton id="btninc" value="Nova carga do Sigtap" size="sm" ajax="true"
+                <p:commandButton id="btninc" value="Nova carga do SIGTAP" size="sm" ajax="true"
                                  icon="glyphicon-plus" class="btn-addNovo" onclick="PF('dlg-aviso').show();">
                     <p:tooltip for="btninc" value="Atualiza dados de procedimentos pelo SIGTAP"></p:tooltip>
                 </p:commandButton>
@@ -43,41 +43,39 @@
                     </p:panelGrid>
 
                 </p:row>
+			<div class="panel panel-primary top-primary">
+				<div class="panel-heading top-heading">
+					<h4 class="panel-title">Histórico</h4>
+				</div>
+			</div>
+			<p:dataTable id="dt" var="tab" rows="20" paginator="true"
+				style="margin-top: 10px" responsive="true"
+				value="#{ProcedimentoController.listaHistoricoDoSigtap}">
 
-                <p:dataTable id="dt" var="tab" rows="20" paginator="true" style="margin-top: 10px"
-                             responsive="true" value="#{ProcedimentoController.listaProcedimentos}">
-
-                    <p:column>
-                        <f:facet name="header">
-                            Código
+				<p:column>
+					<f:facet name="header">
+                            Referência
+                        </f:facet>
+					<h:outputText value="#{tab.mesString} / #{tab.ano}" style="margin-left:44%" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+                            Data e hora de Registro
                         </f:facet>
 
-                        <h:outputText value="#{tab.codProc}" />
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            Descrição
-                        </f:facet>
-
-                        <h:outputText value="#{tab.nomeProc}"/>
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            Ação
-                        </f:facet>
-
-                        <p:commandButton id="verDados" icon="ui-icon-search" size="sm"
-                                        class="btn-acao-table acao-editar">
-                        <p:tooltip for="verDados" value="Ver dados"></p:tooltip>
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{ProcedimentoController.proc}"/>
-                        </p:commandButton>
-
-                    </p:column>
-                </p:dataTable>
-            </h:form>
+					<h:outputText value="#{tab.dataIhHoraRegistro}"
+						style="margin-left:37%">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value="às" style="margin-left:2%" />
+					<h:outputText value="#{tab.dataIhHoraRegistro}"
+						style="margin-left:2%">
+						<f:convertDateTime type="time" dateStyle="full" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</h:form>
 
 		<p:dialog header="Aviso!" widgetVar="dlg-aviso" modal="true" height="150" resizable="false">
 			<h:form id="form-aviso">
