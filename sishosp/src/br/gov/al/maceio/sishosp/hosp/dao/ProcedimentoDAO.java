@@ -1425,4 +1425,32 @@ public class ProcedimentoDAO {
         }
         return anoAtual;
     }
+    
+    public Boolean houveCargaDoSigtapEsteMes() {
+        
+        String sql = "select exists (select id from hosp.historico_consumo_sigtap " + 
+        		"where id = (select id from hosp.historico_consumo_sigtap hcs " + 
+        		"order by id desc limit 1) and (status = 'A' and mes = EXTRACT(MONTH FROM current_date) "+
+        		"and ano = EXTRACT(YEAR FROM current_date))) houve_carga_este_mes";
+        Boolean houveCargaDoSigtap = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next())
+            	houveCargaDoSigtap = rs.getBoolean("houve_carga_este_mes");
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return houveCargaDoSigtap;
+    }
 }

@@ -334,26 +334,45 @@ public class ProcedimentoController implements Serializable {
 	}
     
     public void novaCargaSigtap() throws ProjetoException {
-    	
-		FuncionarioBean user_session = obterUsuarioDaSessao();
-    	Integer idHistoricoConsumoSigtap = VALOR_ZERO;
-    	
-    	for(int i = 0; i < this.listaProcedimentos.size(); i++) {		
-    		buscaCodigosDeDadosExistentesNoBanco();
-    		selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));    		
-    		setaDadosParaListaProcedimentosMensalDTO(i);
-    		limparListasDadosProcedimentos();
-    		try {
-    			idHistoricoConsumoSigtap = 
-    					procedimentoDao.executaRotinaNovaCargaSigtap(listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(), idHistoricoConsumoSigtap);
-    		} catch (Exception e) {
-    			fecharDialogAvisoCargaSigtap();
-    			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-    			e.printStackTrace();
-    		}
+    	if(!verificaSeHouveCargaDoSigtapEsteMes()) {
+    		
+			FuncionarioBean user_session = obterUsuarioDaSessao();
+			Integer idHistoricoConsumoSigtap = VALOR_ZERO;
+
+			for (int i = 0; i < this.listaProcedimentos.size(); i++) {
+				buscaCodigosDeDadosExistentesNoBanco();
+				selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
+				setaDadosParaListaProcedimentosMensalDTO(i);
+				limparListasDadosProcedimentos();
+				try {
+					idHistoricoConsumoSigtap = procedimentoDao.executaRotinaNovaCargaSigtap(
+							listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(), idHistoricoConsumoSigtap);
+				} catch (Exception e) {
+					fecharDialogAvisoCargaSigtap();
+					JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+					e.printStackTrace();
+				}
+			}
+			fecharDialogAvisoCargaSigtap();
+			JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
+			this.listaGravarProcedimentosMensaisDTO.clear();
     	}
-    	fecharDialogAvisoCargaSigtap();
-    	this.listaGravarProcedimentosMensaisDTO.clear();
+    }
+    
+    private Boolean verificaSeHouveCargaDoSigtapEsteMes() {
+    	try {
+    		Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
+    		if(houveCargaEsteMes) {
+    			fecharDialogAvisoCargaSigtap();
+        		JSFUtil.adicionarMensagemAdvertencia("O sistema está atualizado, uma carga já foi executada este mês", "");
+        		return houveCargaEsteMes;
+        	}
+		} catch (Exception e) {
+			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+			e.printStackTrace();
+		}
+    	
+    	return false;
     }
 
 	private void setaDadosParaListaProcedimentosMensalDTO(int i) {
