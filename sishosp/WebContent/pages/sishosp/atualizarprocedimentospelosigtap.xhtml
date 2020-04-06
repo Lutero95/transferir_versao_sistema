@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+	<f:metadata>
+        <f:viewAction action="#{ProcedimentoController.listaHistoricoSigtap()}"/>
+    </f:metadata>
+    
+    <ui:define name="content">
+
+        <h:form id="frmPrincipal">
+                <p:commandButton id="btninc" value="Nova carga do SIGTAP" size="sm" ajax="true"
+                                 icon="glyphicon-plus" class="btn-addNovo" onclick="PF('dlg-aviso').show();">
+                    <p:tooltip for="btninc" value="Atualiza dados de procedimentos pelo SIGTAP"></p:tooltip>
+                </p:commandButton>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <p:row>
+
+                    <p:panelGrid columns="4" id="panelBusca">
+
+                        <p:selectOneMenu value="#{ProcedimentoController.tipoBusca}" style="margin-top: -13px">
+                            <f:selectItem itemLabel="Descrição" itemValue="descricao" />
+                            <f:selectItem itemLabel="Código" itemValue="codigo" />
+                        </p:selectOneMenu>
+
+                        <p:inputText value="#{ProcedimentoController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+
+                        <p:commandButton action="#{ProcedimentoController.buscarProcedimentosPorTipo()}" update="dt"
+                                         icon="ui-icon-search" style="margin-left: 10px"/>
+
+                        <p:commandButton action="#{ProcedimentoController.listarProcedimentos()}"
+                                         actionListener="#{ProcedimentoController.limparCampoBusca()}"
+                                         update="dt, panelBusca"
+                                         icon="limpar" style="margin-left: 10px"/>
+
+                    </p:panelGrid>
+
+                </p:row>
+			<div class="panel panel-primary top-primary">
+				<div class="panel-heading top-heading">
+					<h4 class="panel-title">Histórico</h4>
+				</div>
+			</div>
+			<p:dataTable id="dt" var="tab" rows="20" paginator="true"
+				style="margin-top: 10px" responsive="true"
+				value="#{ProcedimentoController.listaHistoricoDoSigtap}">
+
+				<p:column>
+					<f:facet name="header">
+                            Referência
+                        </f:facet>
+					<h:outputText value="#{tab.mesString} / #{tab.ano}" style="margin-left:44%" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+                            Data e hora de Registro
+                        </f:facet>
+
+					<h:outputText value="#{tab.dataIhHoraRegistro}"
+						style="margin-left:37%">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value="às" style="margin-left:2%" />
+					<h:outputText value="#{tab.dataIhHoraRegistro}"
+						style="margin-left:2%">
+						<f:convertDateTime type="time" dateStyle="full" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Aviso!" widgetVar="dlg-aviso" modal="true" height="150" resizable="false">
+			<h:form id="form-aviso">
+				<div align="center">
+					<h:outputLabel value="VOCÊ DESEJA MESMO DAR UMA NOVA CARGA NO SISTEMA PELO SIGTAP?"/>
+					<br/>
+					<h:outputLabel value="ISSO ATUALIZA OS DADOS DOS PROCEDIMENTOS DO SISTEMA DE ACORDO COM OS DADOS DO SIGTAP"/>
+					<br/>
+					<h:outputLabel value="E SÓ PODE SER FEITO MENSALMENTE CASO NÃO SEJA ADICIONADO NENHUM PROCEDIMENTO."/>
+					<br/>
+					<br/>
+					<h:outputLabel value="O PROCESSO DE ATUALIZAÇÃO DOS DADOS LEVA ALGUNS MINUTOS NÃO FECHE A PÁGINA."/>
+					<br/>
+					<br/>
+					<br/>
+					<p:commandButton value="Continuar" ajax="true" update=":frmPrincipal"
+						action="#{ProcedimentoController.novaCargaSigtap()}" style="margin-right:5%;"/>
+					<p:commandButton value="Fechar" ajax="true" onclick="PF('dlg-aviso').hide();" style="margin-left:5%;"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
