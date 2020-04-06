@@ -50,9 +50,9 @@ public final class ProcedimentoServicePortType_ProcedimentoServicePort_Client {
 
         {
         System.out.println("Invoking pesquisarProcedimentos...");
-        br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestPesquisarProcedimentos _pesquisarProcedimentos_requestPesquisarProcedimentos = null;
+        sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestPesquisarProcedimentos _pesquisarProcedimentos_requestPesquisarProcedimentos = null;
         try {
-            br.gov.saude.servicos.sigtap.v1.procedimentoservice.ResponsePesquisarProcedimentos _pesquisarProcedimentos__return = port.pesquisarProcedimentos(_pesquisarProcedimentos_requestPesquisarProcedimentos);
+        	sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.ResponsePesquisarProcedimentos _pesquisarProcedimentos__return = port.pesquisarProcedimentos(_pesquisarProcedimentos_requestPesquisarProcedimentos);
             System.out.println("pesquisarProcedimentos.result=" + _pesquisarProcedimentos__return);
 
         } catch (SIGTAPFault e) {
@@ -63,9 +63,9 @@ public final class ProcedimentoServicePortType_ProcedimentoServicePort_Client {
             }
         {
         System.out.println("Invoking detalharProcedimento...");
-        br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento _detalharProcedimento_requestDetalharProcedimento = null;
+        sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento _detalharProcedimento_requestDetalharProcedimento = null;
         try {
-            br.gov.saude.servicos.sigtap.v1.procedimentoservice.ResponseDetalharProcedimento _detalharProcedimento__return = port.detalharProcedimento(_detalharProcedimento_requestDetalharProcedimento);
+        	sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.ResponseDetalharProcedimento _detalharProcedimento__return = port.detalharProcedimento(_detalharProcedimento_requestDetalharProcedimento);
             System.out.println("detalharProcedimento.result=" + _detalharProcedimento__return);
 
         } catch (SIGTAPFault e) {
