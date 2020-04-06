@@ -142,9 +142,25 @@ public class OrteseProteseDAO {
 
         List<OrteseProtese> lista = new ArrayList<>();
 
-        String sql = "SELECT op.id, status, nota_fiscal, cod_laudo, situacao, eopm.id id_encaminhamento " + 
-        		"FROM hosp.ortese_protese op LEFT JOIN hosp.encaminhamento_opm  eopm ON op.id = eopm.id_ortese_protese " + 
-        		"WHERE op.cod_unidade = ? ORDER BY id;";
+        String sql = "select " + 
+        		"	op.id, " + 
+        		"	op.status, " + 
+        		"	op.nota_fiscal, " + 
+        		"	op.cod_laudo, " + 
+        		"	op.situacao, " + 
+        		"	eopm.id id_encaminhamento, " + 
+        		"	p.id_paciente , " + 
+        		"	p.nome nomepaciente " + 
+        		"from " + 
+        		"	hosp.ortese_protese op " + 
+        		"left join hosp.encaminhamento_opm eopm on " + 
+        		"	op.id = eopm.id_ortese_protese " + 
+        		"left join hosp.laudo l on l.id_laudo  = op.cod_laudo	 " + 
+        		"left join hosp.pacientes p on p.id_paciente = l.codpaciente 	 " + 
+        		"where " + 
+        		"	op.cod_unidade = ? " + 
+        		"order by " + 
+        		"	id;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -160,6 +176,8 @@ public class OrteseProteseDAO {
                 orteseProtese.setNotaFiscal(rs.getString("nota_fiscal"));
                 orteseProtese.setStatusMovimentacao(rs.getString("situacao"));
                 orteseProtese.setIdEncaminhamento(rs.getInt("id_encaminhamento"));
+                orteseProtese.getLaudo().getPaciente().setId_paciente(rs.getInt("id_encaminhamento"));
+                orteseProtese.getLaudo().getPaciente().setNome(rs.getString("nomepaciente"));
                 lista.add(orteseProtese);
             }
         } catch (SQLException | ProjetoException ex) {

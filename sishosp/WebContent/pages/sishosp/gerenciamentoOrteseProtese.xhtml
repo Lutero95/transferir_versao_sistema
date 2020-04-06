@@ -178,19 +178,12 @@
 
 							<p:column width="20%">
 								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Código" />
+									<h:outputText style="font-size: 14px;" value="Paciente" />
 								</f:facet>
-								<h:outputText value="#{opm.id}"></h:outputText>
+								<h:outputText value="#{opm.laudo.paciente.nome}"></h:outputText>
 							</p:column>1
 
-                            <p:column width="20%">
-								<f:facet name="header">r
-                                    <h:outputText
-										style="font-size: 14px;" value="Laudo" />
-								</f:facet>
-								<h:outputText value="#{opm.laudo.id}"></h:outputText>
-							</p:column>
-
+                          
 							<p:column width="20%">
 								<f:facet name="header">
 									<h:outputText style="font-size: 14px;" value="Status" />

@@ -9,7 +9,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-		<f:event type="preRenderView" listener="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
+            <f:viewAction action="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -53,7 +53,7 @@
 							<p:outputLabel value="Laudo:"
 								style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
+			<h:inputHidden value="#{OrteseProteseController.orteseProtese.laudo.id}" required="true" requiredMessage="Informe o Laudo" />
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
 								update=":formConsuLaudo" immediate="true"
@@ -191,9 +191,7 @@
 
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+				
 
 					<br></br>
 
