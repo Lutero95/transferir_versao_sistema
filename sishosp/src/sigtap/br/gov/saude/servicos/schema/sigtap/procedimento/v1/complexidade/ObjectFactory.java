@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.complexidade;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.complexidade;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

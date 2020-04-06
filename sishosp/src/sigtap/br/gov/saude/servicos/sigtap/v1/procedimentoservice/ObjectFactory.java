@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.sigtap.v1.procedimentoservice;
+package sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

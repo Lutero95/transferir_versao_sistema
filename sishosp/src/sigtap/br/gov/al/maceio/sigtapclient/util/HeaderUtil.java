@@ -1,4 +1,4 @@
-package br.gov.al.maceio.sigtapclient.util;
+package sigtap.br.gov.al.maceio.sigtapclient.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 
-import br.gov.saude.servicos.schema.sigtap.autenticacao.constants.HeaderConstants;
+import sigtap.br.gov.saude.servicos.schema.sigtap.autenticacao.constants.HeaderConstants;
 
 public class HeaderUtil {
 	

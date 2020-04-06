@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.sexopermitido;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.sexopermitido;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

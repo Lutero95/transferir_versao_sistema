@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.v1.paginacao;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao;
 
 import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de PaginacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="PaginacaoType"&gt;
@@ -62,7 +62,7 @@ public class PaginacaoType {
     protected BigInteger totalRegistros;
 
     /**
-     * Obtém o valor da propriedade registroInicial.
+     * Obtï¿½m o valor da propriedade registroInicial.
      * 
      * @return
      *     possible object is
@@ -86,7 +86,7 @@ public class PaginacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade quantidadeRegistros.
+     * Obtï¿½m o valor da propriedade quantidadeRegistros.
      * 
      */
     public int getQuantidadeRegistros() {
@@ -102,7 +102,7 @@ public class PaginacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade totalRegistros.
+     * Obtï¿½m o valor da propriedade totalRegistros.
      * 
      * @return
      *     possible object is

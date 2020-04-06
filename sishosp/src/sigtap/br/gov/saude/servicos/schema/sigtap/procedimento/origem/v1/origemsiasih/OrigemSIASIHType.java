@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de OrigemSIASIHType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="OrigemSIASIHType"&gt;
@@ -51,7 +51,7 @@ public class OrigemSIASIHType {
     protected TipoOrigemSIASIHType tipoOrigemSIASIHType;
 
     /**
-     * Obtém o valor da propriedade codigoProcedimentoSIASIH.
+     * Obtï¿½m o valor da propriedade codigoProcedimentoSIASIH.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class OrigemSIASIHType {
     }
 
     /**
-     * Obtém o valor da propriedade nomeProcedimentoSIASIH.
+     * Obtï¿½m o valor da propriedade nomeProcedimentoSIASIH.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class OrigemSIASIHType {
     }
 
     /**
-     * Obtém o valor da propriedade tipoOrigemSIASIHType.
+     * Obtï¿½m o valor da propriedade tipoOrigemSIASIHType.
      * 
      * @return
      *     possible object is

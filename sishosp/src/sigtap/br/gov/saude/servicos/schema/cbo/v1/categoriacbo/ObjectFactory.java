@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.cbo.v1.categoriacbo;
+package sigtap.br.gov.saude.servicos.schema.cbo.v1.categoriacbo;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

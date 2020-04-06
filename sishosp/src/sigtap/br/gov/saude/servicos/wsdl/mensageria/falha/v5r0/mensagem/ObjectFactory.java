@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.mensagem;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.mensagem;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

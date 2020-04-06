@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.mensagem;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.mensagem;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de MensagemType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="MensagemType"&gt;
@@ -37,7 +37,7 @@ public class MensagemType {
     protected String descricao;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class MensagemType {
     }
 
     /**
-     * Obtém o valor da propriedade descricao.
+     * Obtï¿½m o valor da propriedade descricao.
      * 
      * @return
      *     possible object is

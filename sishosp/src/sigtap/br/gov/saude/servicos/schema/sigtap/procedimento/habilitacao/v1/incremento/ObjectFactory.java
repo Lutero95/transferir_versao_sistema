@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

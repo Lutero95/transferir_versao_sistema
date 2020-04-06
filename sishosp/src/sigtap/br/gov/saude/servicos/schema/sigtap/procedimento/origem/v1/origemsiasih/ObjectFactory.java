@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

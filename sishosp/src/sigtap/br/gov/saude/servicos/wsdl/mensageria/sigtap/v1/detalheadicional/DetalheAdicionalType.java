@@ -1,18 +1,18 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
 
 
 /**
  * <p>Classe Java de DetalheAdicionalType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DetalheAdicionalType"&gt;
@@ -43,7 +43,7 @@ public class DetalheAdicionalType {
     protected PaginacaoType paginacao;
 
     /**
-     * Obtém o valor da propriedade categoriaDetalheAdicional.
+     * Obtï¿½m o valor da propriedade categoriaDetalheAdicional.
      * 
      * @return
      *     possible object is
@@ -67,7 +67,7 @@ public class DetalheAdicionalType {
     }
 
     /**
-     * Obtém o valor da propriedade paginacao.
+     * Obtï¿½m o valor da propriedade paginacao.
      * 
      * @return
      *     possible object is

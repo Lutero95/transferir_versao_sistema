@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.vinculocid;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.vinculocid;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

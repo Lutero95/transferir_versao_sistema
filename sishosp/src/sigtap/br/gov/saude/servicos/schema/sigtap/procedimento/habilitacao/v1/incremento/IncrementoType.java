@@ -1,18 +1,20 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento;
 
 import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao.HabilitacaoType;
+
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao.HabilitacaoType;
 
 
 /**
  * <p>Classe Java de IncrementoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="IncrementoType"&gt;
@@ -71,7 +73,7 @@ public class IncrementoType {
     protected BigDecimal valorPercentualSP;
 
     /**
-     * Obtém o valor da propriedade habilitacao.
+     * Obtï¿½m o valor da propriedade habilitacao.
      * 
      * @return
      *     possible object is
@@ -95,7 +97,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obtém o valor da propriedade valorPercentualSH.
+     * Obtï¿½m o valor da propriedade valorPercentualSH.
      * 
      * @return
      *     possible object is
@@ -119,7 +121,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obtém o valor da propriedade valorPercentualSA.
+     * Obtï¿½m o valor da propriedade valorPercentualSA.
      * 
      * @return
      *     possible object is
@@ -143,7 +145,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obtém o valor da propriedade valorPercentualSP.
+     * Obtï¿½m o valor da propriedade valorPercentualSP.
      * 
      * @return
      *     possible object is

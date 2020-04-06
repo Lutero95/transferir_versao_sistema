@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

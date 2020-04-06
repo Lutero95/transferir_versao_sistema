@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.publicacao.v1.documento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.documento;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,14 +7,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-import br.gov.saude.servicos.schema.sigtap.publicacao.v1.orgaoorigem.OrgaoOrigemType;
-import br.gov.saude.servicos.schema.sigtap.publicacao.v1.tipodocumento.TipoDocumentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.orgaoorigem.OrgaoOrigemType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.tipodocumento.TipoDocumentoType;
 
 
 /**
  * <p>Classe Java de DocumentoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DocumentoType"&gt;
@@ -52,7 +52,7 @@ public class DocumentoType {
     protected XMLGregorianCalendar dataPublicacao;
 
     /**
-     * Obtém o valor da propriedade numeroDocumento.
+     * Obtï¿½m o valor da propriedade numeroDocumento.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obtém o valor da propriedade tipoDocumento.
+     * Obtï¿½m o valor da propriedade tipoDocumento.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obtém o valor da propriedade orgaoOrigem.
+     * Obtï¿½m o valor da propriedade orgaoOrigem.
      * 
      * @return
      *     possible object is
@@ -124,7 +124,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obtém o valor da propriedade dataPublicacao.
+     * Obtï¿½m o valor da propriedade dataPublicacao.
      * 
      * @return
      *     possible object is

@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.corporativo.v1.competencia;
+package sigtap.br.gov.saude.servicos.schema.corporativo.v1.competencia;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

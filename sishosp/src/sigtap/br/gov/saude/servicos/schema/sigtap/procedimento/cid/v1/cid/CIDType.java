@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de CIDType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="CIDType"&gt;
@@ -67,7 +67,7 @@ public class CIDType {
     protected Integer quantidadeCamposIrradiados;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -91,7 +91,7 @@ public class CIDType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -115,7 +115,7 @@ public class CIDType {
     }
 
     /**
-     * Obtém o valor da propriedade agravo.
+     * Obtï¿½m o valor da propriedade agravo.
      * 
      * @return
      *     possible object is
@@ -139,7 +139,7 @@ public class CIDType {
     }
 
     /**
-     * Obtém o valor da propriedade sexoAplicavel.
+     * Obtï¿½m o valor da propriedade sexoAplicavel.
      * 
      * @return
      *     possible object is
@@ -163,7 +163,7 @@ public class CIDType {
     }
 
     /**
-     * Obtém o valor da propriedade estadio.
+     * Obtï¿½m o valor da propriedade estadio.
      * 
      * @return
      *     possible object is
@@ -187,7 +187,7 @@ public class CIDType {
     }
 
     /**
-     * Obtém o valor da propriedade quantidadeCamposIrradiados.
+     * Obtï¿½m o valor da propriedade quantidadeCamposIrradiados.
      * 
      * @return
      *     possible object is

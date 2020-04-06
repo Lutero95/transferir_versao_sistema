@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.areahabilitacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.areahabilitacao;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

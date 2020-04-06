@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

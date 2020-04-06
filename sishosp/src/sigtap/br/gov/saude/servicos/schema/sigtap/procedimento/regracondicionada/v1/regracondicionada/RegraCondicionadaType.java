@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de RegraCondicionadaType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RegraCondicionadaType"&gt;
@@ -56,7 +56,7 @@ public class RegraCondicionadaType {
     protected String descricao;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -80,7 +80,7 @@ public class RegraCondicionadaType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -104,7 +104,7 @@ public class RegraCondicionadaType {
     }
 
     /**
-     * Obtém o valor da propriedade descricao.
+     * Obtï¿½m o valor da propriedade descricao.
      * 
      * @return
      *     possible object is

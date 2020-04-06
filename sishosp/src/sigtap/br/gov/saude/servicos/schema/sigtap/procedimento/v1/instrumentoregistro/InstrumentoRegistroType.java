@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de InstrumentoRegistroType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="InstrumentoRegistroType"&gt;
@@ -46,7 +46,7 @@ public class InstrumentoRegistroType {
     protected String nome;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -70,7 +70,7 @@ public class InstrumentoRegistroType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is

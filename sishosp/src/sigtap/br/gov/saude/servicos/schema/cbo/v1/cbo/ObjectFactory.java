@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.cbo.v1.cbo;
+package sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de TipoOrigemSIASIHType.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * <p>
  * <pre>
  * &lt;simpleType name="TipoOrigemSIASIHType"&gt;

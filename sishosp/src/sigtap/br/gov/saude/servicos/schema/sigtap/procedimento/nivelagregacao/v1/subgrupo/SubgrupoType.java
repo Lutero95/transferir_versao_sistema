@@ -1,17 +1,17 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.subgrupo;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.subgrupo;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.grupo.GrupoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.grupo.GrupoType;
 
 
 /**
  * <p>Classe Java de SubgrupoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="SubgrupoType"&gt;
@@ -51,7 +51,7 @@ public class SubgrupoType {
     protected GrupoType grupo;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class SubgrupoType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class SubgrupoType {
     }
 
     /**
-     * Obtém o valor da propriedade grupo.
+     * Obtï¿½m o valor da propriedade grupo.
      * 
      * @return
      *     possible object is

@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

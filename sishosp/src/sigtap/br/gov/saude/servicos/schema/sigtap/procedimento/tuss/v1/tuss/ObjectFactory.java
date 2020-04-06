@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.tuss.v1.tuss;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.tuss.v1.tuss;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

@@ -1,4 +1,4 @@
-package br.gov.saude.servicos.schema.sigtap.autenticacao.constants;
+package sigtap.br.gov.saude.servicos.schema.sigtap.autenticacao.constants;
 
 public class HeaderConstants {
 	//ENDPOINTS

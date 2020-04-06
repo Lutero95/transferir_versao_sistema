@@ -1,20 +1,21 @@
 
-package br.gov.saude.servicos.sigtap.v1.procedimentoservice;
+package sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.DetalheAdicionalType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.DetalheAdicionalType;
 
 
 /**
  * <p>Classe Java de anonymous complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType&gt;
@@ -59,7 +60,7 @@ public class RequestDetalharProcedimento {
     protected RequestDetalharProcedimento.DetalhesAdicionais detalhesAdicionais;
 
     /**
-     * Obtém o valor da propriedade codigoProcedimento.
+     * Obtï¿½m o valor da propriedade codigoProcedimento.
      * 
      * @return
      *     possible object is
@@ -83,7 +84,7 @@ public class RequestDetalharProcedimento {
     }
 
     /**
-     * Obtém o valor da propriedade competencia.
+     * Obtï¿½m o valor da propriedade competencia.
      * 
      * @return
      *     possible object is
@@ -107,7 +108,7 @@ public class RequestDetalharProcedimento {
     }
 
     /**
-     * Obtém o valor da propriedade detalhesAdicionais.
+     * Obtï¿½m o valor da propriedade detalhesAdicionais.
      * 
      * @return
      *     possible object is
@@ -134,7 +135,7 @@ public class RequestDetalharProcedimento {
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;

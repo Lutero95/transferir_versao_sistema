@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
+package sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

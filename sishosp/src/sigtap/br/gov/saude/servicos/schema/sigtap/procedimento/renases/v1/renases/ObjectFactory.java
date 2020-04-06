@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

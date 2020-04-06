@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.publicacao.v1.finalidadepublicacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.finalidadepublicacao;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

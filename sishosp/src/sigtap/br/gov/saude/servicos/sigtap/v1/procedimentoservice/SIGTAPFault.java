@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.sigtap.v1.procedimentoservice;
+package sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice;
 
 import javax.xml.ws.WebFault;
 
@@ -13,7 +13,7 @@ import javax.xml.ws.WebFault;
 @WebFault(name = "MSFalha", targetNamespace = "http://servicos.saude.gov.br/wsdl/mensageria/falha/v5r0/msfalha")
 public class SIGTAPFault extends Exception {
 
-    private br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha;
+    private sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha;
 
     public SIGTAPFault() {
         super();
@@ -27,17 +27,17 @@ public class SIGTAPFault extends Exception {
         super(message, cause);
     }
 
-    public SIGTAPFault(String message, br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha) {
+    public SIGTAPFault(String message, sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha) {
         super(message);
         this.msFalha = msFalha;
     }
 
-    public SIGTAPFault(String message, br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha, java.lang.Throwable cause) {
+    public SIGTAPFault(String message, sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha msFalha, java.lang.Throwable cause) {
         super(message, cause);
         this.msFalha = msFalha;
     }
 
-    public br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha getFaultInfo() {
+    public sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.msfalha.MSFalha getFaultInfo() {
         return this.msFalha;
     }
 }

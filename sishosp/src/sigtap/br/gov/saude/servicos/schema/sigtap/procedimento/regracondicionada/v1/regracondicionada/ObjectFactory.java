@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

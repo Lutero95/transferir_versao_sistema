@@ -1,4 +1,4 @@
-package br.gov.saude.servicos.schema.sigtap.autenticacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.autenticacao;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 
-import br.gov.saude.servicos.schema.sigtap.autenticacao.constants.HeaderConstants;
+import sigtap.br.gov.saude.servicos.schema.sigtap.autenticacao.constants.HeaderConstants;
 
 public class PasswordHandler implements CallbackHandler{
 

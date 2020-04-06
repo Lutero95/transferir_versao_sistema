@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
+package sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de UnidadeLimiteType.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * <p>
  * <pre>
  * &lt;simpleType name="UnidadeLimiteType"&gt;

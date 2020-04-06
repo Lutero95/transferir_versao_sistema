@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadosdetalhaprocedimentos;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadosdetalhaprocedimentos;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

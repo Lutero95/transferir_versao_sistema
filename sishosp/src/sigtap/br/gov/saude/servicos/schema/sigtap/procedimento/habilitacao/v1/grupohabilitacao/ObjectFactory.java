@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.grupohabilitacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.grupohabilitacao;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

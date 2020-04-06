@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.publicacao.v1.orgaoorigem;
+package sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.orgaoorigem;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

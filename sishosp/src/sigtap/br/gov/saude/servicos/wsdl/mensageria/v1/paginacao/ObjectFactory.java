@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.v1.paginacao;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

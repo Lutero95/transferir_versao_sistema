@@ -1,17 +1,18 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.areahabilitacao.AreaHabilitacaoType;
+
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.areahabilitacao.AreaHabilitacaoType;
 
 
 /**
  * <p>Classe Java de HabilitacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="HabilitacaoType"&gt;
@@ -51,7 +52,7 @@ public class HabilitacaoType {
     protected AreaHabilitacaoType areaHabilitacao;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -75,7 +76,7 @@ public class HabilitacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -99,7 +100,7 @@ public class HabilitacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade areaHabilitacao.
+     * Obtï¿½m o valor da propriedade areaHabilitacao.
      * 
      * @return
      *     possible object is

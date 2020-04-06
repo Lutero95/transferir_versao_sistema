@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.corporativo.pessoafisica.v2.sexo;
+package sigtap.br.gov.saude.servicos.schema.corporativo.pessoafisica.v2.sexo;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

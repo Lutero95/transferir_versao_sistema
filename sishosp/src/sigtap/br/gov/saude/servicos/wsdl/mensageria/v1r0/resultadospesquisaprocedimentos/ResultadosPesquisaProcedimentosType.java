@@ -1,20 +1,21 @@
 
-package br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadospesquisaprocedimentos;
+package sigtap.br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadospesquisaprocedimentos;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.BaseProcedimentoType;
-import br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.BaseProcedimentoType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
 
 
 /**
  * <p>Classe Java de ResultadosPesquisaProcedimentosType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ResultadosPesquisaProcedimentosType"&gt;
@@ -73,7 +74,7 @@ public class ResultadosPesquisaProcedimentosType {
     }
 
     /**
-     * Resposta da paginação
+     * Resposta da paginaï¿½ï¿½o
      * 					
      * 
      * @return

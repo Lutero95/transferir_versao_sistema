@@ -1,38 +1,40 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.cbo.v1.categoriacbo.CategoriaCBOType;
-import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.vinculocid.VinculoCIDType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.rubrica.RubricaType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.grupohabilitacao.GrupoHabilitacaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao.HabilitacaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento.IncrementoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.formaorganizacao.FormaOrganizacaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih.OrigemSIASIHType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao.ComponenteRedeAtencaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada.RegraCondicionadaType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.tipoleito.v1.tipoleito.TipoLeitoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.tuss.v1.tuss.TUSSType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.atributocomplementar.AtributoComplementarType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.complexidade.ComplexidadeType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
-import br.gov.saude.servicos.schema.sigtap.publicacao.v1.documento.DocumentoType;
-import br.gov.saude.servicos.schema.sigtap.publicacao.v1.finalidadepublicacao.FinalidadePublicacaoType;
-import br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
+
+import sigtap.br.gov.saude.servicos.schema.cbo.v1.categoriacbo.CategoriaCBOType;
+import sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.vinculocid.VinculoCIDType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.rubrica.RubricaType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.grupohabilitacao.GrupoHabilitacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.habilitacao.HabilitacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.incremento.IncrementoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.formaorganizacao.FormaOrganizacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.origem.v1.origemsiasih.OrigemSIASIHType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao.ComponenteRedeAtencaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.regracondicionada.v1.regracondicionada.RegraCondicionadaType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.tipoleito.v1.tipoleito.TipoLeitoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.tuss.v1.tuss.TUSSType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.atributocomplementar.AtributoComplementarType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.complexidade.ComplexidadeType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.documento.DocumentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.finalidadepublicacao.FinalidadePublicacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
 
 
 /**
@@ -44,7 +46,7 @@ import br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
  * 
  * <p>Classe Java de ProcedimentoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ProcedimentoType"&gt;
@@ -439,7 +441,7 @@ public class ProcedimentoType
     protected ProcedimentoType.TUSSVinculadas tussVinculadas;
 
     /**
-     * Obtém o valor da propriedade formaOrganizacao.
+     * Obtï¿½m o valor da propriedade formaOrganizacao.
      * 
      * @return
      *     possible object is
@@ -463,7 +465,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade competenciaInicial.
+     * Obtï¿½m o valor da propriedade competenciaInicial.
      * 
      * @return
      *     possible object is
@@ -487,7 +489,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade competenciaFinal.
+     * Obtï¿½m o valor da propriedade competenciaFinal.
      * 
      * @return
      *     possible object is
@@ -511,7 +513,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade finalidadePublicacao.
+     * Obtï¿½m o valor da propriedade finalidadePublicacao.
      * 
      * @return
      *     possible object is
@@ -535,7 +537,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade documentoPublicacao.
+     * Obtï¿½m o valor da propriedade documentoPublicacao.
      * 
      * @return
      *     possible object is
@@ -559,7 +561,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade modalidadesAtendimento.
+     * Obtï¿½m o valor da propriedade modalidadesAtendimento.
      * 
      * @return
      *     possible object is
@@ -583,7 +585,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade complexidade.
+     * Obtï¿½m o valor da propriedade complexidade.
      * 
      * @return
      *     possible object is
@@ -607,7 +609,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade tipoFinanciamento.
+     * Obtï¿½m o valor da propriedade tipoFinanciamento.
      * 
      * @return
      *     possible object is
@@ -631,7 +633,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade rubrica.
+     * Obtï¿½m o valor da propriedade rubrica.
      * 
      * @return
      *     possible object is
@@ -655,7 +657,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade instrumentosRegistro.
+     * Obtï¿½m o valor da propriedade instrumentosRegistro.
      * 
      * @return
      *     possible object is
@@ -679,7 +681,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade mediaPermanencia.
+     * Obtï¿½m o valor da propriedade mediaPermanencia.
      * 
      * @return
      *     possible object is
@@ -703,7 +705,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade tempoPermanencia.
+     * Obtï¿½m o valor da propriedade tempoPermanencia.
      * 
      * @return
      *     possible object is
@@ -727,7 +729,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade quantidadeMaxima.
+     * Obtï¿½m o valor da propriedade quantidadeMaxima.
      * 
      * @return
      *     possible object is
@@ -751,7 +753,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade sexoPermitido.
+     * Obtï¿½m o valor da propriedade sexoPermitido.
      * 
      * @return
      *     possible object is
@@ -775,7 +777,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade idadeMinimaPermitida.
+     * Obtï¿½m o valor da propriedade idadeMinimaPermitida.
      * 
      * @return
      *     possible object is
@@ -799,7 +801,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade idadeMaximaPermitida.
+     * Obtï¿½m o valor da propriedade idadeMaximaPermitida.
      * 
      * @return
      *     possible object is
@@ -823,7 +825,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade pontos.
+     * Obtï¿½m o valor da propriedade pontos.
      * 
      * @return
      *     possible object is
@@ -847,7 +849,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade valorSH.
+     * Obtï¿½m o valor da propriedade valorSH.
      * 
      * @return
      *     possible object is
@@ -871,7 +873,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade valorSA.
+     * Obtï¿½m o valor da propriedade valorSA.
      * 
      * @return
      *     possible object is
@@ -895,7 +897,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade valorSP.
+     * Obtï¿½m o valor da propriedade valorSP.
      * 
      * @return
      *     possible object is
@@ -919,7 +921,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade atributosComplementares.
+     * Obtï¿½m o valor da propriedade atributosComplementares.
      * 
      * @return
      *     possible object is
@@ -943,7 +945,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade descricao.
+     * Obtï¿½m o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -967,7 +969,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade ciDsVinculados.
+     * Obtï¿½m o valor da propriedade ciDsVinculados.
      * 
      * @return
      *     possible object is
@@ -991,7 +993,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade cbOsVinculados.
+     * Obtï¿½m o valor da propriedade cbOsVinculados.
      * 
      * @return
      *     possible object is
@@ -1015,7 +1017,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade categoriasCBOVinculadas.
+     * Obtï¿½m o valor da propriedade categoriasCBOVinculadas.
      * 
      * @return
      *     possible object is
@@ -1039,7 +1041,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade tiposLeitoVinculados.
+     * Obtï¿½m o valor da propriedade tiposLeitoVinculados.
      * 
      * @return
      *     possible object is
@@ -1063,7 +1065,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade servicosClassificacoesVinculados.
+     * Obtï¿½m o valor da propriedade servicosClassificacoesVinculados.
      * 
      * @return
      *     possible object is
@@ -1087,7 +1089,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade habilitacoesVinculadas.
+     * Obtï¿½m o valor da propriedade habilitacoesVinculadas.
      * 
      * @return
      *     possible object is
@@ -1111,7 +1113,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade gruposHabilitacaoVinculados.
+     * Obtï¿½m o valor da propriedade gruposHabilitacaoVinculados.
      * 
      * @return
      *     possible object is
@@ -1135,7 +1137,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade incrementosVinculados.
+     * Obtï¿½m o valor da propriedade incrementosVinculados.
      * 
      * @return
      *     possible object is
@@ -1159,7 +1161,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade componentesRedesVinculados.
+     * Obtï¿½m o valor da propriedade componentesRedesVinculados.
      * 
      * @return
      *     possible object is
@@ -1183,7 +1185,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade origensSIGTAP.
+     * Obtï¿½m o valor da propriedade origensSIGTAP.
      * 
      * @return
      *     possible object is
@@ -1207,7 +1209,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade origensSIASIH.
+     * Obtï¿½m o valor da propriedade origensSIASIH.
      * 
      * @return
      *     possible object is
@@ -1231,7 +1233,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade regrasCondicionadasVinculadas.
+     * Obtï¿½m o valor da propriedade regrasCondicionadasVinculadas.
      * 
      * @return
      *     possible object is
@@ -1255,7 +1257,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade renasesVinculadas.
+     * Obtï¿½m o valor da propriedade renasesVinculadas.
      * 
      * @return
      *     possible object is
@@ -1279,7 +1281,7 @@ public class ProcedimentoType
     }
 
     /**
-     * Obtém o valor da propriedade tussVinculadas.
+     * Obtï¿½m o valor da propriedade tussVinculadas.
      * 
      * @return
      *     possible object is
@@ -1306,7 +1308,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1366,7 +1368,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1426,7 +1428,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1495,7 +1497,7 @@ public class ProcedimentoType
         /**
          * <p>Classe Java de anonymous complex type.
          * 
-         * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+         * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
          * 
          * <pre>
          * &lt;complexType&gt;
@@ -1525,7 +1527,7 @@ public class ProcedimentoType
             protected VinculoCIDType vinculo;
 
             /**
-             * Obtém o valor da propriedade cid.
+             * Obtï¿½m o valor da propriedade cid.
              * 
              * @return
              *     possible object is
@@ -1549,7 +1551,7 @@ public class ProcedimentoType
             }
 
             /**
-             * Obtém o valor da propriedade vinculo.
+             * Obtï¿½m o valor da propriedade vinculo.
              * 
              * @return
              *     possible object is
@@ -1580,7 +1582,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1640,7 +1642,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1700,7 +1702,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1760,7 +1762,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1820,7 +1822,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1880,7 +1882,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -1940,7 +1942,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2000,7 +2002,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2060,7 +2062,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2120,7 +2122,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2180,7 +2182,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2240,7 +2242,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2300,7 +2302,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;
@@ -2360,7 +2362,7 @@ public class ProcedimentoType
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;

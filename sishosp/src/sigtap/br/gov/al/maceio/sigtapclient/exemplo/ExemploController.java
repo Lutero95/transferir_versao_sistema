@@ -1,4 +1,4 @@
-package br.gov.al.maceio.sigtapclient.exemplo;
+package sigtap.br.gov.al.maceio.sigtapclient.exemplo;
 
 import java.math.BigInteger;
 
@@ -6,22 +6,18 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.xml.bind.JAXBException;
 
-import br.gov.al.maceio.sigtapclient.util.ProcedimentoUtil;
-import br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.BaseProcedimentoType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados;
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados.CIDVinculado;
-import br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento;
-import br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento.DetalhesAdicionais;
-import br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestPesquisarProcedimentos;
-import br.gov.saude.servicos.sigtap.v1.procedimentoservice.SIGTAPFault;
-import br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.CategoriaDetalheAdicionalType;
-import br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.DetalheAdicionalType;
-import br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
-import br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadosdetalhaprocedimentos.ResultadosDetalhaProcedimentosType;
-import br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadospesquisaprocedimentos.ResultadosPesquisaProcedimentosType;
+import sigtap.br.gov.al.maceio.sigtapclient.util.ProcedimentoUtil;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.BaseProcedimentoType;
+import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento;
+import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento.DetalhesAdicionais;
+import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestPesquisarProcedimentos;
+import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.SIGTAPFault;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.CategoriaDetalheAdicionalType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.DetalheAdicionalType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadosdetalhaprocedimentos.ResultadosDetalhaProcedimentosType;
+import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1r0.resultadospesquisaprocedimentos.ResultadosPesquisaProcedimentosType;
 
 @ManagedBean
 @ViewScoped

@@ -1,17 +1,18 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.rubrica;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.rubrica;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
+
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
 
 
 /**
  * <p>Classe Java de RubricaType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RubricaType"&gt;
@@ -51,7 +52,7 @@ public class RubricaType {
     protected TipoFinanciamentoType tipoFinanciamento;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -75,7 +76,7 @@ public class RubricaType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -99,7 +100,7 @@ public class RubricaType {
     }
 
     /**
-     * Obtém o valor da propriedade tipoFinanciamento.
+     * Obtï¿½m o valor da propriedade tipoFinanciamento.
      * 
      * @return
      *     possible object is

@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.tipoleito.v1.tipoleito;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.tipoleito.v1.tipoleito;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

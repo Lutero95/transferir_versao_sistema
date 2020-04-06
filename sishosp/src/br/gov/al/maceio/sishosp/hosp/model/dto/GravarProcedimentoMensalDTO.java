@@ -3,7 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 
 public class GravarProcedimentoMensalDTO {
 	private Long idProcedimentoMensal;

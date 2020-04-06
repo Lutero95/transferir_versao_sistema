@@ -1,17 +1,17 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.redeatencao.RedeAtencaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.redeatencao.RedeAtencaoType;
 
 
 /**
  * <p>Classe Java de ComponenteRedeAtencaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ComponenteRedeAtencaoType"&gt;
@@ -51,7 +51,7 @@ public class ComponenteRedeAtencaoType {
     protected RedeAtencaoType redeAtencao;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class ComponenteRedeAtencaoType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class ComponenteRedeAtencaoType {
     }
 
     /**
-     * Obtém o valor da propriedade redeAtencao.
+     * Obtï¿½m o valor da propriedade redeAtencao.
      * 
      * @return
      *     possible object is

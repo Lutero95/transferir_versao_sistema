@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.redeatencao.v1.componenteredeatencao;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

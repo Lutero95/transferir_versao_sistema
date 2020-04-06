@@ -1,17 +1,17 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico.ServicoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico.ServicoType;
 
 
 /**
  * <p>Classe Java de ServicoClassificacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ServicoClassificacaoType"&gt;
@@ -51,7 +51,7 @@ public class ServicoClassificacaoType {
     protected String nomeClassificacao;
 
     /**
-     * Obtém o valor da propriedade servico.
+     * Obtï¿½m o valor da propriedade servico.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class ServicoClassificacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade codigoClassificacao.
+     * Obtï¿½m o valor da propriedade codigoClassificacao.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class ServicoClassificacaoType {
     }
 
     /**
-     * Obtém o valor da propriedade nomeClassificacao.
+     * Obtï¿½m o valor da propriedade nomeClassificacao.
      * 
      * @return
      *     possible object is

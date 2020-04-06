@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

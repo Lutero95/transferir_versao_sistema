@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
+package sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de IdadeLimiteType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="IdadeLimiteType"&gt;
@@ -48,7 +48,7 @@ public class IdadeLimiteType {
     protected UnidadeLimiteType unidadeLimite;
 
     /**
-     * Obtém o valor da propriedade quantidadeLimite.
+     * Obtï¿½m o valor da propriedade quantidadeLimite.
      * 
      */
     public int getQuantidadeLimite() {
@@ -64,7 +64,7 @@ public class IdadeLimiteType {
     }
 
     /**
-     * Obtém o valor da propriedade unidadeLimite.
+     * Obtï¿½m o valor da propriedade unidadeLimite.
      * 
      * @return
      *     possible object is

@@ -1,5 +1,5 @@
 
-package br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
+package sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,13 +11,13 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * 
  *                 
- *                 Este tipo representa um Procedimento com somente o código e o nome, para representações sucintas.
+ *                 Este tipo representa um Procedimento com somente o cï¿½digo e o nome, para representaï¿½ï¿½es sucintas.
  *                 
  *             
  * 
  * <p>Classe Java de BaseProcedimentoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteï¿½do esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="BaseProcedimentoType"&gt;
@@ -56,7 +56,7 @@ public class BaseProcedimentoType {
     protected String nome;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Obtï¿½m o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -80,7 +80,7 @@ public class BaseProcedimentoType {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Obtï¿½m o valor da propriedade nome.
      * 
      * @return
      *     possible object is
