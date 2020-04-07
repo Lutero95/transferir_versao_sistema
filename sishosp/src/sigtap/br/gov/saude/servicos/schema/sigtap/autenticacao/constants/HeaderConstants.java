@@ -14,7 +14,7 @@ public class HeaderConstants {
 	public static final String USERNAME_TOKEN = "UsernameToken";
 	public static final String USERNAME = "SIGTAP.PUBLICO";
 	public static final String PASSWORD_TEXT = "PasswordText";
-	public static final String PASSWORD_HANDLER_CLASS = "br.gov.saude.servicos.schema.sigtap.autenticacao.PasswordHandler";
+	public static final String PASSWORD_HANDLER_CLASS = "sigtap.br.gov.saude.servicos.schema.sigtap.autenticacao.PasswordHandler";
 	
 	//SENHA DE AUTENTICACAO
 	public static final String PASSWORD = "sigtap#2015public";

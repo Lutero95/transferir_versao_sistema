@@ -2,7 +2,7 @@ package br.gov.al.maceio.sishosp.administrativo.enums;
 
 public enum TipoAfastamento {
 
-    TEMPOR√ÅRIO("T");
+    TEMPOR√("T");
 
     private String sigla;
 

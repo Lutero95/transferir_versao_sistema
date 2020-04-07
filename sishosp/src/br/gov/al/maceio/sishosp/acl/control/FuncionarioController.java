@@ -448,9 +448,9 @@ public class FuncionarioController implements Serializable {
 		List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
 		List<DefaultSubMenu> menusAssociados = new ArrayList<>();
 
-		// Gerar menu inicio.
+		// Gerar menu início.
 		DefaultMenuItem item1 = new DefaultMenuItem();
-		item1.setValue("InÃ­cio");
+		item1.setValue("Início");
 		// contextPath+
 		item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
 		// item1.setStyle("overflow: auto; !important");

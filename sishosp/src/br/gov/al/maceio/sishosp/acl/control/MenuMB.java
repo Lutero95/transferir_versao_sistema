@@ -339,9 +339,9 @@ public class MenuMB implements Serializable {
 
 		List<Menu> lista = listaMenusPreview;
 
-		// Gerar menu inÃ­cio.
+		// Gerar menu início.
 		DefaultMenuItem item1 = new DefaultMenuItem();
-		item1.setValue("InÃ­cio");
+		item1.setValue("Início");
 		model.addElement(item1);
 
 		for (Menu menu : lista) {

@@ -1,6 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.model.dto;
 
-import br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
 
 public class ServicoClassificacaoDTO {
 	private Long idServicoClassificacao;

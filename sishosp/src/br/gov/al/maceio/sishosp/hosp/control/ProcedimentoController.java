@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
@@ -63,8 +64,8 @@ public class ProcedimentoController implements Serializable {
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclus√£o de Procedimento";
-    private static final String CABECALHO_ALTERACAO = "Altera√ß√£o de Procedimento";
+    private static final String CABECALHO_INCLUSAO = "Inclus„o de Procedimento";
+    private static final String CABECALHO_ALTERACAO = "AlteraÁ„o de Procedimento";
     //SIGTAP
     private static final String VALOR_PADRAO_PARAMETRO_NAO_USADO = "0";
     private static final Integer QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO = 5;
@@ -339,25 +340,38 @@ public class ProcedimentoController implements Serializable {
     public void novaCargaSigtap() throws ProjetoException {
     	listarProcedimentos();
     	if(this.listaProcedimentos.isEmpty())
-    		JSFUtil.adicionarMensagemErro("N√£o h√° procedimentos cadastrados", "Erro");
+    		JSFUtil.adicionarMensagemErro("N„o h· procedimentos cadastrados", "Erro");
 		else {
-			if (!verificaSeHouveCargaDoSigtapEsteMes()) {
+			if (!verificaSeHouveCargaDoSigtapEsteMes()) {	
 
 				FuncionarioBean user_session = obterUsuarioDaSessao();
 				Integer idHistoricoConsumoSigtap = VALOR_ZERO;
 
 				for (int i = 0; i < this.listaProcedimentos.size(); i++) {
-					buscaCodigosDeDadosExistentesNoBanco();
-					selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
-					setaDadosParaListaProcedimentosMensalDTO(i);
-					limparListasDadosProcedimentos();
+
 					try {
+						buscaCodigosDeDadosExistentesNoBanco();
+						selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
+						setaDadosParaListaProcedimentosMensalDTO(i);
+						limparListasDadosProcedimentos();
 						idHistoricoConsumoSigtap = procedimentoDao.executaRotinaNovaCargaSigtap(
 								listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(),
 								idHistoricoConsumoSigtap);
-					} catch (Exception e) {
-						fecharDialogAvisoCargaSigtap();
-						JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+					}
+					catch (SOAPFaultException soape) {
+						JSFUtil.adicionarMensagemErro
+						("Erro, algo de inesperado ocorreu durante a carga do procedimento "+this.listaProcedimentos.get(i).getCodProc()
+								+" verifique se o cÛdigo do procedimento est· correto"
+								+ " e execute a alteraÁ„o do procedimento para que seja possÌvel realizar uma nova"
+								+ " carga do SIGTAP este mÍs", "");
+						soape.printStackTrace();
+					}
+					catch(SQLException sqle) {
+						JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
+						sqle.printStackTrace();
+					}
+					catch (Exception e) {
+						JSFUtil.adicionarMensagemErro("Erro, algo inesperado ocorreu", "Erro");
 						e.printStackTrace();
 					}
 				}
@@ -374,7 +388,7 @@ public class ProcedimentoController implements Serializable {
     		Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
     		if(houveCargaEsteMes) {
     			fecharDialogAvisoCargaSigtap();
-        		JSFUtil.adicionarMensagemAdvertencia("O sistema est√° atualizado, uma carga j√° foi executada este m√™s", "");
+        		JSFUtil.adicionarMensagemAdvertencia("O sistema est· atualizado, uma carga j· foi executada este mÍs", "");
         		return houveCargaEsteMes;
         	}
 		} catch (Exception e) {
@@ -481,7 +495,6 @@ public class ProcedimentoController implements Serializable {
 			}
 			detalheAdicional++;
 		} catch (SIGTAPFault e) {
-			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
 			e.printStackTrace();
 		}
 		return detalheAdicional;
@@ -489,34 +502,37 @@ public class ProcedimentoController implements Serializable {
     
     private BigInteger detalharProcedimento(ProcedimentoBean procedimento, BigInteger registroInicial, 
     		CategoriaDetalheAdicionalType categoriaDetalheAdicional) throws SIGTAPFault {
-    	RequestDetalharProcedimento requestDetalharProcedimento = new RequestDetalharProcedimento();
+    	
+		RequestDetalharProcedimento requestDetalharProcedimento = new RequestDetalharProcedimento();
 		requestDetalharProcedimento.setCodigoProcedimento(procedimento.getCodProc());
-		
+
 		DetalhesAdicionais detalhesAdicionais = new DetalhesAdicionais();
-		
+
 		DetalheAdicionalType detalheAdicionalType = new DetalheAdicionalType();
 		detalheAdicionalType.setCategoriaDetalheAdicional(categoriaDetalheAdicional);
-		
+
 		PaginacaoType paginacaoType = new PaginacaoType();
 		paginacaoType.setRegistroInicial(registroInicial);
 		paginacaoType.setQuantidadeRegistros(QUANTIDADE_MAXIMA_REGISTROS_POR_BUSCA);
 		paginacaoType.setTotalRegistros(new BigInteger(VALOR_PADRAO_PARAMETRO_NAO_USADO));
-		
+
 		detalheAdicionalType.setPaginacao(paginacaoType);
-		
-		detalhesAdicionais.getDetalheAdicional().add(detalheAdicionalType); 
-		
+
+		detalhesAdicionais.getDetalheAdicional().add(detalheAdicionalType);
+
 		requestDetalharProcedimento.setDetalhesAdicionais(detalhesAdicionais);
-		
-		ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType = 
-			ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
-		
+
+		ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType = ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
+
 		adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
 		adicionaDadosFiltradosEmSuasRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
-		
-		if (VerificadorUtil.verificarSeObjetoNulo(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao())) 
+
+		if (VerificadorUtil
+				.verificarSeObjetoNulo(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao()))
 			return new BigInteger(BigInteger.ZERO.toString());
+    		
 		
+    		
 		return resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getTotalRegistros();	
 	}
     
