@@ -45,8 +45,7 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, cod_unidade)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+                + " cod_unidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -67,64 +66,9 @@ public class ProcedimentoDAO {
                 ps.setInt(7, proc.getValidade_laudo());
             }
             
-            if (proc.getIdadeMinima() == null) {
-                ps.setNull(8, Types.NULL);
-            } else {
-                ps.setInt(8, proc.getIdadeMinima());
-            }
-            
-            if (proc.getIdadeMaxima() == null) {
-                ps.setNull(9, Types.NULL);
-            } else {
-                ps.setInt(9, proc.getIdadeMaxima());
-            }
+            ps.setInt(8, user_session.getUnidade().getId());
 
-            if (proc.getQtdMaxima() == null) {
-                ps.setNull(10, Types.NULL);
-            } else {
-                ps.setInt(10, proc.getQtdMaxima());
-            }
-
-            if (proc.getPrazoMinimoNovaExecucao() == null) {
-                ps.setNull(11, Types.NULL);
-            } else {
-                ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
-            }            
-
-
-            ps.setString(12, proc.getSexo());
-            ps.setInt(13, user_session.getUnidade().getId());
-
-            ResultSet rs = ps.executeQuery();
-
-            int idProc = 0;
-            if (rs.next()) {
-                idProc = rs.getInt("id");
-            }
-
-            sql = "INSERT INTO hosp.proc_cbo (id_proc, id_cbo) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaCbo().size(); i++) {
-                ps.setInt(1, idProc);
-                ps.setInt(2, proc.getListaCbo().get(i).getCodCbo());
-                ps.execute();
-            }
-
-            sql = "INSERT INTO hosp.proc_cid (id_proc, id_cid) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaCid().size(); i++) {
-                ps.setInt(1, idProc);
-                ps.setInt(2, proc.getListaCid().get(i).getIdCid());
-                ps.execute();
-            }
-
-            sql = "INSERT INTO hosp.proc_recurso (id_proc, id_recurso) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaRecurso().size(); i++) {
-                ps.setInt(1, idProc);
-                ps.setInt(2, proc.getListaRecurso().get(i).getIdRecurso());
-                ps.execute();
-            }
+            ps.executeUpdate();
 
             con.commit();
             retorno = true;
@@ -137,8 +81,8 @@ public class ProcedimentoDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public boolean alterarProcedimento(ProcedimentoBean proc) {
@@ -146,8 +90,7 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "update hosp.proc set nome = ?, auditivo = ?, tipo_exame_auditivo = ?, utiliza_equipamento = ?, "
-                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, idade_minima = ?, idade_maxima = ?, qtd_maxima = ?, "
-                + "prazo_minimo_nova_execucao = ?, sexo = ? "
+                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ? "
                 + "where id = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -167,53 +110,9 @@ public class ProcedimentoDAO {
                 stmt.setInt(6, proc.getValidade_laudo());
             }
             stmt.setString(7, proc.getCodProc());
-            stmt.setInt(8, proc.getIdadeMinima());
-            stmt.setInt(9, proc.getIdadeMaxima());
-            stmt.setInt(10, proc.getQtdMaxima());
-            stmt.setInt(11, proc.getPrazoMinimoNovaExecucao());
-            stmt.setString(12, proc.getSexo());
-            stmt.setInt(13, proc.getIdProc());
+            stmt.setInt(8, proc.getIdProc());
 
-            stmt.executeUpdate();
-
-            sql = "delete from hosp.proc_cbo where id_proc = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "delete from hosp.proc_cid where id_proc = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "delete from hosp.proc_recurso where id_proc = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "INSERT INTO hosp.proc_cbo (id_proc, id_cbo) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaCbo().size(); i++) {
-                ps.setInt(1, proc.getIdProc());
-                ps.setInt(2, proc.getListaCbo().get(i).getCodCbo());
-                ps.execute();
-            }
-
-            sql = "INSERT INTO hosp.proc_cid (id_proc, id_cid) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaCid().size(); i++) {
-                ps.setInt(1, proc.getIdProc());
-                ps.setInt(2, proc.getListaCid().get(i).getIdCid());
-                ps.execute();
-            }
-
-            sql = "INSERT INTO hosp.proc_recurso (id_proc, id_recurso) VALUES (?, ?);";
-            ps = con.prepareStatement(sql);
-            for (int i = 0; i < proc.getListaRecurso().size(); i++) {
-                ps.setInt(1, proc.getIdProc());
-                ps.setInt(2, proc.getListaRecurso().get(i).getIdRecurso());
-                ps.execute();
-            }
+            stmt.executeUpdate();           
 
             con.commit();
             retorno = true;
@@ -226,8 +125,8 @@ public class ProcedimentoDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public boolean excluirProcedimento(ProcedimentoBean proc){

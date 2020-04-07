@@ -27,11 +27,12 @@
 					<b:row>
 
 						<b:column span="11" class="label-position">
-							<b:label value="Descrição:" severity="info" />
+							<b:label value="Nome:" severity="info" />
 
-							<b:inputText value="#{ProcedimentoController.proc.nomeProc}" validator="CaractereEmBrancoValidator"
-								required="true" requiredMessage="Descrição: Campo obrigatório!"
-								validatorMessage="Descrição deve conter entre 2 e 80 caracteres."
+							<b:inputText value="#{ProcedimentoController.proc.nomeProc}"
+								validator="CaractereEmBrancoValidator" required="true"
+								requiredMessage="Nome: Campo obrigatório!"
+								validatorMessage="Nome deve conter entre 2 e 80 caracteres."
 								id="incod">
 								<f:validateLength minimum="2" maximum="80" />
 							</b:inputText>
@@ -50,70 +51,7 @@
 
 					</b:row>
 
-					<b:row>
 
-						<b:column span="5" class="label-position new-col15">
-							<b:label value="Idade Mínima:" severity="info" />
-
-							<b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
-								required="false"
-								requiredMessage="Idade mínima: Campo obrigatório!" />
-						</b:column>
-
-						<b:column span="5" class="label-position new-col15">
-							<b:label value="Idade Máxima:" severity="info" />
-
-							<b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
-								required="false"
-								requiredMessage="Idade máxima: Campo obrigatório!" />
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col15">
-							<b:label value="Quantidade Máxima:" severity="info" />
-
-							<b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
-								required="false"
-								requiredMessage="Quantidade máxima em meses: Campo obrigatório!" />
-						</b:column>
-
-						<b:column span="5" class="label-position new-col15">
-							<b:label value="Prazo Mínimo:" severity="info" />
-
-							<b:inputText
-								value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
-								required="false"
-								requiredMessage="Prazo mínimo para nova execução: Campo obrigatório!" />
-						</b:column>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-
-						<b:column span="2" class="new-data-size2">
-
-							<p:outputLabel value="Sexo para procedimento:"
-								style="margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-						</b:column>
-
-						<b:column span="3" class="btn-radio-table">
-							<p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
-								required="true"
-								requiredMessage="Sexo que será permitido esse procedimento: Campo obrigatório!">
-								<f:selectItem itemLabel="Ambos" itemValue="A" />
-								<f:selectItem itemLabel="Masculino" itemValue="M" />
-								<f:selectItem itemLabel="Feminino" itemValue="F" />
-							</p:selectOneRadio>
-						</b:column>
-
-					</b:row>
 
 					<br></br>
 
@@ -192,210 +130,236 @@
 									<f:selectItem itemLabel="Informe a Validade" itemValue="" />
 									<f:selectItem itemLabel="30 dias" itemValue="30" />
 									<f:selectItem itemLabel="90 dias" itemValue="90" />
-									
+
 								</b:selectOneMenu>
 							</b:column>
 						</p:outputPanel>
 
 					</b:row>
+					<div>
+						<b:row rendered="#{ProcedimentoController.tipo  == 2}">
+							<b:column span="11" class="label-position">
+								<b:label value="Descrição:" severity="info" />
+								<b:inputText disabled="true" value="descrição" />
+							</b:column>
 
-					<br></br>
+							<b:column span="11" class="label-position">
+								<b:label value="Competencia:" severity="info" />
+								<b:inputText disabled="true" value="competencia" />
+							</b:column>
 
-					<b:row>
+							<b:column span="11" class="label-position">
+								<b:label value="Complexidade:" severity="info" />
+								<b:inputText disabled="true" value="complexidade" />
+							</b:column>
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="CID: " severity="info" />
+							<p:panelGrid columns="2" columnClasses="label-position"
+								style="margin-left: 1%; width: 92%;">
+								<b:column>
+									<b:label value="Tipo de Financiamento:" severity="info" />
+									<b:inputText disabled="true" value="financiamento" />
+								</b:column>
+								<b:column>
+									<b:label value="Código Tipo de Financiamento:" severity="info" />
+									<b:inputText disabled="true" value="código financiamento" />
+								</b:column>
+							</p:panelGrid>
 
-							<p:outputPanel id="outCid1">
-								<p:autoComplete value="#{ProcedimentoController.cid}" size="31"
-									converter="conCid" id="descCid" class="select-agendaEquipe4"
-									completeMethod="#{CidController.listaCidAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descCid}">
+							<b:column span="11" class="label-position">
+								<b:label value="Sexo:" severity="info" />
+								<b:inputText disabled="true" value="sexo" />
+							</b:column>
 
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
+							<b:column span="11" class="label-position">
+								<b:label value="Quantidade Máxima:" severity="info" />
+								<b:inputText type="number" disabled="true" value="50" />
+							</b:column>
 
-								<p:commandButton size="sm" immediate="true"
-									action="#{ProcedimentoController.addCid()}"
-									tooltip="Adicionar Cid" icon="ui-icon-plus"
-									update="tabelaCid, outCid1, :msgPagina" />
-							</p:outputPanel>
-						</b:column>
+							<p:panelGrid columns="2" columnClasses="label-position"
+								style="margin-left: 1%; width: 92%;">
+								<b:column>
+									<b:label value="Idade Minima:" severity="info" />
+									<b:inputText type="number" disabled="true" value="1" />
+								</b:column>
+								<b:column>
+									<b:label value="Unidade:" severity="info" />
+									<b:inputText disabled="true" value="MESES" />
+								</b:column>
 
-						<b:column span="5">
+								<b:column>
+									<b:label value="Idade Máxima:" severity="info" />
+									<b:inputText type="number" disabled="true" value="60" />
+								</b:column>
+								<b:column>
+									<b:label value="Unidade:" severity="info" />
+									<b:inputText disabled="true" value="ANOS" />
+								</b:column>
+							</p:panelGrid>
 
-							<p:dataTable emptyMessage="Nenhum Cid"
-								styleClass="table table-hover" id="tabelaCid"
-								value="#{ProcedimentoController.proc.listaCid}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
+							<p:panelGrid columns="3" columnClasses="label-position"
+								style="margin-left: 1%; width: 92%;">
+								<b:column>
+									<b:label value="Serviço ambulatórial:" severity="info" />
+									<b:inputText type="number" disabled="true" value="12.5" />
+								</b:column>
+								<b:column>
+									<b:label value="Serviço Hospitalar:" severity="info" />
+									<b:inputText type="number" disabled="true" value="22.5" />
+								</b:column>
+								<b:column>
+									<b:label value="Serviço Profissional:" severity="info" />
+									<b:inputText type="number" disabled="true" value="60" />
+								</b:column>
+							</p:panelGrid>
 
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.idCid}" />
-								</p:column>
+							<p:panelGrid columns="2" columnClasses="label-position"
+								style="margin-left: 1%; width: 92%;">
+								<b:column>
+									<b:label value="Forma de Organização:" severity="info" />
+									<b:inputText disabled="true" value="forma de organização" />
+								</b:column>
+								<b:column>
+									<b:label value="Código Forma de Organização:" severity="info" />
+									<b:inputText disabled="true"
+										value="código forma de organização" />
+								</b:column>
 
-								<p:column headerText="CID" style="font-weight:bold;">
-									<h:outputText value="#{tab.cid}" />
-								</p:column>
+								<b:column>
+									<b:label value="Subgrupo:" severity="info" />
+									<b:inputText disabled="true" value="subgrupo" />
+								</b:column>
+								<b:column>
+									<b:label value="Código Subgrupo:" severity="info" />
+									<b:inputText disabled="true" value="código subgrupo" />
+								</b:column>
 
-								<p:column headerText="Descrição" style="font-weight:bold;">
-									<h:outputText value="#{tab.descCid}" />
-								</p:column>
+								<b:column>
+									<b:label value="Grupo:" severity="info" />
+									<b:inputText disabled="true" value="grupo" />
+								</b:column>
+								<b:column>
+									<b:label value="Grupo:" severity="info" />
+									<b:inputText disabled="true" value="código grupo" />
+								</b:column>
+							</p:panelGrid>
+						</b:row>
+					</div>
 
-								<p:column headerText="Ação">
-									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-											action="#{ProcedimentoController.removerCid()}"
-											icon="ui-icon-trash" update="tabelaCid">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{ProcedimentoController.cid}" />
-										</p:commandButton>
-									</center>
-								</p:column>
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CIDS ASSOCIADOS">
+						<p:column headerText="Código">
+							<h:outputText value="#{car.id}" />
+						</p:column>
 
-							</p:dataTable>
+						<p:column headerText="CID">
+							<h:outputText value="#{car.year}" />
+						</p:column>
 
-						</b:column>
+						<p:column headerText="Agravo">
+							<h:outputText value="#{car.brand}" />
+						</p:column>
 
-					</b:row>
+						<p:column headerText="Sexo Aplicável">
+							<h:outputText value="#{car.color}" />
+						</p:column>
 
-					<b:row>
+						<p:column headerText="Estadio">
+							<h:outputText value="sim" />
+						</p:column>
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="CBO: " severity="info" />
+						<p:column headerText="Campos Irradiados">
+							<h:outputText value="#{car.color}" />
+						</p:column>
+					</p:dataTable>
 
-							<p:outputPanel id="outCbo">
-								<p:autoComplete value="#{ProcedimentoController.cbo}" size="31"
-									converter="conCbo" id="descCbo" class="select-agendaEquipe4"
-									completeMethod="#{CboController.listaCboAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descCbo}">
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CBOS ASSOCIADOS">
+						<p:column headerText="Código">
+							<h:outputText value="#{car.id}" />
+						</p:column>
 
-								<p:commandButton size="sm" immediate="true"
-									action="#{ProcedimentoController.addCbo()}"
-									tooltip="Adicionar CBO" icon="ui-icon-plus"
-									update="tabelaCbo, outCbo, :msgPagina" />
+						<p:column headerText="CBO">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+					</p:dataTable>
 
-							</p:outputPanel>
-						</b:column>
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI SERVIÇOS E CLASSIFICAÇÕES ASSOCIADOS">
+						<p:column headerText="Código Serviço">
+							<h:outputText value="#{car.id}" />
+						</p:column>
 
+						<p:column headerText="Serviço">
+							<h:outputText value="#{car.year}" />
+						</p:column>
 
-						<b:column span="5">
+						<p:column headerText="Código Classificação">
+							<h:outputText value="#{car.id}" />
+						</p:column>
 
-							<p:dataTable emptyMessage="Nenhum CBO"
-								styleClass="table table-hover" id="tabelaCbo"
-								value="#{ProcedimentoController.proc.listaCbo}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
+						<p:column headerText="Classificação">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+					</p:dataTable>
 
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.codCbo}" />
-								</p:column>
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI MODALIDADES DE ATENDIMENTO ASSOCIADOS">
+						<p:column headerText="Código">
+							<h:outputText value="#{car.id}" />
+						</p:column>
 
-								<p:column headerText="CBO" style="font-weight:bold;">
-									<h:outputText value="#{tab.descCbo}" />
-								</p:column>
-
-								<p:column headerText="Ação">
-									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-											action="#{ProcedimentoController.removerCbo()}"
-											icon="ui-icon-trash" update="tabelaCbo">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{ProcedimentoController.cbo}" />
-										</p:commandButton>
-									</center>
-								</p:column>
-
-							</p:dataTable>
-
-						</b:column>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Recurso: " severity="info" />
-
-							<p:outputPanel id="outRecurso">
-								<p:autoComplete value="#{ProcedimentoController.recurso}"
-									size="31" converter="conRecurso" id="descRecurso"
-									class="select-agendaEquipe4"
-									completeMethod="#{RecursoController.listaRecursoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descRecurso}">
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
-
-								<p:commandButton size="sm" immediate="true"
-									action="#{ProcedimentoController.addRecurso()}"
-									tooltip="Adicionar Recurso" icon="ui-icon-plus"
-									update="tabelaRecurso, outRecurso, :msgPagina" />
-
-							</p:outputPanel>
-						</b:column>
-
-						<b:column span="5">
-
-							<p:dataTable emptyMessage="Nenhum Recurso"
-								styleClass="table table-hover" id="tabelaRecurso"
-								value="#{ProcedimentoController.proc.listaRecurso}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
-
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.idRecurso}" />
-								</p:column>
-
-								<p:column headerText="Recurso" style="font-weight:bold;">
-									<h:outputText value="#{tab.descRecurso}" />
-								</p:column>
-
-								<p:column headerText="Ação">
-									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-											action="#{ProcedimentoController.removerRecurso()}"
-											icon="ui-icon-trash" update="tabelaRecurso">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{ProcedimentoController.recurso}" />
-										</p:commandButton>
-									</center>
-								</p:column>
-
-							</p:dataTable>
-
-						</b:column>
-
-					</b:row>
-
-
+						<p:column headerText="Modalidade de Atendimento">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+					</p:dataTable>
 					
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI INSTRUMENTOS DE REGISTRO ASSOCIADOS">
+						<p:column headerText="Código">
+							<h:outputText value="#{car.id}" />
+						</p:column>
+
+						<p:column headerText="Instrumento de Registro">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+					</p:dataTable>
+					
+					<br />
+					<br />
+					<p:dataTable var="car" rendered="#{ProcedimentoController.tipo  == 2}"
+						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI RENASES ASSOCIADOS">
+						<p:column headerText="Código">
+							<h:outputText value="#{car.id}" />
+						</p:column>
+
+						<p:column headerText="RENASES">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+					</p:dataTable>
 					<br></br>
 
 					<div align="center">
 
 						<p:commandButton
 							action="#{ProcedimentoController.gravarProcedimento()}"
-							icon="ui-icon-confirm" size="sm" look="success" update="frmCadProc msgPagina"
-							class="btn-incluir" value="Incluir"
+							icon="ui-icon-confirm" size="sm" look="success"
+							update="frmCadProc msgPagina" class="btn-incluir" value="Incluir"
 							rendered="#{ProcedimentoController.tipo == 1}" />
 
 						<p:commandButton
 							action="#{ProcedimentoController.alterarProcedimento()}"
-							icon="ui-icon-check" size="sm" update="frmCadProc msgPagina" value="Alterar"
-							class="btn-incluir" look="success"
+							icon="ui-icon-check" size="sm" update="frmCadProc msgPagina"
+							value="Alterar" class="btn-incluir" look="success"
 							rendered="#{ProcedimentoController.tipo  == 2}" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
