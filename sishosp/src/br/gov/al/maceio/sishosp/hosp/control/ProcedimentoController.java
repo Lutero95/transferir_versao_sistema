@@ -35,6 +35,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renase
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados.CIDVinculado;
 import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento;
 import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento.DetalhesAdicionais;
@@ -102,7 +103,10 @@ public class ProcedimentoController implements Serializable {
     private Integer idFormasDeOrganizacaoExistente;
     private Integer idTipoFinanciamentoExistente;
 	private List<HistoricoSigtapBean> listaHistoricoDoSigtap;
-    
+	private ProcedimentoType procedimentoMensal;
+	private List<String> listaFiltroMesIhAno = new ArrayList();
+	private String filtroMesIhAnoSelecionado;
+	
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
         this.listaProcedimentos = null;
@@ -121,6 +125,7 @@ public class ProcedimentoController implements Serializable {
         this.listaGravarProcedimentosMensaisDTO = new ArrayList();
         this.listaHistoricoDoSigtap = new ArrayList();
         limparListasDadosProcedimentos();
+        procedimentoMensal = new ProcedimentoType();
     }
 
 	private void limparListasDadosProcedimentos() {
@@ -163,9 +168,10 @@ public class ProcedimentoController implements Serializable {
             proc.setListaCbo(procedimentoDao.listarCbo(id));
             RecursoDAO rDao = new RecursoDAO();
             proc.setListaRecurso(rDao.listaRecursosPorProcedimento(id));
+            listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual();
+            listaMesesIhAnosDoHistorico();
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
-
         }
 
     }
@@ -702,6 +708,40 @@ public class ProcedimentoController implements Serializable {
 	public void listaHistoricoSigtap() {
 		this.listaHistoricoDoSigtap = procedimentoDao.listaHistoricoCargasDoSigtap();
 	}
+	
+	public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual() {
+		try {
+			this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), VALOR_ZERO, VALOR_ZERO);
+			exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
+		} catch (Exception e) {
+			JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
+			e.printStackTrace();
+		}
+	}
+	
+	public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado() {
+		try {
+			String mesAno = this.filtroMesIhAnoSelecionado.replace(" \\ ", "");
+			Integer mes = Integer.valueOf(String.valueOf(mesAno.charAt(VALOR_ZERO)));
+			Integer ano = Integer.valueOf(mesAno.replaceFirst(mes.toString(), ""));
+			this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), ano, mes);
+			exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
+		} catch (Exception e) {
+			JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
+			e.printStackTrace();
+		}
+	}
+	
+	private void exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado() {
+		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.procedimentoMensal.getCodigo())) {
+			JSFUtil.adicionarMensagemAdvertencia("Procedimento não possui dados para o mês e ano selecionado", "");
+			JSFUtil.atualizarComponente(":frmCadProc:message");
+		}
+	}
+	
+	public void listaMesesIhAnosDoHistorico() {
+		this.listaFiltroMesIhAno = procedimentoDao.listaMesesIhAnosDoHistorico();
+	}
 
 	public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
         this.listaProcedimentos = procedimentoDao.listarProcedimentoLaudo();
@@ -778,5 +818,29 @@ public class ProcedimentoController implements Serializable {
 
 	public void setListaHistoricoDoSigtap(List<HistoricoSigtapBean> listaHistoricoDoSigtap) {
 		this.listaHistoricoDoSigtap = listaHistoricoDoSigtap;
+	}
+
+	public ProcedimentoType getProcedimentoMensal() {
+		return procedimentoMensal;
+	}
+
+	public void setProcedimentoMensal(ProcedimentoType procedimentoMensal) {
+		this.procedimentoMensal = procedimentoMensal;
+	}
+
+	public List<String> getListaFiltroMesIhAno() {
+		return listaFiltroMesIhAno;
+	}
+
+	public void setListaFiltroMesIhAno(List<String> listaFiltroMesIhAno) {
+		this.listaFiltroMesIhAno = listaFiltroMesIhAno;
+	}
+
+	public String getFiltroMesIhAnoSelecionado() {
+		return filtroMesIhAnoSelecionado;
+	}
+
+	public void setFiltroMesIhAnoSelecionado(String filtroMesIhAnoSelecionado) {
+		this.filtroMesIhAnoSelecionado = filtroMesIhAnoSelecionado;
 	}
 }

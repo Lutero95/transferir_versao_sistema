@@ -21,6 +21,8 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
 import sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.AgravoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.formaorganizacao.FormaOrganizacaoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.grupo.GrupoType;
@@ -28,9 +30,19 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico.ServicoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.complexidade.ComplexidadeType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CBOsVinculados;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados.CIDVinculado;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.InstrumentosRegistro;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.ModalidadesAtendimento;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.RENASESVinculadas;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.ServicosClassificacoesVinculados;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
 
 
 public class ProcedimentoDAO {
@@ -167,8 +179,8 @@ public class ProcedimentoDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
@@ -965,7 +977,7 @@ public class ProcedimentoDAO {
 			stm.setInt(1, procedimentoMensalDTO.getIdProcedimento());
 			stm.setString(2, procedimentoMensalDTO.getProcedimentoMensal().getCodigo());
 			stm.setString(3, procedimentoMensalDTO.getProcedimentoMensal().getNome());
-			stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial()); //VERIFICAR SE É A INICIAL OU FINAL OU AMBAS E ALTERAR NO BANCO
+			stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial()); 
 			stm.setString(5, procedimentoMensalDTO.getProcedimentoMensal().getComplexidade().name());
 			
 			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getIdTipoFinanciamentoExistente()))
@@ -1387,4 +1399,409 @@ public class ProcedimentoDAO {
         }
         return listaHistoricosSigtap;
     }
+    
+    
+public ProcedimentoType buscaDadosProcedimentoMensal(String codigoProcedimento, Integer ano, Integer mes) throws Exception {
+    	
+    	ProcedimentoType procedimento = new ProcedimentoType();
+    	try {
+    		this.con = ConnectionFactory.getConnection();
+    		if(VerificadorUtil.verificarSeObjetoNuloOuZero(ano) && VerificadorUtil.verificarSeObjetoNuloOuZero(mes)) {
+    			ano = buscaAnoAtual(con);
+    			mes = buscaMesAtual(con);
+    		}
+    		procedimento = buscaProcedimentoMensal(ano, mes, codigoProcedimento, con);
+    		
+    		CIDsVinculados cidVinculados = new CIDsVinculados();
+    		cidVinculados.getCIDVinculado().addAll(listaCidsProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setCIDsVinculados(cidVinculados);
+    			
+    		CBOsVinculados cbosVinculados = new CBOsVinculados();
+    		cbosVinculados.getCBO().addAll(listaCbosProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setCBOsVinculados(cbosVinculados);
+    			
+    		ServicosClassificacoesVinculados servicosClassificacoesVinculados = new ServicosClassificacoesVinculados();
+    		servicosClassificacoesVinculados.getServicoClassificacao()
+    			.addAll(listaServicoClassificacaoProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setServicosClassificacoesVinculados(servicosClassificacoesVinculados);
+    			
+    		ModalidadesAtendimento modalidadesAtendimento = new ModalidadesAtendimento();
+    		modalidadesAtendimento.getModalidadeAtendimento()
+    			.addAll(listaModalidadeAtendimentoProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setModalidadesAtendimento(modalidadesAtendimento);
+    			
+    		InstrumentosRegistro instrumentosRegistro = new InstrumentosRegistro();
+    		instrumentosRegistro.getInstrumentoRegistro()
+    			.addAll(listaInstrumentoRegistroProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setInstrumentosRegistro(instrumentosRegistro);
+    			
+    		RENASESVinculadas renasesVinculadas = new RENASESVinculadas();
+    		renasesVinculadas.getRENASES()
+    			.addAll(listaRenasesProcedimentoMensal(ano, mes, codigoProcedimento, con));
+    		procedimento.setRENASESVinculadas(renasesVinculadas);
+    			
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			con.close();
+		}
+    	return procedimento;
+    }
+    
+    
+    public ProcedimentoType buscaProcedimentoMensal(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	ProcedimentoType procedimentoMensal = new ProcedimentoType();
+        String sql = "select pm.nome, pm.descricao, pm.codigo_procedimento, pm.competencia, pm.complexidade, " + 
+        		"pm.sexo, pm.quantidade_maxima, pm.idade_minima, pm.unidade_idade_minima, " + 
+        		"pm.idade_maxima, pm.unidade_idade_maxima, pm.servico_ambulatorial, pm.servico_hospitalar, pm.servico_profisional, " + 
+        		"tp.codigo as codigo_tipo_financiamento, tp.nome as tipo_financiamento, fo.codigo as codigo_forma_organizacao, " + 
+        		"fo.nome as forma_organizacao, sm.codigo as codigo_subgrupo, sm.nome as subgrupo, " + 
+        		"gm.codigo as codigo_grupo, gm.nome as grupo " + 
+        		"from hosp.procedimento_mensal pm " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"left join hosp.tipo_financiamento tp on tp.id = pm.id_tipo_financiamento " + 
+        		"left join hosp.forma_de_organizacao fo on fo.id = pm.id_forma_de_organizacao " + 
+        		"join hosp.subgrupo_mensal sm on sm.id = fo.id_subgrupo_mensal " + 
+        		"join hosp.grupo_mensal gm on gm.id = sm.id_grupo_mensal " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+            	procedimentoMensal.setNome(rs.getString("nome"));
+            	procedimentoMensal.setDescricao(rs.getString("descricao"));
+            	procedimentoMensal.setCodigo(rs.getString("codigo_procedimento"));
+            	procedimentoMensal.setCompetenciaInicial(rs.getString("competencia"));
+            	
+            	String complexidade = rs.getString("complexidade");
+            	if(complexidade.equals(ComplexidadeType.ALTA_COMPLEXIDADE_OU_CUSTO.name()))
+            		procedimentoMensal.setComplexidade(ComplexidadeType.ALTA_COMPLEXIDADE_OU_CUSTO);
+            	
+            	else if(complexidade.equals(ComplexidadeType.ATENCAO_BASICA.name()))
+            		procedimentoMensal.setComplexidade(ComplexidadeType.ATENCAO_BASICA);
+            	
+            	else if(complexidade.equals(ComplexidadeType.MEDIA_COMPLEXIDADE.name()))
+            		procedimentoMensal.setComplexidade(ComplexidadeType.MEDIA_COMPLEXIDADE);
+            	
+            	else
+            		procedimentoMensal.setComplexidade(ComplexidadeType.NAO_SE_APLICA);
+            	
+            	procedimentoMensal.setSexoPermitido(rs.getString("sexo"));
+            	procedimentoMensal.setQuantidadeMaxima(rs.getInt("quantidade_maxima"));
+            	
+            	
+            	IdadeLimiteType idadeMinimaPermitida = new IdadeLimiteType();
+            	idadeMinimaPermitida.setQuantidadeLimite(rs.getInt("idade_minima"));
+            	String unidadeLimiteIdadeMinima = rs.getString("unidade_idade_minima");
+            	if(unidadeLimiteIdadeMinima.equals(UnidadeLimiteType.MESES.name()))
+            		idadeMinimaPermitida.setUnidadeLimite(UnidadeLimiteType.MESES);
+            	else
+            		idadeMinimaPermitida.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            	procedimentoMensal.setIdadeMinimaPermitida(idadeMinimaPermitida);;
+            	
+            	IdadeLimiteType idadeMaximaPermitida = new IdadeLimiteType();
+            	idadeMaximaPermitida.setQuantidadeLimite(rs.getInt("idade_maxima"));
+            	String unidadeLimiteIdadeMaxima = rs.getString("unidade_idade_maxima");
+            	if(unidadeLimiteIdadeMaxima.equals(UnidadeLimiteType.MESES.name()))
+            		idadeMaximaPermitida.setUnidadeLimite(UnidadeLimiteType.MESES);
+            	else
+            		idadeMaximaPermitida.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            		procedimentoMensal.setIdadeMaximaPermitida(idadeMaximaPermitida);
+
+            	procedimentoMensal.setValorSA(rs.getBigDecimal("servico_ambulatorial"));
+            	procedimentoMensal.setValorSH(rs.getBigDecimal("servico_hospitalar"));
+            	procedimentoMensal.setValorSP(rs.getBigDecimal("servico_profisional"));
+            	
+            	TipoFinanciamentoType tipoFinanciamento = new TipoFinanciamentoType();
+            	tipoFinanciamento.setNome(rs.getString("tipo_financiamento"));
+            	tipoFinanciamento.setCodigo(rs.getString("codigo_tipo_financiamento"));
+            	
+            	procedimentoMensal.setTipoFinanciamento(tipoFinanciamento);
+            	
+            	FormaOrganizacaoType formaOrganizacao = new FormaOrganizacaoType();
+            	formaOrganizacao.setCodigo(rs.getString("codigo_forma_organizacao"));
+            	formaOrganizacao.setNome(rs.getString("forma_organizacao"));
+            	
+            	SubgrupoType subgrupo = new SubgrupoType();
+            	subgrupo.setCodigo(rs.getString("codigo_subgrupo"));
+            	subgrupo.setNome(rs.getString("subgrupo"));
+            	
+            	GrupoType grupo = new GrupoType();
+            	grupo.setCodigo(rs.getString("codigo_grupo"));
+            	grupo.setNome(rs.getString("grupo"));
+            	
+            	subgrupo.setGrupo(grupo);
+            	formaOrganizacao.setSubgrupo(subgrupo);
+            	procedimentoMensal.setFormaOrganizacao(formaOrganizacao);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            conexao.rollback();
+            throw new RuntimeException(ex);
+        }
+        return procedimentoMensal;
+    }
+    
+    
+    public List<CIDVinculado> listaCidsProcedimentoMensal
+    	(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<CIDVinculado> listaCidsVinculados = new ArrayList();
+        String sql = "select cm.codigo, cm.nome, cm.agravo, cm.sexo_aplicavel, cm.estadio, cm.quantidade_campos_irradiados " + 
+        		"from hosp.cid_mensal cm join hosp.cid_procedimento_mensal cpm on cm.id = cpm.id_cid_mensal " + 
+        		"join hosp.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	CIDVinculado cidVinculado = new CIDVinculado();
+            	CIDType cid = new CIDType();
+            	cid.setCodigo(rs.getString("codigo"));
+            	cid.setNome(rs.getString("nome"));
+            	
+            	String agravo = rs.getString("agravo");
+            	if(agravo.equals(AgravoType.AGRAVO_BLOQUEIO.name()))
+            		cid.setAgravo(AgravoType.AGRAVO_BLOQUEIO);
+            	
+            	else if(agravo.equals(AgravoType.AGRAVO_NOTIFICACAO.name()))
+            			cid.setAgravo(AgravoType.AGRAVO_NOTIFICACAO);
+            	else
+            		cid.setAgravo(AgravoType.SEM_AGRAVO);
+            	
+            	cid.setSexoAplicavel(rs.getString("sexo_aplicavel"));
+            	cid.setEstadio(rs.getBoolean("estadio"));
+            	cid.setQuantidadeCamposIrradiados(rs.getInt("quantidade_campos_irradiados"));
+            	cidVinculado.setCID(cid);
+            	listaCidsVinculados.add(cidVinculado);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaCidsVinculados;
+    }
+    
+    public List<CBOType> listaCbosProcedimentoMensal
+    	(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<CBOType> listaCbos = new ArrayList();
+        String sql = "select cbo.codigo, cbo.nome " + 
+        		"from hosp.cbo_mensal cbo join hosp.cbo_procedimento_mensal cpm on cbo.id = cpm.id_cbo_mensal " + 
+        		"join hosp.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	CBOType cbo = new CBOType();
+            	cbo.setCodigo(rs.getString("codigo"));
+            	cbo.setNome(rs.getString("nome"));
+            	
+            	listaCbos.add(cbo);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaCbos;
+    }
+    
+    public List<ServicoClassificacaoType> listaServicoClassificacaoProcedimentoMensal
+    	(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<ServicoClassificacaoType> listaServicoClassificacao = new ArrayList();
+        String sql = "select sm.codigo as codigo_servico, sm.nome as servico, " + 
+        		"cm.codigo as codigo_classificacao, cm.nome as classificacao " + 
+        		"from hosp.servico_mensal sm join hosp.servico_classificacao_mensal scm on sm.id = scm.id_servico " + 
+        		"join hosp.classificacao_mensal cm on cm.id = scm.id_classificacao " + 
+        		"join hosp.procedimento_mensal pm on pm.id = scm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ServicoClassificacaoType servicoClassificacao = new ServicoClassificacaoType();
+            	ServicoType servico = new ServicoType();
+            	servico.setCodigo(rs.getString("codigo_servico"));
+            	servico.setNome(rs.getString("servico"));
+            	
+            	servicoClassificacao.setServico(servico);
+            	servicoClassificacao.setCodigoClassificacao(rs.getString("codigo_classificacao"));
+            	servicoClassificacao.setNomeClassificacao(rs.getString("classificacao"));
+            	
+            	listaServicoClassificacao.add(servicoClassificacao);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaServicoClassificacao;
+    }
+    
+    public List<ModalidadeAtendimentoType> listaModalidadeAtendimentoProcedimentoMensal
+    		(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<ModalidadeAtendimentoType> listaModalidadeAtendimento = new ArrayList();
+        String sql = "select ma.codigo, ma.nome " + 
+        		"from hosp.modalidade_atendimento ma " + 
+        		"join hosp.modalidade_atendimento_procedimento_mensal mapm on mapm.id_modalidade_atendimento = ma.id " + 
+        		"join hosp.procedimento_mensal pm on pm.id = mapm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ModalidadeAtendimentoType modalidadeAtendimento = new ModalidadeAtendimentoType();
+            	modalidadeAtendimento.setCodigo(rs.getString("codigo"));
+            	modalidadeAtendimento.setNome(rs.getString("nome"));
+            	
+            	listaModalidadeAtendimento.add(modalidadeAtendimento);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaModalidadeAtendimento;
+    }
+    
+    public List<InstrumentoRegistroType> listaInstrumentoRegistroProcedimentoMensal
+    	(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<InstrumentoRegistroType> listaInstrumentoRegistro = new ArrayList();
+        String sql = "select ir.codigo, ir.nome " + 
+        		"from hosp.instrumento_registro ir join hosp.instrumento_registro_procedimento_mensal irm on ir.id = irm.id_instrumento_registro " + 
+        		"join hosp.procedimento_mensal pm on pm.id = irm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	InstrumentoRegistroType instrumentoRegistro = new InstrumentoRegistroType();
+            	instrumentoRegistro.setCodigo(rs.getString("codigo"));
+            	instrumentoRegistro.setNome(rs.getString("nome"));
+            	
+            	listaInstrumentoRegistro.add(instrumentoRegistro);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaInstrumentoRegistro;
+    }
+
+    public List<RENASESType> listaRenasesProcedimentoMensal
+    	(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    	
+    	List<RENASESType> listaRenases = new ArrayList();
+        String sql = "select rm.codigo, rm.nome " + 
+        		"from hosp.renases_mensal rm join hosp.renases_procedimento_mensal rpm on rm.id = rpm.id_renases_mensal " + 
+        		"join hosp.procedimento_mensal pm on pm.id = rpm.id_procedimento_mensal " + 
+        		"join hosp.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"where hc.id = (select id from hosp.historico_consumo_sigtap hcs where hcs.ano = ? and hcs.mes = ? " + 
+        		"		   order by id desc limit 1) " + 
+        		"and pm.codigo_procedimento = ?;";
+        
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
+            stm.setString(3, codigoProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	RENASESType renases = new RENASESType();
+            	renases.setCodigo(rs.getString("codigo"));
+            	renases.setNome(rs.getString("nome"));
+            	
+            	listaRenases.add(renases);
+            }
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaRenases;
+    }
+    
+	public List<String> listaMesesIhAnosDoHistorico() {
+
+		List<String> listaMesIhAno = new ArrayList();
+		String sql = "select distinct concat (mes,' \\ ', ano) "
+				+ "as mes_ano from hosp.historico_consumo_sigtap hcs order by mes_ano desc";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				String mesIhAno = rs.getString("mes_ano"); 
+				listaMesIhAno.add(mesIhAno);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		}finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return listaMesIhAno;
+	}
 }
