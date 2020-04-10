@@ -3,7 +3,6 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -629,7 +628,7 @@ public class PacienteDAO {
 
     public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
-        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns "
+        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns, pacientes.dtanascimento "
                 + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
 
         ArrayList<PacienteBean> lista = new ArrayList();
@@ -640,13 +639,14 @@ public class PacienteDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                PacienteBean p = new PacienteBean();
+                PacienteBean paciente = new PacienteBean();
 
-                p.setId_paciente(rs.getInt("id_paciente"));
-                p.setNome(rs.getString("nome").toUpperCase());
-                p.setCpf(rs.getString("cpf"));
-                p.setCns(rs.getString("cns"));
-                lista.add(p);
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                paciente.setNome(rs.getString("nome").toUpperCase());
+                paciente.setCpf(rs.getString("cpf"));
+                paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                lista.add(paciente);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1194,7 +1194,8 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula from hosp.pacientes where ";
+            String sql = "select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula, dtanascimento"
+            		+ " from hosp.pacientes where ";
 
             if(tipo.equals("nome")){
                 sql = sql + "nome like ?";
@@ -1224,14 +1225,14 @@ public class PacienteDAO {
             List<PacienteBean> lista = new ArrayList<PacienteBean>();
 
             while (rs.next()) {
-                PacienteBean p = new PacienteBean();
-                p.setId_paciente(rs.getInt("id_paciente"));
-                p.setNome(rs.getString("nome").toUpperCase());
-                p.setMatricula(rs.getString("matricula"));
-                p.setCpf(rs.getString("cpf"));
-                p.setCns(rs.getString("cns"));
-
-                lista.add(p);
+                PacienteBean paciente = new PacienteBean();
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                paciente.setNome(rs.getString("nome").toUpperCase());
+                paciente.setMatricula(rs.getString("matricula"));
+                paciente.setCpf(rs.getString("cpf"));
+                paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                lista.add(paciente);
 
             }
             return lista;
@@ -1253,7 +1254,7 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes where nome like ? order by nome";
+            String sql = " select id_paciente, nome, cpf, cns, dtanascimento from hosp.pacientes where nome like ? order by nome";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + str.toUpperCase() + "%");
@@ -1262,13 +1263,13 @@ public class PacienteDAO {
             List<PacienteBean> lista = new ArrayList<PacienteBean>();
 
             while (rs.next()) {
-                PacienteBean p = new PacienteBean();
-                p.setId_paciente(rs.getInt("id_paciente"));
-                p.setNome(rs.getString("nome").toUpperCase());
-                p.setCpf(rs.getString("cpf"));
-                p.setCns(rs.getString("cns"));
-
-                lista.add(p);
+                PacienteBean paciente = new PacienteBean();
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                paciente.setNome(rs.getString("nome").toUpperCase());
+                paciente.setCpf(rs.getString("cpf"));
+                paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                lista.add(paciente);
 
             }
             return lista;

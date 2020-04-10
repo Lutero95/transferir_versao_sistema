@@ -24,7 +24,9 @@ import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 
 @ManagedBean(name = "LaudoController")
 @ViewScoped
@@ -64,7 +66,6 @@ public class LaudoController implements Serializable {
         buscaLaudoDTO.setTipoBusca("paciente");
         buscaLaudoDTO.setCampoBusca("");
         tipo = 0;
-
     }
 
     public String redirectEdit() {
@@ -178,6 +179,25 @@ public class LaudoController implements Serializable {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
 			}
         }
+    }
+    
+    public boolean idadeValida() {
+    	
+    	BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente();
+    	ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento();
+    	return true;
+    } 
+    
+    public BuscaIdadePacienteDTO obtemIdadePaciente() {
+    	BuscaIdadePacienteDTO idadePaciente = 
+    			lDao.buscarIdadePacienteEmAnoIhMes(this.laudo.getPaciente().getDtanascimento());
+    	return idadePaciente;
+    }
+    
+    public ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento() {
+    	ProcedimentoType procedimento = lDao.buscarIdadeMinimaIhMaximaDeProcedimento
+    			(this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
+    	return procedimento;
     }
     
     public boolean existeLaudoComMesmosDados() {

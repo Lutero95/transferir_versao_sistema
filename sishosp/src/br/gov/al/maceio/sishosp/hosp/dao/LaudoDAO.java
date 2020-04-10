@@ -16,6 +16,10 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
 
 import javax.faces.context.FacesContext;
 
@@ -194,8 +198,8 @@ public class LaudoDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return idLaudoGerado;
         }
+        return idLaudoGerado;
     }
 
     public Boolean alterarLaudo(LaudoBean laudo) {
@@ -888,4 +892,89 @@ public class LaudoDAO {
         return retorno;
     }
 
+    public BuscaIdadePacienteDTO buscarIdadePacienteEmAnoIhMes(Date dataNascimento) {
+
+        PreparedStatement ps = null;
+        BuscaIdadePacienteDTO idadePaciente = new BuscaIdadePacienteDTO();
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select extract( year from age(current_date, date ? )) idade_anos, " + 
+            			 " extract( month from age(current_date, date ? )) idade_meses";
+
+            ps = conexao.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	idadePaciente.setIdadeAnos(rs.getInt("idade_anos"));
+            	idadePaciente.setIdadeMeses(rs.getInt("idade_meses"));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return idadePaciente;
+    }
+    
+    
+    public ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento(String codigoProcedimento, Date dataSolicitacao) {
+
+        PreparedStatement ps = null;
+        ProcedimentoType procedimento = new ProcedimentoType();
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select pm.idade_minima, pm.unidade_idade_minima, pm.idade_maxima, pm.unidade_idade_maxima " + 
+            		"from hosp.procedimento_mensal pm " + 
+            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            		"where hcs.mes = extract (month from ?) and hcs.ano = extract (year from ?) " + 
+            		"and pm.codigo_procedimento = ?";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setString(3, codigoProcedimento);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	IdadeLimiteType idadeMinima = new IdadeLimiteType();
+            	idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
+            	String unidade = rs.getString("unidade_idade_minima");
+            	if(unidade.equals(UnidadeLimiteType.MESES.name()))
+            		idadeMinima.setUnidadeLimite(UnidadeLimiteType.MESES);
+            	else
+            		idadeMinima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            	procedimento.setIdadeMinimaPermitida(idadeMinima);
+            	
+            	IdadeLimiteType idadeMaxima = new IdadeLimiteType();
+            	idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
+            	unidade = rs.getString("unidade_idade_maxima");
+            	if(unidade.equals(UnidadeLimiteType.MESES.name()))
+            		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.MESES);
+            	else
+            		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            	procedimento.setIdadeMaximaPermitida(idadeMaxima);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return procedimento;
+    }
 }
