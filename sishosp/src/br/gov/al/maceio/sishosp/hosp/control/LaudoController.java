@@ -27,6 +27,7 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
 
 @ManagedBean(name = "LaudoController")
 @ViewScoped
@@ -167,7 +168,7 @@ public class LaudoController implements Serializable {
     }
 
     public void gravarLaudo() {
-    	if(!existeLaudoComMesmosDados()) {
+    	if(!existeLaudoComMesmosDados() && idadeValida() && validaCidsDoLaudo()) {
 			idLaudoGerado = null;
 			idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
@@ -185,8 +186,48 @@ public class LaudoController implements Serializable {
     	
     	BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente();
     	ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento();
-    	return true;
-    } 
+    	Boolean valido = false;
+    	
+    	if(procedimento.getIdadeMinimaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.ANOS) 
+    			&& procedimento.getIdadeMaximaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.ANOS)) {
+        	if(idadePaciente.getIdadeAnos() >= 0) {
+        		if(idadePaciente.getIdadeAnos() >= procedimento.getIdadeMinimaPermitida().getQuantidadeLimite() &&
+        				idadePaciente.getIdadeAnos() <= procedimento.getIdadeMaximaPermitida().getQuantidadeLimite())
+        			valido = true;
+        	}
+    	}
+    	
+    	else if(procedimento.getIdadeMinimaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.MESES) 
+    			&& procedimento.getIdadeMaximaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.MESES)) {
+        	if(idadePaciente.getIdadeMeses() >= 0) {
+        		if(idadePaciente.getIdadeMeses() >= procedimento.getIdadeMinimaPermitida().getQuantidadeLimite() &&
+        				idadePaciente.getIdadeMeses() <= procedimento.getIdadeMaximaPermitida().getQuantidadeLimite())
+        			valido = true;
+        	}
+    	}
+    	
+    	else if(procedimento.getIdadeMinimaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.MESES) 
+    			&& procedimento.getIdadeMaximaPermitida().getUnidadeLimite().equals(UnidadeLimiteType.ANOS)) {
+    		Integer idadeEmMeses = transformaIdadeEmMeses(idadePaciente);
+        	if(idadeEmMeses >= 0) {
+        		if(idadeEmMeses >= procedimento.getIdadeMinimaPermitida().getQuantidadeLimite() && (idadeEmMeses / 12) <= procedimento.getIdadeMaximaPermitida().getQuantidadeLimite())
+        			valido = true;
+        	}
+    	}
+    	
+    	if(!valido)
+    		JSFUtil.adicionarMensagemErro("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima", "");
+    	return valido;
+    }
+
+	private Integer transformaIdadeEmMeses(BuscaIdadePacienteDTO idadePaciente) {
+		Integer meses;
+		if(idadePaciente.getIdadeAnos() > 0)
+			meses = ((idadePaciente.getIdadeAnos() * 12) + idadePaciente.getIdadeMeses());
+		else
+			meses = idadePaciente.getIdadeMeses();
+		return meses;
+	} 
     
     public BuscaIdadePacienteDTO obtemIdadePaciente() {
     	BuscaIdadePacienteDTO idadePaciente = 
@@ -198,6 +239,28 @@ public class LaudoController implements Serializable {
     	ProcedimentoType procedimento = lDao.buscarIdadeMinimaIhMaximaDeProcedimento
     			(this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
     	return procedimento;
+    }
+    
+    public boolean validaCidsDoLaudo() {
+
+    	List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid1().getCid()))
+    		listaCidsLaudo.add(this.laudo.getCid1());
+    	
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid2().getCid()))
+    		listaCidsLaudo.add(this.laudo.getCid2());
+    	
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid3().getCid()))
+    		listaCidsLaudo.add(this.laudo.getCid3());
+
+    	for (CidBean cidBean : listaCidsLaudo) {
+			if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), this.laudo.getDataSolicitacao(), this.laudo.getProcedimentoPrimario().getCodProc())) {
+				JSFUtil.adicionarMensagemErro("Cid(s) selecionado(s) incompatíveis com o permitido no SIGTAP ", "");
+				return false;
+			}
+		}
+    			
+    	return true;
     }
     
     public boolean existeLaudoComMesmosDados() {
@@ -217,7 +280,7 @@ public class LaudoController implements Serializable {
     public void alterarLaudo() throws ProjetoException {
 
       //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
-
+    	  if(idadeValida() && validaCidsDoLaudo()) {
             boolean alterou = lDao.alterarLaudo(laudo);
 
             if (alterou == true) {
@@ -227,6 +290,7 @@ public class LaudoController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteraÃ§Ã£o!", "Erro");
             }
      //   }
+          }
     }
 
 

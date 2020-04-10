@@ -900,10 +900,12 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select extract( year from age(current_date, date ? )) idade_anos, " + 
-            			 " extract( month from age(current_date, date ? )) idade_meses";
+            String sql = "select extract( year from age(current_date, CAST(? AS date) )) idade_anos, " + 
+            		"	   extract( month from age(current_date, CAST(? AS date) )) idade_meses";
 
             ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataNascimento.getTime()));
+            ps.setDate(2, new java.sql.Date(dataNascimento.getTime()));
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -936,8 +938,8 @@ public class LaudoDAO {
             String sql = "select pm.idade_minima, pm.unidade_idade_minima, pm.idade_maxima, pm.unidade_idade_maxima " + 
             		"from hosp.procedimento_mensal pm " + 
             		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
-            		"where hcs.mes = extract (month from ?) and hcs.ano = extract (year from ?) " + 
-            		"and pm.codigo_procedimento = ?";
+            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
+            		"and pm.codigo_procedimento = ? and hcs.status = 'A'";
 
             ps = conexao.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
@@ -976,5 +978,45 @@ public class LaudoDAO {
             }
         }
         return procedimento;
+    }
+    
+    public boolean validaCodigoCidEmLaudo(String codigoCid, Date dataSolicitacao, String codigoProcedimento) {
+
+        PreparedStatement ps = null;
+        boolean cidValido = false;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select exists (select cm.codigo " + 
+            		"from hosp.procedimento_mensal pm " + 
+            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            		"join hosp.cid_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id " + 
+            		"join hosp.cid_mensal cm on cm.id = cpm.id_cid_mensal " + 
+            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
+            		"and pm.codigo_procedimento = ? and hcs.status = 'A' and cm.codigo = ?) as cid_valido";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setString(3, codigoProcedimento);
+            ps.setString(4, codigoCid);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	cidValido = rs.getBoolean("cid_valido");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return cidValido;
     }
 }
