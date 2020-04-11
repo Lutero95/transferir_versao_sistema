@@ -883,4 +883,38 @@ public class InsercaoPacienteDAO {
 		return retorno;
 	}
 
+public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) {
+		
+		boolean dataValida = false;
+		String sql = "select exists ( " + 
+				"	select l.data_solicitacao " + 
+				"		from hosp.laudo l where l.id_laudo = ? " + 
+				"		and (? between l.data_solicitacao and " + 
+				"			(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(l.ano_final ||'-'||'0'||''||l.mes_final ||'-'||'01', 'YYYY-MM-DD')) as data_final))) as valida";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, idLaudo);
+			stm.setDate(2, new java.sql.Date(dataInclusao.getTime()));
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				dataValida = rs.getBoolean("valida");
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return dataValida;
+	}
+	
 }
