@@ -19,7 +19,7 @@ public class AfastamentoProfissional implements Serializable {
 
     public AfastamentoProfissional() {
         funcionario = new FuncionarioBean();
-        tipoAfastamento = TipoAfastamento.TEMPORÃ.getSigla();
+        tipoAfastamento = TipoAfastamento.TEMPOR.getSigla();
     }
 
     public Integer getId() {
