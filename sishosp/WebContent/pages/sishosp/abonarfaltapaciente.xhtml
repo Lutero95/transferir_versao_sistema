@@ -214,6 +214,7 @@
                         <b:row rendered="#{gestaoAbonoFaltaPacienteController.tipoData == 'U'}">
                             <b:column span="2" class="label-position data-size">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                required="true" requiredMessage="Informe a Data"
                                             showOn="button" size="8" class="select-agendaEquipe2"
                                             value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.dataAbono}"
                                             id="dtagen"

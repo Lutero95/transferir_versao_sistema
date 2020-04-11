@@ -43,6 +43,7 @@ public class GestaoAbonoFaltaPacienteController {
 		this.equipeDao = new EquipeDAO();
 		this.listaAtendimentosParaAbono = new ArrayList<>();
 		listaAtendimentosSelecionadosParaAbono = new ArrayList<>();
+		tipoData = "U";
 	}
 	
     public String redirectNovo() {
