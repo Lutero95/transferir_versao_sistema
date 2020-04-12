@@ -167,22 +167,36 @@ public class LaudoController implements Serializable {
 
     }
 
-    public void gravarLaudo() {
-    	if(!existeLaudoComMesmosDados() && idadeValida() && validaCidsDoLaudo()) {
-			idLaudoGerado = null;
-			idLaudoGerado = lDao.cadastrarLaudo(laudo);
+    public void gravarLaudo() throws ProjetoException {
+    	if(!existeLaudoComMesmosDados()) {
+    		try {
+    			unidadeValidaDadosLaudoSigtap();
+    			idLaudoGerado = null;
+    			idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-			if (idLaudoGerado != null) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
-				JSFUtil.abrirDialog("dlgImprimir");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+    			if (idLaudoGerado != null) {
+    				limparDados();
+    				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+    				JSFUtil.abrirDialog("dlgImprimir");
+    			} else {
+    				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+    			}
+	
+			} catch (Exception e) {
 			}
-        }
+    	}
     }
     
-    public boolean idadeValida() {
+    public void unidadeValidaDadosLaudoSigtap() throws ProjetoException {
+    	Boolean validaDadosLaudoSigtap = lDao.unidadeValidaDadosLaudoSigtap(user_session.getUnidade().getId());  
+    	if(validaDadosLaudoSigtap) {
+    		 idadeValida(); 
+    		 validaCidsDoLaudo();
+    		 validaCboDoProfissionalLaudo();
+    	}
+    }
+    
+    public void idadeValida() throws ProjetoException {
     	
     	BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente();
     	ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento();
@@ -215,9 +229,9 @@ public class LaudoController implements Serializable {
         	}
     	}
     	
-    	if(!valido)
-    		JSFUtil.adicionarMensagemErro("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima", "");
-    	return valido;
+    	if(!valido) {
+    		throw new ProjetoException("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima");
+    	}
     }
 
 	private Integer transformaIdadeEmMeses(BuscaIdadePacienteDTO idadePaciente) {
@@ -241,7 +255,7 @@ public class LaudoController implements Serializable {
     	return procedimento;
     }
     
-    public boolean validaCidsDoLaudo() {
+    public void validaCidsDoLaudo() throws ProjetoException {
 
     	List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
     	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid1().getCid()))
@@ -255,13 +269,23 @@ public class LaudoController implements Serializable {
 
     	for (CidBean cidBean : listaCidsLaudo) {
 			if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), this.laudo.getDataSolicitacao(), this.laudo.getProcedimentoPrimario().getCodProc())) {
-				JSFUtil.adicionarMensagemErro("Cid(s) selecionado(s) incompatíveis com o permitido no SIGTAP ", "");
-				return false;
+				throw new ProjetoException("Cid(s) selecionado(s) incompatíveis com o permitido no SIGTAP ");
 			}
 		}
-    			
-    	return true;
     }
+    
+    public void validaCboDoProfissionalLaudo() throws ProjetoException {
+    	String codigoCboSelecionado = obtemCodigoCboSelecionado(); 
+		if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, this.laudo.getDataSolicitacao(),
+				this.laudo.getProcedimentoPrimario().getCodProc())) {
+			throw new ProjetoException("Cbo do profissional selecionado incompatível com o permitido no SIGTAP");
+		}
+    }
+
+	private String obtemCodigoCboSelecionado() {
+		String codigoCboSelecionado = lDao.buscaCodigoCboProfissionalSelecionado(this.laudo.getProfissionalLaudo().getId());
+		return codigoCboSelecionado;
+	}
     
     public boolean existeLaudoComMesmosDados() {
     	try {
@@ -280,17 +304,21 @@ public class LaudoController implements Serializable {
     public void alterarLaudo() throws ProjetoException {
 
       //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
-    	  if(idadeValida() && validaCidsDoLaudo()) {
-            boolean alterou = lDao.alterarLaudo(laudo);
+    		try {
+    			unidadeValidaDadosLaudoSigtap();
+    			boolean alterou = lDao.alterarLaudo(laudo);
 
-            if (alterou == true) {
-                JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
-                JSFUtil.fecharDialog("dlgcadlaudo");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteraÃ§Ã£o!", "Erro");
-            }
-     //   }
-          }
+                if (alterou == true) {
+                    JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
+                    JSFUtil.fecharDialog("dlgcadlaudo");
+                } else {
+                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteraÃ§Ã£o!", "Erro");
+                }
+
+			} catch (Exception e) {
+			}
+    		
+   //   }
     }
 
 

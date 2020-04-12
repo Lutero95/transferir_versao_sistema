@@ -1019,4 +1019,110 @@ public class LaudoDAO {
         }
         return cidValido;
     }
+    
+    public String buscaCodigoCboProfissionalSelecionado(Long idFuncionario) {
+
+        PreparedStatement ps = null;
+        String codigoCbo = "";
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select c.codigo from hosp.cbo c " + 
+            		"join acl.funcionarios f on c.id = f.codcbo where f.id_funcionario = ?";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setLong(1, idFuncionario);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	codigoCbo = rs.getString("codigo");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return codigoCbo;
+    }
+    
+    public boolean validaCodigoCboEmLaudo(String codigoCbo, Date dataSolicitacao, String codigoProcedimento) {
+
+        PreparedStatement ps = null;
+        boolean cboValido = false;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select exists (select cm.codigo " + 
+            		"from hosp.procedimento_mensal pm " + 
+            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            		"join hosp.cbo_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id " + 
+            		"join hosp.cbo_mensal cm on cm.id = cpm.id_cbo_mensal " + 
+            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
+            		"and pm.codigo_procedimento = ? and hcs.status = 'A' and cm.codigo = ?) as cbo_valido";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setString(3, codigoProcedimento);
+            ps.setString(4, codigoCbo);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	cboValido = rs.getBoolean("cbo_valido");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return cboValido;
+    }
+    
+    public boolean unidadeValidaDadosLaudoSigtap(Integer codigoUnidade) {
+
+        PreparedStatement ps = null;
+        boolean unidadValidaDadosLaudoSigtap = false;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select distinct p.valida_dados_laudo_sigtap from hosp.parametro p " + 
+            		"join hosp.unidade u on u.id = p.codunidade " + 
+            		"join acl.funcionarios f on f.codunidade = p.codunidade " + 
+            		"where p.codunidade = ?";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, codigoUnidade);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	unidadValidaDadosLaudoSigtap = rs.getBoolean("valida_dados_laudo_sigtap");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return unidadValidaDadosLaudoSigtap;
+    }
 }

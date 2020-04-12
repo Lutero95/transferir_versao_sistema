@@ -50,7 +50,7 @@ public class LaudoBean implements Serializable {
         cid2 = new CidBean();;
         cid3 = new CidBean();;
         situacao = SituacaoLaudo.PENDENTE.getSigla();
-            }
+    }
 
     public Integer getId() {
         return id;

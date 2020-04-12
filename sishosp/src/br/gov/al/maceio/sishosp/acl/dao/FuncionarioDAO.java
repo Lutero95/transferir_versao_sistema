@@ -1084,7 +1084,7 @@ public class FuncionarioDAO {
 
 		List<FuncionarioBean> lista = new ArrayList<>();
 		String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, "
-				+ "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao, permite_encaixe "
+				+ "f.cns, f.ativo, f.codcbo, c.descricao, c.codigo, f.codprocedimentopadrao, p.nome, f.permite_liberacao, permite_encaixe "
 				+ " FROM acl.funcionarios f "
 				+ "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
 				+ "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) "
@@ -1118,6 +1118,7 @@ public class FuncionarioDAO {
 				prof.setAtivo(rs.getString("ativo"));
 				prof.getCbo().setDescCbo(rs.getString("descricao"));
 				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setCodigo(rs.getString("codigo"));
 				prof.getProc1().setNomeProc(rs.getString("nome"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				//prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
@@ -1265,7 +1266,7 @@ public class FuncionarioDAO {
 				.getSessionMap().get("obj_usuario");
 
 		String sql = "select * from (\n" + 
-				"select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
+				"select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, c.codigo, \n" + 
 				" codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade \n" + 
 				" from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade \n" + 
 				" left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
@@ -1273,7 +1274,7 @@ public class FuncionarioDAO {
 				" left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao\n" + 
 				" where coalesce(admin,false) is false \n" + 
 				" union\n" + 
-				" select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
+				" select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, c.codigo, \n" + 
 				" codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade \n" + 
 				" from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade \n" + 
 				" left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" + 
@@ -1300,6 +1301,7 @@ public class FuncionarioDAO {
 				prof.setAtivo(rs.getString("ativo"));
 				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
 				prof.getCbo().setDescCbo(rs.getString("desccbo"));
+				prof.getCbo().setCodigo(rs.getString("codigo"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				prof.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
