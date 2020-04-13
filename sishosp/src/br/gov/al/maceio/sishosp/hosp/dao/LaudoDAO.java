@@ -1125,4 +1125,80 @@ public class LaudoDAO {
         }
         return unidadValidaDadosLaudoSigtap;
     }
+    
+    public boolean verificaSeProcedimentoPossuiCidsAssociados(Date dataSolicitacao, String codigoProcedimento) {
+
+        PreparedStatement ps = null;
+        boolean possuiCidsAssociados = true;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select count(*) cid_associados from hosp.cid_procedimento_mensal cpm " + 
+            		"join hosp.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
+            		"and pm.codigo_procedimento = ? and hcs.status = 'A' ";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setString(3, codigoProcedimento);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	Integer quantidadeCidsAssociados = rs.getInt("cid_associados");
+            	possuiCidsAssociados = (quantidadeCidsAssociados > 0);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return possuiCidsAssociados;
+    }
+    
+    public boolean sexoDoPacienteValidoComProcedimentoSigtap(Date dataSolicitacao, String sexo, String codigoProcedimento) {
+
+        PreparedStatement ps = null;
+        boolean sexoValido = false;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "select exists (select pm.nome from hosp.procedimento_mensal pm " + 
+            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
+            		"and pm.codigo_procedimento = ? and hcs.status = 'A' and " + 
+            		"(pm.sexo = ? or pm.sexo = 'AMBOS' or pm.sexo = 'NAO_SE_APLICA')) sexo_permitido";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+            ps.setString(3, codigoProcedimento);
+            ps.setString(4, sexo);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	sexoValido = rs.getBoolean("sexo_permitido");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return sexoValido;
+    }
 }

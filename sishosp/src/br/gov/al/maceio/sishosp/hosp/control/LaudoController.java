@@ -26,6 +26,7 @@ import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
+import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
 
@@ -167,31 +168,39 @@ public class LaudoController implements Serializable {
 
     }
 
-    public void gravarLaudo() throws ProjetoException {
-    	if(!existeLaudoComMesmosDados()) {
-    		try {
-    			unidadeValidaDadosLaudoSigtap();
-    			idLaudoGerado = null;
-    			idLaudoGerado = lDao.cadastrarLaudo(laudo);
+	public void gravarLaudo() throws ProjetoException {
+		try {
+			verificaSeCid1FoiInserido();
+			if (!existeLaudoComMesmosDados()) {
+				unidadeValidaDadosLaudoSigtap();
+				idLaudoGerado = null;
+				idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-    			if (idLaudoGerado != null) {
-    				limparDados();
-    				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
-    				JSFUtil.abrirDialog("dlgImprimir");
-    			} else {
-    				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-    			}
-	
-			} catch (Exception e) {
+				if (idLaudoGerado != null) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+					JSFUtil.abrirDialog("dlgImprimir");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				}
+
 			}
-    	}
+		} catch (Exception e) {
+		}
+	}
+    
+    public void verificaSeCid1FoiInserido() throws ProjetoException {
+    	if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid1().getCid()))
+    		throw new ProjetoException("Por favor informe o campo CID 1");
     }
     
     public void unidadeValidaDadosLaudoSigtap() throws ProjetoException {
     	Boolean validaDadosLaudoSigtap = lDao.unidadeValidaDadosLaudoSigtap(user_session.getUnidade().getId());  
     	if(validaDadosLaudoSigtap) {
-    		 idadeValida(); 
-    		 validaCidsDoLaudo();
+    		 idadeValida();
+    		 validaSexoDoPacienteProcedimentoSigtap();
+    		 if(procedimentoPossuiCidsAssociados())
+    			 validaCidsDoLaudo();
     		 validaCboDoProfissionalLaudo();
     	}
     }
@@ -233,6 +242,12 @@ public class LaudoController implements Serializable {
     		throw new ProjetoException("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima");
     	}
     }
+    
+    public Boolean procedimentoPossuiCidsAssociados() {
+    	Boolean possuiCidsAssociados = lDao.verificaSeProcedimentoPossuiCidsAssociados
+    			(this.laudo.getDataSolicitacao(), this.laudo.getProcedimentoPrimario().getCodProc());
+    	return possuiCidsAssociados;
+    }
 
 	private Integer transformaIdadeEmMeses(BuscaIdadePacienteDTO idadePaciente) {
 		Integer meses;
@@ -258,8 +273,7 @@ public class LaudoController implements Serializable {
     public void validaCidsDoLaudo() throws ProjetoException {
 
     	List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
-    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid1().getCid()))
-    		listaCidsLaudo.add(this.laudo.getCid1());
+    	listaCidsLaudo.add(this.laudo.getCid1());
     	
     	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid2().getCid()))
     		listaCidsLaudo.add(this.laudo.getCid2());
@@ -269,7 +283,8 @@ public class LaudoController implements Serializable {
 
     	for (CidBean cidBean : listaCidsLaudo) {
 			if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), this.laudo.getDataSolicitacao(), this.laudo.getProcedimentoPrimario().getCodProc())) {
-				throw new ProjetoException("Cid(s) selecionado(s) incompatíveis com o permitido no SIGTAP ");
+				throw new ProjetoException("Este procedimento possui(em) Cid(s) associado(s), "
+						+ "por favor selecione apenas Cids permitidos no SIGTAP ");
 			}
 		}
     }
@@ -285,6 +300,19 @@ public class LaudoController implements Serializable {
 	private String obtemCodigoCboSelecionado() {
 		String codigoCboSelecionado = lDao.buscaCodigoCboProfissionalSelecionado(this.laudo.getProfissionalLaudo().getId());
 		return codigoCboSelecionado;
+	}
+	
+	public void validaSexoDoPacienteProcedimentoSigtap() throws ProjetoException {
+		String sexoPermitido;
+		if(this.laudo.getPaciente().getSexo().equals(ModeloSexo.FEMININO.getSigla()))
+			sexoPermitido = ModeloSexo.FEMININO.name();
+		else
+			sexoPermitido = ModeloSexo.MASCULINO.name();
+		
+		if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
+				(this.laudo.getDataSolicitacao(), sexoPermitido, this.laudo.getProcedimentoPrimario().getCodProc())) {
+			throw new ProjetoException("O sexo do paciente não compreende o permitido no SIGTAP");
+		}
 	}
     
     public boolean existeLaudoComMesmosDados() {
@@ -305,6 +333,7 @@ public class LaudoController implements Serializable {
 
       //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
     		try {
+    			verificaSeCid1FoiInserido();
     			unidadeValidaDadosLaudoSigtap();
     			boolean alterou = lDao.alterarLaudo(laudo);
 

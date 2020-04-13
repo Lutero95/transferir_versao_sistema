@@ -1194,7 +1194,7 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = "select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula, dtanascimento"
+            String sql = "select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula, dtanascimento, sexo"
             		+ " from hosp.pacientes where ";
 
             if(tipo.equals("nome")){
@@ -1232,8 +1232,8 @@ public class PacienteDAO {
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
                 paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                paciente.setSexo(rs.getString("sexo"));
                 lista.add(paciente);
-
             }
             return lista;
         } catch (Exception ex) {
@@ -1254,7 +1254,7 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns, dtanascimento from hosp.pacientes where nome like ? order by nome";
+            String sql = " select id_paciente, nome, cpf, cns, dtanascimento, sexo from hosp.pacientes where nome like ? order by nome";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + str.toUpperCase() + "%");
@@ -1269,6 +1269,7 @@ public class PacienteDAO {
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
                 paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                paciente.setSexo(rs.getString("sexo"));
                 lista.add(paciente);
 
             }
