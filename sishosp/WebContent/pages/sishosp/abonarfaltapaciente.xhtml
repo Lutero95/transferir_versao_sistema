@@ -31,7 +31,7 @@
                                             value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa}"
                                             size="31" converter="conPrograma"
                                             class="select-agendaEquipe4"
-                                            completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaProgramaAutoCompleteUsuario}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descPrograma}">
@@ -61,7 +61,7 @@
                                             size="31" converter="conGrupo"
                                             class="select-agendaEquipe4"
                                             disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa.idPrograma == null}"
-                                            completeMethod="#{remocaoProfissionalEquipeController.listaGrupoAutoComplete}"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaGrupoAutoCompleteAbono}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descGrupo}">
@@ -98,7 +98,7 @@
                                             size="31" converter="conEquipe"
                                             disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.grupo.idGrupo == null}"
                                             class="select-agendaEquipe4"
-                                            completeMethod="#{remocaoProfissionalEquipeController.listaEquipeAutoComplete}"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaEquipeAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descEquipe}">
@@ -365,7 +365,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formAbonoFaltaPaciente:outGrupo :formAbonoFaltaPaciente:outEquipeRow"
+                                update=":formAbonoFaltaPaciente:outGrupo :formAbonoFaltaPaciente:outEquipe"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();">
@@ -397,7 +397,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formAbonoFaltaPaciente" icon="fa fa-fw fa-check"
+                                 icon="fa fa-fw fa-check" update=":formAbonoFaltaPaciente:outEquipe"
                                 title="Selecionar" class="new-btn-acao-table acao-editar"
                                 oncomplete="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
@@ -485,7 +485,7 @@
                             Selecionar
                         </f:facet>
 						<p:commandButton
-							update=":formAbonoFaltaPaciente"
+							update=":formAbonoFaltaPaciente:outPaciente"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">

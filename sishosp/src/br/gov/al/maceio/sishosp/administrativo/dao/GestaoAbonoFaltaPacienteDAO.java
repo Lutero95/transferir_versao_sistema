@@ -32,7 +32,7 @@ public class GestaoAbonoFaltaPacienteDAO {
 				"afp.cod_grupo, afp.cod_equipe, afp.data_abono, afp.codpaciente, " + 
 				"pa.nome paciente, pro.descprograma, g.descgrupo, e.descequipe, " + 
 				"CASE WHEN afp.turno = 'T' THEN 'TARDE' " + 
-        		"WHEN afp.turno = 'M' THEN 'MANHÃƒ' END AS turno "+
+        		"WHEN afp.turno = 'M' THEN 'MANHÃ' END AS turno "+
 				"	from adm.abono_falta_paciente afp " + 
 				"	join acl.funcionarios f on f.id_funcionario = afp.codusuario_operacao " + 
 				"	join hosp.programa pro on pro.id_programa = afp.cod_programa " + 
@@ -81,7 +81,7 @@ public class GestaoAbonoFaltaPacienteDAO {
 		String sql = "SELECT distinct a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " + 
         		"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, profissional.descfuncionario, " + 
         		"CASE WHEN a.turno = 'T' THEN 'TARDE' " + 
-        		"WHEN a.turno = 'M' THEN 'MANHÃƒ' END AS turno, pa.nome nomepaciente, pa.id_paciente " + 
+        		"WHEN a.turno = 'M' THEN 'MANHA' END AS turno, pa.nome nomepaciente, pa.id_paciente " + 
         		"FROM hosp.atendimentos a " + 
         		"JOIN hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
         		"JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " + 
@@ -175,41 +175,42 @@ public class GestaoAbonoFaltaPacienteDAO {
         String sql = "INSERT INTO adm.abono_falta_paciente " + 
         		"(data_hora_operacao, codusuario_operacao, cod_programa, cod_grupo, cod_equipe, data_abono, turno, codpaciente, justificativa)"  + 
         		"VALUES(CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+        AtendimentoBean atendimentoBean = gravarInsercaoAbonoFaltaPacienteDTO.getAtendimentosParaAbono().get(0);
         try {
 
         	con = ConnectionFactory.getConnection();
 
-            for (AtendimentoBean atendimento : gravarInsercaoAbonoFaltaPacienteDTO.getAtendimentosParaAbono()) {
-                ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sql);
 
-            	ps.setLong(1, gravarInsercaoAbonoFaltaPacienteDTO.getIdUsuarioOperacao());
-            	ps.setInt(2, atendimento.getPrograma().getIdPrograma());
-            	ps.setInt(3, atendimento.getGrupo().getIdGrupo());
-            	ps.setInt(4, atendimento.getEquipe().getCodEquipe());
-            	ps.setDate(5, new Date(atendimento.getDataAtendimentoInicio().getTime()));
-            	if(atendimento.getTurno().equalsIgnoreCase("MANHÃƒ"))
-            		ps.setString(6, Turno.MANHA.getSigla());
-            	else if(atendimento.getTurno().equalsIgnoreCase("TARDE"))
-            		ps.setString(6, Turno.TARDE.getSigla());
-            	
-            	ps.setInt(7, atendimento.getPaciente().getId_paciente());
-            	ps.setString(8, gravarInsercaoAbonoFaltaPacienteDTO.getJustificativa());
-                ResultSet rs = ps.executeQuery();
-                
-                if(rs.next()) {
-                	Integer idAbono = rs.getInt("id");
+        	ps.setLong(1, gravarInsercaoAbonoFaltaPacienteDTO.getIdUsuarioOperacao());
+        	ps.setInt(2, atendimentoBean.getPrograma().getIdPrograma());
+        	ps.setInt(3, atendimentoBean.getGrupo().getIdGrupo());
+        	ps.setInt(4, atendimentoBean.getEquipe().getCodEquipe());
+        	ps.setDate(5, new Date(atendimentoBean.getDataAtendimentoInicio().getTime()));
+        	if(atendimentoBean.getTurno().equalsIgnoreCase(Turno.MANHA.name()))
+        		ps.setString(6, Turno.MANHA.getSigla());
+        	else if(atendimentoBean.getTurno().equalsIgnoreCase(Turno.TARDE.name()))
+        		ps.setString(6, Turno.TARDE.getSigla());
+        	
+        	ps.setInt(7, atendimentoBean.getPaciente().getId_paciente());
+        	ps.setString(8, gravarInsercaoAbonoFaltaPacienteDTO.getJustificativa());
+            ResultSet rs = ps.executeQuery();
+            
+            Integer idAbono;
+            if(rs.next()) {
+            	idAbono = rs.getInt("id");
+            	for (AtendimentoBean atendimento : gravarInsercaoAbonoFaltaPacienteDTO.getAtendimentosParaAbono()) {
                 	inserirAbonoFaltaPaciente1(atendimento.getId1(), idAbono);
-                	atualizarSituacaoAtendimento1(atendimento.getId1());
+                	atualizarSituacaoAtendimento1(atendimento.getId1());                
                 }
             }
-
             retorno = true;
             con.commit();
         }
         catch (Exception ex) {
         	con.rollback();
             ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "AtenÃ§Ã£o");
+            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
             throw new RuntimeException(ex);
         } finally {
             try {

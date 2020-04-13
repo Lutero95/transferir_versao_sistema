@@ -405,7 +405,7 @@ public class AtendimentoDAO {
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.avaliacao,  "
-				+ " case when t.equipe_programa is true then 'Sim' else 'NÃ£o' end as ehEquipe,"
+				+ " case when t.equipe_programa is true then 'Sim' else 'NÃo' end as ehEquipe,"
 
 				+ " case when "
 				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null) =  "

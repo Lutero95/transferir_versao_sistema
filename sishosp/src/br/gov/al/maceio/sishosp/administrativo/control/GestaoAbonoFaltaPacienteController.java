@@ -17,8 +17,12 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ViewScoped
 @ManagedBean
@@ -32,6 +36,8 @@ public class GestaoAbonoFaltaPacienteController {
 	private String tipoData;
 	private List<AtendimentoBean> listaAtendimentosParaAbono;
 	private List<AtendimentoBean> listaAtendimentosSelecionadosParaAbono;
+	private ProgramaDAO pDao = new ProgramaDAO();
+    private GrupoDAO gDao = new GrupoDAO();
 	
 	private static final String ENDERECO_CADASTRO = "abonarfaltapaciente?faces-redirect=true";
 	
@@ -103,6 +109,22 @@ public class GestaoAbonoFaltaPacienteController {
 		this.listaAtendimentosParaAbono = new ArrayList<AtendimentoBean>();
 		this.listaAtendimentosSelecionadosParaAbono = new ArrayList<AtendimentoBean>();
 	}
+	
+    public List<ProgramaBean> listaProgramaAutoCompleteUsuario(String query)
+            throws ProjetoException {
+        List<ProgramaBean> result = pDao.listarProgramasBuscaUsuario(query, 1);
+        return result;
+    }
+	
+    public List<GrupoBean> listaGrupoAutoCompleteAbono(String query) throws ProjetoException {
+        return gDao.listarGruposNoAutoComplete(query, this.abonoFaltaPaciente.getPrograma().getIdPrograma());
+    }
+    
+    public List<EquipeBean> listaEquipeAutoComplete(String query) throws ProjetoException {
+        EquipeDAO eDao = new EquipeDAO();
+        List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query, this.abonoFaltaPaciente.getGrupo().getIdGrupo());
+        return result;
+    }
 
 	public List<GestaoAbonoFaltaPaciente> getListaAbonosFaltaPaciente() {
 		return listaAbonosFaltaPaciente;
