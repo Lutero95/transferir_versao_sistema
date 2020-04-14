@@ -663,58 +663,41 @@ public class FuncionarioController implements Serializable {
 		this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
 		renderizarPermissoes = false;
 	}
-
-	private List<UnidadeBean> tratarUnidadesRepetidasNaListaDoFuncionario(){
-	    List<UnidadeBean> listaAposTratamento = new ArrayList<>();
-
-        boolean existe = false;
-
-	    for(int i=0; i<listaUnidadesDoUsuario.size(); i++){
-	        existe = false;
-
-	        if(listaAposTratamento.size() == 0){
-                listaAposTratamento.add(listaUnidadesDoUsuario.get(i));
-            }
-
-	        else {
-
-                for (int j = 0; j < listaAposTratamento.size(); j++) {
-
-                    if (listaAposTratamento.get(j).getId().equals(listaUnidadesDoUsuario.get(i).getId())) {
-                        existe = true;
-                    }
-                }
-
-                if (existe == false) {
-                    listaAposTratamento.add(listaUnidadesDoUsuario.get(i));
-                }
-            }
-        }
-
-	    return listaAposTratamento;
-    }
-
-	public Boolean validarProgramasDeAcordoComAsUnidadesDoProfissional(){
-		Boolean retorno = false;
-
-		ProgramaDAO pDao = new ProgramaDAO();
-		List<Integer> listaUnidadesDosProgramas = pDao.verificarUnidadesDosProgramas(listaGruposEProgramasProfissional);
-		List<Integer> listaVerificadoraDeUnidades = new ArrayList<>();
-		listaUnidadesDoUsuario = tratarUnidadesRepetidasNaListaDoFuncionario();
-
-		for(int i=0; i<listaUnidadesDoUsuario.size(); i++){
-			for(int j=0; j<listaUnidadesDosProgramas.size(); j++){
-				if(listaUnidadesDoUsuario.get(i).getId().equals(listaUnidadesDosProgramas.get(j))){
-					listaVerificadoraDeUnidades.add(listaUnidadesDosProgramas.get(j));
+	
+	public Boolean validaSeTodosOsProgramasPossuemUnidadeAssociada() {
+		List<Integer> listaIdUnidadesDaListaDeGruposIhProgramas = retornaIdUnidadesDaListaDeGruposIhProgramaDeFormaUnica();
+		
+		if(!listaIdUnidadesDaListaDeGruposIhProgramas.isEmpty() && 
+				!listaIdUnidadesDaListaDeGruposIhProgramas.contains(profissional.getUnidade().getId())) {
+			JSFUtil.adicionarMensagemErro("A unidade principal"+
+					" foi alterada, por favor remova o(s) programa(s)/grupo(o) associados a ela", "");
+			return false;
+		}
+		
+		else if(this.profissional.getListaUnidades().isEmpty() && listaIdUnidadesDaListaDeGruposIhProgramas.size() > 1) {
+			JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que n�o tem correla��o com as unidades associadas a este funcion�rio", "");
+			return false;
+		}
+			
+		else {
+			for (UnidadeBean unidade : this.profissional.getListaUnidades()) {
+				if (!listaIdUnidadesDaListaDeGruposIhProgramas.contains(unidade.getId())) {
+					JSFUtil.adicionarMensagemErro(
+							"Existe Programa/Grupo associado que n�o tem correla��o com as unidades associadas a este funcion�rio","");
+					return false;
 				}
 			}
 		}
+		return true;
+	}
 
-		if(listaVerificadoraDeUnidades.size() == listaUnidadesDosProgramas.size()){
-			retorno = true;
+	private List<Integer> retornaIdUnidadesDaListaDeGruposIhProgramaDeFormaUnica() {
+		List<Integer> idUnidadesDaListaDeGruposIhProgramas = new ArrayList<Integer>();
+		for (ProgramaBean grupoIhPrograma : listaGruposEProgramasProfissional) {
+			if(!idUnidadesDaListaDeGruposIhProgramas.contains(grupoIhPrograma.getCodUnidade()))
+				idUnidadesDaListaDeGruposIhProgramas.add(grupoIhPrograma.getCodUnidade());
 		}
-
-		return retorno;
+		return idUnidadesDaListaDeGruposIhProgramas;
 	}
 
 	public void gravarProfissional() throws ProjetoException {
@@ -722,16 +705,11 @@ public class FuncionarioController implements Serializable {
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
-
 			return;
 		}
-
-		else if(!validarProgramasDeAcordoComAsUnidadesDoProfissional()){
-            JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que não tem correlação com as unidades associadas a este funcionário!",
-                    "Erro");
-
-            return;
-        }
+		
+		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
+			return;
 
 		else
 
@@ -803,15 +781,12 @@ public class FuncionarioController implements Serializable {
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
-
 			return;
 		}
-        else if(!validarProgramasDeAcordoComAsUnidadesDoProfissional()){
-            JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que não tem correlação com as unidades associadas a este funcionário!",
-                    "Erro");
-
-            return;
-        }
+		
+		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
+			return;
+		
 		else
 		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");

@@ -3,7 +3,6 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -471,11 +470,13 @@ public class ProgramaDAO {
 
     public List<ProgramaBean> listarProgramasEGruposPorUnidade(int codigoUnidade) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo, p.cod_procedimento "
-                + "from hosp.grupo_programa gp "
-                + "left join hosp.programa p on (gp.codprograma = p.id_programa) "
-                + "left join hosp.grupo g on (gp.codgrupo = g.id_grupo) "
-                + "where p.cod_unidade = ? order by p.descprograma";
+        String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo, "+
+        		"p.cod_procedimento, u.nome as unidade, u.id " + 
+        		"from hosp.grupo_programa gp " + 
+        		"join hosp.programa p on (gp.codprograma = p.id_programa) " + 
+        		"join hosp.grupo g on (gp.codgrupo = g.id_grupo) " + 
+        		"join hosp.unidade u on u.id = p.cod_unidade " + 
+        		"where p.cod_unidade = ? order by p.descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -490,7 +491,8 @@ public class ProgramaDAO {
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
                 programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
                 programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
-
+                programa.setDescricaoUnidade(rs.getString("unidade"));
+                programa.setCodUnidade(rs.getInt("id"));
                 lista.add(programa);
             }
         } catch (Exception ex) {
@@ -579,37 +581,4 @@ public class ProgramaDAO {
         }
         return lista;
     }
-
-    public List<Integer> verificarUnidadesDosProgramas(List<ProgramaBean> listaProgramas) {
-
-        List<Integer> listaUnidades = new ArrayList<>();
-
-        String sql = "SELECT cod_unidade FROM hosp.programa WHERE id_programa = ?;";
-
-        try {
-
-            con = ConnectionFactory.getConnection();
-
-            for(int i=0; i<listaProgramas.size(); i++) {
-                PreparedStatement stm = con.prepareStatement(sql);
-                stm.setInt(1, listaProgramas.get(i).getIdPrograma());
-                ResultSet rs = stm.executeQuery();
-                while (rs.next()) {
-                    listaUnidades.add(rs.getInt("cod_unidade"));
-                }
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaUnidades;
-    }
-
 }

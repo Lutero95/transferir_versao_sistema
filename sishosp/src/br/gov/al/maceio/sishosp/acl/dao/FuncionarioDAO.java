@@ -1943,24 +1943,27 @@ public class FuncionarioDAO {
 	public ArrayList<ProgramaBean> carregaProfissionalProgramaEGrupos(int idProf) {
 		ArrayList<ProgramaBean> lista = new ArrayList<ProgramaBean>();
 
-		String sql = "select ppg.codprograma, p.descprograma, ppg.codgrupo, g.descgrupo "
-				+ "from hosp.profissional_programa_grupo ppg "
-				+ "left join hosp.programa p on (p.id_programa = ppg.codprograma) "
-				+ "left join hosp.grupo g on (g.id_grupo = ppg.codgrupo)" + "where codprofissional = ?";
+		String sql = "select ppg.codprograma, p.descprograma, ppg.codgrupo, g.descgrupo, u.nome as unidade, u.id " + 
+				"from hosp.profissional_programa_grupo ppg " + 
+				"left join hosp.programa p on (p.id_programa = ppg.codprograma) " + 
+				"left join hosp.grupo g on (g.id_grupo = ppg.codgrupo) " + 
+				"join hosp.unidade u on u.id = p.cod_unidade " + 
+				"where codprofissional = ?;";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, idProf);
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
-				ProgramaBean p = new ProgramaBean();
+				ProgramaBean programa = new ProgramaBean();
 
-				p.setIdPrograma(rs.getInt("codprograma"));
-				p.setDescPrograma(rs.getString("descprograma"));
-				p.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
-				p.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
-
-				lista.add(p);
+				programa.setIdPrograma(rs.getInt("codprograma"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+				programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+				programa.setDescricaoUnidade(rs.getString("unidade"));
+				programa.setCodUnidade(rs.getInt("id"));
+				lista.add(programa);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
