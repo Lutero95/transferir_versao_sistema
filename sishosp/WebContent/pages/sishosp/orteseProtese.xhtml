@@ -21,102 +21,103 @@
 			<div class="panel-body table-body sub-table-body">
 
 				<h:form id="formInsercao">
+					<p:outputPanel id="outlaudo">
+						<b:row
+							rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
 
-					<b:row
-						rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Programa" severity="info" />
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Programa" severity="info" />
+								<p:outputLabel style="margin-left: 15px"
+									value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
 
-							<p:outputLabel style="margin-left: 15px"
-								value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
+							</b:column>
 
-						</b:column>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Grupo" severity="info" />
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
+								<p:outputLabel style="margin-left: 15px"
+									value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
 
-							<p:outputLabel style="margin-left: 15px"
-								value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
+							</b:column>
 
-						</b:column>
+						</b:row>
 
-					</b:row>
+						<br></br>
 
-					<br></br>
+						<b:row>
 
-					<b:row>
-
-						<b:column span="2" class="label-position">
-							<p:outputLabel value="Laudo:"
-								style="margin-left:-15px; margin-top: 8px;
+							<b:column span="2" class="label-position">
+								<p:outputLabel value="Laudo:"
+									style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-			<h:inputHidden value="#{OrteseProteseController.orteseProtese.laudo.id}" required="true" requiredMessage="Informe o Laudo" />
-							<p:commandButton size="sm" style="margin-left: 20px;"
-								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-								update=":formConsuLaudo" immediate="true"
-								onclick="PF('dlgConsuLaudo').show();"
-								action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}" />
-						</b:column>
+								<h:inputHidden
+									value="#{OrteseProteseController.orteseProtese.laudo.id}"
+									required="true" requiredMessage="Informe o Laudo" />
+								<p:commandButton size="sm" style="margin-left: 20px;"
+									class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+									update=":formConsuLaudo" immediate="true"
+									onclick="PF('dlgConsuLaudo').show();"
+									action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}" />
+							</b:column>
 
-					</b:row>
+						</b:row>
 
-					<b:row>
+						<b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Paciente:" class="fire-label" severity="info" />
+							<b:column span="2" class="label-position inserPacient">
+								<b:label value="Paciente:" class="fire-label" severity="info" />
 
-							<h:outputLabel
-								value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
-								class="campo-laudoDig3" />
-						</b:column>
+								<h:outputLabel
+									value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Procedimento:" class="fire-label" severity="info" />
+							<b:column span="2" class="label-position inserPacient">
+								<b:label value="Procedimento:" class="fire-label"
+									severity="info" />
 
-							<h:outputLabel
-								value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
-								class="campo-laudoDig3" />
-						</b:column>
+								<h:outputLabel
+									value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-					</b:row>
+						</b:row>
 
-					<b:row>
+						<b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="CID:" class="fire-label" severity="info" />
+							<b:column span="2" class="label-position inserPacient">
+								<b:label value="CID:" class="fire-label" severity="info" />
 
-							<h:outputLabel
-								value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
-								class="campo-laudoDig3" />
-						</b:column>
+								<h:outputLabel
+									value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Inicial:" class="fire-label"
-								severity="info" />
+							<b:column span="2" class="label-position inserPacient">
+								<b:label value="Vigência Inicial:" class="fire-label"
+									severity="info" />
 
-							<h:outputLabel
-								value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+								<h:outputLabel
+									value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
+							<b:column span="2" class="label-position inserPacient">
+								<b:label value="Vigência Final" class="fire-label"
+									severity="info" />
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Final" class="fire-label"
-								severity="info" />
-
-							<h:outputLabel
-								value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
-
-					</b:row>
-
+								<h:outputLabel
+									value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
+						</b:row>
+					</p:outputPanel>
 					<br></br>
 
 					<b:row>
@@ -212,7 +213,7 @@
 						<p:commandButton
 							action="#{OrteseProteseController.alterarOrteseIhProtese()}"
 							icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
-							update="formInsercao" value="Alterar"
+							update=":formInsercao msgPagina" value="Alterar"
 							rendered="#{OrteseProteseController.tipo  == 2}" />
 
 					</div>
@@ -320,7 +321,7 @@
 						<f:facet name="header">
                             Selecionar
                         </f:facet>
-						<p:commandButton update=":formInsercao msgPagina"
+						<p:commandButton update=":formInsercao:outlaudo msgPagina"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar"
