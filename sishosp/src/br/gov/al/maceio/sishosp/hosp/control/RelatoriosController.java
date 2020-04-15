@@ -40,7 +40,6 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.event.SelectEvent;
 
@@ -78,10 +77,12 @@ public class RelatoriosController implements Serializable {
 	private Integer diaSemana;
 	private Integer mes;
 	private Integer ano;
-
+	private Boolean filtrarPorMunicipio;
+	
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
-
+	private List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados;
+	
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
@@ -105,7 +106,7 @@ public class RelatoriosController implements Serializable {
 		listaGruposProgramas = new ArrayList<>();
 		equipe = new EquipeBean();
 		listaEquipePorTipoAtendimento = new ArrayList<>();
-
+		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
 	}
 
 	public void limparDados() {
@@ -164,6 +165,7 @@ public class RelatoriosController implements Serializable {
 
 	public void preparaRelPacientesPorPrograma() {
 		atributoGenerico1 = "I";
+		atributoGenerico2 = "A";
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
@@ -361,18 +363,41 @@ public class RelatoriosController implements Serializable {
 			//this.executeReport(relatorio, map, "relatorio_atendimento_sintÃ©tico.pdf");
 		}
 	}
+	
+	public void atualizaListaMunicipiosDePacientesAtivosSelecionados(MunicipioBean municipioSelecionado) {
+		List<Integer> idMunicipios = retornaIdDosMunicipiosSelecionados();
+		
+		if(!this.listaMunicipiosDePacienteAtivosSelecionados.isEmpty() && idMunicipios.contains(municipioSelecionado.getId()))
+			JSFUtil.adicionarMensagemAdvertencia("O município "+municipioSelecionado.getNome()+" já foi adicionado", "Atenção");
+		else
+			this.listaMunicipiosDePacienteAtivosSelecionados.add(municipioSelecionado);
+	}
+
+	private List<Integer> retornaIdDosMunicipiosSelecionados() {
+		List<Integer> idMunicipios = new ArrayList<Integer>();
+		for (MunicipioBean municipioBean : listaMunicipiosDePacienteAtivosSelecionados) {
+			idMunicipios.add(municipioBean.getId());
+		}
+		return idMunicipios;
+	}
+	
+	public void removerMunicipioSelecionado(MunicipioBean municipio) {
+			listaMunicipiosDePacienteAtivosSelecionados.remove(municipio);
+	}
 
 	public void gerarPacientesAtivosPorPrograma() throws IOException, ParseException, ProjetoException {
 
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
-
+		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		relatorio = caminho + "pacientes_ativos_por_programa.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("filtromunicipio", idMunicipiosSelecionados);
+		map.put("sexo", this.atributoGenerico2);
 		if (pacienteInstituicao.getPrograma() != null) {
 			map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 		} else {
@@ -1281,4 +1306,22 @@ public class RelatoriosController implements Serializable {
 	public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
 		this.tipoAtendimento = tipoAtendimento;
 	}
+
+	public Boolean getFiltrarPorMunicipio() {
+		return filtrarPorMunicipio;
+	}
+
+	public void setFiltrarPorMunicipio(Boolean filtrarPorMunicipio) {
+		this.filtrarPorMunicipio = filtrarPorMunicipio;
+	}
+
+	public List<MunicipioBean> getListaMunicipiosDePacienteAtivosSelecionados() {
+		return listaMunicipiosDePacienteAtivosSelecionados;
+	}
+
+	public void setListaMunicipiosDePacienteAtivosSelecionados(
+			List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados) {
+		this.listaMunicipiosDePacienteAtivosSelecionados = listaMunicipiosDePacienteAtivosSelecionados;
+	}
+	
 }
