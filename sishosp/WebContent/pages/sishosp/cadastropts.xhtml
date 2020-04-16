@@ -334,7 +334,6 @@
 				<p:growl id="grwInclusaoPts"></p:growl>
 
 				<b:row>
-
 					<b:column span="12" class="label-position data-size">
 
 						<b:label value="Área" id="idArea" severity="info"
@@ -348,21 +347,13 @@
 								var="especialidade"
 								itemLabel="#{especialidade.descEspecialidade}"
 								itemValue="#{especialidade.codEspecialidade}" />
-
 						</b:selectOneMenu>
-
 					</b:column>
-
 				</b:row>
-
-
-
+				
 				<b:row>
-
 					<b:column span="5" class="label-position data-size">
-
 						<h1>OBJETIVO</h1>
-
 						<br></br>
 
 						<b:label value="Curto" severity="info" class="fire-label" />
@@ -457,7 +448,7 @@
 
 		<p:dialog header="Digite a senha" widgetVar="dlgSenhaAreaPts"
 			modal="true" styleClass="topDialog" draggable="false"
-			position="center">
+			position="center" resizable="false">
 			<h:form id="frmSenhaAreaPts">
 
 				<p:growl id="grwSenha" />
@@ -481,9 +472,29 @@
 					<p:commandButton value="Adicionar" look="success" size="sm"
 						style="margin-top:10px" icon="fa fa-fw fa-check"
 						update=":formPts:dtPtsAdicionados, grwSenha"
-						action="#{PtsController.validarSenhaAdicionarAreaPts()}" />
+						action="#{PtsController.verificarSeExistePtsComEspecialidadeSelecionada()}" />
 				</div>
-
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Confirmar" widgetVar="dlgExisteArea"
+			modal="true" styleClass="topDialog" draggable="true"
+			resizable="false"
+			position="center">
+			<h:form id="frmConfirmar">
+				<p:outputLabel value="Já existe informação no PTS para a área selecionada! Deseja continuar mesmo assim?"/>
+				
+				<div align="center">
+					<p:commandButton value="Confirmar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						update=":frmConfirmar"
+						action="#{PtsController.confirmarCadastroPtsComAreaExistente()}"/>
+						
+					<p:commandButton value="Cancelar" look="success" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="ui-icon-close"
+						update=":frmConfirmar, :frmSenhaAreaPts"
+						action="#{PtsController.cancelarCadastroPtsComAreaExistente()}" />	
+				</div>
 			</h:form>
 		</p:dialog>
 

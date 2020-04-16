@@ -25,7 +25,7 @@ import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.*;
 public class PtsController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private PtsDAO pDao = new PtsDAO();
+    private PtsDAO ptsDao = new PtsDAO();
     private EspecialidadeDAO eDao = new EspecialidadeDAO();
     private Pts pts;
     private PtsArea ptsAreaAnterior,ptsAreaAtual;
@@ -46,6 +46,7 @@ public class PtsController implements Serializable {
     private String tipoBusca;
     private FuncionarioBean usuarioLiberacao;
     private Boolean liberacaoAlterarDataPts, liberacaoIncluirPtsVencimentoAnteriorAtualPts;
+    private Boolean confirmaCadastroPtsComAreaExistente;
     //CONSTANTES
     private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_GERENCIAMENTOPTS = "gerenciamentopts.?faces-redirect=true";
@@ -77,11 +78,11 @@ public class PtsController implements Serializable {
             Integer idGerenciamentoPaciente = Integer.parseInt(params.get("idgerpaciente"));
             
             idParametroEndereco = id;
-            existePts = pDao.verificarSeExistePts(id);
+            existePts = ptsDao.verificarSeExistePts(id);
             if (existePts) {
-                this.pts = pDao.ptsCarregarPtsPorId(id);
+                this.pts = ptsDao.ptsCarregarPtsPorId(id);
             } else {
-                this.pts = pDao.ptsCarregarPacientesInstituicao(id);
+                this.pts = ptsDao.ptsCarregarPacientesInstituicao(id);
             }
             listaEspecialidadesEquipe = eDao.listarEspecialidadesPacienteEmTerapia(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), pts.getPaciente().getId_paciente());
 
@@ -113,7 +114,7 @@ public class PtsController implements Serializable {
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             idParametroEndereco = id;
-            statusPts = pDao.verificarStatusPts(id);
+            statusPts = ptsDao.verificarStatusPts(id);
             
             pts = (Pts) SessionUtil.resgatarDaSessao("pts");
             pts.setUltimaDataVencimento(pts.getDataVencimento());
@@ -131,7 +132,7 @@ public class PtsController implements Serializable {
 
     public void buscarPtsPacientesAtivos() throws ProjetoException {
         SessionUtil.adicionarBuscaPtsNaSessao(pts.getPrograma(), pts.getGrupo(), null, null, TelasBuscaSessao.PTS.getSigla());
-        listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,filtroApenasPacientesSemPTS, campoBusca, tipoBusca, filtroTurno);
+        listaPts = ptsDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento,filtroApenasPacientesSemPTS, campoBusca, tipoBusca, filtroTurno);
     }
 
     public void limparBusca() {
@@ -292,7 +293,7 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        Integer novoIdPts = pDao.gravarPts(pts, existePts, StatusPTS.ATIVO.getSigla());
+        Integer novoIdPts = ptsDao.gravarPts(pts, existePts, StatusPTS.ATIVO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
@@ -311,7 +312,7 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        Boolean cadastrou = pDao.alterarPts(pts, usuarioLiberacao);
+        Boolean cadastrou = ptsDao.alterarPts(pts, usuarioLiberacao);
 
         if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("PTS alterado com sucesso!", "Sucesso");
@@ -334,7 +335,7 @@ public class PtsController implements Serializable {
             return null;
         }
 
-        Integer novoIdPts = pDao.gravarPts(pts, false, StatusPTS.RENOVADO.getSigla());
+        Integer novoIdPts = ptsDao.gravarPts(pts, false, StatusPTS.RENOVADO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
@@ -351,7 +352,7 @@ public class PtsController implements Serializable {
 
     public void cancelarPts() throws ProjetoException {
 
-        Boolean cancelou = pDao.cancelarPts(rowBean.getId());
+        Boolean cancelou = ptsDao.cancelarPts(rowBean.getId());
 
         if (cancelou) {
             JSFUtil.adicionarMensagemSucesso("PTS cancelado com sucesso!", "Sucesso");
@@ -367,7 +368,7 @@ public class PtsController implements Serializable {
 
         pts.setId(rowBean.getId());
 
-        Boolean desligou = pDao.desligarPts(pts);
+        Boolean desligou = ptsDao.desligarPts(pts);
 
         if (desligou) {
             JSFUtil.adicionarMensagemSucesso("PTS desligado com sucesso!", "Sucesso");
@@ -412,7 +413,40 @@ public class PtsController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou Sem Permissão para liberação!", "Erro!");
         }
-    }    
+    }
+    ///
+    
+    public void cancelarCadastroPtsComAreaExistente() {
+		confirmaCadastroPtsComAreaExistente = false;
+		JSFUtil.fecharDialog("dlgExisteArea");
+		JSFUtil.fecharDialog("dlgSenhaAreaPts");
+		ptsAreaAtual.getFuncionario().setSenha(new String());
+		ptsAreaAtual.getFuncionario().setCpf(new String());
+	}
+    
+    public void confirmarCadastroPtsComAreaExistente() {
+		confirmaCadastroPtsComAreaExistente = true;
+		JSFUtil.fecharDialog("dlgExisteArea");
+	}
+    
+    public void verificarSeExistePtsComEspecialidadeSelecionada() throws ProjetoException {
+    	Boolean existeEspecialidadeSelecionadaNoBanco = ptsDao.verificarSeExistePtsComEspecialidadeSelecionada(ptsAreaAtual.getArea().getCodEspecialidade());
+    	Boolean existeEspecialidadeSelecionadaNaTela = verificaSeExistePtsComEspecialidadeSelecionadaNaTela();
+    	if((existeEspecialidadeSelecionadaNaTela || existeEspecialidadeSelecionadaNoBanco) && !confirmaCadastroPtsComAreaExistente)
+    		JSFUtil.abrirDialog("dlgExisteArea");
+    	else
+    		validarSenhaAdicionarAreaPts();
+    }
+    
+    public Boolean verificaSeExistePtsComEspecialidadeSelecionadaNaTela() {
+    	List<Integer> listaCodigoEspecialidade = new ArrayList<Integer>();
+    	for (PtsArea ptsArea : pts.getListaPtsArea()) {
+			listaCodigoEspecialidade.add(ptsArea.getArea().getCodEspecialidade());
+		}
+    	if(listaCodigoEspecialidade.contains(ptsAreaAtual.getArea().getCodEspecialidade()))
+    		return true;
+    	return false;
+    }
 
     public void validarSenhaAdicionarAreaPts() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
@@ -430,17 +464,18 @@ public class PtsController implements Serializable {
     }
 
     public void abrirDialogDigitacaoSenha() {
+    	confirmaCadastroPtsComAreaExistente = false;
         JSFUtil.abrirDialog("dlgSenhaAreaPts");
     }
 
     public Pts carregarPtsPaciente(Integer codPrograma, Integer codGrupo, Integer codPaciente) throws ProjetoException {
-        return pDao.carregarPtsDoPaciente(codPrograma, codGrupo, codPaciente);
+        return ptsDao.carregarPtsDoPaciente(codPrograma, codGrupo, codPaciente);
     }
 
     public void verificarSeExistePtsParaProgramaGrupoPaciente() throws ProjetoException {
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rowBean.getGerenciarPaciente().getId())) {
-            if (!pDao.verificarSeExistePtsParaProgramaGrupoPaciente(rowBean)) {
+            if (!ptsDao.verificarSeExistePtsParaProgramaGrupoPaciente(rowBean)) {
                 renderizarBotaoNovo = true;
             }
         }
