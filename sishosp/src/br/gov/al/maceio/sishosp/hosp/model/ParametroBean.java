@@ -24,6 +24,7 @@ public class ParametroBean implements Serializable {
     private Date horarioInicioFuncionamento;
     private Date horarioFinalFuncionamento;
     private boolean bloqueiaPorPendenciaEvolucaoAnterior;
+    private Integer validadePadraoLaudo;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -190,5 +191,12 @@ public class ParametroBean implements Serializable {
 	public void setBloqueiaPorPendenciaEvolucaoAnterior(boolean bloqueiaPorPendenciaEvolucaoAnterior) {
 		this.bloqueiaPorPendenciaEvolucaoAnterior = bloqueiaPorPendenciaEvolucaoAnterior;
 	}
-    
+
+	public Integer getValidadePadraoLaudo() {
+		return validadePadraoLaudo;
+	}
+
+	public void setValidadePadraoLaudo(Integer validadePadraoLaudo) {
+		this.validadePadraoLaudo = validadePadraoLaudo;
+	}
 }
