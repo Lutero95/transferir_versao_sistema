@@ -10,7 +10,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="647"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="353"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -55,14 +55,16 @@
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="sexo" class="java.lang.String"/>
+	<parameter name="filtromunicipio" class="java.util.ArrayList"/>
 	<queryString>
-		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,codgrupo,nome), id_paciente, cns, nome, idade,
-cid, municipio, descbairro, codprograma, descprograma, codgrupo, descgrupo,  nome_principal, nome_fantasia, cnes FROM (
+		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,codgrupo,nome), id_paciente, cns, nome, idade, sexo,
+cid, municipio, id_municipio, descbairro, codprograma, descprograma, codgrupo, descgrupo,  nome_principal, nome_fantasia, cnes FROM (
 SELECT DISTINCT p.id_paciente, 
 p.cns, p.nome, 
 (SELECT extract(year from age(p.dtanascimento))) AS idade,
-cid.cid, m.nome AS municipio, b.descbairro, pi.codprograma, pr.descprograma, g.id_grupo codgrupo, g.descgrupo,
-e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2
+cid.cid, m.nome AS municipio, m.id_municipio, b.descbairro, pi.codprograma, pr.descprograma, g.id_grupo codgrupo, g.descgrupo,
+e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2, p.sexo
 FROM hosp.paciente_instituicao pi
 left JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
 left join hosp.cid on cid.cod = l.cid1
@@ -71,7 +73,7 @@ JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
 JOIN hosp.grupo g ON (pi.codgrupo = g.id_grupo)
 LEFT JOIN hosp.municipio m ON (p.codmunicipio = m.id_municipio)
 LEFT JOIN hosp.bairros b ON (p.codbairro = b.id_bairro)
-JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 WHERE pi.status = 'A'
 AND (($P{codprograma} IS NOT NULL AND pi.codprograma=  $P{codprograma}) OR (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
@@ -80,7 +82,8 @@ AND (($P{codunidade} IS NOT NULL AND pi.cod_unidade=  $P{codunidade}) OR (( $P{c
 AND (SELECT extract(year from age(p.dtanascimento))) >= $P{idademinima}
 AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima} 
  order by codprograma, codgrupo, p.nome
-) tabela;]]>
+) tabela  where  ((sexo =  $P{sexo}  ) or ( $P{sexo}  = 'A'))
+and  $X{IN, id_municipio,  filtromunicipio };]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="row_number"/>

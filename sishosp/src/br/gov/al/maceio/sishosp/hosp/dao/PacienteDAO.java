@@ -14,8 +14,10 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
+import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 
 public class PacienteDAO {
     private Connection conexao = null;
@@ -1458,7 +1460,76 @@ public class PacienteDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return pacienteRetorno;
         }
-    }        
+        return pacienteRetorno;
+    }
+    
+    public List<MunicipioBean> listaMunicipiosPacienteAtivo(Integer codigoUnidade, String sexo) throws ProjetoException {
+        PreparedStatement ps = null;
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            String sql = "select distinct m.id_municipio, m.nome, m.uf " + 
+            		"from " + 
+            		"	hosp.paciente_instituicao p " + 
+            		"	join hosp.profissional_dia_atendimento  pda on pda.id_paciente_instituicao  = p.id " + 
+            		"left join hosp.laudo l on " + 
+            		"	(l.id_laudo = p.codlaudo) " + 
+            		"left join hosp.proc pr on " + 
+            		"	(pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) " + 
+            		"left join hosp.pacientes pa on " + 
+            		"	(coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) " + 
+            		"left join hosp.equipe e on " + 
+            		"	(p.codequipe = e.id_equipe) " + 
+            		"left join acl.funcionarios f on " + 
+            		"	(p.codprofissional = f.id_funcionario) " + 
+            		"left join hosp.grupo g on " + 
+            		"	(g.id_grupo = p.codgrupo) " + 
+            		"left join hosp.programa prog on " + 
+            		"	(prog.id_programa = p.codprograma) " + 
+            		"	left join hosp.municipio  m on m.id_municipio  = pa.codmunicipio " + 
+            		"where "; 
+            		
+            if(sexo.equals(ModeloSexo.FEMININO.getSigla()) || sexo.equals(ModeloSexo.MASCULINO.getSigla())) {
+            	sql +="	p.cod_unidade = ? " + 
+                		"	and status = 'A' "+
+                		"   and pa.sexo = ?"+
+                		" order by " + 
+                		"m.nome";
+            }
+            else {
+            	sql +="	p.cod_unidade = ? " + 
+                		"	and status = 'A' "+ 
+                		"order by " + 
+                		"m.nome";
+            }
+            	
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, codigoUnidade);
+            if(sexo.equals(ModeloSexo.FEMININO.getSigla()) || sexo.equals(ModeloSexo.MASCULINO.getSigla()))
+            	ps.setString(2, sexo);
+            ResultSet rs = ps.executeQuery();
+
+            List<MunicipioBean> listaMunicipios = new ArrayList<MunicipioBean>();
+
+            while (rs.next()) {
+            	MunicipioBean municipio = new MunicipioBean();
+            	municipio.setId(rs.getInt("id_municipio"));
+            	municipio.setNome(rs.getString("nome"));
+            	municipio.setUf(rs.getString("uf"));
+                listaMunicipios.add(municipio);
+            }
+            return listaMunicipios;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

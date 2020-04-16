@@ -87,8 +87,18 @@
 						</b:column>
 					</b:row>
 
-
-
+					<b:row>
+						<b:column>
+							<p:selectOneRadio required="true"
+								requiredMessage="Informe o sexo" id="sexo"
+								value="#{RelatoriosController.atributoGenerico2}"
+								unselectable="true">
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Feminino" itemValue="F" />
+								<f:selectItem itemLabel="Masculino" itemValue="M" />
+							</p:selectOneRadio>
+						</b:column>
+					</b:row>
 					
 					<b:row>
 						<b:column>
@@ -128,11 +138,58 @@
 								<b:label value="Acima de" severity="info" />
 								<p:inputText value="#{RelatoriosController.idadeMinima}"
 									size="1" />
-
 							</b:column>
-
 						</b:row>
+						
+						<b:row>
+							<b:column>
+								<p:selectBooleanCheckbox
+									value="#{RelatoriosController.filtrarPorMunicipio}"
+									itemLabel="Filtrar por Município">
+									<p:ajax update="rowMunicipio" />
+								</p:selectBooleanCheckbox>
+							</b:column>
+						</b:row>
+						
+						<b:row id="rowMunicipio">
+							<b:column span="6"
+								rendered="#{RelatoriosController.filtrarPorMunicipio eq true}">
 
+								<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+									value="#{RelatoriosController.listaMunicipiosDePacienteAtivosSelecionados}"
+									var="mun" display="Nenhum Município">
+
+									<h:column>
+										<f:facet name="header">
+                            				Município
+                        				</f:facet>
+										<p:outputLabel value="#{mun.nome}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+                            				UF
+                        				</f:facet>
+										<p:outputLabel value="#{mun.uf}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+                            				Remover
+                        				</f:facet>
+										<p:commandButton update=":frm:rowMunicipio"
+											class="new-btn-acao-table acao-excluir"
+											icon="fa fa-fw fa-remove" title="Remover"
+											action="#{RelatoriosController.removerMunicipioSelecionado(mun)}">
+										</p:commandButton>
+									</h:column>
+								</b:dataTable>
+								
+								<p:commandButton value="Incluir município"
+									update=":formMunicipios" onclick="PF('dlgMun').show();"
+									action="#{PacienteController.buscaMunicipiosDePacientesAtivos(RelatoriosController.atributoGenerico2)}" />
+							</b:column>
+						</b:row>
 					</p:outputPanel>
 
 
@@ -226,7 +283,44 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
+		<p:dialog header="Municípios de Pacientes Ativos" widgetVar="dlgMun"
+			minHeight="40" width="750" resizable="false" modal="true">
+			<h:form id="formMunicipios">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{PacienteController.listaMunicipiosDePacienteAtivos}"
+					var="mun" display="Nenhum Município">
 
+					<h:column>
+						<f:facet name="header">
+                            Município
+                        </f:facet>
+						<p:outputLabel value="#{mun.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            UF
+                        </f:facet>
+						<p:outputLabel value="#{mun.uf}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":frm:rowMunicipio grw"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar"
+							action="#{RelatoriosController.atualizaListaMunicipiosDePacientesAtivosSelecionados(PacienteController.municipioPacienteAtivoSelecionado)}"
+							oncomplete="PF('dlgMun').hide();">
+							<f:setPropertyActionListener value="#{mun}"
+								target="#{PacienteController.municipioPacienteAtivoSelecionado}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 
