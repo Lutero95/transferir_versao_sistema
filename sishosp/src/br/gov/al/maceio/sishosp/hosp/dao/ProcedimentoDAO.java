@@ -1397,19 +1397,19 @@ public class ProcedimentoDAO {
     }
     
     public Integer buscaMesAtual(Connection conexao) throws ProjetoException, SQLException {
-        Integer anoAtual = null;
+        Integer mesAtual = null;
         String sql = "select extract(month from current_date) as mes_atual";
         try {
         	PreparedStatement ps = conexao.prepareStatement(sql);          
             ResultSet rs = ps.executeQuery();
             if(rs.next())
-            	anoAtual = rs.getInt("mes_atual");
+            	mesAtual = rs.getInt("mes_atual");
         } catch (Exception ex) {
         	conexao.rollback();
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
-        return anoAtual;
+        return mesAtual;
     }
     
     public Integer buscaAnoAtual(Connection conexao) throws ProjetoException, SQLException {
