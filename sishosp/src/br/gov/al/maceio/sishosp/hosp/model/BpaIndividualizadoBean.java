@@ -19,7 +19,7 @@ public class BpaIndividualizadoBean {
 	private String prdQt;
 	private String prdCaten;
 	private String prdNaut;
-	private String prdOrg;
+	private final String prdOrg = "BPA";
 	private String prdNmpac;
 	private String prdDtnasc;
 	private String prdRaca;
@@ -157,9 +157,6 @@ public class BpaIndividualizadoBean {
 	}
 	public String getPrdOrg() {
 		return prdOrg;
-	}
-	public void setPrdOrg(String prdOrg) {
-		this.prdOrg = prdOrg;
 	}
 	public String getPrdNmpac() {
 		return prdNmpac;

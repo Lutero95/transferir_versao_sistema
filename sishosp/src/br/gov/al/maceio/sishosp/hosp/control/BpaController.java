@@ -22,6 +22,11 @@ import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 @ViewScoped
 public class BpaController {
 	
+	private static final int MES_MINIMO_COMPETENCIA_PARA_INE = 8;
+	private static final int ANO_MINIMO_COMPETENCIA_PARA_INE = 2015;
+	private static final int MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO = 999;
+	private static final int MAXIMO_DE_REGISTROS_LINHA_INDIVIDUALIZADO = 99;
+	
 	private BpaDAO bpaDAO = new BpaDAO();
 	private BpaCabecalhoBean bpaCabecalho = new BpaCabecalhoBean();
 	private List<BpaIndividualizadoBean> listaDeBpaIndividualizado;
@@ -48,17 +53,22 @@ public class BpaController {
 	}
 
 	public void gerarLayoutBpaImportacao() throws ProjetoException {
-		this.linhasLayoutImportacao.add(bpaCabecalho.toString());
-		buscaBpasIndividualizadosDoProcedimento("02");
-		adicionaCaracteresEmCamposOndeTamanhoNaoEhValido();
-		adicionarLinhasBpaIndividualizado();
-		String extensao = bpaDAO.buscaExtencaoArquivoPeloMesAtual();
-		Path file = Paths.get(PASTA_RAIZ+"BPA_layout_Importacao"+extensao);
+
 		try {
+			this.linhasLayoutImportacao.add(bpaCabecalho.toString());
+			buscaBpasIndividualizadosDoProcedimento("02");
+			adicionaCaracteresEmCamposOndeTamanhoNaoEhValido();
+			adicionarLinhasBpaIndividualizado();
+			String extensao = bpaDAO.buscaExtencaoArquivoPeloMesAtual();
+			String caminhoIhArquivo = PASTA_RAIZ+"BPA_layout_Importacao"+extensao; 
+			Path file = Paths.get(caminhoIhArquivo);
 			Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
+			JSFUtil.adicionarMensagemSucesso("Layout Gerado com successo na pasta: "+caminhoIhArquivo, "");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
+		} catch (ProjetoException pe) {
+			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
 	}
 	
@@ -66,13 +76,31 @@ public class BpaController {
 		this.listaDeBpaIndividualizado = bpaDAO.carregarParametro(codigoInstrumentoRegistro);
 	}
 	
-	public void adicionaCaracteresEmCamposOndeTamanhoNaoEhValido() {
-		List<BpaIndividualizadoBean> listaBpaIndividualizadoAux = new ArrayList<BpaIndividualizadoBean>();
-		listaBpaIndividualizadoAux.addAll(this.listaDeBpaIndividualizado);
+	public void geraNumeroDaFolhaIndividualizado() {
+		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
+		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
+				
+		List<String> listaCnsDosMedicos = retornaUnicamenteCnsDeCadaMedico();
+		
+		
+	}
+
+	private List<String> retornaUnicamenteCnsDeCadaMedico() {
+		List<String> listaCnsDosMedicos = new ArrayList<String>(); 
+		for(BpaIndividualizadoBean individualizado : this.listaDeBpaIndividualizado) {
+			if(!listaCnsDosMedicos.contains(individualizado.getPrdCnsmed()))
+				listaCnsDosMedicos.add(individualizado.getPrdCnsmed());
+		}
+		return listaCnsDosMedicos;
+	}
+	
+	public void adicionaCaracteresEmCamposOndeTamanhoNaoEhValido() throws ProjetoException {
+		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
+		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
 		
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
 		
-		for (BpaIndividualizadoBean individualizado : listaBpaIndividualizadoAux) {
+		for (BpaIndividualizadoBean individualizado : listaBpaIndividualizadoAuxiliar) {
 			individualizado.setPrdCnes(CamposBpaIndividualizados.PRD_CNES.preencheCaracteresRestantes(individualizado.getPrdCnes()));
 			individualizado.setPrdCmp(CamposBpaIndividualizados.PRD_CMP.preencheCaracteresRestantes(individualizado.getPrdCmp()));
 			individualizado.setPrdCnsmed(CamposBpaIndividualizados.PRD_CNSMED.preencheCaracteresRestantes(individualizado.getPrdCnsmed()));
@@ -89,7 +117,6 @@ public class BpaController {
 			individualizado.setPrdQt(CamposBpaIndividualizados.PRD_QT.preencheCaracteresRestantes(individualizado.getPrdQt()));
 			individualizado.setPrdCaten(CamposBpaIndividualizados.PRD_CATEN.preencheCaracteresRestantes(individualizado.getPrdCaten()));
 			individualizado.setPrdNaut(CamposBpaIndividualizados.PRD_NAUT.preencheCaracteresRestantes(individualizado.getPrdNaut()));
-			individualizado.setPrdOrg(CamposBpaIndividualizados.PRD_ORG.preencheCaracteresRestantes(individualizado.getPrdOrg()));
 			individualizado.setPrdNmpac(CamposBpaIndividualizados.PRD_NMPAC.preencheCaracteresRestantes(individualizado.getPrdNmpac()));
 			individualizado.setPrdDtnasc(CamposBpaIndividualizados.PRD_DTNASC.preencheCaracteresRestantes(individualizado.getPrdDtnasc()));
 			individualizado.setPrdRaca(CamposBpaIndividualizados.PRD_RACA.preencheCaracteresRestantes(individualizado.getPrdRaca()));
@@ -108,12 +135,27 @@ public class BpaController {
 			individualizado.setPrdBairroPcnte(CamposBpaIndividualizados.PRD_BAIRRO_PCNTE.preencheCaracteresRestantes(individualizado.getPrdBairroPcnte()));
 			individualizado.setPrdDDtelPcnte(CamposBpaIndividualizados.PRD_DDTEL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdDDtelPcnte()));
 			individualizado.setPrdEmailPcnte(CamposBpaIndividualizados.PRD_EMAIL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdEmailPcnte()));
-			individualizado.setPrdIne(CamposBpaIndividualizados.PRD_INE.preencheCaracteresRestantes(individualizado.getPrdIne()));
+			individualizado.setPrdIne(validaCompetenciaParaPreencherINE(individualizado.getPrdIne(), individualizado.getPrdCmp()));
 			
 			this.listaDeBpaIndividualizado.add(individualizado);
 		}		
 		
 	}
+	
+	public String validaCompetenciaParaPreencherINE(String ine, String competencia) throws ProjetoException {
+		Integer anoCompetencia = Integer.valueOf(competencia.substring(0, 4));
+		Integer mesCompetencia = Integer.valueOf(competencia.substring(4, 6));
+		if (anoCompetencia < ANO_MINIMO_COMPETENCIA_PARA_INE || (anoCompetencia == ANO_MINIMO_COMPETENCIA_PARA_INE
+				&& mesCompetencia < MES_MINIMO_COMPETENCIA_PARA_INE)) {
+			Integer tamanho = 10;
+			ine = new String();
+			while (ine.length() < tamanho) {
+				ine += " ";
+			}
+			return ine;
+		} else
+			return CamposBpaIndividualizados.PRD_INE.preencheCaracteresRestantes(ine);
+	} 
 	
 	public void adicionarLinhasBpaIndividualizado() {
 		for (BpaIndividualizadoBean bpaIndividualizado : this.listaDeBpaIndividualizado) {

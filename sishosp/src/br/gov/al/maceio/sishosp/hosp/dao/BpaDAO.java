@@ -34,42 +34,41 @@ public class BpaDAO {
 
             while (rs.next()) {
             	BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
-            	bpaIndividualizado.setPrdCnes("9971974"); //ok 
-            	bpaIndividualizado.setPrdCmp("202002"); //VALIDAR
-            	bpaIndividualizado.setPrdCnsmed("702104726597892"); //VALIDAR
-            	bpaIndividualizado.setPrdCbo("223810"); //VALIDAR
-            	bpaIndividualizado.setPrdDtaten("20200203"); //ok
-            	bpaIndividualizado.setPrdFlh("001"); // ok VERIFICAR REGRA DESSE Nº QUANDO QUE ELE É ++
-            	bpaIndividualizado.setPrdSeq("01"); //ok VERIFICAR QUANDO O INDICE SERA ++
-            	bpaIndividualizado.setPrdPa("0301070105"); //ok
-            	bpaIndividualizado.setPrdCnspac("94639190"); //ok 
-            	bpaIndividualizado.setPrdSexo("M"); //VALIDAR
-            	bpaIndividualizado.setPrdIbge("270450"); //ok
-            	bpaIndividualizado.setPrdCid("I694"); //VALIDAR
-            	bpaIndividualizado.setPrdIdade("065"); //pk
-            	bpaIndividualizado.setPrdQt("000002"); //ok
-            	bpaIndividualizado.setPrdCaten("01"); //ok
-            	bpaIndividualizado.setPrdNaut("             "); //OK
-            	bpaIndividualizado.setPrdOrg("BPA"); //VALIDAR
-            	bpaIndividualizado.setPrdNmpac("AMARO EUGENIO CHAVES          ");//ok
-            	bpaIndividualizado.setPrdDtnasc("19540405"); //ok
-            	bpaIndividualizado.setPrdRaca("04"); //ok
-            	bpaIndividualizado.setPrdEtnia("    "); // VALIDAR
-            	bpaIndividualizado.setPrdNac("010"); // ok
-            	bpaIndividualizado.setPrdSrv("135"); // ok
-            	bpaIndividualizado.setPrdClf("003");// ok
-            	bpaIndividualizado.setPrdEquipeSeq("        "); // ok
-            	bpaIndividualizado.setPrdEquipeArea("    ");// ok
-            	bpaIndividualizado.setPrdCnpj("              ");// ok
-            	bpaIndividualizado.setPrdCepPcnte("57955000");// ok
-            	bpaIndividualizado.setPrdLogradPcnte("081"); // ok
-            	bpaIndividualizado.setPrdEndPcnte("RUA DA PEIXARIA               ");  //ok
-            	bpaIndividualizado.setPrdComplPcnte("          "); // ok
-            	bpaIndividualizado.setPrdNumPcnte("SN   "); // ok
-            	bpaIndividualizado.setPrdBairroPcnte("CENTRO                        "); // ok
-            	bpaIndividualizado.setPrdDDtelPcnte("           "); // ok 
-            	bpaIndividualizado.setPrdEmailPcnte("                                        "); // ok
-            	bpaIndividualizado.setPrdIne("          "); // VALIDAR
+            	bpaIndividualizado.setPrdCnes("9971974");
+            	bpaIndividualizado.setPrdCmp("202002");
+            	bpaIndividualizado.setPrdCnsmed("702104726597892");
+            	bpaIndividualizado.setPrdCbo("223810");
+            	bpaIndividualizado.setPrdDtaten("20200203");
+            	bpaIndividualizado.setPrdFlh("001"); //  VERIFICAR REGRA DESSE Nº QUANDO QUE ELE É ++
+            	bpaIndividualizado.setPrdSeq("01"); //   VERIFICAR QUANDO O INDICE SERA ++
+            	bpaIndividualizado.setPrdPa("0301070105"); 
+            	bpaIndividualizado.setPrdCnspac("94639190"); 
+            	bpaIndividualizado.setPrdSexo("M"); 
+            	bpaIndividualizado.setPrdIbge("270450");
+            	bpaIndividualizado.setPrdCid("I694");
+            	bpaIndividualizado.setPrdIdade("065");
+            	bpaIndividualizado.setPrdQt("000002");
+            	bpaIndividualizado.setPrdCaten("01");
+            	bpaIndividualizado.setPrdNaut("             ");
+            	bpaIndividualizado.setPrdNmpac("MANOEL HENRIQUE AMORIM DOS SANTOS"); //"AMARO EUGENIO CHAVES          "
+            	bpaIndividualizado.setPrdDtnasc("19540405");
+            	bpaIndividualizado.setPrdRaca("04");
+            	bpaIndividualizado.setPrdEtnia("    ");
+            	bpaIndividualizado.setPrdNac("010");
+            	bpaIndividualizado.setPrdSrv("135");
+            	bpaIndividualizado.setPrdClf("003");
+            	bpaIndividualizado.setPrdEquipeSeq("        ");
+            	bpaIndividualizado.setPrdEquipeArea("    ");
+            	bpaIndividualizado.setPrdCnpj("              ");
+            	bpaIndividualizado.setPrdCepPcnte("57955000");
+            	bpaIndividualizado.setPrdLogradPcnte("081");
+            	bpaIndividualizado.setPrdEndPcnte("RUA DA PEIXARIA               ");
+            	bpaIndividualizado.setPrdComplPcnte("          ");
+            	bpaIndividualizado.setPrdNumPcnte("SN   ");
+            	bpaIndividualizado.setPrdBairroPcnte("CENTRO                        ");
+            	bpaIndividualizado.setPrdDDtelPcnte("           ");
+            	bpaIndividualizado.setPrdEmailPcnte("                                        ");
+            	bpaIndividualizado.setPrdIne("          ");
             	listaDeBpaIndividualizado.add(bpaIndividualizado);
             }
         } catch (Exception ex) {

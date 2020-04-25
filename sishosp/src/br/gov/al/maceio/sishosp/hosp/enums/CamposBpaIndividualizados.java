@@ -1,58 +1,64 @@
 package br.gov.al.maceio.sishosp.hosp.enums;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.interfaces.IBpaIndividualizado;
+import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 
 public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 
 	
     PRD_CNES { 
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 7;
-    		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo))
+    			throw new ProjetoException("O campo CNES não poder ser nulo no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
 
     },
     
     PRD_CMP {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 6;
-    		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo) || campo.length() < tamanho)
+    			throw new ProjetoException("O campo COMPETENCIA está nulo ou inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}
     },
     
     PRD_CNSMED {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 15;
-    		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo) || campo.length() < tamanho)
+    			throw new ProjetoException("O campo CNS DO MÉDICO está nulo ou inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}    	
     },
     
     PRD_CBO {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 6;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo) || campo.length() < tamanho)
+    			throw new ProjetoException("O campo CBO está nulo ou inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}    	
     },
     
     PRD_DTATEN {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 8;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		else if (campo.length() < tamanho)
+    			throw new ProjetoException("O campo DATA DE ATENDIMENTO é inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}    	
     },
@@ -61,6 +67,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 3;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
@@ -69,6 +76,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 2;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
@@ -77,6 +85,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 10;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
@@ -87,14 +96,16 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
-    		
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
     
-    PRD_SEXO {//**
-    	public String preencheCaracteresRestantes(String campo) {
+    PRD_SEXO {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		if (!campo.equals(ModeloSexo.MASCULINO.getSigla()) && !campo.equals(ModeloSexo.FEMININO.getSigla()))
+    			throw new ProjetoException("O campo SEXO é inválido no BPA Individualizado");
     		return campo;
     	}
     },
@@ -105,16 +116,20 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
     
     PRD_CID {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
 			Integer tamanho = 4;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		else if (campo.length() < tamanho)
+    			throw new ProjetoException("O campo CID é inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}
     },
@@ -123,6 +138,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 3;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -131,6 +147,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 6;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -141,6 +158,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -151,31 +169,29 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
-    },
-    
-    PRD_ORG {//**
-    	public String preencheCaracteresRestantes(String campo) {
-    		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		return campo;
-    	}
     },
     
     PRD_NMPAC {
     	public String preencheCaracteresRestantes(String campo) {
 			Integer tamanho = 30;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}    	
     },
     
     PRD_DTNASC {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 8;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		else if (campo.length() < tamanho)
+    			throw new ProjetoException("O campo DATA DE NASCIMENTO é inválido no BPA Individualizado");
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}
     },
@@ -186,17 +202,17 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
     
-    PRD_ETNIA {//**
+    PRD_ETNIA {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 4;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
-    		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
+    		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}
     },
     
@@ -206,7 +222,8 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
-			return campo;
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
+			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
     
@@ -216,6 +233,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -226,6 +244,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
@@ -236,6 +255,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -246,6 +266,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -256,6 +277,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
@@ -266,6 +288,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -276,6 +299,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -284,6 +308,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 30;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}    	
     },
@@ -292,16 +317,18 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 10;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}    	
     },
     
-    PRD_NUM_PCNTE {//**
+    PRD_NUM_PCNTE {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 5;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return SN;
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}    	
     },
@@ -310,6 +337,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 30;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}
     },
@@ -320,6 +348,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
     		if(campo.isEmpty())
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}    	
     },
@@ -328,19 +357,21 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 40;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
     	}    	
     },
     
-    PRD_INE {
+ 	PRD_INE {    	
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 10;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
-    			return retornaCampoComEspacosAhDireita(campo, tamanho);
-    		return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
-    	}    	
-    };
+   			if(campo.isEmpty())
+   				return retornaCampoComEspacosAhDireita(campo, tamanho);
+   			campo = excluiCaracteresExcedentes(campo, tamanho);
+   			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
+   		}    	
+   	};
 	
 	private static final String SN = "SN   ";
 	
@@ -365,5 +396,13 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
 		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(string))
 			return new String();
 		return string;
+	}
+	
+	protected String excluiCaracteresExcedentes(String campo, Integer tamanho) {
+		if(campo.length() > tamanho) {
+			campo = campo.substring(0, tamanho);
+			return campo;
+		}
+		return campo;
 	}
 }

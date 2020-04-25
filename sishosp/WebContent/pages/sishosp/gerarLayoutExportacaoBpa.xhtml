@@ -9,7 +9,8 @@
     <ui:define name="content">
 
         <h:form id="frmPrincipal">
-        	<p:commandButton value="Gerar layout" action="#{bpaController.gerarLayoutBpaImportacao()}"/>        
+        	<p:messages id="messages" showDetail="true" closable="true"/>
+        	<p:commandButton value="Gerar layout" action="#{bpaController.gerarLayoutBpaImportacao()}" update="messages"/>        
 		</h:form>
 		
 	</ui:define>
