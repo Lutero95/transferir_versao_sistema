@@ -366,26 +366,6 @@ public class AtendimentoController implements Serializable {
 
     public List<AtendimentoBean> listarAtendimentosEquipe()
             throws ProjetoException {
-
-        /*
-    	if (atendimento.getStatus() != null) {
-            if (!atendimento.getStatus().equals("")) {
-
-                for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-                	if ((!VerificadorUtil.verificarSeObjetoNulo(listAtendimentosEquipe.get(i).getId1())) && (!VerificadorUtil.verificarSeObjetoNulo(atendimentoLista
-                            ))) {
-                    if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-                            .getId1()) {
-                        listAtendimentosEquipe.get(i).setStatus(
-                                atendimento.getStatus());
-                        ;
-                    }
-                }
-                }
-            }
-        }
-
-        */
         if (procedimento.getIdProc() != null) {
             if (procedimento.getIdProc() > 0) {
 

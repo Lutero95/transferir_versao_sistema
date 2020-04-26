@@ -241,7 +241,7 @@ public class AtendimentoDAO {
 
 				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
 						+ " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao, horario_atendimento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);";
-				if ((lista.get(i).getStatus() == null) || (lista.get(i).getStatus().equals(""))) {
+				if ((lista.get(i).getStatusAnterior() == null) || (lista.get(i).getStatusAnterior().equals(""))) {
 				PreparedStatement stmt2 = con.prepareStatement(sql2);
 				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
 				stmt2.setInt(2, idAtendimento);
@@ -842,6 +842,7 @@ public class AtendimentoDAO {
 				at.getFuncionario().setId(rs.getLong("codmedico"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
 				at.setStatus(rs.getString("situacao"));
+				at.setStatusAnterior(rs.getString("situacao"));
 				at.setEvolucao(rs.getString("evolucao"));
 				at.setAvaliacao(rs.getBoolean("avaliacao"));
 				at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
