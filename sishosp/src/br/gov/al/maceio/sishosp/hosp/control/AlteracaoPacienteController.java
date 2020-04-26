@@ -723,10 +723,15 @@ public class AlteracaoPacienteController implements Serializable {
 
     }
     
-    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() {
+    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() throws ProjetoException {
     	Boolean dataValida = null;
-    	if (insercaoParaLaudo.getLaudo().getId()!=null)
+    	if ((insercaoParaLaudo.getLaudo().getId()!=null) && (insercao.isInsercaoPacienteSemLaudo()==false))
     	dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    	else
+    	if ((insercao.isInsercaoPacienteSemLaudo())) {
+    		dataValida = validarDataLaudoPacienteSemLaudo();
+    		
+    	}
     	else
     		dataValida = true;
     	if(!dataValida)
@@ -815,7 +820,8 @@ public class AlteracaoPacienteController implements Serializable {
        
     }    
     
-    public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
+    public boolean validarDataLaudoPacienteSemLaudo() throws ProjetoException {
+    	boolean rst = false;
     	Date dataSolicitacaoPacienteTerapia = insercao.getDataSolicitacao();
     	Date dataVigenciaFinalLaudo = insercao.getLaudo().getVigenciaFinal();
     	if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)){
@@ -823,8 +829,14 @@ public class AlteracaoPacienteController implements Serializable {
             insercao.setLaudo(null);
             insercaoParaLaudo.setLaudo(null);
         }
-        
+    	else 
+    		rst = true;
+        return rst;
     }
+    
+    public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
+    	validarDataLaudoPacienteSemLaudo();
+    }    
 
     public void carregarLaudoPaciente() throws ProjetoException {
         insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()

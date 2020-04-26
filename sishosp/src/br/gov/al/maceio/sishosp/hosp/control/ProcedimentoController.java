@@ -64,8 +64,8 @@ public class ProcedimentoController implements Serializable {
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclusão de Procedimento";
-    private static final String CABECALHO_ALTERACAO = "Alteração de Procedimento";
+    private static final String CABECALHO_INCLUSAO = "Inclusï¿½o de Procedimento";
+    private static final String CABECALHO_ALTERACAO = "Alteraï¿½ï¿½o de Procedimento";
     //SIGTAP
     private static final String VALOR_PADRAO_PARAMETRO_NAO_USADO = "0";
     private static final Integer QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO = 5;
@@ -340,7 +340,7 @@ public class ProcedimentoController implements Serializable {
     public void novaCargaSigtap() throws ProjetoException {
     	listarProcedimentos();
     	if(this.listaProcedimentos.isEmpty())
-    		JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
+    		JSFUtil.adicionarMensagemErro("Nï¿½o hï¿½ procedimentos cadastrados", "Erro");
 		else {
 			if (!verificaSeHouveCargaDoSigtapEsteMes()) {	
 
@@ -361,9 +361,9 @@ public class ProcedimentoController implements Serializable {
 					catch (SOAPFaultException soape) {
 						JSFUtil.adicionarMensagemErro
 						("Erro, algo de inesperado ocorreu durante a carga do procedimento "+this.listaProcedimentos.get(i).getCodProc()
-								+" verifique se o código do procedimento está correto"
-								+ " e execute a alteração do procedimento para que seja possível realizar uma nova"
-								+ " carga do SIGTAP este mês", "");
+								+" verifique se o cï¿½digo do procedimento estï¿½ correto"
+								+ " e execute a alteraï¿½ï¿½o do procedimento para que seja possï¿½vel realizar uma nova"
+								+ " carga do SIGTAP este mï¿½s", "");
 						soape.printStackTrace();
 					}
 					catch(SQLException sqle) {
@@ -388,7 +388,7 @@ public class ProcedimentoController implements Serializable {
     		Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
     		if(houveCargaEsteMes) {
     			fecharDialogAvisoCargaSigtap();
-        		JSFUtil.adicionarMensagemAdvertencia("O sistema está atualizado, uma carga já foi executada este mês", "");
+        		JSFUtil.adicionarMensagemAdvertencia("O sistema estï¿½ atualizado, uma carga jï¿½ foi executada este mï¿½s", "");
         		return houveCargaEsteMes;
         	}
 		} catch (Exception e) {
@@ -505,6 +505,7 @@ public class ProcedimentoController implements Serializable {
     	
 		RequestDetalharProcedimento requestDetalharProcedimento = new RequestDetalharProcedimento();
 		requestDetalharProcedimento.setCodigoProcedimento(procedimento.getCodProc());
+		requestDetalharProcedimento.setCompetencia("202004");
 
 		DetalhesAdicionais detalhesAdicionais = new DetalhesAdicionais();
 

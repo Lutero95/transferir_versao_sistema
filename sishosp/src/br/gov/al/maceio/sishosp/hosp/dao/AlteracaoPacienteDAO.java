@@ -81,10 +81,12 @@ public class AlteracaoPacienteDAO {
 					ip.getLaudo().getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
 					ip.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
 					ip.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+					ip.setInsercaoPacienteSemLaudo(false);
 				} else
 				{
 					ip.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
 					ip.getPaciente().setNome(rs.getString("nome"));	
+					ip.setInsercaoPacienteSemLaudo(true);
 				}
 					ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				ip.getEquipe().setDescEquipe(rs.getString("descequipe"));

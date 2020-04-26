@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class IdadeLimiteType {
 
-    protected int quantidadeLimite;
+    protected Integer quantidadeLimite;
     @XmlElement(required = true)
     @XmlSchemaType(name = "string")
     protected UnidadeLimiteType unidadeLimite;
@@ -51,7 +51,7 @@ public class IdadeLimiteType {
      * Obt�m o valor da propriedade quantidadeLimite.
      * 
      */
-    public int getQuantidadeLimite() {
+    public Integer getQuantidadeLimite() {
         return quantidadeLimite;
     }
 
@@ -59,7 +59,7 @@ public class IdadeLimiteType {
      * Define o valor da propriedade quantidadeLimite.
      * 
      */
-    public void setQuantidadeLimite(int value) {
+    public void setQuantidadeLimite(Integer value) {
         this.quantidadeLimite = value;
     }
 

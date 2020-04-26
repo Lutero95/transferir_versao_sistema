@@ -1077,15 +1077,32 @@ public class ProcedimentoDAO {
 			}
 			stm.setString(7, procedimentoMensalDTO.getProcedimentoMensal().getSexoPermitido());
 			
-			if(VerificadorUtil.verificarSeObjetoNulo(procedimentoMensalDTO.getProcedimentoMensal().getQuantidadeMaxima()))
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getQuantidadeMaxima()))
 				stm.setNull(8, Types.NULL);
 			else	
 				stm.setInt(8, procedimentoMensalDTO.getProcedimentoMensal().getQuantidadeMaxima());
 			
-			stm.setInt(9, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite());
+			if ( (procedimentoMensalDTO==null) || (procedimentoMensalDTO.getProcedimentoMensal()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite()==null))
+				stm.setNull(9, Types.NULL);
+			else	
+				stm.setInt(9, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite());
+			
+
+			if ( (procedimentoMensalDTO==null) || (procedimentoMensalDTO.getProcedimentoMensal()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getUnidadeLimite().name()==null))
+				stm.setNull(10, Types.NULL);
+			else
 			stm.setString(10, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getUnidadeLimite().name());
-			stm.setInt(11, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getQuantidadeLimite());
-			stm.setString(12, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getUnidadeLimite().name());
+			
+			if ((VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida())) || (VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getQuantidadeLimite())))
+				stm.setNull(11, Types.NULL);
+			else	
+				stm.setInt(11, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getQuantidadeLimite());
+			
+			
+			if ( (procedimentoMensalDTO==null) || (procedimentoMensalDTO.getProcedimentoMensal()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getUnidadeLimite().name()==null))			
+				stm.setNull(12, Types.NULL);
+			else
+				stm.setString(12, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getUnidadeLimite().name());
 			stm.setDouble(13, procedimentoMensalDTO.getProcedimentoMensal().getValorSA().doubleValue());
 			stm.setDouble(14, procedimentoMensalDTO.getProcedimentoMensal().getValorSH().doubleValue());
 			stm.setDouble(15, procedimentoMensalDTO.getProcedimentoMensal().getValorSP().doubleValue());
@@ -1103,6 +1120,10 @@ public class ProcedimentoDAO {
 			if(rs.next())
 				idProcedimentoMensal = rs.getInt("id");
 		} catch (Exception ex) {
+			System.out.println("(procedimentoMensalDTO"+procedimentoMensalDTO);
+			System.out.println("(procedimentoMensalDTO.getProcedimentoMensal()"+procedimentoMensalDTO.getProcedimentoMensal());
+System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida()"+procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida());
+//System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite()"+procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite());
 			conexao.rollback();
 			ex.printStackTrace();
 			throw new ProjetoException(ex);
