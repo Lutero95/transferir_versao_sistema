@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -13,62 +14,110 @@ import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 
 public class BpaDAO {
 
-    public List<BpaIndividualizadoBean> carregarParametro(String codigoInstrumentoRegistro) throws ProjetoException {
+	private static final String CODIGO_BPA_INDIVIDUALIZADO =  "02";
+	private static final String CODIGO_BPA_CONSOLIDADO =  "01";
+	/* ESTAS CONSTANTES SERAM SUBSTITUÍDAS DEPOIS POR DADOS DO BANCO */
+	private static final String PRD_CATEN = "01";
+	private static final String PRD_NAUT = "             ";
+	private static final String PRD_ETNIA = "    ";
+	private static final String PRD_NAC = "010";
+	private static final String PRD_SRV = "135";
+	private static final String PRD_CLF = "003";
+	private static final String PRD_EQUIPE_SEQ = "        ";
+	private static final String PRD_EQUIPE_AREA = "    ";
+	private static final String PRD_CNPJ = "              ";
+	private static final String PRD_LOGRAD_PCNTE = "   ";
+	private static final String PRD_DDTEL_PCNT = "           ";
+	private static final String PRD_INE = "          ";
+	
+    public List<BpaIndividualizadoBean> carregarParametro(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
-        String sql = "select * from hosp.atendimentos1 a1 " + 
-        		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
-        		" join hosp.pacientes p on p.id_paciente  = a.codpaciente " + 
-        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
-        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
+        String sql = "select count(*) qtdproc,  " + 
+        		"  proc.codproc, emp.cnes, pm.competencia, func.cns cnsprofissional, cbo.codigo cbo, proc.codproc, p.cns cnspaciente, " + 
+        		" p.sexo, substring(to_char(m.codigo,'9999999')	,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, " + 
+        		" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, " + 
+        		" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  " + 
+        		" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento  " + 
+        		" from hosp.atendimentos1 a1  " + 
+        		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  " + 
+        		" left join hosp.cbo on cbo.id = func.codcbo  " + 
+        		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  " + 
+        		" join hosp.pacientes p on p.id_paciente  = a.codpaciente  " + 
+        		" left join hosp.bairros on bairros.id_bairro = p.codbairro  " + 
+        		" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  " + 
+        		" left join hosp.raca on raca.id_raca = p.codraca  " + 
+        		" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  " + 
+        		" join hosp.proc on proc.id = a1.codprocedimento  " + 
+        		" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  " + 
+        		" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  " + 
+        		" left join hosp.cid on cid.cod = l.cid1  " + 
+        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  " + 
+        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  " + 
+        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " + 
+        		" cross join hosp.empresa emp " + 
         		" where a1.situacao ='A' " + 
-        		" and ir.codigo = ? ";
+        		" and a.dtaatende  between ? and ? " + 
+        		" and ir.codigo = ? " + 
+        		" and pm.competencia = ? " + 
+        		" group by " + 
+        		" proc.codproc, emp.cnes, pm.competencia, func.cns , cbo.codigo, proc.codproc, p.cns , " + 
+        		" p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , " + 
+        		" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , " + 
+        		" p.logradouro , p.complemento , p.numero , " + 
+        		" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento " + 
+        		"order by func.cns, p.cns ";
         
         Connection con = ConnectionFactory.getConnection();
        
         try {
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, codigoInstrumentoRegistro);
+            ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
+            ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+            ps.setString(3, CODIGO_BPA_INDIVIDUALIZADO);
+            ps.setString(4, competencia);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
             	BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
-            	bpaIndividualizado.setPrdCnes("9971974");
-            	bpaIndividualizado.setPrdCmp("202002");
-            	bpaIndividualizado.setPrdCnsmed("702104726597892");
-            	bpaIndividualizado.setPrdCbo("223810");
-            	bpaIndividualizado.setPrdDtaten("20200203");
+            	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
+            	bpaIndividualizado.setPrdCmp(rs.getString("competencia"));
+            	bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));
+            	bpaIndividualizado.setPrdCbo(rs.getString("cbo"));
+            	bpaIndividualizado.setPrdDtaten(rs.getDate("dtaatende").toString().replaceAll("-", ""));
             	bpaIndividualizado.setPrdFlh("001"); //  VERIFICAR REGRA DESSE Nº QUANDO QUE ELE É ++
             	bpaIndividualizado.setPrdSeq("01"); //   VERIFICAR QUANDO O INDICE SERA ++
-            	bpaIndividualizado.setPrdPa("0301070105"); 
-            	bpaIndividualizado.setPrdCnspac("94639190"); 
-            	bpaIndividualizado.setPrdSexo("M"); 
-            	bpaIndividualizado.setPrdIbge("270450");
-            	bpaIndividualizado.setPrdCid("I694");
-            	bpaIndividualizado.setPrdIdade("065");
-            	bpaIndividualizado.setPrdQt("000002");
-            	bpaIndividualizado.setPrdCaten("01");
-            	bpaIndividualizado.setPrdNaut("             ");
-            	bpaIndividualizado.setPrdNmpac("MANOEL HENRIQUE AMORIM DOS SANTOS"); //"AMARO EUGENIO CHAVES          "
-            	bpaIndividualizado.setPrdDtnasc("19540405");
-            	bpaIndividualizado.setPrdRaca("04");
-            	bpaIndividualizado.setPrdEtnia("    ");
-            	bpaIndividualizado.setPrdNac("010");
-            	bpaIndividualizado.setPrdSrv("135");
-            	bpaIndividualizado.setPrdClf("003");
-            	bpaIndividualizado.setPrdEquipeSeq("        ");
-            	bpaIndividualizado.setPrdEquipeArea("    ");
-            	bpaIndividualizado.setPrdCnpj("              ");
-            	bpaIndividualizado.setPrdCepPcnte("57955000");
-            	bpaIndividualizado.setPrdLogradPcnte("081");
-            	bpaIndividualizado.setPrdEndPcnte("RUA DA PEIXARIA               ");
-            	bpaIndividualizado.setPrdComplPcnte("          ");
-            	bpaIndividualizado.setPrdNumPcnte("SN   ");
-            	bpaIndividualizado.setPrdBairroPcnte("CENTRO                        ");
-            	bpaIndividualizado.setPrdDDtelPcnte("           ");
-            	bpaIndividualizado.setPrdEmailPcnte("                                        ");
-            	bpaIndividualizado.setPrdIne("          ");
+            	bpaIndividualizado.setPrdPa(rs.getString("codproc")); 
+            	bpaIndividualizado.setPrdCnspac(rs.getString("cnspaciente")); 
+            	bpaIndividualizado.setPrdSexo(rs.getString("sexo")); 
+            	bpaIndividualizado.setPrdIbge(String.valueOf(rs.getInt("codibgemun")));
+            	bpaIndividualizado.setPrdCid(rs.getString("cid"));
+            	bpaIndividualizado.setPrdIdade(String.valueOf(rs.getInt("idade")));
+            	bpaIndividualizado.setPrdQt(String.valueOf(rs.getInt("qtdproc")));
+            	/* POSTERIORMENTE ALIMENTAR OS DADOS QUE RECEBEM CONSTRANTES COM DADOS DO BANCO */
+            	bpaIndividualizado.setPrdCaten(PRD_CATEN);
+            	bpaIndividualizado.setPrdNaut(PRD_NAUT);
+            	
+            	bpaIndividualizado.setPrdNmpac(rs.getString("nomepaciente"));
+            	bpaIndividualizado.setPrdDtnasc(rs.getString("dtanascimento").toString().replaceAll("-", ""));
+            	bpaIndividualizado.setPrdRaca(rs.getString("codraca"));
+            	
+            	bpaIndividualizado.setPrdEtnia(PRD_ETNIA);
+            	bpaIndividualizado.setPrdNac(PRD_NAC);
+            	bpaIndividualizado.setPrdSrv(PRD_SRV);
+            	bpaIndividualizado.setPrdClf(PRD_CLF);
+            	bpaIndividualizado.setPrdEquipeSeq(PRD_EQUIPE_SEQ);
+            	bpaIndividualizado.setPrdEquipeArea(PRD_EQUIPE_AREA);
+            	bpaIndividualizado.setPrdCnpj(PRD_CNPJ);
+            	bpaIndividualizado.setPrdCepPcnte(rs.getString("cep"));
+            	bpaIndividualizado.setPrdLogradPcnte(PRD_LOGRAD_PCNTE);
+            	bpaIndividualizado.setPrdEndPcnte(rs.getString("enderecopaciente"));
+            	bpaIndividualizado.setPrdComplPcnte(rs.getString("complendpaciente"));
+            	bpaIndividualizado.setPrdNumPcnte(rs.getString("numendpaciente"));
+            	bpaIndividualizado.setPrdBairroPcnte(rs.getString("bairropaciente"));
+            	bpaIndividualizado.setPrdDDtelPcnte(PRD_DDTEL_PCNT);
+            	bpaIndividualizado.setPrdEmailPcnte(rs.getString("email"));
+            	bpaIndividualizado.setPrdIne(PRD_INE);
             	listaDeBpaIndividualizado.add(bpaIndividualizado);
             }
         } catch (Exception ex) {
@@ -85,7 +134,7 @@ public class BpaDAO {
     }
     
     public String buscaExtencaoArquivoPeloMesAtual() throws ProjetoException{
-        String extensao = "";
+        String extensao = new String();
         String sql = " SELECT CASE " + 
         		" WHEN extract(month from current_date) = 1  then '.JAN' " + 
         		" WHEN  extract(month from current_date) = 2 THEN '.FEV' " + 
@@ -120,4 +169,36 @@ public class BpaDAO {
         }
         return extensao;
     }
+
+	public List<String> listarCompetencias() {
+		String sql = "select distinct pm.competencia from hosp.procedimento_mensal pm ";
+		List<String> listaCompetencias = new ArrayList<String>();
+		Connection con = null;
+        try {
+        	con = ConnectionFactory.getConnection();	
+        	PreparedStatement ps = con.prepareStatement(sql);          
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	String competencia = rs.getString("competencia");
+            	listaCompetencias.add(competencia);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaCompetencias;
+	}
+
+	private String formataCompetenciaParaExibicaoNaTela(String competencia) {
+		String diaCompetencia = competencia.substring(4, 6);
+		String anoCompetencia = competencia.substring(0, 4);
+		String competenciaFormatada = diaCompetencia+"/"+anoCompetencia;
+		return competenciaFormatada;
+	}
 }

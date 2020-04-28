@@ -1,17 +1,40 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
-    
-    <ui:define name="content">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-        <h:form id="frmPrincipal">
-        	<p:messages id="messages" showDetail="true" closable="true"/>
-        	<p:commandButton value="Gerar layout" action="#{bpaController.gerarLayoutBpaImportacao()}" update="messages"/>        
-		</h:form>
-		
+	<ui:define name="content">
+	
+	    <f:metadata>
+            <f:viewAction action="#{bpaController.listarCompetencias()}"/>
+        </f:metadata>
+	
+		<div class="panel panel-primary top-primary">
+
+			<h:form id="frmPrincipal">
+				<p:messages id="messages" showDetail="true" closable="true" />
+				<div class="panel-body table-body sub-table-body">
+					<b:row>
+						<b:column span="2" class="data-size">
+							<b:label value="Competencia" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{bpaController.competencia}">
+								<f:selectItems
+									value="#{bpaController.listaCompetencias}"
+									var="comp" itemLabel="#{comp}"
+									itemValue="#{comp}" />
+							</b:selectOneMenu>
+						</b:column>
+					</b:row>
+				</div>
+				<p:commandButton value="Gerar Produção"
+					action="#{bpaController.gerarLayoutBpaImportacao()}"
+					update="messages" />
+			</h:form>
+		</div>
 	</ui:define>
 </ui:composition>

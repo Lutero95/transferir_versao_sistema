@@ -32,8 +32,10 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     PRD_CNSMED {
     	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
     		Integer tamanho = 15;
-    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo) || campo.length() < tamanho)
-    			throw new ProjetoException("O campo CNS DO MÉDICO está nulo ou inválido no BPA Individualizado");
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo))
+    			throw new ProjetoException("O campo CNS DO MÉDICO está nulo no BPA Individualizado");
+    		else if (campo.length() < tamanho)
+    			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}    	
@@ -125,10 +127,8 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
 			Integer tamanho = 4;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
+    		if(campo.isEmpty() || (campo.length() < tamanho))
     			return retornaCampoComEspacosAhDireita(campo, tamanho);
-    		else if (campo.length() < tamanho)
-    			throw new ProjetoException("O campo CID é inválido no BPA Individualizado");
     		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return campo;
     	}
@@ -326,7 +326,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     	public String preencheCaracteresRestantes(String campo) {
     		Integer tamanho = 5;
     		campo = retornaStringVaziaQuandoValorEhNulo(campo);
-    		if(campo.isEmpty())
+    		if(campo.isEmpty() || campo.equalsIgnoreCase(SN_NO_BANCO))
     			return SN;
     		campo = excluiCaracteresExcedentes(campo, tamanho);
     		return retornaCampoComEspacosAhDireita(campo, tamanho);
@@ -374,6 +374,7 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
    	};
 	
 	private static final String SN = "SN   ";
+	private static final String SN_NO_BANCO = "S/N";
 	
 	protected String retornaCampoNumericoComZeroAhEsquerda(String campo, Integer tamanho) {
 		StringBuilder stringBuilder = new StringBuilder(campo);

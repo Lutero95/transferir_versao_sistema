@@ -5,7 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -24,7 +28,7 @@ public class BpaController {
 	
 	private static final int MES_MINIMO_COMPETENCIA_PARA_INE = 8;
 	private static final int ANO_MINIMO_COMPETENCIA_PARA_INE = 2015;
-	private static final int MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO = 999;
+	private static final int MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO = 99;
 	private static final int MAXIMO_DE_REGISTROS_LINHA_INDIVIDUALIZADO = 99;
 	
 	private BpaDAO bpaDAO = new BpaDAO();
@@ -32,6 +36,11 @@ public class BpaController {
 	private List<BpaIndividualizadoBean> listaDeBpaIndividualizado;
 	private List<String> linhasLayoutImportacao;
 	private final String PASTA_RAIZ = "C:\\Users\\Public\\Documents\\";
+	
+	private Date dataInicioAtendimento;
+	private Date dataFimAtendimento;
+	private String competencia;
+	private List<String> listaCompetencias;
 	
 	public BpaController() {
 		this.bpaDAO = new BpaDAO();
@@ -51,12 +60,33 @@ public class BpaController {
 		bpaCabecalho.setCbcDstIn("M");
 		bpaCabecalho.setCbcVersao("D02.89    ");
 	}
+	
+	public void listarCompetencias() {
+		this.listaCompetencias = bpaDAO.listarCompetencias();
+		formataCompetenciasParaExibicaoNaTela();
+	}
+	
+	private void formataCompetenciasParaExibicaoNaTela() {
+		List<String> listaCompetenciasAux = new ArrayList<String>();
+		listaCompetenciasAux.addAll(this.listaCompetencias);
+		this.listaCompetencias.clear();
+		for (String competencia : listaCompetenciasAux) {
+			String diaCompetencia = competencia.substring(4, 6);
+			String anoCompetencia = competencia.substring(0, 4);
+			String competenciaFormatada = diaCompetencia+"/"+anoCompetencia;
+			this.listaCompetencias.add(competenciaFormatada);
+		}
+	}
 
 	public void gerarLayoutBpaImportacao() throws ProjetoException {
 
 		try {
 			this.linhasLayoutImportacao.add(bpaCabecalho.toString());
-			buscaBpasIndividualizadosDoProcedimento("02");
+			setaDataInicioIhFimAtendimentoParaIndividualizado(this.competencia);
+			this.competencia = formataCompetenciaParaBanco();
+			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
+			geraNumeroDaFolhaIndividualizado();
+			geraNumeroDaLinhaDaFolhaIndividualizado();
 			adicionaCaracteresEmCamposOndeTamanhoNaoEhValido();
 			adicionarLinhasBpaIndividualizado();
 			String extensao = bpaDAO.buscaExtencaoArquivoPeloMesAtual();
@@ -72,8 +102,36 @@ public class BpaController {
 		}
 	}
 	
-	public void buscaBpasIndividualizadosDoProcedimento(String codigoInstrumentoRegistro) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaDAO.carregarParametro(codigoInstrumentoRegistro);
+	private void setaDataInicioIhFimAtendimentoParaIndividualizado(String competencia) {
+		Integer ano = Integer.valueOf(competencia.substring(3, 7));
+		Integer mes = Integer.valueOf(competencia.substring(0, 2));
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(ano, mes, 1);
+		
+		Integer primeiraDataMes = calendar.getMinimum(Calendar.DAY_OF_MONTH);
+		Integer ultimaDataMes = calendar.getMaximum(Calendar.DAY_OF_MONTH);
+		
+		String dataInicial = ano+"/"+mes+"/"+primeiraDataMes;
+		String dataFinal = ano+"/"+mes+"/"+ultimaDataMes;
+		
+		try {
+			this.dataInicioAtendimento = new SimpleDateFormat("yyyy/MM/dd").parse(dataInicial);
+			this.dataFimAtendimento = new SimpleDateFormat("yyyy/MM/dd").parse(dataFinal);
+		} catch (ParseException e) {
+			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+			e.printStackTrace();
+		}
+	}
+	
+	private String formataCompetenciaParaBanco() {
+		String diaCompetencia = competencia.substring(0, 2);
+		String anoCompetencia = competencia.substring(3, 7);
+		String competenciaFormatada = anoCompetencia+diaCompetencia;
+		return competenciaFormatada; 
+	}
+	
+	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
+		this.listaDeBpaIndividualizado = bpaDAO.carregarParametro(dataInicio, dataFim, competencia);
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
@@ -81,8 +139,45 @@ public class BpaController {
 		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
 				
 		List<String> listaCnsDosMedicos = retornaUnicamenteCnsDeCadaMedico();
-		
-		
+		for (String cnsMedico : listaCnsDosMedicos) {
+			Integer quantidadeRegistrosPorFolha = 0;
+			Integer numeroFolhaBpaIndividualizado = 1;
+			for(int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
+				if(this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedico)) {
+					if(quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO) { 
+						this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
+						quantidadeRegistrosPorFolha++;
+					}
+					else {
+						numeroFolhaBpaIndividualizado++;
+						this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
+						quantidadeRegistrosPorFolha = 1;
+					}
+				}
+			}
+		}
+	}
+	
+	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
+		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
+		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
+
+		String cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdCnsmed();
+		String numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdFlh();
+		Integer numeroLinha = 0;
+		for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
+			if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedicoAuxiliador)
+					&& this.listaDeBpaIndividualizado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
+				numeroLinha++;
+				this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
+			}
+			else {
+				cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdCnsmed();
+				numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdFlh();
+				numeroLinha = 1;
+				this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
+			}
+		}
 	}
 
 	private List<String> retornaUnicamenteCnsDeCadaMedico() {
@@ -177,6 +272,22 @@ public class BpaController {
 
 	public void setListaDeBpaIndividualizado(List<BpaIndividualizadoBean> listaDeBpaIndividualizado) {
 		this.listaDeBpaIndividualizado = listaDeBpaIndividualizado;
+	}
+
+	public String getCompetencia() {
+		return competencia;
+	}
+
+	public void setCompetencia(String competencia) {
+		this.competencia = competencia;
+	}
+
+	public List<String> getListaCompetencias() {
+		return listaCompetencias;
+	}
+
+	public void setListaCompetencias(List<String> listaCompetencias) {
+		this.listaCompetencias = listaCompetencias;
 	}	
 	
 }
