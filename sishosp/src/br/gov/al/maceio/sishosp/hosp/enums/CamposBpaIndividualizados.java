@@ -2,10 +2,10 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.interfaces.IBpaIndividualizado;
+import br.gov.al.maceio.sishosp.hosp.interfaces.IBpa;
 import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 
-public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
+public enum CamposBpaIndividualizados implements IBpa  {
 
 	
     PRD_CNES { 
@@ -66,18 +66,22 @@ public enum CamposBpaIndividualizados implements IBpaIndividualizado  {
     },
     
     PRD_FLH { 
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
 			Integer tamanho = 3;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo))
+    			throw new ProjetoException("O campo FOLHA não poder ser nulo no BPA Individualizado");
 			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}
     },
     
     PRD_SEQ {
-    	public String preencheCaracteresRestantes(String campo) {
+    	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
 			Integer tamanho = 2;
 			campo = retornaStringVaziaQuandoValorEhNulo(campo);
+    		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(campo))
+    			throw new ProjetoException("O campo LINHA DA FOLHA não poder ser nulo no BPA Individualizado");
 			campo = excluiCaracteresExcedentes(campo, tamanho);
 			return retornaCampoNumericoComZeroAhEsquerda(campo, tamanho);
     	}

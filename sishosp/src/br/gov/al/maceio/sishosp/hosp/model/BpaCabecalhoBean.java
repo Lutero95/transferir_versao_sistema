@@ -6,7 +6,7 @@ public class BpaCabecalhoBean {
 	private String cbcMvm;
 	private String cbcLin;
 	private String cbcFlh;
-	private String cbcSmtVrf; //CONTROLE DE DOMINIO
+	private String cbcSmtVrf;
 	private String cbcRsp;
 	private String cbcSgl; 
 	private String cbcCgccpf;

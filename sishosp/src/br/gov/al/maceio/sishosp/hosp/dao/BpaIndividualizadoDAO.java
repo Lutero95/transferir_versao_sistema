@@ -12,10 +12,10 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 
-public class BpaDAO {
+public class BpaIndividualizadoDAO {
 
 	private static final String CODIGO_BPA_INDIVIDUALIZADO =  "02";
-	private static final String CODIGO_BPA_CONSOLIDADO =  "01";
+	
 	/* ESTAS CONSTANTES SERAM SUBSTITUÍDAS DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_CATEN = "01";
 	private static final String PRD_NAUT = "             ";
@@ -30,7 +30,7 @@ public class BpaDAO {
 	private static final String PRD_DDTEL_PCNT = "           ";
 	private static final String PRD_INE = "          ";
 	
-    public List<BpaIndividualizadoBean> carregarParametro(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
+    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
         String sql = "select count(*) qtdproc,  " + 
@@ -85,8 +85,6 @@ public class BpaDAO {
             	bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));
             	bpaIndividualizado.setPrdCbo(rs.getString("cbo"));
             	bpaIndividualizado.setPrdDtaten(rs.getDate("dtaatende").toString().replaceAll("-", ""));
-            	bpaIndividualizado.setPrdFlh("001"); //  VERIFICAR REGRA DESSE Nº QUANDO QUE ELE É ++
-            	bpaIndividualizado.setPrdSeq("01"); //   VERIFICAR QUANDO O INDICE SERA ++
             	bpaIndividualizado.setPrdPa(rs.getString("codproc")); 
             	bpaIndividualizado.setPrdCnspac(rs.getString("cnspaciente")); 
             	bpaIndividualizado.setPrdSexo(rs.getString("sexo")); 
@@ -193,12 +191,5 @@ public class BpaDAO {
             }
         }
         return listaCompetencias;
-	}
-
-	private String formataCompetenciaParaExibicaoNaTela(String competencia) {
-		String diaCompetencia = competencia.substring(4, 6);
-		String anoCompetencia = competencia.substring(0, 4);
-		String competenciaFormatada = diaCompetencia+"/"+anoCompetencia;
-		return competenciaFormatada;
 	}
 }

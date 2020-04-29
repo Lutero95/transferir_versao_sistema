@@ -17,23 +17,38 @@ import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.BpaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
+import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
 import br.gov.al.maceio.sishosp.hosp.model.BpaCabecalhoBean;
+import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 
 @ManagedBean
 @ViewScoped
 public class BpaController {
 	
+	private static final int VALOR_PADRAO_PARA_GERAR_SMT_VRF = 1111;
 	private static final int MES_MINIMO_COMPETENCIA_PARA_INE = 8;
 	private static final int ANO_MINIMO_COMPETENCIA_PARA_INE = 2015;
+	private static final int MAXIMO_DE_REGISTROS_FOLHA_CONSOLIDADO = 20;
 	private static final int MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO = 99;
-	private static final int MAXIMO_DE_REGISTROS_LINHA_INDIVIDUALIZADO = 99;
 	
-	private BpaDAO bpaDAO = new BpaDAO();
-	private BpaCabecalhoBean bpaCabecalho = new BpaCabecalhoBean();
+	private static final String CBC_FLH = "000003";
+	private static final String CBC_RSP = "Secretaria Municipal de Saude";
+	private static final String CBC_SGL = "SMS";
+	private static final String CBC_CGCCPF = "12248522000196";
+	private static final String CBC_DST = "Secretaria estadual de Saude";
+	private static final String CBC_DST_IN = "E";
+	private static final String CBC_VERSAO = "D02.89";
+	
+	private BpaIndividualizadoDAO bpaIndividualizadoDAO;
+	private BpaConsolidadoDAO bpaConsolidadoDAO;
+	private BpaCabecalhoBean bpaCabecalho;
 	private List<BpaIndividualizadoBean> listaDeBpaIndividualizado;
+	private List<BpaConsolidadoBean> listaDeBpaConsolidado;
 	private List<String> linhasLayoutImportacao;
 	private final String PASTA_RAIZ = "C:\\Users\\Public\\Documents\\";
 	
@@ -43,26 +58,16 @@ public class BpaController {
 	private List<String> listaCompetencias;
 	
 	public BpaController() {
-		this.bpaDAO = new BpaDAO();
 		this.bpaCabecalho = new BpaCabecalhoBean();
+		this.bpaConsolidadoDAO = new BpaConsolidadoDAO();
+		this.bpaIndividualizadoDAO = new BpaIndividualizadoDAO();
+		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
 		this.linhasLayoutImportacao = new ArrayList<String>();
-		//teste
-		
-		bpaCabecalho.setCbcMvm("202002");
-		bpaCabecalho.setCbcLin("001227");
-		bpaCabecalho.setCbcFlh("000003");
-		bpaCabecalho.setCbcSmtVrf("1328"); //CONTROLE DE DOMINIO
-		bpaCabecalho.setCbcRsp("Secretaria Municipal de Saude ");
-		bpaCabecalho.setCbcSgl("SMS   ");
-		bpaCabecalho.setCbcCgccpf("12248522000196");
-		bpaCabecalho.setCbcDst("Secretaria estadual de Saude            ");
-		bpaCabecalho.setCbcDstIn("M");
-		bpaCabecalho.setCbcVersao("D02.89    ");
 	}
 	
 	public void listarCompetencias() {
-		this.listaCompetencias = bpaDAO.listarCompetencias();
+		this.listaCompetencias = bpaIndividualizadoDAO.listarCompetencias();
 		formataCompetenciasParaExibicaoNaTela();
 	}
 	
@@ -79,21 +84,21 @@ public class BpaController {
 	}
 
 	public void gerarLayoutBpaImportacao() throws ProjetoException {
-
 		try {
-			this.linhasLayoutImportacao.add(bpaCabecalho.toString());
-			setaDataInicioIhFimAtendimentoParaIndividualizado(this.competencia);
 			this.competencia = formataCompetenciaParaBanco();
-			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
-			geraNumeroDaFolhaIndividualizado();
-			geraNumeroDaLinhaDaFolhaIndividualizado();
-			adicionaCaracteresEmCamposOndeTamanhoNaoEhValido();
+			setaDataInicioIhFimAtendimento(this.competencia);
+			executaMetodosParaGerarBpaConsolidado();
+			executaMetodosParaGerarBpaIndividualizado();
+			executaMetodosParaGerarBpaCabecalho();
+			
+			adicionarCabecalho();
+			adicionarLinhasBpaConsolidado();
 			adicionarLinhasBpaIndividualizado();
-			String extensao = bpaDAO.buscaExtencaoArquivoPeloMesAtual();
+			String extensao = bpaIndividualizadoDAO.buscaExtencaoArquivoPeloMesAtual();
 			String caminhoIhArquivo = PASTA_RAIZ+"BPA_layout_Importacao"+extensao; 
 			Path file = Paths.get(caminhoIhArquivo);
 			Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
-			JSFUtil.adicionarMensagemSucesso("Layout Gerado com successo na pasta: "+caminhoIhArquivo, "");
+			JSFUtil.adicionarMensagemSucesso("Layout de produção gerado com successo na pasta: "+caminhoIhArquivo, "");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
@@ -101,13 +106,68 @@ public class BpaController {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
 	}
+
+	private void executaMetodosParaGerarBpaCabecalho() throws ProjetoException {
+		gerarCabecalho();
+		adicionaCaracteresEmCamposBpaCabecalhoOndeTamanhoNaoEhValido();
+	}
+
+	private void adicionarCabecalho() {
+		this.linhasLayoutImportacao.add(bpaCabecalho.toString());
+	}
+
+	private void gerarCabecalho() throws ProjetoException {
+		this.bpaCabecalho.setCbcMvm(this.competencia);
+		
+		Integer cbcLin = (this.listaDeBpaConsolidado.size() + this.listaDeBpaIndividualizado.size() + 1);
+		this.bpaCabecalho.setCbcLin(cbcLin.toString());
+		
+		this.bpaCabecalho.setCbcFlh(CBC_FLH);
+		this.bpaCabecalho.setCbcSmtVrf(geraNumeroSmtVrf());
+		this.bpaCabecalho.setCbcRsp(CBC_RSP);
+		this.bpaCabecalho.setCbcSgl(CBC_SGL);
+		this.bpaCabecalho.setCbcCgccpf(CBC_CGCCPF);
+		this.bpaCabecalho.setCbcDst(CBC_DST);
+		this.bpaCabecalho.setCbcDstIn(CBC_DST_IN);
+		this.bpaCabecalho.setCbcVersao(CBC_VERSAO);
+	}
 	
-	private void setaDataInicioIhFimAtendimentoParaIndividualizado(String competencia) {
-		Integer ano = Integer.valueOf(competencia.substring(3, 7));
-		Integer mes = Integer.valueOf(competencia.substring(0, 2));
+	private String geraNumeroSmtVrf() {
+		
+		Long somaDosCodigosDeProcedimentos = 0L;
+		for (BpaConsolidadoBean bpaConsolidado : this.listaDeBpaConsolidado) {
+			somaDosCodigosDeProcedimentos += Long.valueOf(bpaConsolidado.getPrdPa());
+			somaDosCodigosDeProcedimentos += Long.valueOf(bpaConsolidado.getPrdQt());
+		}
+		
+		for (BpaIndividualizadoBean bpaIndividualizado : this.listaDeBpaIndividualizado) {
+			somaDosCodigosDeProcedimentos += Long.valueOf(bpaIndividualizado.getPrdPa());
+			somaDosCodigosDeProcedimentos += Long.valueOf(bpaIndividualizado.getPrdQt());
+		}
+		
+		Long restoDivisao = (somaDosCodigosDeProcedimentos % VALOR_PADRAO_PARA_GERAR_SMT_VRF);
+		Long smtVrf = (restoDivisao + VALOR_PADRAO_PARA_GERAR_SMT_VRF);
+		return smtVrf.toString();
+	}
+	
+	private void adicionaCaracteresEmCamposBpaCabecalhoOndeTamanhoNaoEhValido() throws ProjetoException {
+		this.bpaCabecalho.setCbcMvm(CamposBpaCabecalho.CBC_MVM.preencheCaracteresRestantes(this.bpaCabecalho.getCbcMvm()));
+		this.bpaCabecalho.setCbcLin(CamposBpaCabecalho.CBC_LIN.preencheCaracteresRestantes(this.bpaCabecalho.getCbcLin()));
+		this.bpaCabecalho.setCbcFlh(CamposBpaCabecalho.CBC_FLH.preencheCaracteresRestantes(this.bpaCabecalho.getCbcFlh()));
+		this.bpaCabecalho.setCbcSmtVrf(CamposBpaCabecalho.CBC_SMT_VRF.preencheCaracteresRestantes(this.bpaCabecalho.getCbcSmtVrf()));
+		this.bpaCabecalho.setCbcRsp(CamposBpaCabecalho.CBC_RSP.preencheCaracteresRestantes(this.bpaCabecalho.getCbcRsp()));
+		this.bpaCabecalho.setCbcSgl(CamposBpaCabecalho.CBC_SGL.preencheCaracteresRestantes(this.bpaCabecalho.getCbcSgl()));
+		this.bpaCabecalho.setCbcCgccpf(CamposBpaCabecalho.CBC_CGCCPF.preencheCaracteresRestantes(this.bpaCabecalho.getCbcCgccpf()));
+		this.bpaCabecalho.setCbcDst(CamposBpaCabecalho.CBC_DST.preencheCaracteresRestantes(this.bpaCabecalho.getCbcDst()));
+		this.bpaCabecalho.setCbcDstIn(CamposBpaCabecalho.CBC_DST_IN.preencheCaracteresRestantes(this.bpaCabecalho.getCbcDstIn()));
+		this.bpaCabecalho.setCbcVersao(CamposBpaCabecalho.CBC_VERSAO.preencheCaracteresRestantes(this.bpaCabecalho.getCbcVersao()));
+	}
+
+	private void setaDataInicioIhFimAtendimento(String competencia) {
+		Integer ano = Integer.valueOf(competencia.substring(0, 4));
+		Integer mes = Integer.valueOf(competencia.substring(4, 6));
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(ano, mes, 1);
-		
 		Integer primeiraDataMes = calendar.getMinimum(Calendar.DAY_OF_MONTH);
 		Integer ultimaDataMes = calendar.getMaximum(Calendar.DAY_OF_MONTH);
 		
@@ -129,16 +189,105 @@ public class BpaController {
 		String competenciaFormatada = anoCompetencia+diaCompetencia;
 		return competenciaFormatada; 
 	}
+
+	private void executaMetodosParaGerarBpaConsolidado() throws ProjetoException {
+		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
+		geraNumeroDaFolhaConsolidado();
+		geraNumeroDaLinhaDaFolhaConsolidado();
+		adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido();
+	}
+
+	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
+		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia);
+	}
+	
+	public void geraNumeroDaFolhaConsolidado() {
+		List<String> listaCbos = retornaUnicamenteCbosParaBpaConsolidado();
+		for (String cbo : listaCbos) {
+			Integer quantidadeRegistrosPorFolha = 0;
+			Integer numeroFolhaBpaConsolidado = 1;
+			for(int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
+				if(this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cbo)) {
+					if(quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_CONSOLIDADO) { 
+						this.listaDeBpaConsolidado.get(i).setPrdFlh(numeroFolhaBpaConsolidado.toString());
+						quantidadeRegistrosPorFolha++;
+					}
+					else {
+						numeroFolhaBpaConsolidado++;
+						this.listaDeBpaConsolidado.get(i).setPrdFlh(numeroFolhaBpaConsolidado.toString());
+						quantidadeRegistrosPorFolha = 1;
+					}
+				}
+			}
+		}
+	}
+	
+	private List<String> retornaUnicamenteCbosParaBpaConsolidado() {
+		List<String> listaCbos = new ArrayList<String>(); 
+		for(BpaConsolidadoBean consolidado : this.listaDeBpaConsolidado) {
+			if(!listaCbos.contains(consolidado.getPrdCbo()))
+				listaCbos.add(consolidado.getPrdCbo());
+		}
+		return listaCbos;
+	}
+	
+	public void geraNumeroDaLinhaDaFolhaConsolidado() {
+		String cboAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdCbo();
+		String numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdFlh();
+		Integer numeroLinha = 0;
+		for (int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
+			if (this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cboAuxiliador)
+					&& this.listaDeBpaConsolidado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
+				numeroLinha++;
+				this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
+			}
+			else {
+				cboAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdCbo();
+				numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdFlh();
+				numeroLinha = 1;
+				this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
+			}
+		}
+	}
+	
+	public void adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido() throws ProjetoException {
+		List<BpaConsolidadoBean> listaBpaConsolidadoAuxiliar = new ArrayList<BpaConsolidadoBean>();
+		listaBpaConsolidadoAuxiliar.addAll(this.listaDeBpaConsolidado);
+		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
+		
+		for (BpaConsolidadoBean consolidado : listaBpaConsolidadoAuxiliar) {
+			consolidado.setPrdCnes(CamposBpaConsolidado.PRD_CNES.preencheCaracteresRestantes(consolidado.getPrdCnes()));
+			consolidado.setPrdCmp(CamposBpaConsolidado.PRD_CMP.preencheCaracteresRestantes(consolidado.getPrdCmp()));
+			consolidado.setPrdCbo(CamposBpaConsolidado.PRD_CBO.preencheCaracteresRestantes(consolidado.getPrdCbo()));
+			consolidado.setPrdFlh(CamposBpaConsolidado.PRD_FLH.preencheCaracteresRestantes(consolidado.getPrdFlh()));
+			consolidado.setPrdSeq(CamposBpaConsolidado.PRD_SEQ.preencheCaracteresRestantes(consolidado.getPrdSeq()));
+			consolidado.setPrdPa(CamposBpaConsolidado.PRD_PA.preencheCaracteresRestantes(consolidado.getPrdPa()));
+			consolidado.setPrdIdade(CamposBpaConsolidado.PRD_IDADE.preencheCaracteresRestantes(consolidado.getPrdIdade()));
+			consolidado.setPrdQt(CamposBpaConsolidado.PRD_QT.preencheCaracteresRestantes(consolidado.getPrdQt()));
+			this.listaDeBpaConsolidado.add(consolidado);
+		}		
+	}
+	
+	private void adicionarLinhasBpaConsolidado() {
+		for (BpaConsolidadoBean bpaConsolidado : this.listaDeBpaConsolidado) {
+			this.linhasLayoutImportacao.add(bpaConsolidado.toString());
+		}
+	}
+
+	private void executaMetodosParaGerarBpaIndividualizado() throws ProjetoException {
+		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
+		geraNumeroDaFolhaIndividualizado();
+		geraNumeroDaLinhaDaFolhaIndividualizado();
+		adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido();
+	}
 	
 	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaDAO.carregarParametro(dataInicio, dataFim, competencia);
+		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia);
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
-		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
-		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
 				
-		List<String> listaCnsDosMedicos = retornaUnicamenteCnsDeCadaMedico();
+		List<String> listaCnsDosMedicos = retornaUnicamenteCnsParaBpaIndividualizado();
 		for (String cnsMedico : listaCnsDosMedicos) {
 			Integer quantidadeRegistrosPorFolha = 0;
 			Integer numeroFolhaBpaIndividualizado = 1;
@@ -158,10 +307,16 @@ public class BpaController {
 		}
 	}
 	
+	private List<String> retornaUnicamenteCnsParaBpaIndividualizado() {
+		List<String> listaCnsDosMedicos = new ArrayList<String>(); 
+		for(BpaIndividualizadoBean individualizado : this.listaDeBpaIndividualizado) {
+			if(!listaCnsDosMedicos.contains(individualizado.getPrdCnsmed()))
+				listaCnsDosMedicos.add(individualizado.getPrdCnsmed());
+		}
+		return listaCnsDosMedicos;
+	}
+	
 	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
-		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
-		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
-
 		String cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdCnsmed();
 		String numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdFlh();
 		Integer numeroLinha = 0;
@@ -179,17 +334,8 @@ public class BpaController {
 			}
 		}
 	}
-
-	private List<String> retornaUnicamenteCnsDeCadaMedico() {
-		List<String> listaCnsDosMedicos = new ArrayList<String>(); 
-		for(BpaIndividualizadoBean individualizado : this.listaDeBpaIndividualizado) {
-			if(!listaCnsDosMedicos.contains(individualizado.getPrdCnsmed()))
-				listaCnsDosMedicos.add(individualizado.getPrdCnsmed());
-		}
-		return listaCnsDosMedicos;
-	}
 	
-	public void adicionaCaracteresEmCamposOndeTamanhoNaoEhValido() throws ProjetoException {
+	public void adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido() throws ProjetoException {
 		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
 		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
 		
@@ -250,30 +396,14 @@ public class BpaController {
 			return ine;
 		} else
 			return CamposBpaIndividualizados.PRD_INE.preencheCaracteresRestantes(ine);
-	} 
+	}
 	
 	public void adicionarLinhasBpaIndividualizado() {
 		for (BpaIndividualizadoBean bpaIndividualizado : this.listaDeBpaIndividualizado) {
 			this.linhasLayoutImportacao.add(bpaIndividualizado.toString());
 		}
-	}
+	} 
 	
-	public BpaCabecalhoBean getBpaCabecalho() {
-		return bpaCabecalho;
-	}
-
-	public void setBpaCabecalho(BpaCabecalhoBean bpaCabecalho) {
-		this.bpaCabecalho = bpaCabecalho;
-	}
-
-	public List<BpaIndividualizadoBean> getListaDeBpaIndividualizado() {
-		return listaDeBpaIndividualizado;
-	}
-
-	public void setListaDeBpaIndividualizado(List<BpaIndividualizadoBean> listaDeBpaIndividualizado) {
-		this.listaDeBpaIndividualizado = listaDeBpaIndividualizado;
-	}
-
 	public String getCompetencia() {
 		return competencia;
 	}
