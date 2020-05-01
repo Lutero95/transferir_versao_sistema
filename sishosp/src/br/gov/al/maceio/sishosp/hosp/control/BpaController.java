@@ -1,6 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +17,11 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -50,12 +58,16 @@ public class BpaController {
 	private List<BpaIndividualizadoBean> listaDeBpaIndividualizado;
 	private List<BpaConsolidadoBean> listaDeBpaConsolidado;
 	private List<String> linhasLayoutImportacao;
-	private final String PASTA_RAIZ = "C:\\Users\\Public\\Documents\\";
+	
+	private static final String NOME_ARQUIVO = "BPA_layout_Importacao";
+	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
+	private String descricaoArquivo;
 	
 	private Date dataInicioAtendimento;
 	private Date dataFimAtendimento;
 	private String competencia;
 	private List<String> listaCompetencias;
+	private String extensao;
 	
 	public BpaController() {
 		this.bpaCabecalho = new BpaCabecalhoBean();
@@ -83,6 +95,16 @@ public class BpaController {
 		}
 	}
 
+	private ServletContext getServleContext() {
+		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
+		return scontext;
+	}
+	
+	private FacesContext getFacesContext() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return context;
+	}
+	
 	public void gerarLayoutBpaImportacao() throws ProjetoException {
 		try {
 			this.competencia = formataCompetenciaParaBanco();
@@ -94,11 +116,12 @@ public class BpaController {
 			adicionarCabecalho();
 			adicionarLinhasBpaConsolidado();
 			adicionarLinhasBpaIndividualizado();
-			String extensao = bpaIndividualizadoDAO.buscaExtencaoArquivoPeloMesAtual();
-			String caminhoIhArquivo = PASTA_RAIZ+"BPA_layout_Importacao"+extensao; 
-			Path file = Paths.get(caminhoIhArquivo);
+			this.extensao = bpaIndividualizadoDAO.buscaExtencaoArquivoPeloMesAtual();
+			this.descricaoArquivo = NOME_ARQUIVO+extensao;
+			String caminhoIhArquivo = PASTA_RAIZ+NOME_ARQUIVO+extensao; 
+
+			Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
 			Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
-			JSFUtil.adicionarMensagemSucesso("Layout de produção gerado com successo na pasta: "+caminhoIhArquivo, "");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
@@ -106,6 +129,15 @@ public class BpaController {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
 	}
+	
+	public StreamedContent download() throws IOException, ProjetoException {
+        StreamedContent file;
+        InputStream stream = new FileInputStream(
+                this.getServleContext().getRealPath(PASTA_RAIZ) + File.separator + this.descricaoArquivo);
+
+        file = new DefaultStreamedContent(stream, "application/"+this.extensao, this.descricaoArquivo);
+        return file;
+    }
 
 	private void executaMetodosParaGerarBpaCabecalho() throws ProjetoException {
 		gerarCabecalho();

@@ -15,7 +15,6 @@
 		<div class="panel panel-primary top-primary">
 
 			<h:form id="frmPrincipal">
-				<p:messages id="messages" showDetail="true" closable="true" />
 				<div class="panel-body table-body sub-table-body">
 					<b:row>
 						<b:column span="2" class="data-size">
@@ -32,9 +31,9 @@
 					</b:row>
 				</div>
 				<div style="margin-left:0.5%; margin-bottom:0.5%;">
-					<p:commandButton value="Gerar Produção"
-					action="#{bpaController.gerarLayoutBpaImportacao()}"
-					update="messages" />
+					<p:commandButton value="Gerar Produção" ajax="false" actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
+						<p:fileDownload value="#{bpaController.download()}" />
+					</p:commandButton>
 				</div>
 			</h:form>
 		</div>
