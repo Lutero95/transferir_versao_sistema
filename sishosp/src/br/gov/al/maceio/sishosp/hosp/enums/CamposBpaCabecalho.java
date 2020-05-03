@@ -83,6 +83,7 @@ public enum CamposBpaCabecalho implements IBpa  {
 
     CBC_DST_IN {
     	public String preencheCaracteresRestantes(String campo) throws ProjetoException {
+    		campo = retornaStringVaziaQuandoValorEhNulo(campo);
 			if(!campo.equals("E") && !campo.equals("M"))
 				throw new ProjetoException("INDICADOR DE ORGÃO DE DESTINO inválido no cabeçalho");
 			return campo;

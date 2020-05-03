@@ -21,11 +21,8 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_NAUT = "             ";
 	private static final String PRD_ETNIA = "    ";
 	private static final String PRD_NAC = "010";
-	private static final String PRD_SRV = "135";
-	private static final String PRD_CLF = "003";
 	private static final String PRD_EQUIPE_SEQ = "        ";
 	private static final String PRD_EQUIPE_AREA = "    ";
-	private static final String PRD_CNPJ = "              ";
 	private static final String PRD_LOGRAD_PCNTE = "   ";
 	private static final String PRD_DDTEL_PCNT = "           ";
 	private static final String PRD_INE = "          ";
@@ -37,8 +34,8 @@ public class BpaIndividualizadoDAO {
         		"  proc.codproc, emp.cnes, pm.competencia, func.cns cnsprofissional, cbo.codigo cbo, proc.codproc, p.cns cnspaciente, " + 
         		" p.sexo, substring(to_char(m.codigo,'9999999')	,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, " + 
         		" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, " + 
-        		" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  " + 
-        		" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento  " + 
+        		" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, " + 
+        		" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento, sm.codigo codigo_servico, cm.codigo codigo_classificacao  " + 
         		" from hosp.atendimentos1 a1  " + 
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  " + 
         		" left join hosp.cbo on cbo.id = func.codcbo  " + 
@@ -54,7 +51,10 @@ public class BpaIndividualizadoDAO {
         		" left join hosp.cid on cid.cod = l.cid1  " + 
         		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  " + 
         		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " + 
+        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " +
+        		" join hosp.servico_classificacao_mensal scm on scm.id_procedimento_mensal = pm.id " + 
+        		" join hosp.servico_mensal sm on sm.id = scm.id_servico " + 
+        		" join hosp.classificacao_mensal cm on cm.id = scm.id_classificacao "+
         		" cross join hosp.empresa emp " + 
         		" where a1.situacao ='A' " + 
         		" and a.dtaatende  between ? and ? " + 
@@ -64,9 +64,10 @@ public class BpaIndividualizadoDAO {
         		" proc.codproc, emp.cnes, pm.competencia, func.cns , cbo.codigo, proc.codproc, p.cns , " + 
         		" p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , " + 
         		" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , " + 
-        		" p.logradouro , p.complemento , p.numero , " + 
-        		" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento " + 
-        		"order by func.cns, p.cns ";
+        		" p.logradouro, p.complemento , p.numero, " + 
+        		" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, "+
+        		" cm.codigo, sm.codigo, emp.cnpj " + 
+        		" order by func.cns, p.cns ";
         
         Connection con = ConnectionFactory.getConnection();
        
@@ -102,11 +103,11 @@ public class BpaIndividualizadoDAO {
             	
             	bpaIndividualizado.setPrdEtnia(PRD_ETNIA);
             	bpaIndividualizado.setPrdNac(PRD_NAC);
-            	bpaIndividualizado.setPrdSrv(PRD_SRV);
-            	bpaIndividualizado.setPrdClf(PRD_CLF);
+            	bpaIndividualizado.setPrdSrv(rs.getString("codigo_servico"));
+            	bpaIndividualizado.setPrdClf(rs.getString("codigo_classificacao"));
             	bpaIndividualizado.setPrdEquipeSeq(PRD_EQUIPE_SEQ);
             	bpaIndividualizado.setPrdEquipeArea(PRD_EQUIPE_AREA);
-            	bpaIndividualizado.setPrdCnpj(PRD_CNPJ);
+            	bpaIndividualizado.setPrdCnpj(rs.getString("cnpj"));
             	bpaIndividualizado.setPrdCepPcnte(rs.getString("cep"));
             	bpaIndividualizado.setPrdLogradPcnte(PRD_LOGRAD_PCNTE);
             	bpaIndividualizado.setPrdEndPcnte(rs.getString("enderecopaciente"));

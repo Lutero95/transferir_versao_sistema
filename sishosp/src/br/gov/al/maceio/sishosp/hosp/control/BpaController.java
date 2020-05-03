@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
@@ -45,12 +46,6 @@ public class BpaController {
 	private static final int MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO = 99;
 	
 	private static final String CBC_FLH = "000003";
-	private static final String CBC_RSP = "Secretaria Municipal de Saude";
-	private static final String CBC_SGL = "SMS";
-	private static final String CBC_CGCCPF = "12248522000196";
-	private static final String CBC_DST = "Secretaria estadual de Saude";
-	private static final String CBC_DST_IN = "E";
-	private static final String CBC_VERSAO = "D02.89";
 	
 	private BpaIndividualizadoDAO bpaIndividualizadoDAO;
 	private BpaConsolidadoDAO bpaConsolidadoDAO;
@@ -68,6 +63,8 @@ public class BpaController {
 	private String competencia;
 	private List<String> listaCompetencias;
 	private String extensao;
+	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_usuario");
 	
 	public BpaController() {
 		this.bpaCabecalho = new BpaCabecalhoBean();
@@ -75,7 +72,7 @@ public class BpaController {
 		this.bpaIndividualizadoDAO = new BpaIndividualizadoDAO();
 		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
-		this.linhasLayoutImportacao = new ArrayList<String>();
+		limparDadosLayoutGerado();
 	}
 	
 	public void listarCompetencias() {
@@ -122,12 +119,20 @@ public class BpaController {
 
 			Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
 			Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
+			limparDadosLayoutGerado();
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
 		} catch (ProjetoException pe) {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
+	}
+
+	private void limparDadosLayoutGerado() {
+		this.linhasLayoutImportacao = new ArrayList<String>();
+		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
+		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
+		this.bpaCabecalho = new BpaCabecalhoBean();
 	}
 	
 	public StreamedContent download() throws IOException, ProjetoException {
@@ -156,12 +161,13 @@ public class BpaController {
 		
 		this.bpaCabecalho.setCbcFlh(CBC_FLH);
 		this.bpaCabecalho.setCbcSmtVrf(geraNumeroSmtVrf());
-		this.bpaCabecalho.setCbcRsp(CBC_RSP);
-		this.bpaCabecalho.setCbcSgl(CBC_SGL);
-		this.bpaCabecalho.setCbcCgccpf(CBC_CGCCPF);
-		this.bpaCabecalho.setCbcDst(CBC_DST);
-		this.bpaCabecalho.setCbcDstIn(CBC_DST_IN);
-		this.bpaCabecalho.setCbcVersao(CBC_VERSAO);
+		
+		this.bpaCabecalho.setCbcRsp(user_session.getUnidade().getParametro().getOrgaoOrigemResponsavelPelaInformacao());
+		this.bpaCabecalho.setCbcSgl(user_session.getUnidade().getParametro().getSiglaOrgaoOrigemResponsavelPelaDigitacao());
+		this.bpaCabecalho.setCbcCgccpf(user_session.getUnidade().getParametro().getCgcCpfPrestadorOuOrgaoPublico());
+		this.bpaCabecalho.setCbcDst(user_session.getUnidade().getParametro().getOrgaoDestinoInformacao());
+		this.bpaCabecalho.setCbcDstIn(user_session.getUnidade().getParametro().getIndicadorOrgaoDestinoInformacao());
+		this.bpaCabecalho.setCbcVersao(user_session.getUnidade().getParametro().getVersaoSistema());
 	}
 	
 	private String geraNumeroSmtVrf() {
