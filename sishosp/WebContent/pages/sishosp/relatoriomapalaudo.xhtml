@@ -24,9 +24,7 @@
 			<div class="panel-body table-body">
 				<h:form id="frm">
 
-
 					<br />
-
 					<b:row>
 						<b:column span="2"
 							class="label-position new-comple1">
@@ -56,28 +54,83 @@
 							<b:inputText value="#{RelatoriosController.ano}"
 								class="select-agendaEquipe2" required="true"
 								maxlength="4" 
-								requiredMessage="Ano: Campo obrigatório!"
-								/>
-								
+								requiredMessage="Ano: Campo obrigatório!"/>
 						</b:column>
 
-					</b:row>
+						<p:outputPanel id="outProg">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
 
+								<b:label for="prog" value="Programa:" id="prog"
+									class="fire-label" rendered="#{InsercaoController.tipo == 'E'}"
+									severity="info" />
+
+								<p:autoComplete value="#{InsercaoController.insercao.programa}"
+									readonly="#{InsercaoController.ehAvaliacao == true}"
+									rendered="#{InsercaoController.tipo == 'E'}" size="31"
+									converter="conPrograma" class="select-agendaEquipe4"
+									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descPrograma}">
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBusPr" immediate="true"
+									style="margin-left: 5px"
+									disabled="#{InsercaoController.ehAvaliacao == true}"
+									icon="ui-icon-search"
+									rendered="#{InsercaoController.tipo == 'E'}"
+									actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+									action="#{InsercaoController.limparNaBuscaPrograma()}"
+									update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
+
+							</b:column>
+						</p:outputPanel>
+					</b:row>
 					
 					<br />
-
 					<p:commandButton icon="ui-icon-print" value="Gerar"
 						target="_blank" style="font-size: 12px;  text-align: right;"
 						update="grw"
-						actionListener="#{RelatoriosController.gerarMapaLaudo}"
+						actionListener="#{RelatoriosController.gerarMapaLaudo(InsercaoController.insercao.programa.idPrograma)}"
 						ajax="false" />
-
-
 				</h:form>
 			</div>
 		</div>
 
-	
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
+			<h:form id="formConsuProg">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+					display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                            Programa
+                        </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":frm:outProg"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar"
+							action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
+							onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{InsercaoController.insercao.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
 	</ui:define>
 
 </ui:composition>
