@@ -650,6 +650,76 @@
 							</b:row>
 
 						</p:tab>
+						<p:tab title="Produção">
+							<p:outputPanel id="outProducao">
+								<b:row>
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="Órgão de Origem Responsável pela Informação"
+											severity="info" />
+										<b:inputText value="#{UnidadeController.unidade.parametro.orgaoOrigemResponsavelPelaInformacao}"
+											class="form-control"
+											validatorMessage="Órgão de Origem Responsável pela Informação deve conter entre 0 e 30 caracteres.">
+											<f:validateLength minimum="0" maximum="30" />
+										</b:inputText>
+									</b:column>
+									
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="Sigla do Órgão de Origem Resp. pela Digitação"
+											severity="info" />
+										<b:inputText value="#{UnidadeController.unidade.parametro.siglaOrgaoOrigemResponsavelPelaDigitacao}"
+											class="form-control"
+											validatorMessage="Sigla do Órgão de Origem Responsável pela Digitação deve conter entre 0 e 6 caracteres.">
+											<f:validateLength minimum="0" maximum="6" />
+										</b:inputText>
+									</b:column>
+									
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="CGC/CPF do Prestador ou Órgão Público"
+											severity="info" />
+										<b:inputText value="#{UnidadeController.unidade.parametro.cgcCpfPrestadorOuOrgaoPublico}"
+										    type="number"
+											class="form-control"
+											validatorMessage="CGC/CPF do Prestador ou Órgão Público deve conter entre 0 e 14 caracteres.">
+											<f:validateLength minimum="0" maximum="14" />
+										</b:inputText>
+									</b:column>
+									
+									<b:column span="3"
+										class="label-position new-data-size new-comple1">
+										<b:label value="Órgão de Destino da Informação"
+											severity="info" />
+										<b:inputText value="#{UnidadeController.unidade.parametro.orgaoDestinoInformacao}"
+											class="form-control"
+											validatorMessage="Órgão de Destino da Informação deve conter entre 0 e 40 caracteres.">
+											<f:validateLength minimum="0" maximum="40" />
+										</b:inputText>
+									</b:column>
+
+									<b:column span="3" class="label-position new-data-size new-comple1">
+										<b:label value="Indicador do Órgão de Destino" severity="info" />
+										<b:selectOneMenu
+											value="#{UnidadeController.unidade.parametro.indicadorOrgaoDestinoInformacao}">
+											<f:selectItem itemLabel="Selecione" />
+											<f:selectItem itemLabel="Estadual" itemValue="E"/>
+											<f:selectItem itemLabel="Municipal" itemValue="M"/>
+										</b:selectOneMenu>
+									</b:column>
+									
+									<b:column span="3" class="label-position new-data-size new-comple1">
+										<b:label value="Versão do Sistema"
+											severity="info" />
+										<b:inputText value="#{UnidadeController.unidade.parametro.versaoSistema}"
+											class="form-control"
+											validatorMessage="Versão do Sistema deve conter entre 0 e 10 caracteres.">
+											<f:validateLength minimum="0" maximum="10" />
+										</b:inputText>
+									</b:column>
+								</b:row>
+							</p:outputPanel>
+						</p:tab>
 					</p:tabView>
 
 					<br></br>

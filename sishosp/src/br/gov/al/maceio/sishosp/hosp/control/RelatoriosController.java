@@ -585,7 +585,7 @@ public class RelatoriosController implements Serializable {
 // limparDados();
 	}
 
-	public void gerarMapaLaudo() throws IOException, ParseException, ProjetoException {
+	public void gerarMapaLaudo(Integer idPrograma) throws IOException, ParseException, ProjetoException {
 		/*
 		 * if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) { FacesMessage
 		 * msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -605,6 +605,7 @@ public class RelatoriosController implements Serializable {
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
 		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("id_programa", idPrograma);
 		this.executeReport(relatorio, map, "mapalaudo.pdf");
 // limparDados();
 	}

@@ -24,6 +24,13 @@ public class ParametroBean implements Serializable {
     private Date horarioInicioFuncionamento;
     private Date horarioFinalFuncionamento;
     private boolean bloqueiaPorPendenciaEvolucaoAnterior;
+    private String orgaoOrigemResponsavelPelaInformacao;
+    private String siglaOrgaoOrigemResponsavelPelaDigitacao;
+    private String cgcCpfPrestadorOuOrgaoPublico;
+    private String orgaoDestinoInformacao;
+    private String indicadorOrgaoDestinoInformacao;
+    private String versaoSistema;
+
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -190,5 +197,52 @@ public class ParametroBean implements Serializable {
 	public void setBloqueiaPorPendenciaEvolucaoAnterior(boolean bloqueiaPorPendenciaEvolucaoAnterior) {
 		this.bloqueiaPorPendenciaEvolucaoAnterior = bloqueiaPorPendenciaEvolucaoAnterior;
 	}
-    
+
+	public String getOrgaoOrigemResponsavelPelaInformacao() {
+		return orgaoOrigemResponsavelPelaInformacao;
+	}
+
+	public void setOrgaoOrigemResponsavelPelaInformacao(String orgaoOrigemResponsavelPelaInformacao) {
+		this.orgaoOrigemResponsavelPelaInformacao = orgaoOrigemResponsavelPelaInformacao;
+	}
+
+	public String getSiglaOrgaoOrigemResponsavelPelaDigitacao() {
+		return siglaOrgaoOrigemResponsavelPelaDigitacao;
+	}
+
+	public void setSiglaOrgaoOrigemResponsavelPelaDigitacao(String siglaOrgaoOrigemResponsavelPelaDigitacao) {
+		this.siglaOrgaoOrigemResponsavelPelaDigitacao = siglaOrgaoOrigemResponsavelPelaDigitacao;
+	}
+
+	public String getCgcCpfPrestadorOuOrgaoPublico() {
+		return cgcCpfPrestadorOuOrgaoPublico;
+	}
+
+	public void setCgcCpfPrestadorOuOrgaoPublico(String cgcCpfPrestadorOuOrgaoPublico) {
+		this.cgcCpfPrestadorOuOrgaoPublico = cgcCpfPrestadorOuOrgaoPublico;
+	}
+
+	public String getOrgaoDestinoInformacao() {
+		return orgaoDestinoInformacao;
+	}
+
+	public void setOrgaoDestinoInformacao(String orgaoDestinoInformacao) {
+		this.orgaoDestinoInformacao = orgaoDestinoInformacao;
+	}
+
+	public String getIndicadorOrgaoDestinoInformacao() {
+		return indicadorOrgaoDestinoInformacao;
+	}
+
+	public void setIndicadorOrgaoDestinoInformacao(String indicadorOrgaoDestinoInformacao) {
+		this.indicadorOrgaoDestinoInformacao = indicadorOrgaoDestinoInformacao;
+	}
+
+	public String getVersaoSistema() {
+		return versaoSistema;
+	}
+
+	public void setVersaoSistema(String versaoSistema) {
+		this.versaoSistema = versaoSistema;
+	}
 }

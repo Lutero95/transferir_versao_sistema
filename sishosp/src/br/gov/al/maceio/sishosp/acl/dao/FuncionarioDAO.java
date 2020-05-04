@@ -143,8 +143,12 @@ public class FuncionarioDAO {
 				+ "then true else false end as usuarioativo, p.opcao_atendimento, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
-				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese from acl.funcionarios us "
-				+ "join acl.perfil pf on (pf.id = us.id_perfil) "
+				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
+				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese,"
+				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
+				+ " p.versao_sistema "
+				+ " from acl.funcionarios us "
+				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
 				+ " join hosp.empresa e on e.cod_empresa = u.cod_empresa "
@@ -181,6 +185,13 @@ public class FuncionarioDAO {
 				ub.getUnidade().getParametro().setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
 				ub.getUnidade().getParametro().getOrteseProtese().getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
 				ub.getUnidade().getParametro().getOrteseProtese().getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
+				ub.getUnidade().getParametro().setOrgaoOrigemResponsavelPelaInformacao(rs.getString("orgao_origem_responsavel_pela_informacao"));
+				ub.getUnidade().getParametro().setSiglaOrgaoOrigemResponsavelPelaDigitacao(rs.getString("sigla_orgao_origem_responsavel_pela_digitacao"));
+				ub.getUnidade().getParametro().setCgcCpfPrestadorOuOrgaoPublico(rs.getString("cgcCpf_prestador_ou_orgao_publico"));
+				ub.getUnidade().getParametro().setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
+				ub.getUnidade().getParametro().setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
+				ub.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
+
 				// ACL
 				ub.setId(rs.getLong("id_funcionario"));
 				ub.setUsuarioAtivo(rs.getBoolean("usuarioativo"));

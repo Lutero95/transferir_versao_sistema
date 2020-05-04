@@ -112,8 +112,10 @@ public class UnidadeDAO {
                     "qtd_simultanea_atendimento_equipe, codunidade, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
                     "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao, " +
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
-                    "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento)" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
+                    "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
+                    "indicador_orgao_destino_informacao, versao_sistema )" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -224,6 +226,13 @@ public class UnidadeDAO {
             else{
                 ps.setNull(20, Types.NULL);
             }
+            
+            ps.setString(21, unidade.getParametro().getOrgaoOrigemResponsavelPelaInformacao());
+            ps.setString(22, unidade.getParametro().getSiglaOrgaoOrigemResponsavelPelaDigitacao());
+            ps.setString(23, unidade.getParametro().getCgcCpfPrestadorOuOrgaoPublico());
+            ps.setString(24, unidade.getParametro().getOrgaoDestinoInformacao());
+            ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
+            ps.setString(26, unidade.getParametro().getVersaoSistema());
             
             ps.execute();
             
@@ -382,7 +391,9 @@ public class UnidadeDAO {
                     "programa_ortese_protese = ?, grupo_ortese_protese = ?, almoco_inicio = ?, almoco_final = ?,  " +
                     " necessita_presenca_para_evolucao=?, pts_mostra_obs_gerais_curto=? , pts_mostra_obs_gerais_medio=?, " +
                     "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ?, " +
-                    "bloqueia_por_pendencia_evolucao_anterior = ? "+
+                    "bloqueia_por_pendencia_evolucao_anterior = ?, orgao_origem_responsavel_pela_informacao = ?, "+
+                    "sigla_orgao_origem_responsavel_pela_digitacao = ?, cgcCpf_prestador_ou_orgao_publico = ?, orgao_destino_informacao = ?, "+
+                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -460,7 +471,13 @@ public class UnidadeDAO {
             }
 
             ps.setBoolean(20, unidade.getParametro().isBloqueiaPorPendenciaEvolucaoAnterior());
-            ps.setInt(21, unidade.getId());
+            ps.setString(21, unidade.getParametro().getOrgaoOrigemResponsavelPelaInformacao());
+            ps.setString(22, unidade.getParametro().getSiglaOrgaoOrigemResponsavelPelaDigitacao());
+            ps.setString(23, unidade.getParametro().getCgcCpfPrestadorOuOrgaoPublico());
+            ps.setString(24, unidade.getParametro().getOrgaoDestinoInformacao());
+            ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
+            ps.setString(26, unidade.getParametro().getVersaoSistema());
+            ps.setInt(27, unidade.getId());
 
             ps.executeUpdate();
             
@@ -595,7 +612,9 @@ public class UnidadeDAO {
                 "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, " +
                 "necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, " +
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
-                "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso " +
+                "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
+                "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
+                "indicador_orgao_destino_informacao, versao_sistema "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -636,6 +655,12 @@ public class UnidadeDAO {
                 parametro.setHorarioFinalFuncionamento(rs.getTime("horario_final_funcionamento"));
                 parametro.setBloqueiaPorPendenciaEvolucaoAnterior(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
                 parametro.setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
+                parametro.setOrgaoOrigemResponsavelPelaInformacao(rs.getString("orgao_origem_responsavel_pela_informacao"));
+                parametro.setSiglaOrgaoOrigemResponsavelPelaDigitacao(rs.getString("sigla_orgao_origem_responsavel_pela_digitacao"));
+                parametro.setCgcCpfPrestadorOuOrgaoPublico(rs.getString("cgcCpf_prestador_ou_orgao_publico"));
+                parametro.setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
+                parametro.setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
+                parametro.setVersaoSistema(rs.getString("versao_sistema"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
