@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
@@ -60,10 +61,13 @@ public class AtendimentoController implements Serializable {
 	private String campoBusca;
 	private String opcaoAtendimento;
 	private boolean listarEvolucoesPendentes;
+	private static final String SIM = "Sim";
+
+	private String ehEquipe;
 
     //CONSTANTES
-    private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
-    private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
+    private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
+    //private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_ATENDIMENTO_PROFISSIONAL = "atendimentoprofissionalnaequipe?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
@@ -73,7 +77,7 @@ public class AtendimentoController implements Serializable {
                 .getSessionMap().get("obj_funcionario");
         this.periodoInicialEvolucao = null;
         this.periodoFinalEvolucao = null;
-
+        
         tipoBusca = "nome";
         campoBusca = "";
         this.atendimento = new AtendimentoBean();
@@ -167,13 +171,16 @@ public class AtendimentoController implements Serializable {
         listarAtendimentosProfissionalNaEquipe(campoBusca, tipoBusca);
     }
 
-    public String redirectAtendimento() {
-        if (atendimento.getEhEquipe().equals("Sim") || atendimento.getAvaliacao()) {
-            return RedirecionarUtil.redirectEditSemTipo(ENDERECO_EQUIPE, ENDERECO_ID, this.atendimento.getId());
-        } else {
-            return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
-        }
+    public String redirectGerenciarAtendimentos(String ehEquipe) {
+    	setaIdEquipeNaSessao(ehEquipe);
+    	return RedirecionarUtil.redirectEditSemTipo(ENDERECO_GERENCIAR_ATENDIMENTOS, ENDERECO_ID, this.atendimento.getId());
     }
+
+	private void setaIdEquipeNaSessao(String ehEquipe) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+    	Map<String, Object> sessionMap = externalContext.getSessionMap();
+    	sessionMap.put("ehEquipe", ehEquipe);
+	}
     
     public String redirectAtendimentoProfissional() {
     	if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
@@ -231,7 +238,7 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void getCarregaAtendimentoEquipe() throws ProjetoException {
+    public void getCarregaGerenciarAtendimentos() throws ProjetoException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
@@ -242,10 +249,16 @@ public class AtendimentoController implements Serializable {
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
-
+            recuperaIdEquipeDaSessao();
             listarAtendimentosEquipe();
         }
     }
+
+	private void recuperaIdEquipeDaSessao() {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		this.ehEquipe = (String) sessionMap.get("ehEquipe");
+	}
 
     private void verificarSeRenderizaDialogDeLaudo() throws ProjetoException {
         if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && ((atendimento.getAvaliacao()!=null) &&(atendimento.getAvaliacao()==true))){
@@ -290,6 +303,20 @@ public class AtendimentoController implements Serializable {
           //comentado enquanto nao tiver a integracao com o datasus    } else {
           //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
           //comentado enquanto nao tiver a integracao com o datasus   }
+    }
+    
+    public void alterarSituacaoDeAtendimentoPorProfissional() {
+		try {
+			if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
+				if (aDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
+					JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
+					this.listAtendimentosEquipe.get(0).setStatusAnterior(this.listAtendimentosEquipe.get(0).getStatus());
+				}
+			}
+		} catch (ProjetoException e) {
+			JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
+			e.printStackTrace();
+		}
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
@@ -752,5 +779,13 @@ public class AtendimentoController implements Serializable {
 
 	public void setListarEvolucoesPendentes(boolean listarEvolucoesPendentes) {
 		this.listarEvolucoesPendentes = listarEvolucoesPendentes;
+	}
+
+	public String getEhEquipe() {
+		return ehEquipe;
+	}
+
+	public void setEhEquipe(String ehEquipe) {
+		this.ehEquipe = ehEquipe;
 	}
 }
