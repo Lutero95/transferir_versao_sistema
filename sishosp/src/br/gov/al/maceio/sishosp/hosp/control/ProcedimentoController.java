@@ -1,5 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -10,7 +13,11 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.xml.ws.soap.SOAPFaultException;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
@@ -102,6 +109,10 @@ public class ProcedimentoController implements Serializable {
     private Integer idFormasDeOrganizacaoExistente;
     private Integer idTipoFinanciamentoExistente;
 	private List<HistoricoSigtapBean> listaHistoricoDoSigtap;
+	
+	//SIGTAP IMPORTACAO ARQUIVO
+	private UploadedFile arquivoImportacaoSelecionado;
+	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
     
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -708,6 +719,41 @@ public class ProcedimentoController implements Serializable {
         this.listaProcedimentos = procedimentoDao.listarProcedimentoLaudo();
         
     }
+	
+	
+	public void verificaSeUploadFoiRealizado() {
+		if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.arquivoImportacaoSelecionado))
+			JSFUtil.adicionarMensagemErro("Nenhum arquivo inserido", "Erro");
+		else {
+			JSFUtil.adicionarMensagemSucesso
+				("Upload realizado com sucesso do arquivo " + arquivoImportacaoSelecionado.getFileName(), "");
+	        converteArrayBytesParaFile();
+		}
+	}
+
+	private void converteArrayBytesParaFile() {
+		try {
+			//this.getServleContext().getRealPath(path);
+			File file = new File("c:\\demo.txt"); 
+		    OutputStream outputStream = new FileOutputStream(file);
+		    outputStream.write(this.arquivoImportacaoSelecionado.getContents());
+		    System.out.println("Write bytes to file.");
+		    outputStream.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	}
+	
+	private ServletContext getServleContext() {
+		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
+		return scontext;
+	}
+	
+	private FacesContext getFacesContext() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return context;
+	}
+	 
 
     public List<ProcedimentoBean> getListaProcedimentos() {
         return listaProcedimentos;
@@ -779,5 +825,13 @@ public class ProcedimentoController implements Serializable {
 
 	public void setListaHistoricoDoSigtap(List<HistoricoSigtapBean> listaHistoricoDoSigtap) {
 		this.listaHistoricoDoSigtap = listaHistoricoDoSigtap;
+	}
+
+	public UploadedFile getArquivoImportacaoSelecionado() {
+		return arquivoImportacaoSelecionado;
+	}
+
+	public void setArquivoImportacaoSelecionado(UploadedFile arquivoImportacaoSelecionado) {
+		this.arquivoImportacaoSelecionado = arquivoImportacaoSelecionado;
 	}
 }

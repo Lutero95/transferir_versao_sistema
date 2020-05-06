@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+	
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Importação de Arquivos SIGTAP</h4>
+			</div>
+		</div>
+		<div class="panel panel-primary top-primary">
+
+			<h:form id="frmPrincipal" enctype="multipart/form-data">
+				<p:fileUpload value="#{ProcedimentoController.arquivoImportacaoSelecionado}" mode="simple"
+					skinSimple="true" allowTypes="/(\.|\/)(zip|rar)$/" label="Escolher arquivo"/>
+				<br />
+				<p:commandButton value="Importar" ajax="false"
+					action="#{ProcedimentoController.verificaSeUploadFoiRealizado()}" disabled="false" />
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
