@@ -650,7 +650,7 @@ public class GerenciarPacienteDAO {
         		"from " + 
         		"	hosp.atendimentos1 " + 
         		"where " + 
-        		"	atendimentos1.id_atendimento = ? and situacao is null and coalesce(excluido,'N')='N' " + 
+        		"	atendimentos1.id_atendimento = ? and coalesce(excluido,'N')='N' " + 
         		"	and (atendimentos1.id_atendimentos1 not in ( " + 
         		"	select " + 
         		"		distinct sp.id_atendimentos1 " + 

@@ -14,7 +14,13 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Atendimento Equipe</h4>
+				<p:outputPanel rendered="#{AtendimentoController.ehEquipe == 'Sim'}">
+					<h4 class="panel-title">Atendimento por Equipe</h4>
+				</p:outputPanel>
+				
+				<p:outputPanel rendered="#{AtendimentoController.ehEquipe != 'Sim'}">
+					<h4 class="panel-title">Atendimento por Profissional</h4>
+				</p:outputPanel>
 			</div>
 
 			<div class="panel-body table-body">
