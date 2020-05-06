@@ -193,12 +193,13 @@ public class UnidadeController implements Serializable {
 		}
 	}
 
-    public void desativarUnidade() {
+    public void desativarUnidade() throws ProjetoException {
         boolean desativou = eDao.desativarUnidade(unidade);
 
         if (desativou == true) {
             JSFUtil.adicionarMensagemSucesso("Unidade desativada com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
+            listarUnidade();
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
