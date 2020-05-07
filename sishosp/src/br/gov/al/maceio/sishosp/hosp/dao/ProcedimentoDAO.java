@@ -653,7 +653,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaModalidadeAtendimentoExistente() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList();
-        String sql = "SELECT ma.id, ma.codigo FROM hosp.modalidade_atendimento ma ";
+        String sql = "SELECT ma.id, ma.codigo FROM sigtap.modalidade_atendimento ma ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -680,7 +680,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaInstrumentosRegistroExistente() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList();
-        String sql = "SELECT ir.id, ir.codigo FROM hosp.instrumento_registro ir ";
+        String sql = "SELECT ir.id, ir.codigo FROM sigtap.instrumento_registro ir ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -707,7 +707,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCbosExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList();
-        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo_mensal cbo ";
+        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -734,15 +734,15 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCidsExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList();
-        String sql = "SELECT cid.id, cid.codigo FROM hosp.cid_mensal cid ";
+        String sql = "SELECT cid.cod, cid.cid FROM hosp.cid ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
             	PropriedadeDeProcedimentoMensalExistenteDTO cidExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	cidExistente.setId(rs.getInt("id"));
-            	cidExistente.setCodigo(rs.getString("codigo"));
+            	cidExistente.setId(rs.getInt("cod"));
+            	cidExistente.setCodigo(rs.getString("cid"));
             	listaCidExistente.add(cidExistente);
             }
             	
@@ -761,7 +761,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaFormasOrganizacaoExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormaOrganizacaoExistente = new ArrayList();
-        String sql = "SELECT fo.id, fo.codigo FROM hosp.forma_de_organizacao fo ";
+        String sql = "SELECT fo.id, fo.codigo FROM sigtap.forma_de_organizacao fo ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -788,7 +788,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
-        String sql = "SELECT re.id, re.codigo FROM hosp.renases_mensal re ";
+        String sql = "SELECT re.id, re.codigo FROM sigtap.renases re ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -815,7 +815,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaTiposFinanciamentoExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList();
-        String sql = "SELECT tf.id, tf.codigo FROM hosp.tipo_financiamento tf ";
+        String sql = "SELECT tf.id, tf.codigo FROM sigtap.tipo_financiamento tf ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -886,7 +886,7 @@ public class ProcedimentoDAO {
     }
     
 	public Integer inserirTipoFinanciamento(TipoFinanciamentoType tipoFinanciamento, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.tipo_financiamento (codigo, nome) "
+		String sql = "INSERT INTO sigtap.tipo_financiamento (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
 		Integer idTipoFinanciamento = null;
 		try {
@@ -906,11 +906,11 @@ public class ProcedimentoDAO {
     
 	public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao, 
 			List<Integer> listaIdRenasesExistentes) throws ProjetoException, SQLException {
-		String sqlRenases = "INSERT INTO hosp.renases_mensal (codigo, nome) "
+		String sqlRenases = "INSERT INTO sigtap.renases (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
 		
-		String sqlRenasesProcedimentoMensal = "INSERT INTO hosp.renases_procedimento_mensal " + 
-				"(id_procedimento_mensal, id_renases_mensal) VALUES(?, ?);";
+		String sqlRenasesProcedimentoMensal = "INSERT INTO sigtap.renases_procedimento_mensal " + 
+				"(id_procedimento_mensal, id_renases) VALUES(?, ?);";
 		try {
 			PreparedStatement stm = null;
 			for (RENASESType renases : listaRenases) {
@@ -941,8 +941,8 @@ public class ProcedimentoDAO {
 	}
 	
 	public Integer inserirFormaOrganizacao(FormaOrganizacaoType formaOrganizacao, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.forma_de_organizacao " + 
-				"(codigo, nome, id_subgrupo_mensal) " + 
+		String sql = "INSERT INTO sigtap.forma_de_organizacao " + 
+				"(codigo, nome, id_subgrupo) " + 
 				"VALUES(?, ?, ?) returning id ";
 		Integer idFormaOrganizacao = null;
 		try {
@@ -969,7 +969,7 @@ public class ProcedimentoDAO {
 	}
 	
 	private Integer retornaIdSubgrupoCasoExiste(SubgrupoType subgrupo, Connection conexao) throws SQLException, ProjetoException {
-		String sql = "select id from hosp.subgrupo_mensal where codigo = ?";
+		String sql = "select id from sigtap.subgrupo where codigo = ?";
 		Integer idSubgrupo = 0;
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
@@ -987,8 +987,8 @@ public class ProcedimentoDAO {
 	}
 
 	public Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.subgrupo_mensal " + 
-				"(codigo, nome, id_grupo_mensal) " + 
+		String sql = "INSERT INTO sigtap.subgrupo " + 
+				"(codigo, nome, id_grupo) " + 
 				"VALUES(?, ?, ?) returning id ";
 		Integer idSubgrupo = null;
 		try {
@@ -1015,7 +1015,7 @@ public class ProcedimentoDAO {
 	}
 	
 	private Integer retornaIdGrupoCasoExiste(SubgrupoType subgrupo, Connection conexao) throws SQLException, ProjetoException {
-		String sql = "select id from hosp.grupo_mensal where codigo = ?";
+		String sql = "select id from sigtap.grupo where codigo = ?";
 		Integer idGrupo = 0;
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
@@ -1032,7 +1032,7 @@ public class ProcedimentoDAO {
 	}
 
 	public Integer inserirGrupoMensal(GrupoType grupo, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.grupo_mensal " + 
+		String sql = "INSERT INTO sigtap.grupo " + 
 				"(codigo, nome) " + 
 				"VALUES(?, ?) returning id ";
 		Integer idGrupo = null;
@@ -1053,12 +1053,12 @@ public class ProcedimentoDAO {
 	
 	public Integer inserirProcedimentoMensal(GravarProcedimentoMensalDTO procedimentoMensalDTO, Connection conexao, Integer idHistoricoConsumoSigtap)
 			throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.procedimento_mensal " + 
-				"(id_procedimento, codigo_procedimento, nome, competencia, complexidade, id_tipo_financiamento, "+
+		String sql = "INSERT INTO sigtap.procedimento_mensal " + 
+				"(id_procedimento, codigo_procedimento, nome, competencia_inicial, complexidade, id_tipo_financiamento, "+
 				"sexo, quantidade_maxima, idade_minima, unidade_idade_minima, idade_maxima, unidade_idade_maxima, "+
 				"servico_ambulatorial, servico_hospitalar, servico_profisional, id_forma_de_organizacao, "+
-				"descricao, id_historico_consumo_sigtap) " + 
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; "; 
+				"descricao, id_historico_consumo_sigtap, competencia_final) " + 
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; "; 
 				
 		Integer idProcedimentoMensal = null;
 		try {
@@ -1066,7 +1066,7 @@ public class ProcedimentoDAO {
 			stm.setInt(1, procedimentoMensalDTO.getIdProcedimento());
 			stm.setString(2, procedimentoMensalDTO.getProcedimentoMensal().getCodigo());
 			stm.setString(3, procedimentoMensalDTO.getProcedimentoMensal().getNome());
-			stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial()); //VERIFICAR SE É A INICIAL OU FINAL OU AMBAS E ALTERAR NO BANCO
+			stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial());
 			stm.setString(5, procedimentoMensalDTO.getProcedimentoMensal().getComplexidade().name());
 			
 			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getIdTipoFinanciamentoExistente()))
@@ -1116,14 +1116,11 @@ public class ProcedimentoDAO {
 			
 			stm.setString(17, procedimentoMensalDTO.getProcedimentoMensal().getDescricao());
 			stm.setInt(18, idHistoricoConsumoSigtap);
+			stm.setString(19, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaFinal());
 			ResultSet rs = stm.executeQuery();
 			if(rs.next())
 				idProcedimentoMensal = rs.getInt("id");
 		} catch (Exception ex) {
-			System.out.println("(procedimentoMensalDTO"+procedimentoMensalDTO);
-			System.out.println("(procedimentoMensalDTO.getProcedimentoMensal()"+procedimentoMensalDTO.getProcedimentoMensal());
-System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida()"+procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida());
-//System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite()"+procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite());
 			conexao.rollback();
 			ex.printStackTrace();
 			throw new ProjetoException(ex);
@@ -1134,12 +1131,12 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     public void inserirModalidadeAtendimento (List<ModalidadeAtendimentoType> modalidadesAtendimento,
     		Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdModalidadesAtendimentoExistentes) 
     			throws ProjetoException, SQLException {
-        String sqlModalidadeAtendimento = "INSERT INTO hosp.modalidade_atendimento " + 
+        String sqlModalidadeAtendimento = "INSERT INTO sigtap.modalidade_atendimento " + 
         		"(codigo, nome) " + 
         		"VALUES(?, ?) returning id";
         
         String sqlModalidadeAtendimentoProcedimentoMensal = 
-        		"INSERT INTO hosp.modalidade_atendimento_procedimento_mensal " + 
+        		"INSERT INTO sigtap.modalidade_atendimento_procedimento_mensal " + 
         		"(id_procedimento_mensal, id_modalidade_atendimento) " + 
         		"VALUES(?, ?);";
         try {
@@ -1175,11 +1172,11 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
 			Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdInstrumentosRegistroExistentes)
 					throws ProjetoException, SQLException {
 		
-		String sqlInstrumentoRegistro = "INSERT INTO hosp.instrumento_registro (codigo, nome) "
+		String sqlInstrumentoRegistro = "INSERT INTO sigtap.instrumento_registro (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
 		
 		String sqlInstrumentoRegistroProcedimentoMensal =
-				"INSERT INTO hosp.instrumento_registro_procedimento_mensal " + 
+				"INSERT INTO sigtap.instrumento_registro_procedimento_mensal " + 
 				"(id_procedimento_mensal, id_instrumento_registro) " + 
 				"VALUES(?, ?); ";
 		
@@ -1214,10 +1211,10 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     
     public void inserirCBOs(List<CBOType> cbos, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCbosExistentes)
     		throws ProjetoException, SQLException {
-        String sqlCbo = "INSERT INTO hosp.cbo_mensal (codigo, nome) VALUES(?, ?) returning id";
+        String sqlCbo = "INSERT INTO hosp.cbo (codigo, descricao) VALUES(?, ?) returning id";
         
-        String sqlCboProcedimentoMensal = "INSERT INTO hosp.cbo_procedimento_mensal " + 
-        		"(id_procedimento_mensal, id_cbo_mensal) VALUES(?, ?);";
+        String sqlCboProcedimentoMensal = "INSERT INTO sigtap.cbo_procedimento_mensal " + 
+        		"(id_procedimento_mensal, id_cbo) VALUES(?, ?);";
         try {
         	PreparedStatement stm = null;
         	for(CBOType cboType : cbos) {
@@ -1249,11 +1246,11 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     
     public void inserirCIDs(List<CIDVinculado> listaCidVinculado, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCidsExistentes)
     		throws ProjetoException, SQLException {
-        String sqlCid = "INSERT INTO hosp.cid_mensal " + 
-        		"(codigo, nome, agravo, sexo_aplicavel, estadio, quantidade_campos_irradiados) " + 
-        		"VALUES(?, ?, ?, ?, ?, ?) returning id;";
+        String sqlCid = "INSERT INTO hosp.cid " + 
+        		"(codigo, desccid) " + 
+        		"VALUES(?, ?) returning id;";
         
-		String sqlCidProcedimentoMensal = "INSERT INTO hosp.cid_procedimento_mensal (id_procedimento_mensal, id_cid_mensal) " + 
+		String sqlCidProcedimentoMensal = "INSERT INTO sigtap.cid_procedimento_mensal (id_procedimento_mensal, id_cid) " + 
 				"VALUES(?, ?);";
         try {
         	PreparedStatement stm = null;
@@ -1290,16 +1287,16 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     
     public void inserirServicoClassificacao
     	(List<ServicoClassificacaoType> servicosClassificacoesType, Integer idProcedimentoMensal, Connection conexao) throws ProjetoException, SQLException {
-        String sqlServicoClassificacao = "INSERT INTO hosp.servico_classificacao_mensal " + 
+        String sqlServicoClassificacao = "INSERT INTO sigtap.servico_classificacao_mensal " + 
         		"(id_servico, id_classificacao, id_procedimento_mensal) " + 
         		"VALUES(?, ?, ?);";
         
-        String sqlVerificaServico = "select id as id_servico from hosp.servico_mensal where codigo = ?";
+        String sqlVerificaServico = "select id as id_servico from sigtap.servico where codigo = ?";
         
         String sqlVerificaClassificacao = 
         		"select scm.id_classificacao " + 
-        		"from hosp.servico_classificacao_mensal scm " + 
-        		"join hosp.classificacao_mensal cm on scm.id_classificacao = cm.id " + 
+        		"from sigtap.servico_classificacao_mensal scm " + 
+        		"join sigtap.classificacao cm on scm.id_classificacao = cm.id " + 
         		"where scm.id_servico = ? and cm.codigo = ?"; 
         
         try {
@@ -1340,7 +1337,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     }
     
     public Integer inserirServico(ServicoType servicoType, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO hosp.servico_mensal " + 
+        String sql = "INSERT INTO sigtap.servico " + 
         		"(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idServico = null;
         try {
@@ -1359,7 +1356,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     }
     
     public Integer inserirClassificacao(String codigo, String nome, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO hosp.classificacao_mensal " + 
+        String sql = "INSERT INTO sigtap.classificacao " + 
         		"(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idClassificacao = null;
         try {
@@ -1380,7 +1377,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     public Integer gravarHistoricoConsumoSigtap(Long idFuncionario, Connection conexao)
             throws ProjetoException, SQLException {
         Integer idHistorico = null;
-        String sql = "INSERT INTO hosp.historico_consumo_sigtap " + 
+        String sql = "INSERT INTO sigtap.historico_consumo_sigtap " + 
         		"(mes, ano, data_registro, id_funcionario) " + 
         		"VALUES(?, ?, current_timestamp, ?) returning id;";
         
@@ -1405,7 +1402,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     public void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer idHistorico, Connection conexao)
             throws ProjetoException, SQLException {
         
-        String sql = "UPDATE hosp.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
+        String sql = "UPDATE sigtap.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setLong(1, idHistorico);
@@ -1451,8 +1448,8 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     
     public Boolean houveCargaDoSigtapEsteMes() {
         
-        String sql = "select exists (select id from hosp.historico_consumo_sigtap " + 
-        		"where id = (select id from hosp.historico_consumo_sigtap hcs " + 
+        String sql = "select exists (select id from sigtap.historico_consumo_sigtap " + 
+        		"where id = (select id from sigtap.historico_consumo_sigtap hcs " + 
         		"order by id desc limit 1) and (status = 'A' and mes = EXTRACT(MONTH FROM current_date) "+
         		"and ano = EXTRACT(YEAR FROM current_date))) houve_carga_este_mes";
         Boolean houveCargaDoSigtap = false;
@@ -1482,7 +1479,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     	List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList();
         String sql = "select hcs.data_registro, hcs.ano, " + 
         		"to_char(to_timestamp (hcs.mes::text, 'MM'), 'TMMONTH') as mes " + 
-        		"from hosp.historico_consumo_sigtap hcs " + 
+        		"from sigtap.historico_consumo_sigtap hcs " + 
         		"order by hcs.data_registro desc";
         
         try {

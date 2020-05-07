@@ -340,7 +340,7 @@ public class ProcedimentoController implements Serializable {
     public void novaCargaSigtap() throws ProjetoException {
     	listarProcedimentos();
     	if(this.listaProcedimentos.isEmpty())
-    		JSFUtil.adicionarMensagemErro("N�o h� procedimentos cadastrados", "Erro");
+    		JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
 		else {
 			if (!verificaSeHouveCargaDoSigtapEsteMes()) {	
 
@@ -361,8 +361,8 @@ public class ProcedimentoController implements Serializable {
 					catch (SOAPFaultException soape) {
 						JSFUtil.adicionarMensagemErro
 						("Erro, algo de inesperado ocorreu durante a carga do procedimento "+this.listaProcedimentos.get(i).getCodProc()
-								+" verifique se o c�digo do procedimento est� correto"
-								+ " e execute a altera��o do procedimento para que seja poss�vel realizar uma nova"
+								+" verifique se o código do procedimento está correto"
+								+ " e execute a alteração do procedimento para que seja possível realizar uma nova"
 								+ " carga do SIGTAP este m�s", "");
 						soape.printStackTrace();
 					}
@@ -388,7 +388,7 @@ public class ProcedimentoController implements Serializable {
     		Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
     		if(houveCargaEsteMes) {
     			fecharDialogAvisoCargaSigtap();
-        		JSFUtil.adicionarMensagemAdvertencia("O sistema est� atualizado, uma carga j� foi executada este m�s", "");
+        		JSFUtil.adicionarMensagemAdvertencia("O sistema está atualizado, uma carga já foi executada este mês", "");
         		return houveCargaEsteMes;
         	}
 		} catch (Exception e) {

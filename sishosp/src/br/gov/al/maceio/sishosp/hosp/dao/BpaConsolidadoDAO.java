@@ -28,9 +28,9 @@ public class BpaConsolidadoDAO {
         		" left join hosp.cbo on cbo.id = func.codcbo " + 
         		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
         		" join hosp.proc on proc.id = a1.codprocedimento " + 
-        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
-        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
+        		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
+        		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
+        		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
         		" where a1.situacao ='A' " + 
         		" and a.dtaatende  between ? and ? " +  

@@ -49,12 +49,12 @@ public class BpaIndividualizadoDAO {
         		" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  " + 
         		" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  " + 
         		" left join hosp.cid on cid.cod = l.cid1  " + 
-        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  " + 
-        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " +
-        		" join hosp.servico_classificacao_mensal scm on scm.id_procedimento_mensal = pm.id " + 
-        		" join hosp.servico_mensal sm on sm.id = scm.id_servico " + 
-        		" join hosp.classificacao_mensal cm on cm.id = scm.id_classificacao "+
+        		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  " + 
+        		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  " + 
+        		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " +
+        		" join sigtap.servico_classificacao_mensal scm on scm.id_procedimento_mensal = pm.id " + 
+        		" join sigtap.servico sm on sm.id = scm.id_servico " + 
+        		" join sigtap.classificacao cm on cm.id = scm.id_classificacao "+
         		" cross join hosp.empresa emp " + 
         		" where a1.situacao ='A' " + 
         		" and a.dtaatende  between ? and ? " + 
@@ -170,7 +170,7 @@ public class BpaIndividualizadoDAO {
     }
 
 	public List<String> listarCompetencias() {
-		String sql = "select distinct pm.competencia from hosp.procedimento_mensal pm ";
+		String sql = "select distinct pm.competencia_inicial from sigtap.procedimento_mensal pm ";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
         try {
