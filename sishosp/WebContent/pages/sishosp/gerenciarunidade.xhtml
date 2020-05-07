@@ -80,7 +80,7 @@
                             Ação
                         </f:facet>
 
-							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+							<p:commandButton title="Alterar" icon="ui-icon-pencil"
 								size="sm" action="#{UnidadeController.redirectEdit()}"
 								class="btn-acao-table acao-editar">
 								<f:setPropertyActionListener value="#{tab}"
@@ -90,7 +90,7 @@
 									target="#{UnidadeController.tipo}" />
 							</p:commandButton>
 
-							<p:commandButton tooltip="Desativar" icon="ui-icon-trash"
+							<p:commandButton title="Desativar" icon="ui-icon-trash"
 								size="sm" ajax="true" style="margin-left:10px"
 								class="btn-acao-table acao-excluir"
 								oncomplete="PF('dialogExclusao').show()">
@@ -111,7 +111,7 @@
 			resizable="false" showEffect="clip" hideEffect="clip">
 
 			<h:form id="frmExcluir">
-				<div class="alert alert-warning" role="alert">Deseja desativar
+				<div class="alert alert-warning" role="alert">Deseja Desativar
 					esta Unidade?</div>
 				<div align="center">
 					<p:separator />
