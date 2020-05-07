@@ -241,7 +241,7 @@
 							<div align="center">
 								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-pencil-square-o"
 									size="sm" class="btn-acao-table acao-editar"
-									action="#{AtendimentoController.redirectAtendimento()}">
+									action="#{AtendimentoController.redirectGerenciarAtendimentos(atendimento.ehEquipe)}">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 								</p:commandButton>

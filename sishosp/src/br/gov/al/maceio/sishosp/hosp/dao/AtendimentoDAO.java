@@ -222,18 +222,12 @@ public class AtendimentoDAO {
 				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);				
 			}
-			
-			
-
 	
 			
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
-
 				con.close();
-
 				return alterou;
 			}			
-			
 			
 			
 			for (int i = 0; i < lista.size(); i++) {
@@ -916,7 +910,7 @@ public class AtendimentoDAO {
 		return at;
 	}
 
-	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer id) throws ProjetoException {
+	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
 
 		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
 				+ " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao, to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento "
@@ -931,7 +925,7 @@ public class AtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, id);
+			stm.setInt(1, idAtendimento);
 
 			ResultSet rs = stm.executeQuery();
 
@@ -1102,5 +1096,29 @@ public class AtendimentoDAO {
         return rst;
     }	
 	
-
+    public boolean alteraSituacaoDeAtendimentoPorProfissional(String situacao, Integer idAtendimento) throws ProjetoException {
+        
+        String sql = "update hosp.atendimentos1 set situacao = ? where id_atendimento = ?";
+        boolean alterado = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setString(1,  situacao);
+            stm.setInt(2,  idAtendimento);
+            
+            stm.executeUpdate();
+            con.commit();
+            alterado = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return alterado;
+    }	
 }

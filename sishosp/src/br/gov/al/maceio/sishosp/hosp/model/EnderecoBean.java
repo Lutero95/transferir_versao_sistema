@@ -1,6 +1,5 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +11,7 @@ public class EnderecoBean implements Serializable {
 	private String referencia;
 	private String uf;
 	private String numero;
-	private String logradouro;
+    private String logradouro;
 	private Integer codbairro;
 	private Integer codmunicipio;
 	private Integer codIbge;
@@ -29,6 +28,7 @@ public class EnderecoBean implements Serializable {
 	private Boolean cepValido;
 	private Boolean bairroUnico;
 	private ArrayList<String> listaEstados;
+	private LogradouroBean tipoLogradouro;
 
 	public EnderecoBean() {
 		listaEstados = new ArrayList<>();
@@ -102,13 +102,12 @@ public class EnderecoBean implements Serializable {
 		this.numero = numero;
 	}
 
-	public String getLogradouro() {
-		return logradouro;
-	}
-
-	public void setLogradouro(String logradouro) {
-		this.logradouro = logradouro;
-	}
+	
+	  public String getLogradouro() { return logradouro; }
+	  
+	  public void setLogradouro(String logradouro) { this.logradouro = logradouro;
+	  }
+	 
 
 	public Integer getCodbairro() {
 		return codbairro;
