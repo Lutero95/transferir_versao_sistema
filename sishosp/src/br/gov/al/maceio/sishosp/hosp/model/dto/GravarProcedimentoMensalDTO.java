@@ -17,6 +17,7 @@ public class GravarProcedimentoMensalDTO {
     private List<Integer> listaIdRenasesExistente;
     private Integer idFormasDeOrganizacaoExistente;
     private Integer idTipoFinanciamentoExistente;
+    private String competenciaAtual;
     
     public GravarProcedimentoMensalDTO() {
     	this.listaIdModalidadeAtendimentoExistente = new ArrayList();
@@ -85,5 +86,13 @@ public class GravarProcedimentoMensalDTO {
 	}
 	public void setIdTipoFinanciamentoExistente(Integer idTipoFinanciamentoExistente) {
 		this.idTipoFinanciamentoExistente = idTipoFinanciamentoExistente;
-	}	    
+	}
+
+	public String getCompetenciaAtual() {
+		return competenciaAtual;
+	}
+
+	public void setCompetenciaAtual(String competenciaAtual) {
+		this.competenciaAtual = competenciaAtual;
+	}
 }

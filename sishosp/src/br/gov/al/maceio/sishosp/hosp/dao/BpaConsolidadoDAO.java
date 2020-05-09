@@ -22,22 +22,22 @@ public class BpaConsolidadoDAO {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
-        		"  proc.codproc, emp.cnes, pm.competencia, cbo.codigo cbo " + 
+        		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo cbo " +
         		" from hosp.atendimentos1 a1 " + 
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento " + 
         		" left join hosp.cbo on cbo.id = func.codcbo " + 
         		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
         		" join hosp.proc on proc.id = a1.codprocedimento " + 
-        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
-        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
+        		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
+        		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
+        		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
         		" where a1.situacao ='A' " + 
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
-        		" and pm.competencia = ? " + 
+        		" and pm.competencia_atual = ? " +
         		" group by " + 
-        		"  proc.codproc, emp.cnes, pm.competencia,cbo.codigo " + 
+        		"  proc.codproc, emp.cnes, pm.competencia_atual,cbo.codigo " +
         		"order by cbo.codigo ";
         
         Connection con = ConnectionFactory.getConnection();
@@ -53,7 +53,7 @@ public class BpaConsolidadoDAO {
             while (rs.next()) {
             	BpaConsolidadoBean bpaConsolidado = new BpaConsolidadoBean();
             	bpaConsolidado.setPrdCnes(rs.getString("cnes"));
-            	bpaConsolidado.setPrdCmp(rs.getString("competencia"));
+            	bpaConsolidado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaConsolidado.setPrdCbo(rs.getString("cbo"));
             	bpaConsolidado.setPrdPa(rs.getString("codproc"));
             	bpaConsolidado.setPrdIdade(PRD_IDADE);

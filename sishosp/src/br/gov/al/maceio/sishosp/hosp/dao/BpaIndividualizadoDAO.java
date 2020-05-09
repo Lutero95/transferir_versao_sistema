@@ -30,44 +30,54 @@ public class BpaIndividualizadoDAO {
     public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
-        String sql = "select count(*) qtdproc,  " + 
-        		"  proc.codproc, emp.cnes, pm.competencia, func.cns cnsprofissional, cbo.codigo cbo, proc.codproc, p.cns cnspaciente, " + 
-        		" p.sexo, substring(to_char(m.codigo,'9999999')	,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, " + 
-        		" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, " + 
-        		" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, " + 
-        		" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento, sm.codigo codigo_servico, cm.codigo codigo_classificacao  " + 
-        		" from hosp.atendimentos1 a1  " + 
-        		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  " + 
-        		" left join hosp.cbo on cbo.id = func.codcbo  " + 
-        		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  " + 
-        		" join hosp.pacientes p on p.id_paciente  = a.codpaciente  " + 
-        		" left join hosp.bairros on bairros.id_bairro = p.codbairro  " + 
-        		" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  " + 
-        		" left join hosp.raca on raca.id_raca = p.codraca  " + 
-        		" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  " + 
-        		" join hosp.proc on proc.id = a1.codprocedimento  " + 
-        		" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  " + 
-        		" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  " + 
-        		" left join hosp.cid on cid.cod = l.cid1  " + 
-        		" join hosp.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  " + 
-        		" join hosp.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  " + 
-        		" join hosp.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  " +
-        		" join hosp.servico_classificacao_mensal scm on scm.id_procedimento_mensal = pm.id " + 
-        		" join hosp.servico_mensal sm on sm.id = scm.id_servico " + 
-        		" join hosp.classificacao_mensal cm on cm.id = scm.id_classificacao "+
-        		" cross join hosp.empresa emp " + 
-        		" where a1.situacao ='A' " + 
-        		" and a.dtaatende  between ? and ? " + 
-        		" and ir.codigo = ? " + 
-        		" and pm.competencia = ? " + 
-        		" group by " + 
-        		" proc.codproc, emp.cnes, pm.competencia, func.cns , cbo.codigo, proc.codproc, p.cns , " + 
-        		" p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , " + 
-        		" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , " + 
-        		" p.logradouro, p.complemento , p.numero, " + 
-        		" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, "+
-        		" cm.codigo, sm.codigo, emp.cnpj " + 
-        		" order by func.cns, p.cns ";
+        String sql = "select count(*) qtdproc ,\n" +
+				"  proc.codproc, emp.cnes,\n" +
+				"  pm.competencia_atual, \n" +
+				"  func.cns cnsprofissional\n" +
+				"  , cbo.codigo cbo, proc.codproc, \n" +
+				"  p.cns cnspaciente,\n" +
+				" p.sexo, substring(to_char(m.codigo,'9999999')\t,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \n" +
+				" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \n" +
+				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, \n" +
+				" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\n" +
+				" sm.codigo codigo_servico, cm.codigo codigo_classificacao  \n" +
+				" from hosp.atendimentos1 a1  \n" +
+				"join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \n" +
+				"  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \n" +
+				" left join hosp.cbo on cbo.id = func.codcbo  \n" +
+				"  join hosp.pacientes p on p.id_paciente  = a.codpaciente  \n" +
+				" left join hosp.bairros on bairros.id_bairro = p.codbairro  \n" +
+				" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \n" +
+				" left join hosp.raca on raca.id_raca = p.codraca  \n" +
+				" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \n" +
+				" join hosp.proc on proc.id = a1.codprocedimento  \n" +
+				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
+				" left join hosp.programa  prog on prog.id_programa  = prog.id_servico \n" +
+				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
+				" left join hosp.cid on cid.cod = l.cid1  \n" +
+				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
+				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
+				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
+				" cross join hosp.empresa emp\n" +
+				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
+				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
+				" where a1.situacao ='A' \n" +
+				" and a.dtaatende  between ?  and ? \n" +
+				" and ir.codigo = ? \n" +
+				" and pm.competencia_atual = ? \n" +
+				" group by \n" +
+				" proc.codproc, \n" +
+				" emp.cnes, pm.competencia_atual, \n" +
+				" func.cns ,\n" +
+				" cbo.codigo, proc.codproc, \n" +
+				" p.cns,\n" +
+				" p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , \n" +
+				" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , \n" +
+				" p.logradouro, p.complemento , p.numero, \n" +
+				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
+				" cm.codigo, sm.codigo, \n" +
+				" emp.cnpj \n" +
+				" order by func.cns, p.cns \t";
         
         Connection con = ConnectionFactory.getConnection();
        
@@ -82,7 +92,7 @@ public class BpaIndividualizadoDAO {
             while (rs.next()) {
             	BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
             	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
-            	bpaIndividualizado.setPrdCmp(rs.getString("competencia"));
+            	bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));
             	bpaIndividualizado.setPrdCbo(rs.getString("cbo"));
             	bpaIndividualizado.setPrdDtaten(rs.getDate("dtaatende").toString().replaceAll("-", ""));
@@ -170,7 +180,7 @@ public class BpaIndividualizadoDAO {
     }
 
 	public List<String> listarCompetencias() {
-		String sql = "select distinct pm.competencia from hosp.procedimento_mensal pm ";
+		String sql = "select distinct pm.competencia_atual from sigtap.procedimento_mensal pm ";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
         try {
@@ -178,7 +188,7 @@ public class BpaIndividualizadoDAO {
         	PreparedStatement ps = con.prepareStatement(sql);          
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-            	String competencia = rs.getString("competencia");
+            	String competencia = rs.getString("competencia_atual");
             	listaCompetencias.add(competencia);
             }
         } catch (Exception ex) {

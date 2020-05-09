@@ -59,6 +59,8 @@ public class ProcedimentoController implements Serializable {
     private ProcedimentoDAO procedimentoDao = new ProcedimentoDAO();
     private String tipoBusca;
     private String campoBusca;
+    private String anoCompetenciaAtual;
+    private String mesCompetenciaAtual;
     
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -340,7 +342,7 @@ public class ProcedimentoController implements Serializable {
     public void novaCargaSigtap() throws ProjetoException {
     	listarProcedimentos();
     	if(this.listaProcedimentos.isEmpty())
-    		JSFUtil.adicionarMensagemErro("N�o h� procedimentos cadastrados", "Erro");
+    		JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
 		else {
 			if (!verificaSeHouveCargaDoSigtapEsteMes()) {	
 
@@ -351,6 +353,9 @@ public class ProcedimentoController implements Serializable {
 
 					try {
 						buscaCodigosDeDadosExistentesNoBanco();
+						if (this.listaProcedimentos.get(i).getNomeProc().equals("TERAPIA EM GRUPO")){
+						    System.out.println("aqui");
+                        }
 						selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
 						setaDadosParaListaProcedimentosMensalDTO(i);
 						limparListasDadosProcedimentos();
@@ -361,8 +366,8 @@ public class ProcedimentoController implements Serializable {
 					catch (SOAPFaultException soape) {
 						JSFUtil.adicionarMensagemErro
 						("Erro, algo de inesperado ocorreu durante a carga do procedimento "+this.listaProcedimentos.get(i).getCodProc()
-								+" verifique se o c�digo do procedimento est� correto"
-								+ " e execute a altera��o do procedimento para que seja poss�vel realizar uma nova"
+								+" verifique se o código do procedimento está correto"
+								+ " e execute a alteração do procedimento para que seja possível realizar uma nova"
 								+ " carga do SIGTAP este m�s", "");
 						soape.printStackTrace();
 					}
@@ -388,7 +393,7 @@ public class ProcedimentoController implements Serializable {
     		Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
     		if(houveCargaEsteMes) {
     			fecharDialogAvisoCargaSigtap();
-        		JSFUtil.adicionarMensagemAdvertencia("O sistema est� atualizado, uma carga j� foi executada este m�s", "");
+        		JSFUtil.adicionarMensagemAdvertencia("O sistema está atualizado, uma carga já foi executada este mês", "");
         		return houveCargaEsteMes;
         	}
 		} catch (Exception e) {
@@ -505,7 +510,7 @@ public class ProcedimentoController implements Serializable {
     	
 		RequestDetalharProcedimento requestDetalharProcedimento = new RequestDetalharProcedimento();
 		requestDetalharProcedimento.setCodigoProcedimento(procedimento.getCodProc());
-		requestDetalharProcedimento.setCompetencia("202004");
+		requestDetalharProcedimento.setCompetencia(anoCompetenciaAtual+mesCompetenciaAtual);
 
 		DetalhesAdicionais detalhesAdicionais = new DetalhesAdicionais();
 
@@ -543,6 +548,7 @@ public class ProcedimentoController implements Serializable {
 		
 		if(listaGravarProcedimentosMensaisDTO.isEmpty()) {
 			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+            gravarProcedimentoMensalDTO.setCompetenciaAtual(anoCompetenciaAtual+mesCompetenciaAtual);
 			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
 			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 			adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
@@ -550,6 +556,7 @@ public class ProcedimentoController implements Serializable {
 		
 		else if(!listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento().equals(procedimento.getIdProc())){
 			gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
+            gravarProcedimentoMensalDTO.setCompetenciaAtual(anoCompetenciaAtual+mesCompetenciaAtual);
 			gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
 			listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 			adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
@@ -780,4 +787,20 @@ public class ProcedimentoController implements Serializable {
 	public void setListaHistoricoDoSigtap(List<HistoricoSigtapBean> listaHistoricoDoSigtap) {
 		this.listaHistoricoDoSigtap = listaHistoricoDoSigtap;
 	}
+
+    public String getAnoCompetenciaAtual() {
+        return anoCompetenciaAtual;
+    }
+
+    public void setAnoCompetenciaAtual(String anoCompetenciaAtual) {
+        this.anoCompetenciaAtual = anoCompetenciaAtual;
+    }
+
+    public String getMesCompetenciaAtual() {
+        return mesCompetenciaAtual;
+    }
+
+    public void setMesCompetenciaAtual(String mesCompetenciaAtual) {
+        this.mesCompetenciaAtual = mesCompetenciaAtual;
+    }
 }
