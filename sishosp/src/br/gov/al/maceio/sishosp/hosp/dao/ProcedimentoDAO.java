@@ -653,7 +653,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaModalidadeAtendimentoExistente() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList();
-        String sql = "SELECT ma.id, ma.codigo FROM hosp.modalidade_atendimento ma ";
+        String sql = "SELECT ma.id, ma.codigo FROM sigtap.modalidade_atendimento ma ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -680,7 +680,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaInstrumentosRegistroExistente() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList();
-        String sql = "SELECT ir.id, ir.codigo FROM hosp.instrumento_registro ir ";
+        String sql = "SELECT ir.id, ir.codigo FROM sigtap.instrumento_registro ir ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -707,7 +707,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCbosExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList();
-        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo_mensal cbo ";
+        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -734,15 +734,15 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCidsExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList();
-        String sql = "SELECT cid.id, cid.codigo FROM hosp.cid_mensal cid ";
+        String sql = "SELECT cid.cod, cid.cid FROM hosp.cid ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
             	PropriedadeDeProcedimentoMensalExistenteDTO cidExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	cidExistente.setId(rs.getInt("id"));
-            	cidExistente.setCodigo(rs.getString("codigo"));
+            	cidExistente.setId(rs.getInt("cod"));
+            	cidExistente.setCodigo(rs.getString("cid"));
             	listaCidExistente.add(cidExistente);
             }
             	
@@ -761,7 +761,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaFormasOrganizacaoExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormaOrganizacaoExistente = new ArrayList();
-        String sql = "SELECT fo.id, fo.codigo FROM hosp.forma_de_organizacao fo ";
+        String sql = "SELECT fo.id, fo.codigo FROM sigtap.forma_de_organizacao fo ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -788,7 +788,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
-        String sql = "SELECT re.id, re.codigo FROM hosp.renases_mensal re ";
+        String sql = "SELECT re.id, re.codigo FROM sigtap.renases re ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -815,7 +815,7 @@ public class ProcedimentoDAO {
     
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaTiposFinanciamentoExistentes() throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList();
-        String sql = "SELECT tf.id, tf.codigo FROM hosp.tipo_financiamento tf ";
+        String sql = "SELECT tf.id, tf.codigo FROM sigtap.tipo_financiamento tf ";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -1451,8 +1451,8 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     
     public Boolean houveCargaDoSigtapEsteMes() {
         
-        String sql = "select exists (select id from hosp.historico_consumo_sigtap " + 
-        		"where id = (select id from hosp.historico_consumo_sigtap hcs " + 
+        String sql = "select exists (select id from sigtap.historico_consumo_sigtap " + 
+        		"where id = (select id from sigtap.historico_consumo_sigtap hcs " + 
         		"order by id desc limit 1) and (status = 'A' and mes = EXTRACT(MONTH FROM current_date) "+
         		"and ano = EXTRACT(YEAR FROM current_date))) houve_carga_este_mes";
         Boolean houveCargaDoSigtap = false;

@@ -17,10 +17,10 @@
 
 			<h:form id="frmPrincipal" enctype="multipart/form-data">
 				<p:fileUpload value="#{ProcedimentoController.arquivoImportacaoSelecionado}" mode="simple"
-					skinSimple="true" allowTypes="/(\.|\/)(zip|rar)$/" label="Escolher arquivo"/>
+					skinSimple="true" allowTypes="/(\.|\/)(zip)$/" label="Escolher arquivo" update=":frmPrincipal"/>
 				<br />
-				<p:commandButton value="Importar" ajax="false"
-					action="#{ProcedimentoController.verificaSeUploadFoiRealizado()}" disabled="false" />
+				<p:commandButton id="importar" value="Importar dados do SIGTAP" ajax="false"
+					action="#{ProcedimentoController.verificaSeUploadFoiRealizado()}" />
 			</h:form>
 		</div>
 	</ui:define>
