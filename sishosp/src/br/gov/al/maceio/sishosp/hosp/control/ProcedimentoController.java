@@ -608,16 +608,39 @@ public class ProcedimentoController implements Serializable {
 			adicionaDadosNaoGravadosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
 		}
 	}
-
+	
+	private void adicionaDadosFiltradosEmSuasRespectivasVariaveis(
+			CategoriaDetalheAdicionalType categoriaDetalheAdicional,
+			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
+		if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
+			separaCbosGravadosIhNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO());
+		}
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
+			separaCidsGravadosIhNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado());			
+		}
+		
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.DESCRICAO))
+			this.descricaoProcedimentoMensal = resultadosDetalhaProcedimentosType.getProcedimento().getDescricao();
+		
+		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES)) {
+			separaRenasesGravadosIhNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES());
+		}
+		
+		else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
+			listaServicosClassificacao.addAll
+				(resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao());		
+		}
+	}
+	
 	private void adicionaDadosNaoGravadosEmSuasRespectivasVariaveis(
 			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-		adicionaModalidadeAtendimentoNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento());
-		adicionaInstrumentoRegistroNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro());		
-		adicionaFormaOrganizacaoNaoGravada(resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao());
-		adicionaTipoFinanciamentoNaoGravado(resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento());
+		separaModalidadeAtendimentoGravadosIhNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento());
+		separaInstrumentoRegistroGravadosIhNaoGravados(resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro());		
+		separaFormaOrganizacaoGravadaIhNaoGravada(resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao());
+		separaTipoFinanciamentoGravadoIhNaoGravado(resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento());
 	}
 
-	private void adicionaModalidadeAtendimentoNaoGravados(List<ModalidadeAtendimentoType> listaModalidadesAtendimento) {
+	private void separaModalidadeAtendimentoGravadosIhNaoGravados(List<ModalidadeAtendimentoType> listaModalidadesAtendimento) {
 		if(listaModalidadeAtendimentoExistente.isEmpty()) {
 			listaModalidadeAtendimentoNaoGravadosNoBanco.addAll(listaModalidadesAtendimento);
 		}else {
@@ -635,7 +658,7 @@ public class ProcedimentoController implements Serializable {
 		}
 	}
 	
-	private void adicionaInstrumentoRegistroNaoGravados(List<InstrumentoRegistroType> listaInstrumentoRegistro) {
+	private void separaInstrumentoRegistroGravadosIhNaoGravados(List<InstrumentoRegistroType> listaInstrumentoRegistro) {
 		if(listaInstrumentosRegistroExistentes.isEmpty()) {
 			listaInstrumentosRegistroNaoGravadosNoBanco.addAll(listaInstrumentoRegistro);
 		}else {	
@@ -653,7 +676,7 @@ public class ProcedimentoController implements Serializable {
 		}
 	}
 	
-	private void adicionaFormaOrganizacaoNaoGravada(FormaOrganizacaoType formaOrganizacao) {
+	private void separaFormaOrganizacaoGravadaIhNaoGravada(FormaOrganizacaoType formaOrganizacao) {
 		if(listaFormasDeOrganizacaoExistentes.isEmpty()) {
 			formaOrganizacaoNaoGravadaNoBanco = formaOrganizacao;
 		}else {
@@ -670,7 +693,7 @@ public class ProcedimentoController implements Serializable {
 		}
 	}
 	
-	private void adicionaTipoFinanciamentoNaoGravado(TipoFinanciamentoType tipoFinanciamento) {
+	private void separaTipoFinanciamentoGravadoIhNaoGravado(TipoFinanciamentoType tipoFinanciamento) {
 		if(listaTipoFinanciamentoExistente.isEmpty()) {
 			tipoFinanciamentoNaoGravadoNoBanco = tipoFinanciamento;
 		}else {
@@ -686,73 +709,87 @@ public class ProcedimentoController implements Serializable {
 				tipoFinanciamentoNaoGravadoNoBanco = tipoFinanciamento;
 		}
 	}
-
-	private void adicionaDadosFiltradosEmSuasRespectivasVariaveis(
-			CategoriaDetalheAdicionalType categoriaDetalheAdicional,
-			ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-		if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
-			if(listaCBOsExistentes.isEmpty()) {
-				listaCBOsNaoGravadosNoBanco.addAll(resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO());
-			}else {
-				for (CBOType cboType : resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO()) {
-					Boolean valorExistente = false;
-					for(PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO : listaCBOsExistentes) {
-						if(cboExistenteDTO.getCodigo().equals(cboType.getCodigo())) {
-							listaIdCBOsExistente.add(cboExistenteDTO.getId());
-							valorExistente = true;
-						}
+	
+	private void separaCbosGravadosIhNaoGravados(List<CBOType> listaCbo) {
+		if(listaCBOsExistentes.isEmpty()) {
+			listaCBOsNaoGravadosNoBanco.addAll(listaCbo);
+		}else {
+			for (CBOType cboType : listaCbo) {
+				Boolean valorExistente = false;
+				for(PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO : listaCBOsExistentes) {
+					if(cboExistenteDTO.getCodigo().equals(cboType.getCodigo())) {
+						listaIdCBOsExistente.add(cboExistenteDTO.getId());
+						valorExistente = true;
 					}
-					if (!valorExistente)
-						listaCBOsNaoGravadosNoBanco.add(cboType);
 				}
+				if (!valorExistente)
+					listaCBOsNaoGravadosNoBanco.add(cboType);
 			}
 		}
-		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
-			
-			if(listaCidsExistentes.isEmpty()) {
-				listaCidsNaoGravadosNoBanco.addAll
-					(resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado());
-			}else {
-				for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
-					Boolean valorExistente = false;
-					for(PropriedadeDeProcedimentoMensalExistenteDTO cidExistenteDTO : listaCidsExistentes) {
-						if(cidExistenteDTO.getCodigo().equals(cidVinculado.getCID().getCodigo())) { 
-							listaIdCidsExistente.add(cidExistenteDTO.getId());
-							valorExistente = true;
-						}
+	}
+	
+	private void separaCidsGravadosIhNaoGravados(List<CIDVinculado> listaCidVinculado) {
+		if(listaCidsExistentes.isEmpty()) {
+			listaCidsNaoGravadosNoBanco.addAll(listaCidVinculado);
+		}else {
+			for (CIDVinculado cidVinculado : listaCidVinculado) {
+				Boolean valorExistente = false;
+				for(PropriedadeDeProcedimentoMensalExistenteDTO cidExistenteDTO : listaCidsExistentes) {
+					if(cidExistenteDTO.getCodigo().equals(cidVinculado.getCID().getCodigo())) { 
+						listaIdCidsExistente.add(cidExistenteDTO.getId());
+						valorExistente = true;
 					}
-					if(!valorExistente)
-						listaCidsNaoGravadosNoBanco.add(cidVinculado);
 				}
-			}			
-		}
-		
-		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.DESCRICAO))
-			this.descricaoProcedimentoMensal = resultadosDetalhaProcedimentosType.getProcedimento().getDescricao();
-		
-		else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES)) {
-			if(listaRenasesExistentes.isEmpty()) {
-				listaRenasesNaoGravadosNoBanco.
-					addAll(resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES());
-			}else {
-				for (RENASESType renasesType : resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES()) {
-					Boolean valorExitente = false;
-					for(PropriedadeDeProcedimentoMensalExistenteDTO renasesExistenteDTO : listaRenasesExistentes) {
-						if(renasesExistenteDTO.getCodigo().equals(renasesType.getCodigo())) {
-							listaIdRenasesExistente.add(renasesExistenteDTO.getId());
-							valorExitente = true;
-						}	
-					}
-					if(!valorExitente)
-						listaRenasesNaoGravadosNoBanco.add(renasesType);
-				}
+				if(!valorExistente)
+					listaCidsNaoGravadosNoBanco.add(cidVinculado);
 			}
 		}
-		
-		else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
-			listaServicosClassificacao.addAll
-				(resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao());		
+	}
+	
+	private void separaRenasesGravadosIhNaoGravados(List<RENASESType> listaRenases) {
+		if(listaRenasesExistentes.isEmpty()) {
+			listaRenasesNaoGravadosNoBanco.addAll(listaRenases);
+		}else {
+			for (RENASESType renasesType : listaRenases) {
+				Boolean valorExitente = false;
+				for(PropriedadeDeProcedimentoMensalExistenteDTO renasesExistenteDTO : listaRenasesExistentes) {
+					if(renasesExistenteDTO.getCodigo().equals(renasesType.getCodigo())) {
+						listaIdRenasesExistente.add(renasesExistenteDTO.getId());
+						valorExitente = true;
+					}	
+				}
+				if(!valorExitente)
+					listaRenasesNaoGravadosNoBanco.add(renasesType);
+			}
 		}
+	}
+	
+	private void setaDadosNaoGravadosNoBancoAoProcedimento(ProcedimentoType procedimento) {
+		ModalidadesAtendimento modalidadesAtendimento = new ModalidadesAtendimento();
+		procedimento.setModalidadesAtendimento(modalidadesAtendimento);
+		procedimento.getModalidadesAtendimento().getModalidadeAtendimento()
+			.addAll(this.listaModalidadeAtendimentoNaoGravadosNoBanco);
+		
+		InstrumentosRegistro instrumentosRegistro = new InstrumentosRegistro();
+		procedimento.setInstrumentosRegistro(instrumentosRegistro);
+		procedimento.getInstrumentosRegistro().getInstrumentoRegistro()
+			.addAll(this.listaInstrumentosRegistroNaoGravadosNoBanco);
+		
+		CBOsVinculados cbosVinculados = new CBOsVinculados();
+		procedimento.setCBOsVinculados(cbosVinculados);
+		procedimento.getCBOsVinculados().getCBO().addAll(this.listaCBOsNaoGravadosNoBanco);
+		
+		CIDsVinculados cidsVinculados = new CIDsVinculados();
+		procedimento.setCIDsVinculados(cidsVinculados);
+		procedimento.getCIDsVinculados().getCIDVinculado()
+			.addAll(this.listaCidsNaoGravadosNoBanco);
+		
+		RENASESVinculadas renasesVinculados = new RENASESVinculadas();
+		procedimento.setRENASESVinculadas(renasesVinculados);
+		procedimento.getRENASESVinculadas().getRENASES()
+			.addAll(this.listaRenasesNaoGravadosNoBanco);
+		
+		procedimento.setTipoFinanciamento(this.tipoFinanciamentoNaoGravadoNoBanco);
 	}
 	
 	public void listaHistoricoSigtap() {
@@ -1113,21 +1150,55 @@ public class ProcedimentoController implements Serializable {
 	}
 
 	private void relacionarDadosDoProcedimento() {
-		//this.listaGravarProcedimentosMensaisDTO
+		
 		for (ProcedimentoType procedimento : this.listaProcedimentosDoArquivo) {
-			relacionaDadosCidProcedimento(procedimento);
-			relacionaDadosModalidadeProcedimento(procedimento);
-			relacionaDadosCboProcedimento(procedimento);
-			relacionaDadosInstrumentoRegistroProcedimento(procedimento);
-			relacionaDadosRenasesProcedimento(procedimento);
-			relacionaDadosServicoClassificacaoProcedimento(procedimento);
+			Integer idProcedimento = retornaIdProcedimentoNoBanco(procedimento.getCodigo());
+			GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO = new GravarProcedimentoMensalDTO();
+			
+			ModalidadesAtendimento modalidadesAtendimento = relacionaDadosModalidadeProcedimento(procedimento);
+			InstrumentosRegistro instrumentosRegistro = relacionaDadosInstrumentoRegistroProcedimento(procedimento);
+			CBOsVinculados cbosVinculados = relacionaDadosCboProcedimento(procedimento);
+			CIDsVinculados cidsVinculados = relacionaDadosCidProcedimento(procedimento);
+			RENASESVinculadas renasesVinculados = relacionaDadosRenasesProcedimento(procedimento);
+			relacionaDadosServicoClassificacaoProcedimento(procedimento);//
+			TipoFinanciamentoType tipoFinanciamento = relacionaDadosTipoFinanciamentoProcedimento(procedimento);
+			/*  POSTERIORMENTE VERIFICAR COMO RELACIONAR OS DADOS DA FORMA DE ORGANIZAÇÃO
+			 *  JÁ QUE NÃO FOI ENCONTRADO NENHUM ARQUIVO OU COLUNA DO PROCEDIMENTO QUE FAÇA
+			 *  ISSO APENAS O 5º E 6º DIGITO DO CÓDIGO DO PROCEDIMENTO QUE É IGUAL A FORMA DE ORGANIZAÇÃO
+			 * */
+			separaModalidadeAtendimentoGravadosIhNaoGravados(modalidadesAtendimento.getModalidadeAtendimento());
+			separaInstrumentoRegistroGravadosIhNaoGravados(instrumentosRegistro.getInstrumentoRegistro());
+			separaCbosGravadosIhNaoGravados(cbosVinculados.getCBO());
+			separaCidsGravadosIhNaoGravados(cidsVinculados.getCIDVinculado());
+			separaRenasesGravadosIhNaoGravados(renasesVinculados.getRENASES());
+			separaTipoFinanciamentoGravadoIhNaoGravado(tipoFinanciamento);
+			
+			setaDadosNaoGravadosNoBancoAoProcedimento(procedimento);
+			
+			gravarProcedimentoMensalDTO.setIdProcedimento(idProcedimento);
+			gravarProcedimentoMensalDTO.setProcedimentoMensal(procedimento);
+			gravarProcedimentoMensalDTO.setListaIdModalidadeAtendimentoExistente(this.listaIdModalidadeAtendimentoExistente);
+			gravarProcedimentoMensalDTO.setListaIdInstrumentosRegistroExistente(this.listaIdInstrumentosRegistroExistente);
+			gravarProcedimentoMensalDTO.setListaIdCBOsExistente(this.listaIdCBOsExistente);
+			gravarProcedimentoMensalDTO.setListaIdCidsExistente(this.listaIdCidsExistente);
+			gravarProcedimentoMensalDTO.setListaIdRenasesExistente(this.listaIdRenasesExistente);
+			gravarProcedimentoMensalDTO.setIdTipoFinanciamentoExistente(this.idTipoFinanciamentoExistente);
 			System.err.println();
+			this.listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 		}
 	}
 
-	private void relacionaDadosCidProcedimento(ProcedimentoType procedimento) {
+	private Integer retornaIdProcedimentoNoBanco(String codigoProcedimento) {
+		Integer idProcedimento = null;
+		for (ProcedimentoBean procedimento : this.listaProcedimentos) {
+			if(procedimento.getCodProc().equals(codigoProcedimento))
+				idProcedimento = procedimento.getIdProc();
+		}
+		return idProcedimento;
+	}
+
+	private CIDsVinculados relacionaDadosCidProcedimento(ProcedimentoType procedimento) {
 		CIDsVinculados cidsVinculados = new CIDsVinculados();
-		procedimento.setCIDsVinculados(cidsVinculados);
 		
 		RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCidValido = new RelacaoObjetoComProcedimentoDTO();
 		for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCid : this.listaRelacoesProcedimetoCid) {
@@ -1135,15 +1206,15 @@ public class ProcedimentoController implements Serializable {
 				relacaoProcedimentoCidValido = relacaoProcedimentoCid;
 				for(CIDVinculado cidVinculado : this.listaCidDoArquivo) {
 					if(cidVinculado.getCID().getCodigo().equals(relacaoProcedimentoCidValido.getCodigo()))
-						procedimento.getCIDsVinculados().getCIDVinculado().add(cidVinculado);
+						cidsVinculados.getCIDVinculado().add(cidVinculado);
 				}
 			}
 		}
+		return cidsVinculados;
 	}
 	
-	private void relacionaDadosModalidadeProcedimento(ProcedimentoType procedimento) {
+	private ModalidadesAtendimento relacionaDadosModalidadeProcedimento(ProcedimentoType procedimento) {
 		ModalidadesAtendimento modalidadesAtendimento = new ModalidadesAtendimento();
-		procedimento.setModalidadesAtendimento(modalidadesAtendimento);
 		
 		RelacaoObjetoComProcedimentoDTO relacaoProcedimentoModalidadeValida = new RelacaoObjetoComProcedimentoDTO();
 		for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoModalidade : this.listaRelacoesProcedimetoModalidade) {
@@ -1151,15 +1222,15 @@ public class ProcedimentoController implements Serializable {
 				relacaoProcedimentoModalidadeValida = relacaoProcedimentoModalidade;
 				for(ModalidadeAtendimentoType modaliadeAtendimento : this.listaModalidadeAtendimentoDoArquivo) {
 					if(modaliadeAtendimento.getCodigo().equals(relacaoProcedimentoModalidadeValida.getCodigo()))
-						procedimento.getModalidadesAtendimento().getModalidadeAtendimento().add(modaliadeAtendimento);
+						modalidadesAtendimento.getModalidadeAtendimento().add(modaliadeAtendimento);
 				}
 			}
 		}
+		return modalidadesAtendimento;
 	}
 	
-	private void relacionaDadosCboProcedimento(ProcedimentoType procedimento) {
+	private CBOsVinculados relacionaDadosCboProcedimento(ProcedimentoType procedimento) {
 		CBOsVinculados cbosVinculados = new CBOsVinculados();
-		procedimento.setCBOsVinculados(cbosVinculados);
 		
 		RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCboValido = new RelacaoObjetoComProcedimentoDTO();
 		for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCbo : this.listaRelacoesProcedimetoCbo) {
@@ -1167,15 +1238,15 @@ public class ProcedimentoController implements Serializable {
 				relacaoProcedimentoCboValido = relacaoProcedimentoCbo;
 				for(CBOType cbo : this.listaCbosDoArquivo) {
 					if(cbo.getCodigo().equals(relacaoProcedimentoCboValido.getCodigo()))
-						procedimento.getCBOsVinculados().getCBO().add(cbo);
+						cbosVinculados.getCBO().add(cbo);
 				}
 			}
 		}
+		return cbosVinculados;
 	}
 
-	private void relacionaDadosInstrumentoRegistroProcedimento(ProcedimentoType procedimento) {
+	private InstrumentosRegistro relacionaDadosInstrumentoRegistroProcedimento(ProcedimentoType procedimento) {
 		InstrumentosRegistro instrumentosRegistro = new InstrumentosRegistro();
-		procedimento.setInstrumentosRegistro(instrumentosRegistro);
 		
 		RelacaoObjetoComProcedimentoDTO relacaoProcedimentoInstrumentoRegistroValido = new RelacaoObjetoComProcedimentoDTO();
 		for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoInstrumento : this.listaRelacoesProcedimetoInstrumentoRegistro) {
@@ -1183,15 +1254,15 @@ public class ProcedimentoController implements Serializable {
 				relacaoProcedimentoInstrumentoRegistroValido = relacaoProcedimentoInstrumento;
 				for(InstrumentoRegistroType instrumentoRegistro : this.listaInstrumentoRegistroDoArquivo) {
 					if(instrumentoRegistro.getCodigo().equals(relacaoProcedimentoInstrumentoRegistroValido.getCodigo()))
-						procedimento.getInstrumentosRegistro().getInstrumentoRegistro().add(instrumentoRegistro);
+						instrumentosRegistro.getInstrumentoRegistro().add(instrumentoRegistro);
 				}
 			}
 		}
+		return instrumentosRegistro;
 	}
 	
-	private void relacionaDadosRenasesProcedimento(ProcedimentoType procedimento) {
-		RENASESVinculadas cbosVinculados = new RENASESVinculadas();
-		procedimento.setRENASESVinculadas(cbosVinculados);
+	private RENASESVinculadas relacionaDadosRenasesProcedimento(ProcedimentoType procedimento) {
+		RENASESVinculadas renasesVinculados = new RENASESVinculadas();
 		
 		RelacaoObjetoComProcedimentoDTO relacaoProcedimentoRenasesValido = new RelacaoObjetoComProcedimentoDTO();
 		for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoRenases : this.listaRelacoesProcedimetoRenases) {
@@ -1199,10 +1270,11 @@ public class ProcedimentoController implements Serializable {
 				relacaoProcedimentoRenasesValido = relacaoProcedimentoRenases;
 				for(RENASESType renases : this.listaRenasesDoArquivo) {
 					if(renases.getCodigo().equals(relacaoProcedimentoRenasesValido.getCodigo()))
-						procedimento.getRENASESVinculadas().getRENASES().add(renases);
+						renasesVinculados.getRENASES().add(renases);
 				}
 			}
 		}
+		return renasesVinculados;
 	}
 	
 	private void relacionaDadosServicoClassificacaoProcedimento(ProcedimentoType procedimento) {
@@ -1227,6 +1299,15 @@ public class ProcedimentoController implements Serializable {
 				
 			}
 		}
+	}
+	
+	private TipoFinanciamentoType relacionaDadosTipoFinanciamentoProcedimento(ProcedimentoType procedimento) {
+		TipoFinanciamentoType tipoFinanciamento = new TipoFinanciamentoType();
+		for(TipoFinanciamentoType tipoFinanciamentoType : this.listaTipoFinanciamentoDoArquivo) {
+			if(tipoFinanciamentoType.getCodigo().equals(procedimento.getTipoFinanciamento().getCodigo()))
+				tipoFinanciamento = tipoFinanciamentoType;
+		}
+		return tipoFinanciamento;
 	}
 
     public List<ProcedimentoBean> getListaProcedimentos() {
