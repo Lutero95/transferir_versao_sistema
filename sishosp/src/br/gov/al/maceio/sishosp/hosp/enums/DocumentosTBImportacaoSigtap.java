@@ -155,6 +155,7 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			servico.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 0, 3));
 			servicoClassificacao.setServico(servico);
 			servicoClassificacao.setCodigoClassificacao(retornaCampoFormatadoParaTabela(linhaDocumento, 3, 6));
+			servicoClassificacao.setNomeClassificacao(retornaCampoFormatadoParaTabela(linhaDocumento, 6, 156).trim());
 			return servicoClassificacao;
 		}		
 	},

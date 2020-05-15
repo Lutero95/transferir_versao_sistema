@@ -14,8 +14,10 @@
 			</div>
 		</div>
 		<div class="panel panel-primary top-primary">
-
 			<h:form id="frmPrincipal" enctype="multipart/form-data">
+				<div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 				<p:fileUpload value="#{ProcedimentoController.arquivoImportacaoSelecionado}" mode="simple"
 					skinSimple="true" allowTypes="/(\.|\/)(zip)$/" label="Escolher arquivo" update=":frmPrincipal"/>
 				<br />

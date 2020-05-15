@@ -23,7 +23,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.xml.ws.soap.SOAPFaultException;
 import org.primefaces.model.UploadedFile;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
@@ -549,8 +548,6 @@ public class ProcedimentoController implements Serializable {
 			List<File> arquivosDescompactados = descompactaArquivo(arquivoZipCriado.getPath(), pathRaiz.toString());
 			List<File> arquivosTxtDescompactados = retornaArquivosTxtDescompactados(arquivosDescompactados);
 			leArquivosDescompactados(arquivosTxtDescompactados);
-			JSFUtil.adicionarMensagemSucesso(
-					"Upload realizado com sucesso do arquivo " + this.arquivoImportacaoSelecionado.getFileName(), "");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro("Um erro inexperada ocorreu: " + ioe.getMessage(), "");
 			ioe.printStackTrace();
@@ -683,14 +680,23 @@ public class ProcedimentoController implements Serializable {
     		JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
 		else {
 			if (!verificaSeHouveCargaDoSigtapEsteMes()) {	
-
-				FuncionarioBean user_session = obterUsuarioDaSessao();
 				
 				transformaDadosDosArquivosTBEmListasDeObjetos(dadosDosArquivos);
 				transformaDadosDosArquivosRLEmListasDeObjetos(dadosDosArquivos);
 				removeProcedimentosQueNaoEstaoNoBanco();
 				relacionarDadosDoProcedimento();
-
+				try {
+					FuncionarioBean user_session = obterUsuarioDaSessao();
+					if(this.listaGravarProcedimentosMensaisDTO.isEmpty() || VerificadorUtil.verificarSeObjetoNulo(this.listaGravarProcedimentosMensaisDTO))
+						JSFUtil.adicionarMensagemErro("Erro não há dados válidos neste arquivo", "");
+					else {
+						procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO, user_session.getId());
+						JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
+					}
+				}catch(Exception sqle) {
+					JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
+					sqle.printStackTrace();
+				}
 			}
 		}
     }
@@ -702,91 +708,78 @@ public class ProcedimentoController implements Serializable {
 				for (String linha : linhasDocumentoCids) {
 					this.listaCidDoArquivo.add((CIDVinculado) DocumentosTBImportacaoSigtap.TB_CID.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_DESCRICAO.getSigla())){
 				List<String> linhasDocumentoDescricaoProcedimento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoDescricaoProcedimento) {
 					this.listaDescricaoProcedimentoDoArquivo.add((DescricaoProcedimentoDTO) DocumentosTBImportacaoSigtap.TB_DESCRICAO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_FINANCIAMENTO.getSigla())){
 				List<String> linhasDocumentoTipoFinanciamento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoTipoFinanciamento) {
 					this.listaTipoFinanciamentoDoArquivo.add((TipoFinanciamentoType) DocumentosTBImportacaoSigtap.TB_FINANCIAMENTO.retornarObjectoDaString(linha));
 				}						
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_FORMA_ORGANIZACAO.getSigla())){
 				List<String> linhasDocumentoFormaOrganizacao = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoFormaOrganizacao) {
 					this.listaFormaOrganizacaoDoArquivo.add((FormaOrganizacaoType) DocumentosTBImportacaoSigtap.TB_FORMA_ORGANIZACAO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_GRUPO.getSigla())){
 				List<String> linhasDocumentoGrupo = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoGrupo) {
 					this.listaGrupoDoArquivo.add((GrupoType) DocumentosTBImportacaoSigtap.TB_GRUPO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_MODALIDADE.getSigla())){
 				List<String> linhasDocumentoModalidade = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoModalidade) {
 					this.listaModalidadeAtendimentoDoArquivo.add((ModalidadeAtendimentoType) DocumentosTBImportacaoSigtap.TB_MODALIDADE.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_CBO.getSigla())){
 				List<String> linhasDocumentoCbos = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoCbos) {
 					this.listaCbosDoArquivo.add((CBOType) DocumentosTBImportacaoSigtap.TB_CBO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.getSigla())){
 				List<String> linhasDocumentoProcedimentos = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoProcedimentos) {
 					this.listaProcedimentosDoArquivo.add((ProcedimentoType) DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_INSTRUMENTO_REGISTRO.getSigla())){
 				List<String> linhasDocumentoInstrumentoRegistro = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoInstrumentoRegistro) {
 					this.listaInstrumentoRegistroDoArquivo.add((InstrumentoRegistroType) DocumentosTBImportacaoSigtap.TB_INSTRUMENTO_REGISTRO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_RENASES.getSigla())){
 				List<String> linhasDocumentoRenases = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoRenases) {
 					this.listaRenasesDoArquivo.add((RENASESType) DocumentosTBImportacaoSigtap.TB_RENASES.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SERVICO.getSigla())){
 				List<String> linhasDocumentoServico = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoServico) {
 					this.listaServicoDoArquivo.add((ServicoType) DocumentosTBImportacaoSigtap.TB_SERVICO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SERVICO_CLASSIFICACAO.getSigla())){
 				List<String> linhasDocumentoServicoClassificacao = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoServicoClassificacao) {
 					this.listaServicoClassificacaoDoArquivo.add((ServicoClassificacaoType) DocumentosTBImportacaoSigtap.TB_SERVICO_CLASSIFICACAO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SUBGRUPO.getSigla())){
 				List<String> linhasDocumentoSubgrupo = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumentoSubgrupo) {
 					this.listaSubgrupoDoArquivo.add((SubgrupoType) DocumentosTBImportacaoSigtap.TB_SUBGRUPO.retornarObjectoDaString(linha));
 				}
-				System.out.println(chave);
 			}
 		}
 	}
@@ -798,42 +791,36 @@ public class ProcedimentoController implements Serializable {
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoCid.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CID.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_MODALIDADE.getSigla())) {
 				List<String> linhasDocumento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoModalidade.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_MODALIDADE.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CBO.getSigla())) {
 				List<String> linhasDocumento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoCbo.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CBO.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_INSTRUMENTO_REGISTRO.getSigla())) {
 				List<String> linhasDocumento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoInstrumentoRegistro.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_INSTRUMENTO_REGISTRO.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_RENASES.getSigla())) {
 				List<String> linhasDocumento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoRenases.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_RENASES.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 			else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_SERVICO.getSigla())) {
 				List<String> linhasDocumento = dadosDosArquivos.get(chave);
 				for (String linha : linhasDocumento) {
 					this.listaRelacoesProcedimetoServico.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_SERVICO.retornarCodigoObjeto(linha));
 				}
-				System.out.println(chave);
 			}
 		}
 	}
@@ -863,16 +850,21 @@ public class ProcedimentoController implements Serializable {
 			CBOsVinculados cbosVinculados = relacionaDadosCboProcedimento(procedimento);
 			CIDsVinculados cidsVinculados = relacionaDadosCidProcedimento(procedimento);
 			RENASESVinculadas renasesVinculados = relacionaDadosRenasesProcedimento(procedimento);
-			relacionaDadosServicoClassificacaoProcedimento(procedimento);//
+			relacionaDadosServicoClassificacaoProcedimento(procedimento);
 			TipoFinanciamentoType tipoFinanciamento = relacionaDadosTipoFinanciamentoProcedimento(procedimento);
 			/*  POSTERIORMENTE VERIFICAR COMO RELACIONAR OS DADOS DA FORMA DE ORGANIZAÇÃO
 			 *  JÁ QUE NÃO FOI ENCONTRADO NENHUM ARQUIVO OU COLUNA DO PROCEDIMENTO QUE FAÇA
 			 *  ISSO APENAS O 5º E 6º DIGITO DO CÓDIGO DO PROCEDIMENTO QUE É IGUAL A FORMA DE ORGANIZAÇÃO
 			 * */
-						
+			procedimento.setModalidadesAtendimento(modalidadesAtendimento);
+			procedimento.setInstrumentosRegistro(instrumentosRegistro);
+			procedimento.setCBOsVinculados(cbosVinculados);
+			procedimento.setCIDsVinculados(cidsVinculados);
+			procedimento.setRENASESVinculadas(renasesVinculados);
+			procedimento.setTipoFinanciamento(tipoFinanciamento);
+			
 			gravarProcedimentoMensalDTO.setIdProcedimento(idProcedimento);
 			gravarProcedimentoMensalDTO.setProcedimentoMensal(procedimento);
-			System.err.println();
 			this.listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
 		}
 	}
@@ -980,8 +972,10 @@ public class ProcedimentoController implements Serializable {
 						&& servicoClassificacao.getServico().getCodigo().equals(relacaoProcedimentoServicoClassificacaoValido.getCodigo())	) {
 						
 						for(ServicoType servico : this.listaServicoDoArquivo) {
-							if(servico.getCodigo().equals(servicoClassificacao.getServico().getCodigo()))
-								procedimento.getServicosClassificacoesVinculados().getServicoClassificacao().add(servicoClassificacao);							
+							if(servico.getCodigo().equals(servicoClassificacao.getServico().getCodigo())) {
+								servicoClassificacao.getServico().setNome(servico.getNome());
+								procedimento.getServicosClassificacoesVinculados().getServicoClassificacao().add(servicoClassificacao);
+							}							
 						}
 					}
 				}
