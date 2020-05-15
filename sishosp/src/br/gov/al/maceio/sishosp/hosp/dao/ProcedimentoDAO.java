@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -651,251 +653,73 @@ public class ProcedimentoDAO {
         return proc;
     }
     
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaModalidadeAtendimentoExistente() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList();
-        String sql = "SELECT ma.id, ma.codigo FROM sigtap.modalidade_atendimento ma ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO modalidadeAtendimentoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	modalidadeAtendimentoExistente.setId(rs.getInt("id"));
-            	modalidadeAtendimentoExistente.setCodigo(rs.getString("codigo"));
-            	listaModaliadesAtendimentoExistente.add(modalidadeAtendimentoExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaModaliadesAtendimentoExistente;
-    }
     
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaInstrumentosRegistroExistente() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList();
-        String sql = "SELECT ir.id, ir.codigo FROM sigtap.instrumento_registro ir ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO instrumentoRegistroExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	instrumentoRegistroExistente.setId(rs.getInt("id"));
-            	instrumentoRegistroExistente.setCodigo(rs.getString("codigo"));
-            	listaInstrumentoRegistroExistente.add(instrumentoRegistroExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaInstrumentoRegistroExistente;
-    }
     
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCbosExistentes() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList();
-        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	cboExistenteDTO.setId(rs.getInt("id"));
-            	cboExistenteDTO.setCodigo(rs.getString("codigo"));
-            	listaCboExistente.add(cboExistenteDTO);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaCboExistente;
-    }
-    
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCidsExistentes() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList();
-        String sql = "SELECT cid.cod, cid.cid FROM hosp.cid ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO cidExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	cidExistente.setId(rs.getInt("cod"));
-            	cidExistente.setCodigo(rs.getString("cid"));
-            	listaCidExistente.add(cidExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaCidExistente;
-    }
-    
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaFormasOrganizacaoExistentes() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormaOrganizacaoExistente = new ArrayList();
-        String sql = "SELECT fo.id, fo.codigo FROM sigtap.forma_de_organizacao fo ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO formaOrganizacaoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	formaOrganizacaoExistente.setId(rs.getInt("id"));
-            	formaOrganizacaoExistente.setCodigo(rs.getString("codigo"));
-            	listaFormaOrganizacaoExistente.add(formaOrganizacaoExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaFormaOrganizacaoExistente;
-    }
-    
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
-        String sql = "SELECT re.id, re.codigo FROM sigtap.renases re ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO renasesExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	renasesExistente.setId(rs.getInt("id"));
-            	renasesExistente.setCodigo(rs.getString("codigo")); 
-            	listaRenasesExistentes.add(renasesExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaRenasesExistentes;
-    }
-    
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaTiposFinanciamentoExistentes() throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList();
-        String sql = "SELECT tf.id, tf.codigo FROM sigtap.tipo_financiamento tf ";
-        try {
-            con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	PropriedadeDeProcedimentoMensalExistenteDTO tipoFinanciamentoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-            	tipoFinanciamentoExistente.setId(rs.getInt("id"));
-            	tipoFinanciamentoExistente.setCodigo(rs.getString("codigo"));
-            	listaCodigoTipoFinanciamento.add(tipoFinanciamentoExistente);
-            }
-            	
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaCodigoTipoFinanciamento;
-    }    
+	public void executaRotinaNovaCargaSigtap(List<GravarProcedimentoMensalDTO> listaProcedimentoMensalDTO,
+			Long idFuncionario) throws Exception {
 
-    
-    public Integer executaRotinaNovaCargaSigtap(GravarProcedimentoMensalDTO procedimentoMensalDTO, Long idFuncionario, Integer idHistorico) throws Exception {
-    	
-    	Integer idHistoricoConsumoSigtap;
-    	
-    	try {
-    		this.con = ConnectionFactory.getConnection();
-    		
-    		if(VerificadorUtil.verificarSeObjetoNuloOuZero(idHistorico)) {
-    			idHistoricoConsumoSigtap = gravarHistoricoConsumoSigtap(idFuncionario, con);
-    			desatualizaStatusHistoricoConsumoSigtapAnterior(idHistoricoConsumoSigtap, con);
-    			}
-    		else
-    			idHistoricoConsumoSigtap = idHistorico;
-    		
-    		Integer idProcedimentoMensal = inserirProcedimentoMensal(procedimentoMensalDTO, con, idHistoricoConsumoSigtap);
+		String codigoProcedimentoQueDeuErro = "";
+		try {
+			this.con = ConnectionFactory.getConnection();
+			
+			Integer idHistoricoConsumoSigtap = gravarHistoricoConsumoSigtap(idFuncionario, con);
+			desatualizaStatusHistoricoConsumoSigtapAnterior(idHistoricoConsumoSigtap, con);
+			for (GravarProcedimentoMensalDTO procedimentoMensalDTO : listaProcedimentoMensalDTO) {
+				codigoProcedimentoQueDeuErro = procedimentoMensalDTO.getProcedimentoMensal().getCodigo();
+				
+				Integer idProcedimentoMensal = inserirProcedimentoMensal(procedimentoMensalDTO, con,
+						idHistoricoConsumoSigtap);
 
-    		inserirCIDs(procedimentoMensalDTO.getProcedimentoMensal().getCIDsVinculados().getCIDVinculado(), idProcedimentoMensal, con,
-    				procedimentoMensalDTO.getListaIdCidsExistente());
-    		
-    		inserirModalidadeAtendimento(procedimentoMensalDTO.getProcedimentoMensal().
-    				getModalidadesAtendimento().getModalidadeAtendimento(), idProcedimentoMensal, con,
-    				procedimentoMensalDTO.getListaIdModalidadeAtendimentoExistente());
-    			
-   			inserirInstrumentosRegistro(procedimentoMensalDTO.getProcedimentoMensal().
-   					getInstrumentosRegistro().getInstrumentoRegistro(), idProcedimentoMensal, con,
-   					procedimentoMensalDTO.getListaIdInstrumentosRegistroExistente());
-    			
-    		inserirCBOs(procedimentoMensalDTO.getProcedimentoMensal().getCBOsVinculados().getCBO(), idProcedimentoMensal, con,
-    				procedimentoMensalDTO.getListaIdCBOsExistente());
-    		
-    		inserirRenases(procedimentoMensalDTO.getProcedimentoMensal().getRENASESVinculadas().getRENASES(), idProcedimentoMensal, con,
-    				procedimentoMensalDTO.getListaIdRenasesExistente());
-    		
-   			inserirServicoClassificacao(procedimentoMensalDTO.getProcedimentoMensal().
-   					getServicosClassificacoesVinculados().getServicoClassificacao(), idProcedimentoMensal, con);
-    		con.commit();
+				inserirCIDs(procedimentoMensalDTO.getProcedimentoMensal().getCIDsVinculados().getCIDVinculado(),
+						idProcedimentoMensal, con);
+
+				inserirModalidadeAtendimento(
+						procedimentoMensalDTO.getProcedimentoMensal().getModalidadesAtendimento().getModalidadeAtendimento(),
+						idProcedimentoMensal, con);
+
+				inserirInstrumentosRegistro(
+						procedimentoMensalDTO.getProcedimentoMensal().getInstrumentosRegistro()
+								.getInstrumentoRegistro(),
+						idProcedimentoMensal, con);
+
+				inserirCBOs(procedimentoMensalDTO.getProcedimentoMensal().getCBOsVinculados().getCBO(),
+						idProcedimentoMensal, con);
+
+				inserirRenases(procedimentoMensalDTO.getProcedimentoMensal().getRENASESVinculadas().getRENASES(),
+						idProcedimentoMensal, con);
+
+				inserirServicoClassificacao(procedimentoMensalDTO.getProcedimentoMensal()
+						.getServicosClassificacoesVinculados().getServicoClassificacao(), idProcedimentoMensal, con);
+
+			}
+			con.commit();
+		} catch (SOAPFaultException soape) {
+			JSFUtil.adicionarMensagemErro("Erro, algo de inesperado ocorreu durante a carga do procedimento "
+					+ codigoProcedimentoQueDeuErro
+					+ " verifique se o código do procedimento está correto"
+					+ " e execute a alteração do procedimento para que seja possível realizar uma nova"
+					+ " carga do SIGTAP este mês", "");
+			soape.printStackTrace();
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			con.close();
 		}
-    	return idHistoricoConsumoSigtap;
-    }
+	}
     
 	public Integer inserirTipoFinanciamento(TipoFinanciamentoType tipoFinanciamento, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.tipo_financiamento (codigo, nome) "
+		String sql = "INSERT INTO sigtap.tipo_financiamento (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
-		Integer idTipoFinanciamento = null;
+		Integer idTipoFinanciamento = retornaIdTipoFinanciamentoCasoExista(tipoFinanciamento.getCodigo(), conexao);
 		try {
-			PreparedStatement ps = conexao.prepareStatement(sql);
-			ps.setString(1, tipoFinanciamento.getCodigo());
-			ps.setString(2, tipoFinanciamento.getNome());
-			ResultSet rs = ps.executeQuery();
-			if(rs.next()) 
-				idTipoFinanciamento = rs.getInt("id");
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(idTipoFinanciamento)) {			
+				PreparedStatement ps = conexao.prepareStatement(sql);
+				ps.setString(1, tipoFinanciamento.getCodigo());
+				ps.setString(2, tipoFinanciamento.getNome());
+				ResultSet rs = ps.executeQuery();
+				if (rs.next())
+					idTipoFinanciamento = rs.getInt("id");
+			}
 		} catch (Exception ex) {
 			conexao.rollback();
 			ex.printStackTrace();
@@ -903,14 +727,38 @@ public class ProcedimentoDAO {
 		} 
 		return idTipoFinanciamento;
 	}
+	
+	public Integer retornaIdTipoFinanciamentoCasoExista(String codigo, Connection conexao) 
+			throws SQLException, ProjetoException {
+		String sql = "select id from sigtap.tipo_financiamento where codigo = ?";
+		Integer idTipoFinanciamento = 0;
+		try {
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			
+			ps.setString(1, codigo);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				idTipoFinanciamento = rs.getInt("id");
+		} catch (Exception ex) {
+			conexao.rollback();
+			ex.printStackTrace();
+			throw new ProjetoException(ex);
+		}
+		return idTipoFinanciamento;
+	}
     
-	public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao, 
-			List<Integer> listaIdRenasesExistentes) throws ProjetoException, SQLException {
-		String sqlRenases = "INSERT INTO hosp.renases_mensal (codigo, nome) "
+	public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao)
+			throws ProjetoException, SQLException {
+    	List<PropriedadeDeProcedimentoMensalExistenteDTO> todosRenasesExistentes = buscaRenasesExistentes(conexao);
+		String sqlRenases = "INSERT INTO sigtap.renases (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
 		
-		String sqlRenasesProcedimentoMensal = "INSERT INTO hosp.renases_procedimento_mensal " + 
-				"(id_procedimento_mensal, id_renases_mensal) VALUES(?, ?);";
+		String sqlRenasesProcedimentoMensal = "INSERT INTO sigtap.renases_procedimento_mensal " + 
+				"(id_procedimento_mensal, id_renases) VALUES(?, ?);";
+        List<Integer> listaIdRenasesExistentesDoProcedimento = new ArrayList<Integer>();
+        List<RENASESType> listaRenasesAux = new ArrayList<RENASESType>();
+        listaRenasesAux.addAll(listaRenases);	
+		filtraRenasesExistentes(listaRenases, todosRenasesExistentes, listaIdRenasesExistentesDoProcedimento, listaRenasesAux);
 		try {
 			PreparedStatement stm = null;
 			for (RENASESType renases : listaRenases) {
@@ -927,7 +775,7 @@ public class ProcedimentoDAO {
 				}	
 			}
 			
-			for (Integer idRenasesExistente : listaIdRenasesExistentes) {
+			for (Integer idRenasesExistente : listaIdRenasesExistentesDoProcedimento) {
 				stm = conexao.prepareStatement(sqlRenasesProcedimentoMensal);
 				stm.setInt(1, idProcedimentoMensal);
 				stm.setInt(2, idRenasesExistente);
@@ -940,23 +788,57 @@ public class ProcedimentoDAO {
 		}
 	}
 	
+	private void filtraRenasesExistentes(List<RENASESType> listaRenases,
+			List<PropriedadeDeProcedimentoMensalExistenteDTO> todosRenasesExistentes,
+			List<Integer> listaIdRenasesExistentesDoProcedimento, List<RENASESType> listaRenasesAux) {
+		for (RENASESType renases : listaRenasesAux) {
+			for (PropriedadeDeProcedimentoMensalExistenteDTO renasesExistente : todosRenasesExistentes) {
+				if(renases.getCodigo().equals(renasesExistente.getCodigo())) {
+					listaRenases.remove(renases);
+					listaIdRenasesExistentesDoProcedimento.add(renasesExistente.getId());
+				}
+			}
+		}
+	}
+	
 	public Integer inserirFormaOrganizacao(FormaOrganizacaoType formaOrganizacao, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.forma_de_organizacao " + 
-				"(codigo, nome, id_subgrupo_mensal) " + 
+		String sql = "INSERT INTO sigtap.forma_de_organizacao " + 
+				"(codigo, nome, id_subgrupo) " + 
 				"VALUES(?, ?, ?) returning id ";
-		Integer idFormaOrganizacao = null;
+		Integer idFormaOrganizacao = retornaIdFormaOrganizacaoCasoExista(formaOrganizacao.getCodigo(), conexao);
+		try {
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(idFormaOrganizacao)) {
+				PreparedStatement ps = conexao.prepareStatement(sql);
+				ps.setString(1, formaOrganizacao.getCodigo());
+				ps.setString(2, formaOrganizacao.getNome());
+				Integer idSubgrupoExistente = retornaIdSubgrupoCasoExista(formaOrganizacao.getSubgrupo().getCodigo(),
+						conexao);
+				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idSubgrupoExistente))
+					ps.setInt(3, idSubgrupoExistente);
+				else {
+					Integer idSubgrupo = inserirSubgrupoMensal(formaOrganizacao.getSubgrupo(), conexao);
+					ps.setInt(3, idSubgrupo);
+				}
+				ResultSet rs = ps.executeQuery();
+				if (rs.next())
+					idFormaOrganizacao = rs.getInt("id");
+			}
+		} catch (Exception ex) {
+			conexao.rollback();
+			ex.printStackTrace();
+			throw new ProjetoException(ex);
+		}
+		return idFormaOrganizacao;
+	}
+	
+	public Integer retornaIdFormaOrganizacaoCasoExista(String codigo, Connection conexao) 
+			throws SQLException, ProjetoException {
+		String sql = "select id from sigtap.forma_de_organizacao where codigo = ?";
+		Integer idFormaOrganizacao = 0;
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
 			
-			ps.setString(1, formaOrganizacao.getCodigo());
-			ps.setString(2, formaOrganizacao.getNome());
-			Integer idSubgrupoExistente = retornaIdSubgrupoCasoExiste(formaOrganizacao.getSubgrupo(), conexao); 
-			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idSubgrupoExistente))
-				ps.setInt(3, idSubgrupoExistente);
-			else {
-				Integer idSubgrupo = inserirSubgrupoMensal(formaOrganizacao.getSubgrupo(), conexao);
-				ps.setInt(3, idSubgrupo);
-			}
+			ps.setString(1, codigo);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next())
 				idFormaOrganizacao = rs.getInt("id");
@@ -968,13 +850,13 @@ public class ProcedimentoDAO {
 		return idFormaOrganizacao;
 	}
 	
-	private Integer retornaIdSubgrupoCasoExiste(SubgrupoType subgrupo, Connection conexao) throws SQLException, ProjetoException {
-		String sql = "select id from hosp.subgrupo_mensal where codigo = ?";
+	private Integer retornaIdSubgrupoCasoExista(String codigo, Connection conexao) throws SQLException, ProjetoException {
+		String sql = "select id from sigtap.subgrupo where codigo = ?";
 		Integer idSubgrupo = 0;
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
 			
-			ps.setString(1, subgrupo.getCodigo());
+			ps.setString(1, codigo);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next())
 				idSubgrupo = rs.getInt("id");
@@ -987,8 +869,8 @@ public class ProcedimentoDAO {
 	}
 
 	public Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.subgrupo_mensal " + 
-				"(codigo, nome, id_grupo_mensal) " + 
+		String sql = "INSERT INTO sigtap.subgrupo " + 
+				"(codigo, nome, id_grupo) " + 
 				"VALUES(?, ?, ?) returning id ";
 		Integer idSubgrupo = null;
 		try {
@@ -996,7 +878,7 @@ public class ProcedimentoDAO {
 			
 			ps.setString(1, subgrupo.getCodigo());
 			ps.setString(2, subgrupo.getNome());
-			Integer idGrupoExistente = retornaIdGrupoCasoExiste(subgrupo, conexao);
+			Integer idGrupoExistente = retornaIdGrupoCasoExista(subgrupo.getCodigo(), conexao);
 			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idGrupoExistente))
 				ps.setInt(3, idGrupoExistente);
 			else {
@@ -1014,12 +896,12 @@ public class ProcedimentoDAO {
 		return idSubgrupo;
 	}
 	
-	private Integer retornaIdGrupoCasoExiste(SubgrupoType subgrupo, Connection conexao) throws SQLException, ProjetoException {
-		String sql = "select id from hosp.grupo_mensal where codigo = ?";
+	private Integer retornaIdGrupoCasoExista(String codigo, Connection conexao) throws SQLException, ProjetoException {
+		String sql = "select id from sigtap.grupo where codigo = ?";
 		Integer idGrupo = 0;
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
-			ps.setString(1, subgrupo.getGrupo().getCodigo());
+			ps.setString(1, codigo);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next())
 				idGrupo = rs.getInt("id");
@@ -1032,7 +914,7 @@ public class ProcedimentoDAO {
 	}
 
 	public Integer inserirGrupoMensal(GrupoType grupo, Connection conexao) throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.grupo_mensal " + 
+		String sql = "INSERT INTO sigtap.grupo " + 
 				"(codigo, nome) " + 
 				"VALUES(?, ?) returning id ";
 		Integer idGrupo = null;
@@ -1053,8 +935,8 @@ public class ProcedimentoDAO {
 	
 	public Integer inserirProcedimentoMensal(GravarProcedimentoMensalDTO procedimentoMensalDTO, Connection conexao, Integer idHistoricoConsumoSigtap)
 			throws ProjetoException, SQLException {
-		String sql = "INSERT INTO hosp.procedimento_mensal " + 
-				"(id_procedimento, codigo_procedimento, nome, competencia, complexidade, id_tipo_financiamento, "+
+		String sql = "INSERT INTO sigtap.procedimento_mensal " + 
+				"(id_procedimento, codigo_procedimento, nome, competencia_inicial, complexidade, id_tipo_financiamento, "+
 				"sexo, quantidade_maxima, idade_minima, unidade_idade_minima, idade_maxima, unidade_idade_maxima, "+
 				"servico_ambulatorial, servico_hospitalar, servico_profisional, id_forma_de_organizacao, "+
 				"descricao, id_historico_consumo_sigtap) " + 
@@ -1069,12 +951,10 @@ public class ProcedimentoDAO {
 			stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial()); //VERIFICAR SE É A INICIAL OU FINAL OU AMBAS E ALTERAR NO BANCO
 			stm.setString(5, procedimentoMensalDTO.getProcedimentoMensal().getComplexidade().name());
 			
-			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getIdTipoFinanciamentoExistente()))
-				stm.setInt(6, procedimentoMensalDTO.getIdTipoFinanciamentoExistente());
-			else {
-				Integer idTipoFinanciamento = inserirTipoFinanciamento(procedimentoMensalDTO.getProcedimentoMensal().getTipoFinanciamento(), conexao);
-				stm.setInt(6, idTipoFinanciamento);
-			}
+			
+			Integer idTipoFinanciamento = inserirTipoFinanciamento(procedimentoMensalDTO.getProcedimentoMensal().getTipoFinanciamento(), conexao);
+			stm.setInt(6, idTipoFinanciamento);
+			
 			stm.setString(7, procedimentoMensalDTO.getProcedimentoMensal().getSexoPermitido());
 			
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getQuantidadeMaxima()))
@@ -1086,12 +966,11 @@ public class ProcedimentoDAO {
 				stm.setNull(9, Types.NULL);
 			else	
 				stm.setInt(9, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getQuantidadeLimite());
-			
 
 			if ( (procedimentoMensalDTO==null) || (procedimentoMensalDTO.getProcedimentoMensal()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida()==null) || (procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getUnidadeLimite().name()==null))
 				stm.setNull(10, Types.NULL);
 			else
-			stm.setString(10, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getUnidadeLimite().name());
+				stm.setString(10, procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinimaPermitida().getUnidadeLimite().name());
 			
 			if ((VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida())) || (VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMaximaPermitida().getQuantidadeLimite())))
 				stm.setNull(11, Types.NULL);
@@ -1107,12 +986,9 @@ public class ProcedimentoDAO {
 			stm.setDouble(14, procedimentoMensalDTO.getProcedimentoMensal().getValorSH().doubleValue());
 			stm.setDouble(15, procedimentoMensalDTO.getProcedimentoMensal().getValorSP().doubleValue());
 			
-			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentoMensalDTO.getIdFormasDeOrganizacaoExistente()))
-				stm.setInt(16, procedimentoMensalDTO.getIdFormasDeOrganizacaoExistente());
-			else {
-				Integer idFormaOrganizacao = inserirFormaOrganizacao(procedimentoMensalDTO.getProcedimentoMensal().getFormaOrganizacao(), conexao);
-				stm.setInt(16, idFormaOrganizacao);
-			}
+			
+			Integer idFormaOrganizacao = inserirFormaOrganizacao(procedimentoMensalDTO.getProcedimentoMensal().getFormaOrganizacao(), conexao);
+			stm.setInt(16, idFormaOrganizacao);
 			
 			stm.setString(17, procedimentoMensalDTO.getProcedimentoMensal().getDescricao());
 			stm.setInt(18, idHistoricoConsumoSigtap);
@@ -1131,20 +1007,29 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
 		return idProcedimentoMensal;
 	}	
     
-    public void inserirModalidadeAtendimento (List<ModalidadeAtendimentoType> modalidadesAtendimento,
-    		Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdModalidadesAtendimentoExistentes) 
+    public void inserirModalidadeAtendimento (List<ModalidadeAtendimentoType> listaModalidadesAtendimento,
+    		Integer idProcedimentoMensal, Connection conexao) 
     			throws ProjetoException, SQLException {
-        String sqlModalidadeAtendimento = "INSERT INTO hosp.modalidade_atendimento " + 
+    	List<PropriedadeDeProcedimentoMensalExistenteDTO> todasModalidadesAtendimentoExistentes = 
+    			buscaModalidadeAtendimentoExistente(conexao);
+        String sqlModalidadeAtendimento = "INSERT INTO sigtap.modalidade_atendimento " + 
         		"(codigo, nome) " + 
         		"VALUES(?, ?) returning id";
         
         String sqlModalidadeAtendimentoProcedimentoMensal = 
-        		"INSERT INTO hosp.modalidade_atendimento_procedimento_mensal " + 
+        		"INSERT INTO sigtap.modalidade_atendimento_procedimento_mensal " + 
         		"(id_procedimento_mensal, id_modalidade_atendimento) " + 
         		"VALUES(?, ?);";
+        
+        List<Integer> listaIdModalidadesAtendimentoExistentes = new ArrayList<Integer>();
+        List<ModalidadeAtendimentoType> listaModalidadeAtendimentoAux = new ArrayList<ModalidadeAtendimentoType>();
+        listaModalidadeAtendimentoAux.addAll(listaModalidadesAtendimento);
+        filtraModalidadeAtendimentoExistentes(listaModalidadesAtendimento, todasModalidadesAtendimentoExistentes,
+        		listaIdModalidadesAtendimentoExistentes, listaModalidadeAtendimentoAux);
+        
         try {
         	PreparedStatement stm = null;
-        	for(ModalidadeAtendimentoType modalidadeAtendimentoType : modalidadesAtendimento) {
+        	for(ModalidadeAtendimentoType modalidadeAtendimentoType : listaModalidadesAtendimento) {
         		stm = conexao.prepareStatement(sqlModalidadeAtendimento);
         		stm.setString(1, modalidadeAtendimentoType.getCodigo());
         		stm.setString(2, modalidadeAtendimentoType.getNome());
@@ -1171,21 +1056,39 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
         }
     }
     
-	public void inserirInstrumentosRegistro(List<InstrumentoRegistroType> instrumentosRegistro,
-			Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdInstrumentosRegistroExistentes)
-					throws ProjetoException, SQLException {
-		
-		String sqlInstrumentoRegistro = "INSERT INTO hosp.instrumento_registro (codigo, nome) "
+	private void filtraModalidadeAtendimentoExistentes(List<ModalidadeAtendimentoType> listaModalidadesAtendimento,
+			List<PropriedadeDeProcedimentoMensalExistenteDTO> todasModalidadesAtendimentoExistentes,
+			List<Integer> listaIdModalidadesAtendimentoExistentes, List<ModalidadeAtendimentoType> listaModalidadeAtendimentoAux) {
+		for (ModalidadeAtendimentoType modalidadeAtendimento : listaModalidadeAtendimentoAux) {
+			for (PropriedadeDeProcedimentoMensalExistenteDTO modalidadeExistente : todasModalidadesAtendimentoExistentes) {
+				if(modalidadeAtendimento.getCodigo().equals(modalidadeExistente.getCodigo())) {
+					listaModalidadesAtendimento.remove(modalidadeAtendimento);
+					listaIdModalidadesAtendimentoExistentes.add(modalidadeExistente.getId());
+				}
+			}
+		}
+	}
+    
+	public void inserirInstrumentosRegistro
+		(List<InstrumentoRegistroType> listaInstrumentosRegistro, Integer idProcedimentoMensal, Connection conexao)
+		throws ProjetoException, SQLException {
+    	
+		List<PropriedadeDeProcedimentoMensalExistenteDTO> todosInstrumentosRegistroExistentes = buscaInstrumentosRegistroExistente(conexao);
+		String sqlInstrumentoRegistro = "INSERT INTO sigtap.instrumento_registro (codigo, nome) "
 				+ "VALUES(?, ?) returning id";
 		
 		String sqlInstrumentoRegistroProcedimentoMensal =
-				"INSERT INTO hosp.instrumento_registro_procedimento_mensal " + 
+				"INSERT INTO sigtap.instrumento_registro_procedimento_mensal " + 
 				"(id_procedimento_mensal, id_instrumento_registro) " + 
 				"VALUES(?, ?); ";
-		
+        List<Integer> listaIdInstrumentosRegistroExistentes = new ArrayList<Integer>();
+        List<InstrumentoRegistroType> listaInstrumentosRegistroAux = new ArrayList<InstrumentoRegistroType>();
+        listaInstrumentosRegistroAux.addAll(listaInstrumentosRegistro);
+        filtraInstrumentosRegistroExistentes(listaInstrumentosRegistro, todosInstrumentosRegistroExistentes,
+        		listaIdInstrumentosRegistroExistentes, listaInstrumentosRegistroAux);
 		try {
 			PreparedStatement stm = null;
-			for (InstrumentoRegistroType instrumentoRegistroType : instrumentosRegistro) {
+			for (InstrumentoRegistroType instrumentoRegistroType : listaInstrumentosRegistro) {
 				stm = conexao.prepareStatement(sqlInstrumentoRegistro);
 				stm.setString(1, instrumentoRegistroType.getCodigo());
 				stm.setString(2, instrumentoRegistroType.getNome());
@@ -1212,15 +1115,34 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
 		}
 	}
     
-    public void inserirCBOs(List<CBOType> cbos, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCbosExistentes)
+	private void filtraInstrumentosRegistroExistentes(List<InstrumentoRegistroType> listaInstrumentosRegistro,
+			List<PropriedadeDeProcedimentoMensalExistenteDTO> todosInstrumentosRegistroExistentes,
+			List<Integer> listaIdInstrumentosRegistroExistentesDoProcedimento, List<InstrumentoRegistroType> listaInstrumentosRegistroAux) {
+		for (InstrumentoRegistroType instrumentoRegistro : listaInstrumentosRegistroAux) {
+			for (PropriedadeDeProcedimentoMensalExistenteDTO instrumentoRegistroExistente : todosInstrumentosRegistroExistentes) {
+				if(instrumentoRegistro.getCodigo().equals(instrumentoRegistroExistente.getCodigo())) {
+					listaInstrumentosRegistro.remove(instrumentoRegistro);
+					listaIdInstrumentosRegistroExistentesDoProcedimento.add(instrumentoRegistroExistente.getId());
+				}
+			}
+		}
+	}
+	
+    public void inserirCBOs(List<CBOType> listaCbos, Integer idProcedimentoMensal, Connection conexao)
     		throws ProjetoException, SQLException {
-        String sqlCbo = "INSERT INTO hosp.cbo_mensal (codigo, nome) VALUES(?, ?) returning id";
+    	List<PropriedadeDeProcedimentoMensalExistenteDTO> todosCbosExistentes = buscaCbosExistentes(conexao);
+        String sqlCbo = "INSERT INTO hosp.cbo (codigo, descricao) VALUES(?, ?) returning id"; 
+        String sqlCboProcedimentoMensal = "INSERT INTO sigtap.cbo_procedimento_mensal " + 
+        		"(id_procedimento_mensal, id_cbo) VALUES(?, ?);";
         
-        String sqlCboProcedimentoMensal = "INSERT INTO hosp.cbo_procedimento_mensal " + 
-        		"(id_procedimento_mensal, id_cbo_mensal) VALUES(?, ?);";
+        List<Integer> listaIdCbosExistentesDoProcedimento = new ArrayList<Integer>();
+        List<CBOType> listaCbosAux = new ArrayList<CBOType>();
+        listaCbosAux.addAll(listaCbos);
+        filtraCbosExistentes(listaCbos, todosCbosExistentes, listaIdCbosExistentesDoProcedimento, listaCbosAux);
+        
         try {
         	PreparedStatement stm = null;
-        	for(CBOType cboType : cbos) {
+        	for(CBOType cboType : listaCbos) {
         		stm = conexao.prepareStatement(sqlCbo);
         		stm.setString(1, cboType.getCodigo());
         		stm.setString(2, cboType.getNome());
@@ -1234,7 +1156,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
         		}
         	}
         	
-        	for(Integer idCboExistente : listaIdCbosExistentes) {
+        	for(Integer idCboExistente : listaIdCbosExistentesDoProcedimento) {
         		stm = conexao.prepareStatement(sqlCboProcedimentoMensal);
         		stm.setInt(1, idProcedimentoMensal);
         		stm.setInt(2, idCboExistente);
@@ -1246,28 +1168,61 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
             throw new ProjetoException(ex);
         }
     }
+
+	private void filtraCbosExistentes(List<CBOType> listaCbos,
+			List<PropriedadeDeProcedimentoMensalExistenteDTO> todosCbosExistentes,
+			List<Integer> listaIdCbosExistentesDoProcedimento, List<CBOType> listaCbosAux) {
+		for (CBOType cbo : listaCbosAux) {
+			for (PropriedadeDeProcedimentoMensalExistenteDTO cboExistente : todosCbosExistentes) {
+				if(cbo.getCodigo().equals(cboExistente.getCodigo())) {
+					listaCbos.remove(cbo);
+					listaIdCbosExistentesDoProcedimento.add(cboExistente.getId());
+				}
+			}
+		}
+	}
     
-    public void inserirCIDs(List<CIDVinculado> listaCidVinculado, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCidsExistentes)
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCbosExistentes(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList();
+        String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	cboExistenteDTO.setId(rs.getInt("id"));
+            	cboExistenteDTO.setCodigo(rs.getString("codigo"));
+            	listaCboExistente.add(cboExistenteDTO);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaCboExistente;
+    }
+    
+    public void inserirCIDs(List<CIDVinculado> listaCidVinculado, Integer idProcedimentoMensal, Connection conexao)
     		throws ProjetoException, SQLException {
-        String sqlCid = "INSERT INTO hosp.cid_mensal " + 
-        		"(codigo, nome, agravo, sexo_aplicavel, estadio, quantidade_campos_irradiados) " + 
-        		"VALUES(?, ?, ?, ?, ?, ?) returning id;";
+    	List<PropriedadeDeProcedimentoMensalExistenteDTO> todosCidsExistentes = buscaCidsExistentes(conexao);
+
+        String sqlCid = "INSERT INTO hosp.cid (cid, desccid) VALUES(?, ?) returning cod;";
         
-		String sqlCidProcedimentoMensal = "INSERT INTO hosp.cid_procedimento_mensal (id_procedimento_mensal, id_cid_mensal) " + 
+		String sqlCidProcedimentoMensal = "INSERT INTO sigtap.cid_procedimento_mensal (id_procedimento_mensal, id_cid) " + 
 				"VALUES(?, ?);";
+        List<Integer> listaIdCidsExistentesDoProcedimento = new ArrayList<Integer>();
+        List<CIDVinculado> listaCidAux = new ArrayList<CIDVinculado>();
+        listaCidAux.addAll(listaCidVinculado);
+        filtraCidsExistentes(listaCidVinculado, todosCidsExistentes, listaIdCidsExistentesDoProcedimento, listaCidAux);
         try {
         	PreparedStatement stm = null;
         	for(CIDVinculado cidVinculado : listaCidVinculado) {
         		stm = conexao.prepareStatement(sqlCid);
         		stm.setString(1, cidVinculado.getCID().getCodigo());
         		stm.setString(2, cidVinculado.getCID().getNome());
-        		stm.setString(3, cidVinculado.getCID().getAgravo().name());
-        		stm.setString(4, cidVinculado.getCID().getSexoAplicavel());
-        		stm.setBoolean(5, cidVinculado.getCID().isEstadio());
-        		stm.setInt(6, cidVinculado.getCID().getQuantidadeCamposIrradiados());
         		ResultSet rs = stm.executeQuery();
         		if(rs.next()) {
-        			Integer idNovoCid = rs.getInt("id");
+        			Integer idNovoCid = rs.getInt("cod");
         			stm = conexao.prepareStatement(sqlCidProcedimentoMensal);
         			stm.setInt(1, idProcedimentoMensal);
         			stm.setInt(2, idNovoCid);
@@ -1275,7 +1230,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
         		}
         	}
         	
-        	for(Integer idCidExistente : listaIdCidsExistentes) {
+        	for(Integer idCidExistente : listaIdCidsExistentesDoProcedimento) {
         		stm = conexao.prepareStatement(sqlCidProcedimentoMensal);
         		stm.setInt(1, idProcedimentoMensal);
         		stm.setInt(2, idCidExistente);
@@ -1288,18 +1243,33 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
         }
     }
     
+	private void filtraCidsExistentes(List<CIDVinculado> listaCids,
+			List<PropriedadeDeProcedimentoMensalExistenteDTO> todosCidsExistentes,
+			List<Integer> listaIdCidsExistentesDoProcedimento, List<CIDVinculado> listaCidsAux) {
+		
+		for (CIDVinculado cid : listaCidsAux) {
+			for (PropriedadeDeProcedimentoMensalExistenteDTO cidExistente : todosCidsExistentes) {
+				if(cid.getCID().getCodigo().equals(cidExistente.getCodigo())) {
+					listaCids.remove(cid);
+					listaIdCidsExistentesDoProcedimento.add(cidExistente.getId());
+				}
+			}
+		}
+	}
+    
     public void inserirServicoClassificacao
     	(List<ServicoClassificacaoType> servicosClassificacoesType, Integer idProcedimentoMensal, Connection conexao) throws ProjetoException, SQLException {
-        String sqlServicoClassificacao = "INSERT INTO hosp.servico_classificacao_mensal " + 
+        
+        String sqlVerificaServico = "select id as id_servico from sigtap.servico where codigo = ?";
+    	
+    	String sqlServicoClassificacao = "INSERT INTO sigtap.servico_classificacao_mensal " + 
         		"(id_servico, id_classificacao, id_procedimento_mensal) " + 
         		"VALUES(?, ?, ?);";
         
-        String sqlVerificaServico = "select id as id_servico from hosp.servico_mensal where codigo = ?";
-        
         String sqlVerificaClassificacao = 
         		"select scm.id_classificacao " + 
-        		"from hosp.servico_classificacao_mensal scm " + 
-        		"join hosp.classificacao_mensal cm on scm.id_classificacao = cm.id " + 
+        		"from sigtap.servico_classificacao_mensal scm " + 
+        		"join sigtap.classificacao cm on scm.id_classificacao = cm.id " + 
         		"where scm.id_servico = ? and cm.codigo = ?"; 
         
         try {
@@ -1340,7 +1310,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     }
     
     public Integer inserirServico(ServicoType servicoType, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO hosp.servico_mensal " + 
+        String sql = "INSERT INTO sigtap.servico " + 
         		"(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idServico = null;
         try {
@@ -1359,7 +1329,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     }
     
     public Integer inserirClassificacao(String codigo, String nome, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO hosp.classificacao_mensal " + 
+        String sql = "INSERT INTO sigtap.classificacao " + 
         		"(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idClassificacao = null;
         try {
@@ -1377,10 +1347,132 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
         return idClassificacao;
     }
     
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaModalidadeAtendimentoExistente(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList();
+        String sql = "SELECT ma.id, ma.codigo FROM sigtap.modalidade_atendimento ma ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO modalidadeAtendimentoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	modalidadeAtendimentoExistente.setId(rs.getInt("id"));
+            	modalidadeAtendimentoExistente.setCodigo(rs.getString("codigo"));
+            	listaModaliadesAtendimentoExistente.add(modalidadeAtendimentoExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaModaliadesAtendimentoExistente;
+    }
+    
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaInstrumentosRegistroExistente(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList();
+        String sql = "SELECT ir.id, ir.codigo FROM sigtap.instrumento_registro ir ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO instrumentoRegistroExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	instrumentoRegistroExistente.setId(rs.getInt("id"));
+            	instrumentoRegistroExistente.setCodigo(rs.getString("codigo"));
+            	listaInstrumentoRegistroExistente.add(instrumentoRegistroExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaInstrumentoRegistroExistente;
+    }
+    
+    
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCidsExistentes(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList();
+        String sql = "SELECT cid.cod, cid.cid FROM hosp.cid ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO cidExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	cidExistente.setId(rs.getInt("cod"));
+            	cidExistente.setCodigo(rs.getString("cid"));
+            	listaCidExistente.add(cidExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaCidExistente;
+    }
+    
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaFormasOrganizacaoExistentes(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormaOrganizacaoExistente = new ArrayList();
+        String sql = "SELECT fo.id, fo.codigo FROM sigtap.forma_de_organizacao fo ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO formaOrganizacaoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	formaOrganizacaoExistente.setId(rs.getInt("id"));
+            	formaOrganizacaoExistente.setCodigo(rs.getString("codigo"));
+            	listaFormaOrganizacaoExistente.add(formaOrganizacaoExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaFormaOrganizacaoExistente;
+    }
+    
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
+        String sql = "SELECT re.id, re.codigo FROM sigtap.renases re ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO renasesExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	renasesExistente.setId(rs.getInt("id"));
+            	renasesExistente.setCodigo(rs.getString("codigo")); 
+            	listaRenasesExistentes.add(renasesExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaRenasesExistentes;
+    }
+    
+    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaTiposFinanciamentoExistentes(Connection con) throws ProjetoException {
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList();
+        String sql = "SELECT tf.id, tf.codigo FROM sigtap.tipo_financiamento tf ";
+        try {
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	PropriedadeDeProcedimentoMensalExistenteDTO tipoFinanciamentoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
+            	tipoFinanciamentoExistente.setId(rs.getInt("id"));
+            	tipoFinanciamentoExistente.setCodigo(rs.getString("codigo"));
+            	listaCodigoTipoFinanciamento.add(tipoFinanciamentoExistente);
+            }
+            	
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } 
+        return listaCodigoTipoFinanciamento;
+    }    
+
+    
     public Integer gravarHistoricoConsumoSigtap(Long idFuncionario, Connection conexao)
             throws ProjetoException, SQLException {
         Integer idHistorico = null;
-        String sql = "INSERT INTO hosp.historico_consumo_sigtap " + 
+        String sql = "INSERT INTO sigtap.historico_consumo_sigtap " + 
         		"(mes, ano, data_registro, id_funcionario) " + 
         		"VALUES(?, ?, current_timestamp, ?) returning id;";
         
@@ -1405,7 +1497,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     public void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer idHistorico, Connection conexao)
             throws ProjetoException, SQLException {
         
-        String sql = "UPDATE hosp.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
+        String sql = "UPDATE sigtap.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setLong(1, idHistorico);
@@ -1482,7 +1574,7 @@ System.out.println("(procedimentoMensalDTO.getProcedimentoMensal().getIdadeMinim
     	List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList();
         String sql = "select hcs.data_registro, hcs.ano, " + 
         		"to_char(to_timestamp (hcs.mes::text, 'MM'), 'TMMONTH') as mes " + 
-        		"from hosp.historico_consumo_sigtap hcs " + 
+        		"from sigtap.historico_consumo_sigtap hcs " + 
         		"order by hcs.data_registro desc";
         
         try {
