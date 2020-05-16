@@ -45,7 +45,7 @@ public class AtendimentoController implements Serializable {
     private AtendimentoBean atendimentoLista;
     private Boolean primeiraVez;
     private FuncionarioDAO fDao = new FuncionarioDAO();
-    private AtendimentoDAO aDao = new AtendimentoDAO();
+    private AtendimentoDAO atendimentoDao = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
     private GrupoDAO gDao = new GrupoDAO();
     private Integer idAtendimento1;
@@ -64,6 +64,8 @@ public class AtendimentoController implements Serializable {
 	private static final String SIM = "Sim";
     private Integer  idAtendimentos;
 	private String ehEquipe;
+	private UnidadeDAO unidadeDAO;
+	
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -101,6 +103,7 @@ public class AtendimentoController implements Serializable {
         listaGrupos = new ArrayList<>();
         buscaEvolucao = "T";
         buscaTurno = "A";
+        unidadeDAO = new UnidadeDAO();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -202,7 +205,7 @@ public class AtendimentoController implements Serializable {
 		LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
 		LocalDate dataAtual = LocalDate.now();
 		try {
-			Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
+			Integer quantidadePendenciaEvolucaoAnterior = atendimentoDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
 					atendimento.getUnidade().getId(), user_session.getId());
 			
 			if (quantidadePendenciaEvolucaoAnterior == 0)
@@ -232,7 +235,7 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.atendimento = aDao.listarAtendimentoProfissionalPaciente(id);
+            this.atendimento = atendimentoDao.listarAtendimentoProfissionalPaciente(id);
             atendimento.setStatus("A");
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
@@ -247,7 +250,7 @@ public class AtendimentoController implements Serializable {
             if (idAtendimentos==null)
             idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
-            this.atendimento = aDao.listarAtendimentoProfissionalPorId(idAtendimentos);
+            this.atendimento = atendimentoDao.listarAtendimentoProfissionalPorId(idAtendimentos);
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
@@ -291,7 +294,7 @@ public class AtendimentoController implements Serializable {
 
       //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
 
-            boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
+            boolean alterou = atendimentoDao.realizaAtendimentoProfissional(funcionario,
                     atendimento);
 
             if (alterou == true) {
@@ -308,8 +311,11 @@ public class AtendimentoController implements Serializable {
     
     public void alterarSituacaoDeAtendimentoPorProfissional() {
 		try {
+			if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap())
+				verificaSeCboProfissionalEhValidoParaProcedimento();
+			
 			if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
-				if (aDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
+				if (atendimentoDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
 					JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
 					this.listAtendimentosEquipe.get(0).setStatusAnterior(this.listAtendimentosEquipe.get(0).getStatus());
 				}
@@ -318,6 +324,20 @@ public class AtendimentoController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
 			e.printStackTrace();
 		}
+    }
+    
+    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+    	return unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+    }
+    
+    public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
+    	for(AtendimentoBean atendimento: this.listAtendimentosEquipe) {
+    		if(!atendimentoDao.verificaSeCboProfissionalEhValidoParaProcedimento
+    				(atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId())){
+    			throw new ProjetoException("O profissional " + 
+    				atendimento.getFuncionario().getNome()+ "não possui um CBO válido para este procedimento");
+    		}
+    	}
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
@@ -340,7 +360,7 @@ public class AtendimentoController implements Serializable {
 
     public void limparAtendimentoProfissional() throws ProjetoException {
 
-        boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
+        boolean alterou = atendimentoDao.limpaAtendimentoProfissional(atendimento);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Atendimento limpo com sucesso!", "Sucesso");
@@ -371,12 +391,12 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
-        this.listAtendimentos = aDao
+        this.listAtendimentos = atendimentoDao
                 .carregaAtendimentos(atendimento, campoBusca, tipo);
     }
     
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
-        this.listAtendimentos = aDao
+        this.listAtendimentos = atendimentoDao
                 .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno, listarEvolucoesPendentes);
     }
 
@@ -426,7 +446,7 @@ public class AtendimentoController implements Serializable {
 
         } else {
             if (primeiraVez) {
-                this.listAtendimentosEquipe = aDao
+                this.listAtendimentosEquipe = atendimentoDao
                         .carregaAtendimentosEquipe(atendimento.getId());
             }
         }
@@ -502,33 +522,38 @@ public class AtendimentoController implements Serializable {
         return true;
     }
 
-    public void realizarAtendimentoEquipe() throws ProjetoException {
-        if(!validarSeEhNecessarioInformarGrupo()) {
-        	if(!validarSeEhNecessarioInformarLaudo()) {
-            boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
+	public void realizarAtendimentoEquipe() {
+		try {
+			if (!validarSeEhNecessarioInformarGrupo()) {
+				if (!validarSeEhNecessarioInformarLaudo()) {
+					boolean verificou = true; // aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
-            if (verificou) {
-                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                        atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
-                if (alterou) {
-                    getCarregaGerenciarAtendimentos();
-                    JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
-                } else {
-                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
-                }
-            } else {
-                String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
-                JSFUtil.adicionarMensagemErro(mensagem, "Erro");
-            }
-        	}
-            else{
-                JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
-            }
-        }
-        else{
-            JSFUtil.adicionarMensagemErro("Informe o grupo da avaliação!", "Erro!");
-        }
-    }
+					if (verificou) {
+						boolean alterou = atendimentoDao.realizaAtendimentoEquipe(listAtendimentosEquipe,
+								atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+								atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir,
+								atendimento.getId());
+						if (alterou) {
+							getCarregaGerenciarAtendimentos();
+							JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
+						} else {
+							JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+						}
+					} else {
+						String mensagem = atendimentoDao
+								.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
+						JSFUtil.adicionarMensagemErro(mensagem, "Erro");
+					}
+				} else {
+					JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
+				}
+			} else {
+				JSFUtil.adicionarMensagemErro("Informe o grupo da avaliação!", "Erro!");
+			}
+		} catch (ProjetoException e) {
+			// TODO: handle exception
+		}
+	}
 
     public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
     	if ((periodoFinalEvolucao!=null) || (periodoInicialEvolucao!=null)) {
@@ -537,10 +562,10 @@ public class AtendimentoController implements Serializable {
     			return;
     		}
     		else
-    			 listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    			 listaEvolucoes = atendimentoDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
     	}
     	else
-        listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+        listaEvolucoes = atendimentoDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
     }
 
     public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {
