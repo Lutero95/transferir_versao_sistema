@@ -10,10 +10,12 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
+import org.primefaces.context.RequestContext;
 
 import javax.faces.context.FacesContext;
 
@@ -88,7 +90,7 @@ public class InsercaoPacienteDAO {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				con.close();
@@ -148,7 +150,7 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				con.close();
@@ -256,7 +258,7 @@ public class InsercaoPacienteDAO {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataAtendimento()) == lista.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -269,6 +271,12 @@ public class InsercaoPacienteDAO {
 								ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
 							}
 							ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())) {
+								ps4.setNull(5, Types.NULL);
+							} else {
+								ps4.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+							}
 
 							ps4.executeUpdate();
 						}
@@ -292,8 +300,11 @@ public class InsercaoPacienteDAO {
 			}
 
 		} catch (Exception ex) {
+			RequestContext.getCurrentInstance().update("grw");
+			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+
+		//	
 		} finally {
 			try {
 				con.close();
@@ -458,7 +469,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -565,7 +575,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -598,7 +607,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -646,7 +654,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -679,7 +686,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -713,7 +719,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -747,7 +752,6 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -794,7 +798,7 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				con.close();
@@ -836,7 +840,7 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 			} catch (Exception ex) {
@@ -872,7 +876,7 @@ public class InsercaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				con.close();
@@ -906,7 +910,7 @@ public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer id
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				con.close();

@@ -339,7 +339,7 @@ public class RenovacaoPacienteController implements Serializable {
     
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
     	Integer codPaciente = null;
-    	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) 
+    	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null))
     			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
     	
     	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))
@@ -629,7 +629,7 @@ public class RenovacaoPacienteController implements Serializable {
     }
 
     public void gravarRenovacaoPaciente() throws ProjetoException {
-
+        listAgendamentoProfissional = new ArrayList<AgendaBean>();
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
         	if (verificaPeriodoValidoRenovacaoLaudo()) { //Verifica se a data de renovacao está dentro do periodo do laudo ou da nova solicitacao sem laudo 
         	Integer codPaciente = null;

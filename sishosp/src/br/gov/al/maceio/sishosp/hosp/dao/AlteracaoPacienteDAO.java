@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
@@ -39,19 +40,28 @@ public class AlteracaoPacienteDAO {
 		final Integer limitadorHorarioParaStringInicio = 0;
 		final Integer limitadorHorarioParaStringFinal = 5;
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, "
-				+ " pi.codequipe, e.descequipe, pi.turno, pi.horario, "
-				+ "  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n"
-				+ " coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n"
-				+ " pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao, codprocedimento_primario, codprocedimento_secundario1, "
-				+ " codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5 from hosp.paciente_instituicao pi "
-				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
-				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
-				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
-				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) "
-				+ " LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) "
-				+ " LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) "
-				+ " where pi.id = ?";
+		String sql = "select id, codprograma, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
+				"codpaciente_instituicao, nome, codequipe, descequipe, turno, horario, mes_final, ano_final,\n" +
+				"codprofissional,descfuncionario, observacao , codlaudo, data_solicitacao ,\n" +
+				"codprocedimento_primario, codprocedimento_secundario1, \n" +
+				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5,\n" +
+				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario " +
+				" from (\n" +
+				"select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
+				"l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, \n" +
+				" pi.codequipe, e.descequipe, pi.turno, pi.horario, \n" +
+				"  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n" +
+				" coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n" +
+				" pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao, codprocedimento_primario, codprocedimento_secundario1, \n" +
+				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, l.cid1 id_cidprimario from hosp.paciente_instituicao pi \n" +
+				" left join hosp.programa p on (p.id_programa = pi.codprograma) \n" +
+				" left join hosp.grupo g on (pi.codgrupo = g.id_grupo) \n" +
+				" left join hosp.equipe e on (pi.codequipe = e.id_equipe) \n" +
+				" left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) \n" +
+				" LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) \n" +
+				" LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) \n" +
+				" where pi.id = ?    \n" +
+				" )a";
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
@@ -81,6 +91,7 @@ public class AlteracaoPacienteDAO {
 					ip.getLaudo().getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
 					ip.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
 					ip.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+					ip.getLaudo().getCid1().setIdCid(rs.getInt("id_cidprimario"));
 					ip.setInsercaoPacienteSemLaudo(false);
 				} else
 				{
@@ -100,6 +111,7 @@ public class AlteracaoPacienteDAO {
 			*/
 				ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 				ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
+				ip.getLaudo().setVigenciaFinal(rs.getDate("vigencia_final"));
 				ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
 				ip.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 
@@ -107,7 +119,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -153,7 +165,7 @@ public class AlteracaoPacienteDAO {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -188,7 +200,7 @@ public class AlteracaoPacienteDAO {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -335,7 +347,7 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -356,6 +368,12 @@ public class AlteracaoPacienteDAO {
 									ps8.setNull(4, Types.NULL);
 								}
 
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())) {
+									ps8.setNull(5, Types.NULL);
+								} else {
+									ps8.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+								}
+
 								ps8.executeUpdate();
 							}
 						}
@@ -373,7 +391,7 @@ public class AlteracaoPacienteDAO {
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
-				String sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+				String sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=?, cbo=? where atendimentos1.id_atendimentos1 = (\n" +
 						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
 						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
 						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
@@ -381,10 +399,11 @@ public class AlteracaoPacienteDAO {
 				PreparedStatement ps8 = null;
 				ps8 = conexao.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, id_paciente);
-				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
-				ps8.setLong(5, listaSubstituicao.get(i).getAtendimento().getPaciente().getId_paciente());
+				ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(3, id_paciente);
+				ps8.setDate(4,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps8.setLong(6, listaSubstituicao.get(i).getAtendimento().getPaciente().getId_paciente());
 				ps8.execute();
 				
 				ps6 = null;
@@ -540,7 +559,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
 		} finally {
 			try {
 				conexao.close();
@@ -721,7 +740,7 @@ public class AlteracaoPacienteDAO {
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
-				String sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+				String sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=?, cbo=? where atendimentos1.id_atendimentos1 = (\n" +
 						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
 						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
 						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
@@ -729,10 +748,11 @@ public class AlteracaoPacienteDAO {
 				PreparedStatement ps8 = null;
 				ps8 = conexao.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, id_paciente);
-				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
-				ps8.setLong(5, listaSubstituicao.get(i).getAtendimento().getPaciente().getId_paciente());
+				ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(3, id_paciente);
+				ps8.setDate(4,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps8.setLong(6, listaSubstituicao.get(i).getAtendimento().getPaciente().getId_paciente());
 				ps8.execute();
 				
 				ps6 = null;
@@ -844,7 +864,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -983,7 +1003,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -1099,7 +1119,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -1135,7 +1155,7 @@ public class AlteracaoPacienteDAO {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();
@@ -1170,7 +1190,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 			} catch (Exception ex) {
@@ -1203,7 +1223,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 			} catch (Exception ex) {
@@ -1237,7 +1257,7 @@ public class AlteracaoPacienteDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			
 		} finally {
 			try {
 				conexao.close();

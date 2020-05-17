@@ -11,9 +11,11 @@ public class CboBean implements Serializable {
     public CboBean() {
     }
 
-    public CboBean(Integer codCbo, String descCbo, Integer codUnidade) {
+
+    public CboBean(Integer codCbo, String descCbo, String codigo) {
         this.codCbo = codCbo;
         this.descCbo = descCbo;
+        this.codigo = codigo;
     }
 
     public Integer getCodCbo() {

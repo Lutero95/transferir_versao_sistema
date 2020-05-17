@@ -615,7 +615,7 @@ public class TransferenciaPacienteDAO {
 			ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaSubstituicao.size(); i++) {
-				sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=? where atendimentos1.id_atendimentos1 = (\n" + 
+				sql8 = "update hosp.atendimentos1 set codprofissionalatendimento=?, cbo=? where atendimentos1.id_atendimentos1 = (\n" +
 						"select distinct a1.id_atendimentos1 from hosp.paciente_instituicao pi\n" + 
 						"join hosp.atendimentos a on a.id_paciente_instituicao = pi.id\n" + 
 						"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
@@ -623,9 +623,10 @@ public class TransferenciaPacienteDAO {
 				ps8 = null;
 				ps8 = conexao.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, idPacienteInstituicaoNovo);
-				ps8.setDate(3,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(4, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
+				ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(3, idPacienteInstituicaoNovo);
+				ps8.setDate(4,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
+				ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
 				ps8.execute();
 				
 				ps6 = null;

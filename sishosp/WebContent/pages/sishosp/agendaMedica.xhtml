@@ -9,7 +9,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{AgendaController.carregarHorarioOuTurno()}" />
+			<f:event type="preRenderView" listener="#{AgendaController.carregarHorarioOuTurno()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -44,7 +44,6 @@
 				</h:form>
 
 				<h:form id="formAgendaMedica">
-
 					<p:growl id="growlMsg"></p:growl>
 
 					<b:row>
@@ -249,7 +248,7 @@
 										completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.nome}">
+										itemLabel="#{theme.cbo.codCbo}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
 											update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissionalEspecifico outHorariosProfissionalGeral"></p:ajax>
@@ -554,7 +553,7 @@
 							<b:column span="2" class="label-position data-size">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="8" class="select-agendaEquipe2"
-									required="true" requiredMessage="Data: Campo obrigatório!"
+									required="false" requiredMessage="Data: Campo obrigatório!"
 									rendered="#{AgendaController.tipoData == 'U'}"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
 									locale="pt">
@@ -663,6 +662,7 @@
 					</p:outputPanel>
 
 					<div align="center">
+
 						<p:commandButton value="Confirmar" style="margin-top:5px;"
 							class="btn-acao-table acao-confirmar"
 							update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe, outQtdIhMax"
@@ -719,6 +719,8 @@
 
 								<p:column headerText="Cód. Tipo Atend.">
 									<h:outputLabel value="#{agend.tipoAt.idTipo}" />
+									<h:outputLabel value="#{agend.profissional.cbo.codigo}" />
+									<h:outputLabel value="#{agend.profissional.cbo.codCbo}" />
 								</p:column>
 
 								<p:column headerText="Tipo de Atendimento">
@@ -1042,8 +1044,6 @@
 
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AgendaController.agenda.profissional}" />
-							<f:ajax
-								execute="#AgendaController.listaDiasDeAtendimentoAtuais()}" />
 						</p:commandButton>
 					</h:column>
 

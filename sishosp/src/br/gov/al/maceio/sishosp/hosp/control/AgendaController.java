@@ -524,6 +524,11 @@ public class AgendaController implements Serializable {
         return false;
     }
 
+    public void imprime(){
+        System.out.println(agenda.getProfissional().getNome());
+        System.out.println(agenda.getProfissional().getCbo().getCodigo());
+    }
+
     public Boolean verificarSeDiaFoiAdicionadoNosNovosAgendamentos(){
 
         for(int i = 0; i < listaNovosAgendamentos.size(); i++){

@@ -7,7 +7,7 @@
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
-
+<p:growl id="grw"/>
         <f:metadata>
             <f:viewAction
                     action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}"/>
@@ -492,7 +492,7 @@
 
                             <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                              icon="ui-icon-check"
-                                             update=":msgPagina, :formInsercao2, :formInsercao"
+                                             update=":grw :msgPagina :formInsercao2 :formInsercao"
                                              class="btn-incluir"
                                              action="#{InsercaoController.validarInsercaoPaciente()}"/>
 

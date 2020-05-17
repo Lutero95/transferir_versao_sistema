@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -24,12 +25,13 @@ public class RenovacaoPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoRenovacao(Integer id) throws ProjetoException {
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente, pi.codequipe, e.descequipe, pi.turno, "
+		String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente, pacientes.nome nomepaciente,pi.codequipe, e.descequipe, pi.turno, "
 				+ " pi.codprofissional, f.descfuncionario, pi.observacao "
 				+ " from hosp.paciente_instituicao pi " + " left join hosp.laudo l on (l.id_laudo = pi.codlaudo) "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
 				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
 				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
+				+ " LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) \n"
 				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) " + " where pi.id = ?";
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
@@ -52,6 +54,7 @@ public class RenovacaoPacienteDAO {
 				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				ip.getLaudo().getPaciente().setNome(rs.getString("nomepaciente"));
 				ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
@@ -359,6 +362,7 @@ public class RenovacaoPacienteDAO {
 			retorno = true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
 			throw new RuntimeException(ex);
 		} finally {
 			try {

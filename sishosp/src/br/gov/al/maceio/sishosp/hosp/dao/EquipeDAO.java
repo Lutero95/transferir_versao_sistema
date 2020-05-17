@@ -520,14 +520,16 @@ public class EquipeDAO {
         String sql = "";
 
         if (todosOsProfissionais) {
-            sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
-                    + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
-                    + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+            sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao, "
+                    + " c.codigo , c.descricao desccbo  from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+                    + " left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+                    + " left join hosp.cbo c on c.id  = f.codcbo "
                     + " where codunidade = ? order by f.descfuncionario ";
         } else {
-            sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
-                    + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
-                    + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+            sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao, "
+                    + " c.codigo , c.descricao desccbo from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+                    + " left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+                    + " left join hosp.cbo c on c.id  = f.codcbo "
                     + " where equipe = ? order by f.descfuncionario ";
         }
 
@@ -549,6 +551,8 @@ public class EquipeDAO {
                 func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
                 func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
                 func.getCbo().setCodCbo(rs.getInt("codcbo"));
+                func.getCbo().setCodigo(rs.getString("codigo"));
+                func.getCbo().setDescCbo(rs.getString("desccbo"));
                 func.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 
                 lista.add(func);
@@ -993,14 +997,14 @@ public class EquipeDAO {
 
         try {
             con = ConnectionFactory.getConnection();
-            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos \n" + 
-            		"join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento\n" + 
-            		"where atendimentos.id_atendimento=(\n" + 
-            		"select a1.id_atendimento from hosp.atendimentos1 a1 \n" + 
-            		"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento\n" + 
-            		"where a1.id_atendimentos1=? )\n" + 
-            		"and coalesce(atendimentos.situacao,'A')<>'C'\n" + 
-            		"and coalesce(atendimentos1.excluido,'N' )='N'\n" + 
+            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos  " + 
+            		"join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento " + 
+            		"where atendimentos.id_atendimento=( " + 
+            		"select a1.id_atendimento from hosp.atendimentos1 a1  " + 
+            		"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"where a1.id_atendimentos1=? ) " + 
+            		"and coalesce(atendimentos.situacao,'A')<>'C' " + 
+            		"and coalesce(atendimentos1.excluido,'N' )='N' " + 
             		"and atendimentos1.codprofissionalatendimento=? )";
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
 

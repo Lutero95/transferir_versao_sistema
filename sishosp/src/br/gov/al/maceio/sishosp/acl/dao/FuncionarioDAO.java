@@ -1336,7 +1336,7 @@ public class FuncionarioDAO {
 	public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo) throws ProjetoException {
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
 		String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns,\n"
-				+ "m.codcbo, c.id idcbo,c.descricao desccbo\n" + "from acl.funcionarios m\n"
+				+ "m.codcbo, c.codigo idcbo,c.descricao desccbo\n" + "from acl.funcionarios m\n"
 				+ "                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n"
 				+ "                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n"
 				+ "                 left join hosp.cbo c on (c.id = m.codcbo)\n"
@@ -1801,7 +1801,7 @@ public class FuncionarioDAO {
 		FuncionarioBean prof = null;
 
 		String sql = "select id_funcionario, descfuncionario, funcionarios.codespecialidade, e.descespecialidade, \n" + 
-				"funcionarios.codcbo, c.descricao desccbo from acl.funcionarios \n" + 
+				"funcionarios.codcbo,c.codigo codigocbo,  c.descricao desccbo from acl.funcionarios \n" +
 				"join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade\n" + 
 				"left join hosp.cbo c on c.id = funcionarios.codcbo"
 				+ " where funcionarios.id_funcionario = ? and funcionarios.ativo = 'S' order by funcionarios.descfuncionario";
@@ -1819,6 +1819,7 @@ public class FuncionarioDAO {
 				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
 				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setCodigo (rs.getString("codigocbo"));
 				prof.getCbo().setDescCbo(rs.getString("desccbo"));
 				
 			}

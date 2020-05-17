@@ -791,53 +791,55 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     } */
 
     public void gravarInsercaoPaciente() throws ProjetoException {
-    	        if (insercao.getLaudo().getId() != null) {
+            if (insercao.getLaudo().getId() != null) {
 
-            Boolean cadastrou = null;
-            
-            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
-            	gerarListaAgendamentosEquipeTurno();	
-            }
-            
-            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
-            	gerarListaAgendamentosEquipeDiaHorario();
-            }
-            
+                Boolean cadastrou = null;
 
-            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
+                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+                    gerarListaAgendamentosEquipeTurno();
+                }
 
-            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+                    gerarListaAgendamentosEquipeDiaHorario();
+                }
 
-                //gerarListaAgendamentosEquipe();
-            	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaProfissionaisAdicionados);
-            	else
-                    cadastrou = iDao.gravarInsercaoEquipeTurno(insercao,
-                            listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
-            }
-            if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
-                gerarListaAgendamentosProfissional();
+                ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
-                cadastrou = iDao.gravarInsercaoProfissional(insercao,
-                        listaAgendamentosProfissionalFinal);
-            }
+                if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-            if (cadastrou == true) {
-                limparDados();
+                    //gerarListaAgendamentosEquipe();
+                    if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+                        cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaProfissionaisAdicionados);
+                    else
+                        cadastrou = iDao.gravarInsercaoEquipeTurno(insercao,
+                                listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
+                }
+                if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
-                JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+                    gerarListaAgendamentosProfissional();
+
+                    cadastrou = iDao.gravarInsercaoProfissional(insercao,
+                            listaAgendamentosProfissionalFinal);
+                }
+
+                if (cadastrou == true) {
+                    limparDados();
+
+                    JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+
+                } else {
+
+                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+
+                }
 
             } else {
 
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-
+                JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo primeiro!", "Bloqueio");
             }
-        } else {
 
-            JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo primeiro!", "Bloqueio");
 
-        }
     }
 
     private void gerarHorariosAtendimento() throws ParseException {

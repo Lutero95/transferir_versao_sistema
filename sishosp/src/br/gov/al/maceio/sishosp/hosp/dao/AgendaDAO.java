@@ -2550,8 +2550,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
-        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao "
-                + "FROM hosp.profissional_dia_atendimento p "
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao, c.codigo codcbo  "
+                + " FROM hosp.profissional_dia_atendimento p "
                 + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
                 + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
                 + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ?";
@@ -2572,6 +2572,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
                 funcionario.getCbo().setCodCbo(rs.getInt("id"));
                 funcionario.getCbo().setDescCbo(rs.getString("descricao"));
+                funcionario.getCbo().setCodigo(rs.getString("codcbo"));
                 lista.add(funcionario);
             }
         } catch (Exception ex) {
@@ -2591,7 +2592,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             Integer idPacienteInstituicao) throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
-        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao,  to_char(p.horario_atendimento,'HH24:MI') horario_atendimento  "
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao, c.codigo codcbo,   to_char(p.horario_atendimento,'HH24:MI') horario_atendimento  "
                 + "  FROM hosp.profissional_dia_atendimento p "
                 + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
                 + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
@@ -2615,6 +2616,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
                 funcionario.getCbo().setCodCbo(rs.getInt("id"));
                 funcionario.getCbo().setDescCbo(rs.getString("descricao"));
+                funcionario.getCbo().setCodigo(rs.getString("codcbo"));
                 funcionario.setHorarioAtendimento(rs.getString("horario_atendimento"));
                 lista.add(funcionario);
             }
