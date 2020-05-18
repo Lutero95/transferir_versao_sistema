@@ -212,7 +212,7 @@
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.descGrupo}">
                                         <p:ajax event="itemSelect"
-                                                listener="#{AgendaController.selectGrupo}"
+                                                listener="#{InsercaoController.selectGrupo}"
                                                 update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"/>
 
                                     </p:autoComplete>
@@ -885,7 +885,8 @@
                                 update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
-                                onclick="PF('dlgConsuGrop').hide();">
+                                onclick="PF('dlgConsuGrop').hide();"
+                                action="#{InsercaoController.limparEquipeSelecionada()}">
                             <f:setPropertyActionListener value="#{grupo}"
                                                          target="#{InsercaoController.insercao.grupo}"/>
                         </p:commandButton>

@@ -158,12 +158,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
 
     }
+    
+    public void selectGrupo(SelectEvent event) throws ProjetoException {
+        this.insercao.setGrupo((GrupoBean) event.getObject());
+        limparEquipeSelecionada();
+    }
+    
+    public void limparEquipeSelecionada() {
+        this.insercao.setEquipe(new EquipeBean());
+    }
 
     public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
         if (insercao.getGrupo().getIdGrupo() != null) {
             listaEquipePorGrupo = eDao
-                    .listarEquipePorGrupo(insercao.getGrupo().getIdGrupo());
+                    .listarEquipePorGrupo(this.insercao.getGrupo().getIdGrupo());
         }
     }
 
@@ -856,7 +865,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             throws ProjetoException {
 
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
-                insercao.getGrupo().getIdGrupo());
+                this.insercao.getGrupo().getIdGrupo());
         return result;
     }
 
