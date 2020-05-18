@@ -12,6 +12,7 @@
 	<f:metadata>
 		<f:viewAction
 			action="#{RelatoriosController.preparaRelPacientesPorPrograma()}" />
+		<f:viewAction action="#{MBFuncionarios.limparDados()}" />
 	</f:metadata>
 	<ui:define name="content">
 
@@ -58,7 +59,7 @@
 
 					</b:row>
 
-<p:fieldset legend="Filtrar por Programa/Grupo">
+				<p:fieldset legend="Filtrar por Programa/Grupo">
 					<p:outputPanel id="outProgramaGrupo">
 
 						<b:row>
