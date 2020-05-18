@@ -1507,4 +1507,108 @@ public class ProcedimentoDAO {
         }
         return listaHistoricosSigtap;
     }
+    
+    public boolean validaCboProfissionalParaProcedimento(Integer idProcedimento, Long idFuncionario) throws ProjetoException {
+        
+        String sql = "select exists (select f.descfuncionario, cbo.codigo from " + 
+        		"acl.funcionarios f join hosp.cbo on f.codcbo = cbo.id " + 
+        		"join sigtap.cbo_procedimento_mensal cpm on cpm.id_cbo = cbo.id " + 
+        		"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+        		"join hosp.proc on proc.id = pm.id_procedimento " + 
+        		"where pm.id_procedimento = " + 
+        		"	(select id_procedimento from sigtap.procedimento_mensal pm2 " + 
+        		"	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " + 
+        		"	where pm2.id_procedimento = ? and hc.status = 'A' order by pm2.id desc limit 1 ) "+ 
+        		"	and f.id_funcionario = ?) ehvalido";
+        boolean ehValido = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1,  idProcedimento);
+            stm.setLong(2,  idFuncionario);
+            
+            ResultSet rs = stm.executeQuery();
+            if(rs.next())
+            	ehValido = rs.getBoolean("ehvalido");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return ehValido;
+    }
+    
+    public boolean validaCidParaProcedimento(Integer idProcedimento, String codigoCid) throws ProjetoException {
+        
+        String sql = "select exists (select c.cid from " + 
+        		"hosp.cid c join sigtap.cid_procedimento_mensal cpm on cpm.id_cid = c.cod " + 
+        		"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+        		"join hosp.proc on proc.id = pm.id_procedimento " + 
+        		"where pm.id_procedimento = " + 
+        		"	(select id_procedimento from sigtap.procedimento_mensal pm2 " + 
+        		"	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " + 
+        		"	where pm2.id_procedimento = ? and hc.status = 'A' order by pm2.id desc limit 1 ) "+
+        		"and c.cid = ?) ehvalido";
+        boolean ehValido = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1,  idProcedimento);
+            stm.setString(2, codigoCid);
+            
+            ResultSet rs = stm.executeQuery();
+            if(rs.next())
+            	ehValido = rs.getBoolean("ehvalido");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return ehValido;
+    }
+    
+    public boolean validaIdadePacienteParaProcedimento(Integer idProcedimento, Integer idPaciente) 
+    		throws ProjetoException {
+        
+        String sql = "select exists (select p.id_paciente " + 
+        		"from hosp.pacientes p where p.id_paciente = ?" + 
+        		"and extract (year from age(current_date, p.dtanascimento))  >=  (select pm.idade_minima from sigtap.procedimento_mensal pm " + 
+        		"	join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"	where pm.id_procedimento = ? and hc.status = 'A' order by pm.id desc limit 1 ) " + 
+        		"	" + 
+        		"and extract (year from age(current_date, p.dtanascimento))  <=  (select pm.idade_maxima from sigtap.procedimento_mensal pm " + 
+        		"	join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+        		"	where pm.id_procedimento = ? and hc.status = 'A' order by pm.id desc limit 1 )) ehvalido";
+        boolean ehValido = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPaciente);
+            stm.setInt(2,  idProcedimento);
+            stm.setInt(3, idProcedimento);
+            ResultSet rs = stm.executeQuery();
+            if(rs.next())
+            	ehValido = rs.getBoolean("ehvalido");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return ehValido;
+    }
 }

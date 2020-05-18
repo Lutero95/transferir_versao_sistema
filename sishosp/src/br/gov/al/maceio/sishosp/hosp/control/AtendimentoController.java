@@ -46,7 +46,7 @@ public class AtendimentoController implements Serializable {
     private Boolean primeiraVez;
     private FuncionarioDAO fDao = new FuncionarioDAO();
     private AtendimentoDAO atendimentoDao = new AtendimentoDAO();
-    private ProcedimentoDAO pDao = new ProcedimentoDAO();
+    private ProcedimentoDAO procedimentoDao = new ProcedimentoDAO();
     private GrupoDAO gDao = new GrupoDAO();
     private Integer idAtendimento1;
     private List<AtendimentoBean> listaEvolucoes;
@@ -332,10 +332,10 @@ public class AtendimentoController implements Serializable {
     
     public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
     	for(AtendimentoBean atendimento: this.listAtendimentosEquipe) {
-    		if(!atendimentoDao.verificaSeCboProfissionalEhValidoParaProcedimento
+    		if(!procedimentoDao.validaCboProfissionalParaProcedimento
     				(atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId())){
     			throw new ProjetoException("O profissional " + 
-    				atendimento.getFuncionario().getNome()+ "não possui um CBO válido para este procedimento");
+    				atendimento.getFuncionario().getNome()+ " não possui um CBO válido para este procedimento");
     		}
     	}
     }
@@ -477,7 +477,7 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listarProcedimentos() throws ProjetoException {
-        this.listaProcedimentos = pDao.listarProcedimento();
+        this.listaProcedimentos = procedimentoDao.listarProcedimento();
     }
 
     private Boolean validarSeEhNecessarioInformarGrupo(){
@@ -524,6 +524,9 @@ public class AtendimentoController implements Serializable {
 
 	public void realizarAtendimentoEquipe() {
 		try {
+			if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap())
+				verificaSeCboProfissionalEhValidoParaProcedimento();
+			
 			if (!validarSeEhNecessarioInformarGrupo()) {
 				if (!validarSeEhNecessarioInformarLaudo()) {
 					boolean verificou = true; // aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
@@ -551,7 +554,8 @@ public class AtendimentoController implements Serializable {
 				JSFUtil.adicionarMensagemErro("Informe o grupo da avaliação!", "Erro!");
 			}
 		} catch (ProjetoException e) {
-			// TODO: handle exception
+			JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
+			e.printStackTrace();
 		}
 	}
 

@@ -20,7 +20,10 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -41,6 +44,8 @@ public class LaudoController implements Serializable {
     private Boolean renderizarDataAutorizacao;
     private Integer idLaudoGerado = null;
     private BuscaLaudoDTO buscaLaudoDTO;
+    private UnidadeDAO unidadeDAO;
+    private ProcedimentoDAO procedimentoDAO;
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
 
@@ -64,7 +69,8 @@ public class LaudoController implements Serializable {
         buscaLaudoDTO.setTipoBusca("paciente");
         buscaLaudoDTO.setCampoBusca("");
         tipo = 0;
-
+        unidadeDAO = new UnidadeDAO();
+        procedimentoDAO = new ProcedimentoDAO();
     }
 
     public String redirectEdit() {
@@ -166,18 +172,27 @@ public class LaudoController implements Serializable {
     }
 
     public void gravarLaudo() {
-    	if(!existeLaudoComMesmosDados()) {
-			idLaudoGerado = null;
-			idLaudoGerado = lDao.cadastrarLaudo(laudo);
+    	try {
+    		if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()) {
+    			validaCboProfissionalParaProcedimento();
+    			validaCidParaProcedimento();
+    			validaIdadePacienteParaProcedimento();
+    		}
+    		
+			if (!existeLaudoComMesmosDados()) {
+				idLaudoGerado = null;
+				idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-			if (idLaudoGerado != null) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
-				JSFUtil.abrirDialog("dlgImprimir");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				if (idLaudoGerado != null) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+					JSFUtil.abrirDialog("dlgImprimir");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				}
 			}
-        }
+    	} catch (ProjetoException pe) {
+		}
     }
     
     public boolean existeLaudoComMesmosDados() {
@@ -194,22 +209,69 @@ public class LaudoController implements Serializable {
     	return false;
     }
 
-    public void alterarLaudo() throws ProjetoException {
+    public void alterarLaudo() {
 
-      //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
+    	try {			
+		
+    		if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()) {
+    			validaCboProfissionalParaProcedimento();
+    			validaCidParaProcedimento();
+    			validaIdadePacienteParaProcedimento();
+    		}
+			// if(verificarSeLaudoAssociadoPacienteTerapia()) {
+			boolean alterou = lDao.alterarLaudo(laudo);
 
-            boolean alterou = lDao.alterarLaudo(laudo);
-
-            if (alterou == true) {
-                JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
-                JSFUtil.fecharDialog("dlgcadlaudo");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-            }
-     //   }
+			if (alterou == true) {
+				JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
+				JSFUtil.fecharDialog("dlgcadlaudo");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+			}
+			// }
+    	} catch (ProjetoException pe) {
+		}
     }
 
+    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+    	return unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+    }
 
+    public void validaCboProfissionalParaProcedimento() throws ProjetoException {    	
+		if (!procedimentoDAO.validaCboProfissionalParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+				laudo.getProfissionalLaudo().getId())) {
+			throw new ProjetoException("O profissional " + laudo.getProfissionalLaudo().getNome()
+					+ " não possui um CBO válido para o procedimento primário");
+		}
+    }
+    
+    public void validaCidParaProcedimento() throws ProjetoException {    	
+		if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+				laudo.getCid1().getCid())) {
+			throw new ProjetoException("O CID "+laudo.getCid1().getDescCid()+" não é válido para o procedimento primário");
+		}
+		
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid2().getCid())) {
+			if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+					laudo.getCid2().getCid())) {
+				throw new ProjetoException("O CID "+laudo.getCid2().getDescCid()+" não é válido para o procedimento primário");
+			}
+		}
+		
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid3().getCid())) {
+			if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+					laudo.getCid3().getCid())) {
+				throw new ProjetoException("O CID "+laudo.getCid3().getDescCid()+" não é válido para o procedimento primário");
+			}
+		}
+    }
+    
+    public void validaIdadePacienteParaProcedimento() throws ProjetoException {    	
+		if (!procedimentoDAO.validaIdadePacienteParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+				laudo.getPaciente().getId_paciente())) {
+			throw new ProjetoException("A idade do paciente é inválida para o limite aceito para o procedimento primário");
+		}
+    }
+    
     public Boolean verificarSeLaudoAssociadoPacienteTerapia() {
         if (!lDao.verificarSeLaudoAssociadoPacienteTerapia(laudo.getId())) {
             JSFUtil.adicionarMensagemErro("Não é possível alterar pois o laudo já está associado a um paciente em terapia!", "Erro");
