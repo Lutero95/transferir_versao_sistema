@@ -13,6 +13,7 @@
 		<f:viewAction
 			action="#{RelatoriosController.preparaRelPacientesPorPrograma()}" />
 		<f:viewAction action="#{RelatoriosController.adicionaDiasDaSemanaPadrao()}" />
+		<f:viewAction action="#{RelatoriosController.setaTurnoPadrao()}" />
 	</f:metadata>
 	<ui:define name="content">
 		<br />
@@ -70,21 +71,6 @@
 							</p:selectOneRadio>
 						</b:column>
 					</b:row>
-					
-					<b:row>
-						<b:column col-md="3">
-							<p:selectManyCheckbox id="diasSemana" layout="responsive" columns="2"
-								value="#{RelatoriosController.diasSemana}">
-								<f:selectItem itemLabel="Domingo" itemValue="1" />
-								<f:selectItem itemLabel="Segunda" itemValue="2" />
-								<f:selectItem itemLabel="Terça" itemValue="3" />
-								<f:selectItem itemLabel="Quarta" itemValue="4" />
-								<f:selectItem itemLabel="Quinta" itemValue="5" />
-								<f:selectItem itemLabel="Sexta" itemValue="6" />
-								<f:selectItem itemLabel="Sábado" itemValue="7" />
-							</p:selectManyCheckbox>
-						</b:column>
-					</b:row>
 
 					<p:outputPanel id="intervaloIdades">
 
@@ -118,12 +104,31 @@
 
 					</p:outputPanel>
 
+					<b:row>
+						<b:column col-md="3">
+							<p:selectManyCheckbox id="diasSemana" layout="responsive" columns="2"
+								value="#{RelatoriosController.diasSemana}">
+								<f:selectItem itemLabel="Domingo" itemValue="1" />
+								<f:selectItem itemLabel="Segunda" itemValue="2" />
+								<f:selectItem itemLabel="Terça" itemValue="3" />
+								<f:selectItem itemLabel="Quarta" itemValue="4" />
+								<f:selectItem itemLabel="Quinta" itemValue="5" />
+								<f:selectItem itemLabel="Sexta" itemValue="6" />
+								<f:selectItem itemLabel="Sábado" itemValue="7" />
+							</p:selectManyCheckbox>
+						</b:column>
+					</b:row>
 
-
-
-
-
-
+					<b:row>
+						<b:column col-md="4">
+							<p:selectOneRadio id="turnos" layout="responsive" columns="3"
+								value="#{RelatoriosController.turnoSelecionado}">
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</p:selectOneRadio>
+						</b:column>
+					</b:row>
 
 					<br />
 
