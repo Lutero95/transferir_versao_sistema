@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -80,6 +81,7 @@ public class RelatoriosController implements Serializable {
 
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
+	private ArrayList<Integer> diasSemana;
 
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
@@ -1039,6 +1041,15 @@ public class RelatoriosController implements Serializable {
 
 		this.executeReport(relatorio, map, "Agendamentos por Equipe.pdf");
 	}
+	
+	public void adicionaDiasDaSemanaPadrao() {
+		this.diasSemana = new ArrayList<Integer>();
+		this.diasSemana.add(1);
+		this.diasSemana.add(2);
+		this.diasSemana.add(3);
+		this.diasSemana.add(4);
+		this.diasSemana.add(5);
+	}
 
 	private FacesContext getFacesContext() {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -1281,4 +1292,13 @@ public class RelatoriosController implements Serializable {
 	public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
 		this.tipoAtendimento = tipoAtendimento;
 	}
+
+	public ArrayList<Integer> getDiasSemana() {
+		return diasSemana;
+	}
+
+	public void setDiasSemana(ArrayList<Integer> diasSemana) {
+		this.diasSemana = diasSemana;
+	}
+	
 }

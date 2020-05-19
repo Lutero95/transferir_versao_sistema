@@ -10,7 +10,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="647"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="353"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -54,16 +54,27 @@
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="diassemanalista" class="java.util.ArrayList"/>
 	<queryString>
 		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,nome), id_paciente, cns, nome, idade,
-cid, municipio, descbairro, codprograma, descprograma, nome_principal, nome_fantasia, cnes FROM (
+cid, municipio, descbairro, codprograma, descprograma, nome_principal, nome_fantasia, cnes, 
+CASE 
+      WHEN dia_semana = 1 THEN 'DOM'
+      WHEN dia_semana = 2 THEN 'SEG'
+      WHEN dia_semana = 3 THEN 'TER' 
+      WHEN dia_semana = 4 THEN 'QUA'
+      WHEN dia_semana = 5 THEN 'QUI'
+      WHEN dia_semana = 6 THEN 'SEX'
+ELSE 'SAB' end dia
+FROM (
 SELECT DISTINCT p.id_paciente, 
 p.cns, p.nome, 
 (SELECT extract(year from age(p.dtanascimento))) AS idade,
 cid.cid, m.nome AS municipio, b.descbairro, pi.codprograma, pr.descprograma,
-e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2
+e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2, pf.dia_semana
 FROM hosp.paciente_instituicao pi
 left JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
+ join hosp.profissional_dia_atendimento pf on pf.id_profissional = l.cod_profissional 
 left join hosp.cid on cid.cod = l.cid1
 left join hosp.pacientes p on (coalesce(l.codpaciente, pi.id_paciente) = p.id_paciente)
 JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
@@ -76,7 +87,8 @@ AND (($P{codprograma} IS NOT NULL AND pi.codprograma=  $P{codprograma}) OR (( $P
 AND (($P{codunidade} IS NOT NULL AND pi.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 AND (SELECT extract(year from age(p.dtanascimento))) >= $P{idademinima}
 AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima} 
- order by codprograma
+and $X{IN, pf.dia_semana, diassemanalista}
+ order by codprograma, p.nome, dia_semana
 ) tabela;]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Long">
@@ -129,6 +141,7 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
+	<field name="dia" class="java.lang.String"/>
 	<group name="grpfreq" isStartNewPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
 		<groupHeader>
@@ -148,46 +161,53 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 					<text><![CDATA[SEQ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="53" y="31" width="91" height="13" uuid="789361c5-1cc9-46b2-90e0-69bc1a35088d"/>
+					<reportElement x="49" y="31" width="91" height="13" uuid="789361c5-1cc9-46b2-90e0-69bc1a35088d"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CNS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="145" y="31" width="83" height="13" uuid="0f9f6b33-fe7b-47ee-8c79-d0a864536695"/>
+					<reportElement x="141" y="31" width="83" height="13" uuid="0f9f6b33-fe7b-47ee-8c79-d0a864536695"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NOME]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="394" y="31" width="73" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
+					<reportElement x="390" y="31" width="46" height="13" uuid="69e0b27c-95b8-4b7c-8b4f-e274e67fb630"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[IDADE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="466" y="31" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
+					<reportElement x="440" y="31" width="72" height="13" uuid="27e8182c-1a81-419a-b284-d0f604d829de"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CID]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="538" y="25" width="91" height="31" uuid="648ef635-ab38-4425-9fed-32915c455e08"/>
+					<reportElement x="512" y="25" width="91" height="31" uuid="648ef635-ab38-4425-9fed-32915c455e08"/>
 					<textElement textAlignment="Left">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[MUNICÍPIO RESIDÊNCIA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="652" y="31" width="70" height="13" uuid="cbb8e2d8-f8dd-49b8-953c-a056abe84d2f"/>
+					<reportElement x="626" y="31" width="70" height="13" uuid="cbb8e2d8-f8dd-49b8-953c-a056abe84d2f"/>
 					<textElement textAlignment="Center">
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[BAIRRO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="775" y="31" width="26" height="13" uuid="3b14eefb-5dd4-4533-ae46-83ec2fbeb663"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DIA]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -222,7 +242,7 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="18" splitType="Stretch">
+		<band height="37" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="2" width="46" height="13" uuid="f34914ee-10b0-4b63-b91d-6af2b9a5c2b5">
@@ -232,45 +252,49 @@ AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 				<textFieldExpression><![CDATA[$F{row_number}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-				<reportElement x="53" y="2" width="91" height="13" uuid="75112c1b-bcbd-43e8-82f2-11261e8e896d">
+				<reportElement x="49" y="2" width="91" height="13" uuid="75112c1b-bcbd-43e8-82f2-11261e8e896d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="145" y="2" width="244" height="13" uuid="ac6d3627-08c0-4ade-9724-490311256ef9">
+				<reportElement x="141" y="2" width="244" height="13" uuid="ac6d3627-08c0-4ade-9724-490311256ef9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-				<reportElement x="394" y="2" width="68" height="13" uuid="77f0bdb5-3418-4b44-9b02-1087caba3623">
+				<reportElement x="390" y="2" width="46" height="13" uuid="77f0bdb5-3418-4b44-9b02-1087caba3623">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{idade}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)" isBlankWhenNull="true">
-				<reportElement x="466" y="2" width="68" height="13" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d">
+				<reportElement x="440" y="2" width="68" height="13" uuid="19d44b18-ee12-4d81-90fd-711eddbc974d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{cid}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="538" y="2" width="114" height="13" uuid="02a63a05-1bf8-41d5-9d18-1427b6bfce50">
+				<reportElement x="512" y="2" width="114" height="13" uuid="02a63a05-1bf8-41d5-9d18-1427b6bfce50">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$F{municipio}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="652" y="2" width="149" height="13" uuid="0809fb7d-c52a-4cf1-bca2-5efd1612cdc9">
+				<reportElement x="626" y="2" width="149" height="13" uuid="0809fb7d-c52a-4cf1-bca2-5efd1612cdc9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$F{descbairro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="775" y="2" width="26" height="13" uuid="3bebc568-a0f2-4ea2-88c6-3c43fb03da40"/>
+				<textFieldExpression><![CDATA[$F{dia}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
