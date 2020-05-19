@@ -77,7 +77,7 @@
 								<p:inputMask mask="999.999.999-99"
 									value="#{MBFuncionarios.profissional.cpf}"
 									class="form-control select-agendaEquipe2" id="cpf"
-									required="false" validator="CPFValidator"
+									required="true" validator="CPFValidator"
 									validatorMessage="CPF inválido!"
 									requiredMessage="CPF do Profissional Campo obrigatório!">
 								</p:inputMask>
@@ -583,7 +583,7 @@
 							<f:facet name="header">
                                 Adicionar
                             </f:facet>
-							<p:commandButton update=":frmPrincipal:tbv" icon="fa fa-fw fa-check"
+							<p:commandButton update=":frmPrincipal:tbv:outEspeci" icon="fa fa-fw fa-check"
 								title="Selecionar" class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsulEspecialidade').hide();">
 								<f:setPropertyActionListener value="#{espec}"
@@ -645,7 +645,7 @@
 							<f:facet name="header">
                                 Adicionar
                             </f:facet>
-							<p:commandButton update=":frmPrincipal" icon="fa fa-fw fa-check"
+							<p:commandButton update=":frmPrincipal:tbv:outProcP1" icon="fa fa-fw fa-check"
 								class="new-btn-acao-table acao-editar" title="Selecionar"
 								onclick="PF('dlgConsulProc1').hide();">
 								<f:setPropertyActionListener value="#{proc}"

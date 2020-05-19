@@ -660,60 +660,72 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void gravarProfissional() throws ProjetoException {
-/*
+
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
-		} else 
-			*/
-			if (listaSistemasDual.getTarget().size() == 0) {
+		}
+
+		else if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
-			List<Integer> listaSis = new ArrayList<>();
-			List<Long> permissoes = new ArrayList<>();
-			List<Menu> listaMenusAux = listaMenusDual.getTarget();
-			List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+			if (validaCboProfissional()) {
+				List<Integer> listaSis = new ArrayList<>();
+				List<Long> permissoes = new ArrayList<>();
+				List<Menu> listaMenusAux = listaMenusDual.getTarget();
+				List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
 
-			MenuDAO mdao = new MenuDAO();
-			List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+				MenuDAO mdao = new MenuDAO();
+				List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
 
-			MenuMB mmb = new MenuMB();
-			List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
-			List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
-			for (Menu mp : menusPerfil) {
-				for (Menu mf : listaFiltradaaux) {
-					if (mp.getCodigo().equals(mf.getCodigo())) {
-						listaFiltrada.remove(mf);
+				MenuMB mmb = new MenuMB();
+				List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+				List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
+				for (Menu mp : menusPerfil) {
+					for (Menu mf : listaFiltradaaux) {
+						if (mp.getCodigo().equals(mf.getCodigo())) {
+							listaFiltrada.remove(mf);
+						}
 					}
 				}
+
+				for (Sistema s : listaSistemasDual.getTarget()) {
+					listaSis.add(s.getId());
+				}
+
+				PermissaoDAO pmdao = new PermissaoDAO();
+				for (Menu m : listaFiltrada) {
+					permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+				}
+
+				for (Funcao f : listaFuncoesAux) {
+					permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+				}
+
+				profissional.setListaIdPermissoes(permissoes);
+				profissional.setListaIdSistemas(listaSis);
+
+				boolean cadastrou = fDao.gravarProfissional(profissional, listaGruposEProgramasProfissional);
+
+				if (cadastrou == true) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Profissional cadastrado com sucesso!", "Sucesso");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				}
+				this.listaProfissional = fDao.listarProfissionalAtendimento();
 			}
-
-			for (Sistema s : listaSistemasDual.getTarget()) {
-				listaSis.add(s.getId());
-			}
-
-			PermissaoDAO pmdao = new PermissaoDAO();
-			for (Menu m : listaFiltrada) {
-				permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
-			}
-
-			for (Funcao f : listaFuncoesAux) {
-				permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-			}
-
-			profissional.setListaIdPermissoes(permissoes);
-			profissional.setListaIdSistemas(listaSis);
-
-			boolean cadastrou = fDao.gravarProfissional(profissional, listaGruposEProgramasProfissional);
-
-			if (cadastrou == true) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Profissional cadastrado com sucesso!", "Sucesso");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-			}
-			this.listaProfissional = fDao.listarProfissionalAtendimento();
 		}
+	}
+	
+	private Boolean validaCboProfissional() {
+		if(this.profissional.getRealizaAtendimento() == true) {
+			if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.profissional.getCbo().getCodigo())) {
+				JSFUtil.adicionarMensagemAdvertencia("Campo CBO é obrigatório", "");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void excluirProfissional() throws ProjetoException {
@@ -735,58 +747,60 @@ public class FuncionarioController implements Serializable {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
 		}
-		else
-		if (listaSistemasDual.getTarget().size() == 0) {
+		else if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
-		} else {
-			List<Integer> listaSis = new ArrayList<>();
-			List<Long> permissoes = new ArrayList<>();
-			List<Menu> listaMenusAux = new ArrayList<>();
-			List<Funcao> listaFuncoesAux = new ArrayList<>();
-			listaMenusAux = (tipo==1) ? listaMenusDual.getTarget() : listaMenusDualEdit.getTarget();
-			listaFuncoesAux = (tipo==1) ? listaFuncoesDual.getTarget() : listaFuncoesDualEdit.getTarget();
+		} 
+		else {
+			if (validaCboProfissional()) {
+				List<Integer> listaSis = new ArrayList<>();
+				List<Long> permissoes = new ArrayList<>();
+				List<Menu> listaMenusAux = new ArrayList<>();
+				List<Funcao> listaFuncoesAux = new ArrayList<>();
+				listaMenusAux = (tipo == 1) ? listaMenusDual.getTarget() : listaMenusDualEdit.getTarget();
+				listaFuncoesAux = (tipo == 1) ? listaFuncoesDual.getTarget() : listaFuncoesDualEdit.getTarget();
 
-			MenuDAO mdao = new MenuDAO();
-			List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+				MenuDAO mdao = new MenuDAO();
+				List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
 
-			MenuMB mmb = new MenuMB();
-			List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+				MenuMB mmb = new MenuMB();
+				List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
 
-			List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
+				List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 
-			for (Menu mp : menusPerfil) {
-				for (Menu mf : listaFiltradaaux) {
-					if (mp.getCodigo().equals(mf.getCodigo())) {
-						listaFiltrada.remove(mf);
+				for (Menu mp : menusPerfil) {
+					for (Menu mf : listaFiltradaaux) {
+						if (mp.getCodigo().equals(mf.getCodigo())) {
+							listaFiltrada.remove(mf);
+						}
 					}
 				}
-			}
 
-			PermissaoDAO pmdao = new PermissaoDAO();
-			for (Menu m : listaFiltrada) {
-				if(!permissoes.contains(pmdao.recIdPermissoesMenu(m.getId()))) {
-					permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+				PermissaoDAO pmdao = new PermissaoDAO();
+				for (Menu m : listaFiltrada) {
+					if (!permissoes.contains(pmdao.recIdPermissoesMenu(m.getId()))) {
+						permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+					}
 				}
-			}
 
-			for (Sistema s : listaSistemasDual.getTarget()) {
-				listaSis.add(s.getId());
-			}
+				for (Sistema s : listaSistemasDual.getTarget()) {
+					listaSis.add(s.getId());
+				}
 
-			for (Funcao f : listaFuncoesAux) {
-				permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-			}
+				for (Funcao f : listaFuncoesAux) {
+					permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+				}
 
-			profissional.setListaIdPermissoes(permissoes);
-			profissional.setListaIdSistemas(listaSis);
+				profissional.setListaIdPermissoes(permissoes);
+				profissional.setListaIdSistemas(listaSis);
 
-			boolean alterou = fDao.alterarProfissional(profissional, listaGruposEProgramasProfissional);
+				boolean alterou = fDao.alterarProfissional(profissional, listaGruposEProgramasProfissional);
 
-			if (alterou == true) {
-				JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
+				if (alterou == true) {
+					JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
 
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+				}
 			}
 		}
 	}
@@ -871,6 +885,12 @@ public class FuncionarioController implements Serializable {
 	public void rendermedico() {
 		if (profissional.getRealizaAtendimento() == true) {
 			profissional.setRealizaAtendimento(true);
+		}
+		else {
+			profissional.setEspecialidade(null);
+			profissional.setCbo(null);
+			profissional.setProc1(null);
+			profissional.setCns(null);
 		}
 
 	}
