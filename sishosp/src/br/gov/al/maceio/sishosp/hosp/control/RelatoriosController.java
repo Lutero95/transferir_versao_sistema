@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -80,6 +82,9 @@ public class RelatoriosController implements Serializable {
 
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
+	private ArrayList<String> diasSemana;
+	private ArrayList<String> turnos;
+	private String turnoSelecionado;
 
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
@@ -104,7 +109,7 @@ public class RelatoriosController implements Serializable {
 		listaGruposProgramas = new ArrayList<>();
 		equipe = new EquipeBean();
 		listaEquipePorTipoAtendimento = new ArrayList<>();
-
+		this.turnos = new ArrayList<String>();
 	}
 
 	public void limparDados() {
@@ -387,13 +392,20 @@ public class RelatoriosController implements Serializable {
 			map.put("idademaxima", 200);
 		else
 			map.put("idademaxima", idadeMaxima);
-
+		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+		map.put("diassemanalista", diasSemanaInteger);
+		
+		limparTurno();
+		atribuiTurnos();
+			
+		map.put("turnoslista", turnos);
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
 	}
 
 	public void gerarPacientesAtivosPorProgramaEGrupo() throws IOException, ParseException, ProjetoException {
-
+		
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
@@ -418,9 +430,37 @@ public class RelatoriosController implements Serializable {
 			map.put("idademaxima", 200);
 		else
 			map.put("idademaxima", idadeMaxima);
-
+		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+		map.put("diassemanalista", diasSemanaInteger);
+		
+		limparTurno();
+		atribuiTurnos();
+		
+		map.put("turnoslista", turnos);
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
+	}
+
+	private void setaDiasSemanaComoListaDeInteiro(ArrayList<Integer> diasSemanaInteger) {
+		for (String dia : diasSemana) {
+			diasSemanaInteger.add(Integer.valueOf(dia));
+		}
+	}
+	
+	private void atribuiTurnos() {
+		if(turnoSelecionado.equals(Turno.AMBOS.getSigla())) {
+			this.turnos.add(Turno.MANHA.getSigla());
+			this.turnos.add(Turno.TARDE.getSigla());
+		}
+		else if(turnoSelecionado.equals(Turno.MANHA.getSigla()))
+			this.turnos.add(Turno.MANHA.getSigla());
+		else
+			this.turnos.add(Turno.TARDE.getSigla());
+	}
+	
+	private void limparTurno() {
+		this.turnos = new ArrayList<String>();
 	}
 
 	public void gerarPendenciasEvolucaoPorProgramaEGrupo(ArrayList<ProgramaBean> listaProgramasGrupos)
@@ -1039,6 +1079,19 @@ public class RelatoriosController implements Serializable {
 
 		this.executeReport(relatorio, map, "Agendamentos por Equipe.pdf");
 	}
+	
+	public void adicionaDiasDaSemanaPadrao() {
+		this.diasSemana = new ArrayList<String>();
+		this.diasSemana.add("2");
+		this.diasSemana.add("3");
+		this.diasSemana.add("4");
+		this.diasSemana.add("5");
+		this.diasSemana.add("6");
+	}
+	
+	public void setaTurnoPadrao() {
+		this.turnoSelecionado = Turno.AMBOS.getSigla();
+	}
 
 	private FacesContext getFacesContext() {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -1280,5 +1333,21 @@ public class RelatoriosController implements Serializable {
 
 	public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
 		this.tipoAtendimento = tipoAtendimento;
+	}
+
+	public ArrayList<String> getDiasSemana() {
+		return diasSemana;
+	}
+
+	public void setDiasSemana(ArrayList<String> diasSemana) {
+		this.diasSemana = diasSemana;
+	}
+
+	public String getTurnoSelecionado() {
+		return turnoSelecionado;
+	}
+
+	public void setTurnoSelecionado(String turnoSelecionado) {
+		this.turnoSelecionado = turnoSelecionado;
 	}
 }
