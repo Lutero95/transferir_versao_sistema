@@ -33,7 +33,7 @@ import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
 @ViewScoped
 public class LaudoController implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
     private LaudoBean laudo;
     private String cabecalho;
     private Integer tipo;
@@ -48,6 +48,7 @@ public class LaudoController implements Serializable {
     private ProcedimentoDAO procedimentoDAO;
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
+    private Boolean unidadeValidaDadosSigtap;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -57,6 +58,7 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
     private static final String CABECALHO_RENOVACAO = "Renovação de Laudo";
+    private static final String TITULO_CID_PRIMARIO = "Este campo está associado ao Procedimento Primário, selecione-o para buscar o CID 1";
 
     public LaudoController() {
         this.laudo = new LaudoBean();
@@ -129,7 +131,13 @@ public class LaudoController implements Serializable {
     public void setaValidadeProcPrimLaudo(Integer validade) {
         laudo.setPeriodo(validade);
         calcularPeriodoLaudo();
+        limpaCid1();
     }
+
+	private void limpaCid1() {
+		if(this.unidadeValidaDadosSigtap)
+        	laudo.setCid1(null);
+	}
 
     public void renderizarDadosDeAutorizacao() {
         if (laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())) {
@@ -173,7 +181,7 @@ public class LaudoController implements Serializable {
 
     public void gravarLaudo() {
     	try {
-    		if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()) {
+    		if(this.unidadeValidaDadosSigtap) {
     			validaCboProfissionalParaProcedimento();
     			validaCidParaProcedimento();
     			validaIdadePacienteParaProcedimento();
@@ -213,7 +221,7 @@ public class LaudoController implements Serializable {
 
     	try {			
 		
-    		if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()) {
+    		if(this.unidadeValidaDadosSigtap) {
     			validaCboProfissionalParaProcedimento();
     			validaCidParaProcedimento();
     			validaIdadePacienteParaProcedimento();
@@ -232,8 +240,8 @@ public class LaudoController implements Serializable {
 		}
     }
 
-    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
-    	return unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+    public void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+    	this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
     public void validaCboProfissionalParaProcedimento() throws ProjetoException {    	
@@ -341,12 +349,31 @@ public class LaudoController implements Serializable {
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
-        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query);
+    	List<CidBean> result = new ArrayList<CidBean>();
+    	if(this.unidadeValidaDadosSigtap) {
+    		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
+    			result = cDao.listarCidsAutoCompletePorProcedimento(query, this.laudo.getProcedimentoPrimario().getCodProc());
+    	}
+    	else
+    		result = cDao.listarCidsAutoComplete(query);
         return result;
     }
 
     public void listarCids(String campoBusca) throws ProjetoException {
-        listaCids = cDao.listarCidsBusca(campoBusca);
+    	if(this.unidadeValidaDadosSigtap) {
+    		if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
+    			JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
+    		else
+    			listaCids = cDao.listarCidsBuscaPorProcedimento(campoBusca, this.laudo.getProcedimentoPrimario().getCodProc());
+    	}
+    	else	
+    		listaCids = cDao.listarCidsBusca(campoBusca);
+    }
+    
+    public String retornaTituloCidPrimarioSeHouverValidacaoSigtap() {
+    	if(this.unidadeValidaDadosSigtap)
+    		return TITULO_CID_PRIMARIO;
+    	return "";
     }
 
     public LaudoBean getLaudo() {
