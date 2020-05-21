@@ -20,6 +20,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
@@ -723,10 +724,17 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	return dataValida; 
     }
     
+    private boolean listaProfissionaisAdicionadosEstaVazia() {
+    	if(this.listaProfissionaisAdicionados.isEmpty()) {
+    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um profissional", "Atenção");
+    		return true;
+    	}
+    	return false;
+    }
+    
     public void validarInsercaoPaciente() throws ProjetoException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
 			
-			  
 			  GerenciarPacienteController gerenciarPacienteController = new
 			  GerenciarPacienteController(); Date dataSolicitacaoCorreta =
 			  gerenciarPacienteController.ajustarDataDeSolicitacao(
@@ -735,7 +743,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 			  insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
 			 
 			// insercao.setDataSolicitacao(dataSolicitacaoCorreta);
-			if (insercao.getTurno() == null) {
+			if (VerificadorUtil.verificarSeObjetoNulo(insercao.getTurno())) {
 				JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
 			} else if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
 					insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())) {
@@ -802,7 +810,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void gravarInsercaoPaciente() throws ProjetoException {
             if (insercao.getLaudo().getId() != null) {
 
-                Boolean cadastrou = null;
+                Boolean cadastrou = false;
 
                 if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
                     gerarListaAgendamentosEquipeTurno();
@@ -816,13 +824,15 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
                 if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-
-                    //gerarListaAgendamentosEquipe();
-                    if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                        cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaProfissionaisAdicionados);
-                    else
-                        cadastrou = iDao.gravarInsercaoEquipeTurno(insercao,
-                                listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
+                	if(!listaProfissionaisAdicionadosEstaVazia()) {
+                		// gerarListaAgendamentosEquipe();
+                		if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+                			cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal,
+								listaLiberacao, listaProfissionaisAdicionados);
+                		else
+                			cadastrou = iDao.gravarInsercaoEquipeTurno(insercao, listaProfissionaisAdicionados,
+								listaAgendamentosProfissionalFinal, listaLiberacao);
+                    }
                 }
                 if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
