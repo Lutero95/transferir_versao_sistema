@@ -8,9 +8,9 @@
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewAction
-				action="#{AtendimentoController.getCarregaGerenciarAtendimentos()}" />
-		</f:metadata>
+			<f:viewAction action="#{AtendimentoController.getCarregaGerenciarAtendimentos()}" />
+			<f:viewAction action="#{AtendimentoController.buscarSituacoes()}" />
+		</f:metadata> 
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
@@ -173,11 +173,12 @@
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
 
 								<b:selectOneMenu value="#{atendimento.status}" 
-						disabled="#{atendimento.statusAnterior=='A'}"
+									disabled="#{atendimento.statusAnterior=='A'}"
 									style="color: #1d5987 !important;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
-									<f:selectItem itemLabel="Atendido" itemValue="A" />
-									<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
+									<f:selectItems value="#{AtendimentoController.listaSituacoes}" var="sit"
+									 itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+									
 									<p:ajax
 										listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
 										update=":formConsAge"></p:ajax>

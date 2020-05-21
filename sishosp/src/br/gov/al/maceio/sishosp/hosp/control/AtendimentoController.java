@@ -64,6 +64,8 @@ public class AtendimentoController implements Serializable {
 	private static final String SIM = "Sim";
     private Integer  idAtendimentos;
 	private String ehEquipe;
+	private List<SituacaoAtendimentoBean> listaSituacoes;
+	private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -101,6 +103,8 @@ public class AtendimentoController implements Serializable {
         listaGrupos = new ArrayList<>();
         buscaEvolucao = "T";
         buscaTurno = "A";
+        this.listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+        this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -254,6 +258,10 @@ public class AtendimentoController implements Serializable {
             listarAtendimentosEquipe();
         }
     }
+    
+    public void buscarSituacoes() {
+    	this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
+    }		
 
 	private void recuperaIdEquipeDaSessao() {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -790,4 +798,13 @@ public class AtendimentoController implements Serializable {
 	public void setEhEquipe(String ehEquipe) {
 		this.ehEquipe = ehEquipe;
 	}
+
+	public List<SituacaoAtendimentoBean> getListaSituacoes() {
+		return listaSituacoes;
+	}
+
+	public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
+		this.listaSituacoes = listaSituacoes;
+	}
+	
 }
