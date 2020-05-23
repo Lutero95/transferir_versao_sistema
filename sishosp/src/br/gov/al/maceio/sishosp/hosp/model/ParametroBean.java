@@ -30,6 +30,7 @@ public class ParametroBean implements Serializable {
     private String orgaoDestinoInformacao;
     private String indicadorOrgaoDestinoInformacao;
     private String versaoSistema;
+    private Integer validadePadraoLaudo;
 
 
     public ParametroBean() {
@@ -126,45 +127,45 @@ public class ParametroBean implements Serializable {
         this.almocoFinal = almocoFinal;
     }
 
-	public String getNecessitaPresencaParaEvolucao() {
-		return necessitaPresencaParaEvolucao;
-	}
+    public String getNecessitaPresencaParaEvolucao() {
+        return necessitaPresencaParaEvolucao;
+    }
 
-	public void setNecessitaPresencaParaEvolucao(String necessitaPresencaParaEvolucao) {
-		this.necessitaPresencaParaEvolucao = necessitaPresencaParaEvolucao;
-	}
+    public void setNecessitaPresencaParaEvolucao(String necessitaPresencaParaEvolucao) {
+        this.necessitaPresencaParaEvolucao = necessitaPresencaParaEvolucao;
+    }
 
-	public boolean isPtsMostrarObjGeraisCurtoPrazo() {
-		return ptsMostrarObjGeraisCurtoPrazo;
-	}
+    public boolean isPtsMostrarObjGeraisCurtoPrazo() {
+        return ptsMostrarObjGeraisCurtoPrazo;
+    }
 
-	public boolean isPtsMostrarObjGeraisMedioPrazo() {
-		return ptsMostrarObjGeraisMedioPrazo;
-	}
+    public boolean isPtsMostrarObjGeraisMedioPrazo() {
+        return ptsMostrarObjGeraisMedioPrazo;
+    }
 
-	public boolean isPtsMostrarObjGeraisLongoPrazo() {
-		return ptsMostrarObjGeraisLongoPrazo;
-	}
+    public boolean isPtsMostrarObjGeraisLongoPrazo() {
+        return ptsMostrarObjGeraisLongoPrazo;
+    }
 
-	public void setPtsMostrarObjGeraisCurtoPrazo(boolean ptsMostrarObjGeraisCurtoPrazo) {
-		this.ptsMostrarObjGeraisCurtoPrazo = ptsMostrarObjGeraisCurtoPrazo;
-	}
+    public void setPtsMostrarObjGeraisCurtoPrazo(boolean ptsMostrarObjGeraisCurtoPrazo) {
+        this.ptsMostrarObjGeraisCurtoPrazo = ptsMostrarObjGeraisCurtoPrazo;
+    }
 
-	public void setPtsMostrarObjGeraisMedioPrazo(boolean ptsMostrarObjGeraisMedioPrazo) {
-		this.ptsMostrarObjGeraisMedioPrazo = ptsMostrarObjGeraisMedioPrazo;
-	}
+    public void setPtsMostrarObjGeraisMedioPrazo(boolean ptsMostrarObjGeraisMedioPrazo) {
+        this.ptsMostrarObjGeraisMedioPrazo = ptsMostrarObjGeraisMedioPrazo;
+    }
 
-	public void setPtsMostrarObjGeraisLongoPrazo(boolean ptsMostrarObjGeraisLongoPrazo) {
-		this.ptsMostrarObjGeraisLongoPrazo = ptsMostrarObjGeraisLongoPrazo;
-	}
+    public void setPtsMostrarObjGeraisLongoPrazo(boolean ptsMostrarObjGeraisLongoPrazo) {
+        this.ptsMostrarObjGeraisLongoPrazo = ptsMostrarObjGeraisLongoPrazo;
+    }
 
-	public ArrayList<ProgramaGrupoEvolucaoBean> getListaProgramasGruposComEvolucao() {
-		return listaProgramasGruposComEvolucao;
-	}
+    public ArrayList<ProgramaGrupoEvolucaoBean> getListaProgramasGruposComEvolucao() {
+        return listaProgramasGruposComEvolucao;
+    }
 
-	public void setListaProgramasGruposComEvolucao(ArrayList<ProgramaGrupoEvolucaoBean> listaProgramasGruposComEvolucao) {
-		this.listaProgramasGruposComEvolucao = listaProgramasGruposComEvolucao;
-	}
+    public void setListaProgramasGruposComEvolucao(ArrayList<ProgramaGrupoEvolucaoBean> listaProgramasGruposComEvolucao) {
+        this.listaProgramasGruposComEvolucao = listaProgramasGruposComEvolucao;
+    }
 
     public Boolean getUsaHorarioLimiteParaAcesso() {
         return usaHorarioLimiteParaAcesso;
@@ -190,59 +191,66 @@ public class ParametroBean implements Serializable {
         this.horarioFinalFuncionamento = horarioFinalFuncionamento;
     }
 
-	public boolean isBloqueiaPorPendenciaEvolucaoAnterior() {
-		return bloqueiaPorPendenciaEvolucaoAnterior;
-	}
+    public boolean isBloqueiaPorPendenciaEvolucaoAnterior() {
+        return bloqueiaPorPendenciaEvolucaoAnterior;
+    }
 
-	public void setBloqueiaPorPendenciaEvolucaoAnterior(boolean bloqueiaPorPendenciaEvolucaoAnterior) {
-		this.bloqueiaPorPendenciaEvolucaoAnterior = bloqueiaPorPendenciaEvolucaoAnterior;
-	}
+    public void setBloqueiaPorPendenciaEvolucaoAnterior(boolean bloqueiaPorPendenciaEvolucaoAnterior) {
+        this.bloqueiaPorPendenciaEvolucaoAnterior = bloqueiaPorPendenciaEvolucaoAnterior;
+    }
 
-	public String getOrgaoOrigemResponsavelPelaInformacao() {
-		return orgaoOrigemResponsavelPelaInformacao;
-	}
+    public String getOrgaoOrigemResponsavelPelaInformacao() {
+        return orgaoOrigemResponsavelPelaInformacao;
+    }
 
-	public void setOrgaoOrigemResponsavelPelaInformacao(String orgaoOrigemResponsavelPelaInformacao) {
-		this.orgaoOrigemResponsavelPelaInformacao = orgaoOrigemResponsavelPelaInformacao;
-	}
+    public void setOrgaoOrigemResponsavelPelaInformacao(String orgaoOrigemResponsavelPelaInformacao) {
+        this.orgaoOrigemResponsavelPelaInformacao = orgaoOrigemResponsavelPelaInformacao;
+    }
 
-	public String getSiglaOrgaoOrigemResponsavelPelaDigitacao() {
-		return siglaOrgaoOrigemResponsavelPelaDigitacao;
-	}
+    public String getSiglaOrgaoOrigemResponsavelPelaDigitacao() {
+        return siglaOrgaoOrigemResponsavelPelaDigitacao;
+    }
 
-	public void setSiglaOrgaoOrigemResponsavelPelaDigitacao(String siglaOrgaoOrigemResponsavelPelaDigitacao) {
-		this.siglaOrgaoOrigemResponsavelPelaDigitacao = siglaOrgaoOrigemResponsavelPelaDigitacao;
-	}
+    public void setSiglaOrgaoOrigemResponsavelPelaDigitacao(String siglaOrgaoOrigemResponsavelPelaDigitacao) {
+        this.siglaOrgaoOrigemResponsavelPelaDigitacao = siglaOrgaoOrigemResponsavelPelaDigitacao;
+    }
 
-	public String getCgcCpfPrestadorOuOrgaoPublico() {
-		return cgcCpfPrestadorOuOrgaoPublico;
-	}
+    public String getCgcCpfPrestadorOuOrgaoPublico() {
+        return cgcCpfPrestadorOuOrgaoPublico;
+    }
 
-	public void setCgcCpfPrestadorOuOrgaoPublico(String cgcCpfPrestadorOuOrgaoPublico) {
-		this.cgcCpfPrestadorOuOrgaoPublico = cgcCpfPrestadorOuOrgaoPublico;
-	}
+    public void setCgcCpfPrestadorOuOrgaoPublico(String cgcCpfPrestadorOuOrgaoPublico) {
+        this.cgcCpfPrestadorOuOrgaoPublico = cgcCpfPrestadorOuOrgaoPublico;
+    }
 
-	public String getOrgaoDestinoInformacao() {
-		return orgaoDestinoInformacao;
-	}
+    public String getOrgaoDestinoInformacao() {
+        return orgaoDestinoInformacao;
+    }
 
-	public void setOrgaoDestinoInformacao(String orgaoDestinoInformacao) {
-		this.orgaoDestinoInformacao = orgaoDestinoInformacao;
-	}
+    public void setOrgaoDestinoInformacao(String orgaoDestinoInformacao) {
+        this.orgaoDestinoInformacao = orgaoDestinoInformacao;
+    }
 
-	public String getIndicadorOrgaoDestinoInformacao() {
-		return indicadorOrgaoDestinoInformacao;
-	}
+    public String getIndicadorOrgaoDestinoInformacao() {
+        return indicadorOrgaoDestinoInformacao;
+    }
 
-	public void setIndicadorOrgaoDestinoInformacao(String indicadorOrgaoDestinoInformacao) {
-		this.indicadorOrgaoDestinoInformacao = indicadorOrgaoDestinoInformacao;
-	}
+    public void setIndicadorOrgaoDestinoInformacao(String indicadorOrgaoDestinoInformacao) {
+        this.indicadorOrgaoDestinoInformacao = indicadorOrgaoDestinoInformacao;
+    }
 
-	public String getVersaoSistema() {
-		return versaoSistema;
-	}
+    public String getVersaoSistema() {
+        return versaoSistema;
+    }
 
-	public void setVersaoSistema(String versaoSistema) {
-		this.versaoSistema = versaoSistema;
-	}
+    public void setVersaoSistema(String versaoSistema) {
+        this.versaoSistema = versaoSistema;
+    }
+    public Integer getValidadePadraoLaudo() {
+        return validadePadraoLaudo;
+    }
+
+    public void setValidadePadraoLaudo(Integer validadePadraoLaudo) {
+        this.validadePadraoLaudo = validadePadraoLaudo;
+    }
 }

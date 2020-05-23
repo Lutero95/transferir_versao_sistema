@@ -46,7 +46,7 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(3, Types.NULL);
-            }            
+            }
             ps.setString(4, unidade.getCep());
             ps.setString(5, unidade.getCidade());
             ps.setString(6, unidade.getEstado());
@@ -56,14 +56,14 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(8, Types.NULL);
-            }   
-            
+            }
+
             if(unidade.getTelefone1() != null) {
                 ps.setString(9, unidade.getTelefone1());
             }
             else{
                 ps.setNull(9, Types.NULL);
-            }  
+            }
 
             if(unidade.getDdd2() != null) {
                 ps.setInt(10, unidade.getDdd2());
@@ -95,12 +95,12 @@ public class UnidadeDAO {
             else{
                 ps.setNull(14, Types.NULL);
             }
-            
+
             ps.setString(15, unidade.getNomeUnidade());
-            
+
 
             ps.setInt(16, unidade.getCodEmpresa());
-            
+
 
             ResultSet rs = ps.executeQuery();
 
@@ -114,8 +114,8 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
                     "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                    "indicador_orgao_destino_informacao, versao_sistema )" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo )" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -197,18 +197,18 @@ public class UnidadeDAO {
             else{
                 ps.setNull(13, Types.NULL);
             }
-            
+
             if(unidade.getParametro().getNecessitaPresencaParaEvolucao() != null) {
                 ps.setString(14, unidade.getParametro().getNecessitaPresencaParaEvolucao());
             }
             else{
                 ps.setNull(14, Types.NULL);
             }
-            
+
             ps.setBoolean(15, unidade.getParametro().isPtsMostrarObjGeraisCurtoPrazo());
-            
+
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisMedioPrazo());
-            
+
             ps.setBoolean(17, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
 
             ps.setBoolean(18, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
@@ -226,32 +226,32 @@ public class UnidadeDAO {
             else{
                 ps.setNull(20, Types.NULL);
             }
-            
+
             ps.setString(21, unidade.getParametro().getOrgaoOrigemResponsavelPelaInformacao());
             ps.setString(22, unidade.getParametro().getSiglaOrgaoOrigemResponsavelPelaDigitacao());
             ps.setString(23, unidade.getParametro().getCgcCpfPrestadorOuOrgaoPublico());
             ps.setString(24, unidade.getParametro().getOrgaoDestinoInformacao());
             ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
             ps.setString(26, unidade.getParametro().getVersaoSistema());
-            
+            ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
             ps.execute();
-            
-            
+
+
             sql = "INSERT INTO hosp.config_evolucao_unidade_programa_grupo " +
                     "(codunidade, codprograma, codgrupo, inicio_evolucao, usuario_cadastro, data_hora_cadastro ) " +
                     "VALUES(?, ?, ?, ?,?, current_timestamp);";
 
-            	ps = null;
-                ps = con.prepareStatement(sql);
+            ps = null;
+            ps = con.prepareStatement(sql);
 
-                for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
-                    ps.setInt(1, codUnidade);
-                    ps.setInt(2, unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
-                    ps.setInt(3, unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
-                    ps.setDate(4, DataUtil.converterDateUtilParaDateSql(unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
-                    ps.setLong(5, user_session.getId());
-                    ps.execute();
-                }
+            for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
+                ps.setInt(1, codUnidade);
+                ps.setInt(2, unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
+                ps.setInt(3, unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
+                ps.setDate(4, DataUtil.converterDateUtilParaDateSql(unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
+                ps.setLong(5, user_session.getId());
+                ps.execute();
+            }
 
 
             con.commit();
@@ -341,7 +341,7 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(3, Types.NULL);
-            }   
+            }
 
             ps.setString(4, unidade.getCep());
             ps.setString(5, unidade.getCidade());
@@ -351,31 +351,31 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(7, Types.NULL);
-            }     
-            
+            }
+
             if (unidade.getTelefone1()!=null){
                 ps.setString(8, unidade.getTelefone1());
             }
             else{
                 ps.setNull(8, Types.NULL);
-            }     
-            
+            }
+
             if (unidade.getDdd2()!=null){
                 ps.setInt(9, unidade.getDdd2());
             }
             else{
                 ps.setNull(9, Types.NULL);
-            }     
-            
+            }
+
             if (unidade.getTelefone2()!=null){
                 ps.setString(10, unidade.getTelefone2());
             }
             else{
                 ps.setNull(10, Types.NULL);
-            }                
+            }
 
-            
-            
+
+
             ps.setString(11, unidade.getEmail());
             ps.setString(12, unidade.getSite());
             ps.setBoolean(13, unidade.getMatriz());
@@ -393,7 +393,7 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ?, " +
                     "bloqueia_por_pendencia_evolucao_anterior = ?, orgao_origem_responsavel_pela_informacao = ?, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao = ?, cgcCpf_prestador_ou_orgao_publico = ?, orgao_destino_informacao = ?, "+
-                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? "+
+                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?"+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -410,15 +410,15 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(8, Types.NULL);
-            }   
-            
+            }
+
             if ((unidade.getParametro().getOrteseProtese().getPrograma() != null) && (unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null)){
                 ps.setInt(9, unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
             }
             else{
                 ps.setNull(9, Types.NULL);
-            }   
-            
+            }
+
 
             if (( unidade.getParametro().getOrteseProtese().getGrupo() != null) && ( unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null)){
                 ps.setInt(10,  unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
@@ -446,14 +446,14 @@ public class UnidadeDAO {
             }
             else{
                 ps.setNull(13, Types.NULL);
-            }      
-            
+            }
+
             ps.setBoolean(14, unidade.getParametro().isPtsMostrarObjGeraisCurtoPrazo());
-            
+
             ps.setBoolean(15, unidade.getParametro().isPtsMostrarObjGeraisMedioPrazo());
-            
+
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
-            
+
             ps.setBoolean(17, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
 
             if(unidade.getParametro().getHorarioInicioFuncionamento() != null && unidade.getParametro().getUsaHorarioLimiteParaAcesso()) {
@@ -477,34 +477,35 @@ public class UnidadeDAO {
             ps.setString(24, unidade.getParametro().getOrgaoDestinoInformacao());
             ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
             ps.setString(26, unidade.getParametro().getVersaoSistema());
-            ps.setInt(27, unidade.getId());
+            ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
+            ps.setInt(28, unidade.getId());
 
             ps.executeUpdate();
-            
-                sql = "delete from hosp.config_evolucao_unidade_programa_grupo where codunidade = ?";
 
-                PreparedStatement ps2 = null;
-                ps2 = con.prepareStatement(sql);
-                ps2.setLong(1,unidade.getId());
-                ps2.execute();
-          
-            
-            
+            sql = "delete from hosp.config_evolucao_unidade_programa_grupo where codunidade = ?";
+
+            PreparedStatement ps2 = null;
+            ps2 = con.prepareStatement(sql);
+            ps2.setLong(1,unidade.getId());
+            ps2.execute();
+
+
+
             sql = "INSERT INTO hosp.config_evolucao_unidade_programa_grupo " +
                     "(codunidade, codprograma, codgrupo, inicio_evolucao, usuario_cadastro, data_hora_cadastro ) " +
                     "VALUES(?, ?, ?, ?,?, current_timestamp);";
 
-            	ps = null;
-                ps = con.prepareStatement(sql);
+            ps = null;
+            ps = con.prepareStatement(sql);
 
-                for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
-                    ps.setInt(1, unidade.getId());
-                    ps.setInt(2,  unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
-                    ps.setInt(3,  unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
-                    ps.setDate(4, DataUtil.converterDateUtilParaDateSql( unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
-                    ps.setLong(5, user_session.getId());
-                    ps.execute();
-                }            
+            for (int i = 0; i < unidade.getListaProgramasGrupoEvolucao().size(); i++) {
+                ps.setInt(1, unidade.getId());
+                ps.setInt(2,  unidade.getListaProgramasGrupoEvolucao().get(i).getPrograma().getIdPrograma());
+                ps.setInt(3,  unidade.getListaProgramasGrupoEvolucao().get(i).getGrupo().getIdGrupo());
+                ps.setDate(4, DataUtil.converterDateUtilParaDateSql( unidade.getListaProgramasGrupoEvolucao().get(i).getDataInicioEvolucao()));
+                ps.setLong(5, user_session.getId());
+                ps.execute();
+            }
 
             con.commit();
             retorno = true;
@@ -565,12 +566,12 @@ public class UnidadeDAO {
 
             while (rs.next()) {
 
-            	unidade.setId(rs.getInt("id"));
-            	unidade.setNomeUnidade(rs.getString("nome"));
-            	unidade.setNomeEmpresa(rs.getString("nome_principal"));
-            	unidade.setNomeFantasia(rs.getString("nome_fantasia"));
-            	unidade.setCodEmpresa(rs.getInt("cod_empresa"));            	
-            	unidade.setCnpj(rs.getString("cnpj"));
+                unidade.setId(rs.getInt("id"));
+                unidade.setNomeUnidade(rs.getString("nome"));
+                unidade.setNomeEmpresa(rs.getString("nome_principal"));
+                unidade.setNomeFantasia(rs.getString("nome_fantasia"));
+                unidade.setCodEmpresa(rs.getInt("cod_empresa"));
+                unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));
                 unidade.setBairro(rs.getString("bairro"));
                 unidade.setNumero(rs.getInt("numero"));
@@ -614,7 +615,7 @@ public class UnidadeDAO {
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
                 "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                "indicador_orgao_destino_informacao, versao_sistema "+
+                "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -661,6 +662,7 @@ public class UnidadeDAO {
                 parametro.setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
                 parametro.setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
                 parametro.setVersaoSistema(rs.getString("versao_sistema"));
+                parametro.setValidadePadraoLaudo(rs.getInt("validade_padrao_laudo"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -673,15 +675,15 @@ public class UnidadeDAO {
         }
         return parametro;
     }
-    
+
     public List<ProgramaGrupoEvolucaoBean> carregarProgramasEGruposEmEvolucao(Integer id, Connection conAuxiliar) throws ProjetoException {
 
         List<ProgramaGrupoEvolucaoBean> listaProgramasGruposEvolucao = new ArrayList<ProgramaGrupoEvolucaoBean>();
 
-        String sql = "select cev.codunidade,cev.codprograma, p.descprograma, cev.codgrupo, g.descgrupo , cev.inicio_evolucao\n" + 
-        		"from hosp.config_evolucao_unidade_programa_grupo cev\n" + 
-        		"left join hosp.programa p on (p.id_programa = cev.codprograma) \n" + 
-        		"left join hosp.grupo g on (g.id_grupo = cev.codgrupo) where cev.codunidade = ?";
+        String sql = "select cev.codunidade,cev.codprograma, p.descprograma, cev.codgrupo, g.descgrupo , cev.inicio_evolucao\n" +
+                "from hosp.config_evolucao_unidade_programa_grupo cev\n" +
+                "left join hosp.programa p on (p.id_programa = cev.codprograma) \n" +
+                "left join hosp.grupo g on (g.id_grupo = cev.codgrupo) where cev.codunidade = ?";
 
         try {
             PreparedStatement ps = conAuxiliar.prepareStatement(sql);
@@ -689,14 +691,14 @@ public class UnidadeDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-            	ProgramaGrupoEvolucaoBean programaGrupoEvolucao = new ProgramaGrupoEvolucaoBean();
-            	programaGrupoEvolucao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-            	programaGrupoEvolucao.getPrograma().setDescPrograma(rs.getString("descprograma"));
-            	programaGrupoEvolucao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-            	programaGrupoEvolucao.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-            	programaGrupoEvolucao.setDataInicioEvolucao(rs.getDate("inicio_evolucao"));
-            	programaGrupoEvolucao.getUnidade().setId(rs.getInt("codunidade"));
-            	listaProgramasGruposEvolucao.add(programaGrupoEvolucao);
+                ProgramaGrupoEvolucaoBean programaGrupoEvolucao = new ProgramaGrupoEvolucaoBean();
+                programaGrupoEvolucao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                programaGrupoEvolucao.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                programaGrupoEvolucao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+                programaGrupoEvolucao.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                programaGrupoEvolucao.setDataInicioEvolucao(rs.getDate("inicio_evolucao"));
+                programaGrupoEvolucao.getUnidade().setId(rs.getInt("codunidade"));
+                listaProgramasGruposEvolucao.add(programaGrupoEvolucao);
 
             }
         } catch (Exception ex) {
@@ -710,7 +712,7 @@ public class UnidadeDAO {
         }
         return listaProgramasGruposEvolucao;
     }
-    
+
 
     public String carregarOpcaoAtendimentoDaUnidade() throws ProjetoException {
 
@@ -756,7 +758,7 @@ public class UnidadeDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, user_session.getUnidade().getId());
-	            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
 
@@ -832,14 +834,14 @@ public class UnidadeDAO {
                 "JOIN hosp.atendimentos a ON (p.codunidade = a.cod_unidade) " +
                 "where a.dtaatende = ? AND a.horario = ? AND ";
 
-            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codEquipe)) {
-                sql = sql + "a.codequipe = ? and " +
-                        "p.qtd_simultanea_atendimento_equipe > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
-            }
-            else{
-                sql = sql + "a.codmedico = ? and " +
-                        "p.qtd_simultanea_atendimento_profissional > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
-            }
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codEquipe)) {
+            sql = sql + "a.codequipe = ? and " +
+                    "p.qtd_simultanea_atendimento_equipe > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
+        }
+        else{
+            sql = sql + "a.codmedico = ? and " +
+                    "p.qtd_simultanea_atendimento_profissional > COALESCE((SELECT count(*) FROM hosp.atendimentos aa WHERE aa.horario = ? AND aa.dtaatende = ?),0); ";
+        }
 
         try {
             con = ConnectionFactory.getConnection();

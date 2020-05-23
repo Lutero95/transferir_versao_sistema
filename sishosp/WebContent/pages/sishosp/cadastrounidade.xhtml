@@ -409,9 +409,27 @@
 													timeZone="GMT-3" />
 											</p:inputMask>
 										</b:column>
-
 									</b:row>
+								</p:fieldset>
+							</p:outputPanel>
 
+							<p:outputPanel id="oulaudo">
+
+								<p:fieldset legend="Laudo">
+
+									<b:row>
+										<b:column span="12" class="label-position new-col6">
+											<b:selectOneMenu id="validadepadraolaudo"
+												value="#{UnidadeController.unidade.parametro.validadePadraoLaudo}"
+												style="width:200px;" required="true"
+												requiredMessage="Validade: Campo obrigatório!">
+												<f:selectItem itemLabel="Informe a Validade" itemValue="" />
+												<f:selectItem itemLabel="30 dias" itemValue="30" />
+												<f:selectItem itemLabel="90 dias" itemValue="90" />
+												<f:selectItem itemLabel="180 dias" itemValue="180" />
+											</b:selectOneMenu>
+										</b:column>
+									</b:row>
 								</p:fieldset>
 
 							</p:outputPanel>
