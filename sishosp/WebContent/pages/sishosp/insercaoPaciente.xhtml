@@ -174,6 +174,8 @@
                                                     completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
+                                                    required="true"
+                                                    requiredMessage="Campo programa obrigatório"
                                                     itemLabel="#{theme.descPrograma}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{InsercaoController.selectPrograma}"
@@ -210,9 +212,11 @@
                                                     completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
+                                                    required="true"
+                                                    requiredMessage="Campo grupo obrigatório"
                                                     itemLabel="#{theme.descGrupo}">
                                         <p:ajax event="itemSelect"
-                                                listener="#{AgendaController.selectGrupo}"
+                                                listener="#{InsercaoController.selectGrupo}"
                                                 update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"/>
 
                                     </p:autoComplete>
@@ -244,7 +248,8 @@
                                                     disabled="#{InsercaoController.insercao.grupo==null}"
                                                     completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    minQueryLength="1" itemValue="#{theme}" required="true"
+                                                    requiredMessage="Campo equipe obrigatório "
                                                     itemLabel="#{theme.descEquipe}">
                                         <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina, opturno" />
                                     </p:autoComplete>
@@ -885,7 +890,8 @@
                                 update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
-                                onclick="PF('dlgConsuGrop').hide();">
+                                onclick="PF('dlgConsuGrop').hide();"
+                                action="#{InsercaoController.limparEquipeSelecionada()}">
                             <f:setPropertyActionListener value="#{grupo}"
                                                          target="#{InsercaoController.insercao.grupo}"/>
                         </p:commandButton>

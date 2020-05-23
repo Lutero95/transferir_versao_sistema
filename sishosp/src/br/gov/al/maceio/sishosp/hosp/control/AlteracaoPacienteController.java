@@ -742,7 +742,7 @@ public class AlteracaoPacienteController implements Serializable {
     public void gravarAlteracaoPaciente() throws ProjetoException {
     	
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
-			Boolean cadastrou = null;
+			Boolean cadastrou = false;
 			listAgendamentoProfissional = new ArrayList<AgendaBean>();
 
 			InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
@@ -757,24 +757,26 @@ public class AlteracaoPacienteController implements Serializable {
 
 			if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
-					gerarListaAgendamentosEquipeTurno();
+				if (!listaProfissionaisAdicionadosEstaVazia()) {
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+						gerarListaAgendamentosEquipeTurno();
+					}
+
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+						gerarListaAgendamentosEquipeDiaHorario();
+					}
+
+					listaAgendamentosProfissionalFinal = insercaoPacienteController
+							.validarDatas(listAgendamentoProfissional, insercao.getTurno());
+
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+						cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
+								listaAgendamentosProfissionalFinal, id_paciente_insituicao,
+								listaProfissionaisAdicionados);
+					else
+						cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, listaAgendamentosProfissionalFinal,
+								id_paciente_insituicao, listaProfissionaisAdicionados);
 				}
-
-				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
-					gerarListaAgendamentosEquipeDiaHorario();
-				}
-
-				listaAgendamentosProfissionalFinal = insercaoPacienteController
-						.validarDatas(listAgendamentoProfissional, insercao.getTurno());
-
-				if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-					cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
-							listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
-				else
-					cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, listaAgendamentosProfissionalFinal,
-							id_paciente_insituicao, listaProfissionaisAdicionados);
-
 			}
 			if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
@@ -791,6 +793,14 @@ public class AlteracaoPacienteController implements Serializable {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
 			}
     	}
+    }
+    
+    private boolean listaProfissionaisAdicionadosEstaVazia() {
+    	if(this.listaProfissionaisAdicionados.isEmpty()) {
+    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um profissional", "Atenção");
+    		return true;
+    	}
+    	return false;
     }
     
     public static void gravarAlteracaoPacienteDuplicado() throws ProjetoException {
