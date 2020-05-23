@@ -123,6 +123,38 @@ public class SituacaoAtendimentoDAO {
 		}
 		return listaSituacoes;
 	}
+	
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) {
+
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " + 
+				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? order by sa.descricao ";
+
+		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			ps = conexao.prepareStatement(sql);
+			ps.setBoolean(1, atendimentoRealizado);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
+				situacaoAtendimento.setId(rs.getInt("id"));
+				situacaoAtendimento.setDescricao(rs.getString("descricao"));
+				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+				listaSituacoes.add(situacaoAtendimento);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaSituacoes;
+	}
 
 	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) {
 		

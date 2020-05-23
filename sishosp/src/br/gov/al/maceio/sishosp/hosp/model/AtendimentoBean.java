@@ -12,8 +12,6 @@ public class AtendimentoBean implements Serializable {
     private Date dataAtendimentoInicio;
     private Date dataAtendimentoFinal;
     private String turno;
-    private String status;
-    private String statusAnterior;
     private String situacao;
     private String ehEquipe;
     private String evolucao;
@@ -33,6 +31,9 @@ public class AtendimentoBean implements Serializable {
     private UnidadeBean unidade;
     private InsercaoPacienteBean insercaoPacienteBean;
     private GrupoBean grupoAvaliacao;
+    private SituacaoAtendimentoBean situacaoAtendimento;
+    private SituacaoAtendimentoBean situacaoAtendimentoAnterior;
+    
 
     public AtendimentoBean() {
         this.paciente = new PacienteBean();
@@ -46,6 +47,8 @@ public class AtendimentoBean implements Serializable {
         this.insercaoPacienteBean = new InsercaoPacienteBean();
         this.grupoAvaliacao = new GrupoBean();
         this.grupo = new GrupoBean();
+        this.situacaoAtendimento = new SituacaoAtendimentoBean();
+        this.situacaoAtendimentoAnterior = new SituacaoAtendimentoBean();
     }
 
     public Integer getId() {
@@ -144,14 +147,6 @@ public class AtendimentoBean implements Serializable {
         this.equipe = equipe;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public Integer getId1() {
         return id1;
     }
@@ -240,11 +235,19 @@ public class AtendimentoBean implements Serializable {
 		this.presenca = presenca;
 	}
 
-	public String getStatusAnterior() {
-		return statusAnterior;
+	public SituacaoAtendimentoBean getSituacaoAtendimento() {
+		return situacaoAtendimento;
 	}
 
-	public void setStatusAnterior(String statusAnterior) {
-		this.statusAnterior = statusAnterior;
+	public void setSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) {
+		this.situacaoAtendimento = situacaoAtendimento;
+	}
+
+	public SituacaoAtendimentoBean getSituacaoAtendimentoAnterior() {
+		return situacaoAtendimentoAnterior;
+	}
+
+	public void setSituacaoAtendimentoAnterior(SituacaoAtendimentoBean situacaoAtendimentoAnterior) {
+		this.situacaoAtendimentoAnterior = situacaoAtendimentoAnterior;
 	}
 }

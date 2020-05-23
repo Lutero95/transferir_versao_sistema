@@ -186,7 +186,7 @@ public class AtendimentoController implements Serializable {
     	sessionMap.put("ehEquipe", ehEquipe);
 	}
     
-    public String redirectAtendimentoProfissional() {
+    public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
     	if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
     		
     		if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
@@ -194,6 +194,7 @@ public class AtendimentoController implements Serializable {
     		return null;
     	}
     	else {
+    		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
         }
     }
@@ -237,7 +238,8 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = aDao.listarAtendimentoProfissionalPaciente(id);
-            atendimento.setStatus("A");
+            Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
+            this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
     }
@@ -261,8 +263,14 @@ public class AtendimentoController implements Serializable {
     
     public void buscarSituacoes() {
     	this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
-    }		
+    }
 
+    public void buscarSituacoesFiltroAtendimentoRealizado() {
+    	this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
+    			(this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
+    }
+    
+    
 	private void recuperaIdEquipeDaSessao() {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		Map<String, Object> sessionMap = externalContext.getSessionMap();
@@ -299,8 +307,7 @@ public class AtendimentoController implements Serializable {
 
       //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
 
-            boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
-                    atendimento);
+            boolean alterou = aDao.realizaAtendimentoProfissional(funcionario, atendimento);
 
             if (alterou == true) {
                 JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
@@ -317,9 +324,10 @@ public class AtendimentoController implements Serializable {
     public void alterarSituacaoDeAtendimentoPorProfissional() {
 		try {
 			if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
-				if (aDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
+				if (aDao.alteraSituacaoDeAtendimentoPorProfissional
+						(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento.getId())) {
 					JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
-					this.listAtendimentosEquipe.get(0).setStatusAnterior(this.listAtendimentosEquipe.get(0).getStatus());
+					this.listAtendimentosEquipe.get(0).getSituacaoAtendimentoAnterior().setId(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId());
 				}
 			}
 		} catch (ProjetoException e) {
@@ -501,7 +509,7 @@ public class AtendimentoController implements Serializable {
         }
         else {
             for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getStatus())) {
+                if (VerificadorUtil.verificarSeObjetoNuloOuZero(listAtendimentosEquipe.get(i).getSituacaoAtendimento().getId())) {
                     return false;
                 }
             }
@@ -806,5 +814,4 @@ public class AtendimentoController implements Serializable {
 	public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
 		this.listaSituacoes = listaSituacoes;
 	}
-	
 }

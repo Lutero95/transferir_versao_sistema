@@ -141,7 +141,7 @@
 
 							<p:column headerText="Profissional" width="25%">
 								<p:commandButton icon="fa fa-fw fa-search"
-								disabled="#{atendimento.status!='' and atendimento.status!=null}"
+								disabled="#{atendimento.situacaoAtendimento.id > 0}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 									oncomplete="PF('dlgConsultProfi').show()"
@@ -158,7 +158,7 @@
 
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="fa fa-fw fa-search"
-								disabled="#{atendimento.status!='' and atendimento.status!=null}"
+								disabled="#{atendimento.situacaoAtendimento.id > 0}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{AtendimentoController.listarProcedimentos()}"
 									oncomplete="PF('dlgConsulProc1').show()"
@@ -172,8 +172,8 @@
 							<p:column headerText="Status" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
 
-								<b:selectOneMenu value="#{atendimento.status}" 
-									disabled="#{atendimento.statusAnterior=='A'}"
+								<b:selectOneMenu value="#{atendimento.situacaoAtendimento.id}" 
+									disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == true}"
 									style="color: #1d5987 !important;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItems value="#{AtendimentoController.listaSituacoes}" var="sit"
