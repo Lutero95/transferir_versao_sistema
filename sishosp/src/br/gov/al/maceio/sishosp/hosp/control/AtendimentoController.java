@@ -310,7 +310,7 @@ public class AtendimentoController implements Serializable {
 		try {
 			if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
 				if (aDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
-					JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
+					JSFUtil.adicionarMensagemSucesso("Situação do atendimento alterada com sucesso!", "Sucesso");
 					this.listAtendimentosEquipe.get(0).setStatusAnterior(this.listAtendimentosEquipe.get(0).getStatus());
 				}
 			}
