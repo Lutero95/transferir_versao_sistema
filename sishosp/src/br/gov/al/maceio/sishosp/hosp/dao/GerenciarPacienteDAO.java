@@ -1104,12 +1104,14 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            String sql = "select a.dtaatende, sf.*, c.id id_cbo from adm.substituicao_funcionario sf " + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"	left join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " + 
+            		"	left join hosp.cbo c on c.id = f.codcbo " + 
             		"	where sf.id_atendimentos1 in ( " + 
-            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " + 
-            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1 " + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
             		"WHERE a.id_atendimento = ?)";
 
 
@@ -1128,6 +1130,7 @@ public class GerenciarPacienteDAO {
             	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
             	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
             	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+            	substituicao.getFuncionario().getCbo().setCodCbo(rs.getInt("id_cbo"));
                 lista.add(substituicao);
             }
 
