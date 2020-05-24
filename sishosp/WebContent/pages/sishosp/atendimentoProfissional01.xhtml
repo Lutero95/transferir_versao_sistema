@@ -25,7 +25,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 			</div>
 
 			<div class="panel-body table-body">
-				<h:form>
+				<h:form id="formAcoes">
 					<p:row>
 						<div align="center">
 							<p:row>
@@ -61,7 +61,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 					<br></br>
 
 					<p:row>
-						<b:column span="7" class="label-position">
+						<b:column span="7" class="label-position col-next-select-one-menu">
 							<p:outputLabel value="Paciente" severity="info"
 								style="font-weight:bold !important" />
 
@@ -70,7 +70,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 								id="inputname" />
 						</b:column>
 
-						<b:column span="4" style="margin-left: 5.5%;">
+						<b:column span="4" class="col-select-one-menu">
 							<p:outputLabel value="Status" severity="info"
 								style="margin-bottom:1%; margin-left: 5%; font-weight:bold !important;" />
 							<b:selectOneMenu
@@ -130,15 +130,15 @@ setTimeout("jQuery("#mylink").click();", 50);
 					<br></br>
 					<br></br>
 
-					<div align="center">
+					<div align="center" class="div-btns-atendp">
 
 						<p:commandButton
 							action="#{AtendimentoController.realizarAtendimentoProfissional()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
-							update=":msgPagina" class="btn-incluir" style="float:left" />
+							update=":msgPagina" class="btn-incluir" style="float:left; margin-top:6%;" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
-							style="float:right" size="sm" immediate="true" look="info"
+							style="float:right; margin-top:6%;" size="sm" immediate="true" look="info"
 							class="btn-voltar"
 							action="/pages/sishosp/atendimentoprofissionalnaequipe.faces?faces-redirect=true">
 						</p:commandButton>
@@ -147,26 +147,24 @@ setTimeout("jQuery("#mylink").click();", 50);
 			</div>
 		</div>
 
-		<p:dialog widgetVar="dialogExclusao" modal="true" dynamic="true"
-			header="Limpar Atendimento" resizable="false">
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
 
-			<h:form id="dlglimpar">
+			<h:form id="dlgexcluir">
 				<h:panelGrid columns="1">
-
-					<div class="alert alert-warning" role="alert">Deseja limpar o
-						atendimento?</div>
-
+					<div class="alert alert-warning" role="alert">Deseja excluir este Laudo?</div>
 				</h:panelGrid>
 
 				<div align="center">
-
 					<p:separator />
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
-						action="#{AtendimentoController.limparAtendimentoProfissional()}"
-						ajax="true" icon="ui-icon-check" update=":msgPagina" />
+						action="#{LaudoController.excluirLaudo()}" immediate="true"
+						icon="ui-icon-check" update=":msgPagina" class="btn-sim"
+						oncomplete="PF('dlglaudo').hide();">
+					</p:commandButton>
 
-					<p:commandButton value="Não"
+					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="ui-icon-close" style="margin-left:5px;float:right;" />
 				</div>
@@ -1329,7 +1327,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 		<p:dialog widgetVar="dlgImprimir" modal="true" header="Atenção"
 			dynamic="true" resizable="false" showEffect="clip" hideEffect="clip">
 
-			<h:form id="dlgexcluir">
+			<h:form id="dlgimprimir">
 				<div class="alert alert-warning" role="alert">Deseja imprimir
 					este laudo?</div>
 				<div align="center">

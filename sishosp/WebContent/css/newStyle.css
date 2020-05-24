@@ -1253,6 +1253,24 @@ tr:hover.ui-widget-content.ui-datatable-even:hover, tr:hover.even:hover {
 		max-width: 307px;
 	}
 }
+
+@media (min-width: 1024px) {
+	.col-select-one-menu {
+		margin-left: 4.7%;
+	}
+}
+
+@media (min-width: 1440px) {
+	.col-next-select-one-menu {
+		margin-right: 2% !important;
+	}
+}
+
+@media (max-width: 425px) {
+	.div-btns-atendp {
+		margin-top: 80px !important;
+	}
+}
  
 @media ( max-width : 767px) {
 	.col-sm-6 {

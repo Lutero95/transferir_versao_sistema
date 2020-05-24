@@ -251,7 +251,7 @@ public class AtendimentoController implements Serializable {
                 .getRequestParameterMap();
         if ((params.get("id") != null) || (idAtendimentos!=null)) {
             if (idAtendimentos==null)
-            idAtendimentos = Integer.parseInt(params.get("id"));
+            	idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(idAtendimentos);
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
@@ -356,7 +356,7 @@ public class AtendimentoController implements Serializable {
 
     public void limparAtendimentoProfissional() throws ProjetoException {
 
-        boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
+        boolean alterou = aDao.cancelarAtendimentoProfissional(atendimento);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Atendimento limpo com sucesso!", "Sucesso");

@@ -459,17 +459,16 @@ public class AtendimentoDAO {
 	}
 	}
 
-	public Boolean limpaAtendimentoProfissional(AtendimentoBean atendimento) throws ProjetoException {
+	public Boolean cancelarAtendimentoProfissional(AtendimentoBean atendimento) throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
 		try {
 
-			String sql = "update hosp.atendimentos1 set dtaatendido = null, situacao = ? "
-					+ " where id_atendimento = ?";
-//alterar para id_atendimento1 para o caso de profissional 
+			String sql = "update hosp.atendimentos1 set dtaatendido = null, situacao = '' "
+					+ " where id_atendimentos1 = ?";
+
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "");
-			stmt.setInt(2, atendimento.getId());
+			stmt.setInt(1, atendimento.getId1());
 
 			stmt.executeUpdate();
 
@@ -502,10 +501,10 @@ public class AtendimentoDAO {
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
 
 				+ " case when "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null and coalesce(a1.excluido,'N')='N') =  "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =  "
 				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
 				+ " then 'Atendimento Não Informado' " + " when "
-				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is not null and coalesce(a1.excluido,'N')='N') = "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is not null and coalesce(a1.excluido,'N')='N') = "
 				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
 				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao "
 
