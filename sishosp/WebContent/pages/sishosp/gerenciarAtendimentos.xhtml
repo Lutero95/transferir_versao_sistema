@@ -235,7 +235,7 @@
 							action="#{AtendimentoController.realizarAtendimentoEquipe()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
 							rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
-							update="msgPagina" class="btn-incluir" style="float:left" />
+							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" />
 							
 						<p:commandButton
 							action="#{AtendimentoController.alterarSituacaoDeAtendimentoPorProfissional()}"

@@ -208,6 +208,8 @@ public class AtendimentoDAO {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
+			List<Integer> listaIdAtendimento01QueNaoPodemTerRegistroExcluidos = gerenciarPacienteDAO.retornaListaAtendimento01QueNaoPodemTerRegistroExcluidos(idAtendimento, con);
+			
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(idAtendimento, con) ;
 			
 			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe = new ArrayList<>();
@@ -230,40 +232,48 @@ public class AtendimentoDAO {
 			}			
 			
 			
+			List<AtendimentoBean> listaAtendimentosParaUpdate = removeAtendimentosNaoExcluidos(lista,
+					listaIdAtendimento01QueNaoPodemTerRegistroExcluidos);
+			
 			for (int i = 0; i < lista.size(); i++) {
-
-
 				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
 						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);";
 				
-				PreparedStatement stmt2 = con.prepareStatement(sql2);
-				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
-				stmt2.setInt(2, idAtendimento);
-				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getCbo().getCodCbo())) {
-					stmt2.setNull(3, Types.NULL);
-				} else {
-					stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
-				}
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())) {
+					PreparedStatement stmt2 = con.prepareStatement(sql2);
+					stmt2.setLong(1, lista.get(i).getFuncionario().getId());
+					stmt2.setInt(2, idAtendimento);
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getCbo().getCodCbo())) {
+						stmt2.setNull(3, Types.NULL);
+					} else {
+						stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
+					}
 
-				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getProcedimento().getIdProc())) {
-					stmt2.setNull(4, Types.NULL);
-				} else {
-					stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
-				}
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getProcedimento().getIdProc())) {
+						stmt2.setNull(4, Types.NULL);
+					} else {
+						stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+					}
 
-				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimento().getId()))
-					stmt2.setInt(5, lista.get(i).getSituacaoAtendimento().getId());
-				else
-					stmt2.setNull(5, Types.NULL);
-				stmt2.setString(6, lista.get(i).getEvolucao());
-				stmt2.setString(7, lista.get(i).getPerfil());
-				if (lista.get(i).getHorarioAtendimento() != null)
-					stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
-				else
-					stmt2.setNull(8, Types.NULL);
-				stmt2.executeUpdate();
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimento().getId()))
+						stmt2.setInt(5, lista.get(i).getSituacaoAtendimento().getId());
+					else
+						stmt2.setNull(5, Types.NULL);
+					stmt2.setString(6, lista.get(i).getEvolucao());
+					stmt2.setString(7, lista.get(i).getPerfil());
+					if (lista.get(i).getHorarioAtendimento() != null)
+						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
+					else
+						stmt2.setNull(8, Types.NULL);
+					stmt2.executeUpdate();
 				}
-
+				else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())
+						&& !lista.get(i).getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
+					listaAtendimentosParaUpdate.add(lista.get(i));
+				}
+			}
+			
+			alterarSituacaoAtendimentosNaoRegravados(listaAtendimentosParaUpdate, con);
 
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(grupoAvaliacao)) {
 				String sql3 = "update hosp.atendimentos set cod_laudo = ?, grupo_avaliacao = ? where id_atendimento = ?";
@@ -409,10 +419,52 @@ public class AtendimentoDAO {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return alterou;
 		}
+		return alterou;
 	}
 
+	private List<AtendimentoBean> removeAtendimentosNaoExcluidos(List<AtendimentoBean> lista,
+		List<Integer> listaIdAtendimento01QueNaoPodemTerRegistroExcluidos) {
+		List<AtendimentoBean> listaAtendimentosParaUpdate = new ArrayList<AtendimentoBean>();
+		
+		List<AtendimentoBean> listaAtendimentoAuxiliar = new ArrayList<AtendimentoBean>();
+		listaAtendimentoAuxiliar.addAll(lista);
+		for(AtendimentoBean atendimento : lista) {
+			if(listaIdAtendimento01QueNaoPodemTerRegistroExcluidos.contains(atendimento.getId1()) 
+					&& !atendimento.getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
+				listaAtendimentoAuxiliar.remove(atendimento);
+				listaAtendimentosParaUpdate.add(atendimento);
+			}
+		}
+		
+		lista.clear();
+		lista.addAll(listaAtendimentoAuxiliar);
+		return listaAtendimentosParaUpdate;
+	}
+
+    public void alterarSituacaoAtendimentosNaoRegravados
+    	(List<AtendimentoBean> listaAtendimentosComSituacaoAlterada, Connection conexao) throws SQLException {
+
+        String sql = "UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? WHERE id_atendimentos1 = ?" ;
+
+        try {
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            for (AtendimentoBean atendimento : listaAtendimentosComSituacaoAlterada) {
+            	if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId()))
+            		stmt.setNull(1, Types.NULL);
+            	else
+            		stmt.setInt(1, atendimento.getSituacaoAtendimento().getId());
+                stmt.setInt(2, atendimento.getId1());
+                stmt.execute();	
+			}
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } 
+    }
+	
 	public Boolean insereProfissionalParaRealizarAtendimentoNaEquipe(AtendimentoBean atendimento, FuncionarioBean novoProfissional)
 			throws ProjetoException {
 		boolean alterou = false;
