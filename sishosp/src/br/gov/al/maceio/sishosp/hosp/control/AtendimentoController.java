@@ -55,15 +55,17 @@ public class AtendimentoController implements Serializable {
     private Boolean renderizarDialogLaudo;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private List<GrupoBean> listaGrupos;
-	private String tipoBusca;
-	private String buscaEvolucao;
-	private String buscaTurno;
-	private String campoBusca;
-	private String opcaoAtendimento;
-	private boolean listarEvolucoesPendentes;
-	private static final String SIM = "Sim";
+    private String tipoBusca;
+    private String buscaEvolucao;
+    private String buscaTurno;
+    private String campoBusca;
+    private String opcaoAtendimento;
+    private boolean listarEvolucoesPendentes;
+    private static final String SIM = "Sim";
     private Integer  idAtendimentos;
-	private String ehEquipe;
+    private String ehEquipe;
+    private List<SituacaoAtendimentoBean> listaSituacoes;
+    private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -77,7 +79,7 @@ public class AtendimentoController implements Serializable {
                 .getSessionMap().get("obj_funcionario");
         this.periodoInicialEvolucao = null;
         this.periodoFinalEvolucao = null;
-        
+
         tipoBusca = "nome";
         campoBusca = "";
         this.atendimento = new AtendimentoBean();
@@ -101,6 +103,8 @@ public class AtendimentoController implements Serializable {
         listaGrupos = new ArrayList<>();
         buscaEvolucao = "T";
         buscaTurno = "A";
+        this.listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+        this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -113,11 +117,11 @@ public class AtendimentoController implements Serializable {
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
             }
         }
-        
+
         consultarAtendimentos();
 
     }
-    
+
     public void carregarGerenciamentoAtendimentoProfissionalNaEquipe() throws ProjetoException{
         BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
         if(!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
@@ -128,15 +132,15 @@ public class AtendimentoController implements Serializable {
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
             }
         }
-        
+
         consultarAtendimentosProfissionalNaEquipe();
 
-    }    
-    
+    }
+
     public void excluiProfissionalListaAtendimento(AtendimentoBean atendimento) {
-    	listAtendimentosEquipeParaExcluir.add(atendimento);
-    	listAtendimentosEquipe.remove(atendimento);
-    	JSFUtil.fecharDialog("dlgExclusao");
+        listAtendimentosEquipeParaExcluir.add(atendimento);
+        listAtendimentosEquipe.remove(atendimento);
+        JSFUtil.fecharDialog("dlgExclusao");
     }
 
     public void consultarAtendimentos() throws ProjetoException {
@@ -149,22 +153,22 @@ public class AtendimentoController implements Serializable {
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
         listarAtendimentos(campoBusca, tipoBusca);
     }
-    
+
     public void zeraDatasDeAtendimentoQuandoCondicaoListarEvolucoesPendentesEhAlterada() throws ProjetoException {
-    	this.atendimento.setDataAtendimentoInicio(null);
-    	this.atendimento.setDataAtendimentoFinal(null);
-    	if(listarEvolucoesPendentes) {
-    		carregarGerenciamentoAtendimentoProfissionalNaEquipe();
-    	}
+        this.atendimento.setDataAtendimentoInicio(null);
+        this.atendimento.setDataAtendimentoFinal(null);
+        if(listarEvolucoesPendentes) {
+            carregarGerenciamentoAtendimentoProfissionalNaEquipe();
+        }
     }
-    
+
     public void consultarAtendimentosProfissionalNaEquipe() throws ProjetoException {
-    	if(!listarEvolucoesPendentes) {
-			if (this.atendimento.getDataAtendimentoInicio() == null
-					|| this.atendimento.getDataAtendimentoFinal() == null) {
-				JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
-				return;
-			}
+        if(!listarEvolucoesPendentes) {
+            if (this.atendimento.getDataAtendimentoInicio() == null
+                    || this.atendimento.getDataAtendimentoFinal() == null) {
+                JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
+                return;
+            }
         }
         SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
@@ -172,53 +176,54 @@ public class AtendimentoController implements Serializable {
     }
 
     public String redirectGerenciarAtendimentos(String ehEquipe) {
-    	setaIdEquipeNaSessao(ehEquipe);
-    	return RedirecionarUtil.redirectEditSemTipo(ENDERECO_GERENCIAR_ATENDIMENTOS, ENDERECO_ID, this.atendimento.getId());
+        setaIdEquipeNaSessao(ehEquipe);
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_GERENCIAR_ATENDIMENTOS, ENDERECO_ID, this.atendimento.getId());
     }
 
-	private void setaIdEquipeNaSessao(String ehEquipe) {
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-    	Map<String, Object> sessionMap = externalContext.getSessionMap();
-    	sessionMap.put("ehEquipe", ehEquipe);
-	}
-    
-    public String redirectAtendimentoProfissional() {
-    	if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
-    		
-    		if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
-    			return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
-    		return null;
-    	}
-    	else {
+    private void setaIdEquipeNaSessao(String ehEquipe) {
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
+        sessionMap.put("ehEquipe", ehEquipe);
+    }
+
+    public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
+        if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
+
+            if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
+                return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
+            return null;
+        }
+        else {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
         }
     }
 
-	private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
-		Calendar calendar = Calendar.getInstance();
-    	calendar.setTime(atendimento.getDataAtendimentoInicio());
-		LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
-		LocalDate dataAtual = LocalDate.now();
-		try {
-			Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
-					atendimento.getUnidade().getId(), user_session.getId());
-			
-			if (quantidadePendenciaEvolucaoAnterior == 0)
-				return true;
-			else 
-				if ((dataAtendimento.isAfter(dataAtual)) || (dataAtendimento.isEqual(dataAtual)))
-				JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
-				else
-					return true;
-			
-		} catch (ProjetoException e) {
-			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
-			e.printStackTrace();
-		}
-		return false;
-	}
+    private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_usuario");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(atendimento.getDataAtendimentoInicio());
+        LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
+        LocalDate dataAtual = LocalDate.now();
+        try {
+            Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
+                    atendimento.getUnidade().getId(), user_session.getId());
+
+            if (quantidadePendenciaEvolucaoAnterior == 0)
+                return true;
+            else
+            if ((dataAtendimento.isAfter(dataAtual)) || (dataAtendimento.isEqual(dataAtual)))
+                JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
+            else
+                return true;
+
+        } catch (ProjetoException e) {
+            JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public void getCarregaAtendimentoProfissional() throws ProjetoException {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext
@@ -233,7 +238,8 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = aDao.listarAtendimentoProfissionalPaciente(id);
-            atendimento.setStatus("A");
+            Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
+            this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
     }
@@ -245,7 +251,7 @@ public class AtendimentoController implements Serializable {
                 .getRequestParameterMap();
         if ((params.get("id") != null) || (idAtendimentos!=null)) {
             if (idAtendimentos==null)
-            idAtendimentos = Integer.parseInt(params.get("id"));
+                idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(idAtendimentos);
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
@@ -255,11 +261,21 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-	private void recuperaIdEquipeDaSessao() {
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		Map<String, Object> sessionMap = externalContext.getSessionMap();
-		this.ehEquipe = (String) sessionMap.get("ehEquipe");
-	}
+    public void buscarSituacoes() {
+        this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
+    }
+
+    public void buscarSituacoesFiltroAtendimentoRealizado() {
+        this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
+                (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
+    }
+
+
+    private void recuperaIdEquipeDaSessao() {
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
+        this.ehEquipe = (String) sessionMap.get("ehEquipe");
+    }
 
     private void verificarSeRenderizaDialogDeLaudo() throws ProjetoException {
         if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && ((atendimento.getAvaliacao()!=null) &&(atendimento.getAvaliacao()==true))){
@@ -267,14 +283,14 @@ public class AtendimentoController implements Serializable {
             listarLaudosVigentesPaciente();
         }
         else{
-        	if (atendimento.getInsercaoPacienteBean().getLaudo().getId()!=null)
-            carregarDadosLaudo();
+            if (atendimento.getInsercaoPacienteBean().getLaudo().getId()!=null)
+                carregarDadosLaudo();
         }
     }
 
     private void carregarDadosLaudo() throws ProjetoException {
 
-    	LaudoDAO laudoDAO = new LaudoDAO();
+        LaudoDAO laudoDAO = new LaudoDAO();
         atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.buscarLaudosPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
     }
 
@@ -287,37 +303,37 @@ public class AtendimentoController implements Serializable {
             this.funcionario = fDao.buscarProfissionalPorId(valor);
         }
 
-       //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
+        //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
-      //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
+        //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
 
-            boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
-                    atendimento);
+        boolean alterou = aDao.realizaAtendimentoProfissional(funcionario, atendimento);
 
-            if (alterou == true) {
-                JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
-                return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
-                return null;
-            }
-          //comentado enquanto nao tiver a integracao com o datasus    } else {
-          //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
-          //comentado enquanto nao tiver a integracao com o datasus   }
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
+            return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+            return null;
+        }
+        //comentado enquanto nao tiver a integracao com o datasus    } else {
+        //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
+        //comentado enquanto nao tiver a integracao com o datasus   }
     }
-    
+
     public void alterarSituacaoDeAtendimentoPorProfissional() {
-		try {
-			if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
-				if (aDao.alteraSituacaoDeAtendimentoPorProfissional(this.listAtendimentosEquipe.get(0).getStatus(),	this.atendimento.getId())) {
-					JSFUtil.adicionarMensagemSucesso("Situação do atendimento alterada com sucesso!", "Sucesso");
-					this.listAtendimentosEquipe.get(0).setStatusAnterior(this.listAtendimentosEquipe.get(0).getStatus());
-				}
-			}
-		} catch (ProjetoException e) {
-			JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
-			e.printStackTrace();
-		}
+        try {
+            if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
+                if (aDao.alteraSituacaoDeAtendimentoPorProfissional
+                        (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento.getId())) {
+                    JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
+                    this.listAtendimentosEquipe.get(0).getSituacaoAtendimentoAnterior().setId(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId());
+                }
+            }
+        } catch (ProjetoException e) {
+            JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
+            e.printStackTrace();
+        }
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
@@ -340,7 +356,7 @@ public class AtendimentoController implements Serializable {
 
     public void limparAtendimentoProfissional() throws ProjetoException {
 
-        boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
+        boolean alterou = aDao.cancelarAtendimentoProfissional(atendimento);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Atendimento limpo com sucesso!", "Sucesso");
@@ -348,33 +364,33 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
         }
     }
-    
+
     public void insereProfissionalParaRealizarAtendimentoNaEquipe() throws ProjetoException {
-    	AtendimentoBean atendimentoAux = new AtendimentoBean();
+        AtendimentoBean atendimentoAux = new AtendimentoBean();
         //boolean gravou = aDao.insereProfissionalParaRealizarAtendimentoNaEquipe(atendimento, funcionarioAux);
-    	for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-    		atendimentoAux = listAtendimentosEquipe.get(i);
-			break;
-		}
-    	AtendimentoBean aux = new AtendimentoBean();
-    	aux.setId(atendimentoAux.getId());
-    	aux.setCbo(atendimentoAux.getCbo());
-    	aux.setProcedimento(atendimento.getProcedimento());
-    	aux.setFuncionario(funcionarioAux);
-    	listAtendimentosEquipe.add(aux);
-            JSFUtil.adicionarMensagemSucesso("Profissional inserido com sucesso!", "Sucesso");
-            JSFUtil.fecharDialog("dlgincprof");
+        for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+            atendimentoAux = listAtendimentosEquipe.get(i);
+            break;
+        }
+        AtendimentoBean aux = new AtendimentoBean();
+        aux.setId(atendimentoAux.getId());
+        aux.setCbo(atendimentoAux.getCbo());
+        aux.setProcedimento(atendimento.getProcedimento());
+        aux.setFuncionario(funcionarioAux);
+        listAtendimentosEquipe.add(aux);
+        JSFUtil.adicionarMensagemSucesso("Profissional inserido com sucesso!", "Sucesso");
+        JSFUtil.fecharDialog("dlgincprof");
     }
-    
+
     public void limpaInclusaoProfissionalAtendimento() {
-    	funcionarioAux = new FuncionarioBean();
+        funcionarioAux = new FuncionarioBean();
     }
 
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
                 .carregaAtendimentos(atendimento, campoBusca, tipo);
     }
-    
+
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
                 .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno, listarEvolucoesPendentes);
@@ -413,7 +429,7 @@ public class AtendimentoController implements Serializable {
             CboDAO cDao = new CboDAO();
             CboBean cbo = new CboBean();
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo()))
-            cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
+                cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
 
             for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 
@@ -470,7 +486,7 @@ public class AtendimentoController implements Serializable {
 
         return retorno;
     }
-    
+
 
     private Boolean validarSeEhNecessarioInformarLaudo(){
         Boolean retorno = false;
@@ -480,7 +496,7 @@ public class AtendimentoController implements Serializable {
         }
 
         return retorno;
-    }    
+    }
 
     private Boolean validarDadosDoAtendimentoForamInformados() {
 
@@ -493,7 +509,7 @@ public class AtendimentoController implements Serializable {
         }
         else {
             for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getStatus())) {
+                if (VerificadorUtil.verificarSeObjetoNuloOuZero(listAtendimentosEquipe.get(i).getSituacaoAtendimento().getId())) {
                     return false;
                 }
             }
@@ -504,23 +520,23 @@ public class AtendimentoController implements Serializable {
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
         if(!validarSeEhNecessarioInformarGrupo()) {
-        	if(!validarSeEhNecessarioInformarLaudo()) {
-            boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
+            if(!validarSeEhNecessarioInformarLaudo()) {
+                boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
-            if (verificou) {
-                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                        atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
-                if (alterou) {
-                    getCarregaGerenciarAtendimentos();
-                    JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
+                if (verificou) {
+                    boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+                            atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
+                    if (alterou) {
+                        getCarregaGerenciarAtendimentos();
+                        JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
+                    } else {
+                        JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+                    }
                 } else {
-                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+                    String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
+                    JSFUtil.adicionarMensagemErro(mensagem, "Erro");
                 }
-            } else {
-                String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
-                JSFUtil.adicionarMensagemErro(mensagem, "Erro");
             }
-        	}
             else{
                 JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
             }
@@ -531,16 +547,16 @@ public class AtendimentoController implements Serializable {
     }
 
     public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
-    	if ((periodoFinalEvolucao!=null) || (periodoInicialEvolucao!=null)) {
-    		if ((periodoFinalEvolucao==null) || (periodoInicialEvolucao==null)) {
-    			JSFUtil.adicionarMensagemAdvertencia("Informe o período Inicial e Final da Evolução", "Atenção!");
-    			return;
-    		}
-    		else
-    			 listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
-    	}
-    	else
-        listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+        if ((periodoFinalEvolucao!=null) || (periodoInicialEvolucao!=null)) {
+            if ((periodoFinalEvolucao==null) || (periodoInicialEvolucao==null)) {
+                JSFUtil.adicionarMensagemAdvertencia("Informe o período Inicial e Final da Evolução", "Atenção!");
+                return;
+            }
+            else
+                listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+        }
+        else
+            listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
     }
 
     public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {
@@ -626,14 +642,14 @@ public class AtendimentoController implements Serializable {
     }
 
 
-	public List<ProcedimentoBean> getListaProcedimentos() {
-		return listaProcedimentos;
-	}
+    public List<ProcedimentoBean> getListaProcedimentos() {
+        return listaProcedimentos;
+    }
 
 
-	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
-		this.listaProcedimentos = listaProcedimentos;
-	}
+    public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+        this.listaProcedimentos = listaProcedimentos;
+    }
 
     public List<AtendimentoBean> getListaEvolucoes() {
         return listaEvolucoes;
@@ -684,32 +700,32 @@ public class AtendimentoController implements Serializable {
     }
 
 
-	public String getTipoBusca() {
-		return tipoBusca;
-	}
+    public String getTipoBusca() {
+        return tipoBusca;
+    }
 
 
-	public void setTipoBusca(String tipoBusca) {
-		this.tipoBusca = tipoBusca;
-	}
+    public void setTipoBusca(String tipoBusca) {
+        this.tipoBusca = tipoBusca;
+    }
 
 
-	public String getCampoBusca() {
-		return campoBusca;
-	}
+    public String getCampoBusca() {
+        return campoBusca;
+    }
 
 
-	public void setCampoBusca(String campoBusca) {
-		this.campoBusca = campoBusca;
-	}
+    public void setCampoBusca(String campoBusca) {
+        this.campoBusca = campoBusca;
+    }
 
-	public String getOpcaoAtendimento() {
-		return opcaoAtendimento;
-	}
+    public String getOpcaoAtendimento() {
+        return opcaoAtendimento;
+    }
 
-	public void setOpcaoAtendimento(String opcaoAtendimento) {
-		this.opcaoAtendimento = opcaoAtendimento;
-	}
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        this.opcaoAtendimento = opcaoAtendimento;
+    }
 
     public String getBuscaEvolucao() {
         return buscaEvolucao;
@@ -719,75 +735,83 @@ public class AtendimentoController implements Serializable {
         this.buscaEvolucao = buscaEvolucao;
     }
 
-	public String getBuscaTurno() {
-		return buscaTurno;
-	}
+    public String getBuscaTurno() {
+        return buscaTurno;
+    }
 
-	public void setBuscaTurno(String buscaTurno) {
-		this.buscaTurno = buscaTurno;
-	}
+    public void setBuscaTurno(String buscaTurno) {
+        this.buscaTurno = buscaTurno;
+    }
 
-	public FuncionarioBean getFuncionarioAux() {
-		return funcionarioAux;
-	}
+    public FuncionarioBean getFuncionarioAux() {
+        return funcionarioAux;
+    }
 
-	public void setFuncionarioAux(FuncionarioBean funcionarioAux) {
-		this.funcionarioAux = funcionarioAux;
-	}
+    public void setFuncionarioAux(FuncionarioBean funcionarioAux) {
+        this.funcionarioAux = funcionarioAux;
+    }
 
-	public AtendimentoBean getAtendimentoAux() {
-		return atendimentoAux;
-	}
+    public AtendimentoBean getAtendimentoAux() {
+        return atendimentoAux;
+    }
 
-	public void setAtendimentoAux(AtendimentoBean atendimentoAux) {
-		this.atendimentoAux = atendimentoAux;
-	}
+    public void setAtendimentoAux(AtendimentoBean atendimentoAux) {
+        this.atendimentoAux = atendimentoAux;
+    }
 
-	public Date getDataAtendimentoC() {
-		return periodoInicialEvolucao;
-	}
+    public Date getDataAtendimentoC() {
+        return periodoInicialEvolucao;
+    }
 
-	public Date getDataAtendimentoFinalC() {
-		return periodoFinalEvolucao;
-	}
+    public Date getDataAtendimentoFinalC() {
+        return periodoFinalEvolucao;
+    }
 
-	public void setDataAtendimentoC(Date dataAtendimentoC) {
-		this.periodoInicialEvolucao = dataAtendimentoC;
-	}
+    public void setDataAtendimentoC(Date dataAtendimentoC) {
+        this.periodoInicialEvolucao = dataAtendimentoC;
+    }
 
-	public void setDataAtendimentoFinalC(Date dataAtendimentoFinalC) {
-		this.periodoFinalEvolucao = dataAtendimentoFinalC;
-	}
+    public void setDataAtendimentoFinalC(Date dataAtendimentoFinalC) {
+        this.periodoFinalEvolucao = dataAtendimentoFinalC;
+    }
 
-	public Date getPeriodoInicialEvolucao() {
-		return periodoInicialEvolucao;
-	}
+    public Date getPeriodoInicialEvolucao() {
+        return periodoInicialEvolucao;
+    }
 
-	public Date getPeriodoFinalEvolucao() {
-		return periodoFinalEvolucao;
-	}
+    public Date getPeriodoFinalEvolucao() {
+        return periodoFinalEvolucao;
+    }
 
-	public void setPeriodoInicialEvolucao(Date periodoInicialEvolucao) {
-		this.periodoInicialEvolucao = periodoInicialEvolucao;
-	}
+    public void setPeriodoInicialEvolucao(Date periodoInicialEvolucao) {
+        this.periodoInicialEvolucao = periodoInicialEvolucao;
+    }
 
-	public void setPeriodoFinalEvolucao(Date periodoFinalEvolucao) {
-		this.periodoFinalEvolucao = periodoFinalEvolucao;
-	}
+    public void setPeriodoFinalEvolucao(Date periodoFinalEvolucao) {
+        this.periodoFinalEvolucao = periodoFinalEvolucao;
+    }
 
-	public boolean getListarEvolucoesPendentes() {
-		return listarEvolucoesPendentes;
-	}
+    public boolean getListarEvolucoesPendentes() {
+        return listarEvolucoesPendentes;
+    }
 
-	public void setListarEvolucoesPendentes(boolean listarEvolucoesPendentes) {
-		this.listarEvolucoesPendentes = listarEvolucoesPendentes;
-	}
+    public void setListarEvolucoesPendentes(boolean listarEvolucoesPendentes) {
+        this.listarEvolucoesPendentes = listarEvolucoesPendentes;
+    }
 
-	public String getEhEquipe() {
-		return ehEquipe;
-	}
+    public String getEhEquipe() {
+        return ehEquipe;
+    }
 
-	public void setEhEquipe(String ehEquipe) {
-		this.ehEquipe = ehEquipe;
-	}
+    public void setEhEquipe(String ehEquipe) {
+        this.ehEquipe = ehEquipe;
+    }
+
+    public List<SituacaoAtendimentoBean> getListaSituacoes() {
+        return listaSituacoes;
+    }
+
+    public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
+        this.listaSituacoes = listaSituacoes;
+    }
 }

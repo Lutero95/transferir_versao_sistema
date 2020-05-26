@@ -271,23 +271,30 @@
                         Atendimento
                     </f:facet>
 							<div align="center">
-								<p:commandButton tooltip="Atendimento"
-									icon="fa fa-fw fa-pencil-square-o" size="sm"
-									class="btn-acao-table acao-editar" id="btnatendimento"
-									rendered="#{atendimento.presenca=='S'}"
-									action="#{AtendimentoController.redirectAtendimentoProfissional()}">
-									<f:setPropertyActionListener value="#{atendimento}"
+								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento" 
+								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
+								 rendered="#{atendimento.presenca=='S'}" style="padding-bottom:20%; color:green;">
+								 	<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
-
-								</p:commandButton>
-
-								<p:commandButton tooltip="Atendimento"
-									icon="fa fa-fw fa-pencil-square-o" size="sm"
-									class="btn-acao-table acao-editar" id="btnatendimento2"
-									rendered="#{atendimento.presenca=='N'}">
-									<p:tooltip  for="btnatendimento2"
-										value="Não é possível evoluir este paciente pois não foi informada presença!" position="top" />
-								</p:commandButton>
+										
+									<p:menuitem value="Evoluir Atend. Não Realizado" 
+									action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
+										update=":formConsAge" style="background-color: white;">
+										<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+									</p:menuitem>
+								</p:splitButton>
+								
+								<p:splitButton icon="fa fa-fw fa-pencil-square-o" 
+								title="Não é possível evoluir este paciente pois não foi informada presença!" 
+								 rendered="#{atendimento.presenca=='N'}" style="padding-bottom:20%; color:green;">
+									<p:menuitem value="Evoluir Atend. Não Realizado"
+										action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
+										update=":formConsAge" style="background-color: white;">
+										<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+									</p:menuitem>
+								</p:splitButton>
 							</div>
 						</p:column>
 

@@ -18,8 +18,8 @@ public class SituacaoAtendimentoDAO {
 
 	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) {
 		Boolean retorno = false;
-		String sql = "INSERT INTO hosp.situacao_atendimento " + 
-				"(descricao, atendimento_realizado) " + 
+		String sql = "INSERT INTO hosp.situacao_atendimento " +
+				"(descricao, atendimento_realizado) " +
 				"VALUES(?, ?);";
 
 		try {
@@ -45,8 +45,8 @@ public class SituacaoAtendimentoDAO {
 
 	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao){
 		Boolean retorno = false;
-		String sql = "UPDATE hosp.situacao_atendimento " + 
-				"SET descricao = ?, atendimento_realizado = ?" + 
+		String sql = "UPDATE hosp.situacao_atendimento " +
+				"SET descricao = ?, atendimento_realizado = ?" +
 				"WHERE id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -95,7 +95,7 @@ public class SituacaoAtendimentoDAO {
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " + 
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -124,9 +124,41 @@ public class SituacaoAtendimentoDAO {
 		return listaSituacoes;
 	}
 
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) {
+
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? order by sa.descricao ";
+
+		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			ps = conexao.prepareStatement(sql);
+			ps.setBoolean(1, atendimentoRealizado);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
+				situacaoAtendimento.setId(rs.getInt("id"));
+				situacaoAtendimento.setDescricao(rs.getString("descricao"));
+				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+				listaSituacoes.add(situacaoAtendimento);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaSituacoes;
+	}
+
 	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) {
-		
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " + 
+
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa where sa.descricao ilike ? order by sa.descricao ";
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 		try {
@@ -153,10 +185,10 @@ public class SituacaoAtendimentoDAO {
 		}
 		return listaSituacoes;
 	}
-	
+
 	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " + 
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa where sa.id = ?";
 
 		SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
@@ -182,23 +214,23 @@ public class SituacaoAtendimentoDAO {
 		}
 		return situacaoAtendimento;
 	}
-	
+
 	public Boolean existeOutraSituacaoComAtendimentoRealizado(Integer idSituacao) {
 
-		String sqlParaEdicao = "select exists " + 
-				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true and sa.id != ?) " + 
+		String sqlParaEdicao = "select exists " +
+				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true and sa.id != ?) " +
 				"as existe_situacao_com_atendimento_realizado";
-		
-		String sqlParaCadastro = "select exists " + 
-				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true) " + 
+
+		String sqlParaCadastro = "select exists " +
+				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true) " +
 				"as existe_situacao_com_atendimento_realizado";
-		
+
 		Boolean existeSituacaoComStendimentoRealizado = true;
-		
+
 		try {
 			conexao = ConnectionFactory.getConnection();
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(idSituacao))
-				ps = conexao.prepareStatement(sqlParaCadastro);	
+				ps = conexao.prepareStatement(sqlParaCadastro);
 			else {
 				ps = conexao.prepareStatement(sqlParaEdicao);
 				ps.setInt(1, idSituacao);

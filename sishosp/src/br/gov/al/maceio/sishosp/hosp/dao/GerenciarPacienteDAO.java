@@ -650,7 +650,7 @@ public class GerenciarPacienteDAO {
         		"from " + 
         		"	hosp.atendimentos1 " + 
         		"where " + 
-        		"	atendimentos1.id_atendimento = ? and coalesce(excluido,'N')='N' and situacao is null" +
+        		"	atendimentos1.id_atendimento = ? and coalesce(excluido,'N')='N' and id_situacao_atendimento is null" +
         		"	and (atendimentos1.id_atendimentos1 not in ( " + 
         		"	select " + 
         		"		distinct sp.id_atendimentos1 " + 
@@ -730,6 +730,85 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+    
+    public List<Integer> retornaListaAtendimento01QueNaoPodemTerRegistroExcluidos(Integer idAtendimento, Connection conAuxiliar) {
+
+    	List<Integer> listaIdatendimento = new ArrayList<Integer>();
+        try {
+
+            String sql = "select distinct atendimentos1.id_atendimentos1 from hosp.atendimentos1 " + 
+            		"where atendimentos1.id_atendimentos1 in (  " + 
+            		"	select  " + 
+            		"		distinct sp.id_atendimentos1  " + 
+            		"	from  " + 
+            		"		logs.substituicao_profissional_equipe_atendimentos1 sp  " + 
+            		"	join hosp.atendimentos1 a1 on  " + 
+            		"		a1.id_atendimentos1 = sp.id_atendimentos1  " + 
+            		"	join hosp.atendimentos a on  " + 
+            		"		a.id_atendimento = a1.id_atendimento  " + 
+            		"	where  " + 
+            		"		a.id_atendimento = ? )  " + 
+            		"	or ( atendimentos1.id_atendimentos1 in (  " + 
+            		"	select  " + 
+            		"		distinct rpea.id_atendimentos1  " + 
+            		"	from  " + 
+            		"		logs.remocao_profissional_equipe_atendimentos1 rpea  " + 
+            		"	join hosp.atendimentos1 a1 on  " + 
+            		"		a1.id_atendimentos1 = rpea.id_atendimentos1  " + 
+            		"	join hosp.atendimentos a on  " + 
+            		"		a.id_atendimento = a1.id_atendimento  " + 
+            		"	where  " + 
+            		"		a.id_atendimento = ? ) )  " + 
+            		"or ( atendimentos1.id_atendimentos1 in (  " + 
+            		"	select  " + 
+            		"		distinct ipea.id_atendimentos1  " + 
+            		"	from  " + 
+            		"		adm.insercao_profissional_equipe_atendimento_1 ipea   " + 
+            		"	join hosp.atendimentos1 a1 on  " + 
+            		"		a1.id_atendimentos1 = ipea.id_atendimentos1  " + 
+            		"	join hosp.atendimentos a on  " + 
+            		"		a.id_atendimento = a1.id_atendimento  " + 
+            		"	where  " + 
+            		"		a.id_atendimento = ? ) )  " + 
+            		"or ( atendimentos1.id_atendimentos1 in (  " + 
+            		"	select  " + 
+            		"		distinct ipea.id_atendimentos1  " + 
+            		"	from  " + 
+            		"		adm.remocao_profissional_equipe_atendimento_1 ipea  " + 
+            		"	join hosp.atendimentos1 a1 on  " + 
+            		"		a1.id_atendimentos1 = ipea.id_atendimentos1  " + 
+            		"	join hosp.atendimentos a on  " + 
+            		"		a.id_atendimento = a1.id_atendimento  " + 
+            		"	where  " + 
+            		"		a.id_atendimento = ? )) " + 
+            		"and atendimentos1.id_atendimentos1 = ?	";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setInt(1, idAtendimento);
+            ps.setInt(2, idAtendimento);
+            ps.setInt(3, idAtendimento);
+            ps.setInt(4, idAtendimento);
+            ps.setInt(5, idAtendimento);
+            
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	listaIdatendimento.add(rs.getInt("id_atendimentos1"));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaIdatendimento;
+    } 
     
     
     public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
@@ -1104,12 +1183,14 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "select a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
+            String sql = "select a.dtaatende, sf.*, c.id id_cbo from adm.substituicao_funcionario sf " + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+            		"	left join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " + 
+            		"	left join hosp.cbo c on c.id = f.codcbo " + 
             		"	where sf.id_atendimentos1 in ( " + 
-            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " + 
-            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+            		"	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1 " + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
             		"WHERE a.id_atendimento = ?)";
 
 
@@ -1128,6 +1209,7 @@ public class GerenciarPacienteDAO {
             	substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
             	substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
             	substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+            	substituicao.getFuncionario().getCbo().setCodCbo(rs.getInt("id_cbo"));
                 lista.add(substituicao);
             }
 

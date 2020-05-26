@@ -8,9 +8,9 @@
 
 	<ui:define name="content">
 		<f:metadata>
-			<f:viewAction
-				action="#{AtendimentoController.getCarregaGerenciarAtendimentos()}" />
-		</f:metadata>
+			<f:viewAction action="#{AtendimentoController.getCarregaGerenciarAtendimentos()}" />
+			<f:viewAction action="#{AtendimentoController.buscarSituacoes()}" />
+		</f:metadata> 
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
@@ -141,7 +141,7 @@
 
 							<p:column headerText="Profissional" width="25%">
 								<p:commandButton icon="fa fa-fw fa-search"
-								disabled="#{atendimento.status!='' and atendimento.status!=null}"
+								disabled="#{atendimento.situacaoAtendimento.id > 0}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 									oncomplete="PF('dlgConsultProfi').show()"
@@ -158,7 +158,7 @@
 
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="fa fa-fw fa-search"
-								disabled="#{atendimento.status!='' and atendimento.status!=null}"
+								disabled="#{atendimento.situacaoAtendimento.id > 0}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{AtendimentoController.listarProcedimentos()}"
 									oncomplete="PF('dlgConsulProc1').show()"
@@ -172,12 +172,13 @@
 							<p:column headerText="Status" width="15%"
 								rendered="#{AtendimentoController.atendimento.avaliacao != true}">
 
-								<b:selectOneMenu value="#{atendimento.status}" 
-						disabled="#{atendimento.statusAnterior=='A'}"
+								<b:selectOneMenu value="#{atendimento.situacaoAtendimento.id}" 
+									disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == true}"
 									style="color: #1d5987 !important;">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
-									<f:selectItem itemLabel="Atendido" itemValue="A" />
-									<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
+									<f:selectItems value="#{AtendimentoController.listaSituacoes}" var="sit"
+									 itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+									
 									<p:ajax
 										listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
 										update=":formConsAge"></p:ajax>
@@ -234,7 +235,7 @@
 							action="#{AtendimentoController.realizarAtendimentoEquipe()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
 							rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
-							update="msgPagina" class="btn-incluir" style="float:left" />
+							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" />
 							
 						<p:commandButton
 							action="#{AtendimentoController.alterarSituacaoDeAtendimentoPorProfissional()}"
