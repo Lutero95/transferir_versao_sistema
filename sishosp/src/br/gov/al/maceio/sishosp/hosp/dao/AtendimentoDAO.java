@@ -1053,13 +1053,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				AtendimentoBean at = new AtendimentoBean();
-				at.getProcedimento().setNomeProc(rs.getString("nome"));
-				at.getFuncionario().setNome(rs.getString("descfuncionario"));
-				at.setEvolucao(rs.getString("evolucao"));
-				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
-
-				lista.add(at);
+				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
 			}
 
 		} catch (Exception ex) {
@@ -1073,6 +1067,53 @@ public class AtendimentoDAO {
 			}
 		}
 		return lista;
+	}
+	
+	public List<AtendimentoBean> carregarEvolucoesDoPacientePorEquipe(Integer idAtendimento) throws ProjetoException {
+
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, pr.nome FROM hosp.atendimentos1 a1 " + 
+				" LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
+				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " + 
+				" left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) " + 
+				" left join hosp.cbo c on (f.codcbo = c.id) " + 
+				" left join hosp.proc pr on (a1.codprocedimento = pr.id) " + 
+				" where a1.evolucao IS NOT NULL AND a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' " + 
+				" order by a.dtaatende ";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idAtendimento);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+	
+	private void populaResultSetEvolucaoPacienteEquipeOuProfissional(ArrayList<AtendimentoBean> lista, ResultSet rs) throws SQLException {
+		AtendimentoBean atendimento = new AtendimentoBean();
+		atendimento.getProcedimento().setNomeProc(rs.getString("nome"));
+		atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+		atendimento.setEvolucao(rs.getString("evolucao"));
+		atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+
+		lista.add(atendimento);
 	}
 	
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {

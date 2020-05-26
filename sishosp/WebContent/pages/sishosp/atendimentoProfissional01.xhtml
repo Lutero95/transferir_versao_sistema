@@ -32,7 +32,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 								<p:commandButton value="Consultar Evolucao" look="success"
 									size="sm" icon="ui-icon-search" immediate="true"
 									update=":frmPrincipal"
-									action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+									action="#{AtendimentoController.carregaEvolucoesPacienteProfissional(AtendimentoController.atendimento.paciente.id_paciente)}"
 									oncomplete="PF('dlgConsultaEvolucoes').show();" />
 
 								<p:commandButton value="Consultar PTS" look="success" size="sm"
