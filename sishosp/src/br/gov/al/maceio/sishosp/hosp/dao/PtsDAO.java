@@ -6,6 +6,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
 import br.gov.al.maceio.sishosp.hosp.model.Pts;
 import br.gov.al.maceio.sishosp.hosp.model.PtsArea;
@@ -493,7 +494,7 @@ public class PtsDAO {
         try {
 
             PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
-            ps2.setString(1, "LIBERAÇÃO PARA ALTERAR A DATA DO PTS");
+            ps2.setString(1, MotivoLiberacao.ALTERAR_DATA_PTS.getSigla());
             ps2.setLong(2, usuarioLiberacao.getId());
             ps2.setInt(3, codPts);
             ps2.execute();

@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import org.primefaces.event.CellEditEvent;
@@ -44,7 +45,7 @@ public class AtendimentoController implements Serializable {
     private List<ProcedimentoBean> listaProcedimentos;
     private AtendimentoBean atendimentoLista;
     private Boolean primeiraVez;
-    private FuncionarioDAO fDao = new FuncionarioDAO();
+    private FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
     private AtendimentoDAO atendimentoDAO = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
     private GrupoDAO gDao = new GrupoDAO();
@@ -66,12 +67,14 @@ public class AtendimentoController implements Serializable {
 	private String ehEquipe;
 	private List<SituacaoAtendimentoBean> listaSituacoes;
 	private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
+	private FuncionarioBean funcionarioLiberacao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
     //private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_ATENDIMENTO_PROFISSIONAL = "atendimentoprofissionalnaequipe?faces-redirect=true";
+    private static final String ENDERECO_ATENDIMENTO = "atendimento?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public AtendimentoController() {
@@ -105,6 +108,7 @@ public class AtendimentoController implements Serializable {
         buscaTurno = "A";
         this.listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
         this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
+        this.funcionarioLiberacao = new FuncionarioBean();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -240,7 +244,7 @@ public class AtendimentoController implements Serializable {
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
-            this.funcionario = fDao.buscarProfissionalPorId(valor);
+            this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
         }
     }
 
@@ -300,7 +304,7 @@ public class AtendimentoController implements Serializable {
                     .getCurrentInstance().getExternalContext().getSessionMap()
                     .get("obj_usuario");
             Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.funcionario = fDao.buscarProfissionalPorId(valor);
+            this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
         }
 
        //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
@@ -585,11 +589,39 @@ public class AtendimentoController implements Serializable {
         } else {
             return null;
         }
-
     }
 
     public void listarGruposPorProgramas() throws ProjetoException {
         listaGrupos = gDao.listarGruposPorPrograma(atendimento.getPrograma().getIdPrograma());
+    }
+    
+    public void limparFuncionarioLiberacao() {
+    	this.funcionarioLiberacao = new FuncionarioBean();
+    }
+    
+    public String validarSenhaLiberacao() throws ProjetoException {
+
+        FuncionarioBean funcionario = funcionarioDAO.validarCpfIhSenha(this.funcionarioLiberacao.getCpf(), this.funcionarioLiberacao.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+
+        if (!VerificadorUtil.verificarSeObjetoNulo(funcionario)) {
+        	atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimento);
+        	
+        	List<AtendimentoBean> listaAtendimentoProfissionalNaEquipeAux = new ArrayList<AtendimentoBean>(); 
+        	listaAtendimentoProfissionalNaEquipeAux.addAll(this.listAtendimentos);
+        	
+        	this.listAtendimentos.remove(atendimento);
+        	this.listAtendimentosEquipe.remove(atendimento);
+        	
+        	if(this.listAtendimentosEquipe.isEmpty() && listaAtendimentoProfissionalNaEquipeAux.isEmpty())
+        		return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO);
+        	
+            JSFUtil.fecharDialog("dlgLiberacao");
+            JSFUtil.adicionarMensagemSucesso("Evolução cancelada", "Sucesso");
+        } 
+        else 
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem permissão!", "Erro!");
+        return null;
     }
 
     public AtendimentoBean getAtendimento() {
@@ -821,5 +853,13 @@ public class AtendimentoController implements Serializable {
 
 	public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
 		this.listaSituacoes = listaSituacoes;
+	}
+
+	public FuncionarioBean getFuncionarioLiberacao() {
+		return funcionarioLiberacao;
+	}
+
+	public void setFuncionarioLiberacao(FuncionarioBean funcionarioLiberacao) {
+		this.funcionarioLiberacao = funcionarioLiberacao;
 	}
 }

@@ -283,6 +283,13 @@
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
+									
+									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
+										update=":frmLiberacao" style="background-color: white;"
+										action="#{AtendimentoController.limparFuncionarioLiberacao()}">
+										<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+									</p:menuitem>
 								</p:splitButton>
 								
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" 
@@ -291,6 +298,13 @@
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 										action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
 										update=":formConsAge" style="background-color: white;">
+										<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimento}" />
+									</p:menuitem>
+									
+									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
+										update=":frmLiberacao" style="background-color: white;"
+										action="#{AtendimentoController.limparFuncionarioLiberacao()}">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
@@ -303,7 +317,44 @@
 				</h:form>
 			</div>
 		</div>
-		
+
+		<p:dialog header="Cancelamento de evolução" widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					Você está tentando cancelar a evolução do paciente
+					<h:outputLabel
+						value="#{AtendimentoController.atendimento.paciente.nome}!" />
+					Digite o CPF e senha para liberação!
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{AtendimentoController.funcionarioLiberacao.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{AtendimentoController.funcionarioLiberacao.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AtendimentoController.validarSenhaLiberacao()}" 
+						update="msgPagina :formConsAge:dtAtendimentos"/>
+						
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+
+			</h:form>
+		</p:dialog>
+
 		<p:dialog header="ERRO!" widgetVar="dlgErroBloqueioPorPendenciaAnterior"
 			closable="true" modal="true" draggable="false" resizable="false">
 			<h:form>
