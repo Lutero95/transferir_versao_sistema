@@ -211,6 +211,7 @@
 								<div align="center">
 									<p:commandButton icon="fa fa-fw fa-times" size="sm" id="btnCancelar"
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
+										disabled="#{atendimento.situacaoAtendimentoAnterior.id == null || atendimento.situacaoAtendimentoAnterior.id == 0}"
 										class="btn-prime btn-acao-table acao-agend"
 										oncomplete="PF('dlgLiberacao').show();"
 										update=":frmLiberacao">

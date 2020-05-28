@@ -710,7 +710,7 @@ public class AtendimentoDAO {
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, "
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, "
 
 				+ " case\n" + "		when exists (\n" + "		select\n" + "			a11.id_atendimento\n"
 				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
@@ -849,6 +849,7 @@ public class AtendimentoDAO {
 				atendimentoBean.getUnidade().setId(rs.getInt("cod_unidade"));
 				atendimentoBean.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior
 					(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
+				atendimentoBean.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 
 				lista.add(atendimentoBean);
 			}

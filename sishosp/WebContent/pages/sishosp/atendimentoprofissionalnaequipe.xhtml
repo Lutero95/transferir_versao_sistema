@@ -259,8 +259,8 @@
 
 						<p:column>
 							<f:facet name="header">
-                        Sit. Evolução
-                    </f:facet>
+                        		Sit. Evolução
+                    		</f:facet>
 
 							<p:outputLabel value="#{atendimento.situacao}" />
 							
@@ -268,8 +268,8 @@
 
 						<p:column>
 							<f:facet name="header">
-                        Atendimento
-                    </f:facet>
+                        		Atendimento
+                   		 	</f:facet>
 							<div align="center">
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento" 
 								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
@@ -286,7 +286,8 @@
 									
 									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
 										update=":frmLiberacao" style="background-color: white;"
-										action="#{AtendimentoController.limparFuncionarioLiberacao()}">
+										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
+										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
@@ -304,7 +305,8 @@
 									
 									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
 										update=":frmLiberacao" style="background-color: white;"
-										action="#{AtendimentoController.limparFuncionarioLiberacao()}">
+										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
+										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
