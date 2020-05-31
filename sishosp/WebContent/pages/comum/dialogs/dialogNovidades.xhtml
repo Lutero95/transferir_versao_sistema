@@ -7,50 +7,38 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:body>
-<p:dialog widgetVar="dlgNovidades" resizable="false" draggable="false" closable="true" width="auto" height="475"
-          header="Novidades" closeOnEscape="false"
+<p:dialog widgetVar="dlgNovidades" resizable="false" draggable="false" closable="false"  height="300"
+          header="Novidades do Sistema" closeOnEscape="false"
           responsive="true" modal="true"
-          position="center" visible="#{novidadeController.verificarCondicaoVisibleDialog()}">
+          visible="#{novidadeController.verificarCondicaoVisibleDialog()}">
     <h:form id="formNovidades">
         <div align="center">
-            <video src="http://malsup.github.com/video/clear.avi" type="video/avi">
-            </video>
-            <p:media value="http://malsup.github.com/video/clear.avi" width="250" height="300">
-                <f:param name="autostart" value="false" />
-                <p:outputPanel layout="block">
-                    Windows Media is required to view this media. <h:outputLink value="http://www.microsoft.com/Windows/MediaPlayer/">Download Here</h:outputLink>
-                </p:outputPanel>
-            </p:media>
-            <p:dataTable value="#{novidadeController.novidades}" var="novidade" rows="10"
+
+            <p:dataTable value="#{novidadeController.novidades}" var="novidade" rows="5"
                          paginator="true" paginatorPosition="bottom" scrollable="true">
 
-                <p:column headerText="Marcar Como visualizado" width="10%">
+                <p:column headerText="Marcar Como visualizado" width="50">
                     <div align="center">
                         <p:selectBooleanCheckbox value="#{novidade.visualizado}" />
                     </div>
                 </p:column>
 
-                <p:column headerText="Novidade"  style="height: auto">
+                <p:column headerText="Novidade" width="200">
                     <div align="center">
-                        <p:outputLabel value="#{novidade.novidade}"/>
+                        <p:outputLabel value="#{novidade.novidade}" style="font-size:15px"/>
                     </div>
                 </p:column>
 
-                <p:column headerText="Módulo" width="8%">
-                    <div align="center">
-                        <p:outputLabel value="#{novidade.nomeSistema}"/>
-                    </div>
-                </p:column>
 
-                <p:column headerText="Visualizar" >
+                <p:column headerText="Saiba Mais" width="100" >
                     <div align="center">
-                        <p:commandButton icon="btPesquisar" rendered="#{novidade.documento == null}" update="formDescricaoNovidade"
+                        <p:commandButton icon="ui-icon-search" rendered="#{novidade.documento == null}" update="formDescricaoNovidade"
                                          onclick="PF('dlgDescricaoNovidade').show();">
                             <f:setPropertyActionListener value="#{novidade}" target="#{novidadeController.novidade}"/>
                         </p:commandButton>
 
-                        <p:commandButton rendered="#{novidade.documento != null}" icon="btPesquisar" ajax="false"
-                                         actionListener="#{novidadeController.visualizarAnexo(novidade)}" onclick="this.form.target='_blank'">
+                        <p:commandButton rendered="#{novidade.documento != null}" icon="ui-icon-search" ajax="false"
+                                title="Clique aqui para saber mais sobre essa novidade"         actionListener="#{novidadeController.visualizarAnexo(novidade)}" onclick="this.form.target='_blank'">
                         </p:commandButton>
                     </div>
                 </p:column>
