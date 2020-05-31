@@ -164,7 +164,7 @@
 							</b:selectOneMenu>
 						</b:column>
 
-						<b:column span="2" class="col-row-tabel">
+						<b:column span="4" class="col-row-tabel">
 							<b:inputText value="#{AtendimentoController.campoBusca}"
 								placeholder="Digite aqui a busca" />
 						</b:column>
@@ -271,7 +271,7 @@
                         Atendimento
                     </f:facet>
 							<div align="center">
-								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento" 
+								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento Realizado"
 								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
 								 rendered="#{atendimento.presenca=='S'}" style="padding-bottom:20%; color:green;">
 								 	<f:setPropertyActionListener value="#{atendimento}"
@@ -286,7 +286,7 @@
 								</p:splitButton>
 								
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" 
-								title="Não é possível evoluir este paciente pois não foi informada presença!" 
+								title="Não é possível evoluir o atendimento pois não foi informada presença!"
 								 rendered="#{atendimento.presenca=='N'}" style="padding-bottom:20%; color:green;">
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 										action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"

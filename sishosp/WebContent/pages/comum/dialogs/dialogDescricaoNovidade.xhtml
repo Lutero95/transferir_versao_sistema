@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:body>
+<p:dialog widgetVar="dlgDescricaoNovidade" resizable="false" draggable="false" closable="true"
+          responsive="true"
+          header="Descrição da Novidade" closeOnEscape="false" position="center" width="550" height="290">
+
+    <h:form id="formDescricaoNovidade" >
+    <p:scrollPanel style="height:200px">
+        <div align="center">
+            <div class="row">
+                    <div class="alert alert-info"  align="center" style="width: 500px;">
+                        <p:outputLabel value="#{novidadeController.novidade.descricao}"/>
+                    </div>
+            </div>
+        </div>
+    </p:scrollPanel>
+            <p:separator/>
+        <div align="center">
+            <p:commandButton value="Fechar" icon="ui-close" update="formNovidades"
+                                 onclick="PF('dlgDescricaoNovidade').hide();"/>
+        </div>
+    </h:form>
+
+</p:dialog>
+</h:body>
+</html>

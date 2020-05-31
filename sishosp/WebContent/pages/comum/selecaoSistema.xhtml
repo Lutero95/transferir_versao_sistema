@@ -5,7 +5,9 @@
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="../../template/newTemplate.xhtml">
-
+	<f:metadata>
+		<f:viewAction action="#{novidadeController.listarNovidades()}"/>
+	</f:metadata>
 	<ui:define name="content">
 
 		<h:form id="formSIS">
@@ -41,5 +43,7 @@
 				</p:outputPanel>
 			</div>
 		</h:form>
+		<ui:include src="dialogs/dialogNovidades.xhtml"/>
+		<ui:include src="dialogs/dialogDescricaoNovidade.xhtml"/>
 	</ui:define>
 </ui:composition>

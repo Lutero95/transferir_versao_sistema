@@ -28,6 +28,10 @@ public final class JSFUtil {
 		contexto.addMessage(null, msg);
 	}
 
+	public static Object resgatarObjetoDaSessao(String nomeDoObjeto) {
+		return FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(nomeDoObjeto);
+	}
+
 	public static void abrirDialog(String dialog) {
 		RequestContext.getCurrentInstance().execute("PF('" + dialog + "').show();");
 	}

@@ -268,6 +268,9 @@ public class AtendimentoController implements Serializable {
     public void buscarSituacoesFiltroAtendimentoRealizado() {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
                 (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
+        if (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado()){
+            atendimento.setSituacaoAtendimento(listaSituacoes.get(0));
+        }
     }
 
 

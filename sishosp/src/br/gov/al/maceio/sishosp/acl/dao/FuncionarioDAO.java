@@ -1216,12 +1216,12 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.descricao desccbo, \n" + 
+		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo \n" + 
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE \n" + 
 				"union all\n" + 
-				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.descricao desccbo, \n" + 
+				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" + 
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo\n" + 
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao \n" + 
@@ -1247,7 +1247,8 @@ public class FuncionarioDAO {
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getString("ativo"));
 				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setDescCbo(rs.getString("codcbo"));
+				prof.getCbo().setCodigo(rs.getString("codigocbo"));
+				prof.getCbo().setDescCbo(rs.getString("desccbo"));
 				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				prof.getProc1().setNomeProc(rs.getString("descprocpadrao"));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
@@ -1758,9 +1759,9 @@ public class FuncionarioDAO {
 	public FuncionarioBean buscarProfissionalPorIdParaConverter(Integer id) throws ProjetoException {
 		FuncionarioBean prof = null;
 
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, funcionarios.codcbo,c.codigo codigocbo, c.descricao desccbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
-				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
+				+ " from acl.funcionarios LEFT JOIN hosp.cbo c ON (funcionarios.codcbo = c.id) where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1781,6 +1782,9 @@ public class FuncionarioDAO {
 				prof.getUnidade().setId(rs.getInt("codunidade"));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setCodigo(rs.getString("codigocbo"));
+				prof.getCbo().setDescCbo(rs.getString("desccbo"));
 
 			}
 			return prof;
