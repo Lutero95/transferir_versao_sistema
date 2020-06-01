@@ -7,23 +7,23 @@ import br.gov.al.maceio.sishosp.comum.dao.NovidadeDAO;
 import br.gov.al.maceio.sishosp.comum.model.Novidade;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static br.gov.al.maceio.sishosp.comum.util.JSFUtil.resgatarObjetoDaSessao;
 
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class NovidadeController {
     private List<Novidade> novidades;
     private NovidadeDAO novidadeDAO;
     private Novidade novidade;
+    private boolean dialogJaFoiAbertoNaSessao;
 
     public NovidadeController() {
         this.novidades = new ArrayList<>();
@@ -37,6 +37,7 @@ public class NovidadeController {
     }
 
     public void marcarVisualizado(){
+    	dialogJaFoiAbertoNaSessao = true;
         FuncionarioBean usuarioLogado = (FuncionarioBean) resgatarObjetoDaSessao("obj_usuario");
         novidadeDAO.marcarVisualizado(obterNovidadesVisualizadas(), usuarioLogado.getId());
     }
@@ -73,7 +74,9 @@ public class NovidadeController {
     }
 
     public Boolean verificarCondicaoVisibleDialog(){
-        return this.novidades.size() > 0;
+    	if(!dialogJaFoiAbertoNaSessao && this.novidades.size() > 0)
+    		return true;
+        return false;
     }
 
     public List<Novidade> getNovidades() {
@@ -91,4 +94,12 @@ public class NovidadeController {
     public void setNovidade(Novidade novidade) {
         this.novidade = novidade;
     }
+
+	public boolean isDialogJaFoiAbertoNaSessao() {
+		return dialogJaFoiAbertoNaSessao;
+	}
+
+	public void setDialogJaFoiAbertoNaSessao(boolean dialogJaFoiAbertoNaSessao) {
+		this.dialogJaFoiAbertoNaSessao = dialogJaFoiAbertoNaSessao;
+	}
 }
