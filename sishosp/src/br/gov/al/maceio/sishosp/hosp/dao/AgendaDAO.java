@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1678,7 +1679,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
-                + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
+                + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso, "
                 + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca " + " FROM  hosp.atendimentos a "
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
@@ -1750,6 +1751,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 agenda.setPresenca(rs.getString("presenca"));
                 agenda.setSituacao(rs.getString("situacao"));
+                agenda.setAvulso(rs.getBoolean("avulso"));
+                
+                if(agenda.getAvulso())
+                	agenda.setListaNomeProfissionaisAvulso(retornaNomeProfissionaisDoAgendamentoAvulso(rs.getInt("id_atendimento"), con));
+                	
                 lista.add(agenda);
             }
         } catch (Exception ex) {
@@ -1763,6 +1769,31 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
         return lista;
+    }
+    
+    public List<String> retornaNomeProfissionaisDoAgendamentoAvulso(Integer idAtendimento, Connection conexao) throws SQLException {
+
+    	List<String> listaNomeProfissionais = new ArrayList<String>();
+    	String sql = "select distinct f.descfuncionario from hosp.atendimentos a " + 
+    			" join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " + 
+    			" join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " + 
+    			"where a.avulso is true and a.id_atendimento = ? order by f.descfuncionario asc;"; 
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, idAtendimento);
+            
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	listaNomeProfissionais.add(rs.getString("descfuncionario"));
+            }
+
+        } catch (Exception ex) {
+        	conexao.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return listaNomeProfissionais;
     }
 
     public int verQtdMaxAgendaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {

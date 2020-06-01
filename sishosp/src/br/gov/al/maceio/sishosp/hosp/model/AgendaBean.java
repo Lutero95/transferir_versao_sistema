@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
@@ -24,6 +26,8 @@ public class AgendaBean implements Serializable {
     private Boolean encaixe;
     private String presenca;
     private Boolean avaliacao;
+    private Boolean avulso;
+    private List<String> listaNomeProfissionaisAvulso;
     
     // HERDADOS
     private PacienteBean paciente;
@@ -60,6 +64,8 @@ public class AgendaBean implements Serializable {
         qtdAtendimentosManha = new Integer [5];
         qtdAtendimentosTarde = new Integer [5];
         encaixe = false;
+        avulso = false;
+        this.listaNomeProfissionaisAvulso = new ArrayList<String>();
     }
 
     public Integer getIdAgenda() {
@@ -271,4 +277,21 @@ public class AgendaBean implements Serializable {
 	public void setUnidade(UnidadeBean unidade) {
 		this.unidade = unidade;
 	}
+
+	public Boolean getAvulso() {
+		return avulso;
+	}
+
+	public void setAvulso(Boolean avulso) {
+		this.avulso = avulso;
+	}
+
+	public List<String> getListaNomeProfissionaisAvulso() {
+		return listaNomeProfissionaisAvulso;
+	}
+
+	public void setListaNomeProfissionaisAvulso(List<String> listaNomeProfissionaisAvulso) {
+		this.listaNomeProfissionaisAvulso = listaNomeProfissionaisAvulso;
+	}
+	
 }
