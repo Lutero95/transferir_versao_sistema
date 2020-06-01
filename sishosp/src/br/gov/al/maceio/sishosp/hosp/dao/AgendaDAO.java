@@ -3,7 +3,6 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
-import javax.xml.crypto.Data;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -2670,7 +2668,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         Boolean resultado = false;
 
-        String sql = "SELECT id_atendimentos1 FROM hosp.atendimentos1 WHERE situacao = 'A' AND id_atendimento = ?;";
+        String sql = "SELECT id_atendimentos1 FROM hosp.atendimentos1 a1 join hosp.situacao_atendimento sa " + 
+        		"on a1.id_situacao_atendimento = sa.id " + 
+        		"WHERE sa.atendimento_realizado = true AND a1.id_atendimento = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
