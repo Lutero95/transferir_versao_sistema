@@ -1238,7 +1238,7 @@ public class AtendimentoDAO {
         return alterado;
     }
     
-    public boolean cancelarEvolucaoAtendimentoPorProfissional(AtendimentoBean atendimento) throws ProjetoException {
+    public boolean cancelarEvolucaoAtendimentoPorProfissional(AtendimentoBean atendimento, FuncionarioBean usuarioLiberacao) throws ProjetoException {
         
         String sql = "update hosp.atendimentos1 set evolucao = null, id_situacao_atendimento=null where id_atendimentos1 = ?";
         boolean alterado = false;
@@ -1247,7 +1247,7 @@ public class AtendimentoDAO {
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1,  atendimento.getId1());
             stm.executeUpdate();
-            gravarEvolucaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1());
+            gravarEvolucaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
             con.commit();
             alterado = true;
         } catch (Exception ex) {
@@ -1264,14 +1264,14 @@ public class AtendimentoDAO {
     }
     
     private void gravarEvolucaoCancelamentoEvolucao
-    	(Connection conexao, Integer idAtendimento, Integer idAtendimentos1) throws SQLException {
+    	(Connection conexao, Integer idAtendimento, Integer idAtendimentos1, FuncionarioBean usuarioLiberacao) throws SQLException {
     	String sql = "INSERT INTO hosp.liberacoes " + 
     			"(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " + 
     			"VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?, ?); ";
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setString(1, MotivoLiberacao.CANCELAR_EVOLUCAO.getSigla());
-            stm.setLong(2,  user_session.getId());
+            stm.setLong(2,  usuarioLiberacao.getId());
             stm.setInt(3, idAtendimento);
             stm.setInt(4, user_session.getUnidade().getId());
             stm.setInt(5, idAtendimentos1);

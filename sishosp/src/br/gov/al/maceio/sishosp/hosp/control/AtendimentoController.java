@@ -609,7 +609,7 @@ public class AtendimentoController implements Serializable {
                 ValidacaoSenha.LIBERACAO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNulo(funcionario)) {
-            atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimento);
+            atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimento, funcionario);
 
             List<AtendimentoBean> listaAtendimentoProfissionalNaEquipeAux = new ArrayList<AtendimentoBean>();
             listaAtendimentoProfissionalNaEquipeAux.addAll(this.listAtendimentos);
