@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import org.primefaces.event.CellEditEvent;
@@ -44,8 +45,8 @@ public class AtendimentoController implements Serializable {
     private List<ProcedimentoBean> listaProcedimentos;
     private AtendimentoBean atendimentoLista;
     private Boolean primeiraVez;
-    private FuncionarioDAO fDao = new FuncionarioDAO();
-    private AtendimentoDAO aDao = new AtendimentoDAO();
+    private FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+    private AtendimentoDAO atendimentoDAO = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
     private GrupoDAO gDao = new GrupoDAO();
     private Integer idAtendimento1;
@@ -66,12 +67,14 @@ public class AtendimentoController implements Serializable {
     private String ehEquipe;
     private List<SituacaoAtendimentoBean> listaSituacoes;
     private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
+    private FuncionarioBean funcionarioLiberacao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
     //private static final String ENDERECO_PROFISSIONAL_NA_EQUIPE = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_PROFISSIONAL = "atendimentoProfissional01?faces-redirect=true";
     private static final String ENDERECO_ATENDIMENTO_PROFISSIONAL = "atendimentoprofissionalnaequipe?faces-redirect=true";
+    private static final String ENDERECO_ATENDIMENTO = "atendimento?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public AtendimentoController() {
@@ -105,6 +108,7 @@ public class AtendimentoController implements Serializable {
         buscaTurno = "A";
         this.listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
         this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
+        this.funcionarioLiberacao = new FuncionarioBean();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -207,7 +211,7 @@ public class AtendimentoController implements Serializable {
         LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
         LocalDate dataAtual = LocalDate.now();
         try {
-            Integer quantidadePendenciaEvolucaoAnterior = aDao.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
+            Integer quantidadePendenciaEvolucaoAnterior = atendimentoDAO.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
                     atendimento.getUnidade().getId(), user_session.getId());
 
             if (quantidadePendenciaEvolucaoAnterior == 0)
@@ -237,10 +241,10 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.atendimento = aDao.listarAtendimentoProfissionalPaciente(id);
+            this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
-            this.funcionario = fDao.buscarProfissionalPorId(valor);
+            this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
         }
     }
 
@@ -253,7 +257,7 @@ public class AtendimentoController implements Serializable {
             if (idAtendimentos==null)
                 idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
-            this.atendimento = aDao.listarAtendimentoProfissionalPorId(idAtendimentos);
+            this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPorId(idAtendimentos);
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
@@ -303,14 +307,14 @@ public class AtendimentoController implements Serializable {
                     .getCurrentInstance().getExternalContext().getSessionMap()
                     .get("obj_usuario");
             Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.funcionario = fDao.buscarProfissionalPorId(valor);
+            this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
         }
 
         //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
         //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
 
-        boolean alterou = aDao.realizaAtendimentoProfissional(funcionario, atendimento);
+        boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
@@ -327,7 +331,7 @@ public class AtendimentoController implements Serializable {
     public void alterarSituacaoDeAtendimentoPorProfissional() {
         try {
             if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
-                if (aDao.alteraSituacaoDeAtendimentoPorProfissional
+                if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional
                         (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento.getId())) {
                     JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
                     this.listAtendimentosEquipe.get(0).getSituacaoAtendimentoAnterior().setId(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId());
@@ -359,7 +363,7 @@ public class AtendimentoController implements Serializable {
 
     public void limparAtendimentoProfissional() throws ProjetoException {
 
-        boolean alterou = aDao.cancelarAtendimentoProfissional(atendimento);
+        boolean alterou = atendimentoDAO.cancelarAtendimentoProfissional(atendimento);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Atendimento limpo com sucesso!", "Sucesso");
@@ -390,12 +394,12 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
-        this.listAtendimentos = aDao
+        this.listAtendimentos = atendimentoDAO
                 .carregaAtendimentos(atendimento, campoBusca, tipo);
     }
 
     public void listarAtendimentosProfissionalNaEquipe(String campoBusca, String tipo) throws ProjetoException {
-        this.listAtendimentos = aDao
+        this.listAtendimentos = atendimentoDAO
                 .carregaAtendimentosDoProfissionalNaEquipe(atendimento, campoBusca, tipo, buscaEvolucao, buscaTurno, listarEvolucoesPendentes);
     }
 
@@ -445,7 +449,7 @@ public class AtendimentoController implements Serializable {
 
         } else {
             if (primeiraVez) {
-                this.listAtendimentosEquipe = aDao
+                this.listAtendimentosEquipe = atendimentoDAO
                         .carregaAtendimentosEquipe(atendimento.getId());
             }
         }
@@ -527,7 +531,7 @@ public class AtendimentoController implements Serializable {
                 boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
                 if (verificou) {
-                    boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+                    boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
                             atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
                     if (alterou) {
                         getCarregaGerenciarAtendimentos();
@@ -536,7 +540,7 @@ public class AtendimentoController implements Serializable {
                         JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
                     }
                 } else {
-                    String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
+                    String mensagem = atendimentoDAO.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
                     JSFUtil.adicionarMensagemErro(mensagem, "Erro");
                 }
             }
@@ -556,10 +560,18 @@ public class AtendimentoController implements Serializable {
                 return;
             }
             else
-                listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+                listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
         }
         else
-            listaEvolucoes = aDao.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+            listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    }
+
+    public void carregaEvolucoesPacienteProfissional(Integer codPaciente) throws ProjetoException {
+        this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPaciente(codPaciente);
+    }
+
+    public void carregaEvolucoesPacienteEquipe(Integer idAtendimento) throws ProjetoException {
+        this.listaEvolucoes = atendimentoDAO.carregarEvolucoesDoPacientePorEquipe(idAtendimento);
     }
 
     public void carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo,Integer codPaciente) throws ProjetoException {
@@ -585,6 +597,35 @@ public class AtendimentoController implements Serializable {
 
     public void listarGruposPorProgramas() throws ProjetoException {
         listaGrupos = gDao.listarGruposPorPrograma(atendimento.getPrograma().getIdPrograma());
+    }
+
+    public void limparFuncionarioLiberacao() {
+        this.funcionarioLiberacao = new FuncionarioBean();
+    }
+
+    public String validarSenhaLiberacao() throws ProjetoException {
+
+        FuncionarioBean funcionario = funcionarioDAO.validarCpfIhSenha(this.funcionarioLiberacao.getCpf(), this.funcionarioLiberacao.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+
+        if (!VerificadorUtil.verificarSeObjetoNulo(funcionario)) {
+            atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimento);
+
+            List<AtendimentoBean> listaAtendimentoProfissionalNaEquipeAux = new ArrayList<AtendimentoBean>();
+            listaAtendimentoProfissionalNaEquipeAux.addAll(this.listAtendimentos);
+
+            this.listAtendimentos.remove(atendimento);
+            this.listAtendimentosEquipe.remove(atendimento);
+
+            if(this.listAtendimentosEquipe.isEmpty() && listaAtendimentoProfissionalNaEquipeAux.isEmpty())
+                return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO);
+
+            JSFUtil.fecharDialog("dlgLiberacao");
+            JSFUtil.adicionarMensagemSucesso("Evolução cancelada", "Sucesso");
+        }
+        else
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem permissão!", "Erro!");
+        return null;
     }
 
     public AtendimentoBean getAtendimento() {
@@ -816,5 +857,13 @@ public class AtendimentoController implements Serializable {
 
     public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
         this.listaSituacoes = listaSituacoes;
+    }
+
+    public FuncionarioBean getFuncionarioLiberacao() {
+        return funcionarioLiberacao;
+    }
+
+    public void setFuncionarioLiberacao(FuncionarioBean funcionarioLiberacao) {
+        this.funcionarioLiberacao = funcionarioLiberacao;
     }
 }

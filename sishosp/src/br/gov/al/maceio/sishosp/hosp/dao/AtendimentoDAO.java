@@ -9,12 +9,14 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
+import br.gov.al.maceio.sishosp.comum.Configuracao.ConexaoBuilder;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 
@@ -546,7 +548,7 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
+		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.avaliacao,  "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
@@ -560,6 +562,7 @@ public class AtendimentoDAO {
 				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
+				+ " join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a.codmedico)"
 				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
@@ -704,10 +707,10 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno, a.codmedico, f.descfuncionario,"
+		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno, a.codmedico, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, "
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, "
 
 				+ " case\n" + "		when exists (\n" + "		select\n" + "			a11.id_atendimento\n"
 				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
@@ -823,6 +826,7 @@ public class AtendimentoDAO {
 				AtendimentoBean atendimentoBean = new AtendimentoBean();
 				atendimentoBean.setPresenca(rs.getString("presenca"));
 				atendimentoBean.setId(rs.getInt("id_atendimento"));
+				atendimentoBean.setId1(rs.getInt("id_atendimentos1"));
 				atendimentoBean.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimentoBean.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimentoBean.getPaciente().setNome(rs.getString("nome"));
@@ -845,6 +849,7 @@ public class AtendimentoDAO {
 				atendimentoBean.getUnidade().setId(rs.getInt("cod_unidade"));
 				atendimentoBean.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior
 					(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
+				atendimentoBean.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 
 				lista.add(atendimentoBean);
 			}
@@ -1053,13 +1058,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				AtendimentoBean at = new AtendimentoBean();
-				at.getProcedimento().setNomeProc(rs.getString("nome"));
-				at.getFuncionario().setNome(rs.getString("descfuncionario"));
-				at.setEvolucao(rs.getString("evolucao"));
-				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
-
-				lista.add(at);
+				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
 			}
 
 		} catch (Exception ex) {
@@ -1073,6 +1072,53 @@ public class AtendimentoDAO {
 			}
 		}
 		return lista;
+	}
+	
+	public List<AtendimentoBean> carregarEvolucoesDoPacientePorEquipe(Integer idAtendimento) throws ProjetoException {
+
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, pr.nome FROM hosp.atendimentos1 a1 " + 
+				" LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
+				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " + 
+				" left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) " + 
+				" left join hosp.cbo c on (f.codcbo = c.id) " + 
+				" left join hosp.proc pr on (a1.codprocedimento = pr.id) " + 
+				" where a1.evolucao IS NOT NULL AND a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' " + 
+				" order by a.dtaatende ";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idAtendimento);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+	
+	private void populaResultSetEvolucaoPacienteEquipeOuProfissional(ArrayList<AtendimentoBean> lista, ResultSet rs) throws SQLException {
+		AtendimentoBean atendimento = new AtendimentoBean();
+		atendimento.getProcedimento().setNomeProc(rs.getString("nome"));
+		atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+		atendimento.setEvolucao(rs.getString("evolucao"));
+		atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+
+		lista.add(atendimento);
 	}
 	
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
@@ -1190,5 +1236,50 @@ public class AtendimentoDAO {
             }
         }
         return alterado;
-    }	
+    }
+    
+    public boolean cancelarEvolucaoAtendimentoPorProfissional(AtendimentoBean atendimento) throws ProjetoException {
+        
+        String sql = "update hosp.atendimentos1 set evolucao = null, id_situacao_atendimento=null where id_atendimentos1 = ?";
+        boolean alterado = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1,  atendimento.getId1());
+            stm.executeUpdate();
+            gravarEvolucaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1());
+            con.commit();
+            alterado = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return alterado;
+    }
+    
+    private void gravarEvolucaoCancelamentoEvolucao
+    	(Connection conexao, Integer idAtendimento, Integer idAtendimentos1) throws SQLException {
+    	String sql = "INSERT INTO hosp.liberacoes " + 
+    			"(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " + 
+    			"VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?, ?); ";
+        try {
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setString(1, MotivoLiberacao.CANCELAR_EVOLUCAO.getSigla());
+            stm.setLong(2,  user_session.getId());
+            stm.setInt(3, idAtendimento);
+            stm.setInt(4, user_session.getUnidade().getId());
+            stm.setInt(5, idAtendimentos1);
+            stm.executeUpdate();
+        } catch (Exception ex) {
+        	con.rollback();
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
 }

@@ -101,7 +101,7 @@
 								class="btn-prime btn-acao-table acao-agend" immediate="true"
 								update=":frmPrincipal"
 								rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
-								action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+								action="#{AtendimentoController.carregaEvolucoesPacienteEquipe(AtendimentoController.atendimento.id)}"
 								oncomplete="PF('dlgConsultaEvolucoes').show();" />
 
 							<p:commandButton value="Consultar PTS" style="margin-left:25px"
@@ -206,15 +206,33 @@
 									</p:commandButton>
 								</div>
 							</p:column>
-							<p:column headerText="Excluir" width="10%">
 							
-							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-							oncomplete="PF('dlgExclusao').show()">
+							<p:column headerText="Cancelar" width="10%">
+								<div align="center">
+									<p:commandButton icon="fa fa-fw fa-times" size="sm" id="btnCancelar"
+										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
+										disabled="#{atendimento.situacaoAtendimentoAnterior.id == null || atendimento.situacaoAtendimentoAnterior.id == 0}"
+										class="btn-prime btn-acao-table acao-agend"
+										oncomplete="PF('dlgLiberacao').show();"
+										update=":frmLiberacao">
+										<f:setPropertyActionListener value="#{atendimento}"
+											target="#{AtendimentoController.atendimento}" />
+										<p:tooltip for="btnCancelar" value="Cancelar Evolução" position="top"/>
+									</p:commandButton>
+								</div>
+							</p:column>
+							
+							<p:column headerText="Excluir" width="10%">
+								<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+									size="sm" ajax="true" style="margin-left:10px"
+									class="btn-acao-table acao-excluir"
+									oncomplete="PF('dlgExclusao').show()"
+									id="btnExcluir">
 
-							<f:setPropertyActionListener value="#{atendimento}"
-								target="#{AtendimentoController.atendimentoAux}" />
-						</p:commandButton>
+									<f:setPropertyActionListener value="#{atendimento}"
+										target="#{AtendimentoController.atendimentoAux}" />
+									<p:tooltip for="btnExcluir" value="Excluir profissional do atendimento" position="top"/>	
+								</p:commandButton>
 							</p:column>
 
 							<f:facet name="footer">
@@ -254,6 +272,44 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="Cancelamento de evolução" widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					Você está tentando cancelar a evolução do(a) profissional
+					<h:outputLabel
+						value="#{AtendimentoController.atendimento.funcionario.nome}" />
+					para este paciente!	 Digite o CPF e senha para liberação!
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{AtendimentoController.funcionarioLiberacao.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{AtendimentoController.funcionarioLiberacao.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AtendimentoController.validarSenhaLiberacao()}" 
+						update="msgPagina :formConsAge"/>
+						
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
 			draggable="false" resizable="false" closable="true" modal="true"
