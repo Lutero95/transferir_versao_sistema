@@ -694,7 +694,13 @@ public class GerenciarPacienteDAO {
         		"	join hosp.atendimentos a on " + 
         		"		a.id_atendimento = a1.id_atendimento " + 
         		"	where " + 
-        		"		a.id_atendimento = ? ) )";
+        		"		a.id_atendimento = ? ) ) "+
+        		"and ( atendimentos1.id_atendimentos1 not in( " + 
+        		"	select distinct a2.id_atendimentos1 " + 
+        		"	from hosp.atendimentos1 a2 join hosp.liberacoes l " + 
+        		"	on a2.id_atendimentos1 = l.id_atendimentos1 " + 
+        		"	join hosp.atendimentos a on a.id_atendimento = a2.id_atendimento " + 
+        		"	where a.id_atendimento = ?) )";
                 
                 PreparedStatement ps2 = null;
                 ps2 = conAuxiliar.prepareStatement(sql2);
@@ -703,6 +709,7 @@ public class GerenciarPacienteDAO {
                 ps2.setLong(3, idAtendimentos);
                 ps2.setLong(4, idAtendimentos);
                 ps2.setLong(5, idAtendimentos);
+                ps2.setLong(6, idAtendimentos);
                 ps2.execute(); 
                 
     			for (int i = 0; i < listaExcluir.size(); i++) {
@@ -780,8 +787,14 @@ public class GerenciarPacienteDAO {
             		"	join hosp.atendimentos a on  " + 
             		"		a.id_atendimento = a1.id_atendimento  " + 
             		"	where  " + 
-            		"		a.id_atendimento = ? )) " + 
-            		"and atendimentos1.id_atendimentos1 = ?	";
+            		"		a.id_atendimento = ? )) " +
+            		"or ( atendimentos1.id_atendimentos1 in( " + 
+            		"	select distinct a2.id_atendimentos1 " + 
+            		"	from hosp.atendimentos1 a2 join hosp.liberacoes l " + 
+            		"	on a2.id_atendimentos1 = l.id_atendimentos1 " + 
+            		"	join hosp.atendimentos a on a.id_atendimento = a2.id_atendimento " + 
+            		"	where a.id_atendimento = ?) )	" +
+            		"and atendimentos1.id_atendimento = ?	";
 
 
             ps = null;
@@ -791,6 +804,7 @@ public class GerenciarPacienteDAO {
             ps.setInt(3, idAtendimento);
             ps.setInt(4, idAtendimento);
             ps.setInt(5, idAtendimento);
+            ps.setInt(6, idAtendimento);
             
             ResultSet rs = ps.executeQuery();
 

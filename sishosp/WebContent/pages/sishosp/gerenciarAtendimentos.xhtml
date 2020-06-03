@@ -198,25 +198,14 @@
 
 							<p:column headerText="Evolução" width="10%">
 								<div align="center">
-									<p:commandButton icon="fa fa-fw fa-edit" size="sm"
-										class="btn-acao-table acao-editar" disabled="true"
-										action="#{AtendimentoController.abrirDialogAtendimentoPorEquipe()}">
-										<f:setPropertyActionListener value="#{atendimento.id1}"
-											target="#{AtendimentoController.idAtendimento1}" />
-									</p:commandButton>
-								</div>
-							</p:column>
-							
-							<p:column headerText="Cancelar" width="10%">
-								<div align="center">
 									<p:commandButton icon="fa fa-fw fa-times" size="sm" id="btnCancelar"
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
-										disabled="#{atendimento.situacaoAtendimentoAnterior.id == null || atendimento.situacaoAtendimentoAnterior.id == 0}"
+										disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == false}"
 										class="btn-prime btn-acao-table acao-agend"
 										oncomplete="PF('dlgLiberacao').show();"
 										update=":frmLiberacao">
 										<f:setPropertyActionListener value="#{atendimento}"
-											target="#{AtendimentoController.atendimento}" />
+											target="#{AtendimentoController.atendimentoCancelarEvolucao}" />
 										<p:tooltip for="btnCancelar" value="Cancelar Evolução" position="top"/>
 									</p:commandButton>
 								</div>
@@ -279,7 +268,7 @@
 				<div class="alert alert-warning" role="alert">
 					Você está tentando cancelar a evolução do(a) profissional
 					<h:outputLabel
-						value="#{AtendimentoController.atendimento.funcionario.nome}" />
+						value="#{AtendimentoController.atendimentoCancelarEvolucao.funcionario.nome}" />
 					para este paciente!	 Digite o CPF e senha para liberação!
 				</div>
 				<br />
