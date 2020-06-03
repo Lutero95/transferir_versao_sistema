@@ -226,7 +226,6 @@ public class AtendimentoDAO {
 				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);				
 			}
-	
 			
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
 				con.close();
@@ -425,20 +424,21 @@ public class AtendimentoDAO {
 		return alterou;
 	}
 
+	
 	private List<AtendimentoBean> removeAtendimentosNaoExcluidos(List<AtendimentoBean> lista,
-		List<Integer> listaIdAtendimento01QueNaoPodemTerRegistroExcluidos) {
+			List<Integer> listaIdAtendimento01QueNaoPodemTerRegistroExcluidos) {
 		List<AtendimentoBean> listaAtendimentosParaUpdate = new ArrayList<AtendimentoBean>();
-		
+
 		List<AtendimentoBean> listaAtendimentoAuxiliar = new ArrayList<AtendimentoBean>();
 		listaAtendimentoAuxiliar.addAll(lista);
-		for(AtendimentoBean atendimento : lista) {
-			if(listaIdAtendimento01QueNaoPodemTerRegistroExcluidos.contains(atendimento.getId1()) 
+		for (AtendimentoBean atendimento : lista) {
+			if (listaIdAtendimento01QueNaoPodemTerRegistroExcluidos.contains(atendimento.getId1())
 					&& !atendimento.getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
 				listaAtendimentoAuxiliar.remove(atendimento);
 				listaAtendimentosParaUpdate.add(atendimento);
 			}
 		}
-		
+
 		lista.clear();
 		lista.addAll(listaAtendimentoAuxiliar);
 		return listaAtendimentosParaUpdate;

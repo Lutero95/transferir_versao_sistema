@@ -289,7 +289,7 @@
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
 										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"
-										target="#{AtendimentoController.atendimento}" />
+										target="#{AtendimentoController.atendimentoCancelarEvolucao}" />
 									</p:menuitem>
 								</p:splitButton>
 								
@@ -308,7 +308,7 @@
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
 										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"
-										target="#{AtendimentoController.atendimento}" />
+										target="#{AtendimentoController.atendimentoCancelarEvolucao}" />
 									</p:menuitem>
 								</p:splitButton>
 							</div>
@@ -326,7 +326,7 @@
 				<div class="alert alert-warning" role="alert">
 					Você está tentando cancelar a evolução do paciente
 					<h:outputLabel
-						value="#{AtendimentoController.atendimento.paciente.nome}!" />
+						value="#{AtendimentoController.atendimentoCancelarEvolucao.paciente.nome}!" />
 					Digite o CPF e senha para liberação!
 				</div>
 				<br />

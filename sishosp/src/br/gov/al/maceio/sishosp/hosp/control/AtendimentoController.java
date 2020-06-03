@@ -68,6 +68,7 @@ public class AtendimentoController implements Serializable {
     private List<SituacaoAtendimentoBean> listaSituacoes;
     private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
     private FuncionarioBean funcionarioLiberacao;
+    private AtendimentoBean atendimentoCancelarEvolucao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -609,16 +610,18 @@ public class AtendimentoController implements Serializable {
                 ValidacaoSenha.LIBERACAO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNulo(funcionario)) {
-            atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimento, funcionario);
+            atendimentoDAO.cancelarEvolucaoAtendimentoPorProfissional(atendimentoCancelarEvolucao, funcionario);
 
             List<AtendimentoBean> listaAtendimentoProfissionalNaEquipeAux = new ArrayList<AtendimentoBean>();
             listaAtendimentoProfissionalNaEquipeAux.addAll(this.listAtendimentos);
 
-            this.listAtendimentos.remove(atendimento);
-            this.listAtendimentosEquipe.remove(atendimento);
+            this.listAtendimentos.remove(atendimentoCancelarEvolucao);
 
             if(this.listAtendimentosEquipe.isEmpty() && listaAtendimentoProfissionalNaEquipeAux.isEmpty())
                 return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO);
+            
+            else if (!this.listAtendimentosEquipe.isEmpty())
+            	this.listAtendimentosEquipe = atendimentoDAO.carregaAtendimentosEquipe(idAtendimentos);
 
             JSFUtil.fecharDialog("dlgLiberacao");
             JSFUtil.adicionarMensagemSucesso("Evolução cancelada", "Sucesso");
@@ -866,4 +869,12 @@ public class AtendimentoController implements Serializable {
     public void setFuncionarioLiberacao(FuncionarioBean funcionarioLiberacao) {
         this.funcionarioLiberacao = funcionarioLiberacao;
     }
+
+	public AtendimentoBean getAtendimentoCancelarEvolucao() {
+		return atendimentoCancelarEvolucao;
+	}
+
+	public void setAtendimentoCancelarEvolucao(AtendimentoBean atendimentoCancelarEvolucao) {
+		this.atendimentoCancelarEvolucao = atendimentoCancelarEvolucao;
+	}
 }
