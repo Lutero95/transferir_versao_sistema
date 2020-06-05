@@ -77,7 +77,7 @@ and a.codgrupo = ceu.codgrupo
 and a.dtaatende>=ceu.inicio_evolucao
 and coalesce(a.situacao,'A')<>'C'
 and coalesce(a1.excluido,'N' )='N'
-and a1.situacao is null
+and a1.id_situacao_atendimento is null
 order by f.id_funcionario,f.descfuncionario, p.descprograma, g.descgrupo, a.dtaatende, pac.nome, f.descfuncionario]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">
