@@ -223,7 +223,7 @@ public class AlteracaoPacienteDAO {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
-		
+			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 			
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 			
@@ -234,7 +234,8 @@ public class AlteracaoPacienteDAO {
 		//	ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 			
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+			if (!gerenciarPacienteDAO.apagarAtendimentos
+					(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaAtendimento1ComLiberacao)) {
 
 				conexao.close();
 
@@ -582,6 +583,8 @@ public class AlteracaoPacienteDAO {
 
 			
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			
+			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 			
@@ -592,7 +595,8 @@ public class AlteracaoPacienteDAO {
 		//	ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 			
 			
-			if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+			if (!gerenciarPacienteDAO.apagarAtendimentos
+					(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaAtendimento1ComLiberacao)) {
 
 				conexao.close();
 
