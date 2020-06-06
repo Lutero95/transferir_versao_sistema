@@ -306,7 +306,7 @@ and  $X{IN, id_municipio,  filtromunicipio };]]>
 			<textField>
 				<reportElement x="699" y="2" width="64" height="13" uuid="3bebc568-a0f2-4ea2-88c6-3c43fb03da40"/>
 				<textElement textAlignment="Center">
-					<font size="7"/>
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dia}]]></textFieldExpression>
 			</textField>

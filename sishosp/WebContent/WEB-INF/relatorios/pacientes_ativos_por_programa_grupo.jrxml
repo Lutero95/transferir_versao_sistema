@@ -57,37 +57,40 @@
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="diassemanalista" class="java.util.ArrayList"/>
 	<parameter name="turnoslista" class="java.util.ArrayList"/>
+	<parameter name="sexo" class="java.lang.String"/>
+	<parameter name="filtromunicipio" class="java.util.ArrayList"/>
 	<queryString>
-		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,codgrupo,nome), id_paciente, cns, nome, idade,
-cid, municipio, descbairro, codprograma, descprograma, codgrupo, descgrupo,  nome_principal, nome_fantasia, cnes, turno, dia
+		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,codgrupo,nome), id_paciente, cns, nome, idade,sexo,
+cid, municipio,id_municipio, descbairro, codprograma, descprograma, codgrupo, descgrupo,  nome_principal, nome_fantasia, cnes, turno, dia
  FROM (
-SELECT DISTINCT p.id_paciente, 
-p.cns, p.nome, 
+SELECT DISTINCT p.id_paciente,
+p.cns, p.nome,
 (SELECT extract(year from age(p.dtanascimento))) AS idade,
-cid.cid, m.nome AS municipio, b.descbairro, pi.codprograma, pr.descprograma, g.id_grupo codgrupo, g.descgrupo,
-e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2,pi.turno,
+cid.cid, m.nome AS municipio, m.id_municipio,  b.descbairro, pi.codprograma, pr.descprograma, g.id_grupo codgrupo, g.descgrupo,
+e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2,pi.turno,p.sexo,
 hosp.diasSemanaPacienteInstituicao(pi.id) as dia
 FROM hosp.paciente_instituicao pi
 left JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
-join hosp.profissional_dia_atendimento pf on pf.id_paciente_instituicao = pi.id 
+join hosp.profissional_dia_atendimento pf on pf.id_paciente_instituicao = pi.id
 left join hosp.cid on cid.cod = l.cid1
  join hosp.pacientes p on (coalesce(l.codpaciente, pi.id_paciente) = p.id_paciente)
 JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
 JOIN hosp.grupo g ON (pi.codgrupo = g.id_grupo)
 LEFT JOIN hosp.municipio m ON (p.codmunicipio = m.id_municipio)
 LEFT JOIN hosp.bairros b ON (p.codbairro = b.id_bairro)
-JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 WHERE pi.status = 'A'
 AND (($P{codprograma} IS NOT NULL AND pi.codprograma=  $P{codprograma}) OR (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 AND (($P{codgrupo} IS NOT NULL AND pi.codgrupo=  $P{codgrupo}) OR (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 AND (($P{codunidade} IS NOT NULL AND pi.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 AND (SELECT extract(year from age(p.dtanascimento))) >= $P{idademinima}
-AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima} 
+AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 and $X{IN, pf.dia_semana, diassemanalista}
 and $X{IN, pi.turno, turnoslista}
  order by codprograma, codgrupo, p.nome
-) tabela;]]>
+) tabela where  ((sexo =  $P{sexo}  ) or ( $P{sexo}  = 'A'))
+and  $X{IN, id_municipio,  filtromunicipio };]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="row_number"/>
@@ -289,7 +292,7 @@ and $X{IN, pi.turno, turnoslista}
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="55" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="2" width="32" height="13" uuid="f34914ee-10b0-4b63-b91d-6af2b9a5c2b5">
@@ -346,7 +349,7 @@ and $X{IN, pi.turno, turnoslista}
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
-					<font size="7"/>
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dia}]]></textFieldExpression>
 			</textField>

@@ -373,7 +373,7 @@ public class RelatoriosController implements Serializable {
 		List<Integer> idMunicipios = retornaIdDosMunicipiosSelecionados();
 
 		if(!this.listaMunicipiosDePacienteAtivosSelecionados.isEmpty() && idMunicipios.contains(municipioSelecionado.getId()))
-			JSFUtil.adicionarMensagemAdvertencia("O munic�pio "+municipioSelecionado.getNome()+" j� foi adicionado", "Aten��o");
+			JSFUtil.adicionarMensagemAdvertencia("O município "+municipioSelecionado.getNome()+" já adicionado", "Atenção");
 		else
 			this.listaMunicipiosDePacienteAtivosSelecionados.add(municipioSelecionado);
 	}
@@ -435,12 +435,14 @@ public class RelatoriosController implements Serializable {
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
-
+		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("filtromunicipio", idMunicipiosSelecionados);
+		map.put("sexo", this.atributoGenerico2);
 		if (programa != null)
 			map.put("codprograma", programa.getIdPrograma());
 
@@ -654,7 +656,7 @@ public class RelatoriosController implements Serializable {
 		/*
 		 * if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) { FacesMessage
 		 * msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-		 * "As datas devem possuir o mesmo mÃªs.", "Datas InvÃ¡lidas!");
+		 * "As datas devem possuir o mesmo mês.", "Datas Inválidas!");
 		 * FacesContext.getCurrentInstance().addMessage(null, msg); return; }
 		 */
 		final Boolean INICIO_MES = true;
@@ -685,7 +687,7 @@ public class RelatoriosController implements Serializable {
 		}
 
 		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "As datas devem possuir o mesmo mÃªs.",
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "As datas devem possuir o mesmo mês.",
 					"Datas InvÃ¡lidas!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
@@ -909,8 +911,8 @@ public class RelatoriosController implements Serializable {
 		String relatorio = "";
 		if (this.dataDia.equals("DS")) {
 			if (this.mes == null || this.ano == null) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "MÃªs e Ano devem ser preenchidos.",
-						"Campos invï¿½lidos!");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Mês e Ano devem ser preenchidos.",
+						"Campos inválidos!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 			}

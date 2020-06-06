@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +79,8 @@ public class PacienteController implements Serializable {
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
 	private static final String ENDERECO_ID = "&amp;id=";
-	private static final String CABECALHO_INCLUSAO = "InclusÃ£o de Paciente";
-	private static final String CABECALHO_ALTERACAO = "AlteraÃ§Ã£o de Paciente";
+	private static final String CABECALHO_INCLUSAO = "Inclusão de Paciente";
+	private static final String CABECALHO_ALTERACAO = "Alteração de Paciente";
 
 	public PacienteController() {
 		paciente = new PacienteBean();
@@ -171,7 +170,7 @@ public class PacienteController implements Serializable {
 				cidadeDoCep = true;
 			} else {
 				cidadeDoCep = false;
-				JSFUtil.adicionarMensagemAdvertencia("CEP invÃ¡lido!", "AdvertÃªncia");
+				JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
 			}
 		}
 	}
@@ -196,7 +195,7 @@ public class PacienteController implements Serializable {
 		/*
 		 * if ((paciente.getEndereco().getCodbairro() == null) &&
 		 * (paciente.getEndereco().getBairro() == null)) {
-		 * JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "AdvertÃªncia"); }
+		 * JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência"); }
 		 * else {
 		 */
 
@@ -209,7 +208,7 @@ public class PacienteController implements Serializable {
 		if (alterou == true) {
 			JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
 		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteraÃ§Ã£o!", "Erro");
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
 
 	}
@@ -218,10 +217,10 @@ public class PacienteController implements Serializable {
 		boolean excluiu = pDao.excluir(paciente);
 
 		if (excluiu == true) {
-			JSFUtil.adicionarMensagemSucesso("Paciente excluÃ­do com sucesso!", "Sucesso");
+			JSFUtil.adicionarMensagemSucesso("Paciente excluído com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
 		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusÃ£o!", "Erro");
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
 		listaPacientes = pDao.listaPacientes();
@@ -233,7 +232,7 @@ public class PacienteController implements Serializable {
 			if (!DocumentosUtil.validaCNS(cns)) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("CNS nÃ£o vÃ¡lida!");
+				message.setSummary("CNS não válida!");
 				throw new ValidatorException(message);
 			}
 			
@@ -247,7 +246,7 @@ public class PacienteController implements Serializable {
 			if (pacienteRetorno != null) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("JÃ¡ existe cns cadastrado para o paciente " + pacienteRetorno.getNome());
+				message.setSummary("Já existe cns cadastrado para o paciente " + pacienteRetorno.getNome());
 				throw new ValidatorException(message);
 			}
 		}
@@ -261,7 +260,7 @@ public class PacienteController implements Serializable {
 			if (!DocumentosUtil.validaCPF(cpf)) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("CPF nÃ£o vÃ¡lido!");
+				message.setSummary("CPF não válido!");
 				throw new ValidatorException(message);
 			} else {
 				PacienteDAO pDAo = new PacienteDAO();
@@ -274,7 +273,7 @@ public class PacienteController implements Serializable {
 					if (pacienteRetorno != null) {
 						FacesMessage message = new FacesMessage();
 						message.setSeverity(FacesMessage.SEVERITY_ERROR);
-						message.setSummary("JÃ¡ existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
+						message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
 						throw new ValidatorException(message);
 					}
 				
@@ -294,7 +293,7 @@ public class PacienteController implements Serializable {
 			icdao = new ProfissaoDAO();
 
 		} else {
-			JSFUtil.adicionarMensagemAdvertencia("CÃ³digo da ProfissÃ£o incorreto!", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Código da Profissão incorreto!", "Advertência");
 		}
 
 	}
@@ -326,7 +325,7 @@ public class PacienteController implements Serializable {
 			icdao = new FormaTransporteDAO();
 
 		} else {
-			JSFUtil.adicionarMensagemAdvertencia("CÃ³digo da Encaminhamento incorreto!", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Código da Encaminhamento incorreto!", "Advertência");
 		}
 
 	}
@@ -359,7 +358,7 @@ public class PacienteController implements Serializable {
 			icdao = new EncaminhadoDAO();
 
 		} else {
-			JSFUtil.adicionarMensagemAdvertencia("CÃ³digo da Encaminhamento incorreto!", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Código da Encaminhamento incorreto!", "Advertência");
 		}
 
 	}
@@ -409,7 +408,7 @@ public class PacienteController implements Serializable {
 			icdao = new EscolaridadeDAO();
 
 		} else {
-			JSFUtil.adicionarMensagemAdvertencia("CÃ³digo da Escolaridade incorreto!", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Código da Escolaridade incorreto!", "Advertência");
 		}
 
 	}
@@ -445,7 +444,7 @@ public class PacienteController implements Serializable {
 			esDao = new EscolaDAO();
 
 		} else {
-			JSFUtil.adicionarMensagemAdvertencia("CÃ³digo da Escola incorreto!", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Código da Escola incorreto!", "Advertência");
 		}
 
 	}
@@ -485,7 +484,7 @@ public class PacienteController implements Serializable {
 
 	public void validaPIS(String pis) {
 		if (!DocumentosUtil.validaPIS(pis)) {
-			JSFUtil.adicionarMensagemAdvertencia("Esse nÃºmero do PIS nÃ£o Ã© valido", "AdvertÃªncia");
+			JSFUtil.adicionarMensagemAdvertencia("Esse número do PIS não é valido", "Advertência");
 			paciente.setPis("");
 		}
 	}
