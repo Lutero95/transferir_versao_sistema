@@ -355,7 +355,11 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente, 
+    		ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  
+    		ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  
+    		ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento,
+    		ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes) throws SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -418,7 +422,7 @@ public class GerenciarPacienteDAO {
             }       */
             
              
-
+            filtraAtendimento1PorAtendimento(lista, listaAtendimento1ComLiberacoes);
             for (int i = 0; i < lista.size(); i++) {
                 String sql2 = "delete\n" + 
                 		"from\n" + 
@@ -468,18 +472,25 @@ public class GerenciarPacienteDAO {
                 		"	join hosp.atendimentos a on\n" + 
                 		"		a.id_atendimento = a1.id_atendimento\n" + 
                 		"	where\n" + 
-                		"		a.id_atendimento = ? ) )";
-
+                		"		a.id_atendimento = ? ) ) ";
+                
+                String sqlCondicaoIdAtendimento1Leberacao = " and atendimentos1.id_atendimentos1 != ? ";
+                
                 PreparedStatement ps2 = null;
+                sql2 = concatenaSqlParaNaoExcluirAtendimentos1ComLiberacao(listaAtendimento1ComLiberacoes, sql2,
+                		sqlCondicaoIdAtendimento1Leberacao);
                 ps2 = conAuxiliar.prepareStatement(sql2);
                 ps2.setLong(1, lista.get(i));
                 ps2.setLong(2, lista.get(i));
                 ps2.setLong(3, lista.get(i));
                 ps2.setLong(4, lista.get(i));
                 ps2.setLong(5, lista.get(i));
+                concatenaPreparedStatementParaNaoExcluirAtendimentos1ComLiberacao(listaAtendimento1ComLiberacoes, ps2);
                 ps2.execute();
            
             }
+            
+            executaExclusaoLogicaDeAtendimentos1(listaAtendimento1ComLiberacoes, conAuxiliar);
 
             for (int i = 0; i < lista.size(); i++) {
                 String sql3 = "delete\n" + 
@@ -609,6 +620,48 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+
+	private void executaExclusaoLogicaDeAtendimentos1(ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes,
+			Connection conAuxiliar) throws SQLException {
+		String sql = "update hosp.atendimentos1 set excluido = 'S' where id_atendimentos1 = ?";
+		try {
+			for (AtendimentoBean atendimento : listaAtendimento1ComLiberacoes) {
+				PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+				ps.setInt(1, atendimento.getId1());
+				ps.executeUpdate();
+			}
+		} catch (Exception e) {
+			conAuxiliar.rollback();
+		}
+	}
+
+	private void filtraAtendimento1PorAtendimento(ArrayList<Integer> lista,
+			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes) {
+		
+		ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoesAux = new ArrayList<AtendimentoBean>();
+		listaAtendimento1ComLiberacoesAux.addAll(listaAtendimento1ComLiberacoes);
+		
+		for (AtendimentoBean atendimento : listaAtendimento1ComLiberacoesAux) {
+			if(!lista.contains(atendimento.getId()))
+				listaAtendimento1ComLiberacoes.remove(atendimento);
+		}
+		
+	}
+
+	private String concatenaSqlParaNaoExcluirAtendimentos1ComLiberacao(
+			ArrayList<AtendimentoBean> listaIdAtendimento1ComLiberacoes, String sql, String sqlCondicaoIdAtendimento1Leberacao) {
+		for (int i = 0; i < listaIdAtendimento1ComLiberacoes.size(); i++) {
+			sql += sqlCondicaoIdAtendimento1Leberacao;
+		}
+		return sql;
+	}
+	
+	private void concatenaPreparedStatementParaNaoExcluirAtendimentos1ComLiberacao
+		(ArrayList<AtendimentoBean> listaIdAtendimento1ComLiberacoes, PreparedStatement ps) throws SQLException {
+		for (int i = 1; i <= listaIdAtendimento1ComLiberacoes.size(); i++) {
+			ps.setInt(5+i, listaIdAtendimento1ComLiberacoes.get(i-1).getId1());
+		}
+	}
     
     
     public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException {
@@ -1270,13 +1323,39 @@ public class GerenciarPacienteDAO {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
+        } 
+        return retorno;
+    }
+
+	public ArrayList<AtendimentoBean> listaAtendimentos1QueTiveramLiberacoes(Integer idPacienteInstituicao, Connection conexao) {
+		String sql = "select distinct a1.id_atendimentos1, a1.id_atendimento from hosp.atendimentos1 a1 " + 
+				"	join hosp.atendimentos a on a1.id_atendimento = a1.id_atendimento " + 
+				"	join hosp.liberacoes l on l.id_atendimentos1 = a1.id_atendimentos1 " + 
+				"	where a.id_paciente_instituicao = ? and (a1.excluido is null or a1.excluido = 'N') ;";
+		
+		ArrayList<AtendimentoBean> listaAtendimentos1 = new ArrayList<AtendimentoBean>();
+
+        try {
+            ps = null;
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, idPacienteInstituicao);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	AtendimentoBean atendimento = new AtendimentoBean();
+            	atendimento.setId(rs.getInt("id_atendimento"));
+            	atendimento.setId1(rs.getInt("id_atendimentos1"));
+            	listaAtendimentos1.add(atendimento);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
         } finally {
             try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return retorno;
-    }
+		return listaAtendimentos1;
+	}
 
 }
