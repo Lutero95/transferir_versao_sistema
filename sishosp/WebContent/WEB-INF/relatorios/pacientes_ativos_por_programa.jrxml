@@ -56,16 +56,18 @@
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="diassemanalista" class="java.util.ArrayList"/>
 	<parameter name="turnoslista" class="java.util.ArrayList"/>
+	<parameter name="filtromunicipio" class="java.util.ArrayList"/>
+	<parameter name="sexo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT ROW_NUMBER () OVER (ORDER BY codprograma,nome), id_paciente, cns, nome, idade,
-cid, municipio, descbairro, codprograma, descprograma, nome_principal, nome_fantasia, cnes,  turno, dia
+cid, id_municipio, municipio, descbairro, codprograma, descprograma, nome_principal, nome_fantasia, cnes,  turno, dia
 FROM (
-SELECT DISTINCT p.id_paciente, 
-p.cns, p.nome, 
+SELECT DISTINCT p.id_paciente,
+p.cns, p.nome, p.sexo,
 (SELECT extract(year from age(p.dtanascimento))) AS idade,
-cid.cid, m.nome AS municipio, b.descbairro, pi.codprograma, pr.descprograma,
+cid.cid, m.nome AS municipio,m.id_municipio, b.descbairro, pi.codprograma, pr.descprograma,
 e.nome_principal, e.nome_fantasia, e.cnes, e.logomarca, e.logomarca2,  pi.turno,
-hosp.diasSemanaPacienteInstituicao(pi.id) as dia 
+hosp.diasSemanaPacienteInstituicao(pi.id) as dia
 FROM hosp.paciente_instituicao pi
 left JOIN hosp.laudo l ON (pi.codlaudo = l.id_laudo)
 left join hosp.profissional_dia_atendimento pf on pf.id_paciente_instituicao = pi.id
@@ -74,17 +76,18 @@ left join hosp.cid on cid.cod = l.cid1
 JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
 LEFT JOIN hosp.municipio m ON (p.codmunicipio = m.id_municipio)
 LEFT JOIN hosp.bairros b ON (p.codbairro = b.id_bairro)
-JOIN hosp.unidade u ON u.id = $P{codunidade} 
+JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 WHERE pi.status = 'A'
 AND (($P{codprograma} IS NOT NULL AND pi.codprograma=  $P{codprograma}) OR (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 AND (($P{codunidade} IS NOT NULL AND pi.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 AND (SELECT extract(year from age(p.dtanascimento))) >= $P{idademinima}
-AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima} 
+AND (SELECT extract(year from age(p.dtanascimento))) <= $P{idademaxima}
 and $X{IN, pf.dia_semana, diassemanalista}
 and $X{IN, pi.turno, turnoslista}
  order by codprograma, p.nome
-) tabela;]]>
+) tabela where  ((sexo =  $P{sexo}  ) or ( $P{sexo}  = 'A'))
+and  $X{IN, id_municipio,  filtromunicipio };]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="row_number"/>

@@ -79,13 +79,14 @@ public class RelatoriosController implements Serializable {
 	private Integer diaSemana;
 	private Integer mes;
 	private Integer ano;
+	private Boolean filtrarPorMunicipio;
 
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
 	private ArrayList<String> diasSemana;
 	private ArrayList<String> turnos;
 	private String turnoSelecionado;
-
+	private List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados;
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
@@ -110,6 +111,7 @@ public class RelatoriosController implements Serializable {
 		equipe = new EquipeBean();
 		listaEquipePorTipoAtendimento = new ArrayList<>();
 		this.turnos = new ArrayList<String>();
+		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
 	}
 
 	public void limparDados() {
@@ -150,7 +152,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelFrequencia() {
 		atributoGenerico1 = "P";
 	}
-	
+
 	public void preparaRelatorioAgendamentos() {
 		atributoGenerico1 = "A";
 	}
@@ -168,6 +170,7 @@ public class RelatoriosController implements Serializable {
 
 	public void preparaRelPacientesPorPrograma() {
 		atributoGenerico1 = "I";
+		atributoGenerico2 = "A";
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
@@ -276,7 +279,7 @@ public class RelatoriosController implements Serializable {
 		this.executeReportNewTab(relatorio, "laudo.pdf", map);
 
 	}
-	
+
 	public void gerarRelatorioPacientesAtivosLaudoVencido(ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
@@ -331,10 +334,10 @@ public class RelatoriosController implements Serializable {
 
 		}
 	}
-	
+
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		
+
 		pacienteInstituicao.setPrograma(programa);
 		pacienteInstituicao.setGrupo(grupo);
 		int randomico = JSFUtil.geraNumeroRandomico();
@@ -360,10 +363,31 @@ public class RelatoriosController implements Serializable {
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
 		else {
-			//TODO 
+			//TODO
 			//CHAMADA DO RELATÓRIO DE ANTENDIMENTO SINTÉTICO
 			//this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
+	}
+
+	public void atualizaListaMunicipiosDePacientesAtivosSelecionados(MunicipioBean municipioSelecionado) {
+		List<Integer> idMunicipios = retornaIdDosMunicipiosSelecionados();
+
+		if(!this.listaMunicipiosDePacienteAtivosSelecionados.isEmpty() && idMunicipios.contains(municipioSelecionado.getId()))
+			JSFUtil.adicionarMensagemAdvertencia("O munic�pio "+municipioSelecionado.getNome()+" j� foi adicionado", "Aten��o");
+		else
+			this.listaMunicipiosDePacienteAtivosSelecionados.add(municipioSelecionado);
+	}
+
+	private List<Integer> retornaIdDosMunicipiosSelecionados() {
+		List<Integer> idMunicipios = new ArrayList<Integer>();
+		for (MunicipioBean municipioBean : listaMunicipiosDePacienteAtivosSelecionados) {
+			idMunicipios.add(municipioBean.getId());
+		}
+		return idMunicipios;
+	}
+
+	public void removerMunicipioSelecionado(MunicipioBean municipio) {
+		listaMunicipiosDePacienteAtivosSelecionados.remove(municipio);
 	}
 
 	public void gerarPacientesAtivosPorPrograma() throws IOException, ParseException, ProjetoException {
@@ -371,12 +395,14 @@ public class RelatoriosController implements Serializable {
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
-
+		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		relatorio = caminho + "pacientes_ativos_por_programa.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("filtromunicipio", idMunicipiosSelecionados);
+		map.put("sexo", this.atributoGenerico2);
 		if (pacienteInstituicao.getPrograma() != null) {
 			map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 		} else {
@@ -395,17 +421,17 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
-		
+
 		limparTurno();
 		atribuiTurnos();
-			
+
 		map.put("turnoslista", turnos);
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
 	}
 
 	public void gerarPacientesAtivosPorProgramaEGrupo() throws IOException, ParseException, ProjetoException {
-		
+
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
@@ -433,10 +459,10 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
-		
+
 		limparTurno();
 		atribuiTurnos();
-		
+
 		map.put("turnoslista", turnos);
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
@@ -447,7 +473,7 @@ public class RelatoriosController implements Serializable {
 			diasSemanaInteger.add(Integer.valueOf(dia));
 		}
 	}
-	
+
 	private void atribuiTurnos() {
 		if(turnoSelecionado.equals(Turno.AMBOS.getSigla())) {
 			this.turnos.add(Turno.MANHA.getSigla());
@@ -458,7 +484,7 @@ public class RelatoriosController implements Serializable {
 		else
 			this.turnos.add(Turno.TARDE.getSigla());
 	}
-	
+
 	private void limparTurno() {
 		this.turnos = new ArrayList<String>();
 	}
@@ -466,9 +492,9 @@ public class RelatoriosController implements Serializable {
 	public void gerarPendenciasEvolucaoPorProgramaEGrupo(ArrayList<ProgramaBean> listaProgramasGrupos)
 			throws IOException, ParseException, ProjetoException {
 		String caminho = "/WEB-INF/relatorios/";
-		
+
 		String relatorio = retornaTipoDoRelatorioPendenciasEvolucao(caminho);
-		
+
 		ArrayList<Integer> listaProgramas = new ArrayList<>();
 		ArrayList<Integer> listaGrupos = new ArrayList<>();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -487,14 +513,14 @@ public class RelatoriosController implements Serializable {
 
 	}
 
-	private String retornaTipoDoRelatorioPendenciasEvolucao(String caminho) {		
+	private String retornaTipoDoRelatorioPendenciasEvolucao(String caminho) {
 		if(atributoGenerico1.equalsIgnoreCase("PG"))
 			caminho += "pendencias_evolucao_por_programa_grupo.jasper";
 		else
 			caminho += "pendencias_evolucao_por_profissional_programa_grupo.jasper";
 		return caminho;
 	}
-	
+
 	private String retornaNomeDoRelatorioPendenciasEvolucaoPeloTipo() {
 		String nomeRelatorio;
 		if(atributoGenerico1.equalsIgnoreCase("PG"))
@@ -561,7 +587,7 @@ public class RelatoriosController implements Serializable {
 
 		}
 	}
-	
+
 	public void gerarRelatorioEncaminhamentoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
 		String caminho = "/WEB-INF/relatorios/";
@@ -572,7 +598,7 @@ public class RelatoriosController implements Serializable {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "encaminhamento_ortese_protese.pdf");
 	}
-	
+
 	public void gerarRelatorioTermoCompromissoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
 		String caminho = "/WEB-INF/relatorios/";
@@ -699,7 +725,7 @@ public class RelatoriosController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Informe o Período Inicial e Final do Agendamento.", "Campos inválidos!");
 			return;
 		}
-		
+
 
 
 		String caminho = "/WEB-INF/relatorios/";
@@ -708,7 +734,7 @@ public class RelatoriosController implements Serializable {
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
 		if ((prof != null) && (prof.getId() != null))
-		map.put("cod_profissional", this.prof.getId());
+			map.put("cod_profissional", this.prof.getId());
 		if ((tipoAtendimento != null) && (tipoAtendimento.getIdTipo() != null))
 			map.put("cod_tipo_atend", this.tipoAtendimento.getIdTipo());
 		map.put("codunidade", user_session.getUnidade().getId());
@@ -1079,7 +1105,7 @@ public class RelatoriosController implements Serializable {
 
 		this.executeReport(relatorio, map, "Agendamentos por Equipe.pdf");
 	}
-	
+
 	public void adicionaDiasDaSemanaPadrao() {
 		this.diasSemana = new ArrayList<String>();
 		this.diasSemana.add("2");
@@ -1088,7 +1114,7 @@ public class RelatoriosController implements Serializable {
 		this.diasSemana.add("5");
 		this.diasSemana.add("6");
 	}
-	
+
 	public void setaTurnoPadrao() {
 		this.turnoSelecionado = Turno.AMBOS.getSigla();
 	}
@@ -1349,5 +1375,21 @@ public class RelatoriosController implements Serializable {
 
 	public void setTurnoSelecionado(String turnoSelecionado) {
 		this.turnoSelecionado = turnoSelecionado;
+	}
+	public Boolean getFiltrarPorMunicipio() {
+		return filtrarPorMunicipio;
+	}
+
+	public void setFiltrarPorMunicipio(Boolean filtrarPorMunicipio) {
+		this.filtrarPorMunicipio = filtrarPorMunicipio;
+	}
+
+	public List<MunicipioBean> getListaMunicipiosDePacienteAtivosSelecionados() {
+		return listaMunicipiosDePacienteAtivosSelecionados;
+	}
+
+	public void setListaMunicipiosDePacienteAtivosSelecionados(
+			List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados) {
+		this.listaMunicipiosDePacienteAtivosSelecionados = listaMunicipiosDePacienteAtivosSelecionados;
 	}
 }

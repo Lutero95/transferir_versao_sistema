@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
@@ -37,6 +38,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
+import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
@@ -66,11 +68,13 @@ public class PacienteController implements Serializable {
 	private Boolean bairroExiste;
 	private String tipoBusca;
 	private String campoBusca;
+	private MunicipioBean municipioPacienteAtivoSelecionado;
 
 	// LISTAS
 	private List<PacienteBean> listaPacientes;
 	private List<PacienteBean> listaPacientesParaAgenda;
 	private List<PacienteBean> listaPacientesAgenda;
+	private List<MunicipioBean> listaMunicipiosDePacienteAtivos;
 
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
@@ -94,6 +98,7 @@ public class PacienteController implements Serializable {
 		listaPacientes = new ArrayList<>();
 		listaPacientesParaAgenda = new ArrayList<>();
 		listaPacientesAgenda = new ArrayList<PacienteBean>();
+		listaMunicipiosDePacienteAtivos = new ArrayList<MunicipioBean>();
 		bairroExiste = null;
 		paramIdPaciente = null;
 	}
@@ -509,6 +514,12 @@ public class PacienteController implements Serializable {
 
 		telefone = new Telefone();
 	}
+	
+	public void buscaMunicipiosDePacientesAtivos(String sexo) throws ProjetoException {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		listaMunicipiosDePacienteAtivos = pDao.listaMunicipiosPacienteAtivo(user_session.getUnidade().getId(), sexo);
+	}
 
 	public PacienteBean getPaciente() {
 		return paciente;
@@ -667,4 +678,21 @@ public class PacienteController implements Serializable {
 	public void setCampoBusca(String campoBusca) {
 		this.campoBusca = campoBusca;
 	}
+
+	public List<MunicipioBean> getListaMunicipiosDePacienteAtivos() {
+		return listaMunicipiosDePacienteAtivos;
+	}
+
+	public void setListaMunicipiosDePacienteAtivos(List<MunicipioBean> listaMunicipiosDePacienteAtivos) {
+		this.listaMunicipiosDePacienteAtivos = listaMunicipiosDePacienteAtivos;
+	}
+
+	public MunicipioBean getMunicipioPacienteAtivoSelecionado() {
+		return municipioPacienteAtivoSelecionado;
+	}
+
+	public void setMunicipioPacienteAtivoSelecionado(MunicipioBean municipioPacienteAtivoSelecionado) {
+		this.municipioPacienteAtivoSelecionado = municipioPacienteAtivoSelecionado;
+	}
+	
 }
