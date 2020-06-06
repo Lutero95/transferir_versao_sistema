@@ -28,10 +28,7 @@ public final class TratamentoErrosUtil {
         	retorno = MENSAGEM_UNIQUE;
         }
     	
-    	else if(codigoErro.equals(CODIGO_CHECK)) {
-        	retorno = MENSAGEM_CHECK;
-        }
-    	
+
     	else if(codigoErro.equals(CODIGO_NOT_NULL)) {
         	retorno = MENSAGEM_NOT_NULL;
         }

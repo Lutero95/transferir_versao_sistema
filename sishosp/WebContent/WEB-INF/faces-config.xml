@@ -33,6 +33,12 @@
         <validator-id>CPFPacienteValidator</validator-id>
         <validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFPacienteValidator</validator-class>
     </validator>
+
+    <factory>
+        <exception-handler-factory>
+            br.gov.al.maceio.sishosp.comum.exception.CustomExceptionHandlerFactory
+        </exception-handler-factory>
+    </factory>
  <!-- 
     <lifecycle>
         <phase-listener>br.gov.al.maceio.sishosp.comum.util.AuthorizationListener</phase-listener>

@@ -1,11 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,16 +11,14 @@ import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
+import org.apache.commons.lang.ObjectUtils;
 
 public class AlteracaoPacienteDAO {
 
@@ -211,7 +204,7 @@ public class AlteracaoPacienteDAO {
 		return lista;
 	}
 
-	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao, 
+	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao,
 			List<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
@@ -558,9 +551,12 @@ public class AlteracaoPacienteDAO {
 				retorno = true;
 			}
 
+		} catch (SQLException ex2) {
+			ex2.printStackTrace();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) ex2).getSQLState()));
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
+			throw new ProjetoException(ex);
 		} finally {
 			try {
 				conexao.close();
