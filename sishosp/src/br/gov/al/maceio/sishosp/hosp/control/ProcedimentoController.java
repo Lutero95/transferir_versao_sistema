@@ -67,7 +67,7 @@ public class ProcedimentoController implements Serializable {
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO = "Inclus�o de Procedimento";
-    private static final String CABECALHO_ALTERACAO = "Altera��o de Procedimento";
+    private static final String CABECALHO_ALTERACAO = "alteração de Procedimento";
     //SIGTAP
     private static final String VALOR_PADRAO_PARAMETRO_NAO_USADO = "0";
     private static final Integer QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO = 5;
