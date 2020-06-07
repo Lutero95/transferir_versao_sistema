@@ -17,11 +17,11 @@ public final class TratamentoErrosUtil {
 	private static final String CODIGO_FK_EXCLUSAO = "23P01";
 	
 
-    public static String retornarMensagemDeErro(String codigoErro) {
-        return tratarMensagemDeErro(codigoErro);    	
+    public static String retornarMensagemDeErro(String codigoErro, String excessao) {
+        return tratarMensagemDeErro(codigoErro, excessao);    	
     }
     
-    private static String tratarMensagemDeErro(String codigoErro) {
+    private static String tratarMensagemDeErro(String codigoErro, String excessao) {
     	String retorno = "";
     	
     	if(codigoErro.equals(CODIGO_UNIQUE)) {
@@ -43,8 +43,10 @@ public final class TratamentoErrosUtil {
     	else if(codigoErro.equals(CODIGO_FK_EXCLUSAO)) {
         	retorno = MENSAGEM_FK_EXCLUSAO;
         }
+    	else {
+    		retorno = excessao;
+    	}
     	
     	return retorno;
     }
-    
 }

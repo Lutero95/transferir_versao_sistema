@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.ErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -20,36 +21,42 @@ public class CidDAO {
 	PreparedStatement ps = null;
 
 
-	public boolean gravarCid(CidBean cid) throws ProjetoException{
+	public boolean gravarCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "insert into hosp.cid (cid,desccid) values (?,?);";
+		String sql = "insert into hosp.cid (cid,desccid) values (?,?, ?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			//FuncionarioBean func = null;
-		//	func.getNome();
+			// FuncionarioBean func = null;
+			// func.getNome();
+			
 			ps.setString(1, cid.getCid().toUpperCase());
 			ps.setString(2, cid.getDescCid().toUpperCase());
+			
 			ps.execute();
 			con.commit();
 			retorno = true;
-		 
-    } 
-		catch (NullPointerException | SQLException sqle ) {
-			sqle.printStackTrace();
-        
-		sqle.printStackTrace();
-		 throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState()));
-	}finally
-	{
-		try {
-			con.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+
 		}
-		return retorno;
-	}
+		
+		catch ( SQLException sqle) {
+			sqle.printStackTrace();
+			String linhaDoErro = ErrosUtil.retornaLinhaIhClasseDoErro(sqle.getStackTrace(), this.getClass().getName());
+			throw new ProjetoException(
+					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState(), sqle.getMessage()+linhaDoErro  ));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new ProjetoException(ErrosUtil.retornaThrowableComALinhaEspecificaDoErro(e, this.getClass().getName()));
+		}finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
 	}
 
 	public List<CidBean> listarCid() throws ProjetoException {
