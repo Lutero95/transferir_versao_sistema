@@ -553,10 +553,11 @@ public class AlteracaoPacienteDAO {
 
 		} catch (SQLException ex2) {
 			ex2.printStackTrace();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) ex2).getSQLState()));
+			String linhaDoErro = ErrosUtil.retornaLinhaIhClasseDoErro(ex2.getStackTrace(), this.getClass().getName());
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) ex2).getSQLState(), ex2.getMessage()+linhaDoErro));
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new ProjetoException(ex);
+			throw new ProjetoException(ErrosUtil.retornaThrowableComALinhaEspecificaDoErro(ex, this.getClass().getName()));
 		} finally {
 			try {
 				conexao.close();
