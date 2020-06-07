@@ -31,6 +31,7 @@ public class ParametroBean implements Serializable {
     private String indicadorOrgaoDestinoInformacao;
     private String versaoSistema;
     private Integer validadePadraoLaudo;
+    private boolean validaDadosLaudoSigtap;
 
 
     public ParametroBean() {
@@ -252,5 +253,13 @@ public class ParametroBean implements Serializable {
 
     public void setValidadePadraoLaudo(Integer validadePadraoLaudo) {
         this.validadePadraoLaudo = validadePadraoLaudo;
+    }
+
+    public boolean isValidaDadosLaudoSigtap() {
+        return validaDadosLaudoSigtap;
+    }
+
+    public void setValidaDadosLaudoSigtap(boolean validaDadosLaudoSigtap) {
+        this.validaDadosLaudoSigtap = validaDadosLaudoSigtap;
     }
 }

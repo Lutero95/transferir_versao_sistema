@@ -114,8 +114,8 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
                     "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo )" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap )" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -234,6 +234,7 @@ public class UnidadeDAO {
             ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
             ps.setString(26, unidade.getParametro().getVersaoSistema());
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
+            ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
             ps.execute();
 
 
@@ -393,7 +394,7 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ?, " +
                     "bloqueia_por_pendencia_evolucao_anterior = ?, orgao_origem_responsavel_pela_informacao = ?, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao = ?, cgcCpf_prestador_ou_orgao_publico = ?, orgao_destino_informacao = ?, "+
-                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?"+
+                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?, valida_dados_laudo_sigtap = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -478,7 +479,8 @@ public class UnidadeDAO {
             ps.setString(25, unidade.getParametro().getIndicadorOrgaoDestinoInformacao());
             ps.setString(26, unidade.getParametro().getVersaoSistema());
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
-            ps.setInt(28, unidade.getId());
+            ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
+            ps.setInt(29, unidade.getId());
 
             ps.executeUpdate();
 
@@ -611,7 +613,7 @@ public class UnidadeDAO {
 
         String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
                 "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, " +
-                "necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, " +
+                "necessita_presenca_para_evolucao, coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto,valida_dados_laudo_sigtap,  " +
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
                 "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
@@ -648,6 +650,7 @@ public class UnidadeDAO {
                 parametro.setAlmocoInicio(rs.getTime("almoco_inicio"));
                 parametro.setAlmocoFinal(rs.getTime("almoco_final"));
                 parametro.setNecessitaPresencaParaEvolucao(rs.getString("necessita_presenca_para_evolucao"));
+                parametro.setValidaDadosLaudoSigtap(rs.getBoolean("valida_dados_laudo_sigtap"));
                 parametro.setPtsMostrarObjGeraisCurtoPrazo(rs.getBoolean("pts_mostra_obs_gerais_curto"));
                 parametro.setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
                 parametro.setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
