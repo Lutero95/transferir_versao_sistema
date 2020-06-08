@@ -33,7 +33,7 @@ public class ConnectionFactory {
                             + cnf.getMessage(), "Erro");
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            throw new ProjetoException(msg.toString());
+            throw new ProjetoException(cnf, ConnectionFactory.class.getName());
 
         } catch (SQLException sql) {
             System.out.println("Não abriu conexão");
@@ -43,7 +43,8 @@ public class ConnectionFactory {
                             + sql.getMessage(), "Erro");
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            throw new ProjetoException(sql.getMessage());
+            throw new ProjetoException(
+					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sql).getSQLState(), sql.getMessage()), ConnectionFactory.class.getName(), sql);
 
         }
     }

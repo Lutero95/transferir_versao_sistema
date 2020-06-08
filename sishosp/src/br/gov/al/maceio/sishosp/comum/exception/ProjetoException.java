@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.comum.exception;
 
 import br.gov.al.maceio.sishosp.comum.dao.ExceptionDAO;
+import br.gov.al.maceio.sishosp.comum.model.ErroSistema;
+import br.gov.al.maceio.sishosp.comum.util.ErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 public class ProjetoException extends Exception{
@@ -13,14 +15,18 @@ public class ProjetoException extends Exception{
 	public ProjetoException() {
 
     }
-     public ProjetoException(String arg) {
-    	 exceptionDAO.gravaExcecao(arg);
-         JSFUtil.adicionarMensagemErro(arg, "Erro");
+     public ProjetoException(String mensagemUsuario, String nomeDaClasse, Throwable arg) {
+    	 arg.printStackTrace();
+    	 ErroSistema erroSistema = ErrosUtil.retornaErroSistema(arg.getStackTrace(), nomeDaClasse, arg.getMessage());
+    	 exceptionDAO.gravaExcecao(erroSistema);
+         JSFUtil.adicionarMensagemErro(mensagemUsuario, "Erro");
          JSFUtil.atualizarComponente(":msgPagina");
     }
 
-    public ProjetoException(Throwable arg) {
-    	exceptionDAO.gravaExcecao(arg.getMessage());
+    public ProjetoException(Throwable arg, String nomeDaClasse) {
+    	arg.printStackTrace();
+    	ErroSistema erroSistema = ErrosUtil.retornaErroSistema(arg.getStackTrace(), nomeDaClasse, arg.getMessage());
+   	 	exceptionDAO.gravaExcecao(erroSistema);
         JSFUtil.adicionarMensagemErro(arg.getMessage(), "Erro");
         JSFUtil.atualizarComponente(":msgPagina");
     }
@@ -28,5 +34,4 @@ public class ProjetoException extends Exception{
     public ProjetoException(String arg,Throwable arg1){
         super(arg,arg1);
     }
-
 }

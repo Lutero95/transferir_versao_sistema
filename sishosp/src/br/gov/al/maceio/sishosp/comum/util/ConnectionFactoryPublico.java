@@ -30,7 +30,7 @@ public class ConnectionFactoryPublico {
                             + cnf.getMessage(), "Erro");
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            throw new ProjetoException(msg.toString());
+            throw new ProjetoException(cnf, ConnectionFactoryPublico.class.getName());
 
         } catch (SQLException sql) {
             System.out.println("Não abriu conexão com o banco público");
@@ -40,7 +40,8 @@ public class ConnectionFactoryPublico {
                             + sql.getMessage(), "Erro");
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            throw new ProjetoException(sql.getMessage());
+            throw new ProjetoException(
+					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sql).getSQLState(), sql.getMessage()), ConnectionFactoryPublico.class.getName(), sql);
         }
     }
 }

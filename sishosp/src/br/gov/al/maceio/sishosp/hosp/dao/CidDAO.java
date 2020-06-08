@@ -23,14 +23,13 @@ public class CidDAO {
 
 	public boolean gravarCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "insert into hosp.cid (cid,desccid) values (?,?, ?);";
+		String sql = "insert into hosp.cid (cid,desccid) values (?,?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			// FuncionarioBean func = null;
 			// func.getNome();
-			
 			ps.setString(1, cid.getCid().toUpperCase());
 			ps.setString(2, cid.getDescCid().toUpperCase());
 			
@@ -41,14 +40,11 @@ public class CidDAO {
 		}
 		
 		catch ( SQLException sqle) {
-			sqle.printStackTrace();
-			String linhaDoErro = ErrosUtil.retornaLinhaIhClasseDoErro(sqle.getStackTrace(), this.getClass().getName());
 			throw new ProjetoException(
-					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState(), sqle.getMessage()+linhaDoErro  ));
+					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState(), sqle.getMessage()), this.getClass().getName(), sqle);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			throw new ProjetoException(ErrosUtil.retornaThrowableComALinhaEspecificaDoErro(e, this.getClass().getName()));
+			throw new ProjetoException(e, this.getClass().getName());
 		}finally {
 			try {
 				con.close();
@@ -196,7 +192,7 @@ public class CidDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new ProjetoException(ex);
+			throw new ProjetoException(ex, ""); //EDITAR ----------------------------
 		} finally {
 			try {
 				con.close();
