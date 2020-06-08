@@ -41,7 +41,7 @@ public class ConnectionFactoryPublico {
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
             throw new ProjetoException(
-					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sql).getSQLState(), sql.getMessage()), ConnectionFactoryPublico.class.getName(), sql);
+					TratamentoErrosUtil.retornarMensagemDeErro(sql), ConnectionFactoryPublico.class.getName(), sql);
         }
     }
 }

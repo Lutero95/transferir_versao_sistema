@@ -1,5 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
+import java.sql.SQLException;
+
 public final class TratamentoErrosUtil {
 	
 	//MENSAGENS DE RETORNO
@@ -17,7 +19,9 @@ public final class TratamentoErrosUtil {
 	private static final String CODIGO_FK_EXCLUSAO = "23P01";
 	
 
-    public static String retornarMensagemDeErro(String codigoErro, String excessao) {
+    public static String retornarMensagemDeErro(SQLException sqle) {
+    	String codigoErro = sqle.getSQLState(); 
+    	String excessao = sqle.getMessage();
         return tratarMensagemDeErro(codigoErro, excessao);    	
     }
     

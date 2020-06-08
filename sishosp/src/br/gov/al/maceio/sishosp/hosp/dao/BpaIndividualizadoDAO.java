@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 
 public class BpaIndividualizadoDAO {
@@ -129,10 +130,11 @@ public class BpaIndividualizadoDAO {
             	bpaIndividualizado.setPrdIne(PRD_INE);
             	listaDeBpaIndividualizado.add(bpaIndividualizado);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
             	con.close();
             } catch (Exception ex) {
@@ -166,10 +168,11 @@ public class BpaIndividualizadoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
             	extensao = rs.getString("extensao");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
             	con.close();
             } catch (Exception ex) {
@@ -179,7 +182,7 @@ public class BpaIndividualizadoDAO {
         return extensao;
     }
 
-	public List<String> listarCompetencias() {
+	public List<String> listarCompetencias() throws ProjetoException {
 		String sql = "select distinct pm.competencia_atual from sigtap.procedimento_mensal pm ";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
@@ -191,10 +194,11 @@ public class BpaIndividualizadoDAO {
             	String competencia = rs.getString("competencia_atual");
             	listaCompetencias.add(competencia);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
             	con.close();
             } catch (Exception ex) {

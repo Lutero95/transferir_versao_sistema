@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
@@ -29,7 +30,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     PreparedStatement ps = null;
 
     public boolean gravarAgenda(AgendaBean agenda, List<AgendaBean> listaNovosAgendamentos,
-                                Integer funcionarioLiberacao) {
+                                Integer funcionarioLiberacao) throws ProjetoException {
 
         Boolean retorno = false;
         int idAtendimento = 0;
@@ -150,20 +151,21 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais) {
+    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
         Boolean retorno = false;
         int idAtendimento = 0;
@@ -240,20 +242,21 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean excluirAgendamento(AgendaBean agenda) {
+    public boolean excluirAgendamento(AgendaBean agenda) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.atendimentos where id_atendimento = ?";
         try {
@@ -264,20 +267,21 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con.commit();
             excluirTabelaAgendamentos1(agenda);
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean mudaStatusPresenca(AgendaBean agenda) {
+    public boolean mudaStatusPresenca(AgendaBean agenda) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.atendimentos set presenca=? where id_atendimento = ?";
         try {
@@ -291,17 +295,18 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public void excluirTabelaAgendamentos1(AgendaBean agenda) throws ProjetoException {
@@ -312,10 +317,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.setLong(1, agenda.getIdAgenda());
             stmt.execute();
             con.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -375,10 +381,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -444,10 +451,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtd");
             }
             return qtdMax;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -512,10 +520,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -590,10 +599,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
             return retorno;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -663,10 +673,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtdmax");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -739,10 +750,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -755,8 +767,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
-        int mes = cal.get(Calendar.MONTH);
-        int ano = cal.get(Calendar.YEAR);
         int qtd = 0;
 
         String sqlPro = "select distinct p.qtdmax " + "from hosp.config_agenda_profissional p "
@@ -799,10 +809,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtdmax");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -815,8 +826,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
-        int mes = cal.get(Calendar.MONTH);
-        int ano = cal.get(Calendar.YEAR);
         int qtd = 0;
 
         String sqlPro = "select distinct t.qtd " + "from hosp.config_agenda_profissional p "
@@ -871,10 +880,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -921,10 +931,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -989,10 +1000,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1038,10 +1050,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1088,10 +1101,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1140,10 +1154,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1211,10 +1226,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1247,10 +1263,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1283,10 +1300,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1328,10 +1346,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1373,10 +1392,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1391,9 +1411,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             throws ProjetoException {
 
         Boolean retorno = false;
-        int diaSemana = DataUtil.extrairDiaDeData(dataAtendimento);
-        int mes = DataUtil.extrairMesDeData(dataAtendimento);
-        int ano = DataUtil.extrairAnoDeData(dataAtendimento);
 
         String sql = "";
 
@@ -1428,10 +1445,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1460,10 +1478,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1475,7 +1494,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     public boolean buscarDiaSemanaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
-        int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
         int mes = cal.get(Calendar.MONTH);
         int ano = cal.get(Calendar.YEAR);
         int id = 0;
@@ -1519,10 +1537,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1570,10 +1589,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1661,10 +1681,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setAtivo(rs.getString("ativo"));
                 lista.add(agenda);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1758,10 +1779,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 	
                 lista.add(agenda);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1771,7 +1793,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return lista;
     }
     
-    public List<String> retornaNomeProfissionaisDoAgendamentoAvulso(Integer idAtendimento, Connection conexao) throws SQLException {
+    public List<String> retornaNomeProfissionaisDoAgendamentoAvulso(Integer idAtendimento, Connection conexao) throws SQLException, ProjetoException {
 
     	List<String> listaNomeProfissionais = new ArrayList<String>();
     	String sql = "select distinct f.descfuncionario from hosp.atendimentos a " + 
@@ -1788,11 +1810,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             	listaNomeProfissionais.add(rs.getString("descfuncionario"));
             }
 
-        } catch (Exception ex) {
+        } catch (SQLException ex2) {
         	conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaNomeProfissionais;
     }
 
@@ -1833,10 +1857,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1877,10 +1902,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1926,10 +1952,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1958,10 +1985,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("intervalo");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2041,10 +2069,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(configAgendaParte1Bean);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2164,10 +2193,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(configAgendaParte1Bean);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2222,7 +2252,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
      *
      *
      */
-    public Boolean numeroAtendimentosEquipe(InsercaoPacienteBean insercao) {
+    public Boolean numeroAtendimentosEquipe(InsercaoPacienteBean insercao) throws ProjetoException {
         Boolean resultado = false;
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -2248,10 +2278,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("pode_marcar");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2261,7 +2292,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return resultado;
     }
 
-    public Boolean numeroAtendimentosProfissional(InsercaoPacienteBean insercao) {
+    public Boolean numeroAtendimentosProfissional(InsercaoPacienteBean insercao) throws ProjetoException {
         Boolean resultado = false;
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -2306,10 +2337,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("pode_marcar");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2319,7 +2351,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return resultado;
     }
 
-    public List<AgendaBean> quantidadeDeAgendamentosDaEquipePorTurno() {
+    public List<AgendaBean> quantidadeDeAgendamentosDaEquipePorTurno() throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -2433,8 +2465,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                Integer vetor[] = new Integer[5];
-
                 AgendaBean agendaBean = new AgendaBean();
                 agendaBean.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
                 agendaBean.getEquipe().setDescEquipe(rs.getString("descequipe"));
@@ -2452,10 +2482,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 lista.add(agendaBean);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2490,10 +2521,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2528,10 +2560,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2562,10 +2595,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
                 lista.add(diaAtendimento);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2604,10 +2638,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.getCbo().setCodigo(rs.getString("codcbo"));
                 lista.add(funcionario);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2649,10 +2684,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.setHorarioAtendimento(rs.getString("horario_atendimento"));
                 lista.add(funcionario);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2662,8 +2698,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return lista;
     }
 
-    public ArrayList<HorarioAtendimento> listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(Integer idPacienteInstituicao,
-                                                                                        Long idProfissional, Connection conAuxiliar) {
+    public ArrayList<HorarioAtendimento> listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional
+    	(Integer idPacienteInstituicao, Long idProfissional, Connection conAuxiliar) throws ProjetoException, SQLException {
         ArrayList<HorarioAtendimento> lista = new ArrayList<HorarioAtendimento>();
 
         String sql = "SELECT dia_semana, horario_atendimento, id_profissional FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
@@ -2683,19 +2719,17 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
                 lista.add(diaAtendimento);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException ex2) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return lista;
     }
 
-    public Boolean verificarSeAtendimentoFoiRealizado(Integer idAgenda) {
+    public Boolean verificarSeAtendimentoFoiRealizado(Integer idAgenda) throws ProjetoException {
 
         Boolean resultado = false;
 
@@ -2716,10 +2750,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -2729,7 +2764,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return resultado;
     }
 
-    public boolean cancelarAgendamento(Integer idAgenda) {
+    public boolean cancelarAgendamento(Integer idAgenda) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -2744,17 +2779,18 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
 }

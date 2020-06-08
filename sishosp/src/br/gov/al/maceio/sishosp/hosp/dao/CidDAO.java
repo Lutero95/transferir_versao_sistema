@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.ErrosUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
@@ -36,12 +33,10 @@ public class CidDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
-
 		}
 		
 		catch ( SQLException sqle) {
-			throw new ProjetoException(
-					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState(), sqle.getMessage()), this.getClass().getName(), sqle);
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		}
 		catch (Exception e) {
 			throw new ProjetoException(e, this.getClass().getName());
@@ -51,8 +46,8 @@ public class CidDAO {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public List<CidBean> listarCid() throws ProjetoException {
@@ -71,9 +66,10 @@ public class CidDAO {
 
 				lista.add(cid);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -84,7 +80,7 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> buscarCid(String campoBusca, String tipo) {
+	public List<CidBean> buscarCid(String campoBusca, String tipo) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid, cid from hosp.cid where ";
 
@@ -111,9 +107,10 @@ public class CidDAO {
 
 				lista.add(cid);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -124,7 +121,7 @@ public class CidDAO {
 		return lista;
 	}
 
-	public Boolean alterarCid(CidBean cid) {
+	public Boolean alterarCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "update hosp.cid set desccid = ?, cid = ? where cod = ?";
 		try {
@@ -136,20 +133,21 @@ public class CidDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean excluirCid(CidBean cid) {
+	public Boolean excluirCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "delete from hosp.cid where cod = ?";
 
@@ -160,17 +158,18 @@ public class CidDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public CidBean buscaCidPorId(Integer id) throws ProjetoException {
@@ -190,9 +189,10 @@ public class CidDAO {
 
 			return g;
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new ProjetoException(ex, ""); //EDITAR ----------------------------
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -221,8 +221,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -258,8 +260,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -292,8 +296,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
