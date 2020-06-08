@@ -175,20 +175,16 @@ public class CidDAO {
 	public CidBean buscaCidPorId(Integer id) throws ProjetoException {
 		con = ConnectionFactory.getConnection();
 		String sql = "select cod, desccid, cid from hosp.cid where cod = ?";
+		CidBean cid = new CidBean();
 		try {
-
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			CidBean g = new CidBean();
 			while (rs.next()) {
-				g.setIdCid(rs.getInt("cod"));
-				g.setDescCid(rs.getString("desccid"));
-				g.setCid(rs.getString("cid"));
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCid(rs.getString("desccid"));
+				cid.setCid(rs.getString("cid"));
 			}
-
-			return g;
-
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -200,6 +196,7 @@ public class CidDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return cid;
 	}
 
 	public List<CidBean> listarCidsBusca(String descricao) throws ProjetoException {

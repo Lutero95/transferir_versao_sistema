@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.StringUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
@@ -23,7 +23,7 @@ public class EnderecoDAO {
 
     //BAIRRO
 
-    public Boolean cadastrarBairros(EnderecoBean endereco) {
+    public Boolean cadastrarBairros(EnderecoBean endereco) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -41,20 +41,21 @@ public class EnderecoDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarBairros(EnderecoBean endereco) {
+    public Boolean alterarBairros(EnderecoBean endereco) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -68,23 +69,22 @@ public class EnderecoDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirBairros(EnderecoBean endereco) {
+    public Boolean excluirBairros(EnderecoBean endereco) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.bairros where id_bairro = ?";
         try {
@@ -96,18 +96,18 @@ public class EnderecoDAO {
             conexao.commit();
 
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public EnderecoBean listarBairroPorId(int id) throws ProjetoException {
@@ -131,10 +131,11 @@ public class EnderecoDAO {
                 end.setCodmunicipio(rs.getInt("id_municipio"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -168,10 +169,11 @@ public class EnderecoDAO {
 
                 lista.add(end);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -181,7 +183,7 @@ public class EnderecoDAO {
         return lista;
     }
 
-    public ArrayList<EnderecoBean> buscarBairros(String campoBusca) {
+    public ArrayList<EnderecoBean> buscarBairros(String campoBusca) throws ProjetoException {
 
         String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.nome, m.uf, m.id_municipio from hosp.bairros b "
                 + "left join hosp.municipio m on (b.codmunicipio = m.id_municipio) where b.descbairro like ? order by b.descbairro";
@@ -206,10 +208,11 @@ public class EnderecoDAO {
 
                 lista.add(end);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -244,10 +247,11 @@ public class EnderecoDAO {
 
                 lista.add(end);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -272,15 +276,14 @@ public class EnderecoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-
                 cod = rs.getInt("id_municipio");
-
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -310,12 +313,12 @@ public class EnderecoDAO {
                 e.setBairro(rs.getString("descbairro"));
 
                 lista.add(e);
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception sqlc) {
@@ -327,14 +330,13 @@ public class EnderecoDAO {
 
     //MUNICÍPIO
 
-    public Boolean cadastrarMunicipio(EnderecoBean endereco) {
+    public Boolean cadastrarMunicipio(EnderecoBean endereco) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.municipio (nome,codigo,uf) "
                 + " values (?, ?, ?)";
 
         try {
-
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, endereco.getMunicipio().toUpperCase().trim());
@@ -345,20 +347,21 @@ public class EnderecoDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarMunicipio(EnderecoBean endereco) {
+    public Boolean alterarMunicipio(EnderecoBean endereco) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.municipio set nome = ?, codigo = ? , uf = ? where id_municipio = ?";
         try {
@@ -371,24 +374,23 @@ public class EnderecoDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
 
-    public Boolean excluirMunicipio(EnderecoBean endereco) {
+    public Boolean excluirMunicipio(EnderecoBean endereco) throws ProjetoException {
         boolean retorno = false;
         String sql = "delete from hosp.municipio where id_municipio = ?";
         try {
@@ -398,20 +400,19 @@ public class EnderecoDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<EnderecoBean> listaMunicipios() throws ProjetoException {
@@ -426,18 +427,20 @@ public class EnderecoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EnderecoBean p = new EnderecoBean();
+                EnderecoBean endereco = new EnderecoBean();
 
-                p.setCodmunicipio(rs.getInt("id_municipio"));
-                p.setMunicipio(rs.getString("nome").toUpperCase());
-                p.setCodIbge(rs.getInt("codigo"));
-                p.setUf(rs.getString("uf"));
+                endereco.setCodmunicipio(rs.getInt("id_municipio"));
+                endereco.setMunicipio(rs.getString("nome").toUpperCase());
+                endereco.setCodIbge(rs.getInt("codigo"));
+                endereco.setUf(rs.getString("uf"));
 
-                lista.add(p);
+                lista.add(endereco);
             }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -461,25 +464,26 @@ public class EnderecoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EnderecoBean p = new EnderecoBean();
+                EnderecoBean endereco = new EnderecoBean();
 
-                p.setCodmunicipio(rs.getInt("id_municipio"));
-                p.setMunicipio(rs.getString("nome").toUpperCase());
-                p.setCodIbge(rs.getInt("codigo"));
-                p.setUf(rs.getString("uf"));
+                endereco.setCodmunicipio(rs.getInt("id_municipio"));
+                endereco.setMunicipio(rs.getString("nome").toUpperCase());
+                endereco.setCodIbge(rs.getInt("codigo"));
+                endereco.setUf(rs.getString("uf"));
 
-                lista.add(p);
+                lista.add(endereco);
             }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
         return lista;
     }
 
@@ -502,16 +506,17 @@ public class EnderecoDAO {
                 end.setUf(rs.getString("uf"));
             }
 
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
         return end;
     }
 
@@ -519,6 +524,7 @@ public class EnderecoDAO {
             throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
+        List<EnderecoBean> lista = new ArrayList<EnderecoBean>();
         try {
             String sql = " select id_municipio, nome, codigo from hosp.municipio where nome like ? order by nome";
 
@@ -526,7 +532,6 @@ public class EnderecoDAO {
             ps.setString(1, "%" + str.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<EnderecoBean> lista = new ArrayList<EnderecoBean>();
 
             while (rs.next()) {
                 EnderecoBean e = new EnderecoBean();
@@ -535,19 +540,19 @@ public class EnderecoDAO {
                 e.setCodIbge(rs.getInt("codigo"));
 
                 lista.add(e);
-
             }
-            return lista;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
+        return lista;
     }
 
     public String retornarEstadoDaEmpresa()
@@ -571,17 +576,18 @@ public class EnderecoDAO {
                 uf = rs.getString("estado");
 
             }
-            return uf;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
+        return uf;
     }
 
     public Integer retornarCodigoCidade(Integer codIbge)
@@ -600,13 +606,13 @@ public class EnderecoDAO {
 
             while (rs.next()) {
                 codCidade = rs.getInt("id_municipio");
-
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -635,10 +641,11 @@ public class EnderecoDAO {
                 retorno = rs.getInt("id_bairro");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -648,7 +655,7 @@ public class EnderecoDAO {
         return retorno;
     }
 
-    public Integer inserirNovoBairro(EnderecoBean endereco, Connection conexaoAuxiliar) {
+    public Integer inserirNovoBairro(EnderecoBean endereco, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
 
         Integer novoBairro = null;
 
@@ -667,16 +674,14 @@ public class EnderecoDAO {
                 novoBairro = set.getInt("id_bairro");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return novoBairro;
-        }
+        } catch (SQLException sqle) {
+        	conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return novoBairro;
     }
 
 }

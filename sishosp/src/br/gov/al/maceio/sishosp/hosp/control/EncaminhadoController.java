@@ -67,7 +67,7 @@ public class EncaminhadoController implements Serializable {
 
     }
 
-    public void gravarEncaminhado() {
+    public void gravarEncaminhado() throws ProjetoException {
 
         boolean cadastrou = eDao.cadastrar(encaminhado);
 
@@ -80,7 +80,7 @@ public class EncaminhadoController implements Serializable {
 
     }
 
-    public void alterarEncaminhado() {
+    public void alterarEncaminhado() throws ProjetoException {
 
         boolean alterou = eDao.alterar(encaminhado);
 

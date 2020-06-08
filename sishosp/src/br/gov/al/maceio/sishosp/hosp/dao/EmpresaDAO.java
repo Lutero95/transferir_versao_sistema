@@ -3,11 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.context.FacesContext;
 import java.sql.*;
@@ -21,7 +18,7 @@ public class EmpresaDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean gravarEmpresa(EmpresaBean empresa) {
+    public boolean gravarEmpresa(EmpresaBean empresa) throws ProjetoException {
         Boolean retorno = false;
         Integer codEmpresa = null;
 
@@ -91,21 +88,21 @@ public class EmpresaDAO {
                 codEmpresa = rs.getInt("cod_empresa");
             }
 
-
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<EmpresaBean> listarEmpresa() throws ProjetoException {
@@ -143,10 +140,11 @@ public class EmpresaDAO {
                 empresa.setAtivo(rs.getBoolean("ativo"));
                 lista.add(empresa);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -156,7 +154,7 @@ public class EmpresaDAO {
         return lista;
     }
 
-    public Boolean alterarEmpresa(EmpresaBean empresa) {
+    public Boolean alterarEmpresa(EmpresaBean empresa) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
@@ -190,20 +188,21 @@ public class EmpresaDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        }  catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean desativarEmpresa(EmpresaBean empresa) {
+    public Boolean desativarEmpresa(EmpresaBean empresa) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "update hosp.empresa set ativo = false where cod_empresa = ?";
@@ -217,17 +216,18 @@ public class EmpresaDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        }  catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public EmpresaBean buscarEmpresaPorId(Integer id) throws ProjetoException {
@@ -266,10 +266,11 @@ public class EmpresaDAO {
                 empresa.setAtivo(rs.getBoolean("ativo"));
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        }  catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -278,8 +279,4 @@ public class EmpresaDAO {
         }
         return empresa;
     }
-
-
-
-
 }

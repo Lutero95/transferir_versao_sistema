@@ -380,7 +380,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtdMax = rs.getInt("qtdmax");
             }
-            return qtdMax;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -392,6 +391,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtdMax;
     }
 
     public int verQtdMaxAgendaDataEspecificaPorTipoAtendimento(AgendaBean agenda) throws ProjetoException {
@@ -450,7 +450,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtdMax = rs.getInt("qtd");
             }
-            return qtdMax;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -462,6 +461,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtdMax;
     }
 
     public boolean verificarSeExisteConfigAgendaDiaSemanaGeralPorTipoAtendimento(AgendaBean agenda)
@@ -598,7 +598,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 retorno = true;
             }
-            return retorno;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -610,6 +609,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
     public int verQtdMaxConfigAgendaDiaSemanaEspecifica(AgendaBean agenda) throws ProjetoException {
@@ -672,7 +672,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtdmax");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -684,6 +683,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public int verQtdMaxConfigAgendaDiaSemanaEspecificaPorTipoAtendimento(AgendaBean agenda) throws ProjetoException {
@@ -749,7 +749,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtd");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -761,6 +760,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public int verQtdMaxConfigAgendaDiaSemanaGeral(AgendaBean agenda) throws ProjetoException {
@@ -808,7 +808,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtdmax");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -820,6 +819,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public int verQtdMaxConfigAgendaDiaSemanaGeralPorTipoAtendimento(AgendaBean agenda) throws ProjetoException {
@@ -879,7 +879,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtd");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -891,6 +890,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public int verQtdAgendadosData(AgendaBean agenda) throws ProjetoException {
@@ -930,7 +930,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtd");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -942,6 +941,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public boolean buscarDataEspecifica(AgendaBean agenda) throws ProjetoException {
@@ -962,14 +962,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + "where e.codequipe = ? and d.data_especifica = ? and t.primeiroatendimento is true ";
 
         String sqlComplementoFinal = "";
-
+        Boolean retorno = false;
         if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getTurno())) {
             sqlComplementoFinal = "AND ? ::time between d.horario_inicio AND d.horario_final";
         } else {
             sqlComplementoFinal = "AND d.turno = ?";
 
         }
-
+        
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -997,9 +997,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 id = rs.getInt("id_configagenda");
             }
             if (id == 0) {
-                return false;
+                retorno = false;
             } else
-                return true;
+                retorno = true;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1011,6 +1011,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
     public Boolean verificarSeExisteConfigAgendaProfissionalPorTipoAtendimento(Long codProfissional,
@@ -1463,6 +1464,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         int achou = 0;
         String sql = "select codtipoatendimento from hosp.tipo_atend_agenda "
                 + " where codtipoatendimento = ? and codprograma = ? and codgrupo = ?";
+        Boolean retorno = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1475,9 +1477,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 achou = rs.getInt("codtipoatendimento");
             }
             if (achou == 0) {
-                return false;
+                retorno = false;
             } else
-                return true;
+                retorno = true;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1489,6 +1491,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
     public boolean buscarDiaSemanaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {
@@ -1511,7 +1514,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) \n"
                 + "join hosp.tipoatendimento t on t.id = tipo_atend_agenda.codtipoatendimento\n"
                 + "where e.codequipe = ?  and e.mes = ?  and e.ano=? and e.tipo='E' and t.primeiroatendimento is true";
-
+        Boolean retorno = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -1534,9 +1537,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 id = rs.getInt("id_configagenda");
             }
             if (id == 0) {
-                return false;
+                retorno = false;
             } else
-                return true;
+                retorno = true;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1548,6 +1551,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
     public boolean buscarDiaSemanaMesAnoGeral(AgendaBean agenda) throws ProjetoException {
@@ -1565,7 +1569,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.id_configagenda " + "from hosp.config_agenda_equipe e "
                 + "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) "
                 + "where e.codequipe = ? and d.dia = ? and d.turno = ? and e.tipo='G'";
-
+        Boolean retorno = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -1586,9 +1590,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 id = rs.getInt("id_configagenda");
             }
             if (id == 0) {
-                return false;
+                retorno = false;
             } else
-                return true;
+                retorno = true;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1600,6 +1604,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
     public List<AgendaBean> listarAgendamentosData(AgendaBean ag) throws ProjetoException {
@@ -1856,7 +1861,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtdMax = rs.getInt("qtdmax");
             }
-            return qtdMax;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1868,6 +1872,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtdMax;
     }
 
     public Integer verQtdMaxAgendaEspecDataEspecifica(AgendaBean agenda) throws ProjetoException {
@@ -1901,7 +1906,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtdMax = rs.getInt("qtdmax");
             }
-            return qtdMax;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1913,6 +1917,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtdMax;
     }
 
     public int verQtdAgendadosEspec(AgendaBean agenda) throws ProjetoException {
@@ -1951,7 +1956,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             while (rs.next()) {
                 qtd = rs.getInt("qtd");
             }
-            return qtd;
         } catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1963,6 +1967,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ex.printStackTrace();
             }
         }
+        return qtd;
     }
 
     public Boolean retornarIntervaloUltimoAgendamento(Integer codPaciente, Integer codTipoAtendimento,

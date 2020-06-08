@@ -865,7 +865,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
-    public void visualizarHorariosEquipe() {
+    public void visualizarHorariosEquipe() throws ProjetoException {
         listaHorariosDaEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 

@@ -41,6 +41,7 @@ public class ConfigAgendaDAO {
 								con, idConfiguracaoAgenda);
 
 						if (!retorno) {
+							con.close();
 							return false;
 						}
 					}
@@ -59,7 +60,13 @@ public class ConfigAgendaDAO {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
 			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+		} finally {
+			try {
+				con.close();	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return retorno;
 	}
 
@@ -296,6 +303,7 @@ public class ConfigAgendaDAO {
 								idConfiguracaoAgenda, listaConfig);
 
 						if (!retorno) {
+							con.close();
 							return false;
 						}
 					}
@@ -314,7 +322,13 @@ public class ConfigAgendaDAO {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
 			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return retorno;
 	}
 
@@ -1014,7 +1028,6 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, confParte1.getIdConfiAgenda());
 			stmt.execute();
 			con.commit();
-			return true;
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1026,6 +1039,7 @@ public class ConfigAgendaDAO {
 				e2.printStackTrace();
 			}
 		}
+		return true;
 	}
 
 	public Boolean excluirConfigEquipe(ConfigAgendaParte1Bean confParte1) throws ProjetoException {
@@ -1036,10 +1050,12 @@ public class ConfigAgendaDAO {
 			con = ConnectionFactory.getConnection();
 
 			if (!excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con)) {
+				con.close();
 				return retorno;
 			}
 
 			if (!excluirTabelaConfigAgendaEquipe(confParte1.getIdConfiAgenda(), con)) {
+				con.close();
 				return retorno;
 			}
 
@@ -1161,29 +1177,42 @@ public class ConfigAgendaDAO {
 			List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
-		con = ConnectionFactory.getConnection();
+		try {
+			con = ConnectionFactory.getConnection();
+			Boolean retornoAlteracao = alteraConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
 
-		Boolean retornoAlteracao = alteraConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
+			if (retornoAlteracao) {
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+					excluirTabelaDiasProfissional(confParte1.getIdConfiAgenda(), con);
+					for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
+						retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, confParte1.getDiasSemana().get(i),
+								con, confParte1.getIdConfiAgenda());
 
-		if (retornoAlteracao) {
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-				excluirTabelaDiasProfissional(confParte1.getIdConfiAgenda(), con);
-				for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
-					retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, confParte1.getDiasSemana().get(i),
-							con, confParte1.getIdConfiAgenda());
-
-					if (!retorno) {
-						return false;
+						if (!retorno) {
+							con.close();
+							return false;
+						}
 					}
 				}
-			}
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-				retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, null, con, confParte1.getIdConfiAgenda());
-			}
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+					retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, null, con,
+							confParte1.getIdConfiAgenda());
+				}
 
-			if (retorno) {
-				con.commit();
+				if (retorno) {
+					con.commit();
+				}
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 
@@ -1241,30 +1270,43 @@ public class ConfigAgendaDAO {
 			throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
-		con = ConnectionFactory.getConnection();
+		try {
+			con = ConnectionFactory.getConnection();
+			Boolean retornoAlteracao = alteraConfiguracaoAgendaEquipe(confParte1, confParte2, listaTipos, con);
 
-		Boolean retornoAlteracao = alteraConfiguracaoAgendaEquipe(confParte1, confParte2, listaTipos, con);
+			if (retornoAlteracao) {
 
-		if (retornoAlteracao) {
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+					excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con);
+					for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
+						retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
+								confParte1.getIdConfiAgenda(), listaConfig);
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-				excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con);
-				for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
-					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
-							confParte1.getIdConfiAgenda(), listaConfig);
-
-					if (!retorno) {
-						return false;
+						if (!retorno) {
+							con.close();
+							return false;
+						}
 					}
 				}
-			}
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-				retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda(), listaConfig);
-			}
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda(),
+							listaConfig);
+				}
 
-			if (retorno) {
-				con.commit();
+				if (retorno) {
+					con.commit();
+				}
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 

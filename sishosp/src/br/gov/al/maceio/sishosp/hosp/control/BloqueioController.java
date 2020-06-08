@@ -85,7 +85,7 @@ public class BloqueioController implements Serializable {
         }
     }
 
-    public void alterarBloqueio() {
+    public void alterarBloqueio() throws ProjetoException {
 
         Boolean alterou = bDao.alterarBloqueio(bloqueio);
 

@@ -1328,7 +1328,7 @@ public class AlteracaoPacienteController implements Serializable {
         }
     }
 
-    public void visualizarHorariosEquipe() {
+    public void visualizarHorariosEquipe() throws ProjetoException {
     	listaHorariosEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
          
     }

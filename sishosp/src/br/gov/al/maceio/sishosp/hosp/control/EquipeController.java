@@ -178,24 +178,27 @@ public class EquipeController implements Serializable {
 
     public void gravarSubstituicaoProfissionalEquipe(){
         try {
-			dataDeSubstituicaoEhAnteriorAhDataDeSaida();
-	        boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
-			if (cadastrou == true) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+			if(!dataDeSubstituicaoEhAnteriorAhDataDeSaida()) {
+				boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
+				if (cadastrou == true) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+				}
 			}
 		} catch (ProjetoException e) {
 			e.printStackTrace();
 		} 
     }
 	
-	private void dataDeSubstituicaoEhAnteriorAhDataDeSaida() throws ProjetoException{
+	private boolean dataDeSubstituicaoEhAnteriorAhDataDeSaida() {
 		if(substituicaoProfissionalEquipeDTO.getDataDeSubstituicao().before(
 				substituicaoProfissionalEquipeDTO.getRemocaoProfissionalEquipe().getDataSaida())) {
-        	throw new ProjetoException("A data de substituição não pode ser anterior a data de saída");
+			JSFUtil.adicionarMensagemErro("A data de substituição não pode ser anterior a data de saída", "Erro");
+        	return true;
         }
+		return false;
 	}
 
     public String getCabecalho() {

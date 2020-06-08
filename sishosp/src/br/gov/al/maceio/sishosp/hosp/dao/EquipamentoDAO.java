@@ -9,13 +9,14 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
 public class EquipamentoDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarEquipamento(EquipamentoBean equip) {
+    public boolean gravarEquipamento(EquipamentoBean equip) throws ProjetoException {
         Boolean retorno = false;
         String sql = "insert into hosp.tipoaparelho (desctipoaparelho) values (?);";
 
@@ -27,17 +28,18 @@ public class EquipamentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<EquipamentoBean> listarEquipamentos() throws ProjetoException {
@@ -57,20 +59,21 @@ public class EquipamentoDAO {
                 lista.add(e);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return lista;
         }
+        return lista;
     }
 
-    public Boolean alterarEquipamento(EquipamentoBean equip) {
+    public Boolean alterarEquipamento(EquipamentoBean equip) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.tipoaparelho set desctipoaparelho = ? where id = ?";
 
@@ -84,20 +87,21 @@ public class EquipamentoDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirEquipamento(EquipamentoBean equip) {
+    public Boolean excluirEquipamento(EquipamentoBean equip) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.tipoaparelho where id = ?";
 
@@ -109,47 +113,48 @@ public class EquipamentoDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public EquipamentoBean buscaEquipamentoPorId(Integer i) {
+    public EquipamentoBean buscaEquipamentoPorId(Integer i) throws ProjetoException {
 
         String sql = "select id, desctipoaparelho from hosp.tipoaparelho where id =? order by desctipoaparelho";
+        EquipamentoBean equip = new EquipamentoBean();
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, i);
             ResultSet rs = ps.executeQuery();
-            EquipamentoBean equip = new EquipamentoBean();
             while (rs.next()) {
                 equip.setId_equipamento(rs.getInt("id"));
                 equip.setDescEquipamento(rs.getString("desctipoaparelho"));
-
             }
-            return equip;
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return equip;
     }
 
-    public List<EquipamentoBean> listarEquipamentoAutoComplete(String descricao) {
+    public List<EquipamentoBean> listarEquipamentoAutoComplete(String descricao) throws ProjetoException {
         List<EquipamentoBean> lista = new ArrayList<>();
         String sql = "select id, desctipoaparelho from hosp.tipoaparelho where desctipoaparelho like ? order by desctipoaparelho";
 
@@ -166,17 +171,18 @@ public class EquipamentoDAO {
 
                 lista.add(equipamento);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return lista;
         }
+        return lista;
     }
 
 }
