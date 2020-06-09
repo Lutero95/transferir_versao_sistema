@@ -88,7 +88,7 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public void gravarBairros() {
+    public void gravarBairros() throws ProjetoException {
         // foi criado bairro e codbairro porque não estava indo pelos atributos
         // do objeto endereco
         endereco.setBairro(bairro);
@@ -105,7 +105,7 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public void alterarBairros() {
+    public void alterarBairros() throws ProjetoException {
         // foi criado bairro e codbairro porque não estava indo pelos atributos
         // do objeto endereco
         endereco.setBairro(bairro);
@@ -184,7 +184,7 @@ public class EnderecoController implements Serializable {
         }
     }
 
-    public void gravarMunicipios() {
+    public void gravarMunicipios() throws ProjetoException {
 
         boolean cadastrou = eDao.cadastrarMunicipio(endereco);
 
@@ -197,7 +197,7 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public void alterarMunicipios() {
+    public void alterarMunicipios() throws ProjetoException {
 
         boolean alterou = eDao.alterarMunicipio(endereco);
         if (alterou == true) {
@@ -209,7 +209,7 @@ public class EnderecoController implements Serializable {
     }
 
 
-    public void excluirMunicipios() {
+    public void excluirMunicipios() throws ProjetoException {
 
         boolean excluiu = eDao.excluirMunicipio(endereco);
 

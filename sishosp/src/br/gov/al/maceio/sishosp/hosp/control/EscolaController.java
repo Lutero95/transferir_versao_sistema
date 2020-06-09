@@ -66,7 +66,7 @@ public class EscolaController implements Serializable {
 
     }
 
-    public void gravarEscola() {
+    public void gravarEscola() throws ProjetoException {
 
         boolean cadastrou = eDao.cadastrar(escola);
 
@@ -78,7 +78,7 @@ public class EscolaController implements Serializable {
         }
     }
 
-    public void alterarEscola() {
+    public void alterarEscola() throws ProjetoException {
 
         boolean alterou = eDao.alterar(escola);
         listaEscolas = null;

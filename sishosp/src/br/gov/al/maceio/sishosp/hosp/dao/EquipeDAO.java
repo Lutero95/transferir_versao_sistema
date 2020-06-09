@@ -11,10 +11,10 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
-import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
@@ -29,7 +29,7 @@ public class EquipeDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
 
-    public boolean gravarEquipe(EquipeBean equipe) {
+    public boolean gravarEquipe(EquipeBean equipe) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -54,20 +54,21 @@ public class EquipeDAO {
                 con.commit();
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean insereEquipeProfissional(int idEquipe, EquipeBean equipe) {
+    private Boolean insereEquipeProfissional(int idEquipe, EquipeBean equipe) throws ProjetoException, SQLException {
         Boolean retorno = false;
         String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
 
@@ -80,16 +81,14 @@ public class EquipeDAO {
             }
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
     public List<EquipeBean> listarEquipe() throws ProjetoException {
@@ -111,10 +110,11 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -144,10 +144,11 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -177,10 +178,11 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -213,10 +215,11 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -248,10 +251,11 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -280,10 +284,11 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -293,7 +298,7 @@ public class EquipeDAO {
         return lista;
     }
 
-    public Boolean alterarEquipe(EquipeBean equipe) {
+    public Boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.equipe set descequipe = ?, realiza_avaliacao=?, turno=? where id_equipe = ?";
         ps = null;
@@ -316,21 +321,21 @@ public class EquipeDAO {
                 con.commit();
             }
 
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirTabEquipeProf(int id) {
+    private Boolean excluirTabEquipeProf(int id) throws ProjetoException, SQLException {
         Boolean retorno = false;
         String sql = "delete from hosp.equipe_medico where equipe = ?";
 
@@ -339,19 +344,17 @@ public class EquipeDAO {
             ps.setLong(1, id);
             ps.execute();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        }  catch (SQLException sqle) {
+        	con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public Boolean excluirEquipe(EquipeBean equipe) throws ProjetoException {
+    public Boolean excluirEquipe(EquipeBean equipe) throws ProjetoException, SQLException {
         con = ConnectionFactory.getConnection();
         Boolean retorno = excluirTabEquipeProf(equipe.getCodEquipe());
         String sql = "delete from hosp.equipe where id_equipe = ?";
@@ -366,20 +369,21 @@ public class EquipeDAO {
                 con.commit();
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException {
+    public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException, SQLException {
         EquipeBean equipe = null;
 
         String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
@@ -400,20 +404,21 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
             }
 
-            return equipe;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return equipe;
     }
 
-    public EquipeBean buscarEquipePorIDComConexao(Integer id, Connection conAuxiliar) throws ProjetoException {
+    public EquipeBean buscarEquipePorIDComConexao(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
         EquipeBean equipe = null;
 
         String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
@@ -432,16 +437,14 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
             }
 
-            return equipe;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return equipe;
     }
 
     public EquipeBean buscarEquipePorIDParaConverter(Integer id) throws ProjetoException {
@@ -464,17 +467,18 @@ public class EquipeDAO {
                 equipe.setTurno(rs.getString("turno"));
             }
 
-            return equipe;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return equipe;
     }
 
     public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe) throws ProjetoException {
@@ -500,10 +504,11 @@ public class EquipeDAO {
 
                 lista.add(func);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -557,10 +562,11 @@ public class EquipeDAO {
 
                 lista.add(func);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -570,7 +576,7 @@ public class EquipeDAO {
         return lista;
     }
 
-    public Boolean removerProfissionalEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida) {
+    public Boolean removerProfissionalEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -600,20 +606,23 @@ public class EquipeDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirProfissionalDeEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+    public Boolean excluirProfissionalDeEquipe
+    	(int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -628,19 +637,18 @@ public class EquipeDAO {
             retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(
                     listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), codigoProfissional, idRemocaoProfissionalEquipe, con);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar) {
+    public ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -660,20 +668,19 @@ public class EquipeDAO {
                 int idAtendimento1 = rs.getInt("id_atendimentos1");
                 lista.add(idAtendimento1);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return lista;
     }
 
     public Boolean gravarLogRemocaoProfissionalEquipeAtendimentos1(
-            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+            		throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         String sql = "insert into logs.remocao_profissional_equipe_atendimentos1 " +
@@ -692,20 +699,19 @@ public class EquipeDAO {
             retorno = excluirAtendimentosProfissionalRemovidoEquipe(
                     listaAtendimentos1, codigoProfissional, idRemocaoProfissionalEquipe, con);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
     public Boolean excluirAtendimentosProfissionalRemovidoEquipe(
-            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+            		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -723,19 +729,18 @@ public class EquipeDAO {
                     listarIdPacienteInstituicaoAhSeremApagados(
                             codigoProfissional, listaAtendimentos1, conAuxiliar), codigoProfissional, idRemocaoProfissionalEquipe, conAuxiliar);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, List<Integer> listaAtendimentos1, Connection conAuxiliar) {
+    public ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, List<Integer> listaAtendimentos1, Connection conAuxiliar) 
+    		throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -760,20 +765,19 @@ public class EquipeDAO {
                     lista.add(idPacienteInstituicao);
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return lista;
     }
 
     public Boolean gravarLogRemocaoProfissionalEquipePacienteInstituicao(
-            List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) {
+            List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) 
+            		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
         String sql = "insert into logs.remocao_profissional_equipe_profissional_dia_atendimento " +
@@ -797,19 +801,18 @@ public class EquipeDAO {
 
             retorno = excluirProfissionalDiaAtendimento(listaIdPacienteInstituicao, codigoProfissional, conAuxiliar);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean excluirProfissionalDiaAtendimento(List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, Connection conAuxiliar) {
+    public Boolean excluirProfissionalDiaAtendimento(List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -826,19 +829,18 @@ public class EquipeDAO {
 
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public List<Integer> listarDiasDaSemanaAtendimentoProfissional(Long idProfissional, int idPacienteInstituicao, Connection conAuxiliar) {
+    public List<Integer> listarDiasDaSemanaAtendimentoProfissional(Long idProfissional, int idPacienteInstituicao, Connection conAuxiliar) 
+    		throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -855,19 +857,17 @@ public class EquipeDAO {
                 lista.add(diaSemana);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return lista;
     }
 
-    public ArrayList<RemocaoProfissionalEquipe> listarProfissionaisDaEquipeRemovidos(int codigoEquipe) {
+    public ArrayList<RemocaoProfissionalEquipe> listarProfissionaisDaEquipeRemovidos(int codigoEquipe) throws ProjetoException {
 
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<>();
 
@@ -895,10 +895,11 @@ public class EquipeDAO {
                 lista.add(remocao);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -908,7 +909,7 @@ public class EquipeDAO {
         return lista;
     }
 
-    public SubstituicaoProfissionalEquipeDTO listarRemocaoPorId(int codigoRemocao) {
+    public SubstituicaoProfissionalEquipeDTO listarRemocaoPorId(int codigoRemocao) throws ProjetoException {
 
         SubstituicaoProfissionalEquipeDTO substituicao = new SubstituicaoProfissionalEquipeDTO();
 
@@ -932,10 +933,11 @@ public class EquipeDAO {
                 substituicao.getRemocaoProfissionalEquipe().setDataSaida(rs.getDate("data_saida"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -945,7 +947,7 @@ public class EquipeDAO {
         return substituicao;
     }
 
-    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido(long codigoProfissional, int codigoEquipe, Date dataDeSubstituicao) {
+    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido(long codigoProfissional, int codigoEquipe, Date dataDeSubstituicao) throws ProjetoException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -973,10 +975,11 @@ public class EquipeDAO {
                 lista.add(idAtendimentos1);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -986,16 +989,16 @@ public class EquipeDAO {
         return lista;
     }
 
-    public boolean gravarSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao) {
-
-        List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
-                substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(), substituicao.getDataDeSubstituicao());
-
-        substituicao.setListaAtendimentos1(listaAtendimentos1);
+    public boolean gravarSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao) throws ProjetoException {
 
         Boolean retorno = false;
 
         try {
+        	List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
+                    substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(), substituicao.getDataDeSubstituicao());
+
+            substituicao.setListaAtendimentos1(listaAtendimentos1);
+            
             con = ConnectionFactory.getConnection();
             String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos  " + 
             		"join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento " + 
@@ -1007,10 +1010,6 @@ public class EquipeDAO {
             		"and coalesce(atendimentos1.excluido,'N' )='N' " + 
             		"and atendimentos1.codprofissionalatendimento=? )";
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
-
-
-
-
                 ps = null;
                 ps = con.prepareStatement(sql);
 
@@ -1019,8 +1018,6 @@ public class EquipeDAO {
                 ps.setInt(3, listaAtendimentos1.get(i));
                 ps.setLong(4, substituicao.getFuncionarioAssumir().getId());
                 ps.execute();
-
-                
             }
             
             retorno = gravarLogSubstituicaoProfissionalEquipe(substituicao, con);
@@ -1029,21 +1026,22 @@ public class EquipeDAO {
             else
             	con.rollback();
 
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean gravarLogSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar) {
+    public Boolean gravarLogSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1077,19 +1075,18 @@ public class EquipeDAO {
 
             retorno = gravarLogSubstituicaoProfissionalEquipeAtendimentos1(substituicao, conAuxiliar);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean gravarLogSubstituicaoProfissionalEquipeAtendimentos1(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar) {
+    public Boolean gravarLogSubstituicaoProfissionalEquipeAtendimentos1(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1106,19 +1103,18 @@ public class EquipeDAO {
 
             retorno = gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(substituicao, conAuxiliar);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public Boolean gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar) {
+    public Boolean gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1139,19 +1135,18 @@ public class EquipeDAO {
 
             retorno = gravarProfissionalProfissionalDiaAtendimento(substituicao, conAuxiliar);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public Boolean gravarProfissionalProfissionalDiaAtendimento(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar) {
+    public Boolean gravarProfissionalProfissionalDiaAtendimento(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1172,20 +1167,19 @@ public class EquipeDAO {
 
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
     public ArrayList<RemocaoProfissionalEquipe> listarIdPacienteSubstituicaoSubstituicaoProfissionalEquipe(
-            SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO, Connection conAuxiliar) {
+            SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO, Connection conAuxiliar) 
+            		throws SQLException, ProjetoException {
 
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<>();
 
@@ -1210,17 +1204,14 @@ public class EquipeDAO {
                 lista.add(remocaoProfissionalEquipe);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return lista;
     }
-    
     
 }

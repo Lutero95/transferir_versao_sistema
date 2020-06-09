@@ -80,7 +80,7 @@ public class EspecialidadeController implements Serializable {
         }
     }
 
-    public void alterarEspecialidade() {
+    public void alterarEspecialidade() throws ProjetoException {
         boolean alterou = eDao.alterarEspecialidade(espec);
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Especialidade alterada com sucesso!", "Sucesso");

@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.ErrosUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
@@ -23,40 +20,34 @@ public class CidDAO {
 
 	public boolean gravarCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "insert into hosp.cid (cid,desccid) values (?,?, ?);";
+		String sql = "insert into hosp.cid (cid,desccid) values (?,?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			// FuncionarioBean func = null;
 			// func.getNome();
-			
 			ps.setString(1, cid.getCid().toUpperCase());
 			ps.setString(2, cid.getDescCid().toUpperCase());
 			
 			ps.execute();
 			con.commit();
 			retorno = true;
-
 		}
 		
 		catch ( SQLException sqle) {
-			sqle.printStackTrace();
-			String linhaDoErro = ErrosUtil.retornaLinhaIhClasseDoErro(sqle.getStackTrace(), this.getClass().getName());
-			throw new ProjetoException(
-					TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState(), sqle.getMessage()+linhaDoErro  ));
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			throw new ProjetoException(ErrosUtil.retornaThrowableComALinhaEspecificaDoErro(e, this.getClass().getName()));
+			throw new ProjetoException(e, this.getClass().getName());
 		}finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public List<CidBean> listarCid() throws ProjetoException {
@@ -75,9 +66,10 @@ public class CidDAO {
 
 				lista.add(cid);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -88,7 +80,7 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> buscarCid(String campoBusca, String tipo) {
+	public List<CidBean> buscarCid(String campoBusca, String tipo) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid, cid from hosp.cid where ";
 
@@ -115,9 +107,10 @@ public class CidDAO {
 
 				lista.add(cid);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -128,7 +121,7 @@ public class CidDAO {
 		return lista;
 	}
 
-	public Boolean alterarCid(CidBean cid) {
+	public Boolean alterarCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "update hosp.cid set desccid = ?, cid = ? where cod = ?";
 		try {
@@ -140,20 +133,21 @@ public class CidDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean excluirCid(CidBean cid) {
+	public Boolean excluirCid(CidBean cid) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "delete from hosp.cid where cod = ?";
 
@@ -164,39 +158,37 @@ public class CidDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public CidBean buscaCidPorId(Integer id) throws ProjetoException {
 		con = ConnectionFactory.getConnection();
 		String sql = "select cod, desccid, cid from hosp.cid where cod = ?";
+		CidBean cid = new CidBean();
 		try {
-
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			CidBean g = new CidBean();
 			while (rs.next()) {
-				g.setIdCid(rs.getInt("cod"));
-				g.setDescCid(rs.getString("desccid"));
-				g.setCid(rs.getString("cid"));
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCid(rs.getString("desccid"));
+				cid.setCid(rs.getString("cid"));
 			}
-
-			return g;
-
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new ProjetoException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -204,6 +196,7 @@ public class CidDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return cid;
 	}
 
 	public List<CidBean> listarCidsBusca(String descricao) throws ProjetoException {
@@ -225,8 +218,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -262,8 +257,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -296,8 +293,10 @@ public class CidDAO {
 
 				lista.add(c);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();

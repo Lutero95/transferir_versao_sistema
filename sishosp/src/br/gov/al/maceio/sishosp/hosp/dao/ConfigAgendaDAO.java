@@ -9,6 +9,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConfiguracaoAgendaDiasUtil;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
@@ -40,6 +41,7 @@ public class ConfigAgendaDAO {
 								con, idConfiguracaoAgenda);
 
 						if (!retorno) {
+							con.close();
 							return false;
 						}
 					}
@@ -52,24 +54,24 @@ public class ConfigAgendaDAO {
 				if (retorno) {
 					con.commit();
 				}
-
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
+				con.close();	
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public Integer gravaConfiguracaoAgendaProfissional(ConfigAgendaParte1Bean confParte1,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -112,20 +114,18 @@ public class ConfigAgendaDAO {
 				insereTipoAtendAgendaProfissional(idConfigAgenda, confParte1, listaTipos, conAuxiliar);
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return idConfigAgenda;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return idConfigAgenda;
 	}
 
 	public void insereTipoAtendAgendaProfissional(int codConfigAgenda, ConfigAgendaParte1Bean conf1,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws ProjetoException, SQLException {
 		PreparedStatement ps1 = null;
 		String sql = "insert into hosp.tipo_atend_agenda (cod_config_agenda_profissional, codprograma, codtipoatendimento, qtd, codgrupo) "
 				+ " values(?, ?, ?, ?, ?);";
@@ -141,19 +141,17 @@ public class ConfigAgendaDAO {
 				ps1.execute();
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}
 
 	public void insereTipoAtendAgendaEquipe(int codConfigAgenda, ConfigAgendaParte1Bean conf1,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws ProjetoException, SQLException {
 		PreparedStatement ps1 = null;
 		String sql = "insert into hosp.tipo_atend_agenda (cod_config_agenda_equipe, codprograma, codtipoatendimento, qtd, codgrupo) "
 				+ " values(?, ?, ?, ?, ?);";
@@ -169,19 +167,17 @@ public class ConfigAgendaDAO {
 				ps1.execute();
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}
 
 	public Boolean gravaConfiguracaoAgendaProfissionalDias(ConfigAgendaParte1Bean confParte1, String dia,
-			Connection conAuxiliar, Integer idConfigAgenda) {
+			Connection conAuxiliar, Integer idConfigAgenda) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
 
@@ -278,16 +274,14 @@ public class ConfigAgendaDAO {
 
 			retorno = true;
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
 	public Boolean gravarConfiguracaoAgendaEquipeInicio(ConfigAgendaParte1Bean confParte1,
@@ -309,6 +303,7 @@ public class ConfigAgendaDAO {
 								idConfiguracaoAgenda, listaConfig);
 
 						if (!retorno) {
+							con.close();
 							return false;
 						}
 					}
@@ -323,21 +318,22 @@ public class ConfigAgendaDAO {
 				}
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public Integer gravaConfiguracaoAgendaEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws SQLException, ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -390,20 +386,18 @@ public class ConfigAgendaDAO {
 				insereTipoAtendAgendaEquipe(idConfigAgenda, confParte1, listaTipos, conAuxiliar);
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return idConfigAgenda;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return idConfigAgenda;
 	}
 
 	public Boolean gravaConfiguracaoAgendaEquipeDias(ConfigAgendaParte1Bean confParte1, String dia,
-			Connection conAuxiliar, Integer idConfigAgenda, List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfig) {
+			Connection conAuxiliar, Integer idConfigAgenda, List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listaConfig) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
 
@@ -501,19 +495,17 @@ public class ConfigAgendaDAO {
 
 			retorno = true;
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
-	public Boolean gravaConfiguracaoAgendaProfissional(List<ConfiguracaoAgendaEquipeEspecialidadeDTO> lista, Integer idConfigAgenda, Connection conAuxiliar) {
+	public Boolean gravaConfiguracaoAgendaProfissional(List<ConfiguracaoAgendaEquipeEspecialidadeDTO> lista, Integer idConfigAgenda, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
 
@@ -523,30 +515,21 @@ public class ConfigAgendaDAO {
 
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
-
 			for (int i=0; i<lista.size(); i++) {
-
 				ps.setInt(1, idConfigAgenda);
-
 				ps.setInt(2, lista.get(i).getEspecialidade().getCodEspecialidade());
-
 				ps.setInt(3, lista.get(i).getQuantidade());
-
 				ps.execute();
 			}
 
-
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
 	public List<ConfigAgendaParte1Bean> listarHorariosComFiltrosProfissional(ConfigAgendaParte1Bean config,
@@ -631,9 +614,10 @@ public class ConfigAgendaDAO {
 				lista.add(conf);
 
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -721,9 +705,10 @@ public class ConfigAgendaDAO {
 				lista.add(conf);
 
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -764,9 +749,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -809,9 +795,10 @@ public class ConfigAgendaDAO {
 				conf.setAno(rs.getInt("ano"));
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -838,9 +825,10 @@ public class ConfigAgendaDAO {
 				codgrupo = rs.getInt("codgrupo");
 
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -887,9 +875,10 @@ public class ConfigAgendaDAO {
 				conf.setHorarioFinal(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_final")));
 
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -933,9 +922,10 @@ public class ConfigAgendaDAO {
 				conf.setHorarioInicio(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_inicio")));
 				conf.setHorarioFinal(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_final")));
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -968,9 +958,10 @@ public class ConfigAgendaDAO {
 				conf.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1011,9 +1002,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1036,9 +1028,10 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, confParte1.getIdConfiAgenda());
 			stmt.execute();
 			con.commit();
-			return true;
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1046,6 +1039,7 @@ public class ConfigAgendaDAO {
 				e2.printStackTrace();
 			}
 		}
+		return true;
 	}
 
 	public Boolean excluirConfigEquipe(ConfigAgendaParte1Bean confParte1) throws ProjetoException {
@@ -1056,18 +1050,22 @@ public class ConfigAgendaDAO {
 			con = ConnectionFactory.getConnection();
 
 			if (!excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con)) {
+				con.close();
 				return retorno;
 			}
 
 			if (!excluirTabelaConfigAgendaEquipe(confParte1.getIdConfiAgenda(), con)) {
+				con.close();
 				return retorno;
 			}
 
 			con.commit();
 			retorno = true;
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1078,33 +1076,28 @@ public class ConfigAgendaDAO {
 		return retorno;
 	}
 
-	public Boolean excluirTabelaConfigAgendaEquipe(Integer id, Connection conAuxiliar) {
+	public Boolean excluirTabelaConfigAgendaEquipe(Integer id, Connection conAuxiliar) throws SQLException, ProjetoException {
 
 		Boolean retorno = false;
-
 		String sql = "delete from hosp.config_agenda_equipe where id_configagenda = ?";
 
 		try {
 
 			PreparedStatement stmt2 = conAuxiliar.prepareStatement(sql);
-
 			stmt2.setInt(1, id);
 			stmt2.execute();
 			retorno = true;
-
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
-	public Boolean excluirTabelaConfigAgendaEquipeDias(Integer id, Connection conAuxiliar) {
+	public Boolean excluirTabelaConfigAgendaEquipeDias(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
 
@@ -1118,19 +1111,17 @@ public class ConfigAgendaDAO {
 			stmt.execute();
 			retorno = true;
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
-	public void excluirTabelaTipoAgendaProfissional(int id, Connection con) {
+	public void excluirTabelaTipoAgendaProfissional(int id, Connection con) throws ProjetoException, SQLException {
 
 		String sql = "delete from hosp.tipo_atend_agenda where cod_config_agenda_profissional = ?";
 		try {
@@ -1139,18 +1130,16 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, id);
 			stmt.execute();
 
+		} catch (SQLException ex2) {
+			con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}
 	
-	public void excluirTabelaTipoAgendaEquipe(int id, Connection con) {
+	public void excluirTabelaTipoAgendaEquipe(int id, Connection con) throws ProjetoException, SQLException {
 
 		String sql = "delete from hosp.tipo_atend_agenda where cod_config_agenda_equipe = ?";
 		try {
@@ -1159,74 +1148,79 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, id);
 			stmt.execute();
 
+		} catch (SQLException ex2) {
+			con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}	
 
-	public void excluirTabelaDiasProfissional(int id, Connection con) {
+	public void excluirTabelaDiasProfissional(int id, Connection con) throws ProjetoException, SQLException {
 
 		String sql = "delete from hosp.config_agenda_profissional_dias where id_config_agenda_profissional = ?";
 		try {
-
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, id);
 			stmt.execute();
-
+		} catch (SQLException ex2) {
+			con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}
 
 	public Boolean alterarConfiguracaoAgendaProfissionalInicio(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
-		con = ConnectionFactory.getConnection();
+		try {
+			con = ConnectionFactory.getConnection();
+			Boolean retornoAlteracao = alteraConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
 
-		Boolean retornoAlteracao = alteraConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
+			if (retornoAlteracao) {
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+					excluirTabelaDiasProfissional(confParte1.getIdConfiAgenda(), con);
+					for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
+						retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, confParte1.getDiasSemana().get(i),
+								con, confParte1.getIdConfiAgenda());
 
-		if (retornoAlteracao) {
-
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-				excluirTabelaDiasProfissional(confParte1.getIdConfiAgenda(), con);
-				for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
-					retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, confParte1.getDiasSemana().get(i),
-							con, confParte1.getIdConfiAgenda());
-
-					if (!retorno) {
-						return false;
+						if (!retorno) {
+							con.close();
+							return false;
+						}
 					}
 				}
-			}
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-				retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, null, con, confParte1.getIdConfiAgenda());
-			}
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+					retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, null, con,
+							confParte1.getIdConfiAgenda());
+				}
 
-			if (retorno) {
-				con.commit();
+				if (retorno) {
+					con.commit();
+				}
 			}
-
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 
 		return retorno;
 	}
 
 	public Boolean alteraConfiguracaoAgendaProfissional(ConfigAgendaParte1Bean confParte1,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws SQLException, ProjetoException {
 
 		Boolean retorno = false;
 
@@ -1261,16 +1255,14 @@ public class ConfigAgendaDAO {
 			insereTipoAtendAgendaProfissional(confParte1.getIdConfiAgenda(), confParte1, listaTipos, conAuxiliar);
 
 			retorno = true;
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
 		}
+		return retorno;
 	}
 
 	public Boolean alterarConfiguracaoAgendaEquipeInicio(ConfigAgendaParte1Bean confParte1,
@@ -1278,39 +1270,51 @@ public class ConfigAgendaDAO {
 			throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
-		con = ConnectionFactory.getConnection();
+		try {
+			con = ConnectionFactory.getConnection();
+			Boolean retornoAlteracao = alteraConfiguracaoAgendaEquipe(confParte1, confParte2, listaTipos, con);
 
-		Boolean retornoAlteracao = alteraConfiguracaoAgendaEquipe(confParte1, confParte2, listaTipos, con);
+			if (retornoAlteracao) {
 
-		if (retornoAlteracao) {
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+					excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con);
+					for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
+						retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
+								confParte1.getIdConfiAgenda(), listaConfig);
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-				excluirTabelaConfigAgendaEquipeDias(confParte1.getIdConfiAgenda(), con);
-				for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
-					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, confParte1.getDiasSemana().get(i), con,
-							confParte1.getIdConfiAgenda(), listaConfig);
-
-					if (!retorno) {
-						return false;
+						if (!retorno) {
+							con.close();
+							return false;
+						}
 					}
 				}
-			}
 
-			if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-				retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda(), listaConfig);
-			}
+				if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+					retorno = gravaConfiguracaoAgendaEquipeDias(confParte1, null, con, confParte1.getIdConfiAgenda(),
+							listaConfig);
+				}
 
-			if (retorno) {
-				con.commit();
+				if (retorno) {
+					con.commit();
+				}
 			}
-
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 
 		return retorno;
 	}
 
 	public Boolean alteraConfiguracaoAgendaEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
+			List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		Boolean retorno = false;
 
@@ -1349,16 +1353,14 @@ public class ConfigAgendaDAO {
 			insereTipoAtendAgendaEquipe(confParte1.getIdConfiAgenda(), confParte1, listaTipos, conAuxiliar);
 
 			retorno = true;
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return retorno;
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
 	}
 
 	public ArrayList<String> listarDiasAtendimentoProfissionalPorId(Integer id) throws ProjetoException {
@@ -1374,9 +1376,10 @@ public class ConfigAgendaDAO {
 				String dia = rs.getString("dia");
 				lista.add(dia);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1400,9 +1403,10 @@ public class ConfigAgendaDAO {
 				String dia = rs.getString("dia");
 				lista.add(dia);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1451,9 +1455,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1502,9 +1507,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1515,7 +1521,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalGeral() {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalGeral() throws ProjetoException {
 
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
@@ -1543,9 +1549,10 @@ public class ConfigAgendaDAO {
 				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1556,7 +1563,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalEspecifica() {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalEspecifica() throws ProjetoException {
 
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
@@ -1592,9 +1599,10 @@ public class ConfigAgendaDAO {
 				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1605,7 +1613,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<String> listarDiasAtendimentoProfissional(Integer id, Connection conAuxiliar) {
+	public List<String> listarDiasAtendimentoProfissional(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		List<String> lista = new ArrayList<>();
 
@@ -1621,19 +1629,17 @@ public class ConfigAgendaDAO {
 				lista.add(dia.toString());
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 		return lista;
 	}
 
-	public List<String> listarDiasAtendimentoEquipe(Integer id, Connection conAuxiliar) {
+	public List<String> listarDiasAtendimentoEquipe(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		List<String> lista = new ArrayList<>();
 
@@ -1649,19 +1655,17 @@ public class ConfigAgendaDAO {
 				lista.add(dia.toString());
 			}
 
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeEspecifica() {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeEspecifica() throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
 		String sql = "SELECT DISTINCT c.id_configagenda, c.codequipe, d.data_especifica, c.mes, c.ano, e.descequipe "
@@ -1691,9 +1695,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1704,7 +1709,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeGeral() {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeGeral() throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
 		String sql = "SELECT DISTINCT c.id_configagenda, c.codequipe, e.descequipe "
@@ -1727,9 +1732,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1740,7 +1746,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listarQuantidadeEspecialidades(Integer idConfigAgenda) {
+	public List<ConfiguracaoAgendaEquipeEspecialidadeDTO> listarQuantidadeEspecialidades(Integer idConfigAgenda) throws ProjetoException {
 		List<ConfiguracaoAgendaEquipeEspecialidadeDTO> lista = new ArrayList<>();
 
 		String sql = "SELECT e.descespecialidade, c.id_especialidade, c.qtd " +
@@ -1762,9 +1768,10 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();

@@ -9,14 +9,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
 import javax.faces.context.FacesContext;
@@ -47,11 +45,11 @@ public class BloqueioDAO {
                 con.commit();
             }
 
-        } catch (
-                SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -61,7 +59,7 @@ public class BloqueioDAO {
         return retorno;
     }
 
-    public Boolean gravarBloqueio(BloqueioBean bloqueio, Connection conAuxiliar, String turno) {
+    public Boolean gravarBloqueio(BloqueioBean bloqueio, Connection conAuxiliar, String turno) throws SQLException, ProjetoException {
 
         Calendar calendarData = Calendar.getInstance();
         Boolean condicao = true;
@@ -89,19 +87,17 @@ public class BloqueioDAO {
             } while (condicao);
 
             condicao = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return condicao;
-        }
+        } catch (SQLException ex2) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return condicao;
     }
 
-    public Boolean alterarBloqueio(BloqueioBean bloqueio) {
+    public Boolean alterarBloqueio(BloqueioBean bloqueio) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "update hosp.bloqueio_agenda set codmedico = ?, dataagenda = ?,turno = ?, descricao = ?"
@@ -120,20 +116,21 @@ public class BloqueioDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirBloqueio(BloqueioBean bloqueio) {
+    public Boolean excluirBloqueio(BloqueioBean bloqueio) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "delete from hosp.bloqueio_agenda where id_bloqueioagenda = ?";
@@ -145,17 +142,18 @@ public class BloqueioDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<BloqueioBean> listarBloqueio() throws ProjetoException {
@@ -179,10 +177,11 @@ public class BloqueioDAO {
                 bloqueio.setDescBloqueio(rs.getString("descricao"));
                 lista.add(bloqueio);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -211,10 +210,11 @@ public class BloqueioDAO {
                 bloqueio.getProf().setNome(rs.getString("descfuncionario"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -251,10 +251,11 @@ public class BloqueioDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -268,7 +269,6 @@ public class BloqueioDAO {
             Long codProfissional, Date dataAtendimento, Date dataAtendimentoFinal, String turno)
             throws ProjetoException {
 
-        Boolean retorno = false;
         List<Date> lista = new ArrayList<>();
 
         String sql = "SELECT dataagenda " +
@@ -291,10 +291,11 @@ public class BloqueioDAO {
                 lista.add(data);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -304,7 +305,7 @@ public class BloqueioDAO {
         return lista;
     }
 
-    public Date verificarBloqueioProfissionalDeData(Date data, Long codigoProfissional, Connection conAuxiliar) {
+    public Date verificarBloqueioProfissionalDeData(Date data, Long codigoProfissional, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         String sql = "SELECT dataagenda FROM hosp.bloqueio_agenda WHERE codmedico = ? AND dataagenda = ? ";
 
@@ -321,10 +322,13 @@ public class BloqueioDAO {
                 dataSemBloqueio = rs.getDate("dataagenda");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
             } catch (Exception ex) {
                 ex.printStackTrace();

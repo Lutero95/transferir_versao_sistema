@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
 public class EspecialidadeDAO {
@@ -16,7 +17,7 @@ public class EspecialidadeDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarEspecialidade(EspecialidadeBean esp) {
+    public boolean gravarEspecialidade(EspecialidadeBean esp) throws ProjetoException {
         Boolean retorno = false;
         String sql = "insert into hosp.especialidade (descespecialidade) values (?);";
         try {
@@ -25,22 +26,22 @@ public class EspecialidadeDAO {
             ps.setString(1, esp.getDescEspecialidade().toUpperCase());
             ps.execute();
             con.commit();
-            con.close();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean alterarEspecialidade(EspecialidadeBean espec) {
+    public boolean alterarEspecialidade(EspecialidadeBean espec) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.especialidade set descespecialidade = ? where id_especialidade = ?";
         try {
@@ -51,20 +52,21 @@ public class EspecialidadeDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean excluirEspecialidade(EspecialidadeBean espec) {
+    public boolean excluirEspecialidade(EspecialidadeBean espec) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.especialidade where id_especialidade = ?";
         try {
@@ -74,17 +76,18 @@ public class EspecialidadeDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<EspecialidadeBean> listarEspecialidades()
@@ -103,10 +106,11 @@ public class EspecialidadeDAO {
 
                 lista.add(esp);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -116,8 +120,8 @@ public class EspecialidadeDAO {
         return lista;
     }
 
-    public List<EspecialidadeBean> listarEspecialidadesBusca(String descricao,
-                                                             Integer tipo) throws ProjetoException {
+    public List<EspecialidadeBean> listarEspecialidadesBusca
+    	(String descricao,  Integer tipo) throws ProjetoException {
         List<EspecialidadeBean> lista = new ArrayList<>();
         String sql = "select id_especialidade, descespecialidade from hosp.especialidade ";
         if (tipo == 1) {
@@ -133,13 +137,13 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-
                 lista.add(esp);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -165,10 +169,11 @@ public class EspecialidadeDAO {
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -201,13 +206,13 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-
                 lista.add(esp);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -240,13 +245,13 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-
                 lista.add(esp);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -282,13 +287,13 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-
                 lista.add(esp);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -297,6 +302,4 @@ public class EspecialidadeDAO {
         }
         return lista;
     }
-    
-
 }

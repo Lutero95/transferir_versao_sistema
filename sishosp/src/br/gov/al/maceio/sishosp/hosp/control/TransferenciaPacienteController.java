@@ -706,7 +706,7 @@ public class TransferenciaPacienteController implements Serializable {
         insercao.setEquipe(new EquipeBean());
     }
 
-    public void carregaHorariosEquipe() {
+    public void carregaHorariosEquipe() throws ProjetoException {
         listaHorariosAgenda =  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 

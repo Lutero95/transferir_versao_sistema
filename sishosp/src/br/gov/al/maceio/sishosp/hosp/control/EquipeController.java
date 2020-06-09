@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class EquipeController implements Serializable {
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_SUBSTITUIR, ENDERECO_ID, remocaoProfissionalEquipe.getId());
     }
 
-    public void getEditEquipe() throws ProjetoException {
+    public void getEditEquipe() throws ProjetoException, SQLException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -116,7 +117,7 @@ public class EquipeController implements Serializable {
         }
     }
 
-    public void alterarEquipe() {
+    public void alterarEquipe() throws ProjetoException {
 
         if (this.equipe.getProfissionais().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
@@ -133,7 +134,7 @@ public class EquipeController implements Serializable {
         }
     }
 
-    public void excluirEquipe() throws ProjetoException {
+    public void excluirEquipe() throws ProjetoException, SQLException {
 
         boolean excluiu = eDao.excluirEquipe(equipe);
 
@@ -147,7 +148,7 @@ public class EquipeController implements Serializable {
         ListarTodasEquipes();
     }
 
-    public void removerProfissionalAlteracaoEquipe() throws ProjetoException {
+    public void removerProfissionalAlteracaoEquipe() throws ProjetoException, SQLException {
 
         boolean removeu = eDao.removerProfissionalEquipe(equipe.getCodEquipe(), codigoProfissional, equipe.getDataExclusao());
 
@@ -168,34 +169,37 @@ public class EquipeController implements Serializable {
         return result;
     }
 
-    public void listarProfissionaisDaEquipe() throws ProjetoException {
+    public void listarProfissionaisDaEquipe() throws ProjetoException, SQLException {
         this.equipe = eDao.buscarEquipePorID(equipe.getCodEquipe());
     }
 
-    public void listarRemocoes() {
+    public void listarRemocoes() throws ProjetoException {
         listaRemocoes = eDao.listarProfissionaisDaEquipeRemovidos(equipe.getCodEquipe());
     }
 
     public void gravarSubstituicaoProfissionalEquipe(){
         try {
-			dataDeSubstituicaoEhAnteriorAhDataDeSaida();
-	        boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
-			if (cadastrou == true) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+			if(!dataDeSubstituicaoEhAnteriorAhDataDeSaida()) {
+				boolean cadastrou = eDao.gravarSubstituicaoProfissionalEquipe(substituicaoProfissionalEquipeDTO);
+				if (cadastrou == true) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Substituição realizada com sucesso!", "Sucesso");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a substituição!", "Erro");
+				}
 			}
 		} catch (ProjetoException e) {
 			e.printStackTrace();
 		} 
     }
 	
-	private void dataDeSubstituicaoEhAnteriorAhDataDeSaida() throws ProjetoException{
+	private boolean dataDeSubstituicaoEhAnteriorAhDataDeSaida() {
 		if(substituicaoProfissionalEquipeDTO.getDataDeSubstituicao().before(
 				substituicaoProfissionalEquipeDTO.getRemocaoProfissionalEquipe().getDataSaida())) {
-        	throw new ProjetoException("A data de substituição não pode ser anterior a data de saída");
+			JSFUtil.adicionarMensagemErro("A data de substituição não pode ser anterior a data de saída", "Erro");
+        	return true;
         }
+		return false;
 	}
 
     public String getCabecalho() {

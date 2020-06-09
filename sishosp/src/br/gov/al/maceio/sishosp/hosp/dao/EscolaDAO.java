@@ -9,12 +9,13 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
 public class EscolaDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(EscolaBean escola) {
+    public Boolean cadastrar(EscolaBean escola) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.escola (descescola) values (?)";
@@ -27,20 +28,21 @@ public class EscolaDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(EscolaBean escola) {
+    public Boolean alterar(EscolaBean escola) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.escola set descescola = ? where id_escola = ?";
         try {
@@ -51,22 +53,22 @@ public class EscolaDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(EscolaBean escola) {
+    public Boolean excluir(EscolaBean escola) throws ProjetoException {
         boolean retorno = false;
         String sql = "delete from hosp.escola where id_escola = ?";
         try {
@@ -76,19 +78,19 @@ public class EscolaDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<EscolaBean> listaEscolas() throws ProjetoException {
@@ -103,18 +105,19 @@ public class EscolaDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EscolaBean p = new EscolaBean();
+                EscolaBean escola = new EscolaBean();
 
-                p.setCodEscola(rs.getInt("id_escola"));
-                p.setDescescola(rs.getString("descescola"));
-                p.setCodtipoescola(rs.getInt("codtipoescola"));
+                escola.setCodEscola(rs.getInt("id_escola"));
+                escola.setDescescola(rs.getString("descescola"));
+                escola.setCodtipoescola(rs.getInt("codtipoescola"));
 
-                lista.add(p);
+                lista.add(escola);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -124,44 +127,42 @@ public class EscolaDAO {
         return lista;
     }
 
-    public EscolaBean buscaescolacodigo(Integer i) throws ProjetoException {
+    public EscolaBean buscaescolacodigo(Integer idEscola) throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        EscolaBean escola = new EscolaBean();
         try {
-
             String sql = "select id_escola, descescola from hosp.escola where id_escola=? order by descescola";
 
             ps = conexao.prepareStatement(sql);
-            ps.setInt(1, i);
+            ps.setInt(1, idEscola);
             ResultSet rs = ps.executeQuery();
 
-            EscolaBean escola = new EscolaBean();
             while (rs.next()) {
-
                 escola.setCodEscola(rs.getInt("id_escola"));
                 escola.setDescescola(rs.getString("descescola"));
-
             }
-            return escola;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return escola;
     }
 
     public List<EscolaBean> buscaescola(String s) throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        List<EscolaBean> colecao = new ArrayList<EscolaBean>();
         try {
-            List<EscolaBean> listaescolas = new ArrayList<EscolaBean>();
             String sql = "select id_escola,id_escola ||'-'|| descescola descescola from hosp.escola "
                     + " where upper(id_escola ||'-'|| descescola) like ? order by descescola";
 
@@ -169,27 +170,24 @@ public class EscolaDAO {
             ps.setString(1, "%" + s.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<EscolaBean> colecao = new ArrayList<EscolaBean>();
-
             while (rs.next()) {
-
                 EscolaBean escola = new EscolaBean();
                 escola.setCodEscola(rs.getInt("id_escola"));
                 escola.setDescescola(rs.getString("descescola"));
                 colecao.add(escola);
-
             }
-            return colecao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return colecao;
     }
 
     public ArrayList<EscolaBean> listaTipoEscola() throws ProjetoException {
@@ -204,18 +202,16 @@ public class EscolaDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EscolaBean p = new EscolaBean();
-
-                p.setCodtipoescola(rs.getInt("codtipoescola"));
-                p.setDesctipoescola(rs.getString("desctipoescola")
-                        .toUpperCase());
-
-                lista.add(p);
+                EscolaBean escola = new EscolaBean();
+                escola.setCodtipoescola(rs.getInt("codtipoescola"));
+                escola.setDesctipoescola(rs.getString("desctipoescola").toUpperCase());
+                lista.add(escola);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {

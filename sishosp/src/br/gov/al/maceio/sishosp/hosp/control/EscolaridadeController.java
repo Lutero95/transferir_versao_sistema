@@ -69,7 +69,7 @@ public class EscolaridadeController implements Serializable {
         escolaridade = new EscolaridadeBean();
     }
 
-    public void gravarEscolaridade() {
+    public void gravarEscolaridade() throws ProjetoException {
 
         boolean cadastrou = eDao.cadastrar(escolaridade);
 
@@ -82,7 +82,7 @@ public class EscolaridadeController implements Serializable {
 
     }
 
-    public void alterarEscolaridade() {
+    public void alterarEscolaridade() throws ProjetoException {
 
         boolean alterou = eDao.alterar(escolaridade);
 

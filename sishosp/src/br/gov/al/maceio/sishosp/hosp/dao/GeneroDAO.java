@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.Genero;
 
 import java.sql.Connection;
@@ -15,7 +16,7 @@ public class GeneroDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarGenero(Genero genero) {
+	public boolean gravarGenero(Genero genero) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "INSERT INTO hosp.genero (descricao) VALUES (?);";
 
@@ -26,20 +27,21 @@ public class GeneroDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean alterarGenero(Genero genero) {
+	public Boolean alterarGenero(Genero genero) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.genero SET descricao = ? WHERE id = ?";
 
@@ -51,20 +53,21 @@ public class GeneroDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean excluirGenero(Integer id) {
+	public Boolean excluirGenero(Integer id) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "DELETE FROM hosp.genero WHERE id = ?";
 
@@ -75,17 +78,18 @@ public class GeneroDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public ArrayList<Genero> listarGeneros() throws ProjetoException {
@@ -100,15 +104,15 @@ public class GeneroDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				Genero g = new Genero();
-				g.setId(rs.getInt("id"));
-				g.setDescricao(rs.getString("descricao"));
-
-				lista.add(g);
+				Genero genero = new Genero();
+				genero.setId(rs.getInt("id"));
+				genero.setDescricao(rs.getString("descricao"));
+				lista.add(genero);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -123,21 +127,21 @@ public class GeneroDAO {
 			throws ProjetoException {
 		
 		String sql = "SELECT id, descricao FROM hosp.genero WHERE id = ? ORDER BY descricao";
+		Genero genero = new Genero();
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
-			Genero g = new Genero();
 			while (rs.next()) {
-				g.setId(rs.getInt("id"));
-				g.setDescricao(rs.getString("descricao"));
+				genero.setId(rs.getInt("id"));
+				genero.setDescricao(rs.getString("descricao"));
 			}
 
-			return g;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -145,6 +149,7 @@ public class GeneroDAO {
 				ex.printStackTrace();
 			}
 		}
+		return genero;
 	}
 
 }

@@ -9,16 +9,14 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
-import br.gov.al.maceio.sishosp.comum.Configuracao.ConexaoBuilder;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 
 import javax.faces.context.FacesContext;
 
@@ -29,7 +27,7 @@ public class AtendimentoDAO {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
-	public Boolean verificarSeCboEhDoProfissionalPorEquipe(List<AtendimentoBean> lista) {
+	public Boolean verificarSeCboEhDoProfissionalPorEquipe(List<AtendimentoBean> lista) throws ProjetoException {
 
 		Boolean retorno = false;
 		ArrayList<Integer> listaAux = new ArrayList<>();
@@ -59,29 +57,28 @@ public class AtendimentoDAO {
 					if (valor > 0) {
 						listaAux.add(lista.get(i).getProcedimento().getIdProc());
 					}
-
 				}
-
 			}
 
 			if (lista.size() == listaAux.size()) {
 				retorno = true;
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public String gerarMensagemSeCboNaoEhPermitidoParaProcedimento(List<AtendimentoBean> lista) {
+	public String gerarMensagemSeCboNaoEhPermitidoParaProcedimento(List<AtendimentoBean> lista) throws ProjetoException {
 
 		String retorno = "";
 		Boolean permiteAtendimento = false;
@@ -115,20 +112,21 @@ public class AtendimentoDAO {
 
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean verificarSeCboEhDoProfissionalPorProfissional(Long idProfissional, Integer idProcedimento) {
+	public Boolean verificarSeCboEhDoProfissionalPorProfissional(Long idProfissional, Integer idProcedimento) throws ProjetoException {
 
 		Boolean retorno = false;
 
@@ -146,17 +144,18 @@ public class AtendimentoDAO {
 				retorno = true;
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public Boolean realizaAtendimentoProfissional(FuncionarioBean funcionario, AtendimentoBean atendimento)
@@ -189,9 +188,10 @@ public class AtendimentoDAO {
 
 			alterou = true;
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -392,7 +392,6 @@ public class AtendimentoDAO {
 					ps8.setLong(4, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
 					ps8.setLong(5, listaProfissionaisRemovidosAtendimentoEquipe.get(i).getFuncionario().getId());
 					ps8.execute();
-					listaProfissionaisRemovidosAtendimentoEquipe = null;
 					ps6 = con.prepareStatement(sql6);
 					
 					ps6.setDate(1,new java.sql.Date( listaProfissionaisRemovidosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
@@ -406,14 +405,12 @@ public class AtendimentoDAO {
 				}			
 		}
 			
-
 			con.commit();
-
 			alterou = true;
-
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -445,7 +442,7 @@ public class AtendimentoDAO {
 	}
 
     public void alterarSituacaoAtendimentosNaoRegravados
-    	(List<AtendimentoBean> listaAtendimentosComSituacaoAlterada, Connection conexao) throws SQLException {
+    	(List<AtendimentoBean> listaAtendimentosComSituacaoAlterada, Connection conexao) throws SQLException, ProjetoException {
 
         String sql = "UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? WHERE id_atendimentos1 = ?" ;
 
@@ -460,11 +457,13 @@ public class AtendimentoDAO {
                 stmt.setInt(2, atendimento.getId1());
                 stmt.execute();	
 			}
-        } catch (Exception ex) {
+        } catch (SQLException ex2) {
         	conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } 
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
     }
 	
 	public Boolean insereProfissionalParaRealizarAtendimentoNaEquipe(AtendimentoBean atendimento, FuncionarioBean novoProfissional)
@@ -473,43 +472,36 @@ public class AtendimentoDAO {
 		con = ConnectionFactory.getConnection();
 		try {
 
-				String sql2 = "INSERT INTO hosp.atendimentos1( id_atendimento, codprofissionalatendimento, "
-						+ " cbo, codprocedimento) VALUES ( ?, ?, ?,(select coalesce(cod_procedimento, null) from hosp.programa where programa.id_programa=?));";
+			String sql2 = "INSERT INTO hosp.atendimentos1( id_atendimento, codprofissionalatendimento, "
+					+ " cbo, codprocedimento) VALUES ( ?, ?, ?,(select coalesce(cod_procedimento, null) from hosp.programa where programa.id_programa=?));";
 
-				PreparedStatement stmt2 = con.prepareStatement(sql2);
-				stmt2.setLong(1, atendimento.getId());
-				stmt2.setLong(2, novoProfissional.getId());
-				if (VerificadorUtil.verificarSeObjetoNuloOuZero(novoProfissional.getCbo().getCodCbo())) {
-					stmt2.setNull(3, Types.NULL);
-				} else {
-					stmt2.setInt(3, novoProfissional.getCbo().getCodCbo());
-				}
-				
-					stmt2.setInt(4,atendimento.getPrograma().getIdPrograma());
+			PreparedStatement stmt2 = con.prepareStatement(sql2);
+			stmt2.setLong(1, atendimento.getId());
+			stmt2.setLong(2, novoProfissional.getId());
+			if (VerificadorUtil.verificarSeObjetoNuloOuZero(novoProfissional.getCbo().getCodCbo())) {
+				stmt2.setNull(3, Types.NULL);
+			} else {
+				stmt2.setInt(3, novoProfissional.getCbo().getCodCbo());
+			}
 
-				stmt2.executeUpdate();
+			stmt2.setInt(4, atendimento.getPrograma().getIdPrograma());
 
-			
-
+			stmt2.executeUpdate();
 			con.commit();
-
 			alterou = true;
 
-		}catch(
-
-	Exception ex)
-	{
-		ex.printStackTrace();
-		throw new RuntimeException(ex);
-	}finally
-	{
-		try {
-			con.close();
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 		return alterou;
-	}
 	}
 
 	public Boolean cancelarAtendimentoProfissional(AtendimentoBean atendimento) throws ProjetoException {
@@ -524,22 +516,20 @@ public class AtendimentoDAO {
 			stmt.setInt(1, atendimento.getId1());
 
 			stmt.executeUpdate();
-
 			con.commit();
-
 			alterou = true;
-
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return alterou;
 		}
+		return alterou;
 	}
 
 	public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento, String campoBusca, String tipo)
@@ -642,9 +632,10 @@ public class AtendimentoDAO {
 				lista.add(at);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -688,9 +679,10 @@ public class AtendimentoDAO {
 				quantidadeDePendenciasAnterioresDeEvolucao = rs.getInt("qtd");
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -854,9 +846,10 @@ public class AtendimentoDAO {
 				lista.add(atendimentoBean);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -907,9 +900,10 @@ public class AtendimentoDAO {
 				atendimento.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -965,9 +959,10 @@ public class AtendimentoDAO {
 				atendimento.setPresenca(rs.getString("presenca"));
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1025,9 +1020,10 @@ public class AtendimentoDAO {
 				lista.add(atendimento);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1061,9 +1057,10 @@ public class AtendimentoDAO {
 				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1098,9 +1095,10 @@ public class AtendimentoDAO {
 				populaResultSetEvolucaoPacienteEquipeOuProfissional(lista, rs);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1163,9 +1161,10 @@ public class AtendimentoDAO {
 				lista.add(at);
 			}
 
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1177,7 +1176,7 @@ public class AtendimentoDAO {
 	}
 	
     public boolean verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(AtendimentoBean atendimento) throws ProjetoException {
-        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+        
         String sql = "select a.id_atendimento from hosp.atendimentos a  " + 
         		"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " + 
         		"where dtaatende=? " + 
@@ -1199,10 +1198,11 @@ public class AtendimentoDAO {
             while (rs.next()) {
                rst = true;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1225,10 +1225,11 @@ public class AtendimentoDAO {
             stm.executeUpdate();
             con.commit();
             alterado = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1250,10 +1251,11 @@ public class AtendimentoDAO {
             gravarEvolucaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
             con.commit();
             alterado = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1264,7 +1266,7 @@ public class AtendimentoDAO {
     }
     
     private void gravarEvolucaoCancelamentoEvolucao
-    	(Connection conexao, Integer idAtendimento, Integer idAtendimentos1, FuncionarioBean usuarioLiberacao) throws SQLException {
+    	(Connection conexao, Integer idAtendimento, Integer idAtendimentos1, FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
     	String sql = "INSERT INTO hosp.liberacoes " + 
     			"(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " + 
     			"VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?, ?); ";
@@ -1276,10 +1278,12 @@ public class AtendimentoDAO {
             stm.setInt(4, user_session.getUnidade().getId());
             stm.setInt(5, idAtendimentos1);
             stm.executeUpdate();
-        } catch (Exception ex) {
-        	con.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException ex2) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 }

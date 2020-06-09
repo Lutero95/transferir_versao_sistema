@@ -75,34 +75,31 @@ public class SituacaoAtendimentoController  implements Serializable {
 	}
 	
 	public void gravarSituacaoAtendimento() {
-			try {
-				if (this.situacaoAtendimento.getAtendimentoRealizado())
-				existeOutraSituacaoComAtendimentoRealizado();
-
-				if (situacaoAtendimentoDAO.gravarSituacaoAtendimento(this.situacaoAtendimento)) {
-					this.situacaoAtendimento = new SituacaoAtendimentoBean();
-					JSFUtil.adicionarMensagemSucesso("Situação do Atendimento gravada com sucesso", "");
-				}
-			} catch (ProjetoException e) {
-				e.printStackTrace();
-			}
-	}
-	
-	public void alterarSituacaoAtendimento() {
-		try {
-			if (this.situacaoAtendimento.getAtendimentoRealizado())
-				existeOutraSituacaoComAtendimentoRealizado();
-
-			if (situacaoAtendimentoDAO.alterarSituacaoAtendimento(this.situacaoAtendimento))
-				JSFUtil.adicionarMensagemSucesso("Situação do Atendimento alterada com sucesso", "");
-		} catch (ProjetoException e) {
-			e.printStackTrace();
+		if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
+				|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
+			
+			if (situacaoAtendimentoDAO.gravarSituacaoAtendimento(this.situacaoAtendimento)){
+				this.situacaoAtendimento = new SituacaoAtendimentoBean();
+				JSFUtil.adicionarMensagemSucesso("Situação do Atendimento gravada com sucesso", "");
+			}	
 		}
 	}
 	
-	private void existeOutraSituacaoComAtendimentoRealizado() throws ProjetoException {
-		if(situacaoAtendimentoDAO.existeOutraSituacaoComAtendimentoRealizado(this.situacaoAtendimento.getId()))
-			throw new ProjetoException("Já existe uma situação para atendimento realizado");
+	public void alterarSituacaoAtendimento() {
+			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
+					|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
+				
+				if (situacaoAtendimentoDAO.alterarSituacaoAtendimento(this.situacaoAtendimento))
+					JSFUtil.adicionarMensagemSucesso("Situação do Atendimento alterada com sucesso", "");	
+			}
+	}
+	
+	private Boolean existeOutraSituacaoComAtendimentoRealizado() {
+		if(situacaoAtendimentoDAO.existeOutraSituacaoComAtendimentoRealizado(this.situacaoAtendimento.getId())) {
+			JSFUtil.adicionarMensagemErro("Já existe uma situação para atendimento realizado", "Erro");
+			return true;
+		}
+		return false;
 	}
 	
 	public void excluirSituacaoAtendimento() {

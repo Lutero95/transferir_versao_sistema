@@ -115,12 +115,12 @@ public class ConfigAgendaController implements Serializable {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
-    public void inicializarConfiguracaoAgendaProfissional() {
+    public void inicializarConfiguracaoAgendaProfissional() throws ProjetoException {
         carregarListaConfiguracaoProfissionalGeral();
         carregarListaConfiguracaoProfissionalEspecifica();
     }
 
-    public void inicializarConfiguracaoAgendaEquipe() {
+    public void inicializarConfiguracaoAgendaEquipe() throws ProjetoException {
         carregarListaConfiguracaoEquipeGeral();
         carregarListaConfiguracaoEquipeEspecificaa();
     }
@@ -708,19 +708,19 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    private void carregarListaConfiguracaoProfissionalGeral() {
+    private void carregarListaConfiguracaoProfissionalGeral() throws ProjetoException {
         listaProfissionalConfiguracaoGeral = cDao.listarHorariosPorProfissionalGeral();
     }
 
-    private void carregarListaConfiguracaoProfissionalEspecifica() {
+    private void carregarListaConfiguracaoProfissionalEspecifica() throws ProjetoException {
         listaProfissionalConfiguracaoEspecifica = cDao.listarHorariosPorProfissionalEspecifica();
     }
 
-    private void carregarListaConfiguracaoEquipeGeral() {
+    private void carregarListaConfiguracaoEquipeGeral() throws ProjetoException {
         listaEquipeConfiguracaoGeral = cDao.listarHorariosPorEquipeGeral();
     }
 
-    private void carregarListaConfiguracaoEquipeEspecificaa() {
+    private void carregarListaConfiguracaoEquipeEspecificaa() throws ProjetoException {
         listaEquipeConfiguracaoEspecifica = cDao.listarHorariosPorEquipeEspecifica();
     }
 

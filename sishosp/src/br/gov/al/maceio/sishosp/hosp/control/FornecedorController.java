@@ -81,7 +81,7 @@ public class FornecedorController implements Serializable {
 		return listaMunicipios;
 	}
 
-	public void gravarFornecedor() {
+	public void gravarFornecedor() throws ProjetoException {
 
 		boolean cadastrou = fDao.gravarFornecedor(fornecedor);
 
@@ -93,7 +93,7 @@ public class FornecedorController implements Serializable {
 		}
 	}
 
-	public void alterarFornecedor() {
+	public void alterarFornecedor() throws ProjetoException {
 		boolean alterou = fDao.alterarFornecedor(fornecedor);
 
 		if (alterou == true) {

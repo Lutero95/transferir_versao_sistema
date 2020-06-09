@@ -86,7 +86,7 @@ public class CidController implements Serializable {
 		campoBusca = "";
 	}
 
-	public void alterarCid() {
+	public void alterarCid() throws ProjetoException {
 		boolean alterou = cDao.alterarCid(cid);
 
 		if (alterou == true) {

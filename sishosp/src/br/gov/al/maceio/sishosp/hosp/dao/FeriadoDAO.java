@@ -11,7 +11,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
 public class FeriadoDAO {
@@ -19,7 +19,7 @@ public class FeriadoDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public Boolean gravarFeriado(FeriadoBean feriado) {
+    public Boolean gravarFeriado(FeriadoBean feriado) throws ProjetoException {
         Boolean retorno = false;
         String sql = "insert into hosp.feriado (descferiado, dataferiado) values (?, ?);";
         try {
@@ -30,20 +30,21 @@ public class FeriadoDAO {
             ps.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarFeriado(FeriadoBean feriado) {
+    public Boolean alterarFeriado(FeriadoBean feriado) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.feriado set descferiado = ?, dataferiado = ? where codferiado = ?";
         try {
@@ -56,20 +57,21 @@ public class FeriadoDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirFeriado(FeriadoBean feriado) {
+    public Boolean excluirFeriado(FeriadoBean feriado) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.feriado where codferiado = ?";
         try {
@@ -79,17 +81,18 @@ public class FeriadoDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<FeriadoBean> listarFeriado() throws ProjetoException {
@@ -105,13 +108,13 @@ public class FeriadoDAO {
                 feriado.setCodFeriado(rs.getInt("codferiado"));
                 feriado.setDescFeriado(rs.getString("descferiado"));
                 feriado.setDataFeriado(rs.getDate("dataferiado"));
-
                 lista.add(feriado);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -137,10 +140,11 @@ public class FeriadoDAO {
                 feriado.setDataFeriado(rs.getDate("dataferiado"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -153,28 +157,24 @@ public class FeriadoDAO {
     public Boolean verificarSeEhFeriadoDataUnica(Date dataAtendimento)
             throws ProjetoException {
 
-        String sql = "";
-
-        sql = "SELECT codferiado FROM hosp.feriado WHERE dataferiado = ?";
-
+        String sql = "SELECT codferiado FROM hosp.feriado WHERE dataferiado = ?";
         Boolean retorno = false;
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-
             stm.setDate(1, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
-
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -197,8 +197,6 @@ public class FeriadoDAO {
 
             stm.setDate(1, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(dataAtendimentoFinal));
-
-
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -206,10 +204,11 @@ public class FeriadoDAO {
                 lista.add(data);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -219,10 +218,9 @@ public class FeriadoDAO {
         return lista;
     }
 
-    public Date verificarFeriadoDeData(Date data, Connection conAuxiliar) {
+    public Date verificarFeriadoDeData(Date data, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         String sql = "SELECT dataferiado FROM hosp.feriado WHERE dataferiado = ? ";
-
         Date dataSemBloqueio = null;
 
         try {
@@ -235,15 +233,13 @@ public class FeriadoDAO {
                 dataSemBloqueio = rs.getDate("dataferiado");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return dataSemBloqueio;
     }
 

@@ -75,7 +75,7 @@ public class BpaController {
 		limparDadosLayoutGerado();
 	}
 	
-	public void listarCompetencias() {
+	public void listarCompetencias() throws ProjetoException {
 		this.listaCompetencias = bpaIndividualizadoDAO.listarCompetencias();
 		formataCompetenciasParaExibicaoNaTela();
 	}

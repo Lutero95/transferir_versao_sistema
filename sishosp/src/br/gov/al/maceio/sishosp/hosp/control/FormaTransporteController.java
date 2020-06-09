@@ -68,7 +68,7 @@ public class FormaTransporteController implements Serializable {
         transporte = new FormaTransporteBean();
     }
 
-    public void gravarTransporte() {
+    public void gravarTransporte() throws ProjetoException {
         boolean cadastrou = fDao.cadastrar(transporte);
 
         if (cadastrou == true) {
@@ -80,7 +80,7 @@ public class FormaTransporteController implements Serializable {
 
     }
 
-    public void alterarTransporte() {
+    public void alterarTransporte() throws ProjetoException {
         boolean alterou = fDao.alterar(transporte);
 
         if (alterou == true) {

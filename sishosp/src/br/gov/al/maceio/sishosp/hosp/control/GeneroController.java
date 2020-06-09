@@ -86,7 +86,7 @@ public class GeneroController implements Serializable {
         return listaGeneros;
     }
 
-    public void gravarGenero() {
+    public void gravarGenero() throws ProjetoException {
         boolean cadastrou = sDao.gravarGenero(genero);
 
         if (cadastrou == true) {
@@ -97,7 +97,7 @@ public class GeneroController implements Serializable {
         }
     }
 
-    public void alterarGenero() {
+    public void alterarGenero() throws ProjetoException {
 
         boolean alterou = sDao.alterarGenero(genero);
         if (alterou == true) {

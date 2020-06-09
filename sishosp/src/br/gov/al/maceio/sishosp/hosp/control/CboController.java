@@ -74,7 +74,7 @@ public class CboController implements Serializable {
         return result;
     }
 
-    public void gravarCbo() {
+    public void gravarCbo() throws ProjetoException {
         boolean cadastrou = cDao.gravarCBO(this.cbo);
 
         if (cadastrou == true) {
@@ -85,7 +85,7 @@ public class CboController implements Serializable {
         }
     }
 
-    public void alterarCbo() {
+    public void alterarCbo() throws ProjetoException {
         boolean alterou = cDao.alterarCbo(cbo);
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("CBO alterado com sucesso!", "Sucesso");

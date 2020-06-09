@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 
 public class CboDAO {
@@ -17,7 +18,7 @@ public class CboDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarCBO(CboBean cbo) {
+    public boolean gravarCBO(CboBean cbo) throws ProjetoException {
         Boolean retorno = false;
         String sql = "insert into hosp.cbo (descricao, codigo) values (?,?);";
         try {
@@ -28,18 +29,18 @@ public class CboDAO {
             ps.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(),"Atenção");
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<CboBean> listarCbo() throws ProjetoException {
@@ -86,10 +87,11 @@ public class CboDAO {
                 cbo.setCodigo(rs.getString("codigo"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -118,10 +120,11 @@ public class CboDAO {
 
                 lista.add(cbo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -132,7 +135,7 @@ public class CboDAO {
         return lista;
     }
 
-    public Boolean alterarCbo(CboBean cbo) {
+    public Boolean alterarCbo(CboBean cbo) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.cbo set descricao = ?, codigo=? where id = ?";
         try {
@@ -144,20 +147,21 @@ public class CboDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirCbo(CboBean cbo) {
+    public Boolean excluirCbo(CboBean cbo) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.cbo where id = ?";
         try {
@@ -167,16 +171,17 @@ public class CboDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 }

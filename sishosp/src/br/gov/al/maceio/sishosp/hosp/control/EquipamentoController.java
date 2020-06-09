@@ -54,7 +54,7 @@ public class EquipamentoController implements Serializable {
         equipamento = new EquipamentoBean();
     }
 
-    public void gravarEquipamento() {
+    public void gravarEquipamento() throws ProjetoException {
         boolean cadastrou = eDao.gravarEquipamento(equipamento);
 
         if (cadastrou == true) {
@@ -88,7 +88,7 @@ public class EquipamentoController implements Serializable {
         listarEquipamentos();
     }
 
-    public void getEditEquipamento() {
+    public void getEditEquipamento() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -108,9 +108,8 @@ public class EquipamentoController implements Serializable {
         listEquipamentos = eDao.listarEquipamentos();
     }
 
-    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query) {
+    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query) throws ProjetoException {
         List<EquipamentoBean> result = eDao.listarEquipamentoAutoComplete(query);
-
         return result;
     }
 

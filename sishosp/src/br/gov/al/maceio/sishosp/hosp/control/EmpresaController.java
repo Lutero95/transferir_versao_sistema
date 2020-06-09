@@ -104,7 +104,7 @@ public class EmpresaController implements Serializable {
 
     }
 
-    public void gravarEmpresa() {
+    public void gravarEmpresa() throws ProjetoException {
 
         boolean cadastrou = eDao.gravarEmpresa(empresa);
 
@@ -116,7 +116,7 @@ public class EmpresaController implements Serializable {
         }
     }
 
-    public void alterarEmpresa() {
+    public void alterarEmpresa() throws ProjetoException {
         boolean alterou = eDao.alterarEmpresa(empresa);
 
         if (alterou == true) {
@@ -126,7 +126,7 @@ public class EmpresaController implements Serializable {
         }
     }
 
-    public void desativarEmpresa() {
+    public void desativarEmpresa() throws ProjetoException {
         boolean desativou = eDao.desativarEmpresa(empresa);
 
         if (desativou == true) {

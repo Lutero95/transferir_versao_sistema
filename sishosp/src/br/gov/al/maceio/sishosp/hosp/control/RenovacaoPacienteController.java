@@ -712,7 +712,7 @@ public class RenovacaoPacienteController implements Serializable {
         listaLaudosVigentes = laudoDAO.listarLaudosVigentesParaPaciente(insercao.getLaudo().getPaciente().getId_paciente());
     }
 
-    public void carregaHorariosEquipe() {
+    public void carregaHorariosEquipe() throws ProjetoException {
         listaHorariosAgenda =  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 

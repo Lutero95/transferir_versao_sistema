@@ -9,12 +9,13 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 
 public class EncaminhadoDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(EncaminhadoBean encaminhado) {
+    public Boolean cadastrar(EncaminhadoBean encaminhado) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.encaminhado (descencaminhado) values (?)";
@@ -27,20 +28,21 @@ public class EncaminhadoDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(EncaminhadoBean encaminhado) {
+    public Boolean alterar(EncaminhadoBean encaminhado) throws ProjetoException {
 
         boolean retorno = false;
         String sql = "update hosp.encaminhado set descencaminhado = ? where id_encaminhado = ?";
@@ -54,20 +56,21 @@ public class EncaminhadoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(EncaminhadoBean encaminhado) {
+    public Boolean excluir(EncaminhadoBean encaminhado) throws ProjetoException {
 
         boolean retorno = false;
         String sql = "delete from hosp.encaminhado where id_encaminhado = ?";
@@ -80,17 +83,18 @@ public class EncaminhadoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<EncaminhadoBean> listaEncaminhados()
@@ -114,10 +118,11 @@ public class EncaminhadoDAO {
 
                 lista.add(p);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -132,6 +137,7 @@ public class EncaminhadoDAO {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        EncaminhadoBean encaminhado = new EncaminhadoBean();
         try {
 
             String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado = ? order by descencaminhado";
@@ -140,33 +146,30 @@ public class EncaminhadoDAO {
             ps.setInt(1, i);
             ResultSet rs = ps.executeQuery();
 
-            EncaminhadoBean encaminhado = new EncaminhadoBean();
             while (rs.next()) {
-
                 encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
                 encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
-
             }
-            return encaminhado;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return encaminhado;
     }
 
-    public List<EncaminhadoBean> buscaencaminhado(String s)
-            throws ProjetoException {
+    public List<EncaminhadoBean> buscaencaminhado(String s) throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        List<EncaminhadoBean> colecao = new ArrayList<EncaminhadoBean>();
         try {
-            List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();
             String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado "
                     + " where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
 
@@ -174,27 +177,24 @@ public class EncaminhadoDAO {
             ps.setString(1, "%" + s.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<EncaminhadoBean> colecao = new ArrayList<EncaminhadoBean>();
-
             while (rs.next()) {
-
                 EncaminhadoBean encaminhado = new EncaminhadoBean();
                 encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
                 encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
                 colecao.add(encaminhado);
-
             }
-            return colecao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        }  catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return colecao;
     }
 
 }

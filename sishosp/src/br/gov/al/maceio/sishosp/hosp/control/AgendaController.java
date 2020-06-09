@@ -817,7 +817,7 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public void gravarAgenda(Integer funcionarioLiberacao) {
+    public void gravarAgenda(Integer funcionarioLiberacao) throws ProjetoException {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
                 || ((this.agenda.getTipoAt() == null) && (this.agenda.getAvaliacao() == false))
@@ -937,7 +937,7 @@ public class AgendaController implements Serializable {
     }
 
     // SEM USO NO MOMENTO
-    public void excluirAgendamento() {
+    public void excluirAgendamento() throws ProjetoException {
         boolean excluiu = aDao.excluirAgendamento(this.agenda);
         if (excluiu) {
             limparDados();
@@ -1162,7 +1162,7 @@ public class AgendaController implements Serializable {
         this.listaProfissional = fDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
     }
 
-    public void verificarSeAtendimentoFoiRealizado(){
+    public void verificarSeAtendimentoFoiRealizado() throws ProjetoException{
         Boolean atendimentoRealizado = aDao.verificarSeAtendimentoFoiRealizado(rowBean.getIdAgenda());
 
         if(atendimentoRealizado){
