@@ -10,12 +10,10 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
-import org.primefaces.context.RequestContext;
 
 import javax.faces.context.FacesContext;
 
@@ -83,14 +81,15 @@ public class InsercaoPacienteDAO {
 				insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
 				insercao.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
 				insercao.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-				 insercao.getLaudo().setMesFinal(rs.getInt("mes_final"));
-				 insercao.getLaudo().setAnoFinal(rs.getInt("ano_final"));
+				insercao.getLaudo().setMesFinal(rs.getInt("mes_final"));
+				insercao.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 
 				lista.add(insercao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -148,9 +147,10 @@ public class InsercaoPacienteDAO {
 				insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -282,11 +282,9 @@ public class InsercaoPacienteDAO {
 						}
 					}
 				}
-
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {
-
 				if (!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaLiberacao))) {
 					GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 					if (gDao.gravarLiberacao(id, listaLiberacao, idAtendimento, con)) {
@@ -295,16 +293,13 @@ public class InsercaoPacienteDAO {
 				} else {
 					con.commit();
 				}
-
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			RequestContext.getCurrentInstance().update("grw");
-			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
-			ex.printStackTrace();
-
-		//	
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -359,9 +354,6 @@ public class InsercaoPacienteDAO {
 				}
 			}
 			
-			
-		
-
 			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, encaixe, codatendente, dtamarcacao, codprograma, codgrupo)"
 					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
@@ -394,20 +386,15 @@ public class InsercaoPacienteDAO {
 				}
 
 				ps3.setBoolean(10, insercao.getEncaixe());
-
 				ps3.setLong(11, user_session.getId());
-
 				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
-
 				ps3.setLong(13, insercao.getGrupo().getIdGrupo());
-
 				rs = ps3.executeQuery();
 
 				idAtendimento = 0;
 				if (rs.next()) {
 					idAtendimento = rs.getInt("id_atendimento");
 				}
-				
 				
 				for (int j = 0; j < listaProfissionais.size(); j++) {
 
@@ -449,12 +436,9 @@ public class InsercaoPacienteDAO {
 						}
 					}
 				}
-				
-				
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {
-
 				if (!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaLiberacao))) {
 					GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 					if (gDao.gravarLiberacao(id, listaLiberacao, idAtendimento, con)) {
@@ -463,12 +447,12 @@ public class InsercaoPacienteDAO {
 				} else {
 					con.commit();
 				}
-
 				retorno = true;
 			}
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -480,7 +464,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
-			ArrayList<AgendaBean> listaAgendamento) {
+			ArrayList<AgendaBean> listaAgendamento) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -564,17 +548,17 @@ public class InsercaoPacienteDAO {
 				ps4.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
 
 				ps4.executeUpdate();
-
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {
 				con.commit();
-
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -594,19 +578,16 @@ public class InsercaoPacienteDAO {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, id);
-
 			ResultSet rs = stm.executeQuery();
-
 			while (rs.next()) {
 				data = rs.getDate("datafinal");
 			}
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -645,15 +626,16 @@ public class InsercaoPacienteDAO {
 			stm.setInt(7, codPaciente);
 			stm.setInt(8, insercao.getPrograma().getIdPrograma());
 			stm.setInt(9, insercao.getGrupo().getIdGrupo());
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				data = rs.getDate("datafinal");
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -668,24 +650,22 @@ public class InsercaoPacienteDAO {
 	public Boolean verificarSeLaudoConstaNoAtendimento(int codLaudo) throws ProjetoException {
 
 		Boolean retorno = false;
-
 		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE cod_laudo = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, codLaudo);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -706,19 +686,16 @@ public class InsercaoPacienteDAO {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, codLaudo);
-
 			ResultSet rs = stm.executeQuery();
-
 			while (rs.next()) {
 				retorno = true;
 			}
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -739,19 +716,17 @@ public class InsercaoPacienteDAO {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, codLaudo);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				retorno = true;
 			}
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -762,7 +737,7 @@ public class InsercaoPacienteDAO {
 		return retorno;
 	}
 
-	public AvaliacaoInsercaoDTO carregarAtendimentoAvaliacao(int codLaudo) {
+	public AvaliacaoInsercaoDTO carregarAtendimentoAvaliacao(int codLaudo) throws ProjetoException {
 
 		AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = new AvaliacaoInsercaoDTO();
 
@@ -772,11 +747,8 @@ public class InsercaoPacienteDAO {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, codLaudo);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -796,9 +768,10 @@ public class InsercaoPacienteDAO {
 						.setListaProfissionais(listarProfissionaisDaAvaliacaoQueOPacienteTemPerfil(codLaudo, con));
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -810,7 +783,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public ArrayList<FuncionarioBean> listarProfissionaisDaAvaliacaoQueOPacienteTemPerfil(int codLaudo,
-			Connection conAuxiliar) {
+			Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		ArrayList<FuncionarioBean> lista = new ArrayList<>();
 
@@ -823,9 +796,7 @@ public class InsercaoPacienteDAO {
 		try {
 
 			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-
 			stm.setInt(1, codLaudo);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -834,23 +805,20 @@ public class InsercaoPacienteDAO {
 				funcionarioBean.setId(rs.getLong("codprofissionalatendimento"));
 				funcionarioBean.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				funcionarioBean.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-
 				lista.add(funcionarioBean);
 			}
 
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 		return lista;
 	}
 
-	public Boolean verificarSeExisteLaudoAtivoParaProgramaIhGrupo(int codPrograma, int codGrupo, int codPaciente) {
+	public Boolean verificarSeExisteLaudoAtivoParaProgramaIhGrupo(int codPrograma, int codGrupo, int codPaciente) throws ProjetoException {
 
 		Boolean retorno = false;
 
@@ -860,23 +828,21 @@ public class InsercaoPacienteDAO {
 				" and l.codpaciente=?";
 
 		try {
-
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-
 			stm.setInt(1, codPrograma);
 			stm.setInt(2, codGrupo);
 			stm.setInt(3, codPaciente);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -887,7 +853,7 @@ public class InsercaoPacienteDAO {
 		return retorno;
 	}
 
-public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) {
+public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) throws ProjetoException {
 		
 		boolean dataValida = false;
 		String sql = "select exists ( " + 
@@ -908,9 +874,10 @@ public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer id
 				dataValida = rs.getBoolean("valida");
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();

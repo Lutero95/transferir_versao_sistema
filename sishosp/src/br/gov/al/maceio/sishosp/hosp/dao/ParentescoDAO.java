@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.util.List;
 public class ParentescoDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(Parentesco parentesco) {
+    public Boolean cadastrar(Parentesco parentesco) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.parentesco (descparentesco, tipo) values (?, ?)";
@@ -27,20 +28,21 @@ public class ParentescoDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(Parentesco parentesco) {
+    public Boolean alterar(Parentesco parentesco) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.parentesco set descparentesco = ?, tipo = ? where id_parentesco = ?";
         try {
@@ -54,20 +56,21 @@ public class ParentescoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(Parentesco parentesco) {
+    public Boolean excluir(Parentesco parentesco) throws ProjetoException {
         boolean retorno = false;
         String sql = "delete from hosp.parentesco where id_parentesco = ?";
         try {
@@ -77,19 +80,19 @@ public class ParentescoDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<Parentesco> listaParentescos() throws ProjetoException {
@@ -111,10 +114,11 @@ public class ParentescoDAO {
                 parentesco.setTipoParentesco(rs.getString("tipo"));
                 lista.add(parentesco);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -128,42 +132,38 @@ public class ParentescoDAO {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        Parentesco parentesco = new Parentesco();
         try {
-
             String sql = "select id_parentesco, descparentesco, coalesce(tipo,'O') tipoparentesco from hosp.parentesco where id_parentesco=? order by descparentesco";
 
             ps = conexao.prepareStatement(sql);
             ps.setInt(1, cod);
             ResultSet rs = ps.executeQuery();
-
-            Parentesco parentesco = new Parentesco();
             while (rs.next()) {
-
                 parentesco.setCodParentesco(rs.getInt("id_parentesco"));
                 parentesco.setDescParentesco(rs.getString("descparentesco"));
                 parentesco.setTipoParentesco(rs.getString("tipoparentesco"));
-
             }
-            return parentesco;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return parentesco;
     }
 
     public List<Parentesco> buscaParentesco(String s) throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
+        List<Parentesco> colecao = new ArrayList<Parentesco>();
 
         try {
-            List<Parentesco> listaParentescos = new ArrayList<Parentesco>();
-
             String sql = "select id_parentesco, descparentesco, tipo from hosp.parentesco "
                     + " where upper(descparentesco) like ? order by descparentesco";
 
@@ -171,28 +171,25 @@ public class ParentescoDAO {
             ps.setString(1, "%" + s.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<Parentesco> colecao = new ArrayList<Parentesco>();
-
             while (rs.next()) {
-
                 Parentesco parentesco = new Parentesco();
                 parentesco.setCodParentesco(rs.getInt("id_parentesco"));
                 parentesco.setDescParentesco(rs.getString("descparentesco"));
                 parentesco.setTipoParentesco(rs.getString("tipo"));
                 colecao.add(parentesco);
-
             }
-            return colecao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return colecao;
     }
     
     public boolean existeParentescoCadastrado(Parentesco parentesco, boolean editarParentesco) throws ProjetoException {
@@ -217,10 +214,11 @@ public class ParentescoDAO {
             	existeParentescoCadastrado = rs.getBoolean("existe_este_parentesco");
             }
             
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {

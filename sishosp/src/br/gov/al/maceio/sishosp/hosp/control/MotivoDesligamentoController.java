@@ -78,7 +78,7 @@ public class MotivoDesligamentoController implements Serializable {
         	listaMotivos = pDao.listarMotivos();
     }
 
-    public void gravarMotivo() {
+    public void gravarMotivo() throws ProjetoException {
         boolean cadastrou = pDao.gravarMotivo(motivo);
 
         if (cadastrou == true) {
@@ -89,7 +89,7 @@ public class MotivoDesligamentoController implements Serializable {
         }
     }
 
-    public void alterarMotivo() {
+    public void alterarMotivo() throws ProjetoException {
 
         boolean alterou = pDao.alterarMotivo(motivo);
         if (alterou == true) {

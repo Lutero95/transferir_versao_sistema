@@ -81,7 +81,7 @@ public class OperadoraController implements Serializable {
         return listaOperadoras;
     }
 
-    public void gravarOperadora() {
+    public void gravarOperadora() throws ProjetoException {
         boolean cadastrou = oDao.gravarOperadora(operadora);
 
         if (cadastrou == true) {
@@ -92,7 +92,7 @@ public class OperadoraController implements Serializable {
         }
     }
 
-    public void alterarOperadora() {
+    public void alterarOperadora() throws ProjetoException {
 
         boolean alterou = oDao.alterarOperadora(operadora);
         if (alterou == true) {

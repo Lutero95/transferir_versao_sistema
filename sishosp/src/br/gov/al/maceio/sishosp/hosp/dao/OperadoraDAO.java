@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.Operadora;
 
 import java.sql.Connection;
@@ -11,11 +12,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class OperadoraDAO {
-	private Connection conexao = null;
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarOperadora(Operadora operadora) {
+	public boolean gravarOperadora(Operadora operadora) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "INSERT INTO hosp.operadora (descricao) VALUES (?);";
 
@@ -26,20 +26,21 @@ public class OperadoraDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean alterarOperadora(Operadora operadora) {
+	public Boolean alterarOperadora(Operadora operadora) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.operadora SET descricao = ? WHERE id = ?";
 
@@ -51,20 +52,21 @@ public class OperadoraDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean excluirOperadora(Integer id) {
+	public Boolean excluirOperadora(Integer id) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "DELETE FROM hosp.operadora WHERE id = ?";
 
@@ -75,43 +77,43 @@ public class OperadoraDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public ArrayList<Operadora> listarOperadoras() throws ProjetoException {
 
 		String sql = "SELECT id, descricao FROM hosp.operadora ORDER BY descricao";
-
 		ArrayList<Operadora> lista = new ArrayList();
 
 		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				Operadora o = new Operadora();
-				o.setId(rs.getInt("id"));
-				o.setDescricao(rs.getString("descricao"));
-
-				lista.add(o);
+				Operadora operadora = new Operadora();
+				operadora.setId(rs.getInt("id"));
+				operadora.setDescricao(rs.getString("descricao"));
+				lista.add(operadora);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
-				conexao.close();
+				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -123,21 +125,21 @@ public class OperadoraDAO {
 			throws ProjetoException {
 		
 		String sql = "SELECT id, descricao FROM hosp.operadora WHERE id = ? ORDER BY descricao";
+		Operadora operadora = new Operadora();
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
-			Operadora r = new Operadora();
 			while (rs.next()) {
-				r.setId(rs.getInt("id"));
-				r.setDescricao(rs.getString("descricao"));
+				operadora.setId(rs.getInt("id"));
+				operadora.setDescricao(rs.getString("descricao"));
 			}
 
-			return r;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -145,6 +147,7 @@ public class OperadoraDAO {
 				ex.printStackTrace();
 			}
 		}
+		return operadora;
 	}
 
 }

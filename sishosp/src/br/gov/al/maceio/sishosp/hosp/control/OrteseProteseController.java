@@ -16,7 +16,6 @@ import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.OrteseProtese;
-import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -94,7 +93,7 @@ public class OrteseProteseController implements Serializable {
         }
     }
 
-    public void carregarEncaminhamentoOrteseIhProtese() {
+    public void carregarEncaminhamentoOrteseIhProtese() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -117,7 +116,7 @@ public class OrteseProteseController implements Serializable {
         orteseProtese.setNotaFiscal(null);
     }
 
-    public void gravarOrteseIhProtese() {
+    public void gravarOrteseIhProtese() throws ProjetoException {
         boolean cadastrou = oDao.gravarInsercaoOrteseIhProtese(this.orteseProtese);
 
         if (cadastrou == true) {
@@ -129,7 +128,7 @@ public class OrteseProteseController implements Serializable {
         }
     }
 
-    public void alterarOrteseIhProtese() {
+    public void alterarOrteseIhProtese() throws ProjetoException {
         boolean alterou = oDao.alterarOrteseIhProtese(orteseProtese);
 
         if (alterou == true) {
@@ -141,7 +140,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void gravarEncaminhamentoOrteseIhProtese() {
+    public void gravarEncaminhamentoOrteseIhProtese() throws ProjetoException {
         boolean cadastrou = oDao.gravarEncaminhamentoOrteseIhProtese(this.orteseProtese);
 
         if (cadastrou == true) {
@@ -151,7 +150,7 @@ public class OrteseProteseController implements Serializable {
         }
     }
 
-    public void alterarEncaminhamentoOrteseIhProtese() {
+    public void alterarEncaminhamentoOrteseIhProtese() throws ProjetoException {
         boolean alterou = oDao.alterarEncaminhamentoOrteseIhProtese(orteseProtese);
 
         if (alterou == true) {
@@ -163,7 +162,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void cancelarEncaminhamentoOrteseIhProtese() {
+    public void cancelarEncaminhamentoOrteseIhProtese() throws ProjetoException {
         boolean cancelou = oDao.cancelarEncaminhamentoOrteseIhProtese(orteseProtese);
 
         if (cancelou == true) {
@@ -177,7 +176,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void gravarMedicaoOrteseIhProtese() {
+    public void gravarMedicaoOrteseIhProtese() throws ProjetoException {
         boolean gravou = oDao.gravarMedicaoOrteseIhProtese(orteseProtese);
 
         if (gravou == true) {
@@ -190,7 +189,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void cancelarMedicaoOrteseIhProtese() {
+    public void cancelarMedicaoOrteseIhProtese() throws ProjetoException {
 
         boolean cancelou = oDao.cancelarMedicaoOrteseIhProtese(orteseProtese.getId());
 
@@ -214,7 +213,7 @@ public class OrteseProteseController implements Serializable {
         JSFUtil.abrirDialog("dlgMedicao");
     }
 
-    public void verificarEntrega() {
+    public void verificarEntrega() throws ProjetoException {
         String situacao = oDao.verificarSituacao(orteseProtese.getId());
 
         if (situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla())) {
@@ -238,7 +237,7 @@ public class OrteseProteseController implements Serializable {
         orteseProtese.setLaudo(insercao.getLaudo());
     }
 
-    public void gravarEntregaOrteseIhProtese() {
+    public void gravarEntregaOrteseIhProtese() throws ProjetoException {
         boolean gravou = oDao.gravarEntregaOrteseIhProtese(orteseProtese.getId());
 
         if (gravou == true) {
@@ -251,7 +250,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void cancelarEntregaOrteseIhProtese() {
+    public void cancelarEntregaOrteseIhProtese() throws ProjetoException {
         boolean cancelou = oDao.cancelarEntregaOrteseIhProtese(orteseProtese.getId());
 
         if (cancelou == true) {
@@ -264,7 +263,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void verificarRecebimento() {
+    public void verificarRecebimento() throws ProjetoException {
         String situacao = oDao.verificarSituacao(orteseProtese.getId());
 
         if (situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla())) {
@@ -274,7 +273,7 @@ public class OrteseProteseController implements Serializable {
         }
     }
 
-    public void gravarRecebimentoOrteseIhProtese() {
+    public void gravarRecebimentoOrteseIhProtese() throws ProjetoException {
         boolean gravou = oDao.gravarRecebimentoOrteseIhProtese(orteseProtese.getId());
 
         if (gravou == true) {
@@ -287,7 +286,7 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void cancelarRecebimentoOrteseIhProtese() {
+    public void cancelarRecebimentoOrteseIhProtese() throws ProjetoException {
         boolean cancelou = oDao.cancelarRecebimentoOrteseIhProtese(orteseProtese.getId());
 
         if (cancelou == true) {
@@ -304,7 +303,7 @@ public class OrteseProteseController implements Serializable {
         orteseProtese.getLaudo().setPaciente(new PacienteDAO().buscarPacientePorIdOrteseProtese(orteseProtese.getId()));
     }
 
-    public void listarOrteseIhProtese() {
+    public void listarOrteseIhProtese() throws ProjetoException {
         listOrteseProtese = oDao.listarOrteseIhProtese();
         temOrteseIhProteseCadastrado = false;
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()

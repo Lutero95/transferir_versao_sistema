@@ -197,7 +197,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
-    private void carregarDadosAvaliacao(){
+    private void carregarDadosAvaliacao() throws ProjetoException{
         AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = iDao.carregarAtendimentoAvaliacao(insercao.getLaudo().getId());
         insercao.setPrograma(avaliacaoInsercaoDTO.getProgramaBean());
         insercao.setGrupo(avaliacaoInsercaoDTO.getGrupoBean());
@@ -717,7 +717,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
     
-    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() {
+    public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() throws ProjetoException {
     	boolean dataValida =  iDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercao.getLaudo().getId(), insercao.getDataSolicitacao()); 
     	if(!dataValida)
     		JSFUtil.adicionarMensagemErro("Data de Inclusão não está dentro do intervalo da data do laudo", "Erro!");
