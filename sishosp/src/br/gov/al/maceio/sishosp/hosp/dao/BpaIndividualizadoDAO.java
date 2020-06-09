@@ -183,7 +183,7 @@ public class BpaIndividualizadoDAO {
     }
 
 	public List<String> listarCompetencias() throws ProjetoException {
-		String sql = "select distinct pm.competencia_atual from sigtap.procedimento_mensal pm ";
+		String sql = "select distinct pm.competencia_inicial from sigtap.procedimento_mensal pm ";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
         try {
@@ -191,7 +191,7 @@ public class BpaIndividualizadoDAO {
         	PreparedStatement ps = con.prepareStatement(sql);          
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-            	String competencia = rs.getString("competencia_atual");
+            	String competencia = rs.getString("competencia_inicial");
             	listaCompetencias.add(competencia);
             }
         } catch (SQLException ex2) {

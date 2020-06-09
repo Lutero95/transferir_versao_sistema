@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.BaixaReceber;
 import br.gov.al.maceio.sishosp.financeiro.model.CaixaDiarioBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ChequeEmitidoBean;
@@ -35,42 +36,35 @@ public class TesourariaDAO {
 		Connection con = null;
 		ResultSet rs = null;
 
+		List<TesourariaBean> colecao = new ArrayList<>();
 		try {
-
 			con = ConnectionFactory.getConnection();
 			String sql = "select codseq,idbanco,  dtmovimento, valor, complemento, tipo, opcad, codreceber, codpagar, seqcaixadiario from financeiro.movtesouraria where idbanco = ? and seqcaixadiario = ?  order by codseq";
-
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, codbanco);
 			ps.setInt(2, seqcaixa);
 
 			rs = ps.executeQuery();
-			TesourariaBean e = new TesourariaBean();
-			List<TesourariaBean> colecao = new ArrayList<>();
+			TesourariaBean tesouraria = new TesourariaBean();
 			while (rs.next()) {
-				e = new TesourariaBean();
-				e.setCodseq(rs.getInt("codseq"));
-				e.getBanco().setId(rs.getInt("idbanco"));
-				e.setDtmovimento(rs.getDate("dtmovimento"));
-				e.setValor(rs.getDouble("valor"));
-				e.setComplemento(rs.getString("complemento"));
-				e.setTipo(rs.getString("tipo"));
-				e.getFunc().setId(rs.getLong("opcad"));
-				e.setCodreceber(rs.getInt("codreceber"));
-				e.setCodpagar(rs.getInt("codpagar"));
-				e.setSeqcaixadiario(rs.getInt("seqcaixadiario"));
-
-				colecao.add(e);
-
+				tesouraria = new TesourariaBean();
+				tesouraria.setCodseq(rs.getInt("codseq"));
+				tesouraria.getBanco().setId(rs.getInt("idbanco"));
+				tesouraria.setDtmovimento(rs.getDate("dtmovimento"));
+				tesouraria.setValor(rs.getDouble("valor"));
+				tesouraria.setComplemento(rs.getString("complemento"));
+				tesouraria.setTipo(rs.getString("tipo"));
+				tesouraria.getFunc().setId(rs.getLong("opcad"));
+				tesouraria.setCodreceber(rs.getInt("codreceber"));
+				tesouraria.setCodpagar(rs.getInt("codpagar"));
+				tesouraria.setSeqcaixadiario(rs.getInt("seqcaixadiario"));
+				colecao.add(tesouraria);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -80,6 +74,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public boolean pesquisaNumCheque(ChequeEmitidoBean cheque) throws ProjetoException {
@@ -87,7 +82,6 @@ public class TesourariaDAO {
 		PreparedStatement ps = null;
 		Connection con = null;
 		ResultSet rs = null;
-
 		boolean rst = false;
 
 		try {
@@ -95,11 +89,7 @@ public class TesourariaDAO {
 
 			String sql = "select codcheque from Cheque_Emitido where idBanco = ? and NumCheque = ? and status<>'CA' ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, cheque.getBanco().getId());
 			ps.setString(2, cheque.getNumcheque());
 
@@ -109,12 +99,11 @@ public class TesourariaDAO {
 				rst = true;
 			}
 
-			return rst;
-
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
-
-		} finally {
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
 			try {
 				ps.close();
 				rs.close();
@@ -123,6 +112,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return rst;
 	}
 
 	public ChequeEmitidoBean pesquisaChequeEmitido(Integer codcheque, Integer codigo) throws ProjetoException {
@@ -133,19 +123,17 @@ public class TesourariaDAO {
 		ResultSet rs = null;
 		// PROVAVELMENTE ESSE SQL QUE FIZ ABAIXO TA ERRADO, RETIRAR E DEIXAR SÃ“ O
 		// SEGUNDO SQL
+		ChequeEmitidoBean cheque = new ChequeEmitidoBean();
 		try {
 			con = ConnectionFactory.getConnection();
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			String sql2 = "select bx.codchqemitido from financeiro.pagdupbx bx join financeiro.pagdup p on (bx.codigo = p.codigo) where bx.codigo=? ";
 			ps = con.prepareStatement(sql2);
-			ChequeEmitidoBean chq = new ChequeEmitidoBean();
 			ps.setInt(1, codigo);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				chq = new ChequeEmitidoBean();
-				chq.setCodcheque(rs.getInt("codchqemitido"));
-				codcheque2 = chq.getCodcheque();
+				cheque = new ChequeEmitidoBean();
+				cheque.setCodcheque(rs.getInt("codchqemitido"));
+				codcheque2 = cheque.getCodcheque();
 			}
 
 			ps.close();
@@ -154,25 +142,22 @@ public class TesourariaDAO {
 			String sql = "select codcheque, idbanco from financeiro.Cheque_Emitido where codcheque=?";
 
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, codcheque2);
 
 			// chq = null;
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				chq = new ChequeEmitidoBean();
-				chq.setCodcheque(rs.getInt("codcheque"));
-				chq.getBanco().setId(rs.getInt("idbanco"));
+				cheque = new ChequeEmitidoBean();
+				cheque.setCodcheque(rs.getInt("codcheque"));
+				cheque.getBanco().setId(rs.getInt("idbanco"));
 
 			}
-
-			return chq;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
-		} finally {
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
 			try {
 				ps.close();
 				rs.close();
@@ -181,6 +166,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return cheque;
 	}
 
 	public double saldoInicialCaixaBc(Integer idbanco, Integer seqcaixa) throws ProjetoException {
@@ -195,25 +181,18 @@ public class TesourariaDAO {
 			String sql = "select saldoinicial from financeiro.CaixaDiario_Bc where idBanco =?"
 					+ " and SeqCaixaDiario = ? ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, idbanco);
 			ps.setInt(2, seqcaixa);
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saldo = rs.getDouble("saldoinicial");
 			}
-
-			return saldo;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -223,6 +202,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return saldo;
 	}
 
 	public Integer retornaSeqCaixaTesAberto() throws ProjetoException {
@@ -234,27 +214,19 @@ public class TesourariaDAO {
 		Integer seqcaixa = 0;
 		try {
 			con = ConnectionFactory.getConnection();
-
 			String sql = "SELECT seqcaixadiario FROM financeiro.CAIXADIARIO  WHERE  status='A'";
-
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				seqcaixa = rs.getInt("seqcaixadiario");
 			}
 
-			return seqcaixa;
-
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
-
-		} finally {
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
 			try {
 				ps.close();
 				rs.close();
@@ -263,6 +235,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return seqcaixa;
 	}
 
 	public double totalCreditosTesBc(Integer idbanco, Integer seqcaixa) throws ProjetoException {
@@ -277,24 +250,19 @@ public class TesourariaDAO {
 			String sql = "select sum(Valor) valor from financeiro.movtesouraria where idbanco =?"
 					+ " and SeqCaixaDiario = ? and Tipo = 'CD' ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, idbanco);
 			ps.setInt(2, seqcaixa);
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				total = rs.getDouble("valor");
 			}
-			return total;
 
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -304,6 +272,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return total;
 	}
 
 	public double totalDebitosTesBc(Integer idbanco, Integer seqcaixa) throws ProjetoException {
@@ -319,11 +288,7 @@ public class TesourariaDAO {
 			String sql = "select sum(Valor) valor from financeiro.movtesouraria where idbanco =?"
 					+ " and SeqCaixaDiario = ? and Tipo = 'DB' ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, idbanco);
 			ps.setInt(2, seqcaixa);
 
@@ -333,11 +298,10 @@ public class TesourariaDAO {
 				total = rs.getDouble("valor");
 			}
 
-			return total;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -347,6 +311,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return total;
 	}
 
 	public CaixaDiarioBean retornaCaixaAtual() throws ProjetoException {
@@ -363,12 +328,7 @@ public class TesourariaDAO {
 			String sql = "SELECT seqcaixadiario,status, data FROM financeiro.CAIXADIARIO"
 					+ " WHERE SEQCAIXADIARIO = (SELECT MAX(SEQCAIXADIARIO) FROM financeiro.CAIXADIARIO ) ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -377,11 +337,10 @@ public class TesourariaDAO {
 				caixa.setDataCaixaAbertura(rs.getDate("data"));
 			}
 
-			return caixa;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -391,6 +350,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return caixa;
 	}
 
 	public boolean abreCaixa(Integer codbanco) throws ProjetoException {
@@ -405,15 +365,13 @@ public class TesourariaDAO {
 					+ " SELECT coalesce(saldoinicial,0)+coalesce(creditos,0)-coalesce(debitos,0) saldofinal FROM financeiro.caixadiario"
 					+ " WHERE SEQCAIXADIARIO = (SELECT MAX(SEQCAIXADIARIO) FROM financeiro.CAIXADIARIO )"
 					+ " union all" + " select 0" + " ) as t))";
+			
 			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 					.getSessionMap().get("obj_usuario");
+			
 			ps = con.prepareStatement(sql);
-
 			ps.setLong(1, user_session.getId());
-
-
 			ps.executeUpdate();
-
 			ps.close();
 			// insere na tabela caixadiario_bc
 			/*
@@ -457,16 +415,13 @@ public class TesourariaDAO {
 			user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
 			ps = con.prepareStatement(sql);
-
-
 			ps.executeUpdate();
 			con.commit();
-
 			result = true;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -475,14 +430,12 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 
 	public boolean fechaCaixa(CaixaDiarioBean caixa) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = null;
-
 		boolean result = false;
 
 		try {
@@ -496,10 +449,7 @@ public class TesourariaDAO {
 					+ "	select 0  cred, sum(valor) deb from financeiro.movtesouraria m" + "	where 1=1"
 					+ "	and m.seqcaixadiario=?" + "	and tipo='DB'" + "	)w ) t" + "	where seqcaixadiario=?";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, caixa.getSeqcaixadiario());
 			ps.setInt(2, caixa.getSeqcaixadiario());
 			ps.setInt(3, caixa.getSeqcaixadiario());
@@ -515,22 +465,19 @@ public class TesourariaDAO {
 					+ "	select 0  cred, sum(valor) deb, m.idbanco from financeiro.movtesouraria m	where 1=1 "
 					+ "	and m.seqcaixadiario=?	and tipo='DB'	group by m.idbanco	)w group by idbanco) t"
 					+ "	where t.idbanco = bc.idbanco";
-			user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("obj_usuario");
-			ps = con.prepareStatement(sql);
 
+			ps = con.prepareStatement(sql);
 			ps.setInt(1, caixa.getSeqcaixadiario());
 			ps.setInt(2, caixa.getSeqcaixadiario());
-
 			ps.executeUpdate();
 			con.commit();
 
 			result = true;
 
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -538,7 +485,6 @@ public class TesourariaDAO {
 			} catch (Exception sqlc) {
 				sqlc.printStackTrace();
 			}
-
 		}
 		return result;
 	}
@@ -550,6 +496,7 @@ public class TesourariaDAO {
 		Connection con = null;
 		ResultSet rs = null;
 
+		List<TituloPagarBean> colecao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
 			String sql = "select  P.VALOR,p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)\n" + 
@@ -570,9 +517,6 @@ public class TesourariaDAO {
 					+ "    OR (P.Valor > ( SELECT sum(valor)"
 					+ "    FROM financeiro.Cheque_Emitido2 WHERE CODPAGDUP = P.CODIGO )))";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
 
 			ps.setDate(1, new java.sql.Date(periodoInicial.getTime()));
@@ -580,41 +524,36 @@ public class TesourariaDAO {
 			if (forn != null) {
 				if (forn.getCodforn() != null) {
 					ps.setInt(3, forn.getCodforn());
-
 				}
 			}
 
 			rs = ps.executeQuery();
-			TituloPagarBean e = new TituloPagarBean();
-			List<TituloPagarBean> colecao = new ArrayList<>();
+			TituloPagarBean tituloPagaar = new TituloPagarBean();
 			while (rs.next()) {
-				e = new TituloPagarBean();
-				e.setValor(rs.getDouble("valor"));
-				e.setValoraberto(rs.getDouble("valoraberto"));
-				e.getDespesa().setId(rs.getInt("iddespesa"));
-				e.getCcusto().setIdccusto(rs.getInt("idccusto"));
-				e.getForn().setCodforn(rs.getInt("codforn"));
-				e.getForn().setNome(rs.getString("nomeforn"));
-				e.getForn().setFantasia(rs.getString("fantasiaforn"));
-				e.setCodigo(rs.getInt("codigo"));
-				e.getPortador().setCodportador(rs.getInt("codport"));
-				e.setDtemissao(rs.getDate("dtemissao"));
-				e.setDtprevisao(rs.getDate("dtprevisao"));
-				e.setDtvcto(rs.getDate("dtvcto"));
-				e.setDuplicata(rs.getString("duplicata"));
-				e.setHistorico(rs.getString("historico"));
-				e.setParcela(rs.getString("parcela"));
-				e.setSituacao(rs.getString("situacao"));
-				e.setVlr_retencao(rs.getDouble("vlr_retencao"));
-
-				colecao.add(e);
+				tituloPagaar = new TituloPagarBean();
+				tituloPagaar.setValor(rs.getDouble("valor"));
+				tituloPagaar.setValoraberto(rs.getDouble("valoraberto"));
+				tituloPagaar.getDespesa().setId(rs.getInt("iddespesa"));
+				tituloPagaar.getCcusto().setIdccusto(rs.getInt("idccusto"));
+				tituloPagaar.getForn().setCodforn(rs.getInt("codforn"));
+				tituloPagaar.getForn().setNome(rs.getString("nomeforn"));
+				tituloPagaar.getForn().setFantasia(rs.getString("fantasiaforn"));
+				tituloPagaar.setCodigo(rs.getInt("codigo"));
+				tituloPagaar.getPortador().setCodportador(rs.getInt("codport"));
+				tituloPagaar.setDtemissao(rs.getDate("dtemissao"));
+				tituloPagaar.setDtprevisao(rs.getDate("dtprevisao"));
+				tituloPagaar.setDtvcto(rs.getDate("dtvcto"));
+				tituloPagaar.setDuplicata(rs.getString("duplicata"));
+				tituloPagaar.setHistorico(rs.getString("historico"));
+				tituloPagaar.setParcela(rs.getString("parcela"));
+				tituloPagaar.setSituacao(rs.getString("situacao"));
+				tituloPagaar.setVlr_retencao(rs.getDouble("vlr_retencao"));
+				colecao.add(tituloPagaar);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -624,6 +563,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public boolean compensaTitulosPagar(ChequeEmitidoBean cheque, List<TituloPagarBean> lst, String tipodoc)
@@ -661,9 +601,7 @@ public class TesourariaDAO {
 				ps.setNull(13, Types.OTHER);
 			
 			ps.executeUpdate();
-
 			int retornoid = 0;
-
 			retornoid = ps.getInt(1);
 
 			for (int x = 0; x < lst.size(); x++) {
@@ -728,7 +666,6 @@ public class TesourariaDAO {
 					PreparedStatement pspg = con.prepareStatement(sql);
 
 					pspg.setInt(1, lst.get(x).getCodigo());
-
 					pspg.execute();
 					pspg.close();
 				}
@@ -751,12 +688,12 @@ public class TesourariaDAO {
 			con.commit();
 
 			result = true;
-
 			pstes.close();
 
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -772,14 +709,11 @@ public class TesourariaDAO {
 	public boolean compensaTituloAvulso(ChequeEmitidoBean cheque, TituloPagarBean titulo, String tipodoc, Connection conexao)
 			throws ProjetoException, SQLException {
 
-		Connection con = null;
 		CallableStatement ps = null;
 
 		boolean result = false;
 
 		try {
-			
-
 			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 					.getSessionMap().get("obj_usuario");
 
@@ -804,9 +738,7 @@ public class TesourariaDAO {
 				ps.setNull(13, Types.OTHER);
 			
 			ps.executeUpdate();
-
 			int retornoid = 0;
-
 			retornoid = ps.getInt(1);
 
 				// CHEQUE_EMITIDO2
@@ -868,15 +800,10 @@ public class TesourariaDAO {
 				if (titulo.getTitulobaixa().getTpbaixa().equals("1")) {
 					sql = "update financeiro.pagdup set situacao='F' where codigo=? ";
 					PreparedStatement pspg = conexao.prepareStatement(sql);
-
 					pspg.setInt(1, titulo.getCodigo());
-
 					pspg.execute();
 					pspg.close();
 				}
-
-			
-
 			// insercao movtesouraria
 			sql = "insert into financeiro.movtesouraria (	idbanco, tipo, valor, codchqemitido, complemento, seqcaixadiario,  dtmovimento, opcad) values (?,?,?,?,?,?,current_date,?) ";
 			PreparedStatement pstes = conexao.prepareStatement(sql);
@@ -890,14 +817,14 @@ public class TesourariaDAO {
 			pstes.setLong(7, user_session.getId());
 
 			pstes.execute();
-
 			result = true;
-
 			pstes.close();
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -967,8 +894,10 @@ public class TesourariaDAO {
 
 			con.commit();
 			cancelou = true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -977,7 +906,6 @@ public class TesourariaDAO {
 				e2.printStackTrace();
 			}
 		}
-
 		return cancelou;
 	}
 
@@ -1042,8 +970,10 @@ public class TesourariaDAO {
 
 			con.commit();
 			cancelou = true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1053,7 +983,6 @@ public class TesourariaDAO {
 				e2.printStackTrace();
 			}
 		}
-
 		return cancelou;
 	}
 
@@ -1064,6 +993,7 @@ public class TesourariaDAO {
 		Connection con = null;
 		ResultSet rs = null;
 
+		List<ChequeEmitidoBean> colecao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
 
@@ -1087,9 +1017,6 @@ public class TesourariaDAO {
 				sql += " and dtvencimento between ? and ? ";
 			}
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
 
 			ps.setInt(1, codbanco);
@@ -1100,30 +1027,26 @@ public class TesourariaDAO {
 			}
 
 			rs = ps.executeQuery();
-			ChequeEmitidoBean e = new ChequeEmitidoBean();
-			List<ChequeEmitidoBean> colecao = new ArrayList<>();
-
+			ChequeEmitidoBean chequeEmitido = new ChequeEmitidoBean();
 			while (rs.next()) {
-				e = new ChequeEmitidoBean();
-				e.setCodcheque(rs.getInt("codcheque"));
-				e.getBanco().setId(rs.getInt("idbanco"));
-				e.setValor(rs.getDouble("valor"));
-				e.setNumcheque(rs.getString("numcheque"));
-				e.setDtemissao(rs.getDate("dtemissao"));
-				e.setDtvencimento(rs.getDate("dtvencimento"));
-				e.setCompensado(rs.getString("compensado"));
-				e.setDtcompensado(rs.getDate("dtcompensado"));
-				e.setNominal(rs.getString("nominal"));
-				e.setStatus(rs.getString("status"));
-				colecao.add(e);
-
+				chequeEmitido = new ChequeEmitidoBean();
+				chequeEmitido.setCodcheque(rs.getInt("codcheque"));
+				chequeEmitido.getBanco().setId(rs.getInt("idbanco"));
+				chequeEmitido.setValor(rs.getDouble("valor"));
+				chequeEmitido.setNumcheque(rs.getString("numcheque"));
+				chequeEmitido.setDtemissao(rs.getDate("dtemissao"));
+				chequeEmitido.setDtvencimento(rs.getDate("dtvencimento"));
+				chequeEmitido.setCompensado(rs.getString("compensado"));
+				chequeEmitido.setDtcompensado(rs.getDate("dtcompensado"));
+				chequeEmitido.setNominal(rs.getString("nominal"));
+				chequeEmitido.setStatus(rs.getString("status"));
+				colecao.add(chequeEmitido);
 			}
 
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1133,6 +1056,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public List<ChequeRecebidoBean> pesquisaChequesRecebidosBusca(Integer codbanco, ChequeRecebidoBean cheque)
@@ -1141,7 +1065,7 @@ public class TesourariaDAO {
 		PreparedStatement ps = null;
 		Connection con = null;
 		ResultSet rs = null;
-
+		List<ChequeRecebidoBean> colecao = new ArrayList<ChequeRecebidoBean>();
 		try {
 			con = ConnectionFactory.getConnection();
 
@@ -1170,9 +1094,6 @@ public class TesourariaDAO {
 				sql += " and numcheque = ? ";
 			}
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
 			int i = 2;
 			ps.setInt(1, codbanco);
@@ -1187,29 +1108,25 @@ public class TesourariaDAO {
 			}
 
 			rs = ps.executeQuery();
-			ChequeRecebidoBean e = new ChequeRecebidoBean();
-			List<ChequeRecebidoBean> colecao = new ArrayList<ChequeRecebidoBean>();
+			ChequeRecebidoBean chequeRecebido = new ChequeRecebidoBean();
 			while (rs.next()) {
-				e = new ChequeRecebidoBean();
-				e.setCodcheque(rs.getInt("codcheque"));
-				e.getBanco().setId(rs.getInt("codbanco"));
-				e.setValor(rs.getDouble("valor"));
-				e.setNumcheque(rs.getString("numcheque"));
-				e.setDtemissao(rs.getDate("dtemissao"));
-				e.setDtvencimento(rs.getDate("dtvencimento"));
-				e.setCompensado(rs.getString("compensado"));
-				e.setDtcompensado(rs.getDate("dtcompensacao"));
-				e.setNominal(rs.getString("nominal"));
-				e.setStatus(rs.getString("status"));
-				colecao.add(e);
-
+				chequeRecebido = new ChequeRecebidoBean();
+				chequeRecebido.setCodcheque(rs.getInt("codcheque"));
+				chequeRecebido.getBanco().setId(rs.getInt("codbanco"));
+				chequeRecebido.setValor(rs.getDouble("valor"));
+				chequeRecebido.setNumcheque(rs.getString("numcheque"));
+				chequeRecebido.setDtemissao(rs.getDate("dtemissao"));
+				chequeRecebido.setDtvencimento(rs.getDate("dtvencimento"));
+				chequeRecebido.setCompensado(rs.getString("compensado"));
+				chequeRecebido.setDtcompensado(rs.getDate("dtcompensacao"));
+				chequeRecebido.setNominal(rs.getString("nominal"));
+				chequeRecebido.setStatus(rs.getString("status"));
+				colecao.add(chequeRecebido);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1219,6 +1136,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public List<ChequeRecebidoBean> pesquisaChequesRecebido(Integer codbanco, ChequeRecebidoBean cheque)
@@ -1227,7 +1145,7 @@ public class TesourariaDAO {
 		PreparedStatement ps = null;
 		Connection con = null;
 		ResultSet rs = null;
-
+		List<ChequeRecebidoBean> colecao = new ArrayList<ChequeRecebidoBean>();
 		try {
 			con = ConnectionFactory.getConnection();
 
@@ -1249,9 +1167,6 @@ public class TesourariaDAO {
 				sql += " and numcheque = ? ";
 			}
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
 			int i = 2;
 			ps.setInt(1, codbanco);
@@ -1266,29 +1181,25 @@ public class TesourariaDAO {
 			}
 
 			rs = ps.executeQuery();
-			ChequeRecebidoBean e = new ChequeRecebidoBean();
-			List<ChequeRecebidoBean> colecao = new ArrayList<ChequeRecebidoBean>();
+			ChequeRecebidoBean chequeRecebido = new ChequeRecebidoBean();
 			while (rs.next()) {
-				e = new ChequeRecebidoBean();
-				e.setCodcheque(rs.getInt("codcheque"));
-				e.getBanco().setId(rs.getInt("codbanco"));
-				e.setValor(rs.getDouble("valor"));
-				e.setNumcheque(rs.getString("numcheque"));
-				e.setDtemissao(rs.getDate("dtemissao"));
-				e.setDtvencimento(rs.getDate("dtvencimento"));
-				e.setCompensado(rs.getString("compensado"));
-				e.setDtcompensado(rs.getDate("dtcompensacao"));
-				e.setNominal(rs.getString("nominal"));
-				e.setStatus(rs.getString("status"));
-
-				colecao.add(e);
+				chequeRecebido = new ChequeRecebidoBean();
+				chequeRecebido.setCodcheque(rs.getInt("codcheque"));
+				chequeRecebido.getBanco().setId(rs.getInt("codbanco"));
+				chequeRecebido.setValor(rs.getDouble("valor"));
+				chequeRecebido.setNumcheque(rs.getString("numcheque"));
+				chequeRecebido.setDtemissao(rs.getDate("dtemissao"));
+				chequeRecebido.setDtvencimento(rs.getDate("dtvencimento"));
+				chequeRecebido.setCompensado(rs.getString("compensado"));
+				chequeRecebido.setDtcompensado(rs.getDate("dtcompensacao"));
+				chequeRecebido.setNominal(rs.getString("nominal"));
+				chequeRecebido.setStatus(rs.getString("status"));
+				colecao.add(chequeRecebido);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1298,12 +1209,12 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public boolean compensaChq(ChequeEmitidoBean cheque) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = null;
-
 		boolean result = false;
 
 		try {
@@ -1319,13 +1230,11 @@ public class TesourariaDAO {
 
 			ps.executeUpdate();
 			con.commit();
-
 			result = true;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1333,7 +1242,6 @@ public class TesourariaDAO {
 			} catch (Exception sqlc) {
 				sqlc.printStackTrace();
 			}
-
 		}
 		return result;
 	}
@@ -1351,19 +1259,16 @@ public class TesourariaDAO {
 			String sql = "UPDATE financeiro.cheque_recebido set compensado='S', dtcompensacao=? where codcheque=?";
 
 			ps = con.prepareStatement(sql);
-
 			ps.setDate(1, new java.sql.Date(cheque.getDtcompensado().getTime()));
 			ps.setInt(2, cheque.getCodcheque());
 
 			ps.executeUpdate();
 			con.commit();
-
 			result = true;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1372,7 +1277,6 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 
@@ -1380,7 +1284,6 @@ public class TesourariaDAO {
 			PrestacaoContasBean lancto2) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = null;
-		ResultSet set = null;
 
 		boolean result = false;
 		try {
@@ -1434,15 +1337,14 @@ public class TesourariaDAO {
 			if (comitar) {
 				con.commit();
 			}
-
 			result = true;
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
-				set.close();
 				if (comitar) {
 					con.close();
 				}
@@ -1450,7 +1352,6 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 
@@ -1484,6 +1385,7 @@ public class TesourariaDAO {
 			}
 
 			if (acerto) {
+				con.close();
 				return false;
 			} else {
 				ps.close();
@@ -1519,11 +1421,11 @@ public class TesourariaDAO {
 					con.commit();
 				}
 			}
-
 			result = true;
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1535,7 +1437,6 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 
@@ -1595,10 +1496,10 @@ public class TesourariaDAO {
 			}
 
 			con.commit();
-
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1633,8 +1534,6 @@ public class TesourariaDAO {
 					+ "where codempresa_origem=?))) "
 					+ "and td.cheque is true and status='A' and vencimento <=current_date ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, codbanco);
@@ -1647,11 +1546,10 @@ public class TesourariaDAO {
 				total = rs.getDouble("valoraberto");
 			}
 
-			return total;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1661,6 +1559,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return total;
 	}
 
 	public Double pesquisaChequesReceberPrazo(Integer codbanco, Integer seqcaixa) throws ProjetoException {
@@ -1684,13 +1583,9 @@ public class TesourariaDAO {
 					+ "(r.codtipdoc = td.codtipodocumento) where 1=1 "
 					+ "and td.cheque is true and status='A' and vencimento >current_date ";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, codbanco);
 			ps.setInt(2, seqcaixa);
-
 
 			rs = ps.executeQuery();
 
@@ -1698,12 +1593,10 @@ public class TesourariaDAO {
 				total = rs.getDouble("valoraberto");
 			}
 
-			return total;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1713,6 +1606,7 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return total;
 	}
 
 	public Double pesquisaChequesPagarCompensar(Integer codbanco, Integer seqcaixa) throws ProjetoException {
@@ -1724,25 +1618,22 @@ public class TesourariaDAO {
 		ResultSet rs = null;
 		
 		try {
-
 			con = ConnectionFactory.getConnection();
 			String sql = " SELECT coalesce(SUM(VALOR),0) FROM financeiro.CHEQUE_EMITIDO "
 					+ " WHERE COMPENSADO = 'N' AND TIPO = 'CP' AND STATUS = 'OK' " + " CODBANCO = ? ";
 
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, codbanco);
-
 			rs = ps.executeQuery();
 			
 			while (rs.next()) {
 				total = rs.getDouble("valoraberto");
 			}
 
-			return total;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1752,5 +1643,6 @@ public class TesourariaDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return total;
 	}
 }

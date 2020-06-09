@@ -76,7 +76,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 							<b:selectOneMenu
 								value="#{AtendimentoController.atendimento.situacaoAtendimento.id}"
 								required="true" requiredMessage="Status campo obrigatório"
-								disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == true}">
+								disabled="#{AtendimentoController.atendimento.situacaoAtendimento.atendimentoRealizado == true}">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItems value="#{AtendimentoController.listaSituacoes}"
 									var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />

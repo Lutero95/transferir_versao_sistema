@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.CentroCustoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ClienteBean;
 import br.gov.al.maceio.sishosp.financeiro.model.DespesaBean;
@@ -24,47 +25,6 @@ import br.gov.al.maceio.sishosp.financeiro.model.TipoDocumentoBean;
 
 public class BuscaDAO {
 	
-	/*
-	public ClienteBean buscarClienteCod(Integer codCliente) throws ProjetoException {
-
-		Connection con = null;
-		String sql = "select codcliente, nome, codigo_alternativo from financeiro.cliente where codcliente = ?   and ((cliente.codfilial = ?) or (cliente.codfilial in (select codempresa_autorizada from financeiro.empresa_aut_clientes"
-				+ " where codempresa_origem=?))) ";
-		ResultSet set = null;
-		ClienteBean clienteBean = new ClienteBean();
-		try {
-			UsuarioBean user_session = (UsuarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-			con = ConnectFactory.getConnection();
-			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, codCliente);
-			ps.setInt(2, user_session.getEmpresa().getCodfilial());
-			ps.setInt(3, user_session.getEmpresa().getCodfilial());
-			set = ps.executeQuery();
-
-			while (set.next()) {
-
-				clienteBean.setCodcliente(set.getInt("codcliente"));
-				clienteBean.setNome(set.getString("nome"));
-				clienteBean.setCodigo_alternativo(set.getInt("codigo_alternativo"));
-			}
-
-			ps.close();
-			set.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return clienteBean;
-	}
-	*/
-
 	public FuncionarioBean buscarFuncionarioCod(Integer codfunc) throws ProjetoException {
 
 		Connection con = null;
@@ -80,17 +40,17 @@ public class BuscaDAO {
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
 				funcionarioBean.setId(set.getLong("codfunc"));
 				funcionarioBean.setNome(set.getString("nome"));
 			}
 
 			ps.close();
 			set.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
@@ -115,17 +75,17 @@ public class BuscaDAO {
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
 				fornecedorBean.setCodforn(set.getInt("codforn"));
 				fornecedorBean.setNome(set.getString("nome"));
 			}
 
 			ps.close();
 			set.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
@@ -157,10 +117,11 @@ public class BuscaDAO {
 			
 			ps.close();
 			set.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
@@ -170,97 +131,39 @@ public class BuscaDAO {
 		return portadorBean;
 	}
 
-
-	
-
 	public List<PortadorBean> lstTodosPortadores() throws ProjetoException {
 
 		Connection con = null;
 		String sql = "select * from financeiro.portador";
 		ResultSet set = null;
 
-		ArrayList<PortadorBean> lst = new ArrayList<>();
+		ArrayList<PortadorBean> lista = new ArrayList<>();
 		try {
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				PortadorBean bean = new PortadorBean();
-
-				bean.setCodportador(set.getInt("codportador"));
-				bean.setDescricao(set.getString("descricao"));
-
-				lst.add(bean);
-
+				PortadorBean portador = new PortadorBean();
+				portador.setCodportador(set.getInt("codportador"));
+				portador.setDescricao(set.getString("descricao"));
+				lista.add(portador);
 			}
-
 			ps.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
-	/*
-	public List<ClienteBean> lstTodosClientes() throws ProjetoException {
-
-		Connection con = null;
-		String sql = "select * from financeiro.cliente    where ((cliente.codfilial = ?) or (cliente.codfilial in (select codempresa_autorizada from financeiro.empresa_aut_clientes"
-				+ " where codempresa_origem=?))) ";
-		ResultSet set = null;
-
-		ArrayList<ClienteBean> lst = new ArrayList<>();
-		try {
-			UsuarioBean user_session = (UsuarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-			con = ConnectFactory.getConnection();
-			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, user_session.getEmpresa().getCodfilial());
-			ps.setInt(2, user_session.getEmpresa().getCodfilial());
-			set = ps.executeQuery();
-
-			while (set.next()) {
-
-				ClienteBean bean = new ClienteBean();
-
-				bean.setCodcliente(set.getInt("codcliente"));
-				bean.setNome(set.getString("nome"));
-
-				lst.add(bean);
-
-			}
-			
-			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return lst;
-
-	}
-	*/
-	
 	public List<PortadorBean> lstPortador(String desc) throws ProjetoException {
 
 		Connection con = null;
@@ -268,45 +171,37 @@ public class BuscaDAO {
 
 		String sql = " select * from financeiro.portador where descricao like ?  ";
 
-		List<PortadorBean> lst = new ArrayList<PortadorBean>();
+		List<PortadorBean> lista = new ArrayList<PortadorBean>();
 
 		try {
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
+
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%" + desc.toUpperCase() + "%");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-
-				PortadorBean portBean = new PortadorBean();
-
-				portBean.setCodportador(rs.getInt("codportador"));
-				portBean.setDescricao(rs.getString("descricao"));
-
-				lst.add(portBean);
-
+				PortadorBean portador = new PortadorBean();
+				portador.setCodportador(rs.getInt("codportador"));
+				portador.setDescricao(rs.getString("descricao"));
+				lista.add(portador);
 			}
 
 			rs.close();
 			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return lista;
 	}
-
-	
 
 	public List<FornecedorBean> buscaForn(String nome, String cnpj) throws ProjetoException {
 
@@ -314,12 +209,11 @@ public class BuscaDAO {
 		ResultSet set = null;
 		String sql = " SELECT codforn, nome, fantasia, cnpj FROM financeiro.fornecedor where (coalesce(nome,'') like ? or coalesce(fantasia,'') like ?) and coalesce(cnpj,'') like ? ";
 
-		List<FornecedorBean> lst = new ArrayList<FornecedorBean>();
+		List<FornecedorBean> lista = new ArrayList<FornecedorBean>();
 
 		try {
 			con = ConnectionFactory.getConnection();
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
+			
 			if (cnpj == null) {
 				cnpj = "";
 			}
@@ -331,22 +225,18 @@ public class BuscaDAO {
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				FornecedorBean forn = new FornecedorBean();
-
-				forn.setCodforn(set.getInt("codforn"));
-				forn.setNome(set.getString("nome"));
-				forn.setFantasia(set.getString("fantasia"));
-				forn.setCpfcnpj(set.getString("cnpj"));
-
-				lst.add(forn);
-
+				FornecedorBean fornecedor = new FornecedorBean();
+				fornecedor.setCodforn(set.getInt("codforn"));
+				fornecedor.setNome(set.getString("nome"));
+				fornecedor.setFantasia(set.getString("fantasia"));
+				fornecedor.setCpfcnpj(set.getString("cnpj"));
+				lista.add(fornecedor);
 			}
-
 			ps.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -354,183 +244,146 @@ public class BuscaDAO {
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
-	public List<FornecedorBean> buscaFornecedor() throws ProjetoException, SQLException {
+	public List<FornecedorBean> buscaFornecedor() throws ProjetoException {
 
 		Connection con = null;
 		ResultSet set = null;
 
 		String sql = "SELECT * FROM financeiro.fornecedor ";
-
-		List<FornecedorBean> lst = new ArrayList<FornecedorBean>();
+		List<FornecedorBean> lista = new ArrayList<FornecedorBean>();
 
 		try {
 			con = ConnectionFactory.getConnection();
-
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			PreparedStatement ps = con.prepareStatement(sql);
-
-
-
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				FornecedorBean forn = new FornecedorBean();
-
-				forn.setCodforn(set.getInt("codforn"));
-				forn.setNome(set.getString("nome"));
-				forn.setFantasia(set.getString("fantasia"));
-				forn.setCpfcnpj(set.getString("cnpj"));
-
-				lst.add(forn);
-
+				FornecedorBean fornecedor = new FornecedorBean();
+				fornecedor.setCodforn(set.getInt("codforn"));
+				fornecedor.setNome(set.getString("nome"));
+				fornecedor.setFantasia(set.getString("fantasia"));
+				fornecedor.setCpfcnpj(set.getString("cnpj"));
+				lista.add(fornecedor);
 			}
-			
 			ps.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
-			con.close();
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
-	public List<CentroCustoBean> buscaCentroCusto() throws ProjetoException, SQLException {
+	public List<CentroCustoBean> buscaCentroCusto() throws ProjetoException {
 
 		Connection con = null;
 		ResultSet set = null;
 
 		String sql = "select * from financeiro.ccusto";
 
-		List<CentroCustoBean> lst = new ArrayList<CentroCustoBean>();
+		List<CentroCustoBean> lista = new ArrayList<CentroCustoBean>();
 
 		try {
 			con = ConnectionFactory.getConnection();
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			PreparedStatement ps = con.prepareStatement(sql);
-
-
-
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				CentroCustoBean bean = new CentroCustoBean();
-
-				bean.setIdccusto(set.getInt("idccusto"));
-				bean.setDescricao(set.getString("descricao"));
-				lst.add(bean);
-
+				CentroCustoBean centroCusto = new CentroCustoBean();
+				centroCusto.setIdccusto(set.getInt("idccusto"));
+				centroCusto.setDescricao(set.getString("descricao"));
+				lista.add(centroCusto);
 			}
-
 			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
-			con.close();
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
-	public List<TipoDocumentoBean> buscaTipoDoc() throws ProjetoException, SQLException {
+	public List<TipoDocumentoBean> buscaTipoDoc() throws ProjetoException {
 
 		Connection con = null;
 		ResultSet set = null;
 
 		String sql = "select codtipodocumento, descricao from financeiro.tipodocumento  order by descricao";
 
-		List<TipoDocumentoBean> lst = new ArrayList<TipoDocumentoBean>();
+		List<TipoDocumentoBean> lista = new ArrayList<TipoDocumentoBean>();
 
 		try {
 			con = ConnectionFactory.getConnection();
-
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			PreparedStatement ps = con.prepareStatement(sql);
-
-
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				TipoDocumentoBean bean = new TipoDocumentoBean();
-
-				bean.setCodtipodocumento(set.getInt("codtipodocumento"));
-				bean.setDescricao(set.getString("descricao"));
-				lst.add(bean);
-
+				TipoDocumentoBean tipoDocumento = new TipoDocumentoBean();
+				tipoDocumento.setCodtipodocumento(set.getInt("codtipodocumento"));
+				tipoDocumento.setDescricao(set.getString("descricao"));
+				lista.add(tipoDocumento);
 			}
-			
 			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
-			con.close();
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
-	public List<DespesaBean> buscaDespesa() throws ProjetoException, SQLException {
+	public List<DespesaBean> buscaDespesa() throws ProjetoException {
 
 		Connection con = null;
 		ResultSet set = null;
 
 		String sql = "select * from financeiro.despesa ;";
 
-		List<DespesaBean> lst = new ArrayList<DespesaBean>();
-
+		List<DespesaBean> lista = new ArrayList<DespesaBean>();
 		try {
 			con = ConnectionFactory.getConnection();
-
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			PreparedStatement ps = con.prepareStatement(sql);
-
-
 			set = ps.executeQuery();
-
 			while (set.next()) {
-
-				DespesaBean bean = new DespesaBean();
-
-				bean.setId(set.getInt("iddespesa"));
-				bean.setDescricao(set.getString("descricao"));
-
-				lst.add(bean);
-
+				DespesaBean despesa = new DespesaBean();
+				despesa.setId(set.getInt("iddespesa"));
+				despesa.setDescricao(set.getString("descricao"));
+				lista.add(despesa);
 			}
-
 			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
-			con.close();
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
 	
@@ -539,8 +392,7 @@ public class BuscaDAO {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+		List<ClienteBean> colecao = new ArrayList<ClienteBean>();
 		try {
 			String sql = "select coalesce(cpfcnpj,'')||'-'||nome ||'-'|| coalesce(telefone1,0) as nome, codcliente, codigo_alternativo, coalesce(cpfcnpj,'') as cpfcnpj, "
 					+ " coalesce(acerto_sessao, false) acerto_sessao from financeiro.cliente where ativo is not false "
@@ -551,30 +403,26 @@ public class BuscaDAO {
 			ps.setString(1, "%" + nome.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
 
-			List<ClienteBean> colecao = new ArrayList<ClienteBean>();
 
 			while (rs.next()) {
-
-				ClienteBean cli = new ClienteBean();
-				cli.setNome(rs.getString("nome"));
-				cli.setCodcliente(rs.getInt("codcliente"));
-				cli.setCpfcnpj(rs.getString("cpfcnpj"));
-				cli.setCodigo_alternativo(rs.getInt("codigo_alternativo"));
+				ClienteBean cliente = new ClienteBean();
+				cliente.setNome(rs.getString("nome"));
+				cliente.setCodcliente(rs.getInt("codcliente"));
+				cliente.setCpfcnpj(rs.getString("cpfcnpj"));
+				cliente.setCodigo_alternativo(rs.getInt("codigo_alternativo"));
 				if (rs.getBoolean("acerto_sessao") == true)
-					cli.setAcerto("S");
+					cliente.setAcerto("S");
 				else
-					cli.setAcerto("N");
-				colecao.add(cli);
-
+					cliente.setAcerto("N");
+				colecao.add(cliente);
 			}
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -582,16 +430,15 @@ public class BuscaDAO {
 				sqlc.printStackTrace();
 				System.exit(1);
 			}
-
 		}
+		return colecao;
 	}
 	
 	public List<ClienteBean> buscarClienteACComInativos(String nome) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+		List<ClienteBean> colecao = new ArrayList<ClienteBean>();
 		try {
 			String sql = "select coalesce(cpfcnpj,'')||'-'|| nome as nome, codcliente, codigo_alternativo, coalesce(cpfcnpj,'') as cpfcnpj, "
 					+ " coalesce(acerto_sessao, false) acerto_sessao from financeiro.cliente where coalesce(cpfcnpj,'')||'-'||nome like ?  order by nome limit 20";
@@ -600,30 +447,25 @@ public class BuscaDAO {
 			ps.setString(1, "%" + nome.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
 
-			List<ClienteBean> colecao = new ArrayList<ClienteBean>();
-
 			while (rs.next()) {
-
-				ClienteBean cli = new ClienteBean();
-				cli.setNome(rs.getString("nome"));
-				cli.setCodcliente(rs.getInt("codcliente"));
-				cli.setCpfcnpj(rs.getString("cpfcnpj"));
-				cli.setCodigo_alternativo(rs.getInt("codigo_alternativo"));
+				ClienteBean cliente = new ClienteBean();
+				cliente.setNome(rs.getString("nome"));
+				cliente.setCodcliente(rs.getInt("codcliente"));
+				cliente.setCpfcnpj(rs.getString("cpfcnpj"));
+				cliente.setCodigo_alternativo(rs.getInt("codigo_alternativo"));
 				if (rs.getBoolean("acerto_sessao") == true)
-					cli.setAcerto("S");
+					cliente.setAcerto("S");
 				else
-					cli.setAcerto("N");
-				colecao.add(cli);
-
+					cliente.setAcerto("N");
+				colecao.add(cliente);
 			}
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -631,22 +473,20 @@ public class BuscaDAO {
 				sqlc.printStackTrace();
 				System.exit(1);
 			}
-
 		}
+		return colecao;
 	}
-
 	
 	public List<FornecedorBean> buscarFornecedorAC(String nome) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+		List<FornecedorBean> colecao = new ArrayList<FornecedorBean>();
+
 		try {
 			String sql = "select nome, codforn from financeiro.fornecedor where nome like ? ";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, "%" + nome.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
-			List<FornecedorBean> colecao = new ArrayList<FornecedorBean>();
 			while (rs.next()) {
 				FornecedorBean fun = new FornecedorBean();
 				fun.setNome(rs.getString("nome"));
@@ -656,9 +496,10 @@ public class BuscaDAO {
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -667,19 +508,19 @@ public class BuscaDAO {
 				System.exit(1);
 			}
 		}
+		return colecao;
 	}
 
 	public List<PortadorBean> buscarPortadorAC(String descricao) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+		List<PortadorBean> colecao = new ArrayList<PortadorBean>();
+
 		try {
 			String sql = "select descricao, codportador from financeiro.portador where descricao like ? ";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, "%" + descricao.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
-			List<PortadorBean> colecao = new ArrayList<PortadorBean>();
 			while (rs.next()) {
 				PortadorBean ptd = new PortadorBean();
 				ptd.setDescricao(rs.getString("descricao"));
@@ -689,9 +530,10 @@ public class BuscaDAO {
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -700,13 +542,14 @@ public class BuscaDAO {
 				System.exit(1);
 			}
 		}
+		return colecao;
 	}
 
 	public List<String> buscarListaVendasNomeAC(String nome) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+
+		List<String> colecao = new ArrayList<String>();
 		try {
 			String sql = "SELECT v.codvenda, v.dtemissao, v.codcliente,cpfcnpj, nome FROM financeiro.venda v "
 					+ "join financeiro.cliente c on c.codcliente = v.codcliente " + "where nome like ? ";
@@ -714,16 +557,16 @@ public class BuscaDAO {
 			ps.setString(1, "%" + nome.toUpperCase() + "%");
 			// ps.setString(2, "%"+cpfcnpj.toUpperCase()+"%");
 			ResultSet rs = ps.executeQuery();
-			List<String> colecao = new ArrayList<String>();
 			while (rs.next()) {
 				colecao.add(rs.getString("nome"));
 			}
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -732,13 +575,14 @@ public class BuscaDAO {
 				System.exit(1);
 			}
 		}
+		return colecao;
 	}
 
 	public List<String> buscarListaVendasCPFAC(String cpfcnpj) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+
+		List<String> colecao = new ArrayList<String>();
 		try {
 			String sql = "SELECT v.codvenda, v.dtemissao, v.codcliente,cpfcnpj, nome FROM financeiro.venda v "
 					+ "join financeiro.cliente c on c.codcliente = v.codcliente "
@@ -747,16 +591,16 @@ public class BuscaDAO {
 			// ps.setString(1, "%"+nome.toUpperCase()+"%");
 			ps.setString(1, "%" + cpfcnpj.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
-			List<String> colecao = new ArrayList<String>();
 			while (rs.next()) {
 				colecao.add(rs.getString("cpfcnpj"));
 			}
 			
 			rs.close();
 			ps.close();
-			return colecao;
-		} catch (Exception sqle) {
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -765,8 +609,6 @@ public class BuscaDAO {
 				System.exit(1);
 			}
 		}
+		return colecao;
 	}
-
-	
-
 }

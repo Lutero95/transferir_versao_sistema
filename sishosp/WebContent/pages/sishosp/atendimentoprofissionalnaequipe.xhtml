@@ -277,7 +277,8 @@
 								 	<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 										
-									<p:menuitem value="Evoluir Atend. Não Realizado" 
+									<p:menuitem value="Evoluir Atend. Não Realizado"
+												rendered="#{atendimento.presenca=='N'}"
 									action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
 										update=":formConsAge" style="background-color: white;">
 										<f:setPropertyActionListener value="#{atendimento}"

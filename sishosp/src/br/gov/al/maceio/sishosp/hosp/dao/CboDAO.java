@@ -58,10 +58,11 @@ public class CboDAO {
                 cbo.setCodigo(rs.getString("codigo"));
                 lista.add(cbo);
             }
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+            throw new ProjetoException(ex, this.getClass().getName());
+        }finally {
             try {
                 con.close();
             } catch (Exception ex) {

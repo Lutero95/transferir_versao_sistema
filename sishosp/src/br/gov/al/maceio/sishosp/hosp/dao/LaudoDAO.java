@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -633,7 +634,7 @@ public class LaudoDAO {
         return l;
     }
 
-    private Date prepararDataVencimentoApenasComDiasUteis(int mesFinal, int anoFInal, Long codigoFuncionario) {
+    private Date prepararDataVencimentoApenasComDiasUteis(int mesFinal, int anoFInal, Long codigoFuncionario) throws ProjetoException, SQLException {
         Date d = DataUtil.montarDataCompleta(1, mesFinal, anoFInal);
 
         Calendar c = Calendar.getInstance();

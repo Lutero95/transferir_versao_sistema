@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -52,7 +53,7 @@ public class ProcedimentoDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean gravarProcedimento(ProcedimentoBean proc) {
+    public boolean gravarProcedimento(ProcedimentoBean proc) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -84,10 +85,11 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -97,7 +99,7 @@ public class ProcedimentoDAO {
         return retorno;
     }
 
-    public boolean alterarProcedimento(ProcedimentoBean proc) {
+    public boolean alterarProcedimento(ProcedimentoBean proc) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -128,10 +130,11 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -141,7 +144,7 @@ public class ProcedimentoDAO {
         return retorno;
     }
 
-    public boolean excluirProcedimento(ProcedimentoBean proc){
+    public boolean excluirProcedimento(ProcedimentoBean proc) throws ProjetoException{
 
         Boolean retorno = false;
 
@@ -170,10 +173,11 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -213,10 +217,11 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -266,10 +271,11 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -309,10 +315,11 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -349,10 +356,11 @@ public class ProcedimentoDAO {
                 proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 proc.setSexo(rs.getString("sexo"));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -398,10 +406,11 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -446,10 +455,11 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -479,10 +489,11 @@ public class ProcedimentoDAO {
 
                 lista.add(cid);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -511,10 +522,11 @@ public class ProcedimentoDAO {
 
                 lista.add(cbo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -525,7 +537,7 @@ public class ProcedimentoDAO {
     }
 
     public ProcedimentoBean listarProcedimentoPorIdComConexao(int id, Connection conAuxiliar)
-            throws ProjetoException {
+            throws ProjetoException, SQLException {
         ProcedimentoBean proc = new ProcedimentoBean();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
@@ -550,15 +562,13 @@ public class ProcedimentoDAO {
                 proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 proc.setSexo(rs.getString("sexo"));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return proc;
     }
 
@@ -576,10 +586,11 @@ public class ProcedimentoDAO {
                 listaModaliadesAtendimentoExistente.add(modalidadeAtendimentoExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -603,10 +614,11 @@ public class ProcedimentoDAO {
                 listaInstrumentoRegistroExistente.add(instrumentoRegistroExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -630,10 +642,11 @@ public class ProcedimentoDAO {
                 listaCboExistente.add(cboExistenteDTO);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -657,10 +670,11 @@ public class ProcedimentoDAO {
                 listaCidExistente.add(cidExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -684,10 +698,11 @@ public class ProcedimentoDAO {
                 listaFormaOrganizacaoExistente.add(formaOrganizacaoExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -711,10 +726,11 @@ public class ProcedimentoDAO {
                 listaRenasesExistentes.add(renasesExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -738,10 +754,11 @@ public class ProcedimentoDAO {
                 listaCodigoTipoFinanciamento.add(tipoFinanciamentoExistente);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -752,7 +769,7 @@ public class ProcedimentoDAO {
     }
 
 
-    public Integer executaRotinaNovaCargaSigtap(GravarProcedimentoMensalDTO procedimentoMensalDTO, Long idFuncionario, Integer idHistorico) throws Exception {
+    public Integer executaRotinaNovaCargaSigtap(GravarProcedimentoMensalDTO procedimentoMensalDTO, Long idFuncionario, Integer idHistorico) throws ProjetoException {
 
         Integer idHistoricoConsumoSigtap;
 
@@ -788,15 +805,21 @@ public class ProcedimentoDAO {
             inserirServicoClassificacao(procedimentoMensalDTO.getProcedimentoMensal().
                     getServicosClassificacoesVinculados().getServicoClassificacao(), idProcedimentoMensal, con);
             con.commit();
-        } catch (Exception e) {
-            throw e;
-        }finally {
-            con.close();
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
+            try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
         }
         return idHistoricoConsumoSigtap;
     }
 
-    public Integer inserirTipoFinanciamento(TipoFinanciamentoType tipoFinanciamento, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirTipoFinanciamento(TipoFinanciamentoType tipoFinanciamento, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.tipo_financiamento (codigo, nome) "
                 + "VALUES(?, ?) returning id";
         Integer idTipoFinanciamento = null;
@@ -807,15 +830,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idTipoFinanciamento = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idTipoFinanciamento;
     }
 
-    public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao,
+    private void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao,
                                List<Integer> listaIdRenasesExistentes) throws ProjetoException, SQLException {
         String sqlRenases = "INSERT INTO sigtap.renases (codigo, nome) "
                 + "VALUES(?, ?) returning id";
@@ -844,14 +869,16 @@ public class ProcedimentoDAO {
                 stm.setInt(2, idRenasesExistente);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public Integer inserirFormaOrganizacao(FormaOrganizacaoType formaOrganizacao, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirFormaOrganizacao(FormaOrganizacaoType formaOrganizacao, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.forma_de_organizacao " +
                 "(codigo, nome, id_subgrupo_mensal) " +
                 "VALUES(?, ?, ?) returning id ";
@@ -871,11 +898,13 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idFormaOrganizacao = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idFormaOrganizacao;
     }
 
@@ -889,15 +918,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idSubgrupo = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idSubgrupo;
     }
 
-    public Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.subgrupo_mensal " +
                 "(codigo, nome, id_grupo_mensal) " +
                 "VALUES(?, ?, ?) returning id ";
@@ -917,11 +948,13 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idSubgrupo = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idSubgrupo;
     }
 
@@ -934,15 +967,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idGrupo = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idGrupo;
     }
 
-    public Integer inserirGrupoMensal(GrupoType grupo, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirGrupoMensal(GrupoType grupo, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.grupo_mensal " +
                 "(codigo, nome) " +
                 "VALUES(?, ?) returning id ";
@@ -954,15 +989,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idGrupo = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idGrupo;
     }
 
-    public Integer inserirProcedimentoMensal(GravarProcedimentoMensalDTO procedimentoMensalDTO, Connection conexao, Integer idHistoricoConsumoSigtap)
+    private Integer inserirProcedimentoMensal(GravarProcedimentoMensalDTO procedimentoMensalDTO, Connection conexao, Integer idHistoricoConsumoSigtap)
             throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.procedimento_mensal " +
                 "(id_procedimento, codigo_procedimento, nome, competencia, complexidade, id_tipo_financiamento, "+
@@ -1013,15 +1050,17 @@ public class ProcedimentoDAO {
             ResultSet rs = stm.executeQuery();
             if(rs.next())
                 idProcedimentoMensal = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idProcedimentoMensal;
     }
 
-    public void inserirModalidadeAtendimento (List<ModalidadeAtendimentoType> modalidadesAtendimento,
+    private void inserirModalidadeAtendimento (List<ModalidadeAtendimentoType> modalidadesAtendimento,
                                               Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdModalidadesAtendimentoExistentes)
             throws ProjetoException, SQLException {
         String sqlModalidadeAtendimento = "INSERT INTO sigtap.modalidade_atendimento " +
@@ -1054,14 +1093,16 @@ public class ProcedimentoDAO {
                 stm.setInt(2, idModalidadeAtendimentoExistente);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public void inserirInstrumentosRegistro(List<InstrumentoRegistroType> instrumentosRegistro,
+    private void inserirInstrumentosRegistro(List<InstrumentoRegistroType> instrumentosRegistro,
                                             Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdInstrumentosRegistroExistentes)
             throws ProjetoException, SQLException {
 
@@ -1095,14 +1136,16 @@ public class ProcedimentoDAO {
                 stm.setInt(2, idInstrumentoRegistroExistente);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public void inserirCBOs(List<CBOType> cbos, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCbosExistentes)
+    private void inserirCBOs(List<CBOType> cbos, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCbosExistentes)
             throws ProjetoException, SQLException {
         String sqlCbo = "INSERT INTO sigtap.cbo_mensal (codigo, nome) VALUES(?, ?) returning id";
 
@@ -1130,14 +1173,16 @@ public class ProcedimentoDAO {
                 stm.setInt(2, idCboExistente);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public void inserirCIDs(List<CIDVinculado> listaCidVinculado, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCidsExistentes)
+    private void inserirCIDs(List<CIDVinculado> listaCidVinculado, Integer idProcedimentoMensal, Connection conexao, List<Integer> listaIdCidsExistentes)
             throws ProjetoException, SQLException {
         String sqlCid = "INSERT INTO sigtap.cid_mensal " +
                 "(codigo, nome, agravo, sexo_aplicavel, estadio, quantidade_campos_irradiados) " +
@@ -1171,14 +1216,16 @@ public class ProcedimentoDAO {
                 stm.setInt(2, idCidExistente);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public void inserirServicoClassificacao
+    private void inserirServicoClassificacao
             (List<ServicoClassificacaoType> servicosClassificacoesType, Integer idProcedimentoMensal, Connection conexao) throws ProjetoException, SQLException {
         String sqlServicoClassificacao = "INSERT INTO sigtap.servico_classificacao_mensal " +
                 "(id_servico, id_classificacao, id_procedimento_mensal) " +
@@ -1222,14 +1269,16 @@ public class ProcedimentoDAO {
                 stm.setInt(3, idProcedimentoMensal);
                 stm.executeUpdate();
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public Integer inserirServico(ServicoType servicoType, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirServico(ServicoType servicoType, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.servico_mensal " +
                 "(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idServico = null;
@@ -1240,15 +1289,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idServico = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idServico;
     }
 
-    public Integer inserirClassificacao(String codigo, String nome, Connection conexao) throws ProjetoException, SQLException {
+    private Integer inserirClassificacao(String codigo, String nome, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.classificacao_mensal " +
                 "(codigo, nome) VALUES(?, ?) returning id; ";
         Integer idClassificacao = null;
@@ -1259,15 +1310,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idClassificacao = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idClassificacao;
     }
 
-    public Integer gravarHistoricoConsumoSigtap(Long idFuncionario, Connection conexao)
+    private Integer gravarHistoricoConsumoSigtap(Long idFuncionario, Connection conexao)
             throws ProjetoException, SQLException {
         Integer idHistorico = null;
         String sql = "INSERT INTO sigtap.historico_consumo_sigtap " +
@@ -1284,15 +1337,17 @@ public class ProcedimentoDAO {
             ResultSet rs = stm.executeQuery();
             if(rs.next())
                 idHistorico = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return idHistorico;
     }
 
-    public void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer idHistorico, Connection conexao)
+    private void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer idHistorico, Connection conexao)
             throws ProjetoException, SQLException {
 
         String sql = "UPDATE sigtap.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
@@ -1300,14 +1355,16 @@ public class ProcedimentoDAO {
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setLong(1, idHistorico);
             stm.executeUpdate();
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 
-    public Integer buscaMesAtual(Connection conexao) throws ProjetoException, SQLException {
+    private Integer buscaMesAtual(Connection conexao) throws ProjetoException, SQLException {
         Integer mesAtual = null;
         String sql = "select extract(month from current_date) as mes_atual";
         try {
@@ -1315,15 +1372,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 mesAtual = rs.getInt("mes_atual");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return mesAtual;
     }
 
-    public Integer buscaAnoAtual(Connection conexao) throws ProjetoException, SQLException {
+    private Integer buscaAnoAtual(Connection conexao) throws ProjetoException, SQLException {
         Integer anoAtual = null;
         String sql = "select extract(year from current_date) as ano_atual";
         try {
@@ -1331,15 +1390,17 @@ public class ProcedimentoDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 anoAtual = rs.getInt("ano_atual");
-        } catch (Exception ex) {
-            con.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return anoAtual;
     }
 
-    public Boolean houveCargaDoSigtapEsteMes() {
+    public Boolean houveCargaDoSigtapEsteMes() throws ProjetoException {
 
         String sql = "select exists (select id from sigtap.historico_consumo_sigtap " +
                 "where id = (select id from sigtap.historico_consumo_sigtap hcs " +
@@ -1354,10 +1415,11 @@ public class ProcedimentoDAO {
             if (rs.next())
                 houveCargaDoSigtap = rs.getBoolean("houve_carga_este_mes");
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1367,7 +1429,7 @@ public class ProcedimentoDAO {
         return houveCargaDoSigtap;
     }
 
-    public List<HistoricoSigtapBean> listaHistoricoCargasDoSigtap() {
+    public List<HistoricoSigtapBean> listaHistoricoCargasDoSigtap() throws ProjetoException {
 
         List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList();
         String sql = "select hcs.data_registro, hcs.ano, " +
@@ -1387,10 +1449,11 @@ public class ProcedimentoDAO {
                 historicoSigtap.setDataIhHoraRegistro(rs.getTimestamp("data_registro"));
                 listaHistoricosSigtap.add(historicoSigtap);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1401,7 +1464,7 @@ public class ProcedimentoDAO {
     }
 
 
-    public ProcedimentoType buscaDadosProcedimentoMensal(String codigoProcedimento, Integer ano, Integer mes) throws Exception {
+    public ProcedimentoType buscaDadosProcedimentoMensal(String codigoProcedimento, Integer ano, Integer mes) throws ProjetoException {
 
         ProcedimentoType procedimento = new ProcedimentoType();
         try {
@@ -1440,16 +1503,23 @@ public class ProcedimentoDAO {
                     .addAll(listaRenasesProcedimentoMensal(ano, mes, codigoProcedimento, con));
             procedimento.setRENASESVinculadas(renasesVinculadas);
 
-        } catch (Exception e) {
-            throw e;
-        }finally {
-            con.close();
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
+            try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
         }
         return procedimento;
     }
 
 
-    public ProcedimentoType buscaProcedimentoMensal(Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private ProcedimentoType buscaProcedimentoMensal(Integer ano, Integer mes, String codigoProcedimento, Connection conexao)
+    		throws SQLException, ProjetoException {
 
         ProcedimentoType procedimentoMensal = new ProcedimentoType();
         String sql = "select pm.nome, pm.descricao, pm.codigo_procedimento, pm.competencia, pm.complexidade, " +
@@ -1542,17 +1612,20 @@ public class ProcedimentoDAO {
                 formaOrganizacao.setSubgrupo(subgrupo);
                 procedimentoMensal.setFormaOrganizacao(formaOrganizacao);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            conexao.rollback();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return procedimentoMensal;
     }
 
 
-    public List<CIDVinculado> listaCidsProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<CIDVinculado> listaCidsProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao)
+            		throws SQLException, ProjetoException {
 
         List<CIDVinculado> listaCidsVinculados = new ArrayList();
         String sql = "select cm.codigo, cm.nome, cm.agravo, cm.sexo_aplicavel, cm.estadio, cm.quantidade_campos_irradiados " +
@@ -1591,16 +1664,18 @@ public class ProcedimentoDAO {
                 cidVinculado.setCID(cid);
                 listaCidsVinculados.add(cidVinculado);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaCidsVinculados;
     }
 
-    public List<CBOType> listaCbosProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<CBOType> listaCbosProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
         List<CBOType> listaCbos = new ArrayList();
         String sql = "select cbo.codigo, cbo.nome " +
@@ -1625,16 +1700,18 @@ public class ProcedimentoDAO {
 
                 listaCbos.add(cbo);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaCbos;
     }
 
-    public List<ServicoClassificacaoType> listaServicoClassificacaoProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<ServicoClassificacaoType> listaServicoClassificacaoProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
         List<ServicoClassificacaoType> listaServicoClassificacao = new ArrayList();
         String sql = "select sm.codigo as codigo_servico, sm.nome as servico, " +
@@ -1666,16 +1743,18 @@ public class ProcedimentoDAO {
 
                 listaServicoClassificacao.add(servicoClassificacao);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaServicoClassificacao;
     }
 
-    public List<ModalidadeAtendimentoType> listaModalidadeAtendimentoProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
         List<ModalidadeAtendimentoType> listaModalidadeAtendimento = new ArrayList();
         String sql = "select ma.codigo, ma.nome " +
@@ -1701,16 +1780,18 @@ public class ProcedimentoDAO {
 
                 listaModalidadeAtendimento.add(modalidadeAtendimento);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaModalidadeAtendimento;
     }
 
-    public List<InstrumentoRegistroType> listaInstrumentoRegistroProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<InstrumentoRegistroType> listaInstrumentoRegistroProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
         List<InstrumentoRegistroType> listaInstrumentoRegistro = new ArrayList();
         String sql = "select ir.codigo, ir.nome " +
@@ -1735,16 +1816,18 @@ public class ProcedimentoDAO {
 
                 listaInstrumentoRegistro.add(instrumentoRegistro);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaInstrumentoRegistro;
     }
 
-    public List<RENASESType> listaRenasesProcedimentoMensal
-            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException {
+    private List<RENASESType> listaRenasesProcedimentoMensal
+            (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
         List<RENASESType> listaRenases = new ArrayList();
         String sql = "select rm.codigo, rm.nome " +
@@ -1769,15 +1852,17 @@ public class ProcedimentoDAO {
 
                 listaRenases.add(renases);
             }
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaRenases;
     }
 
-    public List<String> listaMesesIhAnosDoHistorico() {
+    public List<String> listaMesesIhAnosDoHistorico() throws ProjetoException {
 
         List<String> listaMesIhAno = new ArrayList();
         String sql = "select distinct concat (mes,' \\ ', ano) "
@@ -1792,10 +1877,11 @@ public class ProcedimentoDAO {
                 String mesIhAno = rs.getString("mes_ano");
                 listaMesIhAno.add(mesIhAno);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
             try {
                 con.close();
             } catch (SQLException e) {

@@ -11,9 +11,8 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.PortadorBean;
-
-
 
 
 public class PortadorDAO {
@@ -24,39 +23,26 @@ public class PortadorDAO {
 		Connection con = null;
 		ResultSet rs = null;
 
+		ArrayList<PortadorBean> colecao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
 			
 			String sql = "select codportador, descricao"
 					+  "	 from financeiro.portador  order by descricao";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext
-					.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-			
-
 			rs = ps.executeQuery();
 			
-			PortadorBean e = new PortadorBean();
-			ArrayList<PortadorBean> colecao = new ArrayList<>();
-			
-			while (rs.next()) {
-				e = new PortadorBean();
-				
-				e.setCodportador(rs.getInt("codportador"));
-				e.setDescricao(rs.getString("descricao"));
-
-
-				colecao.add(e);
+			while (rs.next()) {				
+				PortadorBean portador = new PortadorBean();
+				portador.setCodportador(rs.getInt("codportador"));
+				portador.setDescricao(rs.getString("descricao"));
+				colecao.add(portador);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -66,6 +52,7 @@ public class PortadorDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
 	public ArrayList<PortadorBean> lstPortadores(String descricao)
@@ -75,42 +62,28 @@ public class PortadorDAO {
 		Connection con = null;
 		ResultSet rs = null;
 
+		ArrayList<PortadorBean> colecao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
 			
 			String sql = "select codportador, descricao"
 					+ "	 from financeiro.portador where  descricao like  ? order by descricao";
 
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext
-					.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("obj_usuario");
-
 			ps = con.prepareStatement(sql);
-			
 			ps.setString(1, "%" + descricao + "%");
-
 			rs = ps.executeQuery();
-
-			
-			PortadorBean e = new PortadorBean();
-			ArrayList<PortadorBean> colecao = new ArrayList<>();
+			PortadorBean portador = new PortadorBean();
 
 			while (rs.next()) {
-
-				e = new PortadorBean();
-			
-				e.setCodportador(rs.getInt("codportador"));
-				e.setDescricao(rs.getString("descricao"));
-
-
-				colecao.add(e);
+				portador = new PortadorBean();
+				portador.setCodportador(rs.getInt("codportador"));
+				portador.setDescricao(rs.getString("descricao"));
+				colecao.add(portador);
 			}
-
-			return colecao;
-
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -120,9 +93,10 @@ public class PortadorDAO {
 				sqlc.printStackTrace();
 			}
 		}
+		return colecao;
 	}
 
-	public String inserePort(PortadorBean e) throws ProjetoException {
+	public String inserePort(PortadorBean portador) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = null;
 		
@@ -137,17 +111,16 @@ public class PortadorDAO {
 					.get("obj_usuario");
 			
 			ps = con.prepareStatement(sql);
-			ps.setString(1, e.getDescricao().toUpperCase());
+			ps.setString(1, portador.getDescricao().toUpperCase());
 			ps.setLong(2, user_session.getId());
 
 			ps.executeUpdate();
 			con.commit();
 			
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			retorno = sqle.getMessage();
-			throw new ProjetoException(sqle);
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -155,12 +128,11 @@ public class PortadorDAO {
 			} catch (Exception sqlc) {
 				sqlc.printStackTrace();
 			}
-
 		}
 		return retorno;
 	}
 	
-	public String atualizaPort(PortadorBean e)  throws ProjetoException {
+	public String atualizaPort(PortadorBean portador)  throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = null;
 		String retorno = "OK";
@@ -171,15 +143,15 @@ public class PortadorDAO {
 			String sql = "update financeiro.portador set descricao=?  where codportador=?";
 			
 			ps = con.prepareStatement(sql);
-			ps.setString(1, e.getDescricao().toUpperCase());
-			ps.setInt(2, e.getCodportador());
+			ps.setString(1, portador.getDescricao().toUpperCase());
+			ps.setInt(2, portador.getCodportador());
 			ps.executeUpdate();
 			con.commit();
 			
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			retorno =sqle.getMessage();
-			throw new ProjetoException(sqle);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -187,8 +159,6 @@ public class PortadorDAO {
 			} catch (Exception sqlc) {
 				sqlc.printStackTrace();
 			}
-
-
 		}
 		return retorno;
 	}
@@ -203,21 +173,15 @@ public class PortadorDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-
 			
 			ps.setInt(1, bean.getCodportador());
-
 			ps.execute();
-
 			con.commit();
-
-			return retorno;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			retorno = e.getMessage();
-			return retorno;			
-		} finally {
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
 			try {
 				ps.close();
 				con.close();
@@ -225,8 +189,7 @@ public class PortadorDAO {
 				e.printStackTrace();
 			}
 		}
-
-		
+		return retorno;
 	}		
 		
 }
