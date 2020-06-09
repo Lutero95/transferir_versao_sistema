@@ -375,10 +375,6 @@ public class ProcedimentoController implements Serializable {
                                         + " carga do SIGTAP este m�s", "");
                         soape.printStackTrace();
                     }
-                    catch(SQLException sqle) {
-                        JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
-                        sqle.printStackTrace();
-                    }
                     catch (Exception e) {
                         JSFUtil.adicionarMensagemErro("Erro, algo inesperado ocorreu", "Erro");
                         e.printStackTrace();
@@ -711,7 +707,7 @@ public class ProcedimentoController implements Serializable {
         }
     }
 
-    public void listaHistoricoSigtap() {
+    public void listaHistoricoSigtap() throws ProjetoException {
         this.listaHistoricoDoSigtap = procedimentoDao.listaHistoricoCargasDoSigtap();
     }
 
@@ -745,7 +741,7 @@ public class ProcedimentoController implements Serializable {
         }
     }
 
-    public void listaMesesIhAnosDoHistorico() {
+    public void listaMesesIhAnosDoHistorico() throws ProjetoException {
         this.listaFiltroMesIhAno = procedimentoDao.listaMesesIhAnosDoHistorico();
     }
 

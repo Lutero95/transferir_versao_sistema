@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.administrativo.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.dto.BuscaAgendamentosParaFu
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 
@@ -62,7 +64,8 @@ public class SubstituicaoDAO {
         }
     }
 
-    public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoProfissional substituicaoFuncionario, Connection conAuxiliar) {
+    public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoProfissional substituicaoFuncionario, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -84,16 +87,14 @@ public class SubstituicaoDAO {
 
             ps.execute();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ProjetoException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
     
 	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoProfissional afastamento, Date periodoInicioBusca, Date periodoFimBusca) {

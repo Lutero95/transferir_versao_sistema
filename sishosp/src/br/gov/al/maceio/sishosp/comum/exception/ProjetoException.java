@@ -1,7 +1,5 @@
 package br.gov.al.maceio.sishosp.comum.exception;
 
-import java.sql.SQLException;
-
 import br.gov.al.maceio.sishosp.comum.dao.ExceptionDAO;
 import br.gov.al.maceio.sishosp.comum.model.ErroSistema;
 import br.gov.al.maceio.sishosp.comum.util.ErrosUtil;
@@ -19,6 +17,7 @@ public class ProjetoException extends Exception{
 	public ProjetoException() {
 
     }
+	
      public ProjetoException(String mensagemUsuario, String nomeDaClasse, Throwable arg) {
     	 arg.printStackTrace();
     	 ErroSistema erroSistema = ErrosUtil.retornaErroSistema(arg.getStackTrace(), nomeDaClasse, arg.getMessage());
@@ -38,6 +37,11 @@ public class ProjetoException extends Exception{
     	ErroSistema erroSistema = ErrosUtil.retornaErroSistema(arg.getStackTrace(), nomeDaClasse, exception);
    	 	exceptionDAO.gravaExcecao(erroSistema);
         JSFUtil.adicionarMensagemErro(arg.getMessage(), "Erro");
+        JSFUtil.atualizarComponente(":msgPagina");
+    }
+    
+	public ProjetoException(String mensagem) {
+        JSFUtil.adicionarMensagemErro(mensagem, "Erro");
         JSFUtil.atualizarComponente(":msgPagina");
     }
 

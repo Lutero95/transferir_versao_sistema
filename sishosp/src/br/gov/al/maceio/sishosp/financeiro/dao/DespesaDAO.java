@@ -6,12 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.faces.context.FacesContext;
-
 import br.gov.al.maceio.sishosp.financeiro.model.DespesaBean;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 public class DespesaDAO {
     
@@ -22,9 +20,6 @@ public class DespesaDAO {
         String sql = "insert into financeiro.despesa(descricao) "
             + "values (?)";
         
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-            .getExternalContext().getSessionMap().get("obj_usuario");
-        
         boolean cadastrou = false;
         
         try {
@@ -34,14 +29,13 @@ public class DespesaDAO {
             pstm.execute();
             
             conexao.commit();
-            
             cadastrou = true;
-            
             pstm.close();
-        } catch(Exception ex) {
-            
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -57,9 +51,6 @@ public class DespesaDAO {
         String sql = "update financeiro.despesa set descricao = ?  "
             + "where iddespesa = ?";
         
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-            .getExternalContext().getSessionMap().get("obj_usuario");
-        
         boolean alterou = false;
         
         try {
@@ -70,14 +61,13 @@ public class DespesaDAO {
             pstm.execute();
             
             conexao.commit();
-            
             alterou = true;
-            
             pstm.close();
-        } catch(Exception ex) {
-            
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -102,13 +92,13 @@ public class DespesaDAO {
             pstm.execute();
 
             conexao.commit();
-
             excluiu = true;
-            
             pstm.close();
-        } catch(Exception ex) {
-            throw new ProjetoException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -123,9 +113,6 @@ public class DespesaDAO {
         
         String sql = "select iddespesa, descricao "
             + "from financeiro.despesa  order by descricao";
-        
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-            .getExternalContext().getSessionMap().get("obj_usuario");
 
         ArrayList<DespesaBean> lista = new ArrayList<>();
         
@@ -136,18 +123,19 @@ public class DespesaDAO {
             ResultSet rs = pstm.executeQuery();
             
             while(rs.next()) {
-                DespesaBean d = new DespesaBean();
-                d.setId(rs.getInt("iddespesa"));
-                d.setDescricao(rs.getString("descricao"));
-                
-                lista.add(d);
+                DespesaBean despesa = new DespesaBean();
+                despesa.setId(rs.getInt("iddespesa"));
+                despesa.setDescricao(rs.getString("descricao"));
+                lista.add(despesa);
             }
             
             rs.close();
             pstm.close();
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {

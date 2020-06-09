@@ -6,14 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.faces.context.FacesContext;
-
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.FonteReceitaBean;
-
 
 
 public class FonteReceitaDAO {
@@ -25,9 +21,6 @@ public class FonteReceitaDAO {
         String sql = "insert into clin.fonrec(descricao, codfonrec) "
             + "values (?, ?)";
         
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-            .getExternalContext().getSessionMap().get("obj_usuario");
-        
         boolean cadastrou = false;
 
         try {
@@ -38,14 +31,13 @@ public class FonteReceitaDAO {
             pstm.execute();
             
             conexao.commit();
-            
             cadastrou = true;
-            
             pstm.close();
-        } catch(Exception ex) {
-            
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -61,9 +53,6 @@ public class FonteReceitaDAO {
         String sql = "update clin.fonrec set descricao = ?, codfonrec = ? "
             + "where id = ?";
         
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-            .getExternalContext().getSessionMap().get("obj_usuario");
-        
         boolean alterou = false;
 
         try {
@@ -75,14 +64,13 @@ public class FonteReceitaDAO {
             pstm.execute();
             
             conexao.commit();
-            
             alterou = true;
-            
             pstm.close();
-        } catch(Exception ex) {
-            
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -96,7 +84,6 @@ public class FonteReceitaDAO {
 	public boolean excluirFonteRec(FonteReceitaBean fonteRec) throws ProjetoException {
 
 		String sql = "delete from clin.fonrec where id = ?";
-
 		boolean excluiu = false;
 
 		Connection conexao = null;
@@ -110,8 +97,10 @@ public class FonteReceitaDAO {
 
 			excluiu = true;
 			pstm.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new ProjetoException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -127,36 +116,31 @@ public class FonteReceitaDAO {
     	PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
         
+		List<FonteReceitaBean> colecao = new ArrayList<>();
         try {
         	String sql = "select id, descricao, codfonrec from clin.fonrec   order by descricao";
             
-            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
-                .getExternalContext().getSessionMap().get("obj_usuario");
-            
             ps = con.prepareStatement(sql);
             
-            
             ResultSet rs = ps.executeQuery();
-
-			FonteReceitaBean e = new FonteReceitaBean();
-			List<FonteReceitaBean> colecao = new ArrayList<>();
+			FonteReceitaBean fonteReceita = new FonteReceitaBean();
             
             while(rs.next()) {
-                e = new FonteReceitaBean();
-                e.setId(rs.getInt("id"));
-                e.setDescricao(rs.getString("descricao"));
-                e.setCodFonteRec(rs.getString("codfonrec"));
-                
-                colecao.add(e);
+                fonteReceita = new FonteReceitaBean();
+                fonteReceita.setId(rs.getInt("id"));
+                fonteReceita.setDescricao(rs.getString("descricao"));
+                fonteReceita.setCodFonteRec(rs.getString("codfonrec"));
+                colecao.add(fonteReceita);
             }
             
             rs.close();
             ps.close();
-            return colecao;
             
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -164,5 +148,6 @@ public class FonteReceitaDAO {
                 System.exit(1);
             }
         }
+        return colecao;
     }
 }
