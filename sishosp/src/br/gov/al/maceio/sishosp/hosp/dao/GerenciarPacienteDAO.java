@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
@@ -112,39 +113,40 @@ public class GerenciarPacienteDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                GerenciarPacienteBean gp = new GerenciarPacienteBean();
+                GerenciarPacienteBean gerenciarPaciente = new GerenciarPacienteBean();
 
-                gp.setId(rs.getInt("id"));
-                gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-                gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-                gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                gp.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
-                gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-                gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
-                gp.getFuncionario().setId(rs.getLong("codprofissional"));
-                gp.getFuncionario().setNome(rs.getString("descfuncionario"));
-                gp.setStatus(rs.getString("status"));
-                gp.getLaudo().setId(rs.getInt("codlaudo"));
-                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
-                gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-                gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
-                gp.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
-                gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                gp.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
-                gp.setData_solicitacao(rs.getDate("data_solicitacao"));
-                gp.setObservacao(rs.getString("observacao"));
-                gp.setData_cadastro(rs.getDate("data_cadastro"));
-                gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                gerenciarPaciente.setId(rs.getInt("id"));
+                gerenciarPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                gerenciarPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                gerenciarPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+                gerenciarPaciente.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                gerenciarPaciente.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                gerenciarPaciente.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+                gerenciarPaciente.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                gerenciarPaciente.getFuncionario().setId(rs.getLong("codprofissional"));
+                gerenciarPaciente.getFuncionario().setNome(rs.getString("descfuncionario"));
+                gerenciarPaciente.setStatus(rs.getString("status"));
+                gerenciarPaciente.getLaudo().setId(rs.getInt("codlaudo"));
+                gerenciarPaciente.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
+                gerenciarPaciente.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                gerenciarPaciente.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                gerenciarPaciente.getLaudo().getPaciente().setNome(rs.getString("nome"));
+                gerenciarPaciente.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
+                gerenciarPaciente.getLaudo().getPaciente().setCns(rs.getString("cns"));
+                gerenciarPaciente.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
+                gerenciarPaciente.setData_solicitacao(rs.getDate("data_solicitacao"));
+                gerenciarPaciente.setObservacao(rs.getString("observacao"));
+                gerenciarPaciente.setData_cadastro(rs.getDate("data_cadastro"));
+                gerenciarPaciente.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
-                lista.add(gp);
+                lista.add(gerenciarPaciente);
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -160,30 +162,23 @@ public class GerenciarPacienteDAO {
         		" from hosp.paciente_instituicao p \n" + 
         		" join hosp.profissional_dia_atendimento d on d.id_paciente_instituicao = p.id where p.cod_unidade=2 " ;
 
-                      
-
         ArrayList<Integer> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-           
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                GerenciarPacienteBean gp = new GerenciarPacienteBean();
-
-                gp.setId(rs.getInt("id"));
-                
-
-                lista.add(gp.getId());
-
+                GerenciarPacienteBean gerenciarPaciente = new GerenciarPacienteBean();
+                gerenciarPaciente.setId(rs.getInt("id"));
+                lista.add(gerenciarPaciente.getId());
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -193,26 +188,23 @@ public class GerenciarPacienteDAO {
         return lista;
     }    
 
-    public Boolean desligarPaciente(GerenciarPacienteBean gerenciarRow,
-                                    GerenciarPacienteBean gerenciar) throws ProjetoException {
+    public Boolean desligarPaciente(GerenciarPacienteBean gerenciarRow, GerenciarPacienteBean gerenciar) 
+    		throws ProjetoException {
 
         Boolean retorno = false;
         final String DESLIGADO = "D";
 
-        
         String sql = "update hosp.paciente_instituicao set status = ? "
                 + " where id = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             
-            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
             TransferenciaPacienteDAO gerenciarTransferenciaDAO = new TransferenciaPacienteDAO();
-                    if(!gerenciarTransferenciaDAO.apagarAtendimentosNaRenovacao(gerenciarRow.getId(), gerenciar.getDataDesligamento(), conexao)){
-
-                        conexao.close();
-
-                        return retorno;
-                    }
+			if (!gerenciarTransferenciaDAO.apagarAtendimentosNaRenovacao(gerenciarRow.getId(),
+					gerenciar.getDataDesligamento(), conexao)) {
+				conexao.close();
+				return retorno;
+			}
             
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
@@ -232,13 +224,12 @@ public class GerenciarPacienteDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -248,8 +239,8 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean encaminharPaciente(GerenciarPacienteBean row,
-                                      GerenciarPacienteBean gerenciar) throws ProjetoException {
+    public Boolean encaminharPaciente(GerenciarPacienteBean row, GerenciarPacienteBean gerenciar)
+    		throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -270,17 +261,14 @@ public class GerenciarPacienteDAO {
             stmt.setString(2, "D");
             stmt.setString(3, gerenciar.getObservacao());
             stmt.setLong(4, user_session.getId());
-
             stmt.executeUpdate();
-
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -297,23 +285,21 @@ public class GerenciarPacienteDAO {
         String sql = " SELECT id FROM hosp.paciente_instituicao pi " + 
         		" join hosp.laudo l on l.id_laudo = pi.codlaudo" + 
         		" WHERE pi.status = 'A' AND l.codpaciente = ?";
-
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-
             stmt.setInt(1, codPaciente);
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -323,7 +309,8 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean gravarHistoricoAcaoPaciente(Integer idPacienteInstituicao, String observacao, String tipo, Connection conAuxiliar) {
+    public Boolean gravarHistoricoAcaoPaciente(Integer idPacienteInstituicao, String observacao, String tipo, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -338,20 +325,15 @@ public class GerenciarPacienteDAO {
             ps.setString(2, observacao);
             ps.setString(3, tipo);
             ps.setLong(4, user_session.getId());
-
             ps.executeUpdate();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return retorno;
     }
 
@@ -359,7 +341,7 @@ public class GerenciarPacienteDAO {
     		ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  
     		ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  
     		ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento,
-    		ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes) throws SQLException {
+    		ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -609,20 +591,18 @@ public class GerenciarPacienteDAO {
             }
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return retorno;
     }
 
 	private void executaExclusaoLogicaDeAtendimentos1(ArrayList<AtendimentoBean> listaAtendimento1ComLiberacoes,
-			Connection conAuxiliar) throws SQLException {
+			Connection conAuxiliar) throws SQLException, ProjetoException {
 		String sql = "update hosp.atendimentos1 set excluido = 'S' where id_atendimentos1 = ?";
 		try {
 			for (AtendimentoBean atendimento : listaAtendimento1ComLiberacoes) {
@@ -630,8 +610,12 @@ public class GerenciarPacienteDAO {
 				ps.setInt(1, atendimento.getId1());
 				ps.executeUpdate();
 			}
-		} catch (Exception e) {
+		} catch (SQLException sqle) {
 			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
 		}
 	}
 
@@ -664,7 +648,10 @@ public class GerenciarPacienteDAO {
 	}
     
     
-    public Boolean apagarAtendimentosDeUmAtendimento(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,   List<AtendimentoBean> listaExcluir,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento,  ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException {
+    public Boolean apagarAtendimentosDeUmAtendimento
+    	(Integer idAtendimentos, Connection conAuxiliar,  ArrayList<SubstituicaoProfissional> listaSubstituicaoProfissional,  
+    			List<AtendimentoBean> listaExcluir,  ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosNaEquipeAtendimento, 
+    			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosNaEquipeAtendimento) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         String sql2 = "";
@@ -774,28 +761,22 @@ public class GerenciarPacienteDAO {
                     ps2.setLong(2, listaExcluir.get(i).getId1());
                     ps2.execute();
     			}
-
-
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return retorno;
     }
     
-    public List<Integer> retornaListaAtendimento01QueNaoPodemTerRegistroExcluidos(Integer idAtendimento, Connection conAuxiliar) {
+    public List<Integer> retornaListaAtendimento01QueNaoPodemTerRegistroExcluidos
+    	(Integer idAtendimento, Connection conAuxiliar) throws ProjetoException, SQLException {
 
     	List<Integer> listaIdatendimento = new ArrayList<Integer>();
         try {
-
             String sql = "select distinct atendimentos1.id_atendimentos1 from hosp.atendimentos1 " + 
             		"where atendimentos1.id_atendimentos1 in (  " + 
             		"	select  " + 
@@ -865,26 +846,22 @@ public class GerenciarPacienteDAO {
             	listaIdatendimento.add(rs.getInt("id_atendimentos1"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaIdatendimento;
     } 
     
     
-    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissional(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissional
+    	(Integer idPacienteInstituicao, Connection conAuxiliar) throws ProjetoException, SQLException {
 
-        
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
-
         try {
-
             String sql = "select a.codpaciente,a.dtaatende, sf.* from adm.substituicao_funcionario sf " + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
@@ -896,11 +873,9 @@ public class GerenciarPacienteDAO {
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  " + 
             		")";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idPacienteInstituicao);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -916,27 +891,22 @@ public class GerenciarPacienteDAO {
                 lista.add(substituicao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return lista;
     }    
     
     
-    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao
+    	(Integer idPacienteInstituicao, Connection conAuxiliar) throws ProjetoException, SQLException {
 
-        
         ArrayList<InsercaoProfissionalEquipe> lista = new ArrayList<InsercaoProfissionalEquipe>();
-
         try {
-
             String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
@@ -948,7 +918,6 @@ public class GerenciarPacienteDAO {
             		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL  )  \n" + 
             		")";
-
 
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
@@ -970,26 +939,22 @@ public class GerenciarPacienteDAO {
                 lista.add(insercao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }    
     
-    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao
+    	(Integer idPacienteInstituicao, Connection conAuxiliar) throws ProjetoException, SQLException {
 
-        
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
 
         try {
-
             String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
@@ -1002,11 +967,9 @@ public class GerenciarPacienteDAO {
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL  )  \n" + 
             		") and ipe.id_profissional in (select medico from hosp.equipe_medico em  where em.equipe =a.codequipe )";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idPacienteInstituicao);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1023,26 +986,21 @@ public class GerenciarPacienteDAO {
                 lista.add(remocao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }        
     
-    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalEquipePeloIdPacienteInstituicao
+    	(Integer idPacienteInstituicao, Connection conAuxiliar) throws ProjetoException, SQLException {
 
-        
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
-
         try {
-
             String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, ipe.id_remocao_profissional_equipe, ipe.id_funcionario id_profissional, f.codcbo from logs.remocao_profissional_equipe_atendimentos1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
@@ -1055,11 +1013,9 @@ public class GerenciarPacienteDAO {
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
             		")";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idPacienteInstituicao);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1074,23 +1030,20 @@ public class GerenciarPacienteDAO {
                 lista.add(remocao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }         
     
     
-    public ArrayList<SubstituicaoProfissionalEquipeDTO> listaAtendimentosQueTiveramSubstituicaoProfissionalEquipePeloIdPacienteInstituicao(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public ArrayList<SubstituicaoProfissionalEquipeDTO> listaAtendimentosQueTiveramSubstituicaoProfissionalEquipePeloIdPacienteInstituicao
+    	(Integer idPacienteInstituicao, Connection conAuxiliar) throws SQLException, ProjetoException {
 
-        
         ArrayList<SubstituicaoProfissionalEquipeDTO> lista = new ArrayList<SubstituicaoProfissionalEquipeDTO>();
         try {
 
@@ -1106,11 +1059,9 @@ public class GerenciarPacienteDAO {
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
             		")";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idPacienteInstituicao);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1123,28 +1074,21 @@ public class GerenciarPacienteDAO {
                 lista.add(substituicao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }         
-    
-    
 
-    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) {
+    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento
+    	(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) throws SQLException, ProjetoException {
 
-        
         ArrayList<InsercaoProfissionalEquipe> lista = new ArrayList<InsercaoProfissionalEquipe>();
-
         try {
-
             String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
@@ -1156,7 +1100,6 @@ public class GerenciarPacienteDAO {
             		"AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  \n" + 
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
             		")";
-
 
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
@@ -1177,26 +1120,22 @@ public class GerenciarPacienteDAO {
                 lista.add(insercao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }    
     
-    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) {
+    public ArrayList<RemocaoProfissionalEquipe> listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento
+    	(Integer idAtendimentos, Long codProfissionalAtendimento, Connection conAuxiliar) throws SQLException, ProjetoException {
 
-        
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
 
         try {
-
             String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, rpea.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 rpea \n" + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = rpea.id_atendimentos1 \n" + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" + 
@@ -1209,12 +1148,10 @@ public class GerenciarPacienteDAO {
             		"(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  \n" + 
             		")";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idAtendimentos);
             ps.setLong(2, codProfissionalAtendimento);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1229,27 +1166,21 @@ public class GerenciarPacienteDAO {
                 lista.add(remocao);
             }
 
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }        
     
-    
-    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento(Integer idAtendimentos, Connection conAuxiliar) {
+    public ArrayList<SubstituicaoProfissional> listaAtendimentosQueTiveramSubstituicaoProfissionalEmUmAtendimento
+    	(Integer idAtendimentos, Connection conAuxiliar) throws ProjetoException, SQLException {
 
-        
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
-
         try {
-
             String sql = "select a.dtaatende, sf.*, c.id id_cbo from adm.substituicao_funcionario sf " + 
             		"	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " + 
             		"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
@@ -1260,11 +1191,9 @@ public class GerenciarPacienteDAO {
             		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
             		"WHERE a.id_atendimento = ?)";
 
-
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idAtendimentos);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1279,23 +1208,18 @@ public class GerenciarPacienteDAO {
             	substituicao.getFuncionario().getCbo().setCodCbo(rs.getInt("id_cbo"));
                 lista.add(substituicao);
             }
-
-            return lista;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return lista;
     }   
-    
-       
 
-    public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar) {
+    public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1317,17 +1241,20 @@ public class GerenciarPacienteDAO {
 
                 ps.executeUpdate();
             }
-
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } 
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return retorno;
     }
 
-	public ArrayList<AtendimentoBean> listaAtendimentos1QueTiveramLiberacoes(Integer idPacienteInstituicao, Connection conexao) {
+	public ArrayList<AtendimentoBean> listaAtendimentos1QueTiveramLiberacoes(Integer idPacienteInstituicao, Connection conexao) 
+			throws SQLException, ProjetoException {
 		String sql = "select distinct a1.id_atendimentos1, a1.id_atendimento from hosp.atendimentos1 a1 " + 
 				"	join hosp.atendimentos a on a1.id_atendimento = a1.id_atendimento " + 
 				"	join hosp.liberacoes l on l.id_atendimentos1 = a1.id_atendimentos1 " + 
@@ -1346,16 +1273,13 @@ public class GerenciarPacienteDAO {
             	atendimento.setId1(rs.getInt("id_atendimentos1"));
             	listaAtendimentos1.add(atendimento);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 		return listaAtendimentos1;
 	}
-
 }

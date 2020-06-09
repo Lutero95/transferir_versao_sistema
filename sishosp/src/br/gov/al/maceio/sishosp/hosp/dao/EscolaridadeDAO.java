@@ -9,12 +9,13 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 
 public class EscolaridadeDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(EscolaridadeBean escolaridade) {
+    public Boolean cadastrar(EscolaridadeBean escolaridade) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.escolaridade (descescolaridade)"
@@ -30,20 +31,21 @@ public class EscolaridadeDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(EscolaridadeBean escolaridade) {
+    public Boolean alterar(EscolaridadeBean escolaridade) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.escolaridade set descescolaridade = ? where id_escolaridade = ?";
         try {
@@ -54,23 +56,23 @@ public class EscolaridadeDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(EscolaridadeBean escolaridade) {
+    public Boolean excluir(EscolaridadeBean escolaridade) throws ProjetoException {
         boolean retorno = false;
         String sql = "delete from hosp.escolaridade where id_escolaridade = ?";
         try {
@@ -80,20 +82,20 @@ public class EscolaridadeDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<EscolaridadeBean> listaEscolaridade()
@@ -109,18 +111,19 @@ public class EscolaridadeDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EscolaridadeBean e = new EscolaridadeBean();
+                EscolaridadeBean escolaridade = new EscolaridadeBean();
 
-                e.setCodescolaridade(rs.getInt("id_escolaridade"));
-                e.setDescescolaridade(rs.getString("descescolaridade")
+                escolaridade.setCodescolaridade(rs.getInt("id_escolaridade"));
+                escolaridade.setDescescolaridade(rs.getString("descescolaridade")
                         .toUpperCase());
 
-                lista.add(e);
+                lista.add(escolaridade);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -130,46 +133,45 @@ public class EscolaridadeDAO {
         return lista;
     }
 
-    public EscolaridadeBean buscaescolaridadecodigo(Integer i)
+    public EscolaridadeBean buscaescolaridadecodigo(Integer idEscolaridade)
             throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        EscolaridadeBean escolaridade = new EscolaridadeBean();
         try {
 
             String sql = "select id_escolaridade, descescolaridade from hosp.escolaridade where id_escolaridade=? order by descescolaridade";
 
             ps = conexao.prepareStatement(sql);
-            ps.setInt(1, i);
+            ps.setInt(1, idEscolaridade);
             ResultSet rs = ps.executeQuery();
 
-            EscolaridadeBean escolaridade = new EscolaridadeBean();
             while (rs.next()) {
-
                 escolaridade.setCodescolaridade(rs.getInt("id_escolaridade"));
                 escolaridade.setDescescolaridade(rs.getString("descescolaridade"));
-
             }
-            return escolaridade;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return escolaridade;
     }
 
     public List<EscolaridadeBean> buscaescolaridade(String s)
             throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
+        List<EscolaridadeBean> colecao = new ArrayList<EscolaridadeBean>();
 
         try {
-            List<EscolaridadeBean> listaescolaridades = new ArrayList<EscolaridadeBean>();
             String sql = "select id_escolaridade,id_escolaridade ||'-'|| descescolaridade descescolaridade from hosp.escolaridade "
                     + " where upper(id_escolaridade ||'-'|| descescolaridade) like ? order by descescolaridade";
 
@@ -177,27 +179,25 @@ public class EscolaridadeDAO {
             ps.setString(1, "%" + s.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<EscolaridadeBean> colecao = new ArrayList<EscolaridadeBean>();
 
             while (rs.next()) {
-
                 EscolaridadeBean escolaridade = new EscolaridadeBean();
                 escolaridade.setCodescolaridade(rs.getInt("id_escolaridade"));
                 escolaridade.setDescescolaridade(rs
                         .getString("descescolaridade"));
                 colecao.add(escolaridade);
-
             }
-            return colecao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return colecao;
     }
 }

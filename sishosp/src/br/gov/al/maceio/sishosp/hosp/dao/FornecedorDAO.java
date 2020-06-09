@@ -11,6 +11,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
 import javax.faces.context.FacesContext;
@@ -24,7 +25,7 @@ public class FornecedorDAO {
             .getCurrentInstance().getExternalContext().getSessionMap()
             .get("obj_usuario");
 
-    public Boolean gravarFornecedor(FornecedorBean fornecedor) {
+    public Boolean gravarFornecedor(FornecedorBean fornecedor) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -56,17 +57,18 @@ public class FornecedorDAO {
             con.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<FornecedorBean> listarFornecedores() throws ProjetoException {
@@ -97,10 +99,11 @@ public class FornecedorDAO {
                 lista.add(fornecedor);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -110,7 +113,7 @@ public class FornecedorDAO {
         return lista;
     }
 
-    public Boolean alterarFornecedor(FornecedorBean fornecedor) {
+    public Boolean alterarFornecedor(FornecedorBean fornecedor) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -139,20 +142,21 @@ public class FornecedorDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirFornecedor(Integer id) {
+    public Boolean excluirFornecedor(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -165,17 +169,18 @@ public class FornecedorDAO {
             con.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public FornecedorBean listarFornecedorPorId(int id) throws ProjetoException {
@@ -203,10 +208,11 @@ public class FornecedorDAO {
                 fornecedor.setIe(rs.getString("ie"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -236,17 +242,17 @@ public class FornecedorDAO {
 
                 lista.add(f);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
         return lista;
     }
 

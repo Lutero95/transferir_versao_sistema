@@ -66,7 +66,7 @@ public class FeriadoController implements Serializable {
 
     }
 
-    public void gravarFeriado() {
+    public void gravarFeriado() throws ProjetoException {
         boolean cadastrou = fDao.gravarFeriado(feriado);
 
         if (cadastrou == true) {
@@ -77,7 +77,7 @@ public class FeriadoController implements Serializable {
         }
     }
 
-    public void alterarFeriado() {
+    public void alterarFeriado() throws ProjetoException {
         boolean alterou = fDao.alterarFeriado(feriado);
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Feriado alterado com sucesso!", "Sucesso");

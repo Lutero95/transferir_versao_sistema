@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -25,7 +26,7 @@ public class GrupoDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean gravarGrupo(GrupoBean grupo) {
+    public boolean gravarGrupo(GrupoBean grupo) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut, cod_unidade) values (?, ?, ?, ?, ?) RETURNING id_grupo;";
@@ -61,20 +62,21 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarGrupo(GrupoBean grupo) {
+    public Boolean alterarGrupo(GrupoBean grupo) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ?, insercao_pac_institut = ? where id_grupo = ?";
 
@@ -111,20 +113,21 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirGrupo(GrupoBean grupo) {
+    public Boolean excluirGrupo(GrupoBean grupo) throws ProjetoException {
         Boolean retorno = false;
         String sqlGrupo = "delete from hosp.grupo where id_grupo = ?";
         String sqlEquipe = "delete from hosp.equipe_grupo where id_grupo = ?";
@@ -141,21 +144,22 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<EquipeBean> listarEquipesDoGrupo(int id, Connection conAuxiliar)
-            throws ProjetoException {
+            throws ProjetoException, SQLException {
 
         List<EquipeBean> lista = new ArrayList<EquipeBean>();
         String sql = "select eg.codequipe, e.descequipe from hosp.equipe_grupo eg"
@@ -172,15 +176,13 @@ public class GrupoDAO {
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 lista.add(equipe);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return lista;
     }
 
@@ -191,9 +193,6 @@ public class GrupoDAO {
                 + "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
                 + "where p.id_programa = ?";
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -212,10 +211,11 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -226,15 +226,12 @@ public class GrupoDAO {
     }
 
     public List<GrupoBean> listarGruposPorProgramaComConexao(int codPrograma, Connection conAuxiliar)
-            throws ProjetoException {
+            throws ProjetoException, SQLException {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
                 + "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
                 + "where p.id_programa = ?";
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, codPrograma);
@@ -252,20 +249,18 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return lista;
     }
 
     public List<GrupoBean> listarGruposPorTipoAtend(int idTipo, Connection conAuxiliar)
-            throws ProjetoException {
+            throws ProjetoException, SQLException {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.insercao_pac_institut from hosp.grupo g, "
                 + " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
@@ -287,15 +282,13 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return lista;
     }
 
@@ -318,10 +311,11 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -330,7 +324,6 @@ public class GrupoDAO {
         }
         return lista;
     }
-
 
     public List<GrupoBean> listarGruposDoPrograma(Integer codprograma)
             throws ProjetoException {
@@ -350,10 +343,11 @@ public class GrupoDAO {
                 grupo.setDescGrupo(rs.getString("descgrupo"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -363,9 +357,8 @@ public class GrupoDAO {
         return lista;
     }
 
-    @Deprecated
-    public List<GrupoBean> listarGruposAutoComplete(String descricao,
-                                                    ProgramaBean prog) throws ProjetoException {
+    
+    public List<GrupoBean> listarGruposAutoComplete(String descricao, ProgramaBean prog) throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
                 + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
@@ -390,10 +383,11 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -428,10 +422,11 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -465,10 +460,11 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -489,20 +485,19 @@ public class GrupoDAO {
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-
                 grupo.setIdGrupo(rs.getInt("id_grupo"));
                 grupo.setDescGrupo(rs.getString("descgrupo"));
                 grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
-                grupo.setinsercao_pac_institut(rs
-                        .getBoolean("insercao_pac_institut"));
+                grupo.setinsercao_pac_institut(rs.getBoolean("insercao_pac_institut"));
                 grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo"), con));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -522,20 +517,18 @@ public class GrupoDAO {
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-
                 grupo.setIdGrupo(rs.getInt("id_grupo"));
                 grupo.setDescGrupo(rs.getString("descgrupo"));
                 grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
-                grupo.setinsercao_pac_institut(rs
-                        .getBoolean("insercao_pac_institut"));
-
+                grupo.setinsercao_pac_institut(rs.getBoolean("insercao_pac_institut"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -545,7 +538,7 @@ public class GrupoDAO {
         return grupo;
     }    
 
-    public GrupoBean listarGrupoPorIdComConexao(int id, Connection conAuxiliar) throws ProjetoException {
+    public GrupoBean listarGrupoPorIdComConexao(int id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         GrupoBean grupo = new GrupoBean();
         String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where id_grupo = ?";
@@ -560,15 +553,13 @@ public class GrupoDAO {
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return grupo;
     }
 
@@ -596,10 +587,11 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -608,5 +600,4 @@ public class GrupoDAO {
         }
         return lista;
     }
-
 }

@@ -103,7 +103,7 @@ public class GrupoController implements Serializable {
 
     }
 
-    public void alterarGrupo() {
+    public void alterarGrupo() throws ProjetoException {
         /*
     	if (grupo.getEquipes().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
