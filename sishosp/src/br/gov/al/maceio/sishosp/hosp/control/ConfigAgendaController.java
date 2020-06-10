@@ -158,7 +158,7 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    private void gerarHorariosAtendimento() throws ParseException {
+    private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 

@@ -175,12 +175,10 @@ public class PacienteController implements Serializable {
 		}
 	}
 
-	public void gravarPaciente() {
+	public void gravarPaciente() throws ProjetoException {
 
 		boolean cadastrou = false;
-
 		cadastrou = pDao.cadastrarPaciente(paciente, bairroExiste);
-
 		if (cadastrou == true) {
 			limparDados();
 			JSFUtil.adicionarMensagemSucesso("Paciente cadastrado com sucesso!", "Sucesso");
@@ -191,7 +189,7 @@ public class PacienteController implements Serializable {
 
 	}
 
-	public void alterarPaciente() {
+	public void alterarPaciente() throws ProjetoException {
 		/*
 		 * if ((paciente.getEndereco().getCodbairro() == null) &&
 		 * (paciente.getEndereco().getBairro() == null)) {
@@ -202,9 +200,7 @@ public class PacienteController implements Serializable {
 		if (VerificadorUtil.verificarSeObjetoNulo(bairroExiste)) {
 			bairroExiste = true;
 		}
-
 		boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
-
 		if (alterou == true) {
 			JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
 		} else {
@@ -226,13 +222,13 @@ public class PacienteController implements Serializable {
 		listaPacientes = pDao.listaPacientes();
 	}
 	
-	public void verificaExisteCNSDoPacienteCadastrado(String cns) {
+	public void verificaExisteCNSDoPacienteCadastrado(String cns) throws ProjetoException {
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cns)) {
 			if (!DocumentosUtil.validaCNS(cns)) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("CNS n�o v�lida!");
+				message.setSummary("CNS não válida!");
 				throw new ValidatorException(message);
 			}
 			
@@ -252,7 +248,7 @@ public class PacienteController implements Serializable {
 		}
 	}
 	
-	public void verificaExisteCPFDoPacienteCadastrado(String cpf) {
+	public void verificaExisteCPFDoPacienteCadastrado(String cpf) throws ProjetoException {
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cpf)) {
 			cpf = cpf.replaceAll(" ", "").replaceAll("[^0-9]", "");

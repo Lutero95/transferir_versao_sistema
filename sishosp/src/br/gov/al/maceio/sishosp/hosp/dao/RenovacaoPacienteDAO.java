@@ -3,18 +3,15 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 
 import javax.faces.context.FacesContext;
 
@@ -34,7 +31,6 @@ public class RenovacaoPacienteDAO {
 				+ " LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente) \n"
 				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) " + " where pi.id = ?";
 
-		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -64,9 +60,10 @@ public class RenovacaoPacienteDAO {
 
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -98,19 +95,20 @@ public class RenovacaoPacienteDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				GerenciarPacienteBean ge = new GerenciarPacienteBean();
-				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
-				ge.getFuncionario().setId(rs.getLong("id_profissional"));
-				ge.setId(rs.getInt("id_paciente_instituicao"));
-				ge.getFuncionario().setDiasSemana(rs.getString("dia"));
-				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
-				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				GerenciarPacienteBean gerenciar = new GerenciarPacienteBean();
+				gerenciar.getFuncionario().setNome(rs.getString("descfuncionario"));
+				gerenciar.getFuncionario().setId(rs.getLong("id_profissional"));
+				gerenciar.setId(rs.getInt("id_paciente_instituicao"));
+				gerenciar.getFuncionario().setDiasSemana(rs.getString("dia"));
+				gerenciar.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
+				gerenciar.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
 
-				lista.add(ge);
+				lista.add(gerenciar);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -131,17 +129,16 @@ public class RenovacaoPacienteDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
-
 			stm.setInt(1, id);
-
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				lista.add(rs.getString("dia_semana"));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -154,7 +151,7 @@ public class RenovacaoPacienteDAO {
 
 	public boolean gravarRenovacaoEquipeTurno(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
 			ArrayList<FuncionarioBean> listaProfissionais,
-			ArrayList<AgendaBean> listAgendamentoProfissional) {
+			ArrayList<AgendaBean> listAgendamentoProfissional) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -171,7 +168,6 @@ public class RenovacaoPacienteDAO {
 			conexao = ConnectionFactory.getConnection();
 			ps = conexao.prepareStatement(sql1);
 			ps.setInt(1, insercao.getId());
-
 			ps.executeUpdate();
 
 			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, id_paciente, turno, "+
@@ -355,28 +351,27 @@ public class RenovacaoPacienteDAO {
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R",
 					conexao)) {
 				conexao.commit();
-
 				retorno = true;
 			}
 
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Erro");
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public boolean gravarRenovacaoEquipeDiaHorario(InsercaoPacienteBean insercao,
 			InsercaoPacienteBean insercaoParaLaudo, ArrayList<AgendaBean> listaAgendamento,
-			List<FuncionarioBean> listaProfissionais) {
+			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -393,7 +388,6 @@ public class RenovacaoPacienteDAO {
 			conexao = ConnectionFactory.getConnection();
 			ps = conexao.prepareStatement(sql1);
 			ps.setInt(1, insercao.getId());
-
 			ps.executeUpdate();
 
 			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
@@ -533,26 +527,26 @@ public class RenovacaoPacienteDAO {
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R",
 					conexao)) {
 				conexao.commit();
-
 				retorno = true;
 			}
 
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			ArrayList<AgendaBean> listaAgendamento) {
+			ArrayList<AgendaBean> listaAgendamento) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -651,21 +645,21 @@ public class RenovacaoPacienteDAO {
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R",
 					conexao)) {
 				conexao.commit();
-
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 }

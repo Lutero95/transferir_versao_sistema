@@ -163,7 +163,7 @@ public class UnidadeController implements Serializable {
         unidade.getListaProgramasGrupoEvolucao().add(evolucaoAux);
         evolucaoAux = new ProgramaGrupoEvolucaoBean();
     }    
-    public void gravarUnidade() {
+    public void gravarUnidade() throws ProjetoException {
 
         boolean cadastrou = eDao.gravarUnidade(unidade);
 
@@ -175,7 +175,7 @@ public class UnidadeController implements Serializable {
         }
     }
 
-    public void alterarUnidade() {
+    public void alterarUnidade() throws ProjetoException {
         boolean alterou = eDao.alterarUnidade(unidade);
 
         if (alterou == true) {
@@ -217,7 +217,7 @@ public class UnidadeController implements Serializable {
         return listaUnidades;
     }
 
-    public List<UnidadeBean> listarUnidadesDoFuncionario() {
+    public List<UnidadeBean> listarUnidadesDoFuncionario() throws ProjetoException {
         return eDao.carregarUnidadesDoFuncionario();
     }
 

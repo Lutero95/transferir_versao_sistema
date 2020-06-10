@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -21,7 +22,7 @@ public class TipoAtendimentoDAO {
     PreparedStatement ps = null;
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
-    public boolean gravarTipoAt(TipoAtendimentoBean tipo) {
+    public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo, cod_unidade) "
@@ -58,20 +59,21 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public boolean alterarTipo(TipoAtendimentoBean tipo) {
+    public boolean alterarTipo(TipoAtendimentoBean tipo) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ?, intervalo_minimo = ? where id = ?";
@@ -104,34 +106,32 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirTipo(TipoAtendimentoBean tipo) {
+    public Boolean excluirTipo(TipoAtendimentoBean tipo) throws ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "delete from hosp.tipoatendimento where id = ?";
 
         try {
             con = ConnectionFactory.getConnection();
-
             retorno = excluirTipoGrupo(tipo.getIdTipo(), con);
 
             if (retorno) {
                 retorno = excluirTipoPrograma(tipo.getIdTipo(), con);
             }
-
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, tipo.getIdTipo());
             stmt.execute();
@@ -141,20 +141,21 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirTipoGrupo(int idTipo, Connection conn) {
+    public Boolean excluirTipoGrupo(int idTipo, Connection conn) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -166,44 +167,38 @@ public class TipoAtendimentoDAO {
             stmt.setLong(1, idTipo);
             stmt.execute();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conn.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conn.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean excluirTipoPrograma(int idTipo, Connection conn) {
+    public Boolean excluirTipoPrograma(int idTipo, Connection conn) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "delete from hosp.tipoatendimento_programa where codtipoatendimento = ?";
         retorno = true;
-
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, idTipo);
             stmt.execute();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conn.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conn.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
     public Boolean insereTipoAtendimentoGrupo(int idTipo,
-                                              List<GrupoBean> listaGrupo, Connection conn) {
+                                              List<GrupoBean> listaGrupo, Connection conn) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         String sql = "insert into hosp.tipoatendimento_grupo (codgrupo, codtipoatendimento) values(?,?);";
@@ -212,25 +207,22 @@ public class TipoAtendimentoDAO {
             for (GrupoBean grupoBean : listaGrupo) {
                 ps.setInt(1, grupoBean.getIdGrupo());
                 ps.setInt(2, idTipo);
-
                 ps.execute();
             }
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conn.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conn.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public Boolean insereTipoAtendimentoPrograma(int idTipo,
-                                                 List<ProgramaBean> listaPrograma, Connection conn) {
+    public Boolean insereTipoAtendimentoPrograma(int idTipo, List<ProgramaBean> listaPrograma, Connection conn)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
         String sql = "insert into hosp.tipoatendimento_programa (codprograma, codtipoatendimento) values(?,?);";
@@ -239,21 +231,17 @@ public class TipoAtendimentoDAO {
             for (ProgramaBean programaBean : listaPrograma) {
                 ps.setInt(1, programaBean.getIdPrograma());
                 ps.setInt(2, idTipo);
-
                 ps.execute();
             }
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conn.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conn.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
     public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo, String tipoAtendimento)
@@ -282,13 +270,13 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
-
                 lista.add(tipo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -332,13 +320,13 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
-
                 lista.add(tipo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -366,13 +354,13 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setGrupo(gDao.listarGruposPorTipoAtend(rs.getInt("id"), con));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
-
                 lista.add(tipo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -404,13 +392,13 @@ public class TipoAtendimentoDAO {
                 tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo1.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
-
                 lista.add(tipo1);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -420,8 +408,8 @@ public class TipoAtendimentoDAO {
         return lista;
     }
 
-    public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
-                                                              GrupoBean grupo, String tipoAtendimento) throws ProjetoException {
+    public List<TipoAtendimentoBean> listarTipoAtAutoComplete
+    	(String descricao, GrupoBean grupo, String tipoAtendimento) throws ProjetoException {
 
         PreparedStatement stm = null;
         con = ConnectionFactory.getConnection();
@@ -453,13 +441,13 @@ public class TipoAtendimentoDAO {
                 tipo1.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo1.setProfissional(rs.getBoolean("profissional"));
-
                 lista.add(tipo1);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -473,6 +461,7 @@ public class TipoAtendimentoDAO {
         String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
         + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento WHERE id = ?";
+        TipoAtendimentoBean tipo = null;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -480,7 +469,6 @@ public class TipoAtendimentoDAO {
             ResultSet rs = stm.executeQuery();
             GrupoDAO gDao = new GrupoDAO();
             ProgramaDAO pDao = new ProgramaDAO();
-            TipoAtendimentoBean tipo = null;
             while (rs.next()) {
                 tipo = new TipoAtendimentoBean();
                 tipo.setIdTipo(rs.getInt("id"));
@@ -493,31 +481,31 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
             }
-            return tipo;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return tipo;
     }
     
     public TipoAtendimentoBean listarTipoPorIdParaConverter(int id) throws ProjetoException {
         String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
         + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento WHERE id = ?";
+        TipoAtendimentoBean tipo = null;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
-            GrupoDAO gDao = new GrupoDAO();
-            ProgramaDAO pDao = new ProgramaDAO();
-            TipoAtendimentoBean tipo = null;
+
             while (rs.next()) {
                 tipo = new TipoAtendimentoBean();
                 tipo.setIdTipo(rs.getInt("id"));
@@ -528,17 +516,18 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
             }
-            return tipo;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return tipo;
     }    
 
     public TipoAtendimentoBean listarInformacoesTipoAtendimentoEquieProgramaPorId(int codigo)
@@ -565,10 +554,11 @@ public class TipoAtendimentoDAO {
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -587,19 +577,16 @@ public class TipoAtendimentoDAO {
 
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-
             stm.setInt(1, idPrograma);
-
             ResultSet rs = stm.executeQuery();
-
             while (rs.next()) {
                 retorno = rs.getInt("codtipoatendimento");
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -608,5 +595,4 @@ public class TipoAtendimentoDAO {
         }
         return retorno;
     }
-
 }

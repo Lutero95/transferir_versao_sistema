@@ -68,17 +68,17 @@ public class RemocaoProfissionalEquipeController implements Serializable {
         listaSelecaoSeremRemovidos = new ArrayList<>();
     }
 
-    public void listarRemovidos() {
+    public void listarRemovidos() throws ProjetoException {
         listaRemovidos = rDao.listarRemovidos();
     }
 
-    public void listarSeremRemovidos() {
+    public void listarSeremRemovidos() throws ProjetoException {
         tratarCasoDatas();
         tratarGrupo();
         listaSeremRemovidos = rDao.listarSeremRemovidos(remocaoProfissionalEquipe);
     }
 
-    public void gravarRemocaoProfissionalEquipe() {
+    public void gravarRemocaoProfissionalEquipe() throws ProjetoException {
         tratarCasoDatas();
         tratarGrupo();
 

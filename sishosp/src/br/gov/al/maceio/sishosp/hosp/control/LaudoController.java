@@ -165,7 +165,7 @@ public class LaudoController implements Serializable {
 
     }
 
-    public void gravarLaudo() {
+    public void gravarLaudo() throws ProjetoException {
     	if(!existeLaudoComMesmosDados()) {
 			idLaudoGerado = null;
 			idLaudoGerado = lDao.cadastrarLaudo(laudo);
@@ -210,7 +210,7 @@ public class LaudoController implements Serializable {
     }
 
 
-    public Boolean verificarSeLaudoAssociadoPacienteTerapia() {
+    public Boolean verificarSeLaudoAssociadoPacienteTerapia() throws ProjetoException {
         if (!lDao.verificarSeLaudoAssociadoPacienteTerapia(laudo.getId())) {
             JSFUtil.adicionarMensagemErro("Não é possível alterar pois o laudo já está associado a um paciente em terapia!", "Erro");
             return false;
@@ -218,7 +218,7 @@ public class LaudoController implements Serializable {
         return true;
     }
 
-    public void excluirLaudo() {
+    public void excluirLaudo() throws ProjetoException {
         boolean excluiu = lDao.excluirLaudo(laudo);
 
         if (excluiu == true) {

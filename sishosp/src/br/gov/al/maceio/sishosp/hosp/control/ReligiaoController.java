@@ -86,7 +86,7 @@ public class ReligiaoController implements Serializable {
         return listaReligioes;
     }
 
-    public void gravarReligiao() {
+    public void gravarReligiao() throws ProjetoException {
         boolean cadastrou = rDao.gravarReligiao(religiao);
 
         if (cadastrou == true) {
@@ -97,7 +97,7 @@ public class ReligiaoController implements Serializable {
         }
     }
 
-    public void alterarReligiao() {
+    public void alterarReligiao() throws ProjetoException {
 
         boolean alterou = rDao.alterarReligiao(religiao);
         if (alterou == true) {

@@ -8,14 +8,15 @@ import java.util.ArrayList;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.MotivoDesligamentoBean;
 
 public class MotivoDesligamentoDAO {
-	private Connection conexao = null;
+	
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarMotivo(MotivoDesligamentoBean motivo) {
+	public boolean gravarMotivo(MotivoDesligamentoBean motivo) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "insert into hosp.motivo_desligamento (motivo) values (?);";
 
@@ -26,20 +27,21 @@ public class MotivoDesligamentoDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean alterarMotivo(MotivoDesligamentoBean motivo) {
+	public Boolean alterarMotivo(MotivoDesligamentoBean motivo) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "update hosp.motivo_desligamento set motivo = ? where id = ?";
 
@@ -51,20 +53,21 @@ public class MotivoDesligamentoDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean excluirMotivo(MotivoDesligamentoBean motivo) {
+	public Boolean excluirMotivo(MotivoDesligamentoBean motivo) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "delete from hosp.motivo_desligamento where id = ?";
 
@@ -75,17 +78,18 @@ public class MotivoDesligamentoDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public ArrayList<MotivoDesligamentoBean> listarMotivos() throws ProjetoException {
@@ -95,23 +99,23 @@ public class MotivoDesligamentoDAO {
 		ArrayList<MotivoDesligamentoBean> lista = new ArrayList();
 
 		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				MotivoDesligamentoBean m = new MotivoDesligamentoBean();
-				m.setId_motivo(rs.getInt("id"));
-				m.setMotivo_desligamento(rs.getString("motivo"));
-
-				lista.add(m);
+				MotivoDesligamentoBean motivoDesligamento = new MotivoDesligamentoBean();
+				motivoDesligamento.setId_motivo(rs.getInt("id"));
+				motivoDesligamento.setMotivo_desligamento(rs.getString("motivo"));
+				lista.add(motivoDesligamento);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
-				conexao.close();
+				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -123,22 +127,20 @@ public class MotivoDesligamentoDAO {
 			throws ProjetoException {
 		
 		String sql = "select id, motivo from hosp.motivo_desligamento where id =? order by motivo";
+		MotivoDesligamentoBean motivoDesligamento = new MotivoDesligamentoBean();
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
-			MotivoDesligamentoBean m = new MotivoDesligamentoBean();
 			while (rs.next()) {
-				m.setId_motivo(rs.getInt("id"));
-				m.setMotivo_desligamento(rs.getString("motivo"));
-
+				motivoDesligamento.setId_motivo(rs.getInt("id"));
+				motivoDesligamento.setMotivo_desligamento(rs.getString("motivo"));
 			}
-
-			return m;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -146,6 +148,6 @@ public class MotivoDesligamentoDAO {
 				ex.printStackTrace();
 			}
 		}
+		return motivoDesligamento;
 	}
-
 }

@@ -1,12 +1,11 @@
 package br.gov.al.maceio.sishosp.comum.validator;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.control.PacienteController;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
-
-import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -34,16 +33,18 @@ public class CPFPacienteValidator implements Validator {
 				Integer idPaciente = null;
 				if (PacienteController.getParamIdPaciente() != null) 
 					idPaciente = PacienteController.getParamIdPaciente();
-					pacienteRetorno = pDAo.verificaExisteCpfCadastrado(valorTelaString, idPaciente); // se tiver retorno
-																										// entao existe
-					// cpf
-					if (pacienteRetorno != null) {
-						FacesMessage message = new FacesMessage();
-						message.setSeverity(FacesMessage.SEVERITY_ERROR);
-						message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
-						throw new ValidatorException(message);
-					}
-				
+					try {
+						pacienteRetorno = pDAo.verificaExisteCpfCadastrado(valorTelaString, idPaciente);
+						// cpf
+						if (pacienteRetorno != null) {
+							FacesMessage message = new FacesMessage();
+							message.setSeverity(FacesMessage.SEVERITY_ERROR);
+							message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
+							throw new ValidatorException(message);
+						}
+					} catch (ProjetoException e) {
+						e.printStackTrace();
+					} // se tiver retorno
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusMovimentacaoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPadraoOrteseProtese;
@@ -21,7 +22,7 @@ public class OrteseProteseDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public OrteseProtese carregarGrupoProgramaOrteseIhProtese() {
+    public OrteseProtese carregarGrupoProgramaOrteseIhProtese() throws ProjetoException {
 
         OrteseProtese orteseProtese = new OrteseProtese();
 
@@ -43,10 +44,11 @@ public class OrteseProteseDAO {
                 orteseProtese.getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
                 orteseProtese.getGrupo().setDescGrupo(rs.getString("descgrupo"));
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -56,7 +58,7 @@ public class OrteseProteseDAO {
         return orteseProtese;
     }
 
-    public OrteseProtese carregarEncaminhamentoOrteseIhProtese(Integer idOrteseProtese) {
+    public OrteseProtese carregarEncaminhamentoOrteseIhProtese(Integer idOrteseProtese) throws ProjetoException {
 
         OrteseProtese orteseProtese = new OrteseProtese();
 
@@ -79,10 +81,11 @@ public class OrteseProteseDAO {
                 orteseProtese.setDataEncaminhamento(rs.getDate("data_encaminhamento"));
                 orteseProtese.setId(rs.getInt("id_ortese_protese"));
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -92,7 +95,7 @@ public class OrteseProteseDAO {
         return orteseProtese;
     }
 
-    public OrteseProtese carregarOrteseIhProtesePorId(Integer id) {
+    public OrteseProtese carregarOrteseIhProtesePorId(Integer id) throws ProjetoException {
 
         OrteseProtese orteseProtese = new OrteseProtese();
 
@@ -125,10 +128,11 @@ public class OrteseProteseDAO {
                 orteseProtese.getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
                 orteseProtese.getGrupo().setDescGrupo(rs.getString("descgrupo"));
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -138,7 +142,7 @@ public class OrteseProteseDAO {
         return orteseProtese;
     }
 
-    public List<OrteseProtese> listarOrteseIhProtese() {
+    public List<OrteseProtese> listarOrteseIhProtese() throws ProjetoException {
 
         List<OrteseProtese> lista = new ArrayList<>();
 
@@ -180,10 +184,11 @@ public class OrteseProteseDAO {
                 orteseProtese.getLaudo().getPaciente().setNome(rs.getString("nomepaciente"));
                 lista.add(orteseProtese);
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -193,7 +198,7 @@ public class OrteseProteseDAO {
         return lista;
     }
 
-    public Boolean gravarInsercaoOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean gravarInsercaoOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.ortese_protese (status, nota_fiscal, cod_programa, cod_grupo, cod_equipamento, cod_laudo, cod_fornecedor, " +
@@ -242,23 +247,23 @@ public class OrteseProteseDAO {
 
             if (retorno) {
                 con.commit();
-
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean alterarOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese set nota_fiscal = ?, cod_equipamento = ?, cod_laudo = ?, cod_fornecedor = ? WHERE id = ?";
@@ -274,7 +279,6 @@ public class OrteseProteseDAO {
             }
 
             stmt.setInt(2, orteseProtese.getEquipamento().getId_equipamento());
-
             stmt.setInt(3, orteseProtese.getLaudo().getId());
 
             if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
@@ -289,20 +293,21 @@ public class OrteseProteseDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean gravarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean gravarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese, cod_unidade) " +
@@ -313,17 +318,11 @@ public class OrteseProteseDAO {
             ps = con.prepareStatement(sql);
 
             ps.setInt(1, orteseProtese.getFornecedor().getId());
-
             ps.setString(2, orteseProtese.getEspecificacao().toUpperCase());
-
             ps.setDate(3, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataEncaminhamento()));
-
             ps.setLong(4, user_session.getId());
-
             ps.setInt(5, orteseProtese.getId());
-
             ps.setInt(6, user_session.getUnidade().getId());
-
             ps.execute();
 
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), orteseProtese.getId(), con);
@@ -335,20 +334,21 @@ public class OrteseProteseDAO {
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean alterarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.encaminhamento_opm set cod_fornecedor = ?, especificacao = ?, data_encaminhamento = ? WHERE id = ?";
@@ -358,32 +358,29 @@ public class OrteseProteseDAO {
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setInt(1, orteseProtese.getFornecedor().getId());
-
             ps.setString(2, orteseProtese.getEspecificacao().toUpperCase());
-
             ps.setDate(3, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataEncaminhamento()));
-
             ps.setInt(4, orteseProtese.getIdEncaminhamento());
-
             ps.executeUpdate();
 
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean cancelarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean cancelarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.encaminhamento_opm set data_cancelamento = CURRENT_TIMESTAMP , usuario_cancelamento = ? WHERE id = ?";
@@ -393,9 +390,7 @@ public class OrteseProteseDAO {
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setLong(1, user_session.getId());
-
             ps.setInt(2, orteseProtese.getIdEncaminhamento());
-
             ps.executeUpdate();
 
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_CANCELADO.getSigla(), orteseProtese.getId(), con);
@@ -406,20 +401,21 @@ public class OrteseProteseDAO {
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean gravarMedicaoOrteseIhProtese(OrteseProtese orteseProtese) {
+    public Boolean gravarMedicaoOrteseIhProtese(OrteseProtese orteseProtese) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese SET medicao = ?, data_medicao = ? WHERE id = ?";
@@ -429,13 +425,9 @@ public class OrteseProteseDAO {
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, orteseProtese.getMedicao());
-
             ps.setDate(2, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataMedicao()));
-
             ps.setInt(3, orteseProtese.getId());
-
             ps.executeUpdate();
-
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_EFETUADA.getSigla(), orteseProtese.getId(), con);
 
             if (retorno) {
@@ -445,20 +437,21 @@ public class OrteseProteseDAO {
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean cancelarMedicaoOrteseIhProtese(Integer id) {
+    public Boolean cancelarMedicaoOrteseIhProtese(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese SET medicao = NULL, data_medicao = NULL WHERE id = ?";
@@ -466,11 +459,8 @@ public class OrteseProteseDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-
             ps.setInt(1, id);
-
             ps.executeUpdate();
-
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_CANCELADA.getSigla(), id, con);
 
             if (retorno) {
@@ -479,26 +469,26 @@ public class OrteseProteseDAO {
                     con.commit();
                 }
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    private Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
+    private Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar)
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
         try {
-
             String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador, cod_ortese_protese) " +
                     "values (?,CURRENT_TIMESTAMP,?,?);";
 
@@ -507,21 +497,19 @@ public class OrteseProteseDAO {
             ps.setLong(2, user_session.getId());
             ps.setInt(3, codOrteseIhProtese);
             ps.execute();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    private Boolean gravarUltimaSituacaoValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
+    private Boolean gravarUltimaSituacaoValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) 
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -529,7 +517,6 @@ public class OrteseProteseDAO {
                 "WHERE status = ? AND cod_ortese_protese = ?";
 
         try {
-
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, statusDecartar);
             ps.setInt(2, codOrteseIhProtese);
@@ -541,50 +528,42 @@ public class OrteseProteseDAO {
             ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
             ps.setInt(2, codOrteseIhProtese);
             ps.execute();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    private Boolean gravarUltimaSituacaoIhStatusValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
+    private Boolean gravarUltimaSituacaoIhStatusValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) 
+    		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
         try {
-
             String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ? WHERE id = ?;";
-
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
             ps.setString(2, StatusPadraoOrteseProtese.PENDENTE.getSigla());
             ps.setInt(3, codOrteseIhProtese);
             ps.execute();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    private Boolean alterarSituacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
+    private Boolean alterarSituacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar)
+    		throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?";
@@ -596,49 +575,43 @@ public class OrteseProteseDAO {
             ps.execute();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return retorno;
     }
 
-    public Boolean verificarSeExisteMedicao(Integer id) {
+    public Boolean verificarSeExisteMedicao(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "SELECT medicao FROM hosp.ortese_protese WHERE id = ?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-
             ps.setInt(1, id);
-
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(rs.getString("medicao"))) {
                     retorno = true;
                 }
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public OrteseProtese carregarMedicaoPorIdOrteseProtese(Integer id)
@@ -649,7 +622,6 @@ public class OrteseProteseDAO {
 
         try {
             con = ConnectionFactory.getConnection();
-
             String sql = "SELECT id, medicao, data_medicao FROM hosp.ortese_protese WHERE id = ?; ";
 
             ps = con.prepareStatement(sql);
@@ -661,28 +633,28 @@ public class OrteseProteseDAO {
                 orteseProtese.setMedicao(rs.getString("medicao"));
                 orteseProtese.setDataMedicao(rs.getDate("data_medicao"));
             }
-            return orteseProtese;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return orteseProtese;
     }
 
-    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar) {
+    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         String resultado = null;
 
         PreparedStatement ps = null;
 
         try {
-
             String sql = "SELECT status FROM hosp.historico_movimentacao_ortese_protese WHERE cod_ortese_protese = ? " +
                     "AND status NOT IN ('MC', 'EC', 'RC', 'CE') and status <> ? ORDER BY id DESC LIMIT 1;";
 
@@ -697,20 +669,17 @@ public class OrteseProteseDAO {
                 resultado = rs.getString("status");
             }
 
-            return resultado;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return resultado;
     }
 
-    public Boolean gravarRecebimentoOrteseIhProtese(Integer id) {
+    public Boolean gravarRecebimentoOrteseIhProtese(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese SET situacao = ?, data_hora_acao = CURRENT_TIMESTAMP WHERE id = ?";
@@ -721,59 +690,53 @@ public class OrteseProteseDAO {
 
             ps.setString(1, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla());
             ps.setInt(2, id);
-
             ps.executeUpdate();
-
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla(), id, con);
 
             if (retorno) {
                 con.commit();
             }
-
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean cancelarRecebimentoOrteseIhProtese(Integer id) {
+    public Boolean cancelarRecebimentoOrteseIhProtese(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
-
         try {
             con = ConnectionFactory.getConnection();
-
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.RECEBIMENTO_CANCELADO.getSigla(), id, con);
-
             if (retorno) {
                 retorno = gravarUltimaSituacaoValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla(), con);
                 if (retorno) {
                     con.commit();
                 }
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean gravarEntregaOrteseIhProtese(Integer id) {
+    public Boolean gravarEntregaOrteseIhProtese(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ?, data_hora_acao = CURRENT_TIMESTAMP WHERE id = ?";
@@ -785,7 +748,6 @@ public class OrteseProteseDAO {
             ps.setString(1, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla());
             ps.setString(2, StatusPadraoOrteseProtese.ENTREGUE.getSigla());
             ps.setInt(3, id);
-
             ps.executeUpdate();
 
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla(), id, con);
@@ -794,27 +756,26 @@ public class OrteseProteseDAO {
                 con.commit();
             }
 
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean cancelarEntregaOrteseIhProtese(Integer id) {
+    public Boolean cancelarEntregaOrteseIhProtese(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
 
         try {
             con = ConnectionFactory.getConnection();
-
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.CANCELAR_ENTREGA.getSigla(), id, con);
 
             if (retorno) {
@@ -824,20 +785,21 @@ public class OrteseProteseDAO {
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public String verificarSituacao(Integer id) {
+    public String verificarSituacao(Integer id) throws ProjetoException {
 
         String retorno = "";
 
@@ -855,17 +817,18 @@ public class OrteseProteseDAO {
                 retorno = rs.getString("situacao");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
 }

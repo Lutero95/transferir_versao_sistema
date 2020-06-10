@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
@@ -29,7 +30,7 @@ public class UnidadeDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean gravarUnidade(UnidadeBean unidade) {
+    public boolean gravarUnidade(UnidadeBean unidade) throws ProjetoException {
         Boolean retorno = false;
         Integer codUnidade = null;
         String sql = "INSERT INTO hosp.unidade(rua, bairro, numero, cep, cidade, " +
@@ -258,17 +259,18 @@ public class UnidadeDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public List<UnidadeBean> listarUnidade() throws ProjetoException {
@@ -311,10 +313,11 @@ public class UnidadeDAO {
 
                 lista.add(unidade);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -324,7 +327,7 @@ public class UnidadeDAO {
         return lista;
     }
 
-    public Boolean alterarUnidade(UnidadeBean unidade) {
+    public Boolean alterarUnidade(UnidadeBean unidade) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "UPDATE hosp.unidade SET   rua=?, " +
@@ -512,20 +515,21 @@ public class UnidadeDAO {
             con.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean desativarUnidade(UnidadeBean unidade) {
+    public Boolean desativarUnidade(UnidadeBean unidade) throws ProjetoException {
 
         Boolean retorno = false;
         String sql = "update hosp.unidade set ativo = false where id = ?";
@@ -538,18 +542,18 @@ public class UnidadeDAO {
 
             con.commit();
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public UnidadeBean buscarUnidadePorId(Integer id) throws ProjetoException {
@@ -594,10 +598,11 @@ public class UnidadeDAO {
                 unidade.setNomeUnidade(rs.getString("nome"));
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -607,7 +612,7 @@ public class UnidadeDAO {
         return unidade;
     }
 
-    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) throws ProjetoException {
+    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         ParametroBean parametro = new ParametroBean();
 
@@ -667,19 +672,18 @@ public class UnidadeDAO {
                 parametro.setVersaoSistema(rs.getString("versao_sistema"));
                 parametro.setValidadePadraoLaudo(rs.getInt("validade_padrao_laudo"));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return parametro;
     }
 
-    public List<ProgramaGrupoEvolucaoBean> carregarProgramasEGruposEmEvolucao(Integer id, Connection conAuxiliar) throws ProjetoException {
+    public List<ProgramaGrupoEvolucaoBean> carregarProgramasEGruposEmEvolucao
+    	(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         List<ProgramaGrupoEvolucaoBean> listaProgramasGruposEvolucao = new ArrayList<ProgramaGrupoEvolucaoBean>();
 
@@ -704,15 +708,13 @@ public class UnidadeDAO {
                 listaProgramasGruposEvolucao.add(programaGrupoEvolucao);
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
         return listaProgramasGruposEvolucao;
     }
 
@@ -736,10 +738,11 @@ public class UnidadeDAO {
                 retorno = rs.getString("opcao_atendimento");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -749,7 +752,7 @@ public class UnidadeDAO {
         return retorno;
     }
 
-    public ParametroBean carregarDetalhesAtendimentoDaUnidade() {
+    public ParametroBean carregarDetalhesAtendimentoDaUnidade() throws ProjetoException {
 
         ParametroBean parametro = new ParametroBean();
 
@@ -774,10 +777,11 @@ public class UnidadeDAO {
                 parametro.setAlmocoFinal(rs.getTime("almoco_final"));
 
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -787,7 +791,7 @@ public class UnidadeDAO {
         return parametro;
     }
 
-    public List<UnidadeBean> carregarUnidadesDoFuncionario() {
+    public List<UnidadeBean> carregarUnidadesDoFuncionario() throws ProjetoException {
 
         List<UnidadeBean> lista = new ArrayList<>();
 
@@ -815,10 +819,11 @@ public class UnidadeDAO {
                 lista.add(unidade);
             }
 
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -828,7 +833,7 @@ public class UnidadeDAO {
         return lista;
     }
 
-    public Boolean verificarHorariosCheios(Integer codEquipe, Integer codProfissional, Date data, String horario) {
+    public Boolean verificarHorariosCheios(Integer codEquipe, Integer codProfissional, Date data, String horario) throws ProjetoException {
 
         Boolean resultado = true;
 
@@ -858,12 +863,12 @@ public class UnidadeDAO {
 
             while (rs.next()) {
                 resultado = false;
-
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -873,7 +878,7 @@ public class UnidadeDAO {
         return resultado;
     }
 
-    public Boolean verificarHorarioDeAlmocoUnidade(String horario) {
+    public Boolean verificarHorarioDeAlmocoUnidade(String horario) throws ProjetoException {
 
         Boolean resultado = true;
 
@@ -893,10 +898,11 @@ public class UnidadeDAO {
                 resultado = false;
 
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {

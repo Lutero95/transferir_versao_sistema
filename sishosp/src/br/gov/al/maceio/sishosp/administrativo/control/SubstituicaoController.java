@@ -60,7 +60,7 @@ public class SubstituicaoController implements Serializable {
         listaAtendimentosSelecionada = new ArrayList<>();
     }
 
-    public void gravarAfastamentoProfissional() {
+    public void gravarAfastamentoProfissional() throws ProjetoException {
 
         if (validarSeAgendamentosForamSelecionados()) {
         	if (substituicaoFuncionario.getFuncionario().getId() != substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())
@@ -92,7 +92,7 @@ public class SubstituicaoController implements Serializable {
         return true;
     }
 
-    public void carregarFuncionarioAfastamento() {
+    public void carregarFuncionarioAfastamento() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -113,7 +113,7 @@ public class SubstituicaoController implements Serializable {
         }
     }
 
-    public void buscarAgendamentoDoFuncionarioAfastado() {
+    public void buscarAgendamentoDoFuncionarioAfastado() throws ProjetoException {
     	  if (VerificadorUtil.verificarSeObjetoNulo(buscaAgendamentosParaFuncionarioAfastadoDTO.getTurno()))
     		  JSFUtil.adicionarMensagemAdvertencia("Informe o Turno", "Atenção");
     	  else
@@ -132,7 +132,7 @@ public class SubstituicaoController implements Serializable {
     		}
     }
 
-    public void limparFiltroBuscaAtendimentos() {
+    public void limparFiltroBuscaAtendimentos() throws ProjetoException {
         buscaAgendamentosParaFuncionarioAfastadoDTO.setPrograma(new ProgramaBean());
         buscaAgendamentosParaFuncionarioAfastadoDTO.setGrupo(new GrupoBean());
         buscaAgendamentosParaFuncionarioAfastadoDTO.setTurno(null);

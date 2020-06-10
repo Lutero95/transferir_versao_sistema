@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
@@ -24,8 +25,7 @@ public class PtsDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public Boolean verificarSeExistePts(Integer id)
-            throws ProjetoException {
+    public Boolean verificarSeExistePts(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -34,19 +34,16 @@ public class PtsDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-
             stmt.setInt(1, id);
-
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 retorno = true;
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -56,8 +53,7 @@ public class PtsDAO {
         return retorno;
     }
 
-    public String verificarStatusPts(Integer id)
-            throws ProjetoException {
+    public String verificarStatusPts(Integer id) throws ProjetoException {
 
         String retorno = "";
 
@@ -66,19 +62,18 @@ public class PtsDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-
             stmt.setInt(1, id);
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 retorno = rs.getString("status");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -123,10 +118,11 @@ public class PtsDAO {
                 pts.getPaciente().setCns(rs.getString("cns"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -189,10 +185,11 @@ public class PtsDAO {
 
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -202,7 +199,7 @@ public class PtsDAO {
         return pts;
     }
 
-    public List<PtsArea> carregarAreasPts(Integer id, Connection conAuxiliar, Boolean carregaApenasAreaUsuarioLogado) {
+    public List<PtsArea> carregarAreasPts(Integer id, Connection conAuxiliar, Boolean carregaApenasAreaUsuarioLogado) throws ProjetoException, SQLException {
 
         String sql = "SELECT pa.id, pa.id_area, e.descespecialidade, f.descfuncionario, pa.objetivo_curto, pa.objetivo_medio, pa.objetivo_longo, " +
                 "pa.plano_curto, pa.plano_medio, pa.plano_longo, pa.id_funcionario " +
@@ -241,17 +238,14 @@ public class PtsDAO {
                 ptsArea.getFuncionario().setNome(rs.getString("descfuncionario"));
 
                 lista.add(ptsArea);
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return lista;
     }
 
@@ -265,13 +259,10 @@ public class PtsDAO {
 
 
         PtsArea ptsArea = new PtsArea();
-
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-
             stmt.setInt(1, idPtsArea);
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -286,10 +277,11 @@ public class PtsDAO {
                 ptsArea.getFuncionario().setId(rs.getLong("id_funcionario"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -299,7 +291,7 @@ public class PtsDAO {
         return ptsArea;
     }
 
-    public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS) {
+    public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS) throws ProjetoException {
 
         Integer retorno = null;
 
@@ -361,25 +353,24 @@ public class PtsDAO {
             } else {
                 codPts = null;
             }
-
             conexao.close();
-
             retorno = codPts;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterarPts(Pts pts,  FuncionarioBean usuarioLiberacao) {
+    public Boolean alterarPts(Pts pts,  FuncionarioBean usuarioLiberacao) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -393,10 +384,8 @@ public class PtsDAO {
                 "novas_estrategias_tratamento=?, conduta_alta=?, cod_unidade=? " +
                 "where id=?";
 
-
         try {
             conexao = ConnectionFactory.getConnection();
-
             Boolean verificarSeDataPtsMudou = verificarSeDataPtsMudou(DataUtil.converterDateUtilParaDateSql(pts.getData()), pts.getId());
 
             ps = conexao.prepareStatement(sql1);
@@ -429,29 +418,26 @@ public class PtsDAO {
             }
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean inserirAreaPts(Pts pts, Integer codPts, Connection conAuxiliar) {
+    public Boolean inserirAreaPts(Pts pts, Integer codPts, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
-
         String sql = "INSERT INTO hosp.pts_area (id_pts, id_area, objetivo_curto, objetivo_medio, objetivo_longo, plano_curto, plano_medio, plano_longo, " +
                 "id_funcionario, data_hora_operacao) values (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);";
-
 
         try {
 
@@ -468,57 +454,46 @@ public class PtsDAO {
                 ps2.setLong(9, pts.getListaPtsArea().get(i).getFuncionario().getId());
                 ps2.execute();
             }
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean inserirLiberacaoPts(Integer codPts, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) {
+    public Boolean inserirLiberacaoPts(Integer codPts, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, id_pts) " +
                 "values (?, ?, CURRENT_TIMESTAMP, ?);";
 
-
         try {
-
             PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
             ps2.setString(1, MotivoLiberacao.ALTERAR_DATA_PTS.getSigla());
             ps2.setLong(2, usuarioLiberacao.getId());
             ps2.setInt(3, codPts);
             ps2.execute();
-
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean desativarPts(Integer codPts, Connection conAuxiliar) {
+    public Boolean desativarPts(Integer codPts, Connection conAuxiliar) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "UPDATE hosp.pts SET status = ? WHERE id = ?;";
-
 
         try {
             PreparedStatement ps = conAuxiliar.prepareStatement(sql);
@@ -528,64 +503,54 @@ public class PtsDAO {
 
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean excluirListaArea(Integer id, Connection conAuxiliar) {
+    public Boolean excluirListaArea(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         boolean retorno = false;
-
         String sql = "DELETE FROM hosp.pts_area WHERE id_pts = ?";
 
         try {
             PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.executeUpdate();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public Boolean excluirPts(Integer id, Connection conAuxiliar) {
+    public Boolean excluirPts(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         boolean retorno = false;
 
         String sql = "DELETE FROM hosp.pts WHERE id = ?";
-
         try {
             PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.executeUpdate();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
     public void verificarExclusoesPtsIhArea(Boolean area, Boolean pts, Connection conAuxiliar) throws SQLException {
@@ -623,10 +588,11 @@ public class PtsDAO {
                 retorno = true;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -762,10 +728,11 @@ public class PtsDAO {
                 lista.add(pts);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -872,10 +839,11 @@ public class PtsDAO {
 
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -885,7 +853,7 @@ public class PtsDAO {
         return pts;
     }
 
-    public Boolean cancelarPts(Integer id) {
+    public Boolean cancelarPts(Integer id) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -904,26 +872,25 @@ public class PtsDAO {
 
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean desligarPts(Pts pts) {
+    public Boolean desligarPts(Pts pts) throws ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "UPDATE hosp.pts SET conduta_alta = ?, usuario_desligamento = ?, data_hora_desligamento = CURRENT_TIMESTAMP, " +
                 "data_desligamento = ?, status = ? WHERE id = ?;";
-
         try {
             conexao = ConnectionFactory.getConnection();
 
@@ -936,28 +903,26 @@ public class PtsDAO {
             ps.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean verificarSeDataPtsMudou(Date data, Integer idPts) {
+    public Boolean verificarSeDataPtsMudou(Date data, Integer idPts) throws ProjetoException {
 
         Boolean retorno = false;
-
         String sql = "SELECT CASE WHEN DATA <> ? THEN TRUE ELSE FALSE END AS data_mudou FROM hosp.pts WHERE id = ?;";
-
         Connection conexao1 = null;
 
         try {
@@ -965,17 +930,17 @@ public class PtsDAO {
             PreparedStatement stm = conexao1.prepareStatement(sql);
             stm.setDate(1, data);
             stm.setInt(2, idPts);
-
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
                 retorno = rs.getBoolean("data_mudou");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao1.close();
             } catch (Exception ex) {

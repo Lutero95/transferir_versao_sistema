@@ -96,7 +96,7 @@ public class ProgramaController implements Serializable {
        // }
     }
 
-    public void alterarPrograma() {
+    public void alterarPrograma() throws ProjetoException {
         if (this.prog.getGrupo().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {

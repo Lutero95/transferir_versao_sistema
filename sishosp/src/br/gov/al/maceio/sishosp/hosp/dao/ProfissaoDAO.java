@@ -9,12 +9,13 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 public class ProfissaoDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(ProfissaoBean profissao) {
+    public Boolean cadastrar(ProfissaoBean profissao) throws ProjetoException {
         boolean retorno = false;
 
         String sql = "insert into hosp.profissao (descprofissao)"
@@ -28,20 +29,21 @@ public class ProfissaoDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(ProfissaoBean profissao) {
+    public Boolean alterar(ProfissaoBean profissao) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.profissao set descprofissao = ? where id_profissao = ?";
         try {
@@ -54,20 +56,21 @@ public class ProfissaoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(ProfissaoBean profissao) {
+    public Boolean excluir(ProfissaoBean profissao) throws ProjetoException {
         boolean retorno = false;
         String sql = "delete from hosp.profissao where id_profissao = ?";
         try {
@@ -78,17 +81,18 @@ public class ProfissaoDAO {
 
             conexao.commit();
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<ProfissaoBean> listaProfissoes() throws ProjetoException {
@@ -107,13 +111,13 @@ public class ProfissaoDAO {
 
                 p.setCodprofissao(rs.getInt("id_profissao"));
                 p.setDescprofissao(rs.getString("descprofissao").toUpperCase());
-
                 lista.add(p);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -123,73 +127,66 @@ public class ProfissaoDAO {
         return lista;
     }
 
-    public ProfissaoBean buscaprofissaocodigo(Integer i)
+    public ProfissaoBean buscaprofissaocodigo(Integer id)
             throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        ProfissaoBean profissao = new ProfissaoBean();
         try {
-
             String sql = "select id_profissao, descprofissao from hosp.profissao where id_profissao=? order by descprofissao";
-
             ps = conexao.prepareStatement(sql);
-            ps.setInt(1, i);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
-            ProfissaoBean profissao = new ProfissaoBean();
             while (rs.next()) {
-
                 profissao.setCodprofissao(rs.getInt("id_profissao"));
                 profissao.setDescprofissao(rs.getString("descprofissao"));
-
             }
-            return profissao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return profissao;
     }
 
-    public List<ProfissaoBean> buscaprofissao(String s) throws ProjetoException {
+    public List<ProfissaoBean> buscaprofissao(String campoDeBusca) throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
 
+        List<ProfissaoBean> colecao = new ArrayList<ProfissaoBean>();
         try {
-            List<ProfissaoBean> listaprofissoes = new ArrayList<ProfissaoBean>();
             String sql = "select id_profissao,id_profissao ||'-'|| descprofissao descprofissao from hosp.profissao "
                     + " where upper(id_profissao ||'-'|| descprofissao) like ? order by descprofissao";
 
             ps = conexao.prepareStatement(sql);
-            ps.setString(1, "%" + s.toUpperCase() + "%");
+            ps.setString(1, "%" + campoDeBusca.toUpperCase() + "%");
             ResultSet rs = ps.executeQuery();
 
-            List<ProfissaoBean> colecao = new ArrayList<ProfissaoBean>();
-
             while (rs.next()) {
-
                 ProfissaoBean profissao = new ProfissaoBean();
                 profissao.setCodprofissao(rs.getInt("id_profissao"));
                 profissao.setDescprofissao(rs.getString("descprofissao"));
                 colecao.add(profissao);
-
             }
-            return colecao;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return colecao;
     }
-
 }

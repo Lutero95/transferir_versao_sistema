@@ -266,11 +266,11 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void buscarSituacoes() {
+    public void buscarSituacoes() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
     }
 
-    public void buscarSituacoesFiltroAtendimentoRealizado() {
+    public void buscarSituacoesFiltroAtendimentoRealizado() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
                 (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
         if (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado()){

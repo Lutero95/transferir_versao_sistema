@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -50,10 +51,11 @@ public class LaudoDAO {
             if (rs.next()) 
             	existeLaudoComMesmosDados = rs.getBoolean("existe_laudo_com_mesmos_dados");
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -63,7 +65,7 @@ public class LaudoDAO {
         return existeLaudoComMesmosDados;
     }
     
-    public Integer cadastrarLaudo(LaudoBean laudo) {
+    public Integer cadastrarLaudo(LaudoBean laudo) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -186,20 +188,21 @@ public class LaudoDAO {
             }
             conexao.commit();
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return idLaudoGerado;
         }
+        return idLaudoGerado;
     }
 
-    public Boolean alterarLaudo(LaudoBean laudo) {
+    public Boolean alterarLaudo(LaudoBean laudo) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, "
                 + "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
@@ -312,30 +315,26 @@ public class LaudoDAO {
             }
 
             stmt.setLong(20, user_session.getId());
-
             stmt.setLong(21, laudo.getProfissionalLaudo().getId());
-
             stmt.setInt(22, laudo.getId());
-
             stmt.executeUpdate();
-
             conexao.commit();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluirLaudo(LaudoBean laudo) {
+    public Boolean excluirLaudo(LaudoBean laudo) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.laudo set ativo = false where id_laudo = ?";
 
@@ -344,23 +343,21 @@ public class LaudoDAO {
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
             stmt.setInt(1, laudo.getId());
-
             stmt.executeUpdate();
-
             conexao.commit();
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<LaudoBean> listaLaudos(String situacao, String campoBusca, String tipoBusca)
@@ -385,7 +382,6 @@ public class LaudoDAO {
         if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
             sql = sql + " and pr.codproc = ?";
         }
-
 
         if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
             sql = sql + " and upper(p.matricula) = ?";
@@ -428,31 +424,32 @@ public class LaudoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                LaudoBean l = new LaudoBean();
+                LaudoBean laudo = new LaudoBean();
 
-                l.setId(rs.getInt("id_laudo"));
-                l.getPaciente().setId_paciente(rs.getInt("id_paciente"));
-                l.getPaciente().setMatricula(rs.getString("matricula"));
-                l.getPaciente().setNome(rs.getString("nome"));
-                l.setMesFinal(rs.getInt("mes_final"));
-                l.setAnoFinal(rs.getInt("ano_final"));
-                l.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
-                l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-                l.setSituacao(rs.getString("situacao"));
-                l.setMesFinal(rs.getInt("mes_final"));
-                l.setAnoFinal(rs.getInt("ano_final"));
+                laudo.setId(rs.getInt("id_laudo"));
+                laudo.getPaciente().setId_paciente(rs.getInt("id_paciente"));
+                laudo.getPaciente().setMatricula(rs.getString("matricula"));
+                laudo.getPaciente().setNome(rs.getString("nome"));
+                laudo.setMesFinal(rs.getInt("mes_final"));
+                laudo.setAnoFinal(rs.getInt("ano_final"));
+                laudo.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
+                laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                laudo.setSituacao(rs.getString("situacao"));
+                laudo.setMesFinal(rs.getInt("mes_final"));
+                laudo.setAnoFinal(rs.getInt("ano_final"));
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));
-                l.setProfissionalLaudo(func);
-                l.setVencimento(DataUtil.mostraMesPorExtenso(l.getMesFinal()) + "/" + l.getAnoFinal().toString());
+                laudo.setProfissionalLaudo(func);
+                laudo.setVencimento(DataUtil.mostraMesPorExtenso(laudo.getMesFinal()) + "/" + laudo.getAnoFinal().toString());
 
-                lista.add(l);
+                lista.add(laudo);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -464,7 +461,7 @@ public class LaudoDAO {
 
     public LaudoBean buscarLaudosPorId(Integer id) throws ProjetoException {
 
-        LaudoBean l = new LaudoBean();
+        LaudoBean laudo = new LaudoBean();
 
         String sql = "select id_laudo,l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
                 + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
@@ -492,72 +489,73 @@ public class LaudoDAO {
 
             while (rs.next()) {
 
-                l.setId(rs.getInt("id_laudo"));
-                l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                l.getPaciente().setNome(rs.getString("nome"));
-                l.setDataSolicitacao(rs.getDate("data_solicitacao"));
-                l.setDataAutorizacao(rs.getDate("data_autorizacao"));
-                l.setMesInicio(rs.getInt("mes_inicio"));
-                l.setAnoInicio(rs.getInt("ano_inicio"));
-                l.setMesFinal(rs.getInt("mes_final"));
-                l.setAnoFinal(rs.getInt("ano_final"));
-                l.setPeriodo(rs.getInt("periodo"));
-                l.setVigenciaInicial(rs.getDate("datainicio"));
-                l.setVigenciaFinal(rs.getDate("datafinal"));
-                l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
-                l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-                l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-                l.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
-                l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-                l.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
-                l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-                l.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
-                l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-                l.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
-                l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
-                l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
+                laudo.setId(rs.getInt("id_laudo"));
+                laudo.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                laudo.getPaciente().setNome(rs.getString("nome"));
+                laudo.setDataSolicitacao(rs.getDate("data_solicitacao"));
+                laudo.setDataAutorizacao(rs.getDate("data_autorizacao"));
+                laudo.setMesInicio(rs.getInt("mes_inicio"));
+                laudo.setAnoInicio(rs.getInt("ano_inicio"));
+                laudo.setMesFinal(rs.getInt("mes_final"));
+                laudo.setAnoFinal(rs.getInt("ano_final"));
+                laudo.setPeriodo(rs.getInt("periodo"));
+                laudo.setVigenciaInicial(rs.getDate("datainicio"));
+                laudo.setVigenciaFinal(rs.getDate("datafinal"));
+                laudo.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                laudo.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+                laudo.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
+                laudo.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+                laudo.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
+                laudo.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+                laudo.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
+                laudo.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+                laudo.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
+                laudo.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+                laudo.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
                 if (rs.getString("cid1") != null) {
-                    l.getCid1().setIdCid(rs.getInt("cid1"));
-                    l.getCid1().setDescCid(rs.getString("desccid1"));
-                    l.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
+                    laudo.getCid1().setIdCid(rs.getInt("cid1"));
+                    laudo.getCid1().setDescCid(rs.getString("desccid1"));
+                    laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
                 }
                 if (rs.getString("cid2") != null) {
-                    l.getCid2().setIdCid(rs.getInt("cid2"));
-                    l.getCid2().setDescCid(rs.getString("desccid2"));
-                    l.getCid2().setDescCidAbrev(rs.getString("desccidabrev2"));
+                    laudo.getCid2().setIdCid(rs.getInt("cid2"));
+                    laudo.getCid2().setDescCid(rs.getString("desccid2"));
+                    laudo.getCid2().setDescCidAbrev(rs.getString("desccidabrev2"));
                 }
 
                 if (rs.getString("cid3") != null) {
-                    l.getCid3().setIdCid(rs.getInt("cid3"));
-                    l.getCid3().setDescCid(rs.getString("desccid3"));
-                    l.getCid3().setDescCidAbrev(rs.getString("desccidabrev3"));
+                    laudo.getCid3().setIdCid(rs.getInt("cid3"));
+                    laudo.getCid3().setDescCid(rs.getString("desccid3"));
+                    laudo.getCid3().setDescCidAbrev(rs.getString("desccidabrev3"));
                 }
-                l.setObs(rs.getString("obs"));
-                l.setSituacao(rs.getString("situacao"));
+                laudo.setObs(rs.getString("obs"));
+                laudo.setSituacao(rs.getString("situacao"));
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));
-                l.setProfissionalLaudo(func);
+                laudo.setProfissionalLaudo(func);
                 //l.getProfissionalLaudo().setCodigo(rs.getInt("id_funcionario"));
                 //l.getProfissionalLaudo().setNome(rs.getString("descfuncionario"));
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return l;
+        return laudo;
     }
 
     public LaudoBean carregaLaudoParaRenovacao(Integer id) throws ProjetoException {
 
-        LaudoBean l = new LaudoBean();
+        LaudoBean laudo = new LaudoBean();
 
         String sql = "select l.codpaciente, p.nome, p.cns, p.cpf,p.cns,  l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
                 + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
@@ -583,55 +581,56 @@ public class LaudoDAO {
 
             while (rs.next()) {
 
-                l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                l.getPaciente().setNome(rs.getString("nome"));
-                l.getPaciente().setCpf(rs.getString("cpf"));
-                l.getPaciente().setCns(rs.getString("cns"));
-                l.setDataAutorizacao(rs.getDate("data_autorizacao"));
-                l.setMesInicio(rs.getInt("mes_final"));
-                l.setAnoInicio(rs.getInt("ano_final"));
-                l.setPeriodo(rs.getInt("periodo"));
-                l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
-                l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-                l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-                l.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
-                l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-                l.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
-                l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-                l.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
-                l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-                l.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
-                l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
-                l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
-                l.getCid1().setIdCid(rs.getInt("cid1"));
-                l.getCid1().setDescCid(rs.getString("desccid1"));
-                l.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
-                l.getCid2().setIdCid(rs.getInt("cid2"));
-                l.getCid2().setDescCid(rs.getString("desccid2"));
-                l.getCid1().setDescCidAbrev(rs.getString("desccidabrev2"));
-                l.getCid3().setIdCid(rs.getInt("cid3"));
-                l.getCid3().setDescCid(rs.getString("desccid3"));
-                l.getCid1().setDescCidAbrev(rs.getString("desccidabrev3"));
-                l.setObs(rs.getString("obs"));
-                l.setSituacao(rs.getString("situacao"));
+                laudo.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                laudo.getPaciente().setNome(rs.getString("nome"));
+                laudo.getPaciente().setCpf(rs.getString("cpf"));
+                laudo.getPaciente().setCns(rs.getString("cns"));
+                laudo.setDataAutorizacao(rs.getDate("data_autorizacao"));
+                laudo.setMesInicio(rs.getInt("mes_final"));
+                laudo.setAnoInicio(rs.getInt("ano_final"));
+                laudo.setPeriodo(rs.getInt("periodo"));
+                laudo.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                laudo.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+                laudo.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
+                laudo.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+                laudo.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
+                laudo.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+                laudo.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
+                laudo.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+                laudo.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
+                laudo.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+                laudo.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
+                laudo.getCid1().setIdCid(rs.getInt("cid1"));
+                laudo.getCid1().setDescCid(rs.getString("desccid1"));
+                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
+                laudo.getCid2().setIdCid(rs.getInt("cid2"));
+                laudo.getCid2().setDescCid(rs.getString("desccid2"));
+                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev2"));
+                laudo.getCid3().setIdCid(rs.getInt("cid3"));
+                laudo.getCid3().setDescCid(rs.getString("desccid3"));
+                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev3"));
+                laudo.setObs(rs.getString("obs"));
+                laudo.setSituacao(rs.getString("situacao"));
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));
-                l.setDataSolicitacao(prepararDataVencimentoApenasComDiasUteis(rs.getInt("mes_final"), rs.getInt("ano_final"), func.getId()));
-                l.setProfissionalLaudo(func);
+                laudo.setDataSolicitacao(prepararDataVencimentoApenasComDiasUteis(rs.getInt("mes_final"), rs.getInt("ano_final"), func.getId()));
+                laudo.setProfissionalLaudo(func);
 
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return l;
+        return laudo;
     }
 
     private Date prepararDataVencimentoApenasComDiasUteis(int mesFinal, int anoFInal, Long codigoFuncionario) throws ProjetoException, SQLException {
@@ -643,9 +642,7 @@ public class LaudoDAO {
         Date dataMontada = c.getTime();
 
         Boolean revalidar = true;
-
         Date dataSemFeriado=null;
-
         Date dataSemFinalDeSemana = dataMontada;
 
         while (revalidar) {
@@ -675,7 +672,6 @@ public class LaudoDAO {
             dataSemFinalDeSemana = dataSemFeriado;
 
         }
-
         return dataSemFeriado;
     }
 
@@ -724,10 +720,11 @@ public class LaudoDAO {
 
                 lista.add(insercao);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -754,10 +751,11 @@ public class LaudoDAO {
                 laudo.setAnoInicio(rs.getInt("ano_inicio"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -797,10 +795,11 @@ public class LaudoDAO {
                 laudo.setAnoFinal(rs.getInt("ano_final"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -854,10 +853,11 @@ public class LaudoDAO {
                 laudoBean.getCid1().setIdCid(rs.getInt("id_cid"));
                 laudoBean.getCid1().setDescCid(rs.getString("desccid"));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -867,7 +867,7 @@ public class LaudoDAO {
         return laudoBean;
     }
 
-    public Boolean verificarSeLaudoAssociadoPacienteTerapia(Integer codigoLaudo) {
+    public Boolean verificarSeLaudoAssociadoPacienteTerapia(Integer codigoLaudo) throws ProjetoException {
 
         Boolean retorno = true;
 
@@ -875,19 +875,18 @@ public class LaudoDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setInt(1, codigoLaudo);
             ResultSet rs = stm.executeQuery();
-
             while (rs.next()) {
                 retorno = false;
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {

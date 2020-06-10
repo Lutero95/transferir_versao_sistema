@@ -74,7 +74,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 		}
 	}
 	
-	public void gravarSituacaoAtendimento() {
+	public void gravarSituacaoAtendimento() throws ProjetoException {
 		if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
 				|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
 			
@@ -85,7 +85,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 		}
 	}
 	
-	public void alterarSituacaoAtendimento() {
+	public void alterarSituacaoAtendimento() throws ProjetoException {
 			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
 					|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
 				
@@ -94,7 +94,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 			}
 	}
 	
-	private Boolean existeOutraSituacaoComAtendimentoRealizado() {
+	private Boolean existeOutraSituacaoComAtendimentoRealizado() throws ProjetoException {
 		if(situacaoAtendimentoDAO.existeOutraSituacaoComAtendimentoRealizado(this.situacaoAtendimento.getId())) {
 			JSFUtil.adicionarMensagemErro("Já existe uma situação para atendimento realizado", "Erro");
 			return true;

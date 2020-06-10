@@ -3,9 +3,10 @@ package br.gov.al.maceio.sishosp.administrativo.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarRemocaoAtendimentoDTO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 
@@ -13,6 +14,7 @@ import javax.faces.context.FacesContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class RemocaoProfissionalEquipeDAO {
     private Connection con = null;
     private PreparedStatement ps = null;
 
-    public List<RemocaoProfissionalEquipe> listarSeremRemovidos(RemocaoProfissionalEquipe RemocaoProfissionalEquipe) {
+    public List<RemocaoProfissionalEquipe> listarSeremRemovidos(RemocaoProfissionalEquipe RemocaoProfissionalEquipe) throws ProjetoException {
 
         List<RemocaoProfissionalEquipe> lista = new ArrayList<>();
         int i = 2;
@@ -131,10 +133,11 @@ public class RemocaoProfissionalEquipeDAO {
                 lista.add(remocaoProfissionalEquipe);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -144,11 +147,11 @@ public class RemocaoProfissionalEquipeDAO {
         return lista;
     }
 
-    public Boolean gravarRemocao(GravarRemocaoAtendimentoDTO gravarRemocaoAtendimentoDTO) {
+    public Boolean gravarRemocao(GravarRemocaoAtendimentoDTO gravarRemocaoAtendimentoDTO) throws ProjetoException {
         return gravarRemocaoProfissionalEquipeAtendimento(gravarRemocaoAtendimentoDTO);
     }
 
-    private boolean gravarRemocaoProfissionalEquipeAtendimento(GravarRemocaoAtendimentoDTO gravarRemocaoAtendimentoDTO) {
+    private boolean gravarRemocaoProfissionalEquipeAtendimento(GravarRemocaoAtendimentoDTO gravarRemocaoAtendimentoDTO) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -206,21 +209,21 @@ public class RemocaoProfissionalEquipeDAO {
             retorno = gravarRemocaoProfissionalEquipeAtendimento1(gravarAtendimentoDTO);
 
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    private boolean gravarRemocaoProfissionalEquipeAtendimento1(GravarRemocaoAtendimentoDTO gravarRemocao) {
+    private boolean gravarRemocaoProfissionalEquipeAtendimento1(GravarRemocaoAtendimentoDTO gravarRemocao) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -239,23 +242,18 @@ public class RemocaoProfissionalEquipeDAO {
                 ps.execute();
             }
 
-
             retorno = gravarRemocaoAtendimentos1(gravarRemocao);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	gravarRemocao.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			gravarRemocao.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    private boolean gravarRemocaoAtendimentos1(GravarRemocaoAtendimentoDTO gravarRemocao) {
+    private boolean gravarRemocaoAtendimentos1(GravarRemocaoAtendimentoDTO gravarRemocao) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -281,21 +279,18 @@ public class RemocaoProfissionalEquipeDAO {
                 con.commit();
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	gravarRemocao.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			gravarRemocao.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
 
-    public List<RemocaoProfissionalEquipe> listarRemovidos() {
+    public List<RemocaoProfissionalEquipe> listarRemovidos() throws ProjetoException {
 
         List<RemocaoProfissionalEquipe> lista = new ArrayList<>();
 
@@ -328,10 +323,11 @@ public class RemocaoProfissionalEquipeDAO {
                 lista.add(RemocaoProfissionalEquipe);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
             try {
                 con.close();
             } catch (Exception ex) {

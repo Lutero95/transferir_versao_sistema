@@ -8,12 +8,13 @@ import java.util.ArrayList;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class RacaDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(RacaBean raca) {
+    public Boolean cadastrar(RacaBean raca) throws ProjetoException {
         Boolean retorno = false;
         String sql = "insert into hosp.raca (descraca, codraca) values (?, ?)";
 
@@ -26,20 +27,21 @@ public class RacaDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean alterar(RacaBean raca) {
+    public Boolean alterar(RacaBean raca) throws ProjetoException {
         Boolean retorno = false;
         String sql = "update hosp.raca set descraca = ?, codraca=? where id_raca = ?";
 
@@ -52,23 +54,22 @@ public class RacaDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    public Boolean excluir(RacaBean raca) {
+    public Boolean excluir(RacaBean raca) throws ProjetoException {
         Boolean retorno = false;
         String sql = "delete from hosp.raca where id_raca = ?";
 
@@ -79,20 +80,19 @@ public class RacaDAO {
             stmt.executeUpdate();
 
             conexao.commit();
-
             retorno = true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public ArrayList<RacaBean> listaCor() throws ProjetoException {
@@ -107,17 +107,18 @@ public class RacaDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                RacaBean p = new RacaBean();
-                p.setCodRaca(rs.getInt("id_raca"));
-                p.setDescRaca(rs.getString("descraca").toUpperCase());
-                p.setCodigoIbge(rs.getString("codraca").toUpperCase());
+                RacaBean raca = new RacaBean();
+                raca.setCodRaca(rs.getInt("id_raca"));
+                raca.setDescRaca(rs.getString("descraca").toUpperCase());
+                raca.setCodigoIbge(rs.getString("codraca").toUpperCase());
 
-                lista.add(p);
+                lista.add(raca);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -131,30 +132,28 @@ public class RacaDAO {
     public RacaBean listarRacaPorID(int id) throws ProjetoException {
         String sql = "select  id_raca, descraca, codraca from hosp.raca where id_raca = ? order by descraca";
 
-        ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
-
+        RacaBean raca = new RacaBean();
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
-            RacaBean raca = new RacaBean();
             while (rs.next()) {
                 raca.setCodRaca(rs.getInt("id_raca"));
                 raca.setDescRaca(rs.getString("descraca").toUpperCase());
                 raca.setCodigoIbge(rs.getString("codraca").toUpperCase());
             }
-            return raca;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
+        return raca;
     }
 }
