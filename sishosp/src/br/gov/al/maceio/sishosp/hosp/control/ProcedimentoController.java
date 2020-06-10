@@ -1,16 +1,30 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.xml.ws.soap.SOAPFaultException;
+import javax.servlet.ServletContext;
+import org.primefaces.model.UploadedFile;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
@@ -20,23 +34,37 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.DocumentosRLImportacaoSigtap;
+import br.gov.al.maceio.sishosp.hosp.enums.DocumentosTBImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.DescricaoProcedimentoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.RelacaoObjetoComProcedimentoDTO;
 import sigtap.br.gov.al.maceio.sigtapclient.util.ProcedimentoUtil;
 import sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.formaorganizacao.FormaOrganizacaoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.grupo.GrupoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.subgrupo.SubgrupoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.renases.v1.renases.RENASESType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servico.ServicoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassificacao.v1.servicoclassificacao.ServicoClassificacaoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.instrumentoregistro.InstrumentoRegistroType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.modalidadeatendimento.ModalidadeAtendimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CBOsVinculados;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.CIDsVinculados.CIDVinculado;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.InstrumentosRegistro;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.ModalidadesAtendimento;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.RENASESVinculadas;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType.ServicosClassificacoesVinculados;
+import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento;
 import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.RequestDetalharProcedimento.DetalhesAdicionais;
 import sigtap.br.gov.saude.servicos.sigtap.v1.procedimentoservice.SIGTAPFault;
@@ -62,6 +90,9 @@ public class ProcedimentoController implements Serializable {
     private String campoBusca;
     private String anoCompetenciaAtual;
     private String mesCompetenciaAtual;
+    private List<String> listaFiltroMesIhAno = new ArrayList();
+    private String filtroMesIhAnoSelecionado;
+    private ProcedimentoType procedimentoMensal;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -76,38 +107,34 @@ public class ProcedimentoController implements Serializable {
     private static final BigInteger REGISTRO_INICIAL = BigInteger.ONE;
     private static final Integer VALOR_ZERO = 0;
 
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModalidadeAtendimentoExistente;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentosRegistroExistentes;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCBOsExistentes;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidsExistentes;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormasDeOrganizacaoExistentes;
-    private List<PropriedadeDeProcedimentoMensalExistenteDTO> listaTipoFinanciamentoExistente;
-
     private List<GravarProcedimentoMensalDTO> listaGravarProcedimentosMensaisDTO;
     private GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO;
-
-    private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoNaoGravadosNoBanco;
-    private List<InstrumentoRegistroType> listaInstrumentosRegistroNaoGravadosNoBanco;
-    private List<CBOType> listaCBOsNaoGravadosNoBanco;
-    private List<CIDVinculado> listaCidsNaoGravadosNoBanco;
-    private FormaOrganizacaoType formaOrganizacaoNaoGravadaNoBanco;
-    private List<RENASESType> listaRenasesNaoGravadosNoBanco;
-    private TipoFinanciamentoType tipoFinanciamentoNaoGravadoNoBanco;
-    private List<ServicoClassificacaoType> listaServicosClassificacao;
-    private String descricaoProcedimentoMensal;
-
-    private List<Integer> listaIdModalidadeAtendimentoExistente;
-    private List<Integer> listaIdInstrumentosRegistroExistente;
-    private List<Integer> listaIdCBOsExistente;
-    private List<Integer> listaIdCidsExistente;
-    private List<Integer> listaIdRenasesExistente;
-    private Integer idFormasDeOrganizacaoExistente;
-    private Integer idTipoFinanciamentoExistente;
     private List<HistoricoSigtapBean> listaHistoricoDoSigtap;
-    private ProcedimentoType procedimentoMensal;
-    private List<String> listaFiltroMesIhAno = new ArrayList();
-    private String filtroMesIhAnoSelecionado;
+
+    //SIGTAP IMPORTACAO ARQUIVO
+    private UploadedFile arquivoImportacaoSelecionado;
+    private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
+    private static final String EXTENSAO_TXT = ".txt";
+    private static final String CONTENT_TYPE_ZIP = "application/x-zip-compressed";
+    private List<CIDVinculado> listaCidDoArquivo;
+    private List<DescricaoProcedimentoDTO> listaDescricaoProcedimentoDoArquivo;
+    private List<TipoFinanciamentoType> listaTipoFinanciamentoDoArquivo;
+    private List<FormaOrganizacaoType> listaFormaOrganizacaoDoArquivo;
+    private List<GrupoType> listaGrupoDoArquivo;
+    private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoDoArquivo;
+    private List<CBOType> listaCbosDoArquivo;
+    private List<ProcedimentoType> listaProcedimentosDoArquivo;
+    private List<InstrumentoRegistroType> listaInstrumentoRegistroDoArquivo;
+    private List<RENASESType> listaRenasesDoArquivo;
+    private List<ServicoType> listaServicoDoArquivo;
+    private List<ServicoClassificacaoType> listaServicoClassificacaoDoArquivo;
+    private List<SubgrupoType> listaSubgrupoDoArquivo;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoCid;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoModalidade;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoCbo;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoInstrumentoRegistro;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoRenases;
+    private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoServico;
 
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -117,37 +144,17 @@ public class ProcedimentoController implements Serializable {
         recurso = new RecursoBean();
 
         //SIGTAP
-        this.listaModalidadeAtendimentoExistente = new ArrayList();
-        this.listaInstrumentosRegistroExistentes = new ArrayList();
-        this.listaCBOsExistentes = new ArrayList();
-        this.listaCidsExistentes = new ArrayList();
-        this.listaFormasDeOrganizacaoExistentes = new ArrayList();
-        this.listaRenasesExistentes = new ArrayList();
-        this.listaTipoFinanciamentoExistente = new ArrayList();
-        this.listaGravarProcedimentosMensaisDTO = new ArrayList();
         this.listaHistoricoDoSigtap = new ArrayList();
-        limparListasDadosProcedimentos();
-        procedimentoMensal = new ProcedimentoType();
+        limparListaGravarProcedimentoMensalDTO();
+        limparGravarProcedimentoDTO();
     }
 
-    private void limparListasDadosProcedimentos() {
+    private void limparGravarProcedimentoDTO() {
         this.gravarProcedimentoMensalDTO = new GravarProcedimentoMensalDTO();
-        this.listaModalidadeAtendimentoNaoGravadosNoBanco = new ArrayList();
-        this.listaInstrumentosRegistroNaoGravadosNoBanco = new ArrayList();
-        this.listaCBOsNaoGravadosNoBanco = new ArrayList();
-        this.listaCidsNaoGravadosNoBanco = new ArrayList();
-        this.formaOrganizacaoNaoGravadaNoBanco = new FormaOrganizacaoType();
-        this.listaRenasesNaoGravadosNoBanco = new ArrayList();
-        this.tipoFinanciamentoNaoGravadoNoBanco = new TipoFinanciamentoType();
-        this.listaServicosClassificacao = new ArrayList();
-        this.descricaoProcedimentoMensal = new String();
-        this.listaIdModalidadeAtendimentoExistente = new ArrayList();
-        this.listaIdInstrumentosRegistroExistente = new ArrayList();
-        this.listaIdCBOsExistente = new ArrayList();
-        this.listaIdCidsExistente = new ArrayList();
-        this.listaIdRenasesExistente = new ArrayList();
-        this.idFormasDeOrganizacaoExistente = null;
-        this.idTipoFinanciamentoExistente = null;
+    }
+
+    private void limparListaGravarProcedimentoMensalDTO() {
+        this.listaGravarProcedimentosMensaisDTO = new ArrayList();
     }
 
     public String redirectEdit() {
@@ -186,6 +193,27 @@ public class ProcedimentoController implements Serializable {
         cid = new CidBean();
         cbo = new CboBean();
         recurso = new RecursoBean();
+    }
+
+    public void listaMesesIhAnosDoHistorico() {
+        this.listaFiltroMesIhAno = procedimentoDao.listaMesesIhAnosDoHistorico();
+    }
+
+    public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual() {
+        try {
+            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), VALOR_ZERO, VALOR_ZERO);
+            exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
+        } catch (Exception e) {
+            JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
+            e.printStackTrace();
+        }
+    }
+
+    private void exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado() {
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.procedimentoMensal.getCodigo())) {
+            JSFUtil.adicionarMensagemAdvertencia("Procedimento n�o possui dados para o m�s e ano selecionado", "");
+            JSFUtil.atualizarComponente(":frmCadProc:message");
+        }
     }
 
     public void gravarProcedimento() throws ProjetoException, SQLException {
@@ -346,44 +374,39 @@ public class ProcedimentoController implements Serializable {
         return user_session;
     }
 
+    // **** IMPORTAÇÃO SIGTAP PELO WEBSERVICE ****
+
     public void novaCargaSigtap() throws ProjetoException {
         listarProcedimentos();
+        limparListaGravarProcedimentoMensalDTO();
         if(this.listaProcedimentos.isEmpty())
             JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
         else {
             if (!verificaSeHouveCargaDoSigtapEsteMes()) {
 
                 FuncionarioBean user_session = obterUsuarioDaSessao();
-                Integer idHistoricoConsumoSigtap = VALOR_ZERO;
 
                 for (int i = 0; i < this.listaProcedimentos.size(); i++) {
-
                     try {
-                        buscaCodigosDeDadosExistentesNoBanco();
                         selecionaDetalheAdicionalEmSequencia(this.listaProcedimentos.get(i));
-                        setaDadosParaListaProcedimentosMensalDTO(i);
-                        limparListasDadosProcedimentos();
-                        idHistoricoConsumoSigtap = procedimentoDao.executaRotinaNovaCargaSigtap(
-                                listaGravarProcedimentosMensaisDTO.get(i), user_session.getId(),
-                                idHistoricoConsumoSigtap);
+                        limparGravarProcedimentoDTO();
                     }
-                    catch (SOAPFaultException soape) {
-                        JSFUtil.adicionarMensagemErro
-                                ("Erro, algo de inesperado ocorreu durante a carga do procedimento "+this.listaProcedimentos.get(i).getCodProc()
-                                        +" verifique se o código do procedimento está correto"
-                                        + " e execute a alteração do procedimento para que seja possível realizar uma nova"
-                                        + " carga do SIGTAP este m�s", "");
-                        soape.printStackTrace();
-                    }
-                    catch (Exception e) {
-                        JSFUtil.adicionarMensagemErro("Erro, algo inesperado ocorreu", "Erro");
-                        e.printStackTrace();
+                    catch(Exception sqle) {
+                        JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
+                        sqle.printStackTrace();
                     }
                 }
+
+                try {
+                    procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO, user_session.getId());
+                    JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
+                }catch(Exception sqle) {
+                    JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
+                    sqle.printStackTrace();
+                }
+
                 listaHistoricoSigtap();
                 fecharDialogAvisoCargaSigtap();
-                JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
-                this.listaGravarProcedimentosMensaisDTO.clear();
             }
         }
     }
@@ -404,77 +427,21 @@ public class ProcedimentoController implements Serializable {
         return false;
     }
 
-    private void setaDadosParaListaProcedimentosMensalDTO(int i) {
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getModalidadesAtendimento().
-                getModalidadeAtendimento().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getModalidadesAtendimento().
-                getModalidadeAtendimento().addAll(listaModalidadeAtendimentoNaoGravadosNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getInstrumentosRegistro().
-                getInstrumentoRegistro().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getInstrumentosRegistro().
-                getInstrumentoRegistro().addAll(listaInstrumentosRegistroNaoGravadosNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCBOsVinculados().getCBO().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCBOsVinculados().getCBO()
-                .addAll(listaCBOsNaoGravadosNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
-                getCIDVinculado().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getCIDsVinculados().
-                getCIDVinculado().addAll(listaCidsNaoGravadosNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getRENASESVinculadas().getRENASES().
-                addAll(listaRenasesNaoGravadosNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setDescricao(descricaoProcedimentoMensal);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().
-                getServicoClassificacao().clear();
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().getServicosClassificacoesVinculados().getServicoClassificacao()
-                .addAll(listaServicosClassificacao);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setFormaOrganizacao(formaOrganizacaoNaoGravadaNoBanco);
-        listaGravarProcedimentosMensaisDTO.get(i).getProcedimentoMensal().setTipoFinanciamento(tipoFinanciamentoNaoGravadoNoBanco);
-
-        listaGravarProcedimentosMensaisDTO.get(i).getListaIdModalidadeAtendimentoExistente().addAll(listaIdModalidadeAtendimentoExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).getListaIdInstrumentosRegistroExistente().addAll(listaIdInstrumentosRegistroExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).getListaIdCBOsExistente().addAll(listaIdCBOsExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).getListaIdCidsExistente().addAll(listaIdCidsExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).getListaIdRenasesExistente().addAll(listaIdRenasesExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).setIdFormasDeOrganizacaoExistente(idFormasDeOrganizacaoExistente);
-        listaGravarProcedimentosMensaisDTO.get(i).setIdTipoFinanciamentoExistente(idTipoFinanciamentoExistente);
-    }
-
     private void fecharDialogAvisoCargaSigtap() {
         JSFUtil.fecharDialog("dlg-aviso");
     }
 
-    private void buscaCodigosDeDadosExistentesNoBanco()
-            throws ProjetoException {
-        this.listaModalidadeAtendimentoExistente = procedimentoDao.buscaModalidadeAtendimentoExistente();
-        this.listaInstrumentosRegistroExistentes = procedimentoDao.buscaInstrumentosRegistroExistente();
-        this.listaCBOsExistentes = procedimentoDao.buscaCbosExistentes();
-        this.listaCidsExistentes = procedimentoDao.buscaCidsExistentes();
-        this.listaFormasDeOrganizacaoExistentes = procedimentoDao.buscaFormasOrganizacaoExistentes();
-        this.listaRenasesExistentes = procedimentoDao.buscaRenasesExistentes();
-        this.listaTipoFinanciamentoExistente = procedimentoDao.buscaTiposFinanciamentoExistentes();
-    }
-
     private void selecionaDetalheAdicionalEmSequencia(ProcedimentoBean procedimento) {
         int detalheAdicional = 0;
-        //CBOS, CIDS, DESCRICAO, RENASES, SERVICO_CLASSIFICACAO
         while (detalheAdicional < QUANTIDADE_FILTROS_DETALHAR_PROCEDIMENTO) {
             CategoriaDetalheAdicionalType categoriaDetalheAdicional;
 
             if (detalheAdicional == 0)
-                categoriaDetalheAdicional = CategoriaDetalheAdicionalType.CBOS;
-            else if (detalheAdicional == 1)
-                categoriaDetalheAdicional = CategoriaDetalheAdicionalType.CIDS;
-            else if (detalheAdicional == 2)
                 categoriaDetalheAdicional = CategoriaDetalheAdicionalType.DESCRICAO;
+            else if (detalheAdicional == 1)
+                categoriaDetalheAdicional = CategoriaDetalheAdicionalType.CBOS;
+            else if (detalheAdicional == 2)
+                categoriaDetalheAdicional = CategoriaDetalheAdicionalType.CIDS;
             else if (detalheAdicional == 3)
                 categoriaDetalheAdicional = CategoriaDetalheAdicionalType.RENASES;
             else
@@ -531,223 +498,531 @@ public class ProcedimentoController implements Serializable {
         ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType = ProcedimentoUtil.detalharProcedimentos(requestDetalharProcedimento);
 
         adicionaProcedimentoParaListaProcedimentoMensalDTO(procedimento, resultadosDetalhaProcedimentosType);
-        adicionaDadosFiltradosEmSuasRespectivasVariaveis(categoriaDetalheAdicional, resultadosDetalhaProcedimentosType);
+        adicionaDadosExtrasParaListaProcedimentoMensalDTO(resultadosDetalhaProcedimentosType.getProcedimento(), categoriaDetalheAdicional);
 
-        if (VerificadorUtil
-                .verificarSeObjetoNulo(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao()))
+        if (VerificadorUtil.verificarSeObjetoNulo
+                (resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao()))
             return new BigInteger(BigInteger.ZERO.toString());
-
-
 
         return resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getTotalRegistros();
     }
 
     private void adicionaProcedimentoParaListaProcedimentoMensalDTO(ProcedimentoBean procedimento,
                                                                     ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-        Integer ultimoIndiceDaListaProcedimentosMensalDTO = listaGravarProcedimentosMensaisDTO.size() - 1;
+        Integer ultimoIndiceDaListaProcedimentosMensalDTO = this.listaGravarProcedimentosMensaisDTO.size() - 1;
 
-        if(listaGravarProcedimentosMensaisDTO.isEmpty()) {
+        if(this.listaGravarProcedimentosMensaisDTO.isEmpty()) {
             gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
-            gravarProcedimentoMensalDTO.setCompetenciaAtual(anoCompetenciaAtual+mesCompetenciaAtual);
             gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
-            listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
-            adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
+            this.listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
         }
 
-        else if(!listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento().equals(procedimento.getIdProc())){
+        else if(!this.listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO).getIdProcedimento().equals(procedimento.getIdProc())){
             gravarProcedimentoMensalDTO.setIdProcedimento(procedimento.getIdProc());
-            gravarProcedimentoMensalDTO.setCompetenciaAtual(anoCompetenciaAtual+mesCompetenciaAtual);
             gravarProcedimentoMensalDTO.setProcedimentoMensal(resultadosDetalhaProcedimentosType.getProcedimento());
-            listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
-            adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(resultadosDetalhaProcedimentosType);
+            this.listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
         }
     }
 
-    private void adicionaDadosNaoFiltradosEmSuasRespectivasVariaveis(
-            ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-        //MODALIDADE ATENDIMENTO
-        if(listaModalidadeAtendimentoExistente.isEmpty()) {
-            listaModalidadeAtendimentoNaoGravadosNoBanco.
-                    addAll(resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento());
-        }else {
-
-            for(ModalidadeAtendimentoType modalidadeAtendimento :
-                    resultadosDetalhaProcedimentosType.getProcedimento().getModalidadesAtendimento().getModalidadeAtendimento()) {
-                Boolean valorExistenteAdicionado = false;
-                for (PropriedadeDeProcedimentoMensalExistenteDTO modalidadeExistente : listaModalidadeAtendimentoExistente) {
-                    if (modalidadeExistente.getCodigo().equals(modalidadeAtendimento.getCodigo())) {
-                        this.listaIdModalidadeAtendimentoExistente.add(modalidadeExistente.getId());
-                        valorExistenteAdicionado = true;
-                    }
-                }
-                if(!valorExistenteAdicionado)
-                    listaModalidadeAtendimentoNaoGravadosNoBanco.add(modalidadeAtendimento);
-            }
-        }
-
-        //INSTRUMENTO DE REGISTRO
-        if(listaInstrumentosRegistroExistentes.isEmpty()) {
-            listaInstrumentosRegistroNaoGravadosNoBanco.
-                    addAll(resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro());
-        }else {
-
-            for(InstrumentoRegistroType instrumentoRegistroType :
-                    resultadosDetalhaProcedimentosType.getProcedimento().getInstrumentosRegistro().getInstrumentoRegistro()) {
-                Boolean valorExistente = false;
-                for(PropriedadeDeProcedimentoMensalExistenteDTO instrumentoRegistroExistente : listaInstrumentosRegistroExistentes) {
-                    if(instrumentoRegistroExistente.getCodigo().equals(instrumentoRegistroType.getCodigo())) {
-                        listaIdInstrumentosRegistroExistente.add(instrumentoRegistroExistente.getId());
-                        valorExistente = true;
-                    }
-                }
-                if(!valorExistente)
-                    listaInstrumentosRegistroNaoGravadosNoBanco.add(instrumentoRegistroType);
-            }
-        }
-
-        //FORMA ORGANIZAÇÃO
-        if(listaFormasDeOrganizacaoExistentes.isEmpty()) {
-            formaOrganizacaoNaoGravadaNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao();
-        }else {
-            String codigoFormaOrganizacao = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao().getCodigo();
-            Boolean valorExistente = false;
-            for(PropriedadeDeProcedimentoMensalExistenteDTO formaOrganizacaoExistente : listaFormasDeOrganizacaoExistentes) {
-                if (formaOrganizacaoExistente.getCodigo().equals(codigoFormaOrganizacao)) {
-                    idFormasDeOrganizacaoExistente = formaOrganizacaoExistente.getId();
-                    valorExistente = true;
-                }
-            }
-            if(!valorExistente)
-                formaOrganizacaoNaoGravadaNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getFormaOrganizacao();
-        }
-
-        //TIPO FINANCIAMENTO
-        if(listaTipoFinanciamentoExistente.isEmpty()) {
-            tipoFinanciamentoNaoGravadoNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento();
-        }else {
-            String codigoTipoFinanciamento = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento().getCodigo();
-            Boolean valorExistente = false;
-            for(PropriedadeDeProcedimentoMensalExistenteDTO tipoFinanciamentoExistente : listaTipoFinanciamentoExistente) {
-                if (tipoFinanciamentoExistente.getCodigo().equals(codigoTipoFinanciamento)) {
-                    idTipoFinanciamentoExistente = tipoFinanciamentoExistente.getId();
-                    valorExistente = true;
-                }
-            }
-            if (!valorExistente)
-                tipoFinanciamentoNaoGravadoNoBanco = resultadosDetalhaProcedimentosType.getProcedimento().getTipoFinanciamento();
-        }
+    private void adicionaDadosExtrasParaListaProcedimentoMensalDTO(ProcedimentoType procedimento,
+                                                                   CategoriaDetalheAdicionalType categoriaDetalheAdicional) {
+        Integer ultimoIndiceDaListaProcedimentosMensalDTO = this.listaGravarProcedimentosMensaisDTO.size() - 1;
+        if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS))
+            setarDadosCbo(procedimento, ultimoIndiceDaListaProcedimentosMensalDTO);
+        else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS))
+            setarDadosCid(procedimento, ultimoIndiceDaListaProcedimentosMensalDTO);
+        else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES))
+            setarDadosRenases(procedimento, ultimoIndiceDaListaProcedimentosMensalDTO);
+        else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES))
+            setarDadosServicoClassificacao(procedimento, ultimoIndiceDaListaProcedimentosMensalDTO);
     }
 
+    private void setarDadosCbo(ProcedimentoType procedimento, Integer ultimoIndiceDaListaProcedimentosMensalDTO) {
+        this.listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO)
+                .getProcedimentoMensal().getCBOsVinculados().getCBO().addAll(procedimento.getCBOsVinculados().getCBO());
+    }
 
-    private void adicionaDadosFiltradosEmSuasRespectivasVariaveis(
-            CategoriaDetalheAdicionalType categoriaDetalheAdicional,
-            ResultadosDetalhaProcedimentosType resultadosDetalhaProcedimentosType) {
-        if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CBOS)) {
-            if(listaCBOsExistentes.isEmpty()) {
-                listaCBOsNaoGravadosNoBanco.addAll(resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO());
-            }else {
-                for (CBOType cboType : resultadosDetalhaProcedimentosType.getProcedimento().getCBOsVinculados().getCBO()) {
-                    Boolean valorExistente = false;
-                    for(PropriedadeDeProcedimentoMensalExistenteDTO cboExistenteDTO : listaCBOsExistentes) {
-                        if(cboExistenteDTO.getCodigo().equals(cboType.getCodigo())) {
-                            listaIdCBOsExistente.add(cboExistenteDTO.getId());
-                            valorExistente = true;
-                        }
-                    }
-                    if (!valorExistente)
-                        listaCBOsNaoGravadosNoBanco.add(cboType);
-                }
-            }
-        }
-        else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.CIDS)) {
+    private void setarDadosCid(ProcedimentoType procedimento, Integer ultimoIndiceDaListaProcedimentosMensalDTO) {
+        this.listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO)
+                .getProcedimentoMensal().getCIDsVinculados().getCIDVinculado().addAll(procedimento.getCIDsVinculados().getCIDVinculado());
+    }
 
-            if(listaCidsExistentes.isEmpty()) {
-                listaCidsNaoGravadosNoBanco.addAll
-                        (resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado());
-            }else {
-                for (CIDVinculado cidVinculado : resultadosDetalhaProcedimentosType.getProcedimento().getCIDsVinculados().getCIDVinculado()) {
-                    Boolean valorExistente = false;
-                    for(PropriedadeDeProcedimentoMensalExistenteDTO cidExistenteDTO : listaCidsExistentes) {
-                        if(cidExistenteDTO.getCodigo().equals(cidVinculado.getCID().getCodigo())) {
-                            listaIdCidsExistente.add(cidExistenteDTO.getId());
-                            valorExistente = true;
-                        }
-                    }
-                    if(!valorExistente)
-                        listaCidsNaoGravadosNoBanco.add(cidVinculado);
-                }
-            }
-        }
+    private void setarDadosRenases(ProcedimentoType procedimento, Integer ultimoIndiceDaListaProcedimentosMensalDTO) {
+        this.listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO)
+                .getProcedimentoMensal().getRENASESVinculadas().getRENASES().addAll(procedimento.getRENASESVinculadas().getRENASES());
+    }
 
-        else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.DESCRICAO))
-            this.descricaoProcedimentoMensal = resultadosDetalhaProcedimentosType.getProcedimento().getDescricao();
+    private void setarDadosServicoClassificacao(ProcedimentoType procedimento,
+                                                Integer ultimoIndiceDaListaProcedimentosMensalDTO) {
 
-        else if(categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.RENASES)) {
-            if(listaRenasesExistentes.isEmpty()) {
-                listaRenasesNaoGravadosNoBanco.
-                        addAll(resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES());
-            }else {
-                for (RENASESType renasesType : resultadosDetalhaProcedimentosType.getProcedimento().getRENASESVinculadas().getRENASES()) {
-                    Boolean valorExitente = false;
-                    for(PropriedadeDeProcedimentoMensalExistenteDTO renasesExistenteDTO : listaRenasesExistentes) {
-                        if(renasesExistenteDTO.getCodigo().equals(renasesType.getCodigo())) {
-                            listaIdRenasesExistente.add(renasesExistenteDTO.getId());
-                            valorExitente = true;
-                        }
-                    }
-                    if(!valorExitente)
-                        listaRenasesNaoGravadosNoBanco.add(renasesType);
-                }
-            }
-        }
-
-        else if (categoriaDetalheAdicional.equals(CategoriaDetalheAdicionalType.SERVICOS_CLASSIFICACOES)){
-            listaServicosClassificacao.addAll
-                    (resultadosDetalhaProcedimentosType.getProcedimento().getServicosClassificacoesVinculados().getServicoClassificacao());
-        }
+        this.listaGravarProcedimentosMensaisDTO.get(ultimoIndiceDaListaProcedimentosMensalDTO)
+                .getProcedimentoMensal().getServicosClassificacoesVinculados().getServicoClassificacao()
+                .addAll(procedimento.getServicosClassificacoesVinculados().getServicoClassificacao());
     }
 
     public void listaHistoricoSigtap() throws ProjetoException {
         this.listaHistoricoDoSigtap = procedimentoDao.listaHistoricoCargasDoSigtap();
     }
 
-    public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual() {
-        try {
-            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), VALOR_ZERO, VALOR_ZERO);
-            exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
-        } catch (Exception e) {
-            JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
-            e.printStackTrace();
-        }
-    }
-
-    public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado() {
-        try {
-            String mesAno = this.filtroMesIhAnoSelecionado.replace(" \\ ", "");
-            Integer mes = Integer.valueOf(String.valueOf(mesAno.charAt(VALOR_ZERO)));
-            Integer ano = Integer.valueOf(mesAno.replaceFirst(mes.toString(), ""));
-            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), ano, mes);
-            exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
-        } catch (Exception e) {
-            JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
-            e.printStackTrace();
-        }
-    }
-
-    private void exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado() {
-        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.procedimentoMensal.getCodigo())) {
-            JSFUtil.adicionarMensagemAdvertencia("Procedimento n�o possui dados para o m�s e ano selecionado", "");
-            JSFUtil.atualizarComponente(":frmCadProc:message");
-        }
-    }
-
-    public void listaMesesIhAnosDoHistorico() throws ProjetoException {
-        this.listaFiltroMesIhAno = procedimentoDao.listaMesesIhAnosDoHistorico();
-    }
-
     public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
         this.listaProcedimentos = procedimentoDao.listarProcedimentoLaudo();
 
+    }
+
+    // **** IMPORTAÇÃO SIGTAP POR DOCUMENTOS ****
+
+    public void verificaSeUploadFoiRealizado() {
+        try {
+            limparDadosImportacaoDadosDoSigtap();
+            validaArquivo();
+            Path pathRaiz = (Paths.get(this.getServleContext().getRealPath(PASTA_RAIZ) + File.separator));
+            File arquivoZipCriado = salvaArquivoCompactadoNaPastaTemporariaDoProjeto(pathRaiz);
+            List<File> arquivosDescompactados = descompactaArquivo(arquivoZipCriado.getPath(), pathRaiz.toString());
+            List<File> arquivosTxtDescompactados = retornaArquivosTxtDescompactados(arquivosDescompactados);
+            leArquivosDescompactados(arquivosTxtDescompactados);
+        } catch (IOException ioe) {
+            JSFUtil.adicionarMensagemErro("Um erro inexperada ocorreu: " + ioe.getMessage(), "");
+            ioe.printStackTrace();
+        } catch (ProjetoException pe) {
+            pe.printStackTrace();
+        }
+
+    }
+
+    private void limparDadosImportacaoDadosDoSigtap() {
+        this.listaGravarProcedimentosMensaisDTO = new ArrayList<GravarProcedimentoMensalDTO>();
+        this.listaCidDoArquivo = new ArrayList<ProcedimentoType.CIDsVinculados.CIDVinculado>();
+        this.listaDescricaoProcedimentoDoArquivo = new ArrayList<DescricaoProcedimentoDTO>();
+        this.listaTipoFinanciamentoDoArquivo = new ArrayList<TipoFinanciamentoType>();
+        this.listaFormaOrganizacaoDoArquivo = new ArrayList<FormaOrganizacaoType>();
+        this.listaGrupoDoArquivo = new ArrayList<GrupoType>();
+        this.listaModalidadeAtendimentoDoArquivo = new ArrayList<ModalidadeAtendimentoType>();
+        this.listaCbosDoArquivo = new ArrayList<CBOType>();
+        this.listaProcedimentosDoArquivo = new ArrayList<ProcedimentoType>();
+        this.listaInstrumentoRegistroDoArquivo = new ArrayList<InstrumentoRegistroType>();
+        this.listaRenasesDoArquivo = new ArrayList<RENASESType>();
+        this.listaServicoDoArquivo = new ArrayList<ServicoType>();
+        this.listaServicoClassificacaoDoArquivo = new ArrayList<ServicoClassificacaoType>();
+        this.listaSubgrupoDoArquivo = new ArrayList<SubgrupoType>();
+        this.listaRelacoesProcedimetoCid = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+        this.listaRelacoesProcedimetoModalidade = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+        this.listaRelacoesProcedimetoCbo = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+        this.listaRelacoesProcedimetoInstrumentoRegistro = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+        this.listaRelacoesProcedimetoRenases = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+        this.listaRelacoesProcedimetoServico = new ArrayList<RelacaoObjetoComProcedimentoDTO>();
+    }
+
+    private void validaArquivo() throws ProjetoException {
+        if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.arquivoImportacaoSelecionado.getContents().length))
+            throw new ProjetoException("Nenhum arquivo inserido");
+        else if(!this.arquivoImportacaoSelecionado.getContentType().equals(CONTENT_TYPE_ZIP))
+            throw new ProjetoException("Arquivo inválido, apenas arquivos .zip são permitidos");
+    }
+
+    private File salvaArquivoCompactadoNaPastaTemporariaDoProjeto(Path pathRaiz) throws IOException {
+        File pastaDocumentos = pathRaiz.toFile();
+        if(!pastaDocumentos.exists())
+            pastaDocumentos.mkdir();
+
+        Path path = Paths.get(
+                this.getServleContext().getRealPath(PASTA_RAIZ + this.arquivoImportacaoSelecionado.getFileName()) + File.separator);
+        File arquivo = path.toFile();
+
+        OutputStream outputStream = new FileOutputStream(arquivo);
+        outputStream.write(this.arquivoImportacaoSelecionado.getContents());
+        outputStream.close();
+        return arquivo;
+    }
+
+    private ServletContext getServleContext() {
+        ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
+        return scontext;
+    }
+
+    private FacesContext getFacesContext() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context;
+    }
+
+    private List<File> descompactaArquivo(String zipFile, String outputFolder) {
+        List<File> arquivosDescompactados = new ArrayList<File>();
+        byte[] buffer = new byte[1024];
+
+        try{
+            File folder = new File(outputFolder);
+            if(!folder.exists()){
+                folder.mkdir();
+            }
+
+            ZipInputStream zisInputStream = new ZipInputStream(new FileInputStream(zipFile));
+            ZipEntry zipEntry = zisInputStream.getNextEntry();
+
+            while(zipEntry!=null){
+                String fileName = zipEntry.getName();
+                File novoArquivo = new File(outputFolder + File.separator + fileName);
+                FileOutputStream fileOutputStrem = new FileOutputStream(novoArquivo);
+
+                int len;
+                while ((len = zisInputStream.read(buffer)) > 0) {
+                    fileOutputStrem.write(buffer, 0, len);
+                }
+
+                fileOutputStrem.close();
+                zipEntry = zisInputStream.getNextEntry();
+                arquivosDescompactados.add(novoArquivo);
+            }
+
+            zisInputStream.closeEntry();
+            zisInputStream.close();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        return arquivosDescompactados;
+    }
+
+    private List<File> retornaArquivosTxtDescompactados(List<File> arquivosDesconpactados) {
+        List<File> arquivosTxt = new ArrayList<File>();
+        for (File arquivo : arquivosDesconpactados) {
+            if(arquivo.getName().contains(EXTENSAO_TXT))
+                arquivosTxt.add(arquivo);
+        }
+        return arquivosTxt;
+    }
+
+    private void leArquivosDescompactados(List<File> arquivos) throws FileNotFoundException, ProjetoException {
+        HashMap<String, List<String>> dadosDosArquivos = new HashMap<String, List<String>>();
+        for (File arquivo : arquivos) {
+            String nomeArquivo = arquivo.getName();
+            List<String> linhasDoArquivo = new ArrayList<String>();
+
+            Scanner scanner = new Scanner(arquivo);
+            while (scanner.hasNextLine()) {
+                String linha = scanner.nextLine();
+                linhasDoArquivo.add(linha);
+            }
+            scanner.close();
+            dadosDosArquivos.put(nomeArquivo, linhasDoArquivo);
+        }
+        novaCargaSigtapPorDocumentos(dadosDosArquivos);
+    }
+
+    public void novaCargaSigtapPorDocumentos(HashMap<String, List<String>> dadosDosArquivos) throws ProjetoException {
+        listarProcedimentos();
+        if(this.listaProcedimentos.isEmpty())
+            JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
+        else {
+            if (!verificaSeHouveCargaDoSigtapEsteMes()) {
+
+                transformaDadosDosArquivosTBEmListasDeObjetos(dadosDosArquivos);
+                transformaDadosDosArquivosRLEmListasDeObjetos(dadosDosArquivos);
+                removeProcedimentosQueNaoEstaoNoBanco();
+                relacionarDadosDoProcedimento();
+                try {
+                    FuncionarioBean user_session = obterUsuarioDaSessao();
+                    if(this.listaGravarProcedimentosMensaisDTO.isEmpty() || VerificadorUtil.verificarSeObjetoNulo(this.listaGravarProcedimentosMensaisDTO))
+                        JSFUtil.adicionarMensagemErro("Erro não há dados válidos neste arquivo", "");
+                    else {
+                        procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO, user_session.getId());
+                        JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
+                    }
+                }catch(Exception sqle) {
+                    JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
+                    sqle.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void transformaDadosDosArquivosTBEmListasDeObjetos(HashMap<String, List<String>> dadosDosArquivos) {
+        for (String chave : dadosDosArquivos.keySet()) {
+            if(chave.equals(DocumentosTBImportacaoSigtap.TB_CID.getSigla())) {
+                List<String> linhasDocumentoCids = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoCids) {
+                    this.listaCidDoArquivo.add((CIDVinculado) DocumentosTBImportacaoSigtap.TB_CID.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_DESCRICAO.getSigla())){
+                List<String> linhasDocumentoDescricaoProcedimento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoDescricaoProcedimento) {
+                    this.listaDescricaoProcedimentoDoArquivo.add((DescricaoProcedimentoDTO) DocumentosTBImportacaoSigtap.TB_DESCRICAO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_FINANCIAMENTO.getSigla())){
+                List<String> linhasDocumentoTipoFinanciamento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoTipoFinanciamento) {
+                    this.listaTipoFinanciamentoDoArquivo.add((TipoFinanciamentoType) DocumentosTBImportacaoSigtap.TB_FINANCIAMENTO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_FORMA_ORGANIZACAO.getSigla())){
+                List<String> linhasDocumentoFormaOrganizacao = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoFormaOrganizacao) {
+                    this.listaFormaOrganizacaoDoArquivo.add((FormaOrganizacaoType) DocumentosTBImportacaoSigtap.TB_FORMA_ORGANIZACAO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_GRUPO.getSigla())){
+                List<String> linhasDocumentoGrupo = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoGrupo) {
+                    this.listaGrupoDoArquivo.add((GrupoType) DocumentosTBImportacaoSigtap.TB_GRUPO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_MODALIDADE.getSigla())){
+                List<String> linhasDocumentoModalidade = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoModalidade) {
+                    this.listaModalidadeAtendimentoDoArquivo.add((ModalidadeAtendimentoType) DocumentosTBImportacaoSigtap.TB_MODALIDADE.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_CBO.getSigla())){
+                List<String> linhasDocumentoCbos = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoCbos) {
+                    this.listaCbosDoArquivo.add((CBOType) DocumentosTBImportacaoSigtap.TB_CBO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.getSigla())){
+                List<String> linhasDocumentoProcedimentos = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoProcedimentos) {
+                    this.listaProcedimentosDoArquivo.add((ProcedimentoType) DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_INSTRUMENTO_REGISTRO.getSigla())){
+                List<String> linhasDocumentoInstrumentoRegistro = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoInstrumentoRegistro) {
+                    this.listaInstrumentoRegistroDoArquivo.add((InstrumentoRegistroType) DocumentosTBImportacaoSigtap.TB_INSTRUMENTO_REGISTRO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_RENASES.getSigla())){
+                List<String> linhasDocumentoRenases = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoRenases) {
+                    this.listaRenasesDoArquivo.add((RENASESType) DocumentosTBImportacaoSigtap.TB_RENASES.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SERVICO.getSigla())){
+                List<String> linhasDocumentoServico = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoServico) {
+                    this.listaServicoDoArquivo.add((ServicoType) DocumentosTBImportacaoSigtap.TB_SERVICO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SERVICO_CLASSIFICACAO.getSigla())){
+                List<String> linhasDocumentoServicoClassificacao = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoServicoClassificacao) {
+                    this.listaServicoClassificacaoDoArquivo.add((ServicoClassificacaoType) DocumentosTBImportacaoSigtap.TB_SERVICO_CLASSIFICACAO.retornarObjectoDaString(linha));
+                }
+            }
+            else if(chave.equals(DocumentosTBImportacaoSigtap.TB_SUBGRUPO.getSigla())){
+                List<String> linhasDocumentoSubgrupo = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoSubgrupo) {
+                    this.listaSubgrupoDoArquivo.add((SubgrupoType) DocumentosTBImportacaoSigtap.TB_SUBGRUPO.retornarObjectoDaString(linha));
+                }
+            }
+        }
+    }
+
+    private void transformaDadosDosArquivosRLEmListasDeObjetos(HashMap<String, List<String>> dadosDosArquivos) {
+        for (String chave : dadosDosArquivos.keySet()) {
+            if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CID.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoCid.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CID.retornarCodigoObjeto(linha));
+                }
+            }
+            else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_MODALIDADE.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoModalidade.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_MODALIDADE.retornarCodigoObjeto(linha));
+                }
+            }
+            else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CBO.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoCbo.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_CBO.retornarCodigoObjeto(linha));
+                }
+            }
+            else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_INSTRUMENTO_REGISTRO.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoInstrumentoRegistro.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_INSTRUMENTO_REGISTRO.retornarCodigoObjeto(linha));
+                }
+            }
+            else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_RENASES.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoRenases.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_RENASES.retornarCodigoObjeto(linha));
+                }
+            }
+            else if(chave.equals(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_SERVICO.getSigla())) {
+                List<String> linhasDocumento = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumento) {
+                    this.listaRelacoesProcedimetoServico.add(DocumentosRLImportacaoSigtap.RL_PROCEDIMENTO_SERVICO.retornarCodigoObjeto(linha));
+                }
+            }
+        }
+    }
+
+    private void removeProcedimentosQueNaoEstaoNoBanco() {
+        List<ProcedimentoType> listaProcedimentosDoArquivoAux = new ArrayList<ProcedimentoType>();
+
+        for(int i = 0; i < this.listaProcedimentos.size(); i++) {
+            for (ProcedimentoType procedimento : this.listaProcedimentosDoArquivo) {
+                if(procedimento.getCodigo().equals(listaProcedimentos.get(i).getCodProc()))
+                    listaProcedimentosDoArquivoAux.add(procedimento);
+            }
+        }
+
+        this.listaProcedimentosDoArquivo.clear();
+        this.listaProcedimentosDoArquivo.addAll(listaProcedimentosDoArquivoAux);
+    }
+
+    private void relacionarDadosDoProcedimento() {
+
+        for (ProcedimentoType procedimento : this.listaProcedimentosDoArquivo) {
+            Integer idProcedimento = retornaIdProcedimentoNoBanco(procedimento.getCodigo());
+            GravarProcedimentoMensalDTO gravarProcedimentoMensalDTO = new GravarProcedimentoMensalDTO();
+
+            ModalidadesAtendimento modalidadesAtendimento = relacionaDadosModalidadeProcedimento(procedimento);
+            InstrumentosRegistro instrumentosRegistro = relacionaDadosInstrumentoRegistroProcedimento(procedimento);
+            CBOsVinculados cbosVinculados = relacionaDadosCboProcedimento(procedimento);
+            CIDsVinculados cidsVinculados = relacionaDadosCidProcedimento(procedimento);
+            RENASESVinculadas renasesVinculados = relacionaDadosRenasesProcedimento(procedimento);
+            relacionaDadosServicoClassificacaoProcedimento(procedimento);
+            TipoFinanciamentoType tipoFinanciamento = relacionaDadosTipoFinanciamentoProcedimento(procedimento);
+            /*  POSTERIORMENTE VERIFICAR COMO RELACIONAR OS DADOS DA FORMA DE ORGANIZAÇÃO
+             *  JÁ QUE NÃO FOI ENCONTRADO NENHUM ARQUIVO OU COLUNA DO PROCEDIMENTO QUE FAÇA
+             *  ISSO APENAS O 5º E 6º DIGITO DO CÓDIGO DO PROCEDIMENTO QUE É IGUAL A FORMA DE ORGANIZAÇÃO
+             * */
+            procedimento.setModalidadesAtendimento(modalidadesAtendimento);
+            procedimento.setInstrumentosRegistro(instrumentosRegistro);
+            procedimento.setCBOsVinculados(cbosVinculados);
+            procedimento.setCIDsVinculados(cidsVinculados);
+            procedimento.setRENASESVinculadas(renasesVinculados);
+            procedimento.setTipoFinanciamento(tipoFinanciamento);
+
+            gravarProcedimentoMensalDTO.setIdProcedimento(idProcedimento);
+            gravarProcedimentoMensalDTO.setProcedimentoMensal(procedimento);
+            this.listaGravarProcedimentosMensaisDTO.add(gravarProcedimentoMensalDTO);
+        }
+    }
+
+    private Integer retornaIdProcedimentoNoBanco(String codigoProcedimento) {
+        Integer idProcedimento = null;
+        for (ProcedimentoBean procedimento : this.listaProcedimentos) {
+            if(procedimento.getCodProc().equals(codigoProcedimento))
+                idProcedimento = procedimento.getIdProc();
+        }
+        return idProcedimento;
+    }
+
+    private CIDsVinculados relacionaDadosCidProcedimento(ProcedimentoType procedimento) {
+        CIDsVinculados cidsVinculados = new CIDsVinculados();
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCidValido = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCid : this.listaRelacoesProcedimetoCid) {
+            if(relacaoProcedimentoCid.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoCidValido = relacaoProcedimentoCid;
+                for(CIDVinculado cidVinculado : this.listaCidDoArquivo) {
+                    if(cidVinculado.getCID().getCodigo().equals(relacaoProcedimentoCidValido.getCodigo()))
+                        cidsVinculados.getCIDVinculado().add(cidVinculado);
+                }
+            }
+        }
+        return cidsVinculados;
+    }
+
+    private ModalidadesAtendimento relacionaDadosModalidadeProcedimento(ProcedimentoType procedimento) {
+        ModalidadesAtendimento modalidadesAtendimento = new ModalidadesAtendimento();
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoModalidadeValida = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoModalidade : this.listaRelacoesProcedimetoModalidade) {
+            if(relacaoProcedimentoModalidade.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoModalidadeValida = relacaoProcedimentoModalidade;
+                for(ModalidadeAtendimentoType modaliadeAtendimento : this.listaModalidadeAtendimentoDoArquivo) {
+                    if(modaliadeAtendimento.getCodigo().equals(relacaoProcedimentoModalidadeValida.getCodigo()))
+                        modalidadesAtendimento.getModalidadeAtendimento().add(modaliadeAtendimento);
+                }
+            }
+        }
+        return modalidadesAtendimento;
+    }
+
+    private CBOsVinculados relacionaDadosCboProcedimento(ProcedimentoType procedimento) {
+        CBOsVinculados cbosVinculados = new CBOsVinculados();
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCboValido = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoCbo : this.listaRelacoesProcedimetoCbo) {
+            if(relacaoProcedimentoCbo.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoCboValido = relacaoProcedimentoCbo;
+                for(CBOType cbo : this.listaCbosDoArquivo) {
+                    if(cbo.getCodigo().equals(relacaoProcedimentoCboValido.getCodigo()))
+                        cbosVinculados.getCBO().add(cbo);
+                }
+            }
+        }
+        return cbosVinculados;
+    }
+
+    private InstrumentosRegistro relacionaDadosInstrumentoRegistroProcedimento(ProcedimentoType procedimento) {
+        InstrumentosRegistro instrumentosRegistro = new InstrumentosRegistro();
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoInstrumentoRegistroValido = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoInstrumento : this.listaRelacoesProcedimetoInstrumentoRegistro) {
+            if(relacaoProcedimentoInstrumento.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoInstrumentoRegistroValido = relacaoProcedimentoInstrumento;
+                for(InstrumentoRegistroType instrumentoRegistro : this.listaInstrumentoRegistroDoArquivo) {
+                    if(instrumentoRegistro.getCodigo().equals(relacaoProcedimentoInstrumentoRegistroValido.getCodigo()))
+                        instrumentosRegistro.getInstrumentoRegistro().add(instrumentoRegistro);
+                }
+            }
+        }
+        return instrumentosRegistro;
+    }
+
+    private RENASESVinculadas relacionaDadosRenasesProcedimento(ProcedimentoType procedimento) {
+        RENASESVinculadas renasesVinculados = new RENASESVinculadas();
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoRenasesValido = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoRenases : this.listaRelacoesProcedimetoRenases) {
+            if(relacaoProcedimentoRenases.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoRenasesValido = relacaoProcedimentoRenases;
+                for(RENASESType renases : this.listaRenasesDoArquivo) {
+                    if(renases.getCodigo().equals(relacaoProcedimentoRenasesValido.getCodigo()))
+                        renasesVinculados.getRENASES().add(renases);
+                }
+            }
+        }
+        return renasesVinculados;
+    }
+
+    private void relacionaDadosServicoClassificacaoProcedimento(ProcedimentoType procedimento) {
+        ServicosClassificacoesVinculados servicosClassificacoesVinculados = new ServicosClassificacoesVinculados();
+        procedimento.setServicosClassificacoesVinculados(servicosClassificacoesVinculados);
+
+        RelacaoObjetoComProcedimentoDTO relacaoProcedimentoServicoClassificacaoValido = new RelacaoObjetoComProcedimentoDTO();
+        for(RelacaoObjetoComProcedimentoDTO relacaoProcedimentoServico : this.listaRelacoesProcedimetoServico) {
+            if(relacaoProcedimentoServico.getCodigoProcedimento().equals(procedimento.getCodigo())) {
+                relacaoProcedimentoServicoClassificacaoValido = relacaoProcedimentoServico;
+
+                for(ServicoClassificacaoType servicoClassificacao : this.listaServicoClassificacaoDoArquivo) {
+                    if( (servicoClassificacao.getCodigoClassificacao().equals(relacaoProcedimentoServicoClassificacaoValido.getCodigoClassificacao()) )
+                            && servicoClassificacao.getServico().getCodigo().equals(relacaoProcedimentoServicoClassificacaoValido.getCodigo())	) {
+
+                        for(ServicoType servico : this.listaServicoDoArquivo) {
+                            if(servico.getCodigo().equals(servicoClassificacao.getServico().getCodigo())) {
+                                servicoClassificacao.getServico().setNome(servico.getNome());
+                                procedimento.getServicosClassificacoesVinculados().getServicoClassificacao().add(servicoClassificacao);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private TipoFinanciamentoType relacionaDadosTipoFinanciamentoProcedimento(ProcedimentoType procedimento) {
+        TipoFinanciamentoType tipoFinanciamento = new TipoFinanciamentoType();
+        for(TipoFinanciamentoType tipoFinanciamentoType : this.listaTipoFinanciamentoDoArquivo) {
+            if(tipoFinanciamentoType.getCodigo().equals(procedimento.getTipoFinanciamento().getCodigo()))
+                tipoFinanciamento = tipoFinanciamentoType;
+        }
+        return tipoFinanciamento;
     }
 
     public List<ProcedimentoBean> getListaProcedimentos() {
@@ -859,5 +1134,12 @@ public class ProcedimentoController implements Serializable {
 
     public void setFiltroMesIhAnoSelecionado(String filtroMesIhAnoSelecionado) {
         this.filtroMesIhAnoSelecionado = filtroMesIhAnoSelecionado;
+    }
+    public UploadedFile getArquivoImportacaoSelecionado() {
+        return arquivoImportacaoSelecionado;
+    }
+
+    public void setArquivoImportacaoSelecionado(UploadedFile arquivoImportacaoSelecionado) {
+        this.arquivoImportacaoSelecionado = arquivoImportacaoSelecionado;
     }
 }
