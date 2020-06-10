@@ -64,7 +64,7 @@ public class ProfissaoController implements Serializable {
 
     }
 
-    public void gravarProfissao() {
+    public void gravarProfissao() throws ProjetoException {
 
         boolean cadastrou = pDao.cadastrar(profissao);
         if (cadastrou == true) {
@@ -76,7 +76,7 @@ public class ProfissaoController implements Serializable {
 
     }
 
-    public void alterarProfissao() {
+    public void alterarProfissao() throws ProjetoException {
 
         boolean alterou = pDao.alterar(profissao);
         if (alterou == true) {

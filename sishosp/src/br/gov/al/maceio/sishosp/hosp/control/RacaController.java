@@ -67,7 +67,7 @@ public class RacaController implements Serializable {
 
 	}
 
-	public void gravarRaca() {
+	public void gravarRaca() throws ProjetoException {
 		boolean cadastrou = rDao.cadastrar(raca);
 
 		if (cadastrou == true) {
@@ -80,7 +80,7 @@ public class RacaController implements Serializable {
 
 	}
 
-	public void alterarRaca() {
+	public void alterarRaca() throws ProjetoException {
 
 		boolean alterou = rDao.alterar(raca);
 
@@ -89,7 +89,6 @@ public class RacaController implements Serializable {
 		} else {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
-
 	}
 
 	public void excluirRaca() throws ProjetoException {

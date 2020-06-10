@@ -288,7 +288,7 @@ public class PtsController implements Serializable {
         pts.getListaPtsArea().remove(ptsRemover);
     }
 
-    public String gravarPts() {
+    public String gravarPts() throws ProjetoException {
 
         String retorno = null;
 
@@ -307,7 +307,7 @@ public class PtsController implements Serializable {
         return retorno;
     }
 
-    public String gravarAlteracaoPts() {
+    public String gravarAlteracaoPts() throws ProjetoException {
 
         String retorno = null;
 
@@ -325,7 +325,7 @@ public class PtsController implements Serializable {
         return retorno;
     }
 
-    public String gravarRenovacaoPts() {
+    public String gravarRenovacaoPts() throws ProjetoException {
 
         String retorno = null;
 
