@@ -27,7 +27,7 @@ public class SubstituicaoDAO {
     PreparedStatement ps = null;
 
 
-    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados,SubstituicaoProfissional substituicaoFuncionario) {
+    public Boolean substituirFuncionario(List<AtendimentoBean> listaSelecionados,SubstituicaoProfissional substituicaoFuncionario) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -43,25 +43,23 @@ public class SubstituicaoDAO {
                 stmt.setLong(3, substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId());
 
                 stmt.executeUpdate();
-
                 gravarSubstituicao(listaSelecionados.get(i), substituicaoFuncionario, con);
-
             }
-
             con.commit();
 
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
             try {
                 con.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
     public boolean gravarSubstituicao(AtendimentoBean atendimentoBean, SubstituicaoProfissional substituicaoFuncionario, Connection conAuxiliar)
@@ -97,9 +95,8 @@ public class SubstituicaoDAO {
         return retorno;
     }
     
-	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoProfissional afastamento, Date periodoInicioBusca, Date periodoFimBusca) {
+	public boolean validaPeriodoAfastamentoNaBuscaSubstituicao(AfastamentoProfissional afastamento, Date periodoInicioBusca, Date periodoFimBusca) throws ProjetoException {
 		boolean periodoValidoAfastamentoNaBuscaSubstituicao = false;
-		List<AfastamentoProfissional> lista = new ArrayList<>();
 
 		String sql = "select id from adm.afastamento_funcionario where id_funcionario_afastado	=?\n"
 				+ "	and ((? between inicio_afastamento and fim_afastamento)\n"
@@ -116,10 +113,11 @@ public class SubstituicaoDAO {
 			while (rs.next()) {
 				periodoValidoAfastamentoNaBuscaSubstituicao = true;
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
@@ -129,7 +127,7 @@ public class SubstituicaoDAO {
 		return periodoValidoAfastamentoNaBuscaSubstituicao;
 	}
 
-    public List<AtendimentoBean> listarHorariosParaSeremSubstituidos(BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO, String motivoAfastamento) {
+    public List<AtendimentoBean> listarHorariosParaSeremSubstituidos(BuscaAgendamentosParaFuncionarioAfastadoDTO buscaAgendamentosParaFuncionarioAfastadoDTO, String motivoAfastamento) throws ProjetoException {
 
         List<AtendimentoBean> lista = new ArrayList<>();
         String sql = "";
@@ -209,10 +207,11 @@ public class SubstituicaoDAO {
 
                 lista.add(atendimentoBean);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}  finally {
             try {
                 con.close();
             } catch (Exception ex) {

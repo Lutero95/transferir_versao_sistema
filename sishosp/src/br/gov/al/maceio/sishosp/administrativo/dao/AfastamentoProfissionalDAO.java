@@ -2,15 +2,17 @@ package br.gov.al.maceio.sishosp.administrativo.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 
 import javax.faces.context.FacesContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class AfastamentoProfissionalDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarAfastamentoProfissional(AfastamentoProfissional afastamentoProfissional) {
+	public boolean gravarAfastamentoProfissional(AfastamentoProfissional afastamentoProfissional) throws ProjetoException {
 
 		Boolean retorno = false;
 
@@ -53,21 +55,21 @@ public class AfastamentoProfissionalDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public List<AfastamentoProfissional> listarAfastamentoProfissionais() {
+	public List<AfastamentoProfissional> listarAfastamentoProfissionais() throws ProjetoException {
 
 		List<AfastamentoProfissional> lista = new ArrayList<>();
 
@@ -97,9 +99,10 @@ public class AfastamentoProfissionalDAO {
 				afastamentoProfissional.setMotivoAfastamentoPorExtenso(rs.getString("motivo_afastamento_extenso"));
 				lista.add(afastamentoProfissional);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -110,9 +113,8 @@ public class AfastamentoProfissionalDAO {
 		return lista;
 	}
 
-	public boolean verificaSeExisteAfastamentoProfissionalNoPeriodo(AfastamentoProfissional afastamento) {
+	public boolean verificaSeExisteAfastamentoProfissionalNoPeriodo(AfastamentoProfissional afastamento) throws ProjetoException {
 		boolean existeAfastamentoProfissionalNoPeriodo = false;
-		List<AfastamentoProfissional> lista = new ArrayList<>();
 
 		String sql = "select id from adm.afastamento_funcionario where id_funcionario_afastado	=?\n"
 				+ "	and ((? between inicio_afastamento and fim_afastamento)\n"
@@ -141,10 +143,10 @@ public class AfastamentoProfissionalDAO {
 			while (rs.next()) {
 				existeAfastamentoProfissionalNoPeriodo = true;
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			JSFUtil.adicionarMensagemErro("Erro: ", "Atenção");
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -155,7 +157,7 @@ public class AfastamentoProfissionalDAO {
 		return existeAfastamentoProfissionalNoPeriodo;
 	}
 
-	public AfastamentoProfissional listarAfastamentoProfissionalPorId(int id) {
+	public AfastamentoProfissional listarAfastamentoProfissionalPorId(int id) throws ProjetoException {
 
 		AfastamentoProfissional afastamentoProfissional = new AfastamentoProfissional();
 
@@ -178,9 +180,10 @@ public class AfastamentoProfissionalDAO {
 				afastamentoProfissional.setMotivoAfastamento(rs.getString("motivo_afastamento"));
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -191,7 +194,7 @@ public class AfastamentoProfissionalDAO {
 		return afastamentoProfissional;
 	}
 
-	public Boolean excluirAfastamentoProfissional(int id) {
+	public Boolean excluirAfastamentoProfissional(int id) throws ProjetoException {
 
 		Boolean retorno = false;
 
@@ -204,20 +207,21 @@ public class AfastamentoProfissionalDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public AfastamentoProfissional carregarAfastamentoPeloId(int idAfastamento) {
+	public AfastamentoProfissional carregarAfastamentoPeloId(int idAfastamento) throws ProjetoException {
 
 		AfastamentoProfissional afastamento = new AfastamentoProfissional();
 
@@ -241,9 +245,10 @@ public class AfastamentoProfissionalDAO {
 				afastamento.setMotivoAfastamento(rs.getString("motivo_afastamento"));
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();

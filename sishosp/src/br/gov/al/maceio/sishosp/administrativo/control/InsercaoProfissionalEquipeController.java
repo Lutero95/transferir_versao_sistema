@@ -63,11 +63,11 @@ public class InsercaoProfissionalEquipeController implements Serializable {
 
     }
 
-    public void listarInseridos() {
+    public void listarInseridos() throws ProjetoException {
         listaInseridos = iDao.listarInsercoesRealizadas();
     }
 
-    public void gravarInsercaoProfissionalEquipe() {
+    public void gravarInsercaoProfissionalEquipe() throws ProjetoException {
         tratarCasoDatas();
         tratarEquipe();
         String retornoCadastro = iDao.gravarInsercaoGeral(this.insercaoProfissionalEquipe);

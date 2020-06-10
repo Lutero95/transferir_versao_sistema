@@ -23,7 +23,7 @@ public final class HorarioOuTurnoUtil {
         return opcaoAtendimento;
     }
 
-    public static ArrayList<String> gerarHorariosAtendimento() throws ParseException {
+    public static ArrayList<String> gerarHorariosAtendimento() throws ParseException, ProjetoException {
         ParametroBean parametroBean = new ParametroBean();
         ArrayList<String> listaHorarios = new ArrayList<>();
         UnidadeDAO unidadeDAO = new UnidadeDAO();
@@ -57,7 +57,7 @@ public final class HorarioOuTurnoUtil {
         return listaHorarios;
     }
 
-    public static ArrayList<String> gerarHorariosAtendimentoOlhandoHorariosCheios(Integer codEquipe, Long codProfissional, Date data) throws ParseException {
+    public static ArrayList<String> gerarHorariosAtendimentoOlhandoHorariosCheios(Integer codEquipe, Long codProfissional, Date data) throws ParseException, ProjetoException {
         ParametroBean parametroBean = new ParametroBean();
         ArrayList<String> listaHorarios = new ArrayList<>();
         UnidadeDAO unidadeDAO = new UnidadeDAO();

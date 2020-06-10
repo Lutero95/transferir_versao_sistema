@@ -234,7 +234,7 @@ public class AgendaController implements Serializable {
         }
     }
 
-    public void gerarHorarioAtendimentoAnalisandoHorariosCheios() throws ParseException {
+    public void gerarHorarioAtendimentoAnalisandoHorariosCheios() throws ParseException, ProjetoException {
         if((!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()) || !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getId()))
         && !VerificadorUtil.verificarSeObjetoNulo(agenda.getDataAtendimento())){
             gerarHorariosAtendimento();
@@ -242,7 +242,7 @@ public class AgendaController implements Serializable {
         }
     }
 
-    private void gerarHorariosAtendimento() throws ParseException {
+    private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimentoOlhandoHorariosCheios(agenda.getEquipe().getCodEquipe(), agenda.getProfissional().getId(), agenda.getDataAtendimento());
     }
 

@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.administrativo.control;
 
 import br.gov.al.maceio.sishosp.administrativo.dao.AfastamentoProfissionalDAO;
 import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -43,7 +44,7 @@ public class AfastamentoProfissionalController implements Serializable {
 
     }
 
-    public void gravarAfastamentoProfissional() {
+    public void gravarAfastamentoProfissional() throws ProjetoException {
     	if (!aDao.verificaSeExisteAfastamentoProfissionalNoPeriodo(afastamentoProfissional)) {
         boolean cadastrou = aDao.gravarAfastamentoProfissional(this.afastamentoProfissional);
 
@@ -61,7 +62,7 @@ public class AfastamentoProfissionalController implements Serializable {
     	}
     }
 
-    public void excluirAfastamentoProfissional() {
+    public void excluirAfastamentoProfissional() throws ProjetoException {
         boolean excluiu = aDao.excluirAfastamentoProfissional(afastamentoProfissional.getId());
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Afastamento do Profissional excluído com sucesso!", "Sucesso");
@@ -88,7 +89,7 @@ public class AfastamentoProfissionalController implements Serializable {
         afastamentoProfissional.setPeriodoFinal(null);
     }
 
-    public void listarAfastamentosProfissionais() {
+    public void listarAfastamentosProfissionais() throws ProjetoException {
         listaAfastamentosProfissionais = aDao.listarAfastamentoProfissionais();
     }
 

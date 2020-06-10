@@ -693,7 +693,7 @@ public class TransferenciaPacienteController implements Serializable {
         return true;
     }
     
-    private void gerarHorariosAtendimento() throws ParseException {
+    private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
@@ -809,7 +809,7 @@ public class TransferenciaPacienteController implements Serializable {
 		this.listaHorarioAtendimentos = listaHorarioAtendimentos;
 	}
 
-	public ArrayList<String> getListaHorarios() throws ParseException {
+	public ArrayList<String> getListaHorarios() throws ParseException, ProjetoException {
 		gerarHorariosAtendimento();
 		return listaHorarios;
 	}

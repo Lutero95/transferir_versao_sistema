@@ -861,7 +861,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
 
-    private void gerarHorariosAtendimento() throws ParseException {
+    private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
@@ -1007,7 +1007,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.opcaoAtendimento = opcaoAtendimento;
     }
 
-    public ArrayList<String> getListaHorarios() throws ParseException {
+    public ArrayList<String> getListaHorarios() throws ParseException, ProjetoException {
     	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) 
         gerarHorariosAtendimento();
         return listaHorarios;

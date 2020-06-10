@@ -6,9 +6,10 @@ import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarInsercaoAtendimento1DTO;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarInsercaoProfissionalEquipeAtendimento1DTO;
 import br.gov.al.maceio.sishosp.administrativo.model.dto.GravarInsercaoProfissionalEquipeAtendimentoDTO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 
@@ -16,6 +17,7 @@ import javax.faces.context.FacesContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class InsercaoProfissionalEquipeDAO {
     private Connection con = null;
     private PreparedStatement ps = null;
 
-    private List<Integer> buscarAtendimentosParaAdicionarProfissional(InsercaoProfissionalEquipe insercaoProfissionalEquipe) {
+    private List<Integer> buscarAtendimentosParaAdicionarProfissional(InsercaoProfissionalEquipe insercaoProfissionalEquipe) throws ProjetoException {
 
         List<Integer> lista = new ArrayList<>();
         int i = 2;
@@ -118,10 +120,11 @@ public class InsercaoProfissionalEquipeDAO {
                 lista.add(rs.getInt("id_atendimento"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -131,7 +134,7 @@ public class InsercaoProfissionalEquipeDAO {
         return lista;
     }
 
-    public String gravarInsercaoGeral(InsercaoProfissionalEquipe insercaoProfissionalEquipe) {
+    public String gravarInsercaoGeral(InsercaoProfissionalEquipe insercaoProfissionalEquipe) throws ProjetoException {
         List<Integer> lista = buscarAtendimentosParaAdicionarProfissional(insercaoProfissionalEquipe);
 
         if(!lista.isEmpty()){
@@ -153,7 +156,7 @@ public class InsercaoProfissionalEquipeDAO {
 
     }
 
-    private boolean gravarInsercaoProfissionalEquipeAtendimento(GravarInsercaoProfissionalEquipeAtendimentoDTO gravarInsercaoDTO) {
+    private boolean gravarInsercaoProfissionalEquipeAtendimento(GravarInsercaoProfissionalEquipeAtendimentoDTO gravarInsercaoDTO) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -211,21 +214,21 @@ public class InsercaoProfissionalEquipeDAO {
                 con.commit();
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
         }
+        return retorno;
     }
 
-    private boolean gravarInsercaoAtendimento1(GravarInsercaoAtendimento1DTO gravarAtendimento1) {
+    private boolean gravarInsercaoAtendimento1(GravarInsercaoAtendimento1DTO gravarAtendimento1) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -260,9 +263,7 @@ public class InsercaoProfissionalEquipeDAO {
                 if (rs.next()) {
                     codigoAtendimento1 = rs.getInt("id_atendimentos1");
                 }
-
                 listaInsercaoProfissionalEquipes.add(codigoAtendimento1);
-
             }
 
             GravarInsercaoProfissionalEquipeAtendimento1DTO gravarInsercao1 = new GravarInsercaoProfissionalEquipeAtendimento1DTO(
@@ -270,22 +271,17 @@ public class InsercaoProfissionalEquipeDAO {
                     gravarAtendimento1.getInsercaoProfissionalEquipe());
 
             retorno = gravarInsercaoProfissionalEquipeAtendimento1(gravarInsercao1);
-
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	gravarAtendimento1.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			gravarAtendimento1.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    private boolean gravarInsercaoProfissionalEquipeAtendimento1(GravarInsercaoProfissionalEquipeAtendimento1DTO gravarInsercao1) {
+    private boolean gravarInsercaoProfissionalEquipeAtendimento1(GravarInsercaoProfissionalEquipeAtendimento1DTO gravarInsercao1) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -304,23 +300,18 @@ public class InsercaoProfissionalEquipeDAO {
                 ps.execute();
             }
 
-
-
             retorno = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JSFUtil.adicionarMensagemErro(ex.getMessage(), "Atenção");
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return retorno;
-        }
+        } catch (SQLException sqle) {
+        	gravarInsercao1.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			gravarInsercao1.getConexaoAuxiliar().rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+        return retorno;
     }
 
-    public List<InsercaoProfissionalEquipe> listarInsercoesRealizadas() {
+    public List<InsercaoProfissionalEquipe> listarInsercoesRealizadas() throws ProjetoException {
 
         List<InsercaoProfissionalEquipe> lista = new ArrayList<>();
 
@@ -353,10 +344,11 @@ public class InsercaoProfissionalEquipeDAO {
                 lista.add(insercaoProfissionalEquipe);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
