@@ -1,13 +1,15 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.SituacaoAtendimentoBean;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class SituacaoAtendimentoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) {
+	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "INSERT INTO hosp.situacao_atendimento " +
 				"(descricao, atendimento_realizado) " +
@@ -30,9 +32,10 @@ public class SituacaoAtendimentoDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			JSFUtil.adicionarMensagemErro("Erro ao gravar Situação do Atendimento: " + ex.getMessage(), "Erro");
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -43,7 +46,7 @@ public class SituacaoAtendimentoDAO {
 		return retorno;
 	}
 
-	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao){
+	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao) throws ProjetoException{
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.situacao_atendimento " +
 				"SET descricao = ?, atendimento_realizado = ?" +
@@ -57,9 +60,10 @@ public class SituacaoAtendimentoDAO {
 			ps.executeUpdate();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			JSFUtil.adicionarMensagemErro("Erro ao alterar Situação do Atendimento: "+ex.getMessage(), "Erro");
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -70,7 +74,7 @@ public class SituacaoAtendimentoDAO {
 		return retorno;
 	}
 
-	public Boolean excluirSituacaoAtendimento(Integer id) {
+	public Boolean excluirSituacaoAtendimento(Integer id) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "DELETE FROM hosp.situacao_atendimento WHERE id = ?";
 
@@ -81,9 +85,11 @@ public class SituacaoAtendimentoDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
@@ -93,7 +99,7 @@ public class SituacaoAtendimentoDAO {
 		return retorno;
 	}
 
-	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() {
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa order by sa.descricao ";
@@ -112,8 +118,10 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -124,7 +132,7 @@ public class SituacaoAtendimentoDAO {
 		return listaSituacoes;
 	}
 
-	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) {
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? order by sa.descricao ";
@@ -144,8 +152,10 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -156,7 +166,7 @@ public class SituacaoAtendimentoDAO {
 		return listaSituacoes;
 	}
 
-	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) {
+	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa where sa.descricao ilike ? order by sa.descricao ";
@@ -174,8 +184,10 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -186,7 +198,7 @@ public class SituacaoAtendimentoDAO {
 		return listaSituacoes;
 	}
 
-	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) {
+	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
 				"from hosp.situacao_atendimento sa where sa.id = ?";
@@ -203,8 +215,10 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setDescricao(rs.getString("descricao"));
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -215,7 +229,7 @@ public class SituacaoAtendimentoDAO {
 		return situacaoAtendimento;
 	}
 
-	public Boolean existeOutraSituacaoComAtendimentoRealizado(Integer idSituacao) {
+	public Boolean existeOutraSituacaoComAtendimentoRealizado(Integer idSituacao) throws ProjetoException {
 
 		String sqlParaEdicao = "select exists " +
 				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true and sa.id != ?) " +
@@ -239,9 +253,11 @@ public class SituacaoAtendimentoDAO {
 			if (rs.next()) {
 				existeSituacaoComStendimentoRealizado = rs.getBoolean("existe_situacao_com_atendimento_realizado");
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
 			try {
 				conexao.close();
 			} catch (Exception ex) {

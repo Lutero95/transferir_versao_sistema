@@ -111,7 +111,7 @@ public class TipoAtendimentoController implements Serializable {
         return retorno;
     }
 
-    public void alterarTipo() {
+    public void alterarTipo() throws ProjetoException {
         if (!validarGrupoOuPrograma()) {
             JSFUtil.adicionarMensagemAdvertencia(mensagemAvisoGrupoOuProgramaFaltando, "Campos obrigatórios!");
         } else {

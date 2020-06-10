@@ -5,12 +5,10 @@ import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
-
 import javax.faces.context.FacesContext;
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ public class TransferenciaPacienteDAO {
 				"  LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) \n" + 
 				"  LEFT JOIN hosp.pacientes  ON (coalesce(l.codpaciente, pi.id_paciente) = pacientes.id_paciente)" + " where pi.id = ?";
 
-		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -76,9 +73,10 @@ public class TransferenciaPacienteDAO {
 
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -89,7 +87,9 @@ public class TransferenciaPacienteDAO {
 		return ip;
 	}
 
-    public Boolean apagarAtendimentosNaRenovacao(Integer idPacienteInstituicao,java.util.Date dataTransferencia, Connection conAuxiliar) {
+    public Boolean apagarAtendimentosNaRenovacao
+    	(Integer idPacienteInstituicao,java.util.Date dataTransferencia, Connection conAuxiliar)
+    			throws ProjetoException, SQLException {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -171,15 +171,13 @@ public class TransferenciaPacienteDAO {
 
             retorno = true;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
         return retorno;
     }
 	
@@ -378,13 +376,13 @@ public class TransferenciaPacienteDAO {
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "IT",
 					conexao)) {
 				conexao.commit();
-
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -402,7 +400,6 @@ public class TransferenciaPacienteDAO {
 		Boolean retorno = false;
 		ResultSet rs = null;
 		ArrayList<Integer> lista = new ArrayList<Integer>();
-
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
 		try {
@@ -422,7 +419,6 @@ public class TransferenciaPacienteDAO {
 			ps2.setLong(1, id_paciente);
 			ps2.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
 			ps2.execute();
-
 			rs = ps2.executeQuery();
 
 			while (rs.next()) {
@@ -455,7 +451,6 @@ public class TransferenciaPacienteDAO {
 				ps4.setLong(1, lista.get(i));
 				ps4.execute();
 			}
-
 
 			String sql5 = "update hosp.paciente_instituicao set status='CT' where id = ?";
 
@@ -597,8 +592,6 @@ public class TransferenciaPacienteDAO {
 							} else {
 								ps10.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 							}
-							
-							
 
 							ps10.executeUpdate();
 						}
@@ -648,9 +641,10 @@ public class TransferenciaPacienteDAO {
 				retorno = true;
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -660,5 +654,4 @@ public class TransferenciaPacienteDAO {
 		}
 		return retorno;
 	}
-
 }
