@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import br.gov.al.maceio.sishosp.hosp.interfaces.IDocumentosTBSigtap;
 import br.gov.al.maceio.sishosp.hosp.model.dto.DescricaoProcedimentoDTO;
+import sigtap.br.gov.arquivo.enums.TipoComplexidade;
 import sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.cid.v1.cid.CIDType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.tipofinanciamento.TipoFinanciamentoType;
@@ -97,7 +98,19 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			procedimento.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 0, 10));
 			
 			procedimento.setNome(retornaCampoFormatadoParaTabela(linhaDocumento, 10, 260).trim());
-			procedimento.setComplexidade(ComplexidadeType.ALTA_COMPLEXIDADE_OU_CUSTO); //*
+			String tipoComplexidade = retornaCampoFormatadoParaTabela(linhaDocumento, 260, 261);
+			if (tipoComplexidade.equals(TipoComplexidade.NAO_SE_APLICA.getTipoComplexidade()))
+			procedimento.setComplexidade(ComplexidadeType.NAO_SE_APLICA);
+			else
+			if (tipoComplexidade.equals(TipoComplexidade.ATENCAO_BASICA_COMPLEXIDADE.getTipoComplexidade()))
+				procedimento.setComplexidade(ComplexidadeType.ATENCAO_BASICA);
+			else
+			if (tipoComplexidade.equals(TipoComplexidade.MEDIA_COMPLEXIDADE.getTipoComplexidade()))
+				procedimento.setComplexidade(ComplexidadeType.MEDIA_COMPLEXIDADE);
+			else
+			if (tipoComplexidade.equals(TipoComplexidade.ALTA_COMPLEXIDADE.getTipoComplexidade()))
+				procedimento.setComplexidade(ComplexidadeType.ALTA_COMPLEXIDADE_OU_CUSTO);
+
 			procedimento.setSexoPermitido(retornaCampoFormatadoParaTabela(linhaDocumento, 261, 262)); //*
 			procedimento.setQuantidadeMaxima(Integer.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 262, 266)));
 			
@@ -118,9 +131,7 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			TipoFinanciamentoType tipoFinanciamento = new TipoFinanciamentoType();
 			tipoFinanciamento.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 312, 314));
 			procedimento.setTipoFinanciamento(tipoFinanciamento);
-			
-			procedimento.setCompetenciaInicial(""); //VERIFICAR ESTE CAMPO POIS ELE NÃO VEM NOS DOCUMENTOS
-			procedimento.setCompetenciaFinal(retornaCampoFormatadoParaTabela(linhaDocumento, 324, 330));
+			procedimento.setCompetenciaValidade(retornaCampoFormatadoParaTabela(linhaDocumento, 324, 330));
 			return procedimento;
 		}
 	},

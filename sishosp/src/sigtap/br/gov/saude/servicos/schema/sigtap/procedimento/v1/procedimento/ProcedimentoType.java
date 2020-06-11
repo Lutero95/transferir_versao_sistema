@@ -384,6 +384,7 @@ public class ProcedimentoType
     protected FormaOrganizacaoType formaOrganizacao;
     protected String competenciaInicial;
     protected String competenciaFinal;
+    protected String competenciaValidade;
     @XmlSchemaType(name = "string")
     protected FinalidadePublicacaoType finalidadePublicacao;
     @XmlElement(name = "DocumentoPublicacao")
@@ -488,6 +489,7 @@ public class ProcedimentoType
         this.competenciaInicial = value;
     }
 
+
     /**
      * Obt�m o valor da propriedade competenciaFinal.
      * 
@@ -510,6 +512,15 @@ public class ProcedimentoType
      */
     public void setCompetenciaFinal(String value) {
         this.competenciaFinal = value;
+    }
+
+
+    public String getCompetenciaValidade() {
+        return competenciaValidade;
+    }
+
+    public void setCompetenciaValidade(String value) {
+        this.competenciaValidade = value;
     }
 
     /**

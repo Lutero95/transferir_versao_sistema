@@ -471,7 +471,7 @@ public class ProcedimentoDAO {
         return lista;
     }
 
-    public ArrayList<CidBean> listarCid(Integer id_proc) throws ProjetoException {
+    public ArrayList<CidBean> listarCidDoProcedimentoDeumaCompetencia(Integer id_proc) throws ProjetoException {
 
         ArrayList<CidBean> lista = new ArrayList<>();
         String sql = "select c.cod, c.cid, c.desccid from hosp.cid c left join sigtap.proc_cid p on (c.cod = p.id_cid) where id_proc = ? order by cid";
@@ -998,7 +998,7 @@ public class ProcedimentoDAO {
     public Integer inserirProcedimentoMensal(GravarProcedimentoMensalDTO procedimentoMensalDTO, Connection conexao, Integer idHistoricoConsumoSigtap)
             throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.procedimento_mensal " +
-                "(id_procedimento, codigo_procedimento, nome, competencia_inicial, complexidade, id_tipo_financiamento, "+
+                "(id_procedimento, codigo_procedimento, nome, competencia_atual, complexidade, id_tipo_financiamento, "+
                 "sexo, quantidade_maxima, idade_minima, unidade_idade_minima, idade_maxima, unidade_idade_maxima, "+
                 "servico_ambulatorial, servico_hospitalar, servico_profisional, id_forma_de_organizacao, "+
                 "descricao, id_historico_consumo_sigtap) " +
@@ -1010,7 +1010,7 @@ public class ProcedimentoDAO {
             stm.setInt(1, procedimentoMensalDTO.getIdProcedimento());
             stm.setString(2, procedimentoMensalDTO.getProcedimentoMensal().getCodigo());
             stm.setString(3, procedimentoMensalDTO.getProcedimentoMensal().getNome());
-            stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaInicial()); //VERIFICAR SE É A INICIAL OU FINAL OU AMBAS E ALTERAR NO BANCO
+            stm.setString(4, procedimentoMensalDTO.getProcedimentoMensal().getCompetenciaValidade());
             stm.setString(5, procedimentoMensalDTO.getProcedimentoMensal().getComplexidade().name());
 
 

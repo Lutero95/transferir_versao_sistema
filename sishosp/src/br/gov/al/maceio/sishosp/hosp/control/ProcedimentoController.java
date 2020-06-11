@@ -173,10 +173,10 @@ public class ProcedimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.proc = procedimentoDao.listarProcedimentoPorId(id);
-            proc.setListaCid(procedimentoDao.listarCid(id));
-            proc.setListaCbo(procedimentoDao.listarCbo(id));
-            RecursoDAO rDao = new RecursoDAO();
-            proc.setListaRecurso(rDao.listaRecursosPorProcedimento(id));
+           // proc.setListaCid(procedimentoDao.listarCid(id));
+        //   proc.setListaCbo(procedimentoDao.listarCbo(id));
+         //   RecursoDAO rDao = new RecursoDAO();
+          //  proc.setListaRecurso(rDao.listaRecursosPorProcedimento(id));
             listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual();
             listaMesesIhAnosDoHistorico();
         } else {
@@ -884,6 +884,7 @@ public class ProcedimentoController implements Serializable {
             RENASESVinculadas renasesVinculados = relacionaDadosRenasesProcedimento(procedimento);
             relacionaDadosServicoClassificacaoProcedimento(procedimento);
             TipoFinanciamentoType tipoFinanciamento = relacionaDadosTipoFinanciamentoProcedimento(procedimento);
+
             /*  POSTERIORMENTE VERIFICAR COMO RELACIONAR OS DADOS DA FORMA DE ORGANIZAÇÃO
              *  JÁ QUE NÃO FOI ENCONTRADO NENHUM ARQUIVO OU COLUNA DO PROCEDIMENTO QUE FAÇA
              *  ISSO APENAS O 5º E 6º DIGITO DO CÓDIGO DO PROCEDIMENTO QUE É IGUAL A FORMA DE ORGANIZAÇÃO
@@ -1013,6 +1014,19 @@ public class ProcedimentoController implements Serializable {
                 }
 
             }
+        }
+    }
+
+    public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado() {
+        try {
+            String mesAno = this.filtroMesIhAnoSelecionado.replace(" \\ ", "");
+            Integer mes = Integer.valueOf(String.valueOf(mesAno.charAt(VALOR_ZERO)));
+            Integer ano = Integer.valueOf(mesAno.replaceFirst(mes.toString(), ""));
+            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), ano, mes);
+            exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
+        } catch (Exception e) {
+            JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
+            e.printStackTrace();
         }
     }
 
