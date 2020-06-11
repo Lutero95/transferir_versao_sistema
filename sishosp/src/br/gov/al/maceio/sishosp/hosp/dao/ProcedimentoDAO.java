@@ -861,6 +861,11 @@ public class ProcedimentoDAO {
         Integer idFormaOrganizacao = retornaIdFormaOrganizacaoCasoExista(formaOrganizacao.getCodigo(), conexao);
         try {
             if(VerificadorUtil.verificarSeObjetoNuloOuZero(idFormaOrganizacao)) {
+                Integer idgrupoExistente = retornaIdGrupoCasoExista(formaOrganizacao.getSubgrupo().getGrupo().getCodigo(),
+                        conexao);
+                if (VerificadorUtil.verificarSeObjetoNuloOuZero(idgrupoExistente))
+                    inserirGrupoMensal(formaOrganizacao.getSubgrupo().getGrupo(), conexao);
+
                 PreparedStatement ps = conexao.prepareStatement(sql);
                 ps.setString(1, formaOrganizacao.getCodigo());
                 ps.setString(2, formaOrganizacao.getNome());
@@ -872,6 +877,8 @@ public class ProcedimentoDAO {
                     Integer idSubgrupo = inserirSubgrupoMensal(formaOrganizacao.getSubgrupo(), conexao);
                     ps.setInt(3, idSubgrupo);
                 }
+
+
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
                     idFormaOrganizacao = rs.getInt("id");
@@ -927,20 +934,14 @@ public class ProcedimentoDAO {
     public Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.subgrupo " +
                 "(codigo, nome, id_grupo) " +
-                "VALUES(?, ?, ?) returning id ";
+                "VALUES(?, ?, (select grupo.id from sigtap.grupo where grupo.codigo=?)) returning id ";
         Integer idSubgrupo = null;
         try {
             PreparedStatement ps = conexao.prepareStatement(sql);
 
             ps.setString(1, subgrupo.getCodigo());
             ps.setString(2, subgrupo.getNome());
-            Integer idGrupoExistente = retornaIdGrupoCasoExista(subgrupo.getCodigo(), conexao);
-            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idGrupoExistente))
-                ps.setInt(3, idGrupoExistente);
-            else {
-                Integer idGrupo = inserirGrupoMensal(subgrupo.getGrupo(), conexao);
-                ps.setInt(3, idGrupo);
-            }
+            ps.setString(3, subgrupo.getGrupo().getCodigo());
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idSubgrupo = rs.getInt("id");
