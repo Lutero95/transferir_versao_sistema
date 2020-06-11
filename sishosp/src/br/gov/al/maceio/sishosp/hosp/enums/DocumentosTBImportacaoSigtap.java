@@ -132,6 +132,11 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			tipoFinanciamento.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 312, 314));
 			procedimento.setTipoFinanciamento(tipoFinanciamento);
 			procedimento.setCompetenciaValidade(retornaCampoFormatadoParaTabela(linhaDocumento, 324, 330));
+			
+			FormaOrganizacaoType formaOrganizacao = new FormaOrganizacaoType();
+			formaOrganizacao.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 4, 6));
+			procedimento.setFormaOrganizacao(formaOrganizacao);
+			
 			return procedimento;
 		}
 	},

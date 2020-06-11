@@ -22,7 +22,6 @@ import java.util.zip.ZipInputStream;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.xml.ws.soap.SOAPFaultException;
 import javax.servlet.ServletContext;
 import org.primefaces.model.UploadedFile;
 
@@ -884,17 +883,15 @@ public class ProcedimentoController implements Serializable {
             RENASESVinculadas renasesVinculados = relacionaDadosRenasesProcedimento(procedimento);
             relacionaDadosServicoClassificacaoProcedimento(procedimento);
             TipoFinanciamentoType tipoFinanciamento = relacionaDadosTipoFinanciamentoProcedimento(procedimento);
+            FormaOrganizacaoType formaOrganizacao = relacionaDadosFormaOrganizacaoProcedimento(procedimento);
 
-            /*  POSTERIORMENTE VERIFICAR COMO RELACIONAR OS DADOS DA FORMA DE ORGANIZAÇÃO
-             *  JÁ QUE NÃO FOI ENCONTRADO NENHUM ARQUIVO OU COLUNA DO PROCEDIMENTO QUE FAÇA
-             *  ISSO APENAS O 5º E 6º DIGITO DO CÓDIGO DO PROCEDIMENTO QUE É IGUAL A FORMA DE ORGANIZAÇÃO
-             * */
             procedimento.setModalidadesAtendimento(modalidadesAtendimento);
             procedimento.setInstrumentosRegistro(instrumentosRegistro);
             procedimento.setCBOsVinculados(cbosVinculados);
             procedimento.setCIDsVinculados(cidsVinculados);
             procedimento.setRENASESVinculadas(renasesVinculados);
             procedimento.setTipoFinanciamento(tipoFinanciamento);
+            procedimento.setFormaOrganizacao(formaOrganizacao);
 
             gravarProcedimentoMensalDTO.setIdProcedimento(idProcedimento);
             gravarProcedimentoMensalDTO.setProcedimentoMensal(procedimento);
@@ -1037,6 +1034,15 @@ public class ProcedimentoController implements Serializable {
                 tipoFinanciamento = tipoFinanciamentoType;
         }
         return tipoFinanciamento;
+    }
+    
+    private FormaOrganizacaoType relacionaDadosFormaOrganizacaoProcedimento(ProcedimentoType procedimento) {
+    	FormaOrganizacaoType formaOrganizacao = new FormaOrganizacaoType();
+        for(FormaOrganizacaoType formaOrganizacaoType : this.listaFormaOrganizacaoDoArquivo) {
+            if(formaOrganizacaoType.getCodigo().equals(procedimento.getFormaOrganizacao().getCodigo()))
+            	formaOrganizacao = formaOrganizacaoType;
+        }
+        return formaOrganizacao;
     }
 
     public List<ProcedimentoBean> getListaProcedimentos() {
