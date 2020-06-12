@@ -397,7 +397,8 @@ public class ProcedimentoController implements Serializable {
                 }
 
                 try {
-                    procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO, user_session.getId());
+                    procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO,
+                            listaGrupoDoArquivo, listaSubgrupoDoArquivo, user_session.getId());
                     JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
                 }catch(Exception sqle) {
                     JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
@@ -721,7 +722,8 @@ public class ProcedimentoController implements Serializable {
                     if(this.listaGravarProcedimentosMensaisDTO.isEmpty() || VerificadorUtil.verificarSeObjetoNulo(this.listaGravarProcedimentosMensaisDTO))
                         JSFUtil.adicionarMensagemErro("Erro não há dados válidos neste arquivo", "");
                     else {
-                        procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO, user_session.getId());
+                        procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO,
+                                listaGrupoDoArquivo, listaSubgrupoDoArquivo, user_session.getId());
                         JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
                     }
                 }catch(Exception sqle) {

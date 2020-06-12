@@ -182,6 +182,7 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			GrupoType grupo = new GrupoType();
 			grupo.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 2, 4));
 			subgrupo.setNome(retornaCampoFormatadoParaTabela(linhaDocumento, 4, 104).trim());
+			subgrupo.setGrupo(grupo);
 			return subgrupo;
 		}
 	};
