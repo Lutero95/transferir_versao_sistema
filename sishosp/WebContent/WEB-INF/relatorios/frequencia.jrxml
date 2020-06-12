@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="pestalizzi_maceio"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -83,7 +83,7 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS e
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5,
-programa.descprograma, grupo.descgrupo, p.matricula
+programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade
 FROM hosp.paciente_instituicao pi 
 left join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente =coalesce(l.codpaciente, pi.id_paciente) 
@@ -329,6 +329,7 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="tel3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
+	<field name="cidade" class="java.lang.String"/>
 	<group name="grpfreq" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{codpacienteinstituicao}]]></groupExpression>
 		<groupHeader>
@@ -728,7 +729,7 @@ order by  nome]]>
 					<reportElement x="0" y="214" width="1" height="24" uuid="347c438e-8a7d-4a5f-9e50-73fc3d30ebf2"/>
 				</line>
 				<textField>
-					<reportElement x="4" y="213" width="537" height="53" uuid="b5b97914-8e8f-46c0-96c0-f0e4f72d296b"/>
+					<reportElement x="4" y="213" width="537" height="57" uuid="b5b97914-8e8f-46c0-96c0-f0e4f72d296b"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -739,10 +740,12 @@ order by  nome]]>
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Declaro que no mês de ___________________, o paciente indicado acima, foi submetido aos procedimentos abaixo relacionados, conforme assinatura(s) do paciente/responsável abaixo.\n\n"+
-" Maceió, ______ de ___________________ de 20__                     _______________________________________   "]]></textFieldExpression>
+$F{cidade}+", ______ de ___________________ de 20__"  ]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement positionType="Float" x="259" y="256" width="218" height="13" uuid="94016d1a-f5e3-4326-ad91-a2a6d3f1db9a"/>
+					<reportElement positionType="Float" x="351" y="258" width="190" height="13" uuid="94016d1a-f5e3-4326-ad91-a2a6d3f1db9a">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
 					<textElement textAlignment="Center"/>
 					<text><![CDATA[Assinatura/Carimbo do Diretor da Unidade]]></text>
 				</staticText>
@@ -846,6 +849,14 @@ order by  nome]]>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{matricula}]]></textFieldExpression>
 				</textField>
+				<line>
+					<reportElement x="353" y="257" width="188" height="1" uuid="9d39cbca-3744-4de1-9ea0-5facd109e52a">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</line>
 			</band>
 		</groupHeader>
 	</group>
