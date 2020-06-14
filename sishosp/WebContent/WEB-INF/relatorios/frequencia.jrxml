@@ -740,10 +740,10 @@ order by  nome]]>
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Declaro que no mês de ___________________, o paciente indicado acima, foi submetido aos procedimentos abaixo relacionados, conforme assinatura(s) do paciente/responsável abaixo.\n\n"+
-$F{cidade}+", ______ de ___________________ de 20__"  ]]></textFieldExpression>
+$F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement positionType="Float" x="351" y="258" width="190" height="13" uuid="94016d1a-f5e3-4326-ad91-a2a6d3f1db9a">
+					<reportElement positionType="Float" x="327" y="258" width="214" height="13" uuid="94016d1a-f5e3-4326-ad91-a2a6d3f1db9a">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center"/>
