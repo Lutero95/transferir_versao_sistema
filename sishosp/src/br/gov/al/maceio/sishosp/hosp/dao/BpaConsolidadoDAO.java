@@ -56,7 +56,7 @@ public class BpaConsolidadoDAO {
             while (rs.next()) {
             	BpaConsolidadoBean bpaConsolidado = new BpaConsolidadoBean();
             	bpaConsolidado.setPrdCnes(rs.getString("cnes"));
-            	bpaConsolidado.setPrdCmp(rs.getString("competencia_inicial"));
+            	bpaConsolidado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaConsolidado.setPrdCbo(rs.getString("cbo"));
             	bpaConsolidado.setPrdPa(rs.getString("codproc"));
             	bpaConsolidado.setPrdIdade(PRD_IDADE);

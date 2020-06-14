@@ -327,7 +327,7 @@ public class BpaController {
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
-		if ((listaDeBpaConsolidado!=null) && (listaDeBpaConsolidado.size()>0)) {
+		if ((listaDeBpaIndividualizado!=null) && (listaDeBpaIndividualizado.size()>0)) {
             List<String> listaCnsDosMedicos = retornaUnicamenteCnsParaBpaIndividualizado();
             for (String cnsMedico : listaCnsDosMedicos) {
                 Integer quantidadeRegistrosPorFolha = 0;
@@ -364,7 +364,8 @@ public class BpaController {
             Integer numeroLinha = 0;
             for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
                 if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedicoAuxiliador)
-                        && this.listaDeBpaIndividualizado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
+                        && this.listaDeBpaIndividualizado.get(i).getPrdFlh()!=null
+				&& this.listaDeBpaIndividualizado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
                     numeroLinha++;
                     this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
                 } else {
