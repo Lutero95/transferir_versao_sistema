@@ -24,7 +24,7 @@ public class BpaConsolidadoDAO {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
-        		"  proc.codproc, emp.cnes, pm.competencia_inicial, cbo.codigo cbo " +
+        		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo cbo " +
         		" from hosp.atendimentos1 a1 " + 
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento " + 
         		" left join hosp.cbo on cbo.id = func.codcbo " + 
@@ -38,9 +38,9 @@ public class BpaConsolidadoDAO {
         		" where sa.atendimento_realizado = true " + 
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
-        		" and pm.competencia_inicial = ? " +
+        		" and pm.competencia_atual = ? " +
         		" group by " + 
-        		"  proc.codproc, emp.cnes, pm.competencia_inicial, cbo.codigo " +
+        		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo " +
         		"order by cbo.codigo ";
         
         Connection con = ConnectionFactory.getConnection();

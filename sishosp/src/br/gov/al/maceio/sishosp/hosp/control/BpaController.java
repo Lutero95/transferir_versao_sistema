@@ -270,40 +270,43 @@ public class BpaController {
 	}
 	
 	public void geraNumeroDaLinhaDaFolhaConsolidado() {
-		String cboAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdCbo();
-		String numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdFlh();
-		Integer numeroLinha = 0;
-		for (int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
-			if (this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cboAuxiliador)
-					&& this.listaDeBpaConsolidado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
-				numeroLinha++;
-				this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
-			}
-			else {
-				cboAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdCbo();
-				numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdFlh();
-				numeroLinha = 1;
-				this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
-			}
-		}
+        if ((listaDeBpaConsolidado!=null) && (listaDeBpaConsolidado.size()>0)) {
+            String cboAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdCbo();
+            String numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdFlh();
+            Integer numeroLinha = 0;
+            for (int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
+                if (this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cboAuxiliador)
+                        && this.listaDeBpaConsolidado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
+                    numeroLinha++;
+                    this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
+                } else {
+                    cboAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdCbo();
+                    numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdFlh();
+                    numeroLinha = 1;
+                    this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
+                }
+            }
+        }
 	}
 	
 	public void adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido() throws ProjetoException {
-		List<BpaConsolidadoBean> listaBpaConsolidadoAuxiliar = new ArrayList<BpaConsolidadoBean>();
-		listaBpaConsolidadoAuxiliar.addAll(this.listaDeBpaConsolidado);
-		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
-		
-		for (BpaConsolidadoBean consolidado : listaBpaConsolidadoAuxiliar) {
-			consolidado.setPrdCnes(CamposBpaConsolidado.PRD_CNES.preencheCaracteresRestantes(consolidado.getPrdCnes()));
-			consolidado.setPrdCmp(CamposBpaConsolidado.PRD_CMP.preencheCaracteresRestantes(consolidado.getPrdCmp()));
-			consolidado.setPrdCbo(CamposBpaConsolidado.PRD_CBO.preencheCaracteresRestantes(consolidado.getPrdCbo()));
-			consolidado.setPrdFlh(CamposBpaConsolidado.PRD_FLH.preencheCaracteresRestantes(consolidado.getPrdFlh()));
-			consolidado.setPrdSeq(CamposBpaConsolidado.PRD_SEQ.preencheCaracteresRestantes(consolidado.getPrdSeq()));
-			consolidado.setPrdPa(CamposBpaConsolidado.PRD_PA.preencheCaracteresRestantes(consolidado.getPrdPa()));
-			consolidado.setPrdIdade(CamposBpaConsolidado.PRD_IDADE.preencheCaracteresRestantes(consolidado.getPrdIdade()));
-			consolidado.setPrdQt(CamposBpaConsolidado.PRD_QT.preencheCaracteresRestantes(consolidado.getPrdQt()));
-			this.listaDeBpaConsolidado.add(consolidado);
-		}		
+        if ((listaDeBpaConsolidado!=null) && (listaDeBpaConsolidado.size()>0)) {
+            List<BpaConsolidadoBean> listaBpaConsolidadoAuxiliar = new ArrayList<BpaConsolidadoBean>();
+            listaBpaConsolidadoAuxiliar.addAll(this.listaDeBpaConsolidado);
+            this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
+
+            for (BpaConsolidadoBean consolidado : listaBpaConsolidadoAuxiliar) {
+                consolidado.setPrdCnes(CamposBpaConsolidado.PRD_CNES.preencheCaracteresRestantes(consolidado.getPrdCnes()));
+                consolidado.setPrdCmp(CamposBpaConsolidado.PRD_CMP.preencheCaracteresRestantes(consolidado.getPrdCmp()));
+                consolidado.setPrdCbo(CamposBpaConsolidado.PRD_CBO.preencheCaracteresRestantes(consolidado.getPrdCbo()));
+                consolidado.setPrdFlh(CamposBpaConsolidado.PRD_FLH.preencheCaracteresRestantes(consolidado.getPrdFlh()));
+                consolidado.setPrdSeq(CamposBpaConsolidado.PRD_SEQ.preencheCaracteresRestantes(consolidado.getPrdSeq()));
+                consolidado.setPrdPa(CamposBpaConsolidado.PRD_PA.preencheCaracteresRestantes(consolidado.getPrdPa()));
+                consolidado.setPrdIdade(CamposBpaConsolidado.PRD_IDADE.preencheCaracteresRestantes(consolidado.getPrdIdade()));
+                consolidado.setPrdQt(CamposBpaConsolidado.PRD_QT.preencheCaracteresRestantes(consolidado.getPrdQt()));
+                this.listaDeBpaConsolidado.add(consolidado);
+            }
+        }
 	}
 	
 	private void adicionarLinhasBpaConsolidado() {
@@ -324,25 +327,25 @@ public class BpaController {
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
-				
-		List<String> listaCnsDosMedicos = retornaUnicamenteCnsParaBpaIndividualizado();
-		for (String cnsMedico : listaCnsDosMedicos) {
-			Integer quantidadeRegistrosPorFolha = 0;
-			Integer numeroFolhaBpaIndividualizado = 1;
-			for(int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
-				if(this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedico)) {
-					if(quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO) { 
-						this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
-						quantidadeRegistrosPorFolha++;
-					}
-					else {
-						numeroFolhaBpaIndividualizado++;
-						this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
-						quantidadeRegistrosPorFolha = 1;
-					}
-				}
-			}
-		}
+		if ((listaDeBpaConsolidado!=null) && (listaDeBpaConsolidado.size()>0)) {
+            List<String> listaCnsDosMedicos = retornaUnicamenteCnsParaBpaIndividualizado();
+            for (String cnsMedico : listaCnsDosMedicos) {
+                Integer quantidadeRegistrosPorFolha = 0;
+                Integer numeroFolhaBpaIndividualizado = 1;
+                for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
+                    if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedico)) {
+                        if (quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO) {
+                            this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
+                            quantidadeRegistrosPorFolha++;
+                        } else {
+                            numeroFolhaBpaIndividualizado++;
+                            this.listaDeBpaIndividualizado.get(i).setPrdFlh(numeroFolhaBpaIndividualizado.toString());
+                            quantidadeRegistrosPorFolha = 1;
+                        }
+                    }
+                }
+            }
+        }
 	}
 	
 	private List<String> retornaUnicamenteCnsParaBpaIndividualizado() {
@@ -355,69 +358,72 @@ public class BpaController {
 	}
 	
 	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
-		String cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdCnsmed();
-		String numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdFlh();
-		Integer numeroLinha = 0;
-		for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
-			if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedicoAuxiliador)
-					&& this.listaDeBpaIndividualizado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
-				numeroLinha++;
-				this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
-			}
-			else {
-				cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdCnsmed();
-				numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdFlh();
-				numeroLinha = 1;
-				this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
-			}
-		}
+        if ((listaDeBpaIndividualizado!=null) && (listaDeBpaIndividualizado.size()>0)) {
+            String cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdCnsmed();
+            String numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdFlh();
+            Integer numeroLinha = 0;
+            for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
+                if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedicoAuxiliador)
+                        && this.listaDeBpaIndividualizado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
+                    numeroLinha++;
+                    this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
+                } else {
+                    cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdCnsmed();
+                    numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(i).getPrdFlh();
+                    numeroLinha = 1;
+                    this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
+                }
+            }
+        }
 	}
 	
 	public void adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido() throws ProjetoException {
-		List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
-		listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
-		
-		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
-		
-		for (BpaIndividualizadoBean individualizado : listaBpaIndividualizadoAuxiliar) {
-			individualizado.setPrdCnes(CamposBpaIndividualizados.PRD_CNES.preencheCaracteresRestantes(individualizado.getPrdCnes()));
-			individualizado.setPrdCmp(CamposBpaIndividualizados.PRD_CMP.preencheCaracteresRestantes(individualizado.getPrdCmp()));
-			individualizado.setPrdCnsmed(CamposBpaIndividualizados.PRD_CNSMED.preencheCaracteresRestantes(individualizado.getPrdCnsmed()));
-			individualizado.setPrdCbo(CamposBpaIndividualizados.PRD_CBO.preencheCaracteresRestantes(individualizado.getPrdCbo()));
-			individualizado.setPrdDtaten(CamposBpaIndividualizados.PRD_DTATEN.preencheCaracteresRestantes(individualizado.getPrdDtaten()));
-			individualizado.setPrdFlh(CamposBpaIndividualizados.PRD_FLH.preencheCaracteresRestantes(individualizado.getPrdFlh()));
-			individualizado.setPrdSeq(CamposBpaIndividualizados.PRD_SEQ.preencheCaracteresRestantes(individualizado.getPrdSeq()));
-			individualizado.setPrdPa(CamposBpaIndividualizados.PRD_PA.preencheCaracteresRestantes(individualizado.getPrdPa()));
-			individualizado.setPrdCnspac(CamposBpaIndividualizados.PRD_CNSPAC.preencheCaracteresRestantes(individualizado.getPrdCnspac()));
-			individualizado.setPrdSexo(CamposBpaIndividualizados.PRD_SEXO.preencheCaracteresRestantes(individualizado.getPrdSexo()));
-			individualizado.setPrdIbge(CamposBpaIndividualizados.PRD_IBGE.preencheCaracteresRestantes(individualizado.getPrdIbge()));
-			individualizado.setPrdCid(CamposBpaIndividualizados.PRD_CID.preencheCaracteresRestantes(individualizado.getPrdCid()));
-			individualizado.setPrdIdade(CamposBpaIndividualizados.PRD_IDADE.preencheCaracteresRestantes(individualizado.getPrdIdade()));
-			individualizado.setPrdQt(CamposBpaIndividualizados.PRD_QT.preencheCaracteresRestantes(individualizado.getPrdQt()));
-			individualizado.setPrdCaten(CamposBpaIndividualizados.PRD_CATEN.preencheCaracteresRestantes(individualizado.getPrdCaten()));
-			individualizado.setPrdNaut(CamposBpaIndividualizados.PRD_NAUT.preencheCaracteresRestantes(individualizado.getPrdNaut()));
-			individualizado.setPrdNmpac(CamposBpaIndividualizados.PRD_NMPAC.preencheCaracteresRestantes(individualizado.getPrdNmpac()));
-			individualizado.setPrdDtnasc(CamposBpaIndividualizados.PRD_DTNASC.preencheCaracteresRestantes(individualizado.getPrdDtnasc()));
-			individualizado.setPrdRaca(CamposBpaIndividualizados.PRD_RACA.preencheCaracteresRestantes(individualizado.getPrdRaca()));
-			individualizado.setPrdEtnia(CamposBpaIndividualizados.PRD_ETNIA.preencheCaracteresRestantes(individualizado.getPrdEtnia()));
-			individualizado.setPrdNac(CamposBpaIndividualizados.PRD_NAC.preencheCaracteresRestantes(individualizado.getPrdNac()));
-			individualizado.setPrdSrv(CamposBpaIndividualizados.PRD_SRV.preencheCaracteresRestantes(individualizado.getPrdSrv()));
-			individualizado.setPrdClf(CamposBpaIndividualizados.PRD_CLF.preencheCaracteresRestantes(individualizado.getPrdClf()));
-			individualizado.setPrdEquipeSeq(CamposBpaIndividualizados.PRD_EQUIPE_SEQ.preencheCaracteresRestantes(individualizado.getPrdEquipeSeq()));
-			individualizado.setPrdEquipeArea(CamposBpaIndividualizados.PRD_EQUIPE_AREA.preencheCaracteresRestantes(individualizado.getPrdEquipeArea()));
-			individualizado.setPrdCnpj(CamposBpaIndividualizados.PRD_CNPJ.preencheCaracteresRestantes(individualizado.getPrdCnpj()));
-			individualizado.setPrdCepPcnte(CamposBpaIndividualizados.PRD_CEP_PCNTE.preencheCaracteresRestantes(individualizado.getPrdCepPcnte()));
-			individualizado.setPrdLogradPcnte(CamposBpaIndividualizados.PRD_LOGRAD_PCNTE.preencheCaracteresRestantes(individualizado.getPrdLogradPcnte()));
-			individualizado.setPrdEndPcnte(CamposBpaIndividualizados.PRD_END_PCNTE.preencheCaracteresRestantes(individualizado.getPrdEndPcnte()));
-			individualizado.setPrdComplPcnte(CamposBpaIndividualizados.PRD_COMPL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdComplPcnte()));
-			individualizado.setPrdNumPcnte(CamposBpaIndividualizados.PRD_NUM_PCNTE.preencheCaracteresRestantes(individualizado.getPrdNumPcnte()));
-			individualizado.setPrdBairroPcnte(CamposBpaIndividualizados.PRD_BAIRRO_PCNTE.preencheCaracteresRestantes(individualizado.getPrdBairroPcnte()));
-			individualizado.setPrdDDtelPcnte(CamposBpaIndividualizados.PRD_DDTEL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdDDtelPcnte()));
-			individualizado.setPrdEmailPcnte(CamposBpaIndividualizados.PRD_EMAIL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdEmailPcnte()));
-			individualizado.setPrdIne(validaCompetenciaParaPreencherINE(individualizado.getPrdIne(), individualizado.getPrdCmp()));
-			
-			this.listaDeBpaIndividualizado.add(individualizado);
-		}		
+        if ((listaDeBpaIndividualizado!=null) && (listaDeBpaIndividualizado.size()>0)) {
+            List<BpaIndividualizadoBean> listaBpaIndividualizadoAuxiliar = new ArrayList<BpaIndividualizadoBean>();
+            listaBpaIndividualizadoAuxiliar.addAll(this.listaDeBpaIndividualizado);
+
+            this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
+
+            for (BpaIndividualizadoBean individualizado : listaBpaIndividualizadoAuxiliar) {
+                individualizado.setPrdCnes(CamposBpaIndividualizados.PRD_CNES.preencheCaracteresRestantes(individualizado.getPrdCnes()));
+                individualizado.setPrdCmp(CamposBpaIndividualizados.PRD_CMP.preencheCaracteresRestantes(individualizado.getPrdCmp()));
+                individualizado.setPrdCnsmed(CamposBpaIndividualizados.PRD_CNSMED.preencheCaracteresRestantes(individualizado.getPrdCnsmed()));
+                individualizado.setPrdCbo(CamposBpaIndividualizados.PRD_CBO.preencheCaracteresRestantes(individualizado.getPrdCbo()));
+                individualizado.setPrdDtaten(CamposBpaIndividualizados.PRD_DTATEN.preencheCaracteresRestantes(individualizado.getPrdDtaten()));
+                individualizado.setPrdFlh(CamposBpaIndividualizados.PRD_FLH.preencheCaracteresRestantes(individualizado.getPrdFlh()));
+                individualizado.setPrdSeq(CamposBpaIndividualizados.PRD_SEQ.preencheCaracteresRestantes(individualizado.getPrdSeq()));
+                individualizado.setPrdPa(CamposBpaIndividualizados.PRD_PA.preencheCaracteresRestantes(individualizado.getPrdPa()));
+                individualizado.setPrdCnspac(CamposBpaIndividualizados.PRD_CNSPAC.preencheCaracteresRestantes(individualizado.getPrdCnspac()));
+                individualizado.setPrdSexo(CamposBpaIndividualizados.PRD_SEXO.preencheCaracteresRestantes(individualizado.getPrdSexo()));
+                individualizado.setPrdIbge(CamposBpaIndividualizados.PRD_IBGE.preencheCaracteresRestantes(individualizado.getPrdIbge()));
+                individualizado.setPrdCid(CamposBpaIndividualizados.PRD_CID.preencheCaracteresRestantes(individualizado.getPrdCid()));
+                individualizado.setPrdIdade(CamposBpaIndividualizados.PRD_IDADE.preencheCaracteresRestantes(individualizado.getPrdIdade()));
+                individualizado.setPrdQt(CamposBpaIndividualizados.PRD_QT.preencheCaracteresRestantes(individualizado.getPrdQt()));
+                individualizado.setPrdCaten(CamposBpaIndividualizados.PRD_CATEN.preencheCaracteresRestantes(individualizado.getPrdCaten()));
+                individualizado.setPrdNaut(CamposBpaIndividualizados.PRD_NAUT.preencheCaracteresRestantes(individualizado.getPrdNaut()));
+                individualizado.setPrdNmpac(CamposBpaIndividualizados.PRD_NMPAC.preencheCaracteresRestantes(individualizado.getPrdNmpac()));
+                individualizado.setPrdDtnasc(CamposBpaIndividualizados.PRD_DTNASC.preencheCaracteresRestantes(individualizado.getPrdDtnasc()));
+                individualizado.setPrdRaca(CamposBpaIndividualizados.PRD_RACA.preencheCaracteresRestantes(individualizado.getPrdRaca()));
+                individualizado.setPrdEtnia(CamposBpaIndividualizados.PRD_ETNIA.preencheCaracteresRestantes(individualizado.getPrdEtnia()));
+                individualizado.setPrdNac(CamposBpaIndividualizados.PRD_NAC.preencheCaracteresRestantes(individualizado.getPrdNac()));
+                individualizado.setPrdSrv(CamposBpaIndividualizados.PRD_SRV.preencheCaracteresRestantes(individualizado.getPrdSrv()));
+                individualizado.setPrdClf(CamposBpaIndividualizados.PRD_CLF.preencheCaracteresRestantes(individualizado.getPrdClf()));
+                individualizado.setPrdEquipeSeq(CamposBpaIndividualizados.PRD_EQUIPE_SEQ.preencheCaracteresRestantes(individualizado.getPrdEquipeSeq()));
+                individualizado.setPrdEquipeArea(CamposBpaIndividualizados.PRD_EQUIPE_AREA.preencheCaracteresRestantes(individualizado.getPrdEquipeArea()));
+                individualizado.setPrdCnpj(CamposBpaIndividualizados.PRD_CNPJ.preencheCaracteresRestantes(individualizado.getPrdCnpj()));
+                individualizado.setPrdCepPcnte(CamposBpaIndividualizados.PRD_CEP_PCNTE.preencheCaracteresRestantes(individualizado.getPrdCepPcnte()));
+                individualizado.setPrdLogradPcnte(CamposBpaIndividualizados.PRD_LOGRAD_PCNTE.preencheCaracteresRestantes(individualizado.getPrdLogradPcnte()));
+                individualizado.setPrdEndPcnte(CamposBpaIndividualizados.PRD_END_PCNTE.preencheCaracteresRestantes(individualizado.getPrdEndPcnte()));
+                individualizado.setPrdComplPcnte(CamposBpaIndividualizados.PRD_COMPL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdComplPcnte()));
+                individualizado.setPrdNumPcnte(CamposBpaIndividualizados.PRD_NUM_PCNTE.preencheCaracteresRestantes(individualizado.getPrdNumPcnte()));
+                individualizado.setPrdBairroPcnte(CamposBpaIndividualizados.PRD_BAIRRO_PCNTE.preencheCaracteresRestantes(individualizado.getPrdBairroPcnte()));
+                individualizado.setPrdDDtelPcnte(CamposBpaIndividualizados.PRD_DDTEL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdDDtelPcnte()));
+                individualizado.setPrdEmailPcnte(CamposBpaIndividualizados.PRD_EMAIL_PCNTE.preencheCaracteresRestantes(individualizado.getPrdEmailPcnte()));
+                individualizado.setPrdIne(validaCompetenciaParaPreencherINE(individualizado.getPrdIne(), individualizado.getPrdCmp()));
+
+                this.listaDeBpaIndividualizado.add(individualizado);
+            }
+        }
 		
 	}
 	

@@ -59,10 +59,11 @@ public class BpaIndividualizadoDAO {
 				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
 				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
+				" join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
 				" cross join hosp.empresa emp\n" +
 				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where a1.situacao ='A' \n" +
+				" where sa.atendimento_realizado is true \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
 				" and pm.competencia_atual = ? \n" +
@@ -183,7 +184,7 @@ public class BpaIndividualizadoDAO {
     }
 
 	public List<String> listarCompetencias() throws ProjetoException {
-		String sql = "select distinct pm.competencia_inicial from sigtap.procedimento_mensal pm ";
+		String sql = "select distinct pm.competencia_atual from sigtap.procedimento_mensal pm ";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
         try {
@@ -191,7 +192,7 @@ public class BpaIndividualizadoDAO {
         	PreparedStatement ps = con.prepareStatement(sql);          
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-            	String competencia = rs.getString("competencia_inicial");
+            	String competencia = rs.getString("competencia_atual");
             	listaCompetencias.add(competencia);
             }
         } catch (SQLException ex2) {
