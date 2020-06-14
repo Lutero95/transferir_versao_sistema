@@ -164,7 +164,7 @@ public class ProcedimentoController implements Serializable {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
-    public void getEditProcedimento() throws ProjetoException {
+    public void getEditProcedimento() throws ProjetoException, SQLException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -172,10 +172,6 @@ public class ProcedimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.proc = procedimentoDao.listarProcedimentoPorId(id);
-           // proc.setListaCid(procedimentoDao.listarCid(id));
-        //   proc.setListaCbo(procedimentoDao.listarCbo(id));
-         //   RecursoDAO rDao = new RecursoDAO();
-          //  proc.setListaRecurso(rDao.listaRecursosPorProcedimento(id));
             listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual();
             listaMesesIhAnosDoHistorico();
         } else {
@@ -194,13 +190,13 @@ public class ProcedimentoController implements Serializable {
         recurso = new RecursoBean();
     }
 
-    public void listaMesesIhAnosDoHistorico() {
+    public void listaMesesIhAnosDoHistorico() throws ProjetoException, SQLException {
         this.listaFiltroMesIhAno = procedimentoDao.listaMesesIhAnosDoHistorico();
     }
 
     public void listaDadosDoProcedimentoSelecionadoPorMesIhAnoAtual() {
         try {
-            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), VALOR_ZERO, VALOR_ZERO);
+            this.procedimentoMensal = procedimentoDao.buscaDadosProcedimentoMensal(proc.getCodProc(), procedimentoDao.retornaMaiorAnoCargaSigtap(), procedimentoDao.retornaMaiorMêsNoUltimoAnoCargaSigtap());
             exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
         } catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
@@ -381,7 +377,7 @@ public class ProcedimentoController implements Serializable {
         if(this.listaProcedimentos.isEmpty())
             JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
         else {
-            if (!verificaSeHouveCargaDoSigtapEsteMes()) {
+            if (!verificaSeHouveCargaDoSigtapEsteMes( -1,  -1)) {
 
                 FuncionarioBean user_session = obterUsuarioDaSessao();
 
@@ -398,7 +394,7 @@ public class ProcedimentoController implements Serializable {
 
                 try {
                     procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO,
-                            listaGrupoDoArquivo, listaSubgrupoDoArquivo, user_session.getId());
+                            listaGrupoDoArquivo, listaSubgrupoDoArquivo,listaFormaOrganizacaoDoArquivo,  user_session.getId(), 1, 1);
                     JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
                 }catch(Exception sqle) {
                     JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
@@ -411,12 +407,12 @@ public class ProcedimentoController implements Serializable {
         }
     }
 
-    private Boolean verificaSeHouveCargaDoSigtapEsteMes() {
+    private Boolean verificaSeHouveCargaDoSigtapEsteMes(Integer mes, Integer ano) {
         try {
-            Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes();
+            Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes(mes, ano);
             if(houveCargaEsteMes) {
                 fecharDialogAvisoCargaSigtap();
-                JSFUtil.adicionarMensagemAdvertencia("O sistema está atualizado, uma carga já foi executada este mês", "");
+                JSFUtil.adicionarMensagemAdvertencia("Os Dados do SIGTAP já estão atualizados para a competência "+String.format("%02d", mes)+"/"+ano+".", "");
                 return houveCargaEsteMes;
             }
         } catch (Exception e) {
@@ -711,7 +707,10 @@ public class ProcedimentoController implements Serializable {
         if(this.listaProcedimentos.isEmpty())
             JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
         else {
-            if (!verificaSeHouveCargaDoSigtapEsteMes()) {
+            String anoMesCompetencia = recuperaCompetenciaCarga(dadosDosArquivos);
+            int ano = Integer.parseInt(anoMesCompetencia.substring(0,4));
+            int mes = Integer.parseInt((anoMesCompetencia.substring(4,6)));
+            if (!verificaSeHouveCargaDoSigtapEsteMes(mes, ano)) {
 
                 transformaDadosDosArquivosTBEmListasDeObjetos(dadosDosArquivos);
                 transformaDadosDosArquivosRLEmListasDeObjetos(dadosDosArquivos);
@@ -723,7 +722,7 @@ public class ProcedimentoController implements Serializable {
                         JSFUtil.adicionarMensagemErro("Erro não há dados válidos neste arquivo", "");
                     else {
                         procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO,
-                                listaGrupoDoArquivo, listaSubgrupoDoArquivo, user_session.getId());
+                                listaGrupoDoArquivo, listaSubgrupoDoArquivo,listaFormaOrganizacaoDoArquivo, user_session.getId(), mes, ano);
                         JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
                     }
                 }catch(Exception sqle) {
@@ -815,6 +814,20 @@ public class ProcedimentoController implements Serializable {
                 }
             }
         }
+    }
+
+    private String recuperaCompetenciaCarga(HashMap<String, List<String>> dadosDosArquivos) {
+        ProcedimentoType procedimento = new ProcedimentoType();
+        for (String chave : dadosDosArquivos.keySet()) {
+            if (chave.equals(DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.getSigla())) {
+                List<String> linhasDocumentoProcedimentos = dadosDosArquivos.get(chave);
+                for (String linha : linhasDocumentoProcedimentos) {
+                    procedimento = (ProcedimentoType) DocumentosTBImportacaoSigtap.TB_PROCEDIMENTO.retornarObjectoDaString(linha);
+                    break;
+                }
+            }
+        }
+        return procedimento.getCompetenciaValidade();
     }
 
     private void transformaDadosDosArquivosRLEmListasDeObjetos(HashMap<String, List<String>> dadosDosArquivos) {

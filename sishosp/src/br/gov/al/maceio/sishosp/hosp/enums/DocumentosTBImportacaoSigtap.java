@@ -120,12 +120,12 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 			idadeMaxima.setQuantidadeLimite(Integer.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 278, 282)));
 			procedimento.setIdadeMinimaPermitida(idadeMinima);
 			procedimento.setIdadeMaximaPermitida(idadeMaxima);
-			
-			Long valorSA = Long.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 292, 302));
+
+			Double valorSA = Double.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 292, 302))/100;
 			procedimento.setValorSA(BigDecimal.valueOf(valorSA));
-			Long valorSH = Long.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 282, 292));
+			Double valorSH = Double.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 282, 292))/100;
 			procedimento.setValorSH(BigDecimal.valueOf(valorSH));
-			Long valorSP = Long.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 302, 312));
+			Double valorSP = Double.valueOf(retornaCampoFormatadoParaTabela(linhaDocumento, 302, 312))/100;
 			procedimento.setValorSP(BigDecimal.valueOf(valorSP));
 			
 			TipoFinanciamentoType tipoFinanciamento = new TipoFinanciamentoType();
@@ -178,9 +178,9 @@ public enum DocumentosTBImportacaoSigtap implements IDocumentosTBSigtap{
 	TB_SUBGRUPO("tb_sub_grupo.txt"){
 		public Object retornarObjectoDaString(String linhaDocumento) {
 			SubgrupoType subgrupo = new SubgrupoType();
-			subgrupo.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 0, 2));
+			subgrupo.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 2, 4));
 			GrupoType grupo = new GrupoType();
-			grupo.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 2, 4));
+			grupo.setCodigo(retornaCampoFormatadoParaTabela(linhaDocumento, 0, 2));
 			subgrupo.setNome(retornaCampoFormatadoParaTabela(linhaDocumento, 4, 104).trim());
 			subgrupo.setGrupo(grupo);
 			return subgrupo;

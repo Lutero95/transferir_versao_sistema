@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.comum.exception;
 
 //import java.io.PrintWriter;
 //import java.io.StringWriter;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 import javax.faces.FacesException;
@@ -44,7 +45,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
         final Iterator iterator = getUnhandledExceptionQueuedEvents().iterator();
         while (iterator.hasNext()) {
-            ExceptionQueuedEvent event = (ExceptionQueuedEvent) iterator.next();
+                ExceptionQueuedEvent event = (ExceptionQueuedEvent) iterator.next();
             ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
 
             // Recupera a exceção do contexto
@@ -54,17 +55,17 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
             try {
 
 //                // Aqui você poderia por exemploinstanciar as classes StringWriter e PrintWriter
-//                StringWriter stringWriter = new StringWriter();
-//                // PrintWriter printWriter = new PrintWriter(stringWriter);
-//                // exception.printStackTrace(printWriter);
+                StringWriter stringWriter = new StringWriter();
+                // PrintWriter printWriter = new PrintWriter(stringWriter);
+                // exception.printStackTrace(printWriter);
 //                // Por fim você pode converter a pilha de exceções em uma String
-//                String message = stringWriter.toString();
+                String message = stringWriter.toString();
 //
 //                // Aqui você poderia enviar um email com a StackTrace
 //                // em anexo para a equipe de desenvolvimento
 //
 //                // e depois imprimir a stacktrace no log
-//                exception.printStackTrace();
+                exception.printStackTrace();
 
                 // Coloca uma mensagem de exceção no mapa da request
                 requestMap.put("exceptionMessage", exception.getMessage());

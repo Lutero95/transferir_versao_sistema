@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1.subgrupo.SubgrupoType;
 
 
@@ -50,6 +51,7 @@ public class FormaOrganizacaoType {
     protected String nome;
     @XmlElement(name = "Subgrupo")
     protected SubgrupoType subgrupo;
+    protected HistoricoSigtapBean historicoSigtap;
 
     /**
      * Obt�m o valor da propriedade codigo.
@@ -123,4 +125,11 @@ public class FormaOrganizacaoType {
         this.subgrupo = value;
     }
 
+    public HistoricoSigtapBean getHistoricoSigtap() {
+        return historicoSigtap;
+    }
+
+    public void setHistoricoSigtap(HistoricoSigtapBean historicoSigtap) {
+        this.historicoSigtap = historicoSigtap;
+    }
 }

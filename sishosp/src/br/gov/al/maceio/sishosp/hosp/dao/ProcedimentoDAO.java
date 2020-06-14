@@ -635,25 +635,7 @@ public class ProcedimentoDAO {
         return listaCidExistente;
     }
 
-    public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaFormasOrganizacaoExistentes(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaFormaOrganizacaoExistente = new ArrayList();
-        String sql = "SELECT fo.id, fo.codigo FROM sigtap.forma_de_organizacao fo ";
-        try {
-            ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                PropriedadeDeProcedimentoMensalExistenteDTO formaOrganizacaoExistente = new PropriedadeDeProcedimentoMensalExistenteDTO();
-                formaOrganizacaoExistente.setId(rs.getInt("id"));
-                formaOrganizacaoExistente.setCodigo(rs.getString("codigo"));
-                listaFormaOrganizacaoExistente.add(formaOrganizacaoExistente);
-            }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
-        return listaFormaOrganizacaoExistente;
-    }
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes(Connection con) throws ProjetoException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
@@ -699,16 +681,18 @@ public class ProcedimentoDAO {
 
     public void executaRotinaNovaCargaSigtap(List<GravarProcedimentoMensalDTO> listaProcedimentoMensalDTO,
                                              List<GrupoType>  listaGrupos,
-                                             List<SubgrupoType>  listaSubGrupos,Long idFuncionario) throws Exception {
+                                             List<SubgrupoType>  listaSubGrupos,  List<FormaOrganizacaoType>  listaFormasOrganizacao, Long idFuncionario, Integer mes, Integer ano) throws Exception {
 
         String codigoProcedimentoQueDeuErro = "";
         try {
             this.con = ConnectionFactory.getConnection();
 
-            Integer idHistoricoConsumoSigtap = gravarHistoricoConsumoSigtap(idFuncionario, con);
-            desatualizaStatusHistoricoConsumoSigtapAnterior(idHistoricoConsumoSigtap, con);
-            inserirListaDeGrupos(listaGrupos, con);
-            inserirListaDeSubGrupos(listaSubGrupos, con);
+            desatualizaStatusHistoricoConsumoSigtapAnterior( mes, ano, con);
+            Integer idHistoricoConsumoSigtap = gravarHistoricoConsumoSigtap(idFuncionario,mes, ano, con);
+
+            inserirListaDeGrupos(listaGrupos, idHistoricoConsumoSigtap, con);
+            inserirListaDeSubGrupos(listaSubGrupos, idHistoricoConsumoSigtap, con);
+            inserirFormaOrganizacao(listaFormasOrganizacao,idHistoricoConsumoSigtap,  con);
             for (GravarProcedimentoMensalDTO procedimentoMensalDTO : listaProcedimentoMensalDTO) {
                 codigoProcedimentoQueDeuErro = procedimentoMensalDTO.getProcedimentoMensal().getCodigo();
 
@@ -797,14 +781,11 @@ public class ProcedimentoDAO {
     }
 
 
-    public void inserirListaDeGrupos(List<GrupoType> listaGrupos, Connection conexao)
+    public void inserirListaDeGrupos(List<GrupoType> listaGrupos,Integer idHistoricoSigtap,  Connection conexao)
             throws ProjetoException, SQLException {
         try {
             for (GrupoType grupo : listaGrupos) {
-                Integer idgrupoExistente = retornaIdGrupoCasoExista(grupo.getCodigo(),
-                        conexao);
-                if (VerificadorUtil.verificarSeObjetoNuloOuZero(idgrupoExistente))
-                    inserirGrupoMensal(grupo, conexao);
+                    inserirGrupoMensal(grupo,idHistoricoSigtap,  conexao);
             }
 
 
@@ -817,14 +798,11 @@ public class ProcedimentoDAO {
         }
     }
 
-    public void inserirListaDeSubGrupos(List<SubgrupoType> listaSubGrupos, Connection conexao)
+    public void inserirListaDeSubGrupos(List<SubgrupoType> listaSubGrupos,Integer idHistoricoSigtap,  Connection conexao)
             throws ProjetoException, SQLException {
         try {
             for (SubgrupoType subGrupo : listaSubGrupos) {
-                Integer idSubGrupoExistente = retornaIdSubgrupoCasoExista(subGrupo.getCodigo(),
-                        conexao);
-                if (VerificadorUtil.verificarSeObjetoNuloOuZero(idSubGrupoExistente))
-                    inserirSubgrupoMensal(subGrupo, conexao);
+                    inserirSubgrupoMensal(subGrupo,idHistoricoSigtap,  conexao);
             }
 
 
@@ -837,8 +815,7 @@ public class ProcedimentoDAO {
         }
     }
 
-
-    public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao)
+   public void inserirRenases(List<RENASESType> listaRenases, Integer idProcedimentoMensal, Connection conexao)
             throws ProjetoException, SQLException {
         List<PropriedadeDeProcedimentoMensalExistenteDTO> todosRenasesExistentes = buscaRenasesExistentes(conexao);
         String sqlRenases = "INSERT INTO sigtap.renases (codigo, nome) "
@@ -894,28 +871,28 @@ public class ProcedimentoDAO {
         }
     }
 
-    public Integer inserirFormaOrganizacao(FormaOrganizacaoType formaOrganizacao, Connection conexao) throws ProjetoException, SQLException {
-        if(VerificadorUtil.verificarSeObjetoNulo(formaOrganizacao))
-            return null;
-
-        String sql = "INSERT INTO sigtap.forma_de_organizacao " +
-                "(codigo, nome, id_subgrupo) " +
-                "VALUES(?, ?, ?) returning id ";
-
-        Integer idFormaOrganizacao = retornaIdFormaOrganizacaoCasoExista(formaOrganizacao.getCodigo(), conexao);
+    public void  inserirFormaOrganizacao(List<FormaOrganizacaoType> listaFormaOrganizacao,Integer idHistoricoSigtap, Connection conexao) throws ProjetoException, SQLException {
+        String sql = "INSERT INTO sigtap.forma_de_organizacao_mensal " +
+                "(codigo, nome, id_subgrupo, id_grupo, id_historico_consumo_sigtap) " +
+                "VALUES(?, ?, ? , ?, ?) returning id ";
         try {
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(idFormaOrganizacao)) {
-                PreparedStatement ps = conexao.prepareStatement(sql);
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            for(FormaOrganizacaoType formaOrganizacao : listaFormaOrganizacao) {
                 ps.setString(1, formaOrganizacao.getCodigo());
                 ps.setString(2, formaOrganizacao.getNome());
                 Integer idSubgrupoExistente = retornaIdSubgrupoCasoExista(formaOrganizacao.getSubgrupo().getCodigo(),
-                        conexao);
-                    ps.setInt(3, idSubgrupoExistente);
+                        idHistoricoSigtap,conexao);
+                ps.setInt(3, idSubgrupoExistente);
+                Integer idGrupoExistente = retornaIdGrupoCasoExista(formaOrganizacao.getSubgrupo().getGrupo().getCodigo(),
+                        idHistoricoSigtap, conexao);
+                ps.setInt(4, idGrupoExistente);
+
+                ps.setInt(5, idHistoricoSigtap);
 
                 ResultSet rs = ps.executeQuery();
-                if (rs.next())
-                    idFormaOrganizacao = rs.getInt("id");
+
             }
+
         } catch (SQLException sqle) {
             conexao.rollback();
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -923,34 +900,17 @@ public class ProcedimentoDAO {
             conexao.rollback();
             throw new ProjetoException(ex, this.getClass().getName());
         }
-        return idFormaOrganizacao;
+
     }
 
-    public Integer retornaIdFormaOrganizacaoCasoExista(String codigo, Connection conexao)
-            throws SQLException, ProjetoException {
-        String sql = "select id from sigtap.forma_de_organizacao where codigo = ?";
-        Integer idFormaOrganizacao = 0;
-        try {
-            PreparedStatement ps = conexao.prepareStatement(sql);
-
-            ps.setString(1, codigo);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-                idFormaOrganizacao = rs.getInt("id");
-        } catch (Exception ex) {
-            conexao.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return idFormaOrganizacao;
-    }
-
-    private Integer retornaIdSubgrupoCasoExista(String codigo, Connection conexao) throws SQLException, ProjetoException {
-        String sql = "select id from sigtap.subgrupo where codigo = ?";
+   public Integer retornaIdSubgrupoCasoExista(String codigo,Integer idHistoricoSigtap, Connection conexao) throws SQLException, ProjetoException {
+        String sql = "select id from sigtap.subgrupo_mensal where codigo = ? and id_historico_consumo_sigtap=?";
         Integer idSubgrupo = 0;
         try {
             PreparedStatement ps = conexao.prepareStatement(sql);
 
             ps.setString(1, codigo);
+            ps.setInt(2, idHistoricoSigtap);
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idSubgrupo = rs.getInt("id");
@@ -964,10 +924,31 @@ public class ProcedimentoDAO {
         return idSubgrupo;
     }
 
-    public Integer inserirSubgrupoMensal(SubgrupoType subgrupo, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO sigtap.subgrupo " +
-                "(codigo, nome, id_grupo) " +
-                "VALUES(?, ?, (select grupo.id from sigtap.grupo where grupo.codigo=?)) returning id ";
+    public Integer retornaIdGrupoCasoExista(String codigo, Integer idHistoricoSigtap,  Connection conexao) throws SQLException, ProjetoException {
+        String sql = "select id from sigtap.grupo_mensal where codigo = ? and id_historico_consumo_sigtap=?";
+        Integer idGrupo = 0;
+        try {
+            PreparedStatement ps = conexao.prepareStatement(sql);
+
+            ps.setString(1, codigo);
+            ps.setInt(2, idHistoricoSigtap);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+                idGrupo = rs.getInt("id");
+        }catch (SQLException sqle) {
+            conexao.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexao.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return idGrupo;
+    }
+
+    public Integer inserirSubgrupoMensal(SubgrupoType subgrupo,Integer idHistoricoSigtap, Connection conexao) throws ProjetoException, SQLException {
+        String sql = "INSERT INTO sigtap.subgrupo_mensal " +
+                "(codigo, nome, id_grupo, id_historico_consumo_sigtap) " +
+                "VALUES(?, ?, (select grupo_mensal.id from sigtap.grupo_mensal where grupo_mensal.codigo=? and grupo_mensal.id_historico_consumo_sigtap=? ), ?) returning id ";
         Integer idSubgrupo = null;
         try {
             PreparedStatement ps = conexao.prepareStatement(sql);
@@ -975,6 +956,8 @@ public class ProcedimentoDAO {
             ps.setString(1, subgrupo.getCodigo());
             ps.setString(2, subgrupo.getNome());
             ps.setString(3, subgrupo.getGrupo().getCodigo());
+            ps.setInt(4, idHistoricoSigtap);
+            ps.setInt(5, idHistoricoSigtap);
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idSubgrupo = rs.getInt("id");
@@ -988,34 +971,16 @@ public class ProcedimentoDAO {
         return idSubgrupo;
     }
 
-    private Integer retornaIdGrupoCasoExista(String codigo, Connection conexao) throws SQLException, ProjetoException {
-        String sql = "select id from sigtap.grupo where codigo = ?";
-        Integer idGrupo = 0;
-        try {
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            ps.setString(1, codigo);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-                idGrupo = rs.getInt("id");
-        } catch (SQLException sqle) {
-            conexao.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            conexao.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return idGrupo;
-    }
-
-    public Integer inserirGrupoMensal(GrupoType grupo, Connection conexao) throws ProjetoException, SQLException {
-        String sql = "INSERT INTO sigtap.grupo " +
-                "(codigo, nome) " +
-                "VALUES(?, ?) returning id ";
+    public Integer inserirGrupoMensal(GrupoType grupo,Integer idHistoricoSigtap, Connection conexao) throws ProjetoException, SQLException {
+        String sql = "INSERT INTO sigtap.grupo_mensal " +
+                "(codigo, nome, id_historico_consumo_sigtap) " +
+                "VALUES(?, ?, ?) returning id ";
         Integer idGrupo = null;
         try {
             PreparedStatement ps = conexao.prepareStatement(sql);
             ps.setString(1, grupo.getCodigo());
             ps.setString(2, grupo.getNome());
+            ps.setInt(3, idHistoricoSigtap);
             ResultSet rs = ps.executeQuery();
             if(rs.next())
                 idGrupo = rs.getInt("id");
@@ -1034,9 +999,9 @@ public class ProcedimentoDAO {
         String sql = "INSERT INTO sigtap.procedimento_mensal " +
                 "(id_procedimento, codigo_procedimento, nome, competencia_atual, complexidade, id_tipo_financiamento, "+
                 "sexo, quantidade_maxima, idade_minima, unidade_idade_minima, idade_maxima, unidade_idade_maxima, "+
-                "servico_ambulatorial, servico_hospitalar, servico_profisional, id_forma_de_organizacao, "+
+                "servico_ambulatorial, servico_hospitalar, servico_profisional, "+
                 "descricao, id_historico_consumo_sigtap) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
 
         Integer idProcedimentoMensal = null;
         try {
@@ -1092,16 +1057,8 @@ public class ProcedimentoDAO {
             stm.setDouble(13, procedimentoMensalDTO.getProcedimentoMensal().getValorSA().doubleValue());
             stm.setDouble(14, procedimentoMensalDTO.getProcedimentoMensal().getValorSH().doubleValue());
             stm.setDouble(15, procedimentoMensalDTO.getProcedimentoMensal().getValorSP().doubleValue());
-
-
-            Integer idFormaOrganizacao = inserirFormaOrganizacao(procedimentoMensalDTO.getProcedimentoMensal().getFormaOrganizacao(), conexao);
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(idFormaOrganizacao))
-                stm.setNull(16, Types.NULL);
-            else
-                stm.setInt(16, idFormaOrganizacao);
-
-            stm.setString(17, procedimentoMensalDTO.getProcedimentoMensal().getDescricao());
-            stm.setInt(18, idHistoricoConsumoSigtap);
+            stm.setString(16, procedimentoMensalDTO.getProcedimentoMensal().getDescricao());
+            stm.setInt(17, idHistoricoConsumoSigtap);
             ResultSet rs = stm.executeQuery();
             if(rs.next())
                 idProcedimentoMensal = rs.getInt("id");
@@ -1467,19 +1424,18 @@ public class ProcedimentoDAO {
     }
 
 
-    public Integer gravarHistoricoConsumoSigtap(Long idFuncionario, Connection conexao)
+    public Integer gravarHistoricoConsumoSigtap(Long idFuncionario,Integer mes, Integer ano,  Connection conexao)
             throws ProjetoException, SQLException {
         Integer idHistorico = null;
         String sql = "INSERT INTO sigtap.historico_consumo_sigtap " +
                 "(mes, ano, data_registro, id_funcionario) " +
                 "VALUES(?, ?, current_timestamp, ?) returning id;";
 
-        Integer mesAtual = buscaMesAtual(conexao);
-        Integer anoAtual = buscaAnoAtual(conexao);
+
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, mesAtual);
-            stm.setInt(2, anoAtual);
+            stm.setInt(1, mes);
+            stm.setInt(2, ano);
             stm.setLong(3, idFuncionario);
             ResultSet rs = stm.executeQuery();
             if(rs.next())
@@ -1492,13 +1448,14 @@ public class ProcedimentoDAO {
         return idHistorico;
     }
 
-    public void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer idHistorico, Connection conexao)
+    public void desatualizaStatusHistoricoConsumoSigtapAnterior(Integer mes, Integer ano,  Connection conexao)
             throws ProjetoException, SQLException {
 
-        String sql = "UPDATE sigtap.historico_consumo_sigtap SET status='D' WHERE id != ?; ";
+        String sql = "UPDATE sigtap.historico_consumo_sigtap SET status='D' WHERE status='A' and mes=? and ano=? ";
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setLong(1, idHistorico);
+            stm.setInt(1, mes);
+            stm.setInt(2, ano);
             stm.executeUpdate();
         } catch (Exception ex) {
             conexao.rollback();
@@ -1507,48 +1464,26 @@ public class ProcedimentoDAO {
         }
     }
 
-    public Integer buscaMesAtual(Connection conexao) throws ProjetoException, SQLException {
-        Integer mesAtual = null;
-        String sql = "select extract(month from current_date) as mes_atual";
-        try {
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-                mesAtual = rs.getInt("mes_atual");
-        } catch (Exception ex) {
-            conexao.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
-        return mesAtual;
-    }
 
-    public Integer buscaAnoAtual(Connection conexao) throws ProjetoException, SQLException {
-        Integer anoAtual = null;
-        String sql = "select extract(year from current_date) as ano_atual";
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-                anoAtual = rs.getInt("ano_atual");
-        } catch (Exception ex) {
-            con.rollback();
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
-        return anoAtual;
-    }
+    public Boolean houveCargaDoSigtapEsteMes(Integer mes, Integer ano) throws ProjetoException {
 
-    public Boolean houveCargaDoSigtapEsteMes() throws ProjetoException {
-
-        String sql = "select exists (select id from sigtap.historico_consumo_sigtap " +
-                "where id = (select id from sigtap.historico_consumo_sigtap hcs " +
-                "order by id desc limit 1) and (status = 'A' and mes = EXTRACT(MONTH FROM current_date) "+
-                "and ano = EXTRACT(YEAR FROM current_date))) houve_carga_este_mes";
+        String sql = "select\n" +
+                "\texists (\n" +
+                "\tselect\n" +
+                "\t\tid\n" +
+                "\tfrom\n" +
+                "\t\tsigtap.historico_consumo_sigtap\n" +
+                "\twhere\n" +
+                "\tstatus = 'A'\n" +
+                "\t\tand mes = ?\n" +
+                "\t\tand ano = ?\n" +
+                "\t\t) houve_carga_este_mes";
         Boolean houveCargaDoSigtap = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, mes);
+            stm.setInt(2, ano);
             ResultSet rs = stm.executeQuery();
 
             if (rs.next())
@@ -1608,10 +1543,7 @@ public class ProcedimentoDAO {
         ProcedimentoType procedimento = new ProcedimentoType();
         try {
             this.con = ConnectionFactory.getConnection();
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(ano) && VerificadorUtil.verificarSeObjetoNuloOuZero(mes)) {
-                ano = buscaAnoAtual(con);
-                mes = buscaMesAtual(con);
-            }
+
             procedimento = buscaProcedimentoMensal(ano, mes, codigoProcedimento, con);
 
             CIDsVinculados cidVinculados = new CIDsVinculados();
@@ -1661,7 +1593,7 @@ public class ProcedimentoDAO {
             throws SQLException, ProjetoException {
 
         ProcedimentoType procedimentoMensal = new ProcedimentoType();
-        String sql = "select\n" +
+        String sql = "select distinct \n" +
                 "\tpm.nome,\n" +
                 "\tpm.descricao,\n" +
                 "\tpm.codigo_procedimento,\n" +
@@ -1688,25 +1620,20 @@ public class ProcedimentoDAO {
                 "\tsigtap.procedimento_mensal pm\n" +
                 "join sigtap.historico_consumo_sigtap hc on\n" +
                 "\thc.id = pm.id_historico_consumo_sigtap left join  sigtap.tipo_financiamento tp on\n" +
-                "\ttp.id = pm.id_tipo_financiamento left join sigtap.forma_de_organizacao fo on\n" +
-                "\tfo.id = pm.id_forma_de_organizacao\n" +
-                "join sigtap.subgrupo  sm on\n" +
-                "\tsm.id = fo.id_subgrupo \n" +
-                "join sigtap.grupo  gm on\n" +
-                "\tgm.id = sm.id_grupo \n" +
+                "\ttp.id = pm.id_tipo_financiamento left join sigtap.forma_de_organizacao_mensal fo on\n" +
+                "\tfo.id_historico_consumo_sigtap = hc.id \n" +
+                "join sigtap.subgrupo_mensal  sm on\n" +
+                "\tsm.id = fo.id_subgrupo and sm.id_historico_consumo_sigtap = hc.id \n" +
+                "join sigtap.grupo_mensal  gm on\n" +
+                "\tgm.id = sm.id_grupo and gm.id = fo.id_grupo and gm.id_historico_consumo_sigtap = hc.id\n" +
                 "where\n" +
-                "\thc.id = (\n" +
-                "\tselect\n" +
-                "\t\tid\n" +
-                "\tfrom\n" +
-                "\t\tsigtap.historico_consumo_sigtap hcs\n" +
-                "\twhere\n" +
-                "\t\thcs.ano = ?\n" +
-                "\t\tand hcs.mes = ?\n" +
-                "\torder by\n" +
-                "\t\tid desc\n" +
-                "\tlimit 1)\n" +
-                "\tand pm.codigo_procedimento = ?";
+                "\thc.ano=?\n" +
+                "\tand hc.mes=?\n" +
+                "\tand hc.status ='A'\n" +
+                "\tand pm.codigo_procedimento =?\n" +
+                "\tand gm.codigo =trim(substring(pm.codigo_procedimento,1,2))\n" +
+                "\tand sm.codigo =trim(substring(pm.codigo_procedimento,3,2)) \n" +
+                "\tand fo.codigo =trim(substring(pm.codigo_procedimento,5,2))";
 
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
@@ -1739,7 +1666,7 @@ public class ProcedimentoDAO {
 
 
                 IdadeLimiteType idadeMinimaPermitida = new IdadeLimiteType();
-                idadeMinimaPermitida.setQuantidadeLimite(rs.getInt("idade_minima"));
+                idadeMinimaPermitida.setQuantidadeLimite(rs.getInt("idade_minima")/12);
                /* String unidadeLimiteIdadeMinima = rs.getString("unidade_idade_minima");
                 if(unidadeLimiteIdadeMinima.equals(UnidadeLimiteType.MESES.name()))
                     idadeMinimaPermitida.setUnidadeLimite(UnidadeLimiteType.MESES);
@@ -1748,7 +1675,7 @@ public class ProcedimentoDAO {
                 procedimentoMensal.setIdadeMinimaPermitida(idadeMinimaPermitida);;
 
                 IdadeLimiteType idadeMaximaPermitida = new IdadeLimiteType();
-                idadeMaximaPermitida.setQuantidadeLimite(rs.getInt("idade_maxima"));
+                idadeMaximaPermitida.setQuantidadeLimite(rs.getInt("idade_maxima")/12);
                /* String unidadeLimiteIdadeMaxima = rs.getString("unidade_idade_maxima");
                 if(unidadeLimiteIdadeMaxima.equals(UnidadeLimiteType.MESES.name()))
                     idadeMaximaPermitida.setUnidadeLimite(UnidadeLimiteType.MESES);
@@ -2035,11 +1962,13 @@ public class ProcedimentoDAO {
         return listaRenases;
     }
 
-    public List<String> listaMesesIhAnosDoHistorico() {
+    public List<String> listaMesesIhAnosDoHistorico() throws ProjetoException, SQLException {
 
         List<String> listaMesIhAno = new ArrayList();
-        String sql = "select distinct concat (mes,' \\ ', ano) "
-                + "as mes_ano from sigtap.historico_consumo_sigtap hcs order by mes_ano desc";
+        String sql = "select distinct concat (lpad(trim(to_char(mes,'99')), 2, '0'),'/', ano) \n" +
+                "as mes_ano,\n" +
+                "concat (ano,'/',lpad(trim(to_char(mes,'99')), 2, '0')) as ano_mes\n" +
+                "from sigtap.historico_consumo_sigtap hcs order by ano_mes desc";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -2050,9 +1979,12 @@ public class ProcedimentoDAO {
                 String mesIhAno = rs.getString("mes_ano");
                 listaMesIhAno.add(mesIhAno);
             }
+        } catch (SQLException sqle) {
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
         }finally {
             try {
                 con.close();
@@ -2061,6 +1993,68 @@ public class ProcedimentoDAO {
             }
         }
         return listaMesIhAno;
+    }
+
+    public Integer retornaMaiorAnoCargaSigtap() throws ProjetoException, SQLException {
+
+        Integer ano = null;
+        String sql = "select max(ano) ano\n" +
+                "from sigtap.historico_consumo_sigtap hcs";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ano = rs.getInt("ano");
+            }
+        } catch (SQLException sqle) {
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return ano;
+    }
+
+    public Integer retornaMaiorMêsNoUltimoAnoCargaSigtap() throws SQLException, ProjetoException {
+
+        Integer mes = null;
+        String sql = "select max(hcs.mes) mes\n" +
+                "from sigtap.historico_consumo_sigtap hcs\n" +
+                "where hcs.ano = (select max(hcs2.ano) ano\n" +
+                "from sigtap.historico_consumo_sigtap hcs2)";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                mes = rs.getInt("mes");
+            }
+        } catch (SQLException sqle) {
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return mes;
     }
 
 

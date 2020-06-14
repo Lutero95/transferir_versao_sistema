@@ -133,7 +133,7 @@
 							</b:selectOneMenu>
 						</b:column>
 						<b:column span="2" class="label-position new-col3-2">
-							<p:commandButton
+							<p:commandButton process="@this" immediate="true"
 								action="#{ProcedimentoController.listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado()}"
 								update=":frmCadProc" icon="ui-icon-search"
 								style="margin-left: 20%; margin-top: 10%;" />
@@ -141,6 +141,29 @@
 					</b:row>
 					<h1 class="texto-titulo">Dados Gerais do Procedimento</h1>
 					<div>
+						<b:row>
+							<p:panelGrid columns="1" columnClasses="label-position"
+										 style="margin-left: 1%; width: 92%;">
+								<b:column>
+									<b:label value="Grupo:" severity="info" />
+									<b:inputText disabled="true"
+												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.grupo.nome}" />
+								</b:column>
+
+								<b:column>
+									<b:label value="Subgrupo:" severity="info" />
+									<b:inputText disabled="true"
+												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.nome}" />
+								</b:column>
+								<b:column>
+									<b:label value="Forma de Organização:" severity="info" />
+									<b:inputText disabled="true"
+												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.nome}" />
+								</b:column>
+
+							</p:panelGrid>
+
+						</b:row>
 						<b:row rendered="#{ProcedimentoController.tipo  == 2}">
 							<b:column span="11" class="label-position">
 								<b:label value="Descrição:" severity="info" />
@@ -151,7 +174,7 @@
 							<b:column span="11" class="label-position">
 								<b:label value="Competencia:" severity="info" />
 								<b:inputText disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.competenciaInicial}" />
+									value="#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(4)}/#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(0,4)}" />
 							</b:column>
 
 							<b:column span="11" class="label-position">
@@ -167,17 +190,19 @@
 									<b:inputText disabled="true"
 										value="#{ProcedimentoController.procedimentoMensal.tipoFinanciamento.nome}" />
 								</b:column>
-								<b:column>
-									<b:label value="Código Tipo de Financiamento:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.tipoFinanciamento.codigo}" />
-								</b:column>
+
 							</p:panelGrid>
 
 							<b:column span="11" class="label-position">
 								<b:label value="Sexo:" severity="info" />
-								<b:inputText disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.sexoPermitido}" />
+								<b:inputText disabled="true" value="MASCULINO"
+											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('M')}" />
+								<b:inputText disabled="true" value="FEMININO"
+											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('F')}" />
+								<b:inputText disabled="true" value="NÃO SE APLICA"
+											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('N')}" />
+								<b:inputText disabled="true" value="AMBOS"
+									rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('I')}" />
 							</b:column>
 
 							<b:column span="11" class="label-position">
@@ -193,29 +218,21 @@
 									<b:inputText type="number" disabled="true"
 										value="#{ProcedimentoController.procedimentoMensal.idadeMinimaPermitida.quantidadeLimite}" />
 								</b:column>
-								<b:column>
-									<b:label value="Unidade:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.idadeMinimaPermitida.unidadeLimite}" />
-								</b:column>
+
 
 								<b:column>
 									<b:label value="Idade Máxima:" severity="info" />
 									<b:inputText type="number" disabled="true"
 										value="#{ProcedimentoController.procedimentoMensal.idadeMaximaPermitida.quantidadeLimite}" />
 								</b:column>
-								<b:column>
-									<b:label value="Unidade:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.idadeMaximaPermitida.unidadeLimite}" />
-								</b:column>
+
 							</p:panelGrid>
 
 							<p:panelGrid columns="3" columnClasses="label-position"
 								style="margin-left: 1%; width: 92%;">
 								<b:column>
 									<b:label value="Serviço ambulatórial:" severity="info" />
-									<b:inputText type="number" disabled="true"
+									<b:inputText  disabled="true"
 										value="#{ProcedimentoController.procedimentoMensal.valorSA}" />
 								</b:column>
 								<b:column>
@@ -230,41 +247,7 @@
 								</b:column>
 							</p:panelGrid>
 
-							<p:panelGrid columns="2" columnClasses="label-position"
-								style="margin-left: 1%; width: 92%;">
-								<b:column>
-									<b:label value="Forma de Organização:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.nome}" />
-								</b:column>
-								<b:column>
-									<b:label value="Código Forma de Organização:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.codigo}" />
-								</b:column>
 
-								<b:column>
-									<b:label value="Subgrupo:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.nome}" />
-								</b:column>
-								<b:column>
-									<b:label value="Código Subgrupo:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.codigo}" />
-								</b:column>
-
-								<b:column>
-									<b:label value="Grupo:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.grupo.nome}" />
-								</b:column>
-								<b:column>
-									<b:label value="Código do Grupo:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.grupo.codigo}" />
-								</b:column>
-							</p:panelGrid>
 						</b:row>
 					</div>
 
