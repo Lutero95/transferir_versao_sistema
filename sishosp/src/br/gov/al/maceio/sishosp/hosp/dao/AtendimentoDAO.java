@@ -1121,9 +1121,10 @@ public class AtendimentoDAO {
 	
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
 
-		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo FROM hosp.atendimentos1 a1 "
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo, sa.descricao  situacaoatendimento FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ " left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento "
+				+ " left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento "
 				+ " left join hosp.programa  on programa.id_programa = a.codprograma "
 				+ " left join hosp.grupo g on g.id_grupo = a.codgrupo "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
@@ -1157,6 +1158,7 @@ public class AtendimentoDAO {
 				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
 				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				at.getSituacaoAtendimento().setDescricao(rs.getString("situacaoatendimento"));
 
 				lista.add(at);
 			}
