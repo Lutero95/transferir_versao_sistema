@@ -10,6 +10,7 @@
 
         <f:metadata>
             <f:viewAction action="#{LaudoController.getEditLaudo}"/>
+            <f:viewAction action="#{LaudoController.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -171,7 +172,7 @@
                                         itemLabel="#{theme.nomeProc}">
                                     <p:ajax event="itemSelect"
                                             listener="#{LaudoController.setaValidadeProcPrimLaudo(LaudoController.laudo.procedimentoPrimario.validade_laudo)}"
-                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
+                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>       
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusProcP1" icon="ui-icon-search"
@@ -369,6 +370,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
+                                                title="#{LaudoController.retornaTituloCidPrimarioSeHouverValidacaoSigtap()}"
                                                 itemLabel="#{theme.descCidAbrev}">
                                 </p:autoComplete>
 
@@ -779,7 +781,7 @@
                         </p:panelGrid>
 
                     </p:row>
-                    <p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
+                    <p:dataTable emptyMessage="Nenhum CID listado" rows="10"
                                  paginator="true" id="tabelacid1" style="width:500px"
                                  value="#{LaudoController.listaCids}" var="tab">
 

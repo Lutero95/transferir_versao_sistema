@@ -20,7 +20,10 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -41,8 +44,11 @@ public class LaudoController implements Serializable {
     private Boolean renderizarDataAutorizacao;
     private Integer idLaudoGerado = null;
     private BuscaLaudoDTO buscaLaudoDTO;
+    private UnidadeDAO unidadeDAO;
+    private ProcedimentoDAO procedimentoDAO;
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
+    private Boolean unidadeValidaDadosSigtap;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -52,6 +58,7 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
     private static final String CABECALHO_RENOVACAO = "Renovação de Laudo";
+    private static final String TITULO_CID_PRIMARIO = "Este campo está associado ao Procedimento Primário, selecione-o para buscar o CID 1";
 
     public LaudoController() {
         this.laudo = new LaudoBean();
@@ -64,7 +71,8 @@ public class LaudoController implements Serializable {
         buscaLaudoDTO.setTipoBusca("paciente");
         buscaLaudoDTO.setCampoBusca("");
         tipo = 0;
-
+        unidadeDAO = new UnidadeDAO();
+        procedimentoDAO = new ProcedimentoDAO();
     }
 
     public String redirectEdit() {
@@ -123,6 +131,12 @@ public class LaudoController implements Serializable {
     public void setaValidadeProcPrimLaudo(Integer validade) {
         laudo.setPeriodo(validade);
         calcularPeriodoLaudo();
+        limpaCid1();
+    }
+
+    private void limpaCid1() {
+        if(this.unidadeValidaDadosSigtap)
+            laudo.setCid1(null);
     }
 
     public void renderizarDadosDeAutorizacao() {
@@ -166,49 +180,97 @@ public class LaudoController implements Serializable {
     }
 
     public void gravarLaudo() throws ProjetoException {
-    	if(!existeLaudoComMesmosDados()) {
-			idLaudoGerado = null;
-			idLaudoGerado = lDao.cadastrarLaudo(laudo);
+        if(this.unidadeValidaDadosSigtap) {
+            validaCboProfissionalParaProcedimento();
+            validaCidParaProcedimento();
+            validaIdadePacienteParaProcedimento();
+        }
+        if(!existeLaudoComMesmosDados()) {
+            idLaudoGerado = null;
+            idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-			if (idLaudoGerado != null) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
-				JSFUtil.abrirDialog("dlgImprimir");
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-			}
+            if (idLaudoGerado != null) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+                JSFUtil.abrirDialog("dlgImprimir");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
         }
     }
-    
+
     public boolean existeLaudoComMesmosDados() {
-    	try {
-			if(lDao.existeLaudoComMesmosDados(laudo)) {
-				JSFUtil.adicionarMensagemErro
-				("Já existe laudo para este Paciente, com as mesmas condições digitadas!", "Erro");
-				return true;
-			}
-		} catch (ProjetoException e) {
-			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-			e.printStackTrace();
-		}
-    	return false;
+        try {
+            if(lDao.existeLaudoComMesmosDados(laudo)) {
+                JSFUtil.adicionarMensagemErro
+                        ("Já existe laudo para este Paciente, com as mesmas condições digitadas!", "Erro");
+                return true;
+            }
+        } catch (ProjetoException e) {
+            JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void alterarLaudo() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+            validaCboProfissionalParaProcedimento();
+            validaCidParaProcedimento();
+            validaIdadePacienteParaProcedimento();
+        }
+        //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
 
-      //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
+        boolean alterou = lDao.alterarLaudo(laudo);
 
-            boolean alterou = lDao.alterarLaudo(laudo);
-
-            if (alterou == true) {
-                JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
-                JSFUtil.fecharDialog("dlgcadlaudo");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-            }
-     //   }
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgcadlaudo");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+        }
+        //   }
     }
 
+    public void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+        this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+    }
+
+    public void validaCboProfissionalParaProcedimento() throws ProjetoException {
+        if (!procedimentoDAO.validaCboProfissionalParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+                laudo.getProfissionalLaudo().getId())) {
+            throw new ProjetoException("O profissional " + laudo.getProfissionalLaudo().getNome()
+                    + " não possui um CBO válido para o procedimento primário");
+        }
+    }
+
+    public void validaCidParaProcedimento() throws ProjetoException {
+        if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+                laudo.getCid1().getCid())) {
+            throw new ProjetoException("O CID '"+laudo.getCid1().getDescCid()+"' não é válido para o procedimento primário");
+        }
+
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid2().getCid())) {
+            if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+                    laudo.getCid2().getCid())) {
+                throw new ProjetoException("O CID "+laudo.getCid2().getDescCid()+" não é válido para o procedimento primário");
+            }
+        }
+
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid3().getCid())) {
+            if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+                    laudo.getCid3().getCid())) {
+                throw new ProjetoException("O CID "+laudo.getCid3().getDescCid()+" não é válido para o procedimento primário");
+            }
+        }
+    }
+
+    public void validaIdadePacienteParaProcedimento() throws ProjetoException {
+        if (!procedimentoDAO.validaIdadePacienteParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
+                laudo.getPaciente().getId_paciente())) {
+            throw new ProjetoException("A idade do paciente é inválida para o limite aceito para o procedimento primário");
+        }
+    }
 
     public Boolean verificarSeLaudoAssociadoPacienteTerapia() throws ProjetoException {
         if (!lDao.verificarSeLaudoAssociadoPacienteTerapia(laudo.getId())) {
@@ -279,12 +341,33 @@ public class LaudoController implements Serializable {
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
-        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query);
+        List<CidBean> result = new ArrayList<CidBean>();
+        if(this.unidadeValidaDadosSigtap) {
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
+                result = cDao.listarCidsAutoCompletePorProcedimento(query, this.laudo.getProcedimentoPrimario().getCodProc());
+        }
+        else
+            result = cDao.listarCidsAutoComplete(query);
         return result;
+
     }
 
     public void listarCids(String campoBusca) throws ProjetoException {
-        listaCids = cDao.listarCidsBusca(campoBusca);
+        if(this.unidadeValidaDadosSigtap) {
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
+                JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
+            else
+                listaCids = cDao.listarCidsBuscaPorProcedimento(campoBusca, this.laudo.getProcedimentoPrimario().getCodProc());
+        }
+        else
+            listaCids = cDao.listarCidsBusca(campoBusca);
+
+    }
+
+    public String retornaTituloCidPrimarioSeHouverValidacaoSigtap() {
+        if(this.unidadeValidaDadosSigtap)
+            return TITULO_CID_PRIMARIO;
+        return "";
     }
 
     public LaudoBean getLaudo() {

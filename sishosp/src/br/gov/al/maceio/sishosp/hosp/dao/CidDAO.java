@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
@@ -29,12 +31,12 @@ public class CidDAO {
 			// func.getNome();
 			ps.setString(1, cid.getCid().toUpperCase());
 			ps.setString(2, cid.getDescCid().toUpperCase());
-			
+
 			ps.execute();
 			con.commit();
 			retorno = true;
 		}
-		
+
 		catch ( SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		}
@@ -233,29 +235,26 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsBuscaPorProcedimentoAutoComplete(String descricao)
+	public List<CidBean> listarCidsAutoComplete(String descricao)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select c.cod, c.desccidabrev, c.cid from hosp.cid c "
-				//"left join hosp.proc_cid p on (p.id_cid = c.cod) "
-			//	+ " where c.cod = ? and desccid LIKE ? order by c.desccid";
 				+ " where 1=1  and desccidabrev ILIKE ? order by c.desccid";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-		//	stm.setInt(1, id_proc);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			stm.setString(1, "%" + descricao + "%");
 
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean c = new CidBean();
-				c.setIdCid(rs.getInt("cod"));
-				c.setDescCidAbrev(rs.getString("desccidabrev"));
-				c.setCid(rs.getString("cid"));
+				CidBean cid = new CidBean();
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				cid.setCid(rs.getString("cid"));
 
-				lista.add(c);
+				lista.add(cid);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -272,31 +271,70 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsBusca() throws ProjetoException {
+	public List<CidBean> listarCidsBuscaPorProcedimento(String descricao, String codigoProcedimento) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cod, c.desccid, c.cid from hosp.cid c  "
-//				+ " where c.cod = ? order by c.desccid";
-				+ " order by c.desccid";
+		String sql = "select cod, desccidabrev, cid " +
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
+				"where desccidabrev Ilike ? or cid Ilike ? " +
+				"and (pm.codigo_procedimento = ?)";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			//stm.setInt(1, id_proc);
-
+			stm.setString(1, "%" + descricao + "%");
+			stm.setString(2, "%" + descricao + "%");
+			stm.setString(3, codigoProcedimento);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean c = new CidBean();
-				c.setIdCid(rs.getInt("cod"));
-				c.setDescCid(rs.getString("desccid"));
-				c.setCid(rs.getString("cid"));
+				CidBean cid = new CidBean();
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				cid.setCid(rs.getString("cid"));
 
-				lista.add(c);
+				lista.add(cid);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
 			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return lista;
+	}
+
+	public List<CidBean> listarCidsAutoCompletePorProcedimento(String descricao, String codigoProcedimento)
+			throws ProjetoException {
+		List<CidBean> lista = new ArrayList<>();
+		String sql = "select cid.cod, cid.desccidabrev, cid.cid "+
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
+				"where 1=1  and desccidabrev ILIKE ? and (pm.codigo_procedimento = ?) order by desccid";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			stm.setString(2, codigoProcedimento);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				CidBean cid = new CidBean();
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				cid.setCid(rs.getString("cid"));
+
+				lista.add(cid);
+			}
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();

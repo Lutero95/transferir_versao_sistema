@@ -911,5 +911,32 @@ public class UnidadeDAO {
         }
         return resultado;
     }
+    
+    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+
+        Boolean resultado = true;
+        String sql = "select valida_dados_laudo_sigtap from hosp.parametro where codunidade = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getUnidade().getId());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                resultado = rs.getBoolean("valida_dados_laudo_sigtap");
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
+    }
 
 }
