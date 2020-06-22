@@ -367,7 +367,7 @@
                                 <p:autoComplete value="#{LaudoController.laudo.cid1}" size="25"
                                                 required="true" requiredMessage="Informe o CID Primário"
                                                 converter="conCid" id="descCid1" class="select-agendaEquipe4"
-                                                completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
+                                                completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimentoCid1}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 title="#{LaudoController.retornaTituloCidPrimarioSeHouverValidacaoSigtap()}"
@@ -391,7 +391,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descCidAbrev}">
+                                                itemLabel="#{theme.descCidAbrev}">                                               
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusCid2" icon="ui-icon-search"
@@ -773,11 +773,10 @@
                                          placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
 
                             <p:commandButton
-                                    action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
+                                    action="#{LaudoController.listarCids1(LaudoController.buscaLaudoDTO.campoBusca)}"
                                     update="tabelacid1 msgPagina" icon="ui-icon-search"
-                                    style="margin-left: 10px;"/>
-
-
+                                    style="margin-left: 10px;">
+                            </p:commandButton>
                         </p:panelGrid>
 
                     </p:row>
@@ -844,9 +843,8 @@
                             <p:commandButton
                                     action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                     update="tabelacid2 msgPagina" icon="ui-icon-search"
-                                    style="margin-left: 10px;"/>
-
-
+                                    style="margin-left: 10px;">      
+                            </p:commandButton>
                         </p:panelGrid>
 
                     </p:row>
@@ -911,7 +909,8 @@
                         <p:commandButton
                                 action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                 update="tabelacid3 msgPagina" icon="ui-icon-search"
-                                style="margin-left: 10px;"/>
+                                style="margin-left: 10px;">
+                        </p:commandButton>         
 
 
                     </p:panelGrid>

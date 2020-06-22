@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
@@ -12,6 +14,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
 public class CidDAO {
@@ -213,12 +216,7 @@ public class CidDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean c = new CidBean();
-				c.setIdCid(rs.getInt("cod"));
-				c.setDescCidAbrev(rs.getString("desccidabrev"));
-				c.setCid(rs.getString("cid"));
-
-				lista.add(c);
+				mapearResultSet(lista, rs);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -249,12 +247,7 @@ public class CidDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean cid = new CidBean();
-				cid.setIdCid(rs.getInt("cod"));
-				cid.setDescCidAbrev(rs.getString("desccidabrev"));
-				cid.setCid(rs.getString("cid"));
-
-				lista.add(cid);
+				mapearResultSet(lista, rs);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -271,29 +264,38 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsBuscaPorProcedimento(String descricao, String codigoProcedimento) throws ProjetoException {
+	public List<CidBean> listarCidsBuscaPorProcedimento(String descricao, String codigoProcedimento, Date dataSolicitacao) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cod, desccidabrev, cid " +
-				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
-				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
-				"where desccidabrev Ilike ? or cid Ilike ? " +
-				"and (pm.codigo_procedimento = ?)";
+		String sql = "select distinct cod, desccidabrev, cid " + 
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " + 
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+				"join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
+				"where (desccidabrev Ilike ? or cid Ilike ? ) " + 
+				"and (pm.codigo_procedimento = ?) ";
 
+		String filtroDataSolicitacao = "and (hc.ano = ? and hc.mes = ?) ";
+		
+		if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao))
+			sql += filtroDataSolicitacao;
+		
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao + "%");
 			stm.setString(2, "%" + descricao + "%");
 			stm.setString(3, codigoProcedimento);
+			
+			if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao)) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(dataSolicitacao);
+				stm.setInt(4, calendar.get(Calendar.YEAR));
+				stm.setInt(5, calendar.get(Calendar.MONTH)+1);
+			}
+			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean cid = new CidBean();
-				cid.setIdCid(rs.getInt("cod"));
-				cid.setDescCidAbrev(rs.getString("desccidabrev"));
-				cid.setCid(rs.getString("cid"));
-
-				lista.add(cid);
+				mapearResultSet(lista, rs);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -310,28 +312,37 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsAutoCompletePorProcedimento(String descricao, String codigoProcedimento)
+	public List<CidBean> listarCidsAutoCompletePorProcedimento(String descricao, String codigoProcedimento, Date dataSolicitacao)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cid.cod, cid.desccidabrev, cid.cid "+
-				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
-				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
-				"where 1=1  and desccidabrev ILIKE ? and (pm.codigo_procedimento = ?) order by desccid";
+		String sql = "select distinct cid.cod, cid.desccidabrev, cid.cid " + 
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " + 
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+				"join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap "+
+				"where 1=1  and desccidabrev ILIKE ? and (pm.codigo_procedimento = ?) ";
+		
+		String filtroDataSolicitacao = "and (hc.ano = ? and hc.mes = ?) ";
+		
+		if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao))
+			sql += filtroDataSolicitacao;
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
 			stm.setString(2, codigoProcedimento);
+			
+			if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao)) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(dataSolicitacao);
+				stm.setInt(3, calendar.get(Calendar.YEAR));
+				stm.setInt(4, calendar.get(Calendar.MONTH)+1);
+			}
+			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				CidBean cid = new CidBean();
-				cid.setIdCid(rs.getInt("cod"));
-				cid.setDescCidAbrev(rs.getString("desccidabrev"));
-				cid.setCid(rs.getString("cid"));
-
-				lista.add(cid);
+				mapearResultSet(lista, rs);
 			}
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
@@ -344,6 +355,15 @@ public class CidDAO {
 		}
 
 		return lista;
+	}
+	
+	private void mapearResultSet(List<CidBean> lista, ResultSet rs) throws SQLException {
+		CidBean cid = new CidBean();
+		cid.setIdCid(rs.getInt("cod"));
+		cid.setDescCidAbrev(rs.getString("desccidabrev"));
+		cid.setCid(rs.getString("cid"));
+
+		lista.add(cid);
 	}
 
 }

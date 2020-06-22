@@ -464,7 +464,7 @@ public class LaudoDAO {
         LaudoBean laudo = new LaudoBean();
 
         String sql = "select id_laudo,l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
-                + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
+                + " l.periodo, l.codprocedimento_primario, pr.codproc, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
                 + " l.codprocedimento_secundario4, ps4.nome as nome4, "
                 + " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,c1.desccidabrev as desccidabrev1,  l.cid2, c2.desccid as desccid2, c2.desccidabrev as desccidabrev2, "
@@ -502,6 +502,7 @@ public class LaudoDAO {
                 laudo.setVigenciaInicial(rs.getDate("datainicio"));
                 laudo.setVigenciaFinal(rs.getDate("datafinal"));
                 laudo.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                laudo.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
                 laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
                 laudo.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
                 laudo.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
@@ -558,7 +559,7 @@ public class LaudoDAO {
         LaudoBean laudo = new LaudoBean();
 
         String sql = "select l.codpaciente, p.nome, p.cns, p.cpf,p.cns,  l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
-                + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
+                + " l.periodo, l.codprocedimento_primario, pr.codproc, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
                 + " l.codprocedimento_secundario4, ps4.nome as nome4, "
                 + " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,  c1.desccidabrev desccidabrev1, l.cid2, c2.desccid as desccid2,  c2.desccidabrev desccidabrev2, "
@@ -590,6 +591,7 @@ public class LaudoDAO {
                 laudo.setAnoInicio(rs.getInt("ano_final"));
                 laudo.setPeriodo(rs.getInt("periodo"));
                 laudo.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                laudo.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
                 laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
                 laudo.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
                 laudo.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));

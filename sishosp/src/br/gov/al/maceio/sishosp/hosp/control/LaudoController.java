@@ -58,7 +58,7 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
     private static final String CABECALHO_RENOVACAO = "Renovação de Laudo";
-    private static final String TITULO_CID_PRIMARIO = "Este campo está associado ao Procedimento Primário, selecione-o para buscar o CID 1";
+    private static final String TITULO_CID_PRIMARIO = "Este campo é associado ao Procedimento Primário e Data de Solicitação, selecione-os para buscar o CID 1";
 
     public LaudoController() {
         this.laudo = new LaudoBean();
@@ -303,7 +303,6 @@ public class LaudoController implements Serializable {
             buscaLaudoDTO.setSituacao("T");
         }
 
-
         listaLaudo = lDao.listaLaudos(buscaLaudoDTO.getSituacao(), buscaLaudoDTO.getCampoBusca(), buscaLaudoDTO.getTipoBusca());
     }
 
@@ -343,25 +342,62 @@ public class LaudoController implements Serializable {
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
         List<CidBean> result = new ArrayList<CidBean>();
         if(this.unidadeValidaDadosSigtap) {
-            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
-                result = cDao.listarCidsAutoCompletePorProcedimento(query, this.laudo.getProcedimentoPrimario().getCodProc());
+			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
+				result = cDao.listarCidsAutoCompletePorProcedimento(query,
+						this.laudo.getProcedimentoPrimario().getCodProc(), null);
         }
         else
             result = cDao.listarCidsAutoComplete(query);
         return result;
 
     }
-
+    
     public void listarCids(String campoBusca) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
-                JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
-            else
-                listaCids = cDao.listarCidsBuscaPorProcedimento(campoBusca, this.laudo.getProcedimentoPrimario().getCodProc());
+			if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
+				JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
+			else
+				listaCids = cDao.listarCidsBuscaPorProcedimento(campoBusca,
+						this.laudo.getProcedimentoPrimario().getCodProc(), null);
         }
         else
             listaCids = cDao.listarCidsBusca(campoBusca);
+    }
+    
+    public List<CidBean> listaCidAutoCompletePorProcedimentoCid1(String query) throws ProjetoException {
+        List<CidBean> result = new ArrayList<CidBean>();
+        if(this.unidadeValidaDadosSigtap) {
+        	if(dataSolicitacaoEhValidaParaCidSelecionado()) {
+				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
+					result = cDao.listarCidsAutoCompletePorProcedimento
+					(query, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
+        	}
+        }
+        else
+            result = cDao.listarCidsAutoComplete(query);
+        return result;
+    }
 
+    public void listarCids1(String campoBusca) throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+        	if(dataSolicitacaoEhValidaParaCidSelecionado()) {
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
+					JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
+				else
+					listaCids = cDao.listarCidsBuscaPorProcedimento
+						(campoBusca,	this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
+        	}
+        }
+        else
+            listaCids = cDao.listarCidsBusca(campoBusca);
+    }
+    
+    private boolean dataSolicitacaoEhValidaParaCidSelecionado() {
+		if (VerificadorUtil.verificarSeObjetoNulo(this.laudo.getDataSolicitacao())) {
+			JSFUtil.adicionarMensagemErro("Informe antes a data de Solicitação", "Erro");
+			return false;
+		}
+    	return true;
     }
 
     public String retornaTituloCidPrimarioSeHouverValidacaoSigtap() {
