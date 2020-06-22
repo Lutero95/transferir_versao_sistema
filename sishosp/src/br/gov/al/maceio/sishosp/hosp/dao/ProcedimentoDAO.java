@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -2057,9 +2059,9 @@ public class ProcedimentoDAO {
         return mes;
     }
 
-    public boolean validaCboProfissionalParaProcedimento(Integer idProcedimento, Long idFuncionario) throws ProjetoException {
+    public boolean validaCboProfissionalParaProcedimento(Integer idProcedimento, Long idFuncionario, Date dataSolicitacao) throws ProjetoException {
 
-        String sql = "select exists (select f.descfuncionario, cbo.codigo from " +
+        String sql = "select exists (select distinct f.descfuncionario, cbo.codigo from " +
                 "acl.funcionarios f join hosp.cbo on f.codcbo = cbo.id " +
                 "join sigtap.cbo_procedimento_mensal cpm on cpm.id_cbo = cbo.id " +
                 "join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
@@ -2067,15 +2069,18 @@ public class ProcedimentoDAO {
                 "where pm.id_procedimento = " +
                 "	(select id_procedimento from sigtap.procedimento_mensal pm2 " +
                 "	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " +
-                "	where pm2.id_procedimento = ? and hc.status = 'A' order by pm2.id desc limit 1 ) "+
+                "	where pm2.id_procedimento = ? and hc.status = 'A' and (hc.ano = ? and hc.mes = ?) \t order by pm2.id desc limit 1 ) "+
                 "	and f.id_funcionario = ?) ehvalido";
         boolean ehValido = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1,  idProcedimento);
-            stm.setLong(2,  idFuncionario);
-
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataSolicitacao);
+            stm.setInt(2, calendar.get(Calendar.YEAR));
+            stm.setInt(3, calendar.get(Calendar.MONTH)+1);
+            stm.setLong(4,  idFuncionario);
             ResultSet rs = stm.executeQuery();
             if(rs.next())
                 ehValido = rs.getBoolean("ehvalido");
@@ -2092,7 +2097,7 @@ public class ProcedimentoDAO {
         return ehValido;
     }
 
-    public boolean validaCidParaProcedimento(Integer idProcedimento, String codigoCid) throws ProjetoException {
+    public boolean validaCidParaProcedimento(Integer idProcedimento, String codigoCid, Date dataSolicitacao) throws ProjetoException {
 
         String sql = "select exists (select c.cid from " +
                 "hosp.cid c join sigtap.cid_procedimento_mensal cpm on cpm.id_cid = c.cod " +
@@ -2101,14 +2106,18 @@ public class ProcedimentoDAO {
                 "where pm.id_procedimento = " +
                 "	(select id_procedimento from sigtap.procedimento_mensal pm2 " +
                 "	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " +
-                "	where pm2.id_procedimento = ? and hc.status = 'A' order by pm2.id desc limit 1 ) "+
+                "	where pm2.id_procedimento = ? and hc.status = 'A' and (hc.ano = ? and hc.mes = ?) \t order by pm2.id desc limit 1 ) "+
                 "and c.cid = ?) ehvalido";
         boolean ehValido = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1,  idProcedimento);
-            stm.setString(2, codigoCid);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataSolicitacao);
+            stm.setInt(2, calendar.get(Calendar.YEAR));
+            stm.setInt(3, calendar.get(Calendar.MONTH)+1);
+            stm.setString(4, codigoCid);
 
             ResultSet rs = stm.executeQuery();
             if(rs.next())
@@ -2126,25 +2135,31 @@ public class ProcedimentoDAO {
         return ehValido;
     }
 
-    public boolean validaIdadePacienteParaProcedimento(Integer idProcedimento, Integer idPaciente)
+    public boolean validaIdadePacienteParaProcedimento(Integer idProcedimento, Integer idPaciente, Date dataSolicitacao)
             throws ProjetoException {
 
         String sql = "select exists (select p.id_paciente " +
                 "from hosp.pacientes p where p.id_paciente = ?" +
                 "and extract (year from age(current_date, p.dtanascimento))  >=  (select pm.idade_minima from sigtap.procedimento_mensal pm " +
                 "	join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " +
-                "	where pm.id_procedimento = ? and hc.status = 'A' order by pm.id desc limit 1 ) " +
+                "	where pm.id_procedimento = ? and hc.status = 'A' and (hc.ano = ? and hc.mes = ?) \t order by pm.id desc limit 1 ) " +
                 "	" +
                 "and extract (year from age(current_date, p.dtanascimento))  <=  (select pm.idade_maxima from sigtap.procedimento_mensal pm " +
                 "	join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " +
-                "	where pm.id_procedimento = ? and hc.status = 'A' order by pm.id desc limit 1 )) ehvalido";
+                "	where pm.id_procedimento = ? and hc.status = 'A'  and (hc.ano = ? and hc.mes = ?) order by pm.id desc limit 1 )) ehvalido";
         boolean ehValido = false;
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, idPaciente);
             stm.setInt(2,  idProcedimento);
-            stm.setInt(3, idProcedimento);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataSolicitacao);
+            stm.setInt(3, calendar.get(Calendar.YEAR));
+            stm.setInt(4, calendar.get(Calendar.MONTH)+1);
+            stm.setInt(5, idProcedimento);
+            stm.setInt(6, calendar.get(Calendar.YEAR));
+            stm.setInt(7, calendar.get(Calendar.MONTH)+1);
             ResultSet rs = stm.executeQuery();
             if(rs.next())
                 ehValido = rs.getBoolean("ehvalido");

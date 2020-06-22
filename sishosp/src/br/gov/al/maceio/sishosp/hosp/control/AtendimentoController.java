@@ -355,7 +355,7 @@ public class AtendimentoController implements Serializable {
     public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
         for(AtendimentoBean atendimento: this.listAtendimentosEquipe) {
             if(!pDao.validaCboProfissionalParaProcedimento
-                    (atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId())){
+                    (atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())){
                 throw new ProjetoException("O profissional " +
                         atendimento.getFuncionario().getNome()+ " não possui um CBO válido para este procedimento");
             }

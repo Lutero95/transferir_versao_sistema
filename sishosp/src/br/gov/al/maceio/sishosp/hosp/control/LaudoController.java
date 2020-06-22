@@ -238,7 +238,7 @@ public class LaudoController implements Serializable {
 
     public void validaCboProfissionalParaProcedimento() throws ProjetoException {
         if (!procedimentoDAO.validaCboProfissionalParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
-                laudo.getProfissionalLaudo().getId())) {
+                laudo.getProfissionalLaudo().getId(), laudo.getDataSolicitacao())) {
             throw new ProjetoException("O profissional " + laudo.getProfissionalLaudo().getNome()
                     + " não possui um CBO válido para o procedimento primário");
         }
@@ -246,20 +246,20 @@ public class LaudoController implements Serializable {
 
     public void validaCidParaProcedimento() throws ProjetoException {
         if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
-                laudo.getCid1().getCid())) {
+                laudo.getCid1().getCid(), laudo.getDataSolicitacao())) {
             throw new ProjetoException("O CID '"+laudo.getCid1().getDescCid()+"' não é válido para o procedimento primário");
         }
 
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid2().getCid())) {
             if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
-                    laudo.getCid2().getCid())) {
+                    laudo.getCid2().getCid(), laudo.getDataSolicitacao())) {
                 throw new ProjetoException("O CID "+laudo.getCid2().getDescCid()+" não é válido para o procedimento primário");
             }
         }
 
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getCid3().getCid())) {
             if (!procedimentoDAO.validaCidParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
-                    laudo.getCid3().getCid())) {
+                    laudo.getCid3().getCid(), laudo.getDataSolicitacao())) {
                 throw new ProjetoException("O CID "+laudo.getCid3().getDescCid()+" não é válido para o procedimento primário");
             }
         }
@@ -267,7 +267,7 @@ public class LaudoController implements Serializable {
 
     public void validaIdadePacienteParaProcedimento() throws ProjetoException {
         if (!procedimentoDAO.validaIdadePacienteParaProcedimento(laudo.getProcedimentoPrimario().getIdProc(),
-                laudo.getPaciente().getId_paciente())) {
+                laudo.getPaciente().getId_paciente(), laudo.getDataSolicitacao())) {
             throw new ProjetoException("A idade do paciente é inválida para o limite aceito para o procedimento primário");
         }
     }

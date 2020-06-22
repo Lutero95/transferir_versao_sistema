@@ -9,6 +9,7 @@ public class AtendimentoBean implements Serializable {
 
     private Integer id;
     private Integer id1;
+    private Date dataAtendimento;
     private Date dataAtendimentoInicio;
     private Date dataAtendimentoFinal;
     private String turno;
@@ -250,4 +251,12 @@ public class AtendimentoBean implements Serializable {
 	public void setSituacaoAtendimentoAnterior(SituacaoAtendimentoBean situacaoAtendimentoAnterior) {
 		this.situacaoAtendimentoAnterior = situacaoAtendimentoAnterior;
 	}
+
+    public Date getDataAtendimento() {
+        return dataAtendimento;
+    }
+
+    public void setDataAtendimento(Date dataAtendimento) {
+        this.dataAtendimento = dataAtendimento;
+    }
 }

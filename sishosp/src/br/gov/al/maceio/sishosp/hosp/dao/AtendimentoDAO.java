@@ -975,9 +975,10 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
 
-		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
+		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
 				+ " f.codcbo, c.descricao, a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao, to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento "
 				+ " from hosp.atendimentos1 a1"
+				+ " join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento "
 				+ " left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
@@ -995,6 +996,7 @@ public class AtendimentoDAO {
 
 			while (rs.next()) {
 				AtendimentoBean atendimento = new AtendimentoBean();
+				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
 				atendimento.setId(rs.getInt("id_atendimento"));
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));

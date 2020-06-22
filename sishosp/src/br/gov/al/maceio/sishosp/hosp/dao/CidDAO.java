@@ -273,7 +273,7 @@ public class CidDAO {
 				"where (desccidabrev Ilike ? or cid Ilike ? ) " + 
 				"and (pm.codigo_procedimento = ?) ";
 
-		String filtroDataSolicitacao = "and (hc.ano = ? and hc.mes = ?) ";
+		String filtroDataSolicitacao = " and hc.status='A' and (hc.ano = ? and hc.mes = ?) ";
 		
 		if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao))
 			sql += filtroDataSolicitacao;
