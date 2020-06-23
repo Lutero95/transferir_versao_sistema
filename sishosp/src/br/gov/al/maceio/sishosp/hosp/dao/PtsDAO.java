@@ -40,10 +40,10 @@ public class PtsDAO {
                 retorno = true;
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -70,10 +70,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -119,10 +119,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -186,10 +186,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -207,19 +207,19 @@ public class PtsDAO {
                 "LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) " +
                 " left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario " +
                 " LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
-        	     " left join acl.funcionarios f2 on f2.id_funcionario = ? " ;
-              
+                " left join acl.funcionarios f2 on f2.id_funcionario = ? " ;
+
         sql  = sql + " WHERE p.id = ? ";
         if (carregaApenasAreaUsuarioLogado)
-        	sql = sql + " and pa.id_area= f2.codespecialidade";
+            sql = sql + " and pa.id_area= f2.codespecialidade";
 
         List<PtsArea> lista = new ArrayList<>();
 
         try {
             PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
-            
+
             //if (carregaApenasAreaUsuarioLogado)
-            	stmt.setLong(1, user_session.getId());
+            stmt.setLong(1, user_session.getId());
             stmt.setInt(2, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -240,12 +240,12 @@ public class PtsDAO {
                 lista.add(ptsArea);
             }
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
 
@@ -278,10 +278,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -357,10 +357,10 @@ public class PtsDAO {
             retorno = codPts;
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -408,7 +408,7 @@ public class PtsDAO {
             ps.setInt(17, user_session.getUnidade().getId());
             ps.setInt(18, pts.getId());
 
-           ps.executeUpdate();
+            ps.executeUpdate();
 
             excluirListaArea(pts.getId(), conexao);
             inserirAreaPts(pts, pts.getId(), conexao);
@@ -420,10 +420,10 @@ public class PtsDAO {
             conexao.commit();
             retorno = true;
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -456,12 +456,12 @@ public class PtsDAO {
             }
             retorno = true;
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -481,12 +481,12 @@ public class PtsDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -504,12 +504,12 @@ public class PtsDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -524,12 +524,12 @@ public class PtsDAO {
             stmt.executeUpdate();
             retorno = true;
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -544,12 +544,12 @@ public class PtsDAO {
             stmt.executeUpdate();
             retorno = true;
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -589,10 +589,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -657,7 +657,7 @@ public class PtsDAO {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
             sql = sql + " AND EXTRACT(year FROM p.data_vencimento) = ? ";
         }
-        
+
         if (!filtroTurno.equals("A")) {
             sql = sql + " AND pi.turno=? ";
         }
@@ -672,7 +672,7 @@ public class PtsDAO {
             stmt.setInt(1, codGrupo);
             stmt.setInt(2, codPrograma);
             int i = 3;
-            
+
 
             if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
                 stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
@@ -690,7 +690,7 @@ public class PtsDAO {
                 stmt.setInt(i, Integer.valueOf(campoBusca));
                 i++;
             }
-            
+
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
                 stmt.setInt(i, filtroMesVencimento);
                 i++;
@@ -700,7 +700,7 @@ public class PtsDAO {
                 stmt.setInt(i, filtroAnoVencimento);
                 i++;
             }
-            
+
             if (!filtroTurno.equals("A")) {
                 stmt.setString(i, filtroTurno);
                 i++;
@@ -729,10 +729,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -745,63 +745,63 @@ public class PtsDAO {
     public Pts carregarPtsDoPaciente(Integer codPrograma, Integer codGrupo, Integer codPaciente) throws ProjetoException {
 
 
-        String sql = "select\n" + 
-        		"	p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, \n" + 
-        		"p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, \n" + 
-        		"objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, \n" + 
-        		"novas_estrategias_tratamento, conduta_alta\n" + 
-        		"from\n" + 
-        		"	hosp.paciente_instituicao pi\n" + 
-        		"left join hosp.laudo on\n" + 
-        		"	(laudo.id_laudo = pi.codlaudo)\n" + 
-        		"left join hosp.programa pr on\n" + 
-        		"	(pr.id_programa = pi.codprograma)\n" + 
-        		"left join hosp.grupo g on\n" + 
-        		"	(g.id_grupo = pi.codgrupo)\n" + 
-        		"left join hosp.pacientes pa on\n" + 
-        		"	(pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) )\n" + 
-        		"left join hosp.pts p on\n" + 
-        		"	(p.cod_grupo = pi.codgrupo)\n" + 
-        		"	and (p.cod_programa = pi.codprograma)\n" + 
-        		"	and (p.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))\n" + 
-        		"	and coalesce(p.status, '')<> 'C'\n" + 
-        		"	and coalesce(p.status, '')<> 'I'\n" + 
-        		"	and coalesce(p.status, '')<> 'D'\n" + 
-        		"left join (\n" + 
-        		"	select\n" + 
-        		"		p2.id,\n" + 
-        		"		p2.cod_grupo,\n" + 
-        		"		p2.cod_programa,\n" + 
-        		"		p2.cod_paciente\n" + 
-        		"	from\n" + 
-        		"		hosp.pts p2\n" + 
-        		"	where\n" + 
-        		"		p2.id = (\n" + 
-        		"		select\n" + 
-        		"			max(id)\n" + 
-        		"		from\n" + 
-        		"			hosp.pts p3\n" + 
-        		"		where\n" + 
-        		"			(p3.cod_grupo = p2.cod_grupo)\n" + 
-        		"			and (p3.cod_programa = p2.cod_programa)\n" + 
-        		"			and (p3.cod_paciente = p2.cod_paciente)\n" + 
-        		"			and coalesce(p3.status, '')<> 'C'\n" + 
-        		"			and coalesce(p3.status, '')<> 'I' ) ) ptsmax on\n" + 
-        		"	ptsmax.cod_grupo = p.cod_grupo\n" + 
-        		"	and ptsmax.cod_programa = p.cod_programa\n" + 
-        		"	and ptsmax.cod_paciente = p.cod_paciente\n" + 
-        		"where\n" + 
-        		"	pi.status = 'A'\n" + 
-        		"	and pi.codgrupo = ?\n" + 
-        		"	and pi.codprograma = ?\n" + 
-        		"	and pa.id_paciente = ?\n" + 
-        		"	and\n" + 
-        		"	(case\n" + 
-        		"		when p.id is not null then p.id = ptsmax.id\n" + 
-        		"		else 1 = 1\n" + 
-        		"	end)\n" + 
-        		"order by\n" + 
-        		"	p.data";
+        String sql = "select\n" +
+                "	p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, \n" +
+                "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, \n" +
+                "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, \n" +
+                "novas_estrategias_tratamento, conduta_alta\n" +
+                "from\n" +
+                "	hosp.paciente_instituicao pi\n" +
+                "left join hosp.laudo on\n" +
+                "	(laudo.id_laudo = pi.codlaudo)\n" +
+                "left join hosp.programa pr on\n" +
+                "	(pr.id_programa = pi.codprograma)\n" +
+                "left join hosp.grupo g on\n" +
+                "	(g.id_grupo = pi.codgrupo)\n" +
+                "left join hosp.pacientes pa on\n" +
+                "	(pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) )\n" +
+                "left join hosp.pts p on\n" +
+                "	(p.cod_grupo = pi.codgrupo)\n" +
+                "	and (p.cod_programa = pi.codprograma)\n" +
+                "	and (p.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))\n" +
+                "	and coalesce(p.status, '')<> 'C'\n" +
+                "	and coalesce(p.status, '')<> 'I'\n" +
+                "	and coalesce(p.status, '')<> 'D'\n" +
+                "left join (\n" +
+                "	select\n" +
+                "		p2.id,\n" +
+                "		p2.cod_grupo,\n" +
+                "		p2.cod_programa,\n" +
+                "		p2.cod_paciente\n" +
+                "	from\n" +
+                "		hosp.pts p2\n" +
+                "	where\n" +
+                "		p2.id = (\n" +
+                "		select\n" +
+                "			max(id)\n" +
+                "		from\n" +
+                "			hosp.pts p3\n" +
+                "		where\n" +
+                "			(p3.cod_grupo = p2.cod_grupo)\n" +
+                "			and (p3.cod_programa = p2.cod_programa)\n" +
+                "			and (p3.cod_paciente = p2.cod_paciente)\n" +
+                "			and coalesce(p3.status, '')<> 'C'\n" +
+                "			and coalesce(p3.status, '')<> 'I' ) ) ptsmax on\n" +
+                "	ptsmax.cod_grupo = p.cod_grupo\n" +
+                "	and ptsmax.cod_programa = p.cod_programa\n" +
+                "	and ptsmax.cod_paciente = p.cod_paciente\n" +
+                "where\n" +
+                "	pi.status = 'A'\n" +
+                "	and pi.codgrupo = ?\n" +
+                "	and pi.codprograma = ?\n" +
+                "	and pa.id_paciente = ?\n" +
+                "	and\n" +
+                "	(case\n" +
+                "		when p.id is not null then p.id = ptsmax.id\n" +
+                "		else 1 = 1\n" +
+                "	end)\n" +
+                "order by\n" +
+                "	p.data";
 
         Pts pts = new Pts();
 
@@ -840,10 +840,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -873,10 +873,10 @@ public class PtsDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -906,10 +906,10 @@ public class PtsDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -937,10 +937,10 @@ public class PtsDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao1.close();
             } catch (Exception ex) {
@@ -948,6 +948,35 @@ public class PtsDAO {
             }
         }
         return retorno;
+    }
+    public Boolean verificarSeExistePtsComEspecialidadeSelecionada(Integer idEspecialidade)
+            throws ProjetoException {
+
+        Boolean existe = false;
+        String sql = "select exists (select pa.id from hosp.pts_area pa where pa.id_area = ?) existe_area";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setInt(1, idEspecialidade);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                existe = rs.getBoolean("existe_area");
+            }
+        }  catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        }finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
     }
 
 }
