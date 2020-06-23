@@ -61,6 +61,7 @@ public class FuncionarioBean implements Serializable {
     private List<Integer> listaIdSistemas;
     private List<Long> listaIdMenus;
     private List<Long> listaIdPermissoes;
+    private Boolean excecaoBloqueioHorario;
 
     private List<SecretariaBean> listaSecreFolha;
 
@@ -499,4 +500,14 @@ public class FuncionarioBean implements Serializable {
     public void setCodigoDaUnidadeSelecionada(Integer codigoDaUnidadeSelecionada) {
         this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
     }
+
+
+	public Boolean getExcecaoBloqueioHorario() {
+		return excecaoBloqueioHorario;
+	}
+
+
+	public void setExcecaoBloqueioHorario(Boolean excecaoBloqueioHorario) {
+		this.excecaoBloqueioHorario = excecaoBloqueioHorario;
+	}
 }

@@ -920,18 +920,16 @@ public class FuncionarioDAO {
 		Boolean retorno = false;
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, permite_liberacao, permite_encaixe) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?) returning id_funcionario;";
+				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 
 			ps.setString(1, profissional.getNome().toUpperCase());
-
 			ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
-
 			ps.setString(3, profissional.getSenha());
-
 			ps.setLong(4, user_session.getId());
 
 			if (profissional.getEspecialidade() != null) {
@@ -971,16 +969,12 @@ public class FuncionarioDAO {
 			}
 
 			ps.setString(9, profissional.getAtivo());
-
 			ps.setBoolean(10, profissional.getRealizaAtendimento());
-
 			ps.setLong(11, profissional.getPerfil().getId());
-
 			ps.setInt(12, profissional.getUnidade().getId());
-
 			ps.setBoolean(13, profissional.getRealizaLiberacoes());
-
 			ps.setBoolean(14, profissional.getRealizaEncaixes());
+			ps.setBoolean(15, profissional.getExcecaoBloqueioHorario());
 
 			ResultSet rs = ps.executeQuery();
 
@@ -995,7 +989,6 @@ public class FuncionarioDAO {
 
 				ps.setInt(1, profissional.getListaUnidades().get(i).getId());
 				ps.setInt(2, idProf);
-
 				ps.executeUpdate();
 			}
 
@@ -1425,7 +1418,7 @@ public class FuncionarioDAO {
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
-				+ " codunidade=?"
+				+ " codunidade=?, excecao_bloqueio_horario=? "
 				+ " where id_funcionario = ?";
 
 		try {
@@ -1473,20 +1466,14 @@ public class FuncionarioDAO {
 			}
 
 			stmt.setLong(7, profissional.getPerfil().getId());
-
 			stmt.setBoolean(8, profissional.getRealizaLiberacoes());
-
 			stmt.setBoolean(9, profissional.getRealizaAtendimento());
-
 			stmt.setBoolean(10, profissional.getRealizaEncaixes());
-
 			stmt.setString(11, profissional.getSenha());
-
 			stmt.setString(12, profissional.getCpf().replaceAll("[^0-9]", ""));
-
 			stmt.setLong(13, profissional.getUnidade().getId());
-			
-			stmt.setLong(14, profissional.getId());
+			stmt.setBoolean(14, profissional.getExcecaoBloqueioHorario());
+			stmt.setLong(15, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -1710,10 +1697,10 @@ public class FuncionarioDAO {
 	}
 
 	public FuncionarioBean buscarProfissionalPorId(Integer id) throws ProjetoException {
-		FuncionarioBean prof = null;
+		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario "
 				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
 		try {
@@ -1723,26 +1710,26 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
-				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
-				prof.getPerfil().setId(rs.getLong("id_perfil"));
-				prof.getUnidade().setId(rs.getInt("codunidade"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.setCpf(rs.getString("cpf"));
+				profissional.setSenha(rs.getString("senha"));
+				profissional.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissional.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				profissional.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				profissional.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				profissional.setCns(rs.getString("cns"));
+				profissional.setAtivo(rs.getString("ativo"));
+				profissional.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				profissional.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				profissional.getPerfil().setId(rs.getLong("id_perfil"));
+				profissional.getUnidade().setId(rs.getInt("codunidade"));
+				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				profissional.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 			}
-			return prof;
+			return profissional;
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -25,38 +25,6 @@
 					id="tbv">
 
 					<p:tab title="Dados Pessoais">
-
-						<b:row>
-							<b:column span="3">
-								<p:selectBooleanCheckbox label="Realiza Atendimento"
-									itemLabel="Realiza Atendimento" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaAtendimento}">
-									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv:outAtendimento"></p:ajax>
-								</p:selectBooleanCheckbox>
-							</b:column>
-
-							<b:column span="3">
-								<p:selectBooleanCheckbox label="Realizar Liberações"
-									itemLabel="Realiza Liberações" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaLiberacoes}">
-									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv"></p:ajax>
-								</p:selectBooleanCheckbox>
-							</b:column>
-
-							<b:column span="3">
-								<p:selectBooleanCheckbox label="Realizar Encaixes"
-									itemLabel="Realiza Encaixes" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaEncaixes}">
-									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv"></p:ajax>
-								</p:selectBooleanCheckbox>
-							</b:column>
-						</b:row>
-
-						<br></br>
-
 						<b:row>
 							<b:column span="8" class="label-position">
 								<b:label for="nome" value="Nome" severity="info" />
@@ -141,6 +109,44 @@
 
 						</b:row>
 
+					</p:tab>
+					
+					<p:tab title="Atribuições">
+						<b:row>
+							<b:column span="3">
+								<p:selectBooleanCheckbox label="Realiza Atendimento"
+									itemLabel="Realiza Atendimento" style="color:#2e84ce;"
+									value="#{MBFuncionarios.profissional.realizaAtendimento}">
+									<p:ajax listener="#{MBFuncionarios.rendermedico}"
+										update="frmPrincipal:tbv:outAtendimento"></p:ajax>
+								</p:selectBooleanCheckbox>
+							</b:column>
+
+							<b:column span="3">
+								<p:selectBooleanCheckbox label="Realizar Liberações"
+									itemLabel="Realiza Liberações" style="color:#2e84ce;"
+									value="#{MBFuncionarios.profissional.realizaLiberacoes}">
+									<p:ajax listener="#{MBFuncionarios.rendermedico}"
+										update="frmPrincipal:tbv"></p:ajax>
+								</p:selectBooleanCheckbox>
+							</b:column>
+
+							<b:column span="3">
+								<p:selectBooleanCheckbox label="Realizar Encaixes"
+									itemLabel="Realiza Encaixes" style="color:#2e84ce;"
+									value="#{MBFuncionarios.profissional.realizaEncaixes}">
+									<p:ajax listener="#{MBFuncionarios.rendermedico}"
+										update="frmPrincipal:tbv"></p:ajax>
+								</p:selectBooleanCheckbox>
+							</b:column>
+
+							<b:column span="3">
+								<p:selectBooleanCheckbox label="Exceção Bloqueio de Horário"
+									itemLabel="Exceção Bloqueio de Horário"
+									style="color:#2e84ce; margin-left:0.5%;"
+									value="#{MBFuncionarios.profissional.excecaoBloqueioHorario}" />
+							</b:column>
+						</b:row>
 					</p:tab>
 
 					<p:tab title="Visualizar outras unidades">
@@ -466,11 +472,10 @@
 										</p:pickList>
 									</p:panelGrid>
 								</p:tab>
-
 							</p:tabView>
-						</p:outputPanel>
+							<br/>
+							</p:outputPanel>
 					</p:tab>
-
 
 				<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 2}">
 
@@ -530,12 +535,11 @@
 							</p:tab>
 
 						</p:tabView>
+						<br/>
 					</p:outputPanel>
-				</p:tab>
 
+					</p:tab>
 			</p:tabView>
-
-
 
 				<br></br>
 
