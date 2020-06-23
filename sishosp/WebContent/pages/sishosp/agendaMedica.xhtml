@@ -19,30 +19,6 @@
 
 			<div class="panel-body table-body">
 
-				<h:form>
-					<b:row
-						rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
-
-						<b:column span="2" class="label-position">
-							<b:label value="Unidade:" severity="info" />
-
-							<b:selectOneMenu class="select-agendaEquipe2"
-								value="#{AgendaController.agenda.unidade.id}">
-								<f:selectItems
-									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
-									var="emp" itemLabel="#{emp.nomeFantasia}"
-									itemValue="#{emp.codEmpresa}" />
-								<p:ajax event="change" process="@this"
-									update=":formAgendaMedica:outProg" />
-							</b:selectOneMenu>
-
-						</b:column>
-
-						<br></br>
-
-					</b:row>
-				</h:form>
-
 				<h:form id="formAgendaMedica">
 					<p:growl id="growlMsg"></p:growl>
 

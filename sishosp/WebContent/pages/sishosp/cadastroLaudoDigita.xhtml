@@ -3,7 +3,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"	
+                xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
@@ -108,7 +108,7 @@
                                 <p:ajax event="dateSelect"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
                                         update=":formLaudo:outvalidade"/>
-                                         <p:ajax event="blur"
+                                <p:ajax event="blur"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
                                         update=":formLaudo:outvalidade"/>
                             </p:calendar>
@@ -172,7 +172,7 @@
                                         itemLabel="#{theme.nomeProc}">
                                     <p:ajax event="itemSelect"
                                             listener="#{LaudoController.setaValidadeProcPrimLaudo(LaudoController.laudo.procedimentoPrimario.validade_laudo)}"
-                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>       
+                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusProcP1" icon="ui-icon-search"
@@ -391,7 +391,7 @@
                                                 completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descCidAbrev}">                                               
+                                                itemLabel="#{theme.descCidAbrev}">
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusCid2" icon="ui-icon-search"
@@ -843,7 +843,7 @@
                             <p:commandButton
                                     action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                     update="tabelacid2 msgPagina" icon="ui-icon-search"
-                                    style="margin-left: 10px;">      
+                                    style="margin-left: 10px;">
                             </p:commandButton>
                         </p:panelGrid>
 
@@ -910,7 +910,7 @@
                                 action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
                                 update="tabelacid3 msgPagina" icon="ui-icon-search"
                                 style="margin-left: 10px;">
-                        </p:commandButton>         
+                        </p:commandButton>
 
 
                     </p:panelGrid>

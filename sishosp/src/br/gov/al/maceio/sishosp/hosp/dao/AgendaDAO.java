@@ -37,9 +37,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao)"
-                + " VALUES " + "(?, ?, ?, ?, ?," + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
+                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao, codatendente)"
+                + " VALUES " + "(?, ?, ?, ?, ?," + " current_timestamp , ?, ?, ?, ?,"
+                + " ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -59,44 +59,47 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
                 ps.setDate(4, new java.sql.Date(listaNovosAgendamentos.get(i).getDataAtendimento().getTime()));
                 ps.setString(5, "A");
-                ps.setDate(6, new java.sql.Date(new Date().getTime()));
-                ps.setInt(7, agenda.getTipoAt().getIdTipo());
+                ps.setInt(6, agenda.getTipoAt().getIdTipo());
 
                 if (agenda.getTurno() != null) {
-                    ps.setString(8, agenda.getTurno().toUpperCase());
+                    ps.setString(7, agenda.getTurno().toUpperCase());
                 } else {
-                    ps.setNull(8, Types.NULL);
+                    ps.setNull(7, Types.NULL);
                 }
 
                 if (agenda.getEquipe().getCodEquipe() != null) {
-                    ps.setInt(9, agenda.getEquipe().getCodEquipe());
+                    ps.setInt(8, agenda.getEquipe().getCodEquipe());
                 } else {
-                    ps.setNull(9, Types.NULL);
+                    ps.setNull(8, Types.NULL);
                 }
-                ps.setString(10, agenda.getObservacao().toUpperCase());
-                ps.setString(11, "S");
-                ps.setInt(12, agenda.getUnidade().getId());
+                ps.setString(9, agenda.getObservacao().toUpperCase());
+                ps.setString(10, "S");
+                ps.setInt(11, agenda.getUnidade().getId());
 
                 if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
-                    ps.setInt(13, agenda.getGrupo().getIdGrupo());
+                    ps.setInt(12, agenda.getGrupo().getIdGrupo());
                 } else {
-                    ps.setNull(13, Types.NULL);
+                    ps.setNull(12, Types.NULL);
                 }
 
-                ps.setBoolean(14, agenda.getEncaixe());
+                ps.setBoolean(13, agenda.getEncaixe());
                 if (funcionarioLiberacao > 0) {
-                    ps.setLong(15, funcionarioLiberacao);
+                    ps.setLong(14, funcionarioLiberacao);
+                } else {
+                    ps.setNull(14, Types.NULL);
+                }
+
+                if (agenda.getHorario() != null) {
+                    ps.setTime(15, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
                 } else {
                     ps.setNull(15, Types.NULL);
                 }
 
-                if (agenda.getHorario() != null) {
-                    ps.setTime(16, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
-                } else {
-                    ps.setNull(16, Types.NULL);
-                }
+                ps.setBoolean(16, agenda.getAvaliacao());
 
-                ps.setBoolean(17, agenda.getAvaliacao());
+                FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().get("obj_funcionario");
+                ps.setLong(17, user_session.getId());
 
                 ResultSet rs = ps.executeQuery();
 
@@ -172,9 +175,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente,  codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno,  observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario,  avulso)"
-                + " VALUES " + "(?, ?, ?, ?, ?," + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?,  true) RETURNING id_atendimento;";
+                + " turno,  observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario,  avulso, codatendente)"
+                + " VALUES " + "(?, ?, ?, ?, current_timestamp ," + " ?, ?, ?, ?, ?,"
+                + " ?, ?, ?, ?,  true, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -185,36 +188,37 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             ps.setDate(3, new java.sql.Date(agenda.getDataAtendimento().getTime()));
             ps.setString(4, "A");
-            ps.setDate(5, new java.sql.Date(new Date().getTime()));
-            ps.setInt(6, agenda.getTipoAt().getIdTipo());
+            ps.setInt(5, agenda.getTipoAt().getIdTipo());
 
             if (agenda.getTurno() != null) {
-                ps.setString(7, agenda.getTurno().toUpperCase());
+                ps.setString(6, agenda.getTurno().toUpperCase());
             } else {
-            	ps.setNull(7, Types.NULL);
+            	ps.setNull(6, Types.NULL);
             }
 
-            ps.setString(8, agenda.getObservacao().toUpperCase());
-            ps.setString(9, "S");
-            ps.setInt(10, agenda.getUnidade().getId());
+            ps.setString(7, agenda.getObservacao().toUpperCase());
+            ps.setString(8, "S");
+            ps.setInt(9, agenda.getUnidade().getId());
 
             if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
-                ps.setInt(11, agenda.getGrupo().getIdGrupo());
+                ps.setInt(10, agenda.getGrupo().getIdGrupo());
             } else {
-                ps.setNull(11, Types.NULL);
+                ps.setNull(10, Types.NULL);
             }
 
-            ps.setBoolean(12, false);
+            ps.setBoolean(11, false);
 
-            ps.setNull(13, Types.NULL);
+            ps.setNull(12, Types.NULL);
 
 
             if (agenda.getHorario() != null) {
-                ps.setTime(14, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+                ps.setTime(13, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
             } else {
-                ps.setNull(14, Types.NULL);
+                ps.setNull(13, Types.NULL);
             }
-
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().get("obj_funcionario");
+            ps.setLong(14, user_session.getId());
 
             ResultSet rs = ps.executeQuery();
 

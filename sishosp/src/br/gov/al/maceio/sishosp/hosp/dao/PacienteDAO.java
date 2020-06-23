@@ -367,10 +367,10 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -586,10 +586,10 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -620,10 +620,10 @@ public class PacienteDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -635,7 +635,7 @@ public class PacienteDAO {
 
     public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
-        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns "
+        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns, pacientes.dtanascimento "
                 + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
 
         ArrayList<PacienteBean> lista = new ArrayList();
@@ -652,13 +652,14 @@ public class PacienteDAO {
                 paciente.setNome(rs.getString("nome").toUpperCase());
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -713,7 +714,7 @@ public class PacienteDAO {
                 try {
                     prontVelho = Integer.parseInt(conteudo);
                 } catch (Exception e) {
-                	conexao.close();
+                    conexao.close();
                     return listaPacientes;
                 }
 
@@ -727,7 +728,7 @@ public class PacienteDAO {
                 try {
                     prontNovo = Long.parseLong(conteudo);
                 } catch (Exception e) {
-                	conexao.close();
+                    conexao.close();
                     return listaPacientes;
                 }
                 if (prontNovo != null)
@@ -802,10 +803,10 @@ public class PacienteDAO {
                 listaPacientes.add(paciente);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -952,10 +953,10 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1101,10 +1102,10 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1147,10 +1148,10 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1183,10 +1184,10 @@ public class PacienteDAO {
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1202,7 +1203,8 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula from hosp.pacientes where ";
+            String sql = "select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula, dtanascimento, sexo"
+                    + " from hosp.pacientes where ";
 
             if(tipo.equals("nome")){
                 sql = sql + "nome like ?";
@@ -1237,13 +1239,15 @@ public class PacienteDAO {
                 paciente.setMatricula(rs.getString("matricula"));
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                paciente.setSexo(rs.getString("sexo"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1260,7 +1264,7 @@ public class PacienteDAO {
         List<PacienteBean> lista = new ArrayList<PacienteBean>();
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes where nome like ? order by nome";
+            String sql = " select id_paciente, nome, cpf, cns, dtanascimento, sexo from hosp.pacientes where nome like ? order by nome";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + str.toUpperCase() + "%");
@@ -1273,13 +1277,15 @@ public class PacienteDAO {
                 paciente.setNome(rs.getString("nome").toUpperCase());
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
+                paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                paciente.setSexo(rs.getString("sexo"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1315,10 +1321,10 @@ public class PacienteDAO {
                 paciente.setCns(rs.getString("cns"));
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1328,8 +1334,8 @@ public class PacienteDAO {
         return paciente;
     }
 
-    public Boolean inserirTelefone(List<Telefone> lista, Integer idPaciente, Connection conexaoAuxiliar) 
-    		throws ProjetoException, SQLException {
+    public Boolean inserirTelefone(List<Telefone> lista, Integer idPaciente, Connection conexaoAuxiliar)
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1365,17 +1371,17 @@ public class PacienteDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	conexaoAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conexaoAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
-    public Boolean deletarTelefone(Integer idPaciente, Connection conexaoAuxiliar) 
-    		throws SQLException, ProjetoException {
+    public Boolean deletarTelefone(Integer idPaciente, Connection conexaoAuxiliar)
+            throws SQLException, ProjetoException {
 
         Boolean retorno = false;
 
@@ -1387,12 +1393,12 @@ public class PacienteDAO {
             stmt.execute();
             retorno = true;
         } catch (SQLException sqle) {
-        	conexaoAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conexaoAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -1417,12 +1423,12 @@ public class PacienteDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
-            	conexao.close();
+                conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1450,12 +1456,12 @@ public class PacienteDAO {
                 pacienteRetorno.setNome(rs.getString("nome"));
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
-            	conexao.close();
+                conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1518,10 +1524,10 @@ public class PacienteDAO {
                 listaMunicipios.add(municipio);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
