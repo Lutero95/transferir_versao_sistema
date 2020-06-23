@@ -127,6 +127,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                         }
                         ps.executeUpdate();
                     } else if (agenda.getEquipe().getCodEquipe() != null) {
+                    	agenda.getEquipe().setProfissionais(new EquipeDAO().listarProfissionaisDaEquipe(agenda.getEquipe().getCodEquipe()));
+                    	
                         for (FuncionarioBean prof : agenda.getEquipe().getProfissionais()) {
                             ps.setLong(1, prof.getId());
                             ps.setInt(2, idAtendimento);

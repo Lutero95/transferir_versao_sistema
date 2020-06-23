@@ -711,7 +711,6 @@
 					<br></br>
 
 
-
 					<br></br>
 
 					<div align="center">
@@ -1096,20 +1095,22 @@
 			<h:form id="frmSenha">
 			<div class="alert alert-warning" role="alert">Você está tentando agendar um paciente que ainda não faz parte da equipe! Digite a senha para liberação!
 					</div>
-				<h:panelGrid columns="1" cellpadding="3">
-
-					<b:inputText mask="999-999-999-99" style="padding:10px;"
-						required="true" value="#{AgendaController.funcionario.cpf}"
-						placeholder="Digite o CPF" render-label="true"
-						requiredMessage="CPF obrigatório" />
-					<b:message for="@previous" />
-
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
-						value="#{AgendaController.funcionario.senha}"></b:inputSecret>
-					<b:message for="@previous" />
-
-				</h:panelGrid>
+				<br/>
+				<div align="center" >
+					<p:column>
+						<b:inputText mask="999-999-999-99" style="padding:10px; width:50%;"
+							required="true" value="#{AgendaController.funcionario.cpf}"
+							placeholder="Digite o CPF" render-label="true"
+							requiredMessage="CPF obrigatório" />
+						<b:message for="@previous" />
+					</p:column>
+					<p:column>
+						<b:inputSecret style="padding:10px;margin-top:10px;width:50%;" required="true"
+							placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+							value="#{AgendaController.funcionario.senha}"></b:inputSecret>
+						<b:message for="@previous" />
+					</p:column>
+				</div>
 
 				<div align="center">
 					<p:commandButton value="Liberar" look="success" size="sm" id="b1"

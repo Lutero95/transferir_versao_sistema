@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 public class EquipeBean implements Serializable {
 
+
+	private static final long serialVersionUID = 1L;
 	private Integer codEquipe;
 	private String descEquipe;
 	private Integer codUnidade;
@@ -23,15 +23,14 @@ public class EquipeBean implements Serializable {
 	// LISTAS
 	private List<FuncionarioBean> profissionais;
 	private List<FuncionarioBean> profissionaisNovo;
-
+	
 	// HERDADO
 	private FuncionarioBean profAdd;
 
 	public EquipeBean() {
-		this.profissionais = new ArrayList<FuncionarioBean>();
 		this.profissionaisNovo = new ArrayList<FuncionarioBean>();
+		this.profissionais = new ArrayList<FuncionarioBean>();
 		this.profAdd = new FuncionarioBean();
-
 	}
 
 	public Integer getCodEquipe() {
@@ -134,4 +133,5 @@ public class EquipeBean implements Serializable {
 	public void setDataExclusao(Date dataExclusao) {
 		this.dataExclusao = dataExclusao;
 	}
+	
 }
