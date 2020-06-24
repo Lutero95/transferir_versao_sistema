@@ -2061,16 +2061,26 @@ public class ProcedimentoDAO {
 
     public boolean validaCboProfissionalParaProcedimento(Integer idProcedimento, Long idFuncionario, Date dataSolicitacao) throws ProjetoException {
 
-        String sql = "select exists (select distinct f.descfuncionario, cbo.codigo from " +
-                "acl.funcionarios f join hosp.cbo on f.codcbo = cbo.id " +
-                "join sigtap.cbo_procedimento_mensal cpm on cpm.id_cbo = cbo.id " +
-                "join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
-                "join hosp.proc on proc.id = pm.id_procedimento " +
-                "where pm.id_procedimento = " +
-                "	(select id_procedimento from sigtap.procedimento_mensal pm2 " +
-                "	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " +
-                "	where pm2.id_procedimento = ? and hc.status = 'A' and (hc.ano = ? and hc.mes = ?) \t order by pm2.id desc limit 1 ) "+
-                "	and f.id_funcionario = ?) ehvalido";
+        String sql = "select exists (\n" +
+                "\tselect\n" +
+                "\t\tdistinct  f.descfuncionario, cbo.codigo\n" +
+                "\tfrom sigtap.procedimento_mensal pm \n" +
+                "join sigtap.historico_consumo_sigtap hc on\n" +
+                "\t\t\thc.id = pm.id_historico_consumo_sigtap\t\t\n" +
+                "\tjoin sigtap.cbo_procedimento_mensal cpm on\n" +
+                "\t\tcpm.id_procedimento_mensal =  pm.id\n" +
+                "\tjoin hosp.cbo on\n" +
+                "\t\tcpm.id_cbo = cbo.id\t\n" +
+                "\tjoin hosp.proc on\n" +
+                "\t\tproc.id = pm.id_procedimento\n" +
+                "\t\tjoin acl.funcionarios f on f.codcbo  = cpm.id_cbo\n" +
+                "\twhere\n" +
+                "\t\t\tpm.id_procedimento = ?\n" +
+                "\t\t\tand hc.status = 'A'\n" +
+                "\t\t\tand (hc.ano = ?\n" +
+                "\t\t\tand hc.mes = ?)\n" +
+                "\t\t\tand f.id_funcionario = ?\n" +
+                ") ehvalido";
         boolean ehValido = false;
         try {
             con = ConnectionFactory.getConnection();
