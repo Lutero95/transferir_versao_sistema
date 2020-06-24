@@ -120,14 +120,11 @@
 							</b:column>
 
 						</p:outputPanel>
-
 					</b:row>
 
 
 					<b:row class="row-table">
 
-
-					
 						<b:column span="2" class="col-row-tabel">
 							<b:selectOneMenu size="10"
 								value="#{AtendimentoController.tipoBusca}">
@@ -158,86 +155,102 @@
 						reflow="true" paginator="true" rows="15" var="atendimento"
 						value="#{AtendimentoController.listAtendimentos}"
 						styleClass="table table-hover" paginatorPosition="bottom">
-
-						<p:column>
+						
+						<p:column width="75">
 							<f:facet name="header">
-                        Data
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Presença" />
+							</f:facet>
+							<h:outputText value="SIM" rendered="#{atendimento.presenca=='S'}" />
+							<h:outputText value="NÃO" rendered="#{atendimento.presenca=='N'}" />
+						</p:column>
+
+						<p:column width="75">
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Data" />
+                    		</f:facet>
 							<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
 						</p:column>
-
-						<p:column>
+						
+						<p:column width="75" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
 							<f:facet name="header">
-                        Paciente
-                    </f:facet>
-							<p:outputLabel value="#{atendimento.paciente.nome}" />
-						</p:column>
-
-						<p:column>
-							<f:facet name="header">
-                        CNS
-                    </f:facet>
-							<p:outputLabel value="#{atendimento.paciente.cns}" />
-						</p:column>
-
-						<p:column rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
-							<f:facet name="header">
-                        Turno
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Turno" />
+                    		</f:facet>
 							<h:outputLabel value="MANHÃ"
 								rendered="#{atendimento.turno == 'M'}" />
 							<h:outputLabel value="TARDE"
 								rendered="#{atendimento.turno == 'T'}" />
 						</p:column>
-
-						<p:column>
+						
+						<p:column width="73">
 							<f:facet name="header">
-                        Profissional
-                    </f:facet>
-							<p:outputLabel value="#{atendimento.funcionario.nome}" />
+								<h:outputText style="font-size: 12px;" value="Prontuário" />
+							</f:facet>
+							<h:outputText value="#{atendimento.paciente.id_paciente}"></h:outputText>
+						</p:column>	
+						
+						<p:column width="70">
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Matrícula" />
+							</f:facet>
+							<h:outputText value="#{atendimento.paciente.matricula}"></h:outputText>
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-                        Programa
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Paciente" />
+                    		</f:facet>
+							<p:outputLabel value="#{atendimento.paciente.nome}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Programa" />
+                    		</f:facet>
 							<p:outputLabel value="#{atendimento.programa.descPrograma}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Tipo de Atendimento" />
+                    		</f:facet>
 							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-                        Nome Equipe
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Equipe" />
+                    		</f:facet>
 							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
 						</p:column>
-
+						
 						<p:column>
 							<f:facet name="header">
-                        Equipe
-                    </f:facet>
-							<p:outputLabel value="#{atendimento.ehEquipe}" />
+								<h:outputText style="font-size: 12px;" value="Profissional" />
+                    		</f:facet>
+							<p:outputLabel value="#{atendimento.funcionario.nome}" />
+						</p:column>
+						
+						<p:column width="60"> 
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Avulso" />
+							</f:facet>
+							<h:outputText rendered="#{atendimento.avulso == true}" value="SIM"/>
+							<h:outputText rendered="#{atendimento.avulso == false}" value="NÃO"/>
 						</p:column>
 
-						<p:column>
+						<p:column width="100">
 							<f:facet name="header">
-                        Situação
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Situação" />
+                    		</f:facet>
 							<p:outputLabel value="#{atendimento.situacao}" />
 						</p:column>
 
 						<p:column>
 							<f:facet name="header">
-                        Atendimento
-                    </f:facet>
+								<h:outputText style="font-size: 12px;" value="Atendimento" />
+                    		</f:facet>
 							<div align="center">
 								<p:commandButton tooltip="Atendimento" icon="fa fa-fw fa-pencil-square-o"
 									size="sm" class="btn-acao-table acao-editar"
@@ -247,7 +260,27 @@
 								</p:commandButton>
 							</div>
 						</p:column>
-
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Profissionais da Equipe" />
+                    		</f:facet>
+							<div align="center">
+								<p:commandButton icon="fa fa-fw fa-bars"
+									disabled="#{atendimento.avulso == false and atendimento.ehEquipe != 'Sim'}"
+									id="btn-funcionarios-equipe" />
+									
+								<p:tooltip id="toolTipContent" for="btn-funcionarios-equipe"
+									position="top">
+									<p:dataTable value="#{atendimento.listaNomeProfissionais}"
+										var="prof" style="width:250px;">
+										<p:column headerText="Profissional:">
+											<h:outputLabel value="#{prof}" />
+										</p:column>
+									</p:dataTable>
+								</p:tooltip>	
+							</div>
+						</p:column>
 					</p:dataTable>
 
 				</h:form>

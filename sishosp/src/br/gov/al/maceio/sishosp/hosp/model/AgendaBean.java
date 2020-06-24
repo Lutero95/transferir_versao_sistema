@@ -9,7 +9,9 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class AgendaBean implements Serializable {
 
-    private Integer idAgenda;
+
+	private static final long serialVersionUID = 1L;
+	private Integer idAgenda;
     private boolean prontoGravar;
     private Date dataAtendimento;
     private Date dataAtendimentoFinal;
@@ -27,7 +29,8 @@ public class AgendaBean implements Serializable {
     private String presenca;
     private Boolean avaliacao;
     private Boolean avulso;
-    private List<String> listaNomeProfissionaisAvulso;
+    private String situacaoAtendimentoInformado;
+    private List<String> listaNomeProfissionais;
     
     // HERDADOS
     private PacienteBean paciente;
@@ -65,7 +68,7 @@ public class AgendaBean implements Serializable {
         qtdAtendimentosTarde = new Integer [5];
         encaixe = false;
         avulso = false;
-        this.listaNomeProfissionaisAvulso = new ArrayList<String>();
+        this.listaNomeProfissionais = new ArrayList<String>();
     }
 
     public Integer getIdAgenda() {
@@ -286,12 +289,20 @@ public class AgendaBean implements Serializable {
 		this.avulso = avulso;
 	}
 
-	public List<String> getListaNomeProfissionaisAvulso() {
-		return listaNomeProfissionaisAvulso;
+
+	public String getSituacaoAtendimentoInformado() {
+		return situacaoAtendimentoInformado;
 	}
 
-	public void setListaNomeProfissionaisAvulso(List<String> listaNomeProfissionaisAvulso) {
-		this.listaNomeProfissionaisAvulso = listaNomeProfissionaisAvulso;
+	public void setSituacaoAtendimentoInformado(String situacaoAtendimentoInformado) {
+		this.situacaoAtendimentoInformado = situacaoAtendimentoInformado;
 	}
-	
+
+	public List<String> getListaNomeProfissionais() {
+		return listaNomeProfissionais;
+	}
+
+	public void setListaNomeProfissionais(List<String> listaNomeProfissionais) {
+		this.listaNomeProfissionais = listaNomeProfissionais;
+	}
 }

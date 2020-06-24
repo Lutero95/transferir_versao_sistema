@@ -183,7 +183,7 @@
 
 						<p:column width="65">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Presença" />
+								<h:outputText style="font-size: 12px;" value="Presença" />
 							</f:facet>
 							<h:outputText value="SIM" rendered="#{agenda.presenca=='S'}" />
 							<h:outputText value="NÃO" rendered="#{agenda.presenca=='N'}" />
@@ -191,7 +191,7 @@
 
 						<p:column width="60">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Data" />
+								<h:outputText style="font-size: 12px;" value="Data" />
 							</f:facet>
 							<h:outputText value="#{agenda.dataAtendimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy"  />
@@ -200,31 +200,29 @@
 						
 						<p:column width="50">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Turno" />
+								<h:outputText style="font-size: 12px;" value="Turno" />
 							</f:facet>
 							<h:outputText value="TARDE" rendered="#{agenda.turno=='T'}"/>
 							<h:outputText value="MANHÃ" rendered="#{agenda.turno=='M'}"/>
-								
-							
 						</p:column>			
 						
 						<p:column width="73">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Prontuário" />
+								<h:outputText style="font-size: 12px;" value="Prontuário" />
 							</f:facet>
 							<h:outputText value="#{agenda.paciente.id_paciente}"></h:outputText>
 						</p:column>	
 						
 						<p:column width="70">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Matrícula" />
+								<h:outputText style="font-size: 12px;" value="Matrícula" />
 							</f:facet>
 							<h:outputText value="#{agenda.paciente.matricula}"></h:outputText>
 						</p:column>															
 
 						<p:column width="150">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Paciente" />
+								<h:outputText style="font-size: 12px;" value="Paciente" />
 							</f:facet>
 							<h:outputText value="#{agenda.paciente.nome}"></h:outputText>
 						</p:column>
@@ -232,7 +230,7 @@
 
 						<p:column width="130">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;"
+								<h:outputText style="font-size: 12px;"
 									value="Tipo de Atendimento" />
 							</f:facet>
 							<h:outputText value="#{agenda.tipoAt.descTipoAt}"></h:outputText>
@@ -240,40 +238,47 @@
 
 						<p:column width="110">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Equipe" />
+								<h:outputText style="font-size: 12px;" value="Equipe" />
 							</f:facet>
 							<h:outputText value="#{agenda.equipe.descEquipe}"></h:outputText>
 						</p:column>
 
 						<p:column width="120">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Profissional" />
+								<h:outputText style="font-size: 12px;" value="Profissional" />
 							</f:facet>
 							<h:outputText value="#{agenda.profissional.nome}"></h:outputText>
 						</p:column>
 
 						<p:column width="55">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Avulso" />
+								<h:outputText style="font-size: 12px;" value="Avulso" />
 							</f:facet>
 							<h:outputText rendered="#{agenda.avulso == true}" value="SIM"/>
 							<h:outputText rendered="#{agenda.avulso == false}" value="NÃO"/>
 						</p:column>
+						
+						<p:column width="100">
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Situação" />
+                    		</f:facet>
+							<p:outputLabel value="#{agenda.situacaoAtendimentoInformado}" />
+						</p:column>
 
 						<p:column width="90">
 							<f:facet name="header">
-								<h:outputText style="font-size: 14px;" value="Profissional Avulso" />
+								<h:outputText style="font-size: 12px;" value="Profissionais da Equipe" />
 							</f:facet>
 							<div align="center">
 								<p:commandButton icon="fa fa-fw fa-bars"
-									disabled="#{agenda.avulso == false}"
+									disabled="#{agenda.avulso == false and agenda.equipe.codEquipe == 0}"
 									id="btn-funcionarios-avulso" />
 
-								<p:tooltip id="toolTipContent" for="btn-funcionarios-avulso"
-									position="top">
-									<p:dataTable value="#{agenda.listaNomeProfissionaisAvulso}"
+								<p:tooltip id="toolTipAvulso" for="btn-funcionarios-avulso"
+									position="top" >
+									<p:dataTable value="#{agenda.listaNomeProfissionais}"
 										var="prof" style="width:250px;">
-										<p:column headerText="Funcionário:">
+										<p:column headerText="Profissional:">
 											<h:outputLabel value="#{prof}" />
 										</p:column>
 									</p:dataTable>
