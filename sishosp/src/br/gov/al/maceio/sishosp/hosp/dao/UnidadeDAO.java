@@ -115,8 +115,8 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
                     "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap )" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap, minutos_tolerancia )" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -207,11 +207,8 @@ public class UnidadeDAO {
             }
 
             ps.setBoolean(15, unidade.getParametro().isPtsMostrarObjGeraisCurtoPrazo());
-
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisMedioPrazo());
-
             ps.setBoolean(17, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
-
             ps.setBoolean(18, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
 
             if(unidade.getParametro().getHorarioInicioFuncionamento() != null) {
@@ -236,6 +233,7 @@ public class UnidadeDAO {
             ps.setString(26, unidade.getParametro().getVersaoSistema());
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
             ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
+            ps.setInt(29, unidade.getParametro().getMinutosTolerancia());
             ps.execute();
 
 
@@ -397,7 +395,8 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_longo=?, horario_limite_acesso = ?, horario_inicio_funcionamento = ?, horario_final_funcionamento = ?, " +
                     "bloqueia_por_pendencia_evolucao_anterior = ?, orgao_origem_responsavel_pela_informacao = ?, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao = ?, cgcCpf_prestador_ou_orgao_publico = ?, orgao_destino_informacao = ?, "+
-                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?, valida_dados_laudo_sigtap = ? "+
+                    "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?, "+
+                    "valida_dados_laudo_sigtap = ?, minutos_tolerancia = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -453,11 +452,8 @@ public class UnidadeDAO {
             }
 
             ps.setBoolean(14, unidade.getParametro().isPtsMostrarObjGeraisCurtoPrazo());
-
             ps.setBoolean(15, unidade.getParametro().isPtsMostrarObjGeraisMedioPrazo());
-
             ps.setBoolean(16, unidade.getParametro().isPtsMostrarObjGeraisLongoPrazo());
-
             ps.setBoolean(17, unidade.getParametro().getUsaHorarioLimiteParaAcesso());
 
             if(unidade.getParametro().getHorarioInicioFuncionamento() != null && unidade.getParametro().getUsaHorarioLimiteParaAcesso()) {
@@ -483,7 +479,8 @@ public class UnidadeDAO {
             ps.setString(26, unidade.getParametro().getVersaoSistema());
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
             ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
-            ps.setInt(29, unidade.getId());
+            ps.setInt(29, unidade.getParametro().getMinutosTolerancia());
+            ps.setInt(30, unidade.getId());
 
             ps.executeUpdate();
 
@@ -622,7 +619,7 @@ public class UnidadeDAO {
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
                 "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo "+
+                "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -671,6 +668,7 @@ public class UnidadeDAO {
                 parametro.setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
                 parametro.setVersaoSistema(rs.getString("versao_sistema"));
                 parametro.setValidadePadraoLaudo(rs.getInt("validade_padrao_laudo"));
+                parametro.setMinutosTolerancia(rs.getInt("minutos_tolerancia"));
             }
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
