@@ -20,15 +20,16 @@ public class SituacaoAtendimentoDAO {
 
 	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "INSERT INTO hosp.situacao_atendimento " +
-				"(descricao, atendimento_realizado) " +
-				"VALUES(?, ?);";
+		String sql = "INSERT INTO hosp.situacao_atendimento  " +
+				"(descricao, atendimento_realizado, abono_falta) " +
+				"VALUES(?, ?,?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, situacaoAtendimento.getDescricao().toUpperCase());
 			ps.setBoolean(2, situacaoAtendimento.getAtendimentoRealizado());
+			ps.setBoolean(3, situacaoAtendimento.isAbonoFalta());
 			ps.execute();
 			con.commit();
 			retorno = true;
@@ -49,14 +50,15 @@ public class SituacaoAtendimentoDAO {
 	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao) throws ProjetoException{
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.situacao_atendimento " +
-				"SET descricao = ?, atendimento_realizado = ?" +
+				"SET descricao = ?, atendimento_realizado = ?, abono_falta=? " +
 				"WHERE id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, situacao.getDescricao());
+			ps.setString(1, situacao.getDescricao().toUpperCase());
 			ps.setBoolean(2, situacao.getAtendimentoRealizado());
-			ps.setInt(3, situacao.getId());
+			ps.setBoolean(3, situacao.isAbonoFalta());
+			ps.setInt(4, situacao.getId());
 			ps.executeUpdate();
 			con.commit();
 			retorno = true;
@@ -101,7 +103,7 @@ public class SituacaoAtendimentoDAO {
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta  " +
 				"from hosp.situacao_atendimento sa order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -116,6 +118,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setId(rs.getInt("id"));
 				situacaoAtendimento.setDescricao(rs.getString("descricao"));
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
 		} catch (SQLException sqle) {
@@ -200,7 +203,7 @@ public class SituacaoAtendimentoDAO {
 
 	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta " +
 				"from hosp.situacao_atendimento sa where sa.id = ?";
 
 		SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
@@ -214,6 +217,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setId(rs.getInt("id"));
 				situacaoAtendimento.setDescricao(rs.getString("descricao"));
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -266,5 +270,44 @@ public class SituacaoAtendimentoDAO {
 		}
 		return existeSituacaoComStendimentoRealizado;
 	}
+
+	public Boolean existeOutraSituacaoComAbonoFalta(Integer idSituacao) throws ProjetoException {
+
+		String sqlParaEdicao = "select exists " +
+				"	(select sa.id from hosp.situacao_atendimento sa where sa.abono_falta = true and sa.id != ?) " +
+				"as existe_situacao_com_abono_falta";
+
+		String sqlParaCadastro = "select exists " +
+				"	(select sa.id from hosp.situacao_atendimento sa where sa.abono_falta = true) " +
+				"as existe_situacao_com_abono_falta";
+
+		Boolean existeSituacaoComAbonoFalta = true;
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(idSituacao))
+				ps = conexao.prepareStatement(sqlParaCadastro);
+			else {
+				ps = conexao.prepareStatement(sqlParaEdicao);
+				ps.setInt(1, idSituacao);
+			}
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				existeSituacaoComAbonoFalta = rs.getBoolean("existe_situacao_com_abono_falta");
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return existeSituacaoComAbonoFalta;
+	}
+
 
 }

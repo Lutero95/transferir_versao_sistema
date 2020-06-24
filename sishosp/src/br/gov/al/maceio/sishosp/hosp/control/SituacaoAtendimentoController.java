@@ -75,28 +75,48 @@ public class SituacaoAtendimentoController  implements Serializable {
 	}
 	
 	public void gravarSituacaoAtendimento() throws ProjetoException {
-		if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
-				|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
-			
-			if (situacaoAtendimentoDAO.gravarSituacaoAtendimento(this.situacaoAtendimento)){
-				this.situacaoAtendimento = new SituacaoAtendimentoBean();
-				JSFUtil.adicionarMensagemSucesso("Situação do Atendimento gravada com sucesso", "");
-			}	
+		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
+			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
+					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
+
+				if (situacaoAtendimentoDAO.gravarSituacaoAtendimento(this.situacaoAtendimento)) {
+					this.situacaoAtendimento = new SituacaoAtendimentoBean();
+					JSFUtil.adicionarMensagemSucesso("Situação do Atendimento gravada com sucesso", "");
+				}
+			}
 		}
 	}
 	
 	public void alterarSituacaoAtendimento() throws ProjetoException {
-			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado())
-					|| !this.situacaoAtendimento.getAtendimentoRealizado()) {
-				
+		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
+			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
+					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
+
 				if (situacaoAtendimentoDAO.alterarSituacaoAtendimento(this.situacaoAtendimento))
-					JSFUtil.adicionarMensagemSucesso("Situação do Atendimento alterada com sucesso", "");	
+					JSFUtil.adicionarMensagemSucesso("Situação do Atendimento alterada com sucesso", "");
 			}
+		}
 	}
 	
 	private Boolean existeOutraSituacaoComAtendimentoRealizado() throws ProjetoException {
 		if(situacaoAtendimentoDAO.existeOutraSituacaoComAtendimentoRealizado(this.situacaoAtendimento.getId())) {
 			JSFUtil.adicionarMensagemErro("Já existe uma situação para atendimento realizado", "Erro");
+			return true;
+		}
+		return false;
+	}
+
+	private Boolean existeOutraSituacaoComAbonoFalta() throws ProjetoException {
+		if(situacaoAtendimentoDAO.existeOutraSituacaoComAbonoFalta(this.situacaoAtendimento.getId())) {
+			JSFUtil.adicionarMensagemErro("Já existe uma situação para Abono de Falta", "Erro");
+			return true;
+		}
+		return false;
+	}
+
+	private Boolean selecionouAbonoFaltaEAtendimentoRealizado() throws ProjetoException {
+		if ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isAbonoFalta())) {
+			JSFUtil.adicionarMensagemErro("Selecione apenas uma das opções: Atendimento Realizado ou Abono de Falta", "Erro");
 			return true;
 		}
 		return false;

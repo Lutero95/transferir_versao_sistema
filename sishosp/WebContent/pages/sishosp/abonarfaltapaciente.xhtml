@@ -1,0 +1,511 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Abonar Falta Paciente</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formAbonoFaltaPaciente">
+
+                    <p:growl id="growlMsg"></p:growl>
+
+                    <p:outputPanel id="rowProgramaIhGrupo">
+                        <b:row>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Programa" severity="info"/>
+
+                                <p:outputPanel id="outProg">
+                                    <p:autoComplete
+                                            value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa}"
+                                            size="31" converter="conPrograma"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaProgramaAutoCompleteUsuario}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{remocaoProfissionalEquipeController.selectPrograma}"
+                                                update="outProg, outGrupo"/>
+
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusPr" immediate="true"
+                                                     icon="ui-icon-search"
+
+                                                     action="#{remocaoProfissionalEquipeController.limparNaBuscaPrograma()}"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Grupo" severity="info"/>
+
+                                <p:outputPanel id="outGrupo">
+                                    <p:autoComplete
+                                            value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.grupo}"
+                                            size="31" converter="conGrupo"
+                                            class="select-agendaEquipe4"
+                                            disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa.idPrograma == null}"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaGrupoAutoCompleteAbono}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descGrupo}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{remocaoProfissionalEquipeController.selectGrupo}"
+                                                update="outGrupo, outEquipeRow"/>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusGr" immediate="true"
+                                                     icon="ui-icon-search" update=":formConsuGrop"
+                                                     disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa.idPrograma == null}"
+                                                     action="#{remocaoProfissionalEquipeController.limparNaBuscaGrupo()}"
+                                                     actionListener="#{remocaoProfissionalEquipeController.atualizaListaGrupos(gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa)}"
+                                                     onclick="PF('dlgConsuGrop').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outEquipeRow">
+                        <b:row>
+
+                            <b:column span="2"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Equipe" severity="info"/>
+
+                                <p:outputPanel id="outEquipe">
+
+                                    <p:autoComplete
+                                            value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.equipe}"
+                                            size="31" converter="conEquipe"
+                                            disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.grupo.idGrupo == null}"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{gestaoAbonoFaltaPacienteController.listaEquipeAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descEquipe}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusEqui" immediate="true"
+                                                     disabled="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.grupo.idGrupo == null}"
+                                                     action="#{gestaoAbonoFaltaPacienteController.carregaListaEquipePorGrupo()}"
+                                                     icon="ui-icon-search"
+                                                     oncomplete="PF('dlgConsuEquipe').show();"
+                                                     update=":formConsuEquipe"/>
+                                </p:outputPanel>
+                            </b:column>
+                            
+                            <b:column span="2"
+                            	class="label-position new-data-size new-comple1">
+                            	<b:label value="Justificativa" severity="info"/>
+                            	
+                            	<p:outputPanel id="outJustificativa">
+                            		<p:inputTextarea value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.justificativa}"
+                            			 rows="6" cols="33" scrollHeight="200"
+                            			 autoResize="false"  class="select-agendaEquipe4" 
+                            			 style="margin-top: 1%;" />
+                            	</p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outPaciente">
+                        <b:row>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+
+								<b:label value="Paciente" severity="info" />
+
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.paciente}"
+									size="31" converter="conPaciente" required="true"
+									requiredMessage="Paciente: Campo obrigatório!"
+									class="select-agendaEquipe4"
+									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect"
+										update="msgPagina :formAbonoFaltaPaciente"
+										global="false" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBPa" immediate="true"
+									icon="ui-icon-search" update=":formConsuPac"
+									oncomplete="PF('dlgConsuPac').show();" />
+							</p:outputPanel>
+
+							</b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+
+                    <b:row>
+
+                        <p:outputPanel>
+                            <b:column span="2" class="new-data-size2">
+
+                                <p:outputLabel value="Turno:"
+                                               style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            </b:column>
+
+                            <b:column span="3" class="btn-radio-table">
+
+                                <p:selectOneRadio
+                                        value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.turno}">
+                                    <f:selectItem itemLabel="Ambos" itemValue="A"/>
+                                    <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                </p:selectOneRadio>
+
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="2" class="new-data-size2">
+
+                            <p:outputLabel value="Data do abono da Falta:"
+                                           style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                        </b:column>
+
+                        <b:column span="3" class="btn-radio-table">
+                            <p:selectOneRadio value="#{gestaoAbonoFaltaPacienteController.tipoData}"
+                            required="true" requiredMessage="Data Abono: Campo obrigatório!">
+                                <f:selectItem itemLabel="Data única" itemValue="U"/>
+                                <p:ajax update="outdata"></p:ajax>
+                            </p:selectOneRadio>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <!-- DATA ÚNICA -->
+                    <p:outputPanel id="outdata">
+                        <b:row rendered="#{gestaoAbonoFaltaPacienteController.tipoData == 'U'}">
+                            <b:column span="2" class="label-position data-size">
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                required="true" requiredMessage="Informe a Data"
+                                            showOn="button" size="8" class="select-agendaEquipe2"
+                                            value="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.dataAbono}"
+                                            id="dtagen"
+                                            locale="pt">
+                                </p:calendar>
+
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br></br>
+
+
+                    <b:row>
+                        <p:commandButton value="Buscar" look="success" size="sm"
+                                         id="bgbuscar" icon="ui-icon-search"
+                                         action="#{gestaoAbonoFaltaPacienteController.listarAtendimentosParaAbono()}"
+                                         update="growlMsg, tabela"
+                                         class="btn-incluir"/>
+                    </b:row>
+
+                    <br/>
+
+                    <b:row>
+
+                        <p:outputPanel id="tabela">
+                            <p:dataTable value="#{gestaoAbonoFaltaPacienteController.listaAtendimentosParaAbono}" var="tab"
+                                         id="dtAtendimentos"
+                                         emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
+                                         selection="#{gestaoAbonoFaltaPacienteController.listaAtendimentosSelecionadosParaAbono}"
+                                         rowKey="#{tab.id1}">
+
+                                <f:facet name="header">
+                                    Atendimentos
+                                </f:facet>
+
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center" width="5%"/>
+
+                                <p:column headerText="Paciente" width="10%">
+                                    <h:outputText value="#{tab.paciente.nome}"/>
+                                </p:column>
+
+                                <p:column headerText="Data" width="15%">
+                                    <h:outputText value="#{tab.dataAtendimentoInicio}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+
+
+                                <p:column headerText="Profissional" width="25%">
+                                    <h:outputText value="#{tab.funcionario.nome}">
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Turno" width="10%">
+                                    <h:outputText value="#{tab.turno}"/>
+                                </p:column>
+
+                                <p:column headerText="Grupo" width="30%">
+                                    <h:outputText value="#{tab.grupo.descGrupo}"/>
+                                </p:column>
+
+                                <p:column headerText="Equipe" width="30%">
+                                    <h:outputText value="#{tab.equipe.descEquipe}"/>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br/>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm"
+                                         id="bgravar" icon="ui-icon-check"
+                                         action="#{gestaoAbonoFaltaPacienteController.gravaAbonos()}"
+                                         update=":formAbonoFaltaPaciente"
+                                         class="btn-incluir"/>
+
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         update=":formAbonoFaltaPaciente"
+                                         action="/pages/sishosp/gestaoabonofaltapaciente.xhtml?faces-redirect=true">
+                        </p:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAbonoFaltaPaciente:outProg, :formAbonoFaltaPaciente:outGrupo"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                title="Selecionar"
+                                oncomplete="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" responsive="true" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+                             responsive="true" save-state="false" saveState="false"
+                             value="#{remocaoProfissionalEquipeController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAbonoFaltaPaciente:outGrupo :formAbonoFaltaPaciente:outEquipe"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{gestaoAbonoFaltaPacienteController.listaEquipePorGrupo}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                 icon="fa fa-fw fa-check" update=":formAbonoFaltaPaciente:outEquipe"
+                                title="Selecionar" class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			responsive="true">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
+
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+				<p:row>
+
+					<p:panelGrid columns="4">
+
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{PacienteController.campoBusca}"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+						<p:commandButton
+							action="#{PacienteController.buscarPacientesPorTipo()}"
+							update="tabelapacientes" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
+
+					</p:panelGrid>
+
+				</p:row>
+				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
+
+					<p:column width="100">
+						<f:facet name="header">
+                            Prontuário
+                        </f:facet>
+
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Nome
+                        </f:facet>
+
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Matrícula
+                        </f:facet>
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            CNS
+                        </f:facet>
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Selecionar
+                        </f:facet>
+						<p:commandButton
+							update=":formAbonoFaltaPaciente:outPaciente"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+								target="#{gestaoAbonoFaltaPacienteController.abonoFaltaPaciente.paciente}" />
+						</p:commandButton>
+
+					</p:column>
+
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
