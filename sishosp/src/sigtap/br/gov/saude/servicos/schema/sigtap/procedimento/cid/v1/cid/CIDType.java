@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de CIDType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="CIDType"&gt;
@@ -67,7 +67,7 @@ public class CIDType {
     protected Integer quantidadeCamposIrradiados;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -91,7 +91,7 @@ public class CIDType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -115,7 +115,7 @@ public class CIDType {
     }
 
     /**
-     * Obt�m o valor da propriedade agravo.
+     * Obtém o valor da propriedade agravo.
      * 
      * @return
      *     possible object is
@@ -139,7 +139,7 @@ public class CIDType {
     }
 
     /**
-     * Obt�m o valor da propriedade sexoAplicavel.
+     * Obtém o valor da propriedade sexoAplicavel.
      * 
      * @return
      *     possible object is
@@ -163,7 +163,7 @@ public class CIDType {
     }
 
     /**
-     * Obt�m o valor da propriedade estadio.
+     * Obtém o valor da propriedade estadio.
      * 
      * @return
      *     possible object is
@@ -187,7 +187,7 @@ public class CIDType {
     }
 
     /**
-     * Obt�m o valor da propriedade quantidadeCamposIrradiados.
+     * Obtém o valor da propriedade quantidadeCamposIrradiados.
      * 
      * @return
      *     possible object is

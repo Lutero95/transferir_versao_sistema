@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de PaginacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="PaginacaoType"&gt;
@@ -62,7 +62,7 @@ public class PaginacaoType {
     protected BigInteger totalRegistros;
 
     /**
-     * Obt�m o valor da propriedade registroInicial.
+     * Obtém o valor da propriedade registroInicial.
      * 
      * @return
      *     possible object is
@@ -86,7 +86,7 @@ public class PaginacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade quantidadeRegistros.
+     * Obtém o valor da propriedade quantidadeRegistros.
      * 
      */
     public int getQuantidadeRegistros() {
@@ -102,7 +102,7 @@ public class PaginacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade totalRegistros.
+     * Obtém o valor da propriedade totalRegistros.
      * 
      * @return
      *     possible object is

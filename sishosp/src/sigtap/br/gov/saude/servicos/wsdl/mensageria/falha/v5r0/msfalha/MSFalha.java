@@ -17,7 +17,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.falha.v5r0.mensagem.Mensagem
 /**
  * <p>Classe Java de anonymous complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType&gt;
@@ -48,7 +48,7 @@ public class MSFalha {
     protected List<MensagemType> mensagem;
 
     /**
-     * Obt�m o valor da propriedade identificador.
+     * Obtém o valor da propriedade identificador.
      * 
      * @return
      *     possible object is

@@ -100,8 +100,8 @@ public class TituloPagarController implements Serializable {
 	private static final String ENDERECO_CADASTRO = "cadastropagar?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
 	private static final String ENDERECO_ID = "&amp;id=";
-	private static final String CABECALHO_INCLUSAO = "Inclus�o de T�tulo a Pagar";
-	private static final String CABECALHO_ALTERACAO = "alteração de T�tulo a Pagar";
+	private static final String CABECALHO_INCLUSAO = "Inclusão de Título a Pagar";
+	private static final String CABECALHO_ALTERACAO = "alteração de Título a Pagar";
 
 	public TituloPagarController() throws ParseException {
 		buscaPagar = new BuscaBeanPagar();

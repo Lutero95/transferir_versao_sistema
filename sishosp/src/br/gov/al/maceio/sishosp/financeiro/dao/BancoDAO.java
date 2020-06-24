@@ -168,7 +168,7 @@ public class BancoDAO {
         }
         return lista;
         
-    }	// metodo que pega dados JO�O W.
+    }
     	public BancoBean buscarBancoPorId(BancoBean bancoParametro) throws ProjetoException {
     		
 	        String sql = "select id, banco, codbanco, agencia, conta, descricao, caixa, "

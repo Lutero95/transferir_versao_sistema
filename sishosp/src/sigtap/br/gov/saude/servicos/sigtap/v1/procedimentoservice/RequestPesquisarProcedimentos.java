@@ -12,7 +12,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
 /**
  * <p>Classe Java de anonymous complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType&gt;
@@ -51,7 +51,7 @@ public class RequestPesquisarProcedimentos {
     protected PaginacaoType paginacao;
 
     /**
-     * Obt�m o valor da propriedade codigoGrupo.
+     * Obtém o valor da propriedade codigoGrupo.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class RequestPesquisarProcedimentos {
     }
 
     /**
-     * Obt�m o valor da propriedade codigoSubgrupo.
+     * Obtém o valor da propriedade codigoSubgrupo.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class RequestPesquisarProcedimentos {
     }
 
     /**
-     * Obt�m o valor da propriedade competencia.
+     * Obtém o valor da propriedade competencia.
      * 
      * @return
      *     possible object is
@@ -123,7 +123,7 @@ public class RequestPesquisarProcedimentos {
     }
 
     /**
-     * Obt�m o valor da propriedade paginacao.
+     * Obtém o valor da propriedade paginacao.
      * 
      * @return
      *     possible object is

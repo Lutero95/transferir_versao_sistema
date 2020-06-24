@@ -869,7 +869,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaHorariosDaEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
-    // AUTOCOMPLETE INÃ�CIO
+    // AUTOCOMPLETE INÍCIO
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {

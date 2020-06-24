@@ -15,7 +15,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.D
 /**
  * <p>Classe Java de anonymous complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType&gt;
@@ -60,7 +60,7 @@ public class RequestDetalharProcedimento {
     protected RequestDetalharProcedimento.DetalhesAdicionais detalhesAdicionais;
 
     /**
-     * Obt�m o valor da propriedade codigoProcedimento.
+     * Obtém o valor da propriedade codigoProcedimento.
      * 
      * @return
      *     possible object is
@@ -84,7 +84,7 @@ public class RequestDetalharProcedimento {
     }
 
     /**
-     * Obt�m o valor da propriedade competencia.
+     * Obtém o valor da propriedade competencia.
      * 
      * @return
      *     possible object is
@@ -108,7 +108,7 @@ public class RequestDetalharProcedimento {
     }
 
     /**
-     * Obt�m o valor da propriedade detalhesAdicionais.
+     * Obtém o valor da propriedade detalhesAdicionais.
      * 
      * @return
      *     possible object is
@@ -135,7 +135,7 @@ public class RequestDetalharProcedimento {
     /**
      * <p>Classe Java de anonymous complex type.
      * 
-     * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+     * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
      * 
      * <pre>
      * &lt;complexType&gt;

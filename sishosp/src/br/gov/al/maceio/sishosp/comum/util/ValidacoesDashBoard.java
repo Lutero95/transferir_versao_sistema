@@ -11,11 +11,11 @@ public class ValidacoesDashBoard {
 		
 		
 		dia = data.substring(0, 2);// captura apenas o dia
-		mes = data.substring(3, 5);// captura apenas o m�s
+		mes = data.substring(3, 5);// captura apenas o mês
 		ano = data.substring(6, 10);// captura apenas o ano
 
 		dia2 = data2.substring(0, 2);// captura apenas o dia
-		mes2 = data2.substring(3, 5);// captura apenas o m�s
+		mes2 = data2.substring(3, 5);// captura apenas o mês
 		ano2 = data2.substring(6, 10);// captura apenas o ano
 
 		diaint = Integer.parseInt(dia);// transforma o valor de String para int

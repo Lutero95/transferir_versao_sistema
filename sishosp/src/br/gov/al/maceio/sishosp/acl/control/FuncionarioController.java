@@ -492,7 +492,7 @@ public class FuncionarioController implements Serializable {
 				 * sb.setStyle("display: block;\n" + "    z-index: 1017;\n" + "    left: 0px;\n"
 				 * + "    top: 54px;\n" + "    overflow: auto;\n" + "    height: 312px;");
 				 */
-				// inicia a cria�o do
+				// inicia a criação do
 				// submenu
 				sb.setLabel(p.getMenu().getDescricao());
 				sb.setIcon(p.getMenu().getCodigo());

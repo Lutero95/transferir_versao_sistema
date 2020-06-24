@@ -14,7 +14,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.ha
 /**
  * <p>Classe Java de IncrementoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="IncrementoType"&gt;
@@ -73,7 +73,7 @@ public class IncrementoType {
     protected BigDecimal valorPercentualSP;
 
     /**
-     * Obt�m o valor da propriedade habilitacao.
+     * Obtém o valor da propriedade habilitacao.
      * 
      * @return
      *     possible object is
@@ -97,7 +97,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obt�m o valor da propriedade valorPercentualSH.
+     * Obtém o valor da propriedade valorPercentualSH.
      * 
      * @return
      *     possible object is
@@ -121,7 +121,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obt�m o valor da propriedade valorPercentualSA.
+     * Obtém o valor da propriedade valorPercentualSA.
      * 
      * @return
      *     possible object is
@@ -145,7 +145,7 @@ public class IncrementoType {
     }
 
     /**
-     * Obt�m o valor da propriedade valorPercentualSP.
+     * Obtém o valor da propriedade valorPercentualSP.
      * 
      * @return
      *     possible object is

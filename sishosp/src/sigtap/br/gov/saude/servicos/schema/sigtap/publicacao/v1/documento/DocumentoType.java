@@ -14,7 +14,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.publicacao.v1.tipodocumento.Ti
 /**
  * <p>Classe Java de DocumentoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DocumentoType"&gt;
@@ -52,7 +52,7 @@ public class DocumentoType {
     protected XMLGregorianCalendar dataPublicacao;
 
     /**
-     * Obt�m o valor da propriedade numeroDocumento.
+     * Obtém o valor da propriedade numeroDocumento.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obt�m o valor da propriedade tipoDocumento.
+     * Obtém o valor da propriedade tipoDocumento.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obt�m o valor da propriedade orgaoOrigem.
+     * Obtém o valor da propriedade orgaoOrigem.
      * 
      * @return
      *     possible object is
@@ -124,7 +124,7 @@ public class DocumentoType {
     }
 
     /**
-     * Obt�m o valor da propriedade dataPublicacao.
+     * Obtém o valor da propriedade dataPublicacao.
      * 
      * @return
      *     possible object is

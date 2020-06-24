@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de CategoriaCBOType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="CategoriaCBOType"&gt;
@@ -46,7 +46,7 @@ public class CategoriaCBOType {
     protected String nome;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -70,7 +70,7 @@ public class CategoriaCBOType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is

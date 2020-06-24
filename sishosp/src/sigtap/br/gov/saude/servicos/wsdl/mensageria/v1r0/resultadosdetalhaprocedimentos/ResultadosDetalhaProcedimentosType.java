@@ -15,7 +15,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.sigtap.v1.detalheadicional.D
 /**
  * <p>Classe Java de ResultadosDetalhaProcedimentosType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ResultadosDetalhaProcedimentosType"&gt;

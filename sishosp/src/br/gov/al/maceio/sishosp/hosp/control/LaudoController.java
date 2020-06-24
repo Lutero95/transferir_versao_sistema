@@ -254,7 +254,7 @@ public class LaudoController implements Serializable {
         }
 
         if(!valido) {
-            throw new ProjetoException("A idade do paciente n�o compreende o intervalo permitido entre idade minima e m�xima");
+            throw new ProjetoException("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima");
         }
     }
 
@@ -308,7 +308,7 @@ public class LaudoController implements Serializable {
         String codigoCboSelecionado = obtemCodigoCboSelecionado();
         if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, this.laudo.getDataSolicitacao(),
                 this.laudo.getProcedimentoPrimario().getCodProc())) {
-            throw new ProjetoException("Cbo do profissional selecionado incompat�vel com o permitido no SIGTAP");
+            throw new ProjetoException("Cbo do profissional selecionado incompatível com o permitido no SIGTAP");
         }
     }
 
@@ -326,7 +326,7 @@ public class LaudoController implements Serializable {
 
         if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
                 (this.laudo.getDataSolicitacao(), sexoPermitido, this.laudo.getProcedimentoPrimario().getCodProc())) {
-            throw new ProjetoException("O sexo do paciente n�o compreende o permitido no SIGTAP");
+            throw new ProjetoException("O sexo do paciente não compreende o permitido no SIGTAP");
         }
     }
 

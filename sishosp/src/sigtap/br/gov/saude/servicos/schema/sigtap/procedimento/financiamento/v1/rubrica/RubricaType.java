@@ -12,7 +12,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.financiamento.v1.
 /**
  * <p>Classe Java de RubricaType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RubricaType"&gt;
@@ -52,7 +52,7 @@ public class RubricaType {
     protected TipoFinanciamentoType tipoFinanciamento;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class RubricaType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class RubricaType {
     }
 
     /**
-     * Obt�m o valor da propriedade tipoFinanciamento.
+     * Obtém o valor da propriedade tipoFinanciamento.
      * 
      * @return
      *     possible object is

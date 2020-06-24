@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de IdadeLimiteType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="IdadeLimiteType"&gt;
@@ -48,7 +48,7 @@ public class IdadeLimiteType {
     protected UnidadeLimiteType unidadeLimite;
 
     /**
-     * Obt�m o valor da propriedade quantidadeLimite.
+     * Obtém o valor da propriedade quantidadeLimite.
      * 
      */
     public Integer getQuantidadeLimite() {
@@ -64,7 +64,7 @@ public class IdadeLimiteType {
     }
 
     /**
-     * Obt�m o valor da propriedade unidadeLimite.
+     * Obtém o valor da propriedade unidadeLimite.
      * 
      * @return
      *     possible object is

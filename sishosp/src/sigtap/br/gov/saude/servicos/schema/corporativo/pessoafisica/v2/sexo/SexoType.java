@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de SexoType.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * <p>
  * <pre>
  * &lt;simpleType name="SexoType"&gt;

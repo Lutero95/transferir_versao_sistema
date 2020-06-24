@@ -11,7 +11,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.servicoclassifica
 /**
  * <p>Classe Java de ServicoClassificacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ServicoClassificacaoType"&gt;
@@ -51,7 +51,7 @@ public class ServicoClassificacaoType {
     protected String nomeClassificacao;
 
     /**
-     * Obt�m o valor da propriedade servico.
+     * Obtém o valor da propriedade servico.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class ServicoClassificacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade codigoClassificacao.
+     * Obtém o valor da propriedade codigoClassificacao.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class ServicoClassificacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade nomeClassificacao.
+     * Obtém o valor da propriedade nomeClassificacao.
      * 
      * @return
      *     possible object is

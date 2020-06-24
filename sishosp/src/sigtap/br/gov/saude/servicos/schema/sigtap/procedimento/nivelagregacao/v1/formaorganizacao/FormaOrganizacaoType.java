@@ -13,7 +13,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1
 /**
  * <p>Classe Java de FormaOrganizacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="FormaOrganizacaoType"&gt;
@@ -54,7 +54,7 @@ public class FormaOrganizacaoType {
     protected HistoricoSigtapBean historicoSigtap;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class FormaOrganizacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -102,7 +102,7 @@ public class FormaOrganizacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade subgrupo.
+     * Obtém o valor da propriedade subgrupo.
      * 
      * @return
      *     possible object is

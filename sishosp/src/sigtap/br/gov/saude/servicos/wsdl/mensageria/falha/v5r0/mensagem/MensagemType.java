@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de MensagemType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="MensagemType"&gt;
@@ -37,7 +37,7 @@ public class MensagemType {
     protected String descricao;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class MensagemType {
     }
 
     /**
-     * Obt�m o valor da propriedade descricao.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is

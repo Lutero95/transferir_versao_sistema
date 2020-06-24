@@ -12,7 +12,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
 /**
  * <p>Classe Java de DetalheAdicionalType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DetalheAdicionalType"&gt;
@@ -43,7 +43,7 @@ public class DetalheAdicionalType {
     protected PaginacaoType paginacao;
 
     /**
-     * Obt�m o valor da propriedade categoriaDetalheAdicional.
+     * Obtém o valor da propriedade categoriaDetalheAdicional.
      * 
      * @return
      *     possible object is
@@ -67,7 +67,7 @@ public class DetalheAdicionalType {
     }
 
     /**
-     * Obt�m o valor da propriedade paginacao.
+     * Obtém o valor da propriedade paginacao.
      * 
      * @return
      *     possible object is

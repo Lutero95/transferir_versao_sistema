@@ -174,7 +174,7 @@ public class TesourariaController implements Serializable {
         listaMovimentacaoCaixa();
         
 		 //FacesContext facesContext = FacesContext.getCurrentInstance();
-        //facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Hor�rio Selecionado:"+String.valueOf(codagenda),String.valueOf(codagenda) ));  
+        //facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Horário Selecionado:"+String.valueOf(codagenda),String.valueOf(codagenda) ));
 
     }
     

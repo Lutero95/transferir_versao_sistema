@@ -961,7 +961,7 @@ public class AgendaController implements Serializable {
             consultarAgenda(agenda.getPresenca());
             rowBean = linhaCapturada;
             //rowBean = new AgendaBean();
-            JSFUtil.adicionarMensagemSucesso("ação conclu�da com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("ação concluída com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
         }

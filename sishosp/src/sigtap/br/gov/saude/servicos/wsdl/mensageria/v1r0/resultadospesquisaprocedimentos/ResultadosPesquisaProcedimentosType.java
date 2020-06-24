@@ -15,7 +15,7 @@ import sigtap.br.gov.saude.servicos.wsdl.mensageria.v1.paginacao.PaginacaoType;
 /**
  * <p>Classe Java de ResultadosPesquisaProcedimentosType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ResultadosPesquisaProcedimentosType"&gt;
@@ -74,7 +74,7 @@ public class ResultadosPesquisaProcedimentosType {
     }
 
     /**
-     * Resposta da pagina��o
+     * Resposta da paginação
      * 					
      * 
      * @return

@@ -945,36 +945,50 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select pm.idade_minima, pm.unidade_idade_minima, pm.idade_maxima, pm.unidade_idade_maxima " + 
-            		"from hosp.procedimento_mensal pm " + 
-            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
-            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
-            		"and pm.codigo_procedimento = ? and hcs.status = 'A'";
-
+            String sql = "select pm.idade_minima, coalesce (pm.unidade_idade_minima,'MESES') unidade_idade_minima, pm.idade_maxima,coalesce (pm.unidade_idade_maxima,'MESES') unidade_idade_maxima " +
+            		" from sigtap.procedimento_mensal pm " +
+            		" join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " +
+            		" where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " +
+            		" and pm.codigo_procedimento = ? and hcs.status = 'A' and (hcs.ano = ? and hcs.mes = ?)";
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataSolicitacao);
             ps = conexao.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
             ps.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
             ps.setString(3, codigoProcedimento);
+            ps.setInt(4, calendar.get(Calendar.YEAR));
+            ps.setInt(5, calendar.get(Calendar.MONTH)+1);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                String unidade = rs.getString("unidade_idade_maxima");
             	IdadeLimiteType idadeMinima = new IdadeLimiteType();
-            	idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
-            	String unidade = rs.getString("unidade_idade_minima");
-            	if(unidade.equals(UnidadeLimiteType.MESES.name()))
+                if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
+                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima")/12);
+                else
+                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
+
+            	if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
             		idadeMinima.setUnidadeLimite(UnidadeLimiteType.MESES);
             	else
             		idadeMinima.setUnidadeLimite(UnidadeLimiteType.ANOS);
             	procedimento.setIdadeMinimaPermitida(idadeMinima);
             	
             	IdadeLimiteType idadeMaxima = new IdadeLimiteType();
-            	idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
-            	unidade = rs.getString("unidade_idade_maxima");
-            	if(unidade.equals(UnidadeLimiteType.MESES.name()))
+                if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
+                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima")/12);
+                else
+                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
+
+
+            	if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
             		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.MESES);
             	else
             		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.ANOS);
-            	procedimento.setIdadeMaximaPermitida(idadeMaxima);
+
+
+                    procedimento.setIdadeMaximaPermitida(idadeMaxima);
+
             }
 
         } catch (Exception ex) {
@@ -998,13 +1012,13 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select exists (select cm.codigo " + 
-            		"from hosp.procedimento_mensal pm " + 
-            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
-            		"join hosp.cid_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id " + 
-            		"join hosp.cid_mensal cm on cm.id = cpm.id_cid_mensal " + 
-            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
-            		"and pm.codigo_procedimento = ? and hcs.status = 'A' and cm.codigo = ?) as cid_valido";
+            String sql = "select exists (select cm.cid \n" +
+                    "from sigtap.procedimento_mensal pm \n" +
+                    "join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap \n" +
+                    "join sigtap.cid_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id \n" +
+                    "join hosp.cid  cm on cm.cod = cpm.id_cid  \n" +
+                    "where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) \n" +
+                    "and pm.codigo_procedimento = ? and hcs.status = 'A' and cm.cid = ?) as cid_valido";
 
             ps = conexao.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
@@ -1070,13 +1084,13 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select exists (select cm.codigo " + 
-            		"from hosp.procedimento_mensal pm " + 
-            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
-            		"join hosp.cbo_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id " + 
-            		"join hosp.cbo_mensal cm on cm.id = cpm.id_cbo_mensal " + 
-            		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
-            		"and pm.codigo_procedimento = ? and hcs.status = 'A' and cm.codigo = ?) as cbo_valido";
+            String sql = "select exists (select cm.codigo \n" +
+                    "from sigtap.procedimento_mensal pm \n" +
+                    "join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap \n" +
+                    "join sigtap.cbo_procedimento_mensal cpm on cpm.id_procedimento_mensal = pm.id \n" +
+                    "join hosp.cbo cm on cm.id = cpm.id_cbo \n" +
+                    "where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) \n" +
+                    "and pm.codigo_procedimento =? and hcs.status = 'A' and cm.codigo = ?) as cbo_valido";
 
             ps = conexao.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
@@ -1144,9 +1158,9 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select count(*) cid_associados from hosp.cid_procedimento_mensal cpm " + 
-            		"join hosp.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
-            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            String sql = "select count(*) cid_associados from sigtap.cid_procedimento_mensal cpm " +
+            		"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
+            		"join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " +
             		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
             		"and pm.codigo_procedimento = ? and hcs.status = 'A' ";
 
@@ -1182,11 +1196,11 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select exists (select pm.nome from hosp.procedimento_mensal pm " + 
-            		"join hosp.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " + 
+            String sql = "select exists (select pm.nome from sigtap.procedimento_mensal pm " +
+            		"join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " +
             		"where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " + 
             		"and pm.codigo_procedimento = ? and hcs.status = 'A' and " + 
-            		"(pm.sexo = ? or pm.sexo = 'AMBOS' or pm.sexo = 'NAO_SE_APLICA')) sexo_permitido";
+            		"(pm.sexo = ? or pm.sexo = 'I' or pm.sexo = 'N')) sexo_permitido";
 
             ps = conexao.prepareStatement(sql);
             ps.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));

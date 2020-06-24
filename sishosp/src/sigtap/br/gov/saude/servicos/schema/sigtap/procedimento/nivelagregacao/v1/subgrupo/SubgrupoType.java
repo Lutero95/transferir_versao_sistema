@@ -11,7 +11,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.nivelagregacao.v1
 /**
  * <p>Classe Java de SubgrupoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="SubgrupoType"&gt;
@@ -51,7 +51,7 @@ public class SubgrupoType {
     protected GrupoType grupo;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class SubgrupoType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class SubgrupoType {
     }
 
     /**
-     * Obt�m o valor da propriedade grupo.
+     * Obtém o valor da propriedade grupo.
      * 
      * @return
      *     possible object is

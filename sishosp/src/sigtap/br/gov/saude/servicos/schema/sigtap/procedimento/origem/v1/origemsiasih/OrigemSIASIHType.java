@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java de OrigemSIASIHType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="OrigemSIASIHType"&gt;
@@ -51,7 +51,7 @@ public class OrigemSIASIHType {
     protected TipoOrigemSIASIHType tipoOrigemSIASIHType;
 
     /**
-     * Obt�m o valor da propriedade codigoProcedimentoSIASIH.
+     * Obtém o valor da propriedade codigoProcedimentoSIASIH.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class OrigemSIASIHType {
     }
 
     /**
-     * Obt�m o valor da propriedade nomeProcedimentoSIASIH.
+     * Obtém o valor da propriedade nomeProcedimentoSIASIH.
      * 
      * @return
      *     possible object is
@@ -99,7 +99,7 @@ public class OrigemSIASIHType {
     }
 
     /**
-     * Obt�m o valor da propriedade tipoOrigemSIASIHType.
+     * Obtém o valor da propriedade tipoOrigemSIASIHType.
      * 
      * @return
      *     possible object is

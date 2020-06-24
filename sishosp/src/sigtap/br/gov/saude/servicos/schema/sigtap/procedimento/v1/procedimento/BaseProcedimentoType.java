@@ -11,13 +11,13 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * 
  *                 
- *                 Este tipo representa um Procedimento com somente o c�digo e o nome, para representa��es sucintas.
+ *                 Este tipo representa um Procedimento com somente o código e o nome, para representações sucintas.
  *                 
  *             
  * 
  * <p>Classe Java de BaseProcedimentoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="BaseProcedimentoType"&gt;
@@ -56,7 +56,7 @@ public class BaseProcedimentoType {
     protected String nome;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -80,7 +80,7 @@ public class BaseProcedimentoType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is

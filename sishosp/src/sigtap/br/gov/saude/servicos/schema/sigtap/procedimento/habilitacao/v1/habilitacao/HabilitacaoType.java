@@ -12,7 +12,7 @@ import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.habilitacao.v1.ar
 /**
  * <p>Classe Java de HabilitacaoType complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conte�do esperado contido dentro desta classe.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="HabilitacaoType"&gt;
@@ -52,7 +52,7 @@ public class HabilitacaoType {
     protected AreaHabilitacaoType areaHabilitacao;
 
     /**
-     * Obt�m o valor da propriedade codigo.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class HabilitacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade nome.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class HabilitacaoType {
     }
 
     /**
-     * Obt�m o valor da propriedade areaHabilitacao.
+     * Obtém o valor da propriedade areaHabilitacao.
      * 
      * @return
      *     possible object is
