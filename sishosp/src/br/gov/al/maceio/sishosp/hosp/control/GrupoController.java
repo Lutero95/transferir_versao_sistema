@@ -88,7 +88,7 @@ public class GrupoController implements Serializable {
 /*
         if (grupo.getEquipes().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
-        } else 
+        } else
         */
         {
             boolean cadastrou = gDao.gravarGrupo(grupo);
@@ -147,6 +147,12 @@ public class GrupoController implements Serializable {
 
     }
 
+    public void listarProgramasEGruposPorUnidade(int codigoUnidade) throws ProjetoException {
+        ProgramaDAO pDao = new ProgramaDAO();
+        listaProgramasEGrupos = pDao.listarProgramasEGruposPorUnidade(codigoUnidade);
+
+    }
+
     public GrupoBean getGrupo() {
         return grupo;
     }
@@ -191,7 +197,7 @@ public class GrupoController implements Serializable {
     public List<GrupoBean> listaGrupoGeralAutoComplete(String query)
             throws ProjetoException {
 
-            return gDao.listarGruposGeralAutoComplete(query);
+        return gDao.listarGruposGeralAutoComplete(query);
 
     }
 
@@ -215,12 +221,12 @@ public class GrupoController implements Serializable {
         this.prog = prog;
     }
 
-	public List<ProgramaBean> getListaProgramasEGrupos() {
-		return listaProgramasEGrupos;
-	}
+    public List<ProgramaBean> getListaProgramasEGrupos() {
+        return listaProgramasEGrupos;
+    }
 
-	public void setListaProgramasEGrupos(List<ProgramaBean> listaProgramasEGrupos) {
-		this.listaProgramasEGrupos = listaProgramasEGrupos;
-	}
+    public void setListaProgramasEGrupos(List<ProgramaBean> listaProgramasEGrupos) {
+        this.listaProgramasEGrupos = listaProgramasEGrupos;
+    }
 
 }

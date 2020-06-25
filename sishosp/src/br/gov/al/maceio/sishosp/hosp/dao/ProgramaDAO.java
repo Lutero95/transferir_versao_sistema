@@ -14,6 +14,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 public class ProgramaDAO {
 
@@ -56,10 +57,10 @@ public class ProgramaDAO {
 
             retorno = true;
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -102,10 +103,10 @@ public class ProgramaDAO {
             con.commit();
             retorno = true;
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -135,10 +136,10 @@ public class ProgramaDAO {
             con.commit();
             retorno = true;
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -169,10 +170,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -210,10 +211,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -250,10 +251,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -291,10 +292,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -331,10 +332,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -364,10 +365,10 @@ public class ProgramaDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -376,7 +377,7 @@ public class ProgramaDAO {
         }
         return programa;
     }
-    
+
     public ProgramaBean listarProgramaPorIdParaConverter(int id) throws ProjetoException {
 
         ProgramaBean programa = new ProgramaBean();
@@ -395,10 +396,10 @@ public class ProgramaDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -406,7 +407,7 @@ public class ProgramaDAO {
             }
         }
         return programa;
-    }    
+    }
 
     public ProgramaBean listarProgramaPorIdComConexao(int id, Connection conAuxiliar) throws SQLException, ProjetoException {
 
@@ -423,12 +424,12 @@ public class ProgramaDAO {
             }
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return programa;
     }
 
@@ -457,10 +458,51 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public List<ProgramaBean> listarProgramasEGruposPorUnidade(int codigoUnidade) throws ProjetoException {
+        List<ProgramaBean> lista = new ArrayList<>();
+        String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo, "+
+                "p.cod_procedimento, u.nome as unidade, u.id " +
+                "from hosp.grupo_programa gp " +
+                "join hosp.programa p on (gp.codprograma = p.id_programa) " +
+                "join hosp.grupo g on (gp.codgrupo = g.id_grupo) " +
+                "join hosp.unidade u on u.id = p.cod_unidade " +
+                "where p.cod_unidade = ? order by p.descprograma";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codigoUnidade);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("codprograma"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
+                programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+                programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+                programa.setDescricaoUnidade(rs.getString("unidade"));
+                programa.setCodUnidade(rs.getInt("id"));
+                lista.add(programa);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -500,10 +542,10 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -534,12 +576,12 @@ public class ProgramaDAO {
             }
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
 

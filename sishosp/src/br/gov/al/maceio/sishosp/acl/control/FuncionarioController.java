@@ -1,3 +1,4 @@
+
 package br.gov.al.maceio.sishosp.acl.control;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -53,6 +55,8 @@ public class FuncionarioController implements Serializable {
 	private Integer codigoDaUnidadeSelecionada = null;
 	private List<Empresa> listaEmpresaFuncionario;
 	private Empresa empresa;
+	private List<UnidadeBean> listaUnidadesDoUsuario;
+	private UnidadeBean unidadeParaProgramasIhGrupos;
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -110,6 +114,8 @@ public class FuncionarioController implements Serializable {
 		unidadesDoUsuarioLogado = new ArrayList<>();
 		listaEmpresaFuncionario = new ArrayList<>();
 		empresa = new Empresa();
+		listaUnidadesDoUsuario = new ArrayList<>();
+		unidadeParaProgramasIhGrupos = new UnidadeBean();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -181,10 +187,10 @@ public class FuncionarioController implements Serializable {
 			return null;
 
 		} else {
-			
+
 			Integer quantidadeEmpresas = fDao.verificarSeTrabalhaEmMaisDeUmaEmpresa(usuario.getCpf());
 
- 			if(quantidadeEmpresas > 1){
+			if(quantidadeEmpresas > 1){
 				listaEmpresaFuncionario = fDao.carregarEmpresasDoFuncionario(usuario.getCpf());
 				JSFUtil.abrirDialog("selecaoEmpresa");
 			}
@@ -230,10 +236,10 @@ public class FuncionarioController implements Serializable {
 					JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
 					return  null;
 				}
-				else 
+				else
 				{
-				String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
-				return url;
+					String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+					return url;
 				}
 			}
 		}
@@ -292,68 +298,68 @@ public class FuncionarioController implements Serializable {
 
 		// ACL =============================================================
 
-				List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
+		List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
 
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario_sis",
-						sistemas);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario_sis",
+				sistemas);
 
-				List<Permissoes> permissoes = fDao.carregarPermissoes(usuarioLogado);
+		List<Permissoes> permissoes = fDao.carregarPermissoes(usuarioLogado);
 
-				carregarAtalhosPaginaInicial(permissoes);
+		carregarAtalhosPaginaInicial(permissoes);
 
-				sistemaLogado.setDescricao("Sem Sistema");
-				sistemaLogado.setSigla("Sem Sistema");
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sistema_logado",
-						sistemaLogado);
+		sistemaLogado.setDescricao("Sem Sistema");
+		sistemaLogado.setSigla("Sem Sistema");
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sistema_logado",
+				sistemaLogado);
 
-				for (Sistema s : sistemas) {
-					Menu m = new Menu();
-					m.setDescricao("Principal");
-					m.setUrl(s.getUrl());
-					m.setTipo("injetado");
-					Permissoes perms = new Permissoes();
-					perms.setMenu(m);
-					permissoes.add(perms);
-				}
+		for (Sistema s : sistemas) {
+			Menu m = new Menu();
+			m.setDescricao("Principal");
+			m.setUrl(s.getUrl());
+			m.setTipo("injetado");
+			Permissoes perms = new Permissoes();
+			perms.setMenu(m);
+			permissoes.add(perms);
+		}
 
-				for (Sistema s : sistemas) {
-					Menu m = new Menu();
-					m.setDescricao("Fale Conosco");
-					m.setUrl(s.getUrl());
-					m.setTipo("injetado");
-					Permissoes perms = new Permissoes();
-					perms.setMenu(m);
-					permissoes.add(perms);
-				}
+		for (Sistema s : sistemas) {
+			Menu m = new Menu();
+			m.setDescricao("Fale Conosco");
+			m.setUrl(s.getUrl());
+			m.setTipo("injetado");
+			Permissoes perms = new Permissoes();
+			perms.setMenu(m);
+			permissoes.add(perms);
+		}
 
-				Permissoes perms2 = new Permissoes();
-				Menu m3 = new Menu();
-				m3.setDescricao("Primeiro Acesso");
-				m3.setUrl("/pages/comum/primeiroAcesso.faces");
-				m3.setTipo("injetado");
-				perms2.setMenu(m3);
-				permissoes.add(perms2);
+		Permissoes perms2 = new Permissoes();
+		Menu m3 = new Menu();
+		m3.setDescricao("Primeiro Acesso");
+		m3.setUrl("/pages/comum/primeiroAcesso.faces");
+		m3.setTipo("injetado");
+		perms2.setMenu(m3);
+		permissoes.add(perms2);
 
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario", permissoes);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("perms_usuario", permissoes);
 
-				HttpSession session = SessionUtil.getSession();
-				session.setAttribute("User", usuarioLogado.getId());
+		HttpSession session = SessionUtil.getSession();
+		session.setAttribute("User", usuarioLogado.getId());
 
-				recoverDataFromSession();
+		recoverDataFromSession();
 
-				String url = "";
+		String url = "";
 
-				if (sistemas.size() > 1)
-					url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-				else {
-					recSistemaLogado(sistemas.get(0));
-					gerarMenus(sistemaLogado);
-					url = sistemas.get(0).getUrl() + "?faces-redirect=true";
-				}
+		if (sistemas.size() > 1)
+			url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+		else {
+			recSistemaLogado(sistemas.get(0));
+			gerarMenus(sistemaLogado);
+			url = sistemas.get(0).getUrl() + "?faces-redirect=true";
+		}
 
-				return url;
-			
-		
+		return url;
+
+
 	}
 
 	public void carregarAtalhosPaginaInicial(List<Permissoes> permissoes){
@@ -388,19 +394,19 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void carregaListaSistemasDualInsercao() throws ProjetoException {
-			listaSistemasSoucer = null;
-			listaSistemasTarget = new ArrayList<>();
-			listaSistemasSoucerNaInclusao();
-			listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
+		listaSistemasSoucer = null;
+		listaSistemasTarget = new ArrayList<>();
+		listaSistemasSoucerNaInclusao();
+		listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
 	}
-	
+
 	public void carregaListaSistemasDualAlteracao() throws ProjetoException {
 		listaSistemasSoucer = null;
 		listaSistemasTarget = new ArrayList<>();
 		listaSistemasSoucerNaAlteracao();
 		listaSistemasTargetNaAlteracao();
 		listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
-}
+	}
 
 	public void setListaSistemasDual(DualListModel<Sistema> listaSistemasDual) {
 		this.listaSistemasDual = listaSistemasDual;
@@ -448,7 +454,7 @@ public class FuncionarioController implements Serializable {
 		List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
 		List<DefaultSubMenu> menusAssociados = new ArrayList<>();
 
-		// Gerar menu inÍcio.
+		// Gerar menu inicio.
 		DefaultMenuItem item1 = new DefaultMenuItem();
 		item1.setValue("InÍcio");
 		// contextPath+
@@ -481,7 +487,7 @@ public class FuncionarioController implements Serializable {
 					&& (p.getMenu().getTipo().equals("submenu")) // compara o
 					// tipo para
 					// verificar
-					// se 
+					// se
 					// submenu
 					&& (p.getIdSistema().equals(sistema.getId())) // compara os
 					// ids
@@ -659,14 +665,56 @@ public class FuncionarioController implements Serializable {
 		renderizarPermissoes = false;
 	}
 
+	public Boolean validaSeTodosOsProgramasPossuemUnidadeAssociada() {
+		List<Integer> listaIdUnidadesDaListaDeGruposIhProgramas = retornaIdUnidadesDaListaDeGruposIhProgramaDeFormaUnica();
+
+		if(!listaIdUnidadesDaListaDeGruposIhProgramas.isEmpty() &&
+				!listaIdUnidadesDaListaDeGruposIhProgramas.contains(profissional.getUnidade().getId())) {
+			JSFUtil.adicionarMensagemErro("A unidade principal"+
+					" foi alterada, por favor remova o(s) programa(s)/grupo(o) associados a ela", "");
+			return false;
+		}
+
+		else if(this.profissional.getListaUnidades().isEmpty() && listaIdUnidadesDaListaDeGruposIhProgramas.size() > 1) {
+			JSFUtil.adicionarMensagemErro("Existe Programa/Grupo associado que n�o tem correla��o com as unidades associadas a este funcion�rio", "");
+			return false;
+		}
+
+		else {
+			for (UnidadeBean unidade : this.profissional.getListaUnidades()) {
+				if (!listaIdUnidadesDaListaDeGruposIhProgramas.contains(unidade.getId())) {
+					JSFUtil.adicionarMensagemErro(
+							"Existe Programa/Grupo associado que n�o tem correla��o com as unidades associadas a este funcion�rio","");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private List<Integer> retornaIdUnidadesDaListaDeGruposIhProgramaDeFormaUnica() {
+		List<Integer> idUnidadesDaListaDeGruposIhProgramas = new ArrayList<Integer>();
+		for (ProgramaBean grupoIhPrograma : listaGruposEProgramasProfissional) {
+			if(!idUnidadesDaListaDeGruposIhProgramas.contains(grupoIhPrograma.getCodUnidade()))
+				idUnidadesDaListaDeGruposIhProgramas.add(grupoIhPrograma.getCodUnidade());
+		}
+		return idUnidadesDaListaDeGruposIhProgramas;
+	}
+
 	public void gravarProfissional() throws ProjetoException {
 
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
+			return;
 		}
 
-		else if (listaSistemasDual.getTarget().size() == 0) {
+		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
+			return;
+
+		else
+
+		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
 			if (validaCboProfissional()) {
@@ -717,7 +765,7 @@ public class FuncionarioController implements Serializable {
 			}
 		}
 	}
-	
+
 	private Boolean validaCboProfissional() {
 		if(this.profissional.getRealizaAtendimento() == true) {
 			if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.profissional.getCbo().getCodigo())) {
@@ -746,10 +794,16 @@ public class FuncionarioController implements Serializable {
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
+			return;
 		}
-		else if (listaSistemasDual.getTarget().size() == 0) {
+
+		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
+			return;
+
+		else
+		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
-		} 
+		}
 		else {
 			if (validaCboProfissional()) {
 				List<Integer> listaSis = new ArrayList<>();
@@ -829,7 +883,7 @@ public class FuncionarioController implements Serializable {
 				if (listaGruposEProgramasProfissional.get(i).getIdPrograma() == profissional.getProgAdd()
 						.getIdPrograma()
 						&& (listaGruposEProgramasProfissional.get(i).getGrupoBean().getIdGrupo() == profissional
-								.getProgAdd().getGrupoBean().getIdGrupo())) {
+						.getProgAdd().getGrupoBean().getIdGrupo())) {
 					existe = true;
 
 				}
@@ -876,7 +930,7 @@ public class FuncionarioController implements Serializable {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
 		return result;
 	}
-	
+
 	public List<FuncionarioBean> listaTodosProfissionaisAutoComplete(String query) throws ProjetoException {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 2);
 		return result;
@@ -1004,6 +1058,22 @@ public class FuncionarioController implements Serializable {
 		profissional.getListaUnidades().remove(unidadeBean);
 	}
 
+	public void montarListaDeUnidadesDoUsuario() throws ProjetoException {
+		listaUnidadesDoUsuario = new ArrayList<>();
+		UnidadeDAO unidadeDAO = new UnidadeDAO();
+		listaUnidadesDoUsuario.add(unidadeDAO.buscarUnidadePorId(profissional.getUnidade().getId()));
+
+		for (int i=0; i<profissional.getListaUnidades().size(); i++){
+			listaUnidadesDoUsuario.add(profissional.getListaUnidades().get(i));
+		}
+
+	}
+
+	public void acoesAposEscolherUnidadeParaCarregarProgramasIhGrupos(){
+		JSFUtil.fecharDialog("dlgUnidadesParaProgramaGrupo");
+		JSFUtil.abrirDialog("dlgConsuGrupos");
+	}
+
 	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
@@ -1042,8 +1112,8 @@ public class FuncionarioController implements Serializable {
 		JSFUtil.abrirDialog("dlgAlterarSenha");
 		JSFUtil.atualizarComponente("frmAlterarSenha");
 	}
-	
-		public void abrirDialogTrocarDeUnidade(){
+
+	public void abrirDialogTrocarDeUnidade(){
 		JSFUtil.abrirDialog("selecaoUnidade");
 	}
 
@@ -1166,12 +1236,12 @@ public class FuncionarioController implements Serializable {
 	public DualListModel<Menu> getListaMenusDualEdit()
 			throws NumberFormatException, ProjetoException {
 		//if (listaMenusDualEdit == null) {
-			listaMenusSourceEdit = null;
-			listaMenusTargetEdit = null;
-			getListaMenusSourceEdit();
-			getListaMenusTargetEdit();
-			listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit,
-					listaMenusTargetEdit);
+		listaMenusSourceEdit = null;
+		listaMenusTargetEdit = null;
+		getListaMenusSourceEdit();
+		getListaMenusTargetEdit();
+		listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit,
+				listaMenusTargetEdit);
 		//}
 		return listaMenusDualEdit;
 	}
@@ -1347,16 +1417,16 @@ public class FuncionarioController implements Serializable {
 		}
 		return listaSistemasSoucer;
 	}
-	
+
 	public List<Sistema> listaSistemasSoucerNaAlteracao() throws ProjetoException {
-			FuncionarioDAO udao = new FuncionarioDAO();
-			listaSistemasSoucer = udao.carregaSistemasListaSourceAlteracao(profissional.getId());
+		FuncionarioDAO udao = new FuncionarioDAO();
+		listaSistemasSoucer = udao.carregaSistemasListaSourceAlteracao(profissional.getId());
 		return listaSistemasSoucer;
-	}	
+	}
 
 	public List<Sistema> listaSistemasTargetNaAlteracao() throws ProjetoException {
-			FuncionarioDAO udao = new FuncionarioDAO();
-			listaSistemasTarget = udao.carregaListaSistemasTargetAlteracao(profissional.getId());
+		FuncionarioDAO udao = new FuncionarioDAO();
+		listaSistemasTarget = udao.carregaListaSistemasTargetAlteracao(profissional.getId());
 		return listaSistemasTarget;
 	}
 
@@ -1453,5 +1523,21 @@ public class FuncionarioController implements Serializable {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+
+	public List<UnidadeBean> getListaUnidadesDoUsuario() {
+		return listaUnidadesDoUsuario;
+	}
+
+	public void setListaUnidadesDoUsuario(List<UnidadeBean> listaUnidadesDoUsuario) {
+		this.listaUnidadesDoUsuario = listaUnidadesDoUsuario;
+	}
+
+	public UnidadeBean getUnidadeParaProgramasIhGrupos() {
+		return unidadeParaProgramasIhGrupos;
+	}
+
+	public void setUnidadeParaProgramasIhGrupos(UnidadeBean unidadeParaProgramasIhGrupos) {
+		this.unidadeParaProgramasIhGrupos = unidadeParaProgramasIhGrupos;
 	}
 }

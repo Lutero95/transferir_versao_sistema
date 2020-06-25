@@ -1,11 +1,11 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:b="http://bootsfaces.net/ui"
-	template="../../template/template.xhtml">
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:stella="http://stella.caelum.com.br/faces2"
+				xmlns:b="http://bootsfaces.net/ui"
+				template="../../template/template.xhtml">
 
 	<ui:define name="content">
 
@@ -18,39 +18,39 @@
 			<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
 					<h:outputText value="#{MBFuncionarios.cabecalho}"
-						class="panel-title"></h:outputText>
+								  class="panel-title"></h:outputText>
 				</div>
 
 				<p:tabView style="height:auto; width:auto;border-bottom:none;"
-					id="tbv">
+						   id="tbv">
 
 					<p:tab title="Dados Pessoais">
 
 						<b:row>
 							<b:column span="3">
 								<p:selectBooleanCheckbox label="Realiza Atendimento"
-									itemLabel="Realiza Atendimento" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaAtendimento}">
+														 itemLabel="Realiza Atendimento" style="color:#2e84ce;"
+														 value="#{MBFuncionarios.profissional.realizaAtendimento}">
 									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv:outAtendimento"></p:ajax>
+											update="frmPrincipal:tbv:outAtendimento"></p:ajax>
 								</p:selectBooleanCheckbox>
 							</b:column>
 
 							<b:column span="3">
 								<p:selectBooleanCheckbox label="Realizar Liberações"
-									itemLabel="Realiza Liberações" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaLiberacoes}">
+														 itemLabel="Realiza Liberações" style="color:#2e84ce;"
+														 value="#{MBFuncionarios.profissional.realizaLiberacoes}">
 									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv"></p:ajax>
+											update="frmPrincipal:tbv"></p:ajax>
 								</p:selectBooleanCheckbox>
 							</b:column>
 
 							<b:column span="3">
 								<p:selectBooleanCheckbox label="Realizar Encaixes"
-									itemLabel="Realiza Encaixes" style="color:#2e84ce;"
-									value="#{MBFuncionarios.profissional.realizaEncaixes}">
+														 itemLabel="Realiza Encaixes" style="color:#2e84ce;"
+														 value="#{MBFuncionarios.profissional.realizaEncaixes}">
 									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-										update="frmPrincipal:tbv"></p:ajax>
+											update="frmPrincipal:tbv"></p:ajax>
 								</p:selectBooleanCheckbox>
 							</b:column>
 						</b:row>
@@ -62,11 +62,11 @@
 								<b:label for="nome" value="Nome" severity="info" />
 
 								<b:inputText value="#{MBFuncionarios.profissional.nome}"
-									id="nome" required="true"
-									validator="CaractereEmBrancoValidator"
-									requiredMessage="Nome: Campo obrigatório!"
-									validatorMessage="Nome deve conter entre 2 e 100 caracteres."
-									class="form-control">
+											 id="nome" required="true"
+											 validator="CaractereEmBrancoValidator"
+											 requiredMessage="Nome: Campo obrigatório!"
+											 validatorMessage="Nome deve conter entre 2 e 100 caracteres."
+											 class="form-control">
 									<f:validateLength minimum="2" maximum="100" />
 								</b:inputText>
 							</b:column>
@@ -75,11 +75,11 @@
 								<b:label for="cpf" value="CPF: " severity="info" />
 
 								<p:inputMask mask="999.999.999-99"
-									value="#{MBFuncionarios.profissional.cpf}"
-									class="form-control select-agendaEquipe2" id="cpf"
-									required="true" validator="CPFValidator"
-									validatorMessage="CPF inválido!"
-									requiredMessage="CPF do Profissional Campo obrigatório!">
+											 value="#{MBFuncionarios.profissional.cpf}"
+											 class="form-control select-agendaEquipe2" id="cpf"
+											 required="true" validator="CPFValidator"
+											 validatorMessage="CPF inválido!"
+											 requiredMessage="CPF do Profissional Campo obrigatório!">
 								</p:inputMask>
 
 							</b:column>
@@ -91,8 +91,8 @@
 								<b:label value="Senha " severity="info" />
 
 								<b:inputSecret required="true"
-									requiredMessage="Senha: Campo obrigatório!"
-									value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
+											   requiredMessage="Senha: Campo obrigatório!"
+											   value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
 							</b:column>
 
 							<b:column span="3" class="label-position">
@@ -112,15 +112,15 @@
 								<b:label value="Perfil" severity="info" />
 
 								<p:selectOneMenu style="margin-left: 10px;"
-									value="#{MBFuncionarios.profissional.perfil.id}"
-									required="true" requiredMessage="Perfil: Campo obrigatório!">
+												 value="#{MBFuncionarios.profissional.perfil.id}"
+												 required="true" requiredMessage="Perfil: Campo obrigatório!">
 
 									<f:selectItem itemLabel="Selecione" />
 									<f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
-										itemLabel="#{perf.descricao}" itemValue="#{perf.id}" />
+												   itemLabel="#{perf.descricao}" itemValue="#{perf.id}" />
 									<p:ajax event="change"
-										listener="#{MBFuncionarios.limparDualCad()}"
-										update="frmPrincipal:tbv:outPermissoes" />
+											listener="#{MBFuncionarios.limparDualCad()}"
+											update="frmPrincipal:tbv:outPermissoes" />
 								</p:selectOneMenu>
 							</b:column>
 
@@ -128,14 +128,15 @@
 								<b:label value="Unidade Padrão" severity="info" />
 
 								<b:selectOneMenu
-									value="#{MBFuncionarios.profissional.unidade.id}"
-									required="true"
-									requiredMessage="Unidade Padrão: Campo obrigatório!">
+										value="#{MBFuncionarios.profissional.unidade.id}"
+										required="true"
+										requiredMessage="Unidade Padrão: Campo obrigatório!">
 
 									<f:selectItem itemLabel="Selecione" />
 									<f:selectItems
-										value="#{UnidadeController.listarTodasAsUnidades()}" var="emp"
-										itemLabel="#{emp.nomeUnidade}" itemValue="#{emp.id}" />
+											value="#{UnidadeController.listarTodasAsUnidades()}" var="emp"
+											itemLabel="#{emp.nomeUnidade}" itemValue="#{emp.id}" />
+									<p:ajax event="change" process="@this" />
 								</b:selectOneMenu>
 							</b:column>
 
@@ -153,20 +154,20 @@
 								<b:label value="Unidade" severity="info" />
 
 								<b:selectOneMenu id="unidadeExtra"
-									value="#{MBFuncionarios.profissional.unidadeExtra.id}">
+												 value="#{MBFuncionarios.profissional.unidadeExtra.id}">
 
 									<f:selectItem itemLabel="Selecione" />
 									<f:selectItems
-										value="#{UnidadeController.listarTodasAsUnidades()}" var="emp"
-										itemLabel="#{emp.nomeUnidade}" itemValue="#{emp.id}" />
+											value="#{UnidadeController.listarTodasAsUnidades()}" var="emp"
+											itemLabel="#{emp.nomeUnidade}" itemValue="#{emp.id}" />
 								</b:selectOneMenu>
 							</b:column>
 
 							<b:column span="3">
 								<p:commandButton process="@this, unidadeExtra" value="Adicionar"
-									action="#{MBFuncionarios.addUnidadeExtra()}"
-									class="btn-acao-table acao-confirmar" icon="ui-icon-plus"
-									style="margin-top: 20px;" update="tabelaunidades, :msgPagina"></p:commandButton>
+												 action="#{MBFuncionarios.addUnidadeExtra()}"
+												 class="btn-acao-table acao-confirmar" icon="ui-icon-plus"
+												 style="margin-top: 20px;" update="tabelaunidades, :msgPagina"></p:commandButton>
 							</b:column>
 						</b:row>
 
@@ -175,12 +176,12 @@
 						<b:row>
 							<b:column span="9">
 								<p:outputPanel>
-								<p:autoUpdate/>
+									<p:autoUpdate/>
 									<p:dataTable emptyMessage="Nenhuma unidade adicionada"
-										styleClass="table table-hover" id="tabelaunidades"
-										value="#{MBFuncionarios.profissional.listaUnidades}"
-										var="unidade" paginator="true" paginatorPosition="bottom"
-										rows="12" resizableColumns="true">
+												 styleClass="table table-hover" id="tabelaunidades"
+												 value="#{MBFuncionarios.profissional.listaUnidades}"
+												 var="unidade" paginator="true" paginatorPosition="bottom"
+												 rows="12" resizableColumns="true">
 
 										<p:column headerText="Unidade">
 											<p:outputLabel value="#{unidade.nomeUnidade}" />
@@ -189,11 +190,11 @@
 										<p:column headerText="Ação">
 											<div align="center">
 												<p:commandButton immediate="true"
-													class="new-btn-acao-table acao-excluir"
-													action="#{MBFuncionarios.removerUnidadeExtra()}"
-													icon="ui-icon-trash" update="tabelaunidades">
+																 class="new-btn-acao-table acao-excluir"
+																 action="#{MBFuncionarios.removerUnidadeExtra()}"
+																 icon="ui-icon-trash" update="tabelaunidades">
 													<f:setPropertyActionListener value="#{unidade}"
-														target="#{MBFuncionarios.unidadeBean}" />
+																				 target="#{MBFuncionarios.unidadeBean}" />
 												</p:commandButton>
 											</div>
 										</p:column>
@@ -216,24 +217,24 @@
 
 								<b:column span="2" class="label-position">
 									<p:outputLabel value="Programa/Grupo:"
-										style="margin-left:-15px; margin-top: 8px;
+												   style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
 									<p:commandButton process="@this" size="sm" immediate="true"
-										tooltip="Incluir Profissional" icon="ui-icon-plus"
-										class="new-btn-acao-table acao-editar"
-										style="margin-left: 20px;"
-										actionListener="#{GrupoController.listarProgramasEGrupos}"
-										oncomplete="PF('dlgConsuGrupos').show();" />
+													 tooltip="Incluir Profissional" icon="ui-icon-plus"
+													 class="new-btn-acao-table acao-editar"
+													 style="margin-left: 20px;"
+													 action="#{MBFuncionarios.montarListaDeUnidadesDoUsuario}"
+													 oncomplete="PF('dlgUnidadesParaProgramaGrupo').show();" update=":frmUnidadesParaProgramaGrupo"/>
 								</b:column>
 
 								<b:column span="6" class="label-position">
 
 									<p:dataTable emptyMessage="Nenhum Programa/Grupo"
-										styleClass="table table-hover" id="tabelagrupo"
-										value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
-										var="programa" paginator="true" paginatorPosition="bottom"
-										rows="12" resizableColumns="true">
+												 styleClass="table table-hover" id="tabelagrupo"
+												 value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
+												 var="programa" paginator="true" paginatorPosition="bottom"
+												 rows="12" resizableColumns="true">
 
 										<p:column headerText="Programa">
 											<p:outputLabel value="#{programa.descPrograma}" />
@@ -243,14 +244,18 @@
 											<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
 										</p:column>
 
+										<p:column headerText="Unidade">
+											<p:outputLabel value="#{programa.descricaoUnidade}" />
+										</p:column>
+
 										<p:column headerText="Ação">
 											<div align="center">
 												<p:commandButton immediate="true"
-													action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
-													icon="ui-icon-trash" update="tabelagrupo"
-													class="new-btn-acao-table acao-excluir">
+																 action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
+																 icon="ui-icon-trash" update="tabelagrupo"
+																 class="new-btn-acao-table acao-excluir">
 													<f:setPropertyActionListener value="#{programa}"
-														target="#{MBFuncionarios.profissional.progAdd}" />
+																				 target="#{MBFuncionarios.profissional.progAdd}" />
 												</p:commandButton>
 											</div>
 										</p:column>
@@ -271,62 +276,62 @@
 
 							<div align="center">
 								<p:outputLabel
-									value="Marque a opção 'Realiza Atendimento' para carregar os itens dessa opção."
-									style="font-size:18px !important;"
-									rendered="#{MBFuncionarios.profissional.realizaAtendimento == false}" />
+										value="Marque a opção 'Realiza Atendimento' para carregar os itens dessa opção."
+										style="font-size:18px !important;"
+										rendered="#{MBFuncionarios.profissional.realizaAtendimento == false}" />
 							</div>
 
 							<b:row
-								rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
+									rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
 
 								<b:column span="3"
-									class="label-position new-data-size new-comple1">
+										  class="label-position new-data-size new-comple1">
 									<b:label value="Especialidade" severity="info" />
 
 									<p:outputPanel id="outEspeci">
 
 										<p:autoComplete
-											value="#{MBFuncionarios.profissional.especialidade}"
-											size="31" converter="conEspecialidade" id="descE"
-											completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
-											effect="fade" var="theme" forceSelection="true"
-											required="true" class="select-agendaEquipe4"
-											requiredMessage="Especialidade: Campo obrigatório!"
-											minQueryLength="1" itemValue="#{theme}"
-											itemLabel="#{theme.descEspecialidade}">
+												value="#{MBFuncionarios.profissional.especialidade}"
+												size="31" converter="conEspecialidade" id="descE"
+												completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												required="true" class="select-agendaEquipe4"
+												requiredMessage="Especialidade: Campo obrigatório!"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descEspecialidade}">
 										</p:autoComplete>
 
 										<p:commandButton id="btBusEsp" icon="ui-icon-search"
-											style="margin-top: 5px;" update=":formConsulEspec"
-											onclick="PF('dlgConsulEspecialidade').show();"
-											immediate="true"
-											actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
+														 style="margin-top: 5px;" update=":formConsulEspec"
+														 onclick="PF('dlgConsulEspecialidade').show();"
+														 immediate="true"
+														 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
 
 									</p:outputPanel>
 
 								</b:column>
 
 								<b:column span="3"
-									class="label-position new-data-size new-comple1">
+										  class="label-position new-data-size new-comple1">
 									<b:label value="C.B.O" severity="info" />
 
 									<p:outputPanel id="outCboP">
 
 										<p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
-											size="31" converter="conCbo" id="descCbo"
-											class="select-agendaEquipe4"
-											completeMethod="#{CboController.listaCboAutoComplete}"
-											effect="fade" var="theme" forceSelection="true"
-											minQueryLength="1" itemValue="#{theme}" required="true"
-											requiredMessage="CBO: Campo obrigatório!"
-											itemLabel="#{theme.descCbo}">
+														size="31" converter="conCbo" id="descCbo"
+														class="select-agendaEquipe4"
+														completeMethod="#{CboController.listaCboAutoComplete}"
+														effect="fade" var="theme" forceSelection="true"
+														minQueryLength="1" itemValue="#{theme}" required="true"
+														requiredMessage="CBO: Campo obrigatório!"
+														itemLabel="#{theme.descCbo}">
 										</p:autoComplete>
 
 										<p:commandButton id="btBusCbo" icon="ui-icon-search"
-											update=":formConsulCbo" style="margin-top: 5px;"
-											immediate="true"
-											actionListener="#{CboController.listarCbos()}"
-											oncomplete="PF('dlgConsulCbo').show();" />
+														 update=":formConsulCbo" style="margin-top: 5px;"
+														 immediate="true"
+														 actionListener="#{CboController.listarCbos()}"
+														 oncomplete="PF('dlgConsulCbo').show();" />
 
 									</p:outputPanel>
 
@@ -335,26 +340,26 @@
 							</b:row>
 
 							<b:row
-								rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
+									rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
 
 								<b:column span="3"
-									class="label-position new-data-size new-comple1">
+										  class="label-position new-data-size new-comple1">
 									<b:label value="Procedimento" severity="info" />
 
 									<p:outputPanel id="outProcP1">
 										<p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
-											size="31" converter="conProcedimento" id="descProc1"
-											class="select-agendaEquipe4"
-											completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-											effect="fade" var="theme" forceSelection="true"
-											minQueryLength="1" itemValue="#{theme}"
-											itemLabel="#{theme.nomeProc}">
+														size="31" converter="conProcedimento" id="descProc1"
+														class="select-agendaEquipe4"
+														completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+														effect="fade" var="theme" forceSelection="true"
+														minQueryLength="1" itemValue="#{theme}"
+														itemLabel="#{theme.nomeProc}">
 										</p:autoComplete>
 
 										<p:commandButton id="btBusProc1" icon="ui-icon-search"
-											onclick="PF('dlgConsulProc1').show();" immediate="true"
-											actionListener="#{ProcedimentoController.listarProcedimentos()}"
-											style="margin-top: 5px;" />
+														 onclick="PF('dlgConsulProc1').show();" immediate="true"
+														 actionListener="#{ProcedimentoController.listarProcedimentos()}"
+														 style="margin-top: 5px;" />
 									</p:outputPanel>
 								</b:column>
 
@@ -363,13 +368,13 @@
 
 									<p:outputPanel id="outProcP2">
 										<b:inputText value="#{MBFuncionarios.profissional.cns}"
-											class="form-control" required="true"
-											validator="CaractereEmBrancoValidator"
-											requiredMessage="CNS: Campo obrigátorio!">
+													 class="form-control" required="true"
+													 validator="CaractereEmBrancoValidator"
+													 requiredMessage="CNS: Campo obrigátorio!">
 											<p:ajax
-												listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
-												global="false" event="blur" immediate="true"
-												update=":msgPagina" />
+													listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
+													global="false" event="blur" immediate="true"
+													update=":msgPagina" />
 										</b:inputText>
 
 									</p:outputPanel>
@@ -386,24 +391,24 @@
 						<center>
 							<p:panelGrid columns="2" style="border:none">
 								<p:pickList id="pick"
-									value="#{MBFuncionarios.listaSistemasDual}" var="sis"
-									itemLabel="#{sis.descricao}" itemValue="#{sis}"
-									showCheckbox="true" converter="conPickListSistema"
-									required="true"
-									requiredMessage="Informe pelo menos um sistema."
-									showSourceFilter="true" showTargetFilter="true"
-									filterMatchMode="contains">
+											value="#{MBFuncionarios.listaSistemasDual}" var="sis"
+											itemLabel="#{sis.descricao}" itemValue="#{sis}"
+											showCheckbox="true" converter="conPickListSistema"
+											required="true"
+											requiredMessage="Informe pelo menos um sistema."
+											showSourceFilter="true" showTargetFilter="true"
+											filterMatchMode="contains">
 
 									<f:facet name="sourceCaption">
 										<h:outputText value="Sistemas não associados"
-											style="color:black" />
+													  style="color:black" />
 									</f:facet>
 									<f:facet name="targetCaption">
 										<h:outputText value="Sistemas Associados" style="color:black" />
 									</f:facet>
 
 									<p:ajax event="transfer"
-										listener="#{MBFuncionarios.onTransferSistema}" />
+											listener="#{MBFuncionarios.onTransferSistema}" />
 								</p:pickList>
 							</p:panelGrid>
 						</center>
@@ -415,22 +420,22 @@
 						<p:outputPanel id="outPermissoes">
 							<div align="center">
 								<p:outputLabel
-									value="Selecione um perfil para exibir as permissões que não estão associadas."
-									style="font-size:18px !important;"
-									rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
+										value="Selecione um perfil para exibir as permissões que não estão associadas."
+										style="font-size:18px !important;"
+										rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
 							</div>
 
 							<p:tabView id="tabvPerms" class="tab-style"
-								rendered="#{MBFuncionarios.renderizarPermissoes == true}">
+									   rendered="#{MBFuncionarios.renderizarPermissoes == true}">
 
 								<p:tab title="Associar Menus">
 									<p:panelGrid styleClass="semBorda" columns="2">
 										<p:pickList id="pickMenu"
-											value="#{MBFuncionarios.listaMenusDual}" var="menu"
-											itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
-											itemValue="#{menu}" showCheckbox="true"
-											showSourceFilter="true" showTargetFilter="true"
-											filterMatchMode="contains" converter="conPickListMenu">
+													value="#{MBFuncionarios.listaMenusDual}" var="menu"
+													itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+													itemValue="#{menu}" showCheckbox="true"
+													showSourceFilter="true" showTargetFilter="true"
+													filterMatchMode="contains" converter="conPickListMenu">
 
 											<f:facet name="sourceCaption">
 												<font color="#227ac6">Menus não associados</font>
@@ -440,7 +445,7 @@
 											</f:facet>
 
 											<p:ajax event="transfer"
-												listener="#{MBFuncionarios.onTransferMenu}" />
+													listener="#{MBFuncionarios.onTransferMenu}" />
 										</p:pickList>
 									</p:panelGrid>
 								</p:tab>
@@ -448,11 +453,11 @@
 								<p:tab title="Associar Funções">
 									<p:panelGrid styleClass="semBorda" columns="2">
 										<p:pickList id="pickFuncao"
-											value="#{MBFuncionarios.listaFuncoesDual}" var="funcao"
-											itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
-											itemValue="#{funcao}" showCheckbox="true"
-											showSourceFilter="true" showTargetFilter="true"
-											filterMatchMode="contains" converter="conPickListFuncao">
+													value="#{MBFuncionarios.listaFuncoesDual}" var="funcao"
+													itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+													itemValue="#{funcao}" showCheckbox="true"
+													showSourceFilter="true" showTargetFilter="true"
+													filterMatchMode="contains" converter="conPickListFuncao">
 
 											<f:facet name="sourceCaption">
 												<font color="#227ac6">Funções não associadas</font>
@@ -462,7 +467,7 @@
 											</f:facet>
 
 											<p:ajax event="transfer"
-												listener="#{MBFuncionarios.onTransferFuncao}" />
+													listener="#{MBFuncionarios.onTransferFuncao}" />
 										</p:pickList>
 									</p:panelGrid>
 								</p:tab>
@@ -472,68 +477,68 @@
 					</p:tab>
 
 
-				<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 2}">
+					<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 2}">
 
-					<p:outputPanel id="outPermissoesAlterar">
-						<div align="center">
-							<p:outputLabel
-									value="Selecione um perfil para exibir as permissões que não estão associadas."
-									style="font-size:18px !important;"
-									rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
-						</div>
+						<p:outputPanel id="outPermissoesAlterar">
+							<div align="center">
+								<p:outputLabel
+										value="Selecione um perfil para exibir as permissões que não estão associadas."
+										style="font-size:18px !important;"
+										rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
+							</div>
 
-						<p:tabView id="tabvPermsAlterar" class="tab-style"
-								   rendered="#{MBFuncionarios.renderizarPermissoes == true}">
+							<p:tabView id="tabvPermsAlterar" class="tab-style"
+									   rendered="#{MBFuncionarios.renderizarPermissoes == true}">
 
-							<p:tab title="Associar Menus">
-								<p:panelGrid styleClass="semBorda" columns="2">
-									<p:pickList id="pickMenuAlterar"
-												value="#{MBFuncionarios.listaMenusDualEdit}" var="menu"
-												itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
-												itemValue="#{menu}" showCheckbox="true"
-												showSourceFilter="true" showTargetFilter="true"
-												filterMatchMode="contains" converter="conPickListMenu">
+								<p:tab title="Associar Menus">
+									<p:panelGrid styleClass="semBorda" columns="2">
+										<p:pickList id="pickMenuAlterar"
+													value="#{MBFuncionarios.listaMenusDualEdit}" var="menu"
+													itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+													itemValue="#{menu}" showCheckbox="true"
+													showSourceFilter="true" showTargetFilter="true"
+													filterMatchMode="contains" converter="conPickListMenu">
 
-										<f:facet name="sourceCaption">
-											<font color="#227ac6">Menus não associados</font>
-										</f:facet>
-										<f:facet name="targetCaption">
-											<font color="#227ac6">Menus associados</font>
-										</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Menus não associados</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Menus associados</font>
+											</f:facet>
 
-										<p:ajax event="transfer"
-												listener="#{MBFuncionarios.onTransferMenu}" />
-									</p:pickList>
-								</p:panelGrid>
-							</p:tab>
+											<p:ajax event="transfer"
+													listener="#{MBFuncionarios.onTransferMenu}" />
+										</p:pickList>
+									</p:panelGrid>
+								</p:tab>
 
-							<p:tab title="Associar Funções">
-								<p:panelGrid styleClass="semBorda" columns="2">
-									<p:pickList id="pickFuncaoAlterar"
-												value="#{MBFuncionarios.listaFuncoesDualEdit}" var="funcao"
-												itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
-												itemValue="#{funcao}" showCheckbox="true"
-												showSourceFilter="true" showTargetFilter="true"
-												filterMatchMode="contains" converter="conPickListFuncao">
+								<p:tab title="Associar Funções">
+									<p:panelGrid styleClass="semBorda" columns="2">
+										<p:pickList id="pickFuncaoAlterar"
+													value="#{MBFuncionarios.listaFuncoesDualEdit}" var="funcao"
+													itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+													itemValue="#{funcao}" showCheckbox="true"
+													showSourceFilter="true" showTargetFilter="true"
+													filterMatchMode="contains" converter="conPickListFuncao">
 
-										<f:facet name="sourceCaption">
-											<font color="#227ac6">Funções não associadas</font>
-										</f:facet>
-										<f:facet name="targetCaption">
-											<font color="#227ac6">Funções associadas</font>
-										</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Funções não associadas</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Funções associadas</font>
+											</f:facet>
 
-										<p:ajax event="transfer"
-												listener="#{MBFuncionarios.onTransferFuncao}" />
-									</p:pickList>
-								</p:panelGrid>
-							</p:tab>
+											<p:ajax event="transfer"
+													listener="#{MBFuncionarios.onTransferFuncao}" />
+										</p:pickList>
+									</p:panelGrid>
+								</p:tab>
 
-						</p:tabView>
-					</p:outputPanel>
-				</p:tab>
+							</p:tabView>
+						</p:outputPanel>
+					</p:tab>
 
-			</p:tabView>
+				</p:tabView>
 
 
 
@@ -541,19 +546,19 @@
 
 				<div align="center">
 					<p:commandButton action="#{MBFuncionarios.gravarProfissional()}"
-						icon="ui-icon-check" size="sm" look="success"
-						update=":frmPrincipal msgPagina" class="btn-incluir new-bottom"
-						value="Incluir" rendered="#{MBFuncionarios.tipo == 1}" />
+									 icon="ui-icon-check" size="sm" look="success"
+									 update=":frmPrincipal msgPagina" class="btn-incluir new-bottom"
+									 value="Incluir" rendered="#{MBFuncionarios.tipo == 1}" />
 
 					<p:commandButton action="#{MBFuncionarios.alterarProfissional()}"
-						icon="ui-icon-check" size="sm" update="msgPagina"
-						value="Alterar" look="success" class="btn-incluir new-bottom"
-						rendered="#{MBFuncionarios.tipo  == 2}" />
+									 icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
+									 value="Alterar" look="success" class="btn-incluir new-bottom"
+									 rendered="#{MBFuncionarios.tipo  == 2}" />
 
 					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						class="btn-voltar new-bottom" size="sm" immediate="true"
-						look="info"
-						action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
+									 class="btn-voltar new-bottom" size="sm" immediate="true"
+									 look="info"
+									 action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
 					</p:commandButton>
 
 				</div>
@@ -563,31 +568,31 @@
 		</h:form>
 
 		<p:dialog header="Consultar Especialidade" modal="true" dynamic="true"
-			widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
+				  widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
 			<h:form id="formConsulEspec">
 				<p:outputPanel>
-				<p:autoUpdate/>
+					<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{EspecialidadeController.listaEspecialidade}"
-						page-length="5" page-length-menu="5,10,20" var="espec"
-						display="Nenhuma Especialidade">
+								 value="#{EspecialidadeController.listaEspecialidade}"
+								 page-length="5" page-length-menu="5,10,20" var="espec"
+								 display="Nenhuma Especialidade">
 
 						<h:column>
 							<f:facet name="header">
-                                Especialidade
-                            </f:facet>
+								Especialidade
+							</f:facet>
 							<p:outputLabel value="#{espec.descEspecialidade}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                                Adicionar
-                            </f:facet>
+								Adicionar
+							</f:facet>
 							<p:commandButton update=":frmPrincipal:tbv:outEspeci" icon="fa fa-fw fa-check"
-								title="Selecionar" class="new-btn-acao-table acao-editar"
-								onclick="PF('dlgConsulEspecialidade').hide();">
+											 title="Selecionar" class="new-btn-acao-table acao-editar"
+											 onclick="PF('dlgConsulEspecialidade').hide();">
 								<f:setPropertyActionListener value="#{espec}"
-									target="#{MBFuncionarios.profissional.especialidade}" />
+															 target="#{MBFuncionarios.profissional.especialidade}" />
 							</p:commandButton>
 						</h:column>
 
@@ -597,28 +602,28 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar C.B.O." widgetVar="dlgConsulCbo" dynamic="true"
-			modal="true" styleClass="topDialog">
+				  modal="true" styleClass="topDialog">
 			<h:form id="formConsulCbo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{CboController.listaCbo}" var="cbo" page-length="5"
-					page-length-menu="5,10,20" display="Nenhum C.B.O.">
+							 value="#{CboController.listaCbo}" var="cbo" page-length="5"
+							 page-length-menu="5,10,20" display="Nenhum C.B.O.">
 
 					<h:column>
 						<f:facet name="header">
-                            Descrição
-                        </f:facet>
+							Descrição
+						</f:facet>
 						<p:outputLabel value="#{cbo.descCbo}" />
 					</h:column>
 
 					<h:column>
 						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
+							Adicionar
+						</f:facet>
 						<p:commandButton update=":frmPrincipal:tbv:outCboP" icon="fa fa-fw fa-check"
-							class="new-btn-acao-table acao-editar" title="Selecionar"
-							onclick="PF('dlgConsulCbo').hide();">
+										 class="new-btn-acao-table acao-editar" title="Selecionar"
+										 onclick="PF('dlgConsulCbo').hide();">
 							<f:setPropertyActionListener value="#{cbo}"
-								target="#{MBFuncionarios.profissional.cbo}" />
+														 target="#{MBFuncionarios.profissional.cbo}" />
 						</p:commandButton>
 					</h:column>
 
@@ -627,29 +632,29 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Procedimento 1" widgetVar="dlgConsulProc1" dynamic="true"
-			modal="true" styleClass="topDialog2">
+				  modal="true" styleClass="topDialog2">
 			<h:form id="formConsulProc1">
 				<p:outputPanel>
-				<p:autoUpdate/>
+					<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+								 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
 						<h:column>
 							<f:facet name="header">
-                                Descrição
-                            </f:facet>
+								Descrição
+							</f:facet>
 							<p:outputLabel value="#{proc.nomeProc}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                                Adicionar
-                            </f:facet>
+								Adicionar
+							</f:facet>
 							<p:commandButton update=":frmPrincipal:tbv:outProcP1" icon="fa fa-fw fa-check"
-								class="new-btn-acao-table acao-editar" title="Selecionar"
-								onclick="PF('dlgConsulProc1').hide();">
+											 class="new-btn-acao-table acao-editar" title="Selecionar"
+											 onclick="PF('dlgConsulProc1').hide();">
 								<f:setPropertyActionListener value="#{proc}"
-									target="#{MBFuncionarios.profissional.proc1}" />
+															 target="#{MBFuncionarios.profissional.proc1}" />
 							</p:commandButton>
 						</h:column>
 
@@ -660,29 +665,29 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Procedimento 2" widgetVar="dlgConsulProc2" dynamic="true"
-			modal="true" styleClass="topDialog">
+				  modal="true" styleClass="topDialog">
 			<h:form id="formConsulProc2">
 				<p:outputPanel >
-				<p:autoUpdate/>
+					<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+								 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
 						<h:column>
 							<f:facet name="header">
-                                Descrição
-                            </f:facet>
+								Descrição
+							</f:facet>
 							<p:outputLabel value="#{proc.nomeProc}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                                Adicionar
-                            </f:facet>
+								Adicionar
+							</f:facet>
 							<p:commandButton update=":frmPrincipal" icon="fa fa-fw fa-check"
-								class="new-btn-acao-table acao-editar" title="Selecionar"
-								onclick="PF('dlgConsulProc2').hide();">
+											 class="new-btn-acao-table acao-editar" title="Selecionar"
+											 onclick="PF('dlgConsulProc2').hide();">
 								<f:setPropertyActionListener value="#{proc}"
-									target="#{MBFuncionarios.profissional.proc2}" />
+															 target="#{MBFuncionarios.profissional.proc2}" />
 							</p:commandButton>
 						</h:column>
 
@@ -693,48 +698,81 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos" dynamic="true"
-			modal="true" styleClass="topDialog">
+				  modal="true" styleClass="topDialog">
 			<h:form id="formConsuGrops">
 				<p:outputPanel >
-				<p:autoUpdate/>
+					<p:autoUpdate/>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
-						var="programa">
+								 value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
+								 var="programa">
 
 
 						<h:column>
 							<f:facet name="header">
-                                Programa
-                            </f:facet>
+								Programa
+							</f:facet>
 							<p:outputLabel value="#{programa.descPrograma}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                                Grupo
-                            </f:facet>
+								Grupo
+							</f:facet>
 							<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
 						</h:column>
 
 
 						<h:column>
 							<f:facet name="header">
-                                Adicionar
-                            </f:facet>
+								Adicionar
+							</f:facet>
 							<p:commandButton
-								update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
-								icon="fa fa-fw fa-check" title="Selecionar"
-								class="new-btn-acao-table acao-editar"
-								onclick="PF('dlgConsuGrupos').hide();"
-								action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
+									update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar"
+									onclick="PF('dlgConsuGrupos').hide();"
+									action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
 								<f:setPropertyActionListener value="#{programa}"
-									target="#{MBFuncionarios.profissional.progAdd}" />
+															 target="#{MBFuncionarios.profissional.progAdd}" />
 							</p:commandButton>
 						</h:column>
 
 					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Unidades permitidas para o usuário" widgetVar="dlgUnidadesParaProgramaGrupo" dynamic="true"
+				  modal="true" styleClass="topDialog">
+
+			<h:form id="frmUnidadesParaProgramaGrupo">
+
+				<p:dataTable emptyMessage="Nenhuma unidade adicionada"
+							 styleClass="table table-hover" id="dtUnidadesParaProgramaGrupo"
+							 value="#{MBFuncionarios.listaUnidadesDoUsuario}"
+							 var="unidade" paginator="true" paginatorPosition="bottom"
+							 rows="12" resizableColumns="true">
+
+					<p:column headerText="Unidade">
+						<p:outputLabel value="#{unidade.nomeUnidade}" />
+					</p:column>
+
+					<p:column headerText="Selecionar">
+						<div align="center">
+							<p:commandButton immediate="true"
+											 action="#{GrupoController.listarProgramasEGruposPorUnidade(unidade.id)}"
+											 actionListener="#{MBFuncionarios.acoesAposEscolherUnidadeParaCarregarProgramasIhGrupos}"
+											 oncomplete="PF('dlgConsuGrupos').show();"
+											 icon="ui-icon-check">
+								<f:setPropertyActionListener value="#{unidade}"
+															 target="#{MBFuncionarios.unidadeParaProgramasIhGrupos}" />
+							</p:commandButton>
+						</div>
+					</p:column>
+				</p:dataTable>
+
+			</h:form>
+
 		</p:dialog>
 
 	</ui:define>

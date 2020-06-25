@@ -22,6 +22,7 @@ public class ProgramaBean implements Serializable {
 	private GrupoBean grupoRmv;
 	private ProcedimentoBean procedimento;
 	private Integer codUnidade;
+	private String descricaoUnidade;  
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -129,6 +130,14 @@ public class ProgramaBean implements Serializable {
 
 	public void setCodUnidade(Integer codUnidade) {
 		this.codUnidade = codUnidade;
+	}
+
+	public String getDescricaoUnidade() {
+		return descricaoUnidade;
+	}
+
+	public void setDescricaoUnidade(String descricaoUnidade) {
+		this.descricaoUnidade = descricaoUnidade;
 	}
 
 	
