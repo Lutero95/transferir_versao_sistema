@@ -539,10 +539,10 @@ public class AtendimentoDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
-				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
+				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, p.matricula, "
 				+ " a.codequipe, e.descequipe, a.avaliacao,  "
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
-
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, coalesce(a.presenca, 'N') presenca, a.avulso, "
+				
 				+ " case when "
 				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =  "
 				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
@@ -616,6 +616,7 @@ public class AtendimentoDAO {
 				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				at.getPaciente().setNome(rs.getString("nome"));
 				at.getPaciente().setCns(rs.getString("cns"));
+				at.getPaciente().setMatricula(rs.getString("matricula"));
 				at.setTurno(rs.getString("turno"));
 				at.getFuncionario().setId(rs.getLong("codmedico"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
@@ -626,9 +627,14 @@ public class AtendimentoDAO {
 				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
 				at.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				at.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				at.setPresenca(rs.getString("presenca"));
+				at.setAvulso(rs.getBoolean("avulso"));
 				at.setEhEquipe(rs.getString("ehEquipe"));
 				at.setAvaliacao(rs.getBoolean("avaliacao"));
 
+				if(at.getAvulso() || at.getEhEquipe().equalsIgnoreCase("Sim"))
+					at.setListaNomeProfissionais(retornaNomeProfissionaisAtendimento(rs.getInt("id_atendimento"), con));
+					
 				lista.add(at);
 			}
 
@@ -646,6 +652,35 @@ public class AtendimentoDAO {
 		return lista;
 	}
 
+
+	public List<String> retornaNomeProfissionaisAtendimento(int idAtendimento, Connection con) throws SQLException, ProjetoException {
+    	
+		List<String> listaProfissionais = new ArrayList<>();
+    	String sql = "select distinct f.descfuncionario " + 
+    			" from acl.funcionarios f " + 
+    			" join hosp.atendimentos1 a1 on (f.id_funcionario = a1.codprofissionalatendimento) " + 
+    			" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
+    			" where a1.id_atendimento = ? " + 
+    			" order by 1"; 
+        try {
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idAtendimento);
+            
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	listaProfissionais.add(rs.getString("descfuncionario"));
+            }
+
+        } catch (SQLException ex2) {
+        	con.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			con.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return listaProfissionais;
+	}
 
 	public Integer retornaQuantidadeDePendenciasAnterioresDeEvolucao
 			(Integer idUnidade, Long codigoProfissionalAtendimento) throws ProjetoException {

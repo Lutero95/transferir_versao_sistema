@@ -2,12 +2,15 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class AtendimentoBean implements Serializable {
 
-    private Integer id;
+    
+	private static final long serialVersionUID = 1L;
+	private Integer id;
     private Integer id1;
     private Date dataAtendimento;
     private Date dataAtendimentoInicio;
@@ -20,6 +23,8 @@ public class AtendimentoBean implements Serializable {
     private String perfil;
     private String horarioAtendimento;
     private String presenca;
+    private Boolean avulso; 
+    private List<String> listaNomeProfissionais;
     // HERDADOS
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
@@ -259,4 +264,21 @@ public class AtendimentoBean implements Serializable {
     public void setDataAtendimento(Date dataAtendimento) {
         this.dataAtendimento = dataAtendimento;
     }
+
+	public boolean getAvulso() {
+		return avulso;
+	}
+
+	public void setAvulso(Boolean avulso) {
+		this.avulso = avulso;
+	}
+
+	public List<String> getListaNomeProfissionais() {
+		return listaNomeProfissionais;
+	}
+
+	public void setListaNomeProfissionais(List<String> listaNomeProfissionais) {
+		this.listaNomeProfissionais = listaNomeProfissionais;
+	}
+    
 }

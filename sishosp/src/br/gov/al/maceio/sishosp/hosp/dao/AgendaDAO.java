@@ -1711,8 +1711,18 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
-                + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso, "
-                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca " + " FROM  hosp.atendimentos a "
+                + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso,  "
+                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, "
+                
+				+ " case when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =  "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
+				+ " then 'Atendimento Não Informado' " + " when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is not null and coalesce(a1.excluido,'N')='N') = "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
+				+ " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao_atendimento_informado "
+                
+                + " FROM  hosp.atendimentos a "
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
@@ -1784,9 +1794,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setPresenca(rs.getString("presenca"));
                 agenda.setSituacao(rs.getString("situacao"));
                 agenda.setAvulso(rs.getBoolean("avulso"));
+                agenda.setSituacaoAtendimentoInformado(rs.getString("situacao_atendimento_informado"));
                 
-                if(agenda.getAvulso())
-                	agenda.setListaNomeProfissionaisAvulso(retornaNomeProfissionaisDoAgendamentoAvulso(rs.getInt("id_atendimento"), con));
+                if(agenda.getAvulso() || !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()))
+                	agenda.setListaNomeProfissionais(new AtendimentoDAO().retornaNomeProfissionaisAtendimento(agenda.getIdAgenda(), con));
                 	
                 lista.add(agenda);
             }
@@ -1802,33 +1813,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
         return lista;
-    }
-    
-    public List<String> retornaNomeProfissionaisDoAgendamentoAvulso(Integer idAtendimento, Connection conexao) throws SQLException, ProjetoException {
-
-    	List<String> listaNomeProfissionais = new ArrayList<String>();
-    	String sql = "select distinct f.descfuncionario from hosp.atendimentos a " + 
-    			" join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " + 
-    			" join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " + 
-    			"where a.avulso is true and a.id_atendimento = ? order by f.descfuncionario asc;"; 
-        try {
-            PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, idAtendimento);
-            
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-            	listaNomeProfissionais.add(rs.getString("descfuncionario"));
-            }
-
-        } catch (SQLException ex2) {
-        	conexao.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			conexao.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
-        return listaNomeProfissionais;
     }
 
     public int verQtdMaxAgendaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {
