@@ -104,7 +104,7 @@ public class SituacaoAtendimentoDAO {
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta  " +
-				"from hosp.situacao_atendimento sa order by sa.descricao ";
+				"from hosp.situacao_atendimento sa where  sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true) order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 
@@ -138,7 +138,7 @@ public class SituacaoAtendimentoDAO {
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
-				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? order by sa.descricao ";
+				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true)  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 
