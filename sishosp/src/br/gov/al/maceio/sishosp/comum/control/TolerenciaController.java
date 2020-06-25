@@ -1,0 +1,121 @@
+package br.gov.al.maceio.sishosp.comum.control;
+
+import java.io.IOException;
+import java.util.Calendar;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.comum.dao.ToleranciaDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.model.HorarioFuncionamento;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+
+@ManagedBean
+@SessionScoped
+public class TolerenciaController {
+	
+	private HorarioFuncionamento horarioFuncionamento;
+	private ToleranciaDAO toleranciaDAO;
+	private Integer minutosTolerancia;
+	private boolean buscouHorarioIhTolerancia;
+	private Long horarioAtualEmMilisegundos;
+	private Long horarioFinalEmMilisegundos;
+	private int anoAtual;
+	private int mesAtual;
+	private int diaDoMesAtual;
+	private boolean visualizouDialogTolerancia;
+	
+	public TolerenciaController() {
+		this.toleranciaDAO = new ToleranciaDAO();
+		this.horarioFuncionamento = new HorarioFuncionamento();
+	} 
+	
+	public void visualizouDialog() {
+		this.visualizouDialogTolerancia = true;
+	}
+	
+	public void buscarDados() throws ProjetoException, IOException {
+		if(!buscouHorarioIhTolerancia) {
+			buscaHorarioFuncionamento();
+			buscaMinutosTolerancia();
+			buscouHorarioIhTolerancia = true;
+		}
+		verificaTolerancia();
+	}
+	
+	private  void verificaTolerancia() throws IOException {
+		if(alcancouLimiteHorario()) {
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(horarioFuncionamento.getHorarioFim());
+			calendar.set(anoAtual, mesAtual, diaDoMesAtual);
+			
+			calendar.add(Calendar.MINUTE, minutosTolerancia);
+			this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
+			
+			if(horarioExpirou()) {
+				logout();
+			}
+			else if (!visualizouDialogTolerancia){
+				JSFUtil.abrirDialog("dialogTolerancia");
+			}
+		}
+	}
+	
+	private void buscaHorarioFuncionamento() throws ProjetoException {
+		this.horarioFuncionamento = this.toleranciaDAO.buscaHorarioFuncionamento();
+	}
+	
+	private void buscaMinutosTolerancia() throws ProjetoException {
+		this.minutosTolerancia = this.toleranciaDAO.buscaMinutosTolerancia();
+	}
+	
+	public boolean alcancouLimiteHorario() {
+		
+		Calendar calendar = Calendar.getInstance();
+		this.horarioAtualEmMilisegundos = calendar.getTimeInMillis();
+		
+		this.anoAtual = calendar.get(Calendar.YEAR);
+		this.mesAtual = calendar.get(Calendar.MONTH);
+		this.diaDoMesAtual = calendar.get(Calendar.DAY_OF_MONTH);
+		
+		calendar.setTime(horarioFuncionamento.getHorarioFim());
+		calendar.set(anoAtual, mesAtual, diaDoMesAtual);
+		
+		this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
+		
+		return horarioExpirou();
+	}
+
+	private boolean horarioExpirou() {
+		if(horarioAtualEmMilisegundos > horarioFinalEmMilisegundos) {
+	    	return true;
+	    }
+		return false;
+	}
+	
+	private void logout() throws IOException {
+		SessionUtil.getSession().invalidate();
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "S");
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/ehosp/pages/comum/login.faces");
+	}
+
+	public HorarioFuncionamento getHorarioFuncionamento() {
+		return horarioFuncionamento;
+	}
+
+	public void setHorarioFuncionamento(HorarioFuncionamento horarioFuncionamento) {
+		this.horarioFuncionamento = horarioFuncionamento;
+	}
+
+	public Integer getMinutosTolerancia() {
+		return minutosTolerancia;
+	}
+
+	public void setMinutosTolerancia(Integer minutosTolerancia) {
+		this.minutosTolerancia = minutosTolerancia;
+	}
+}
