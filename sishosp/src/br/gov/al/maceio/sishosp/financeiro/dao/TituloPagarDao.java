@@ -10,11 +10,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.BaixaPagar;
 import br.gov.al.maceio.sishosp.financeiro.model.BancoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.BuscaBeanPagar;
@@ -32,9 +30,6 @@ public class TituloPagarDao {
 
 	public Boolean replicarPagar2(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao)
 			throws ProjetoException {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Boolean boo = false;
 
@@ -178,8 +173,10 @@ public class TituloPagarDao {
 
 			con.commit();
 			boo = true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -188,16 +185,12 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return boo;
-
 	}
 
 	public boolean replicarPagar(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao)
 			throws ProjetoException {
 		boolean rst = false;
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		CallableStatement ps = null;
@@ -307,10 +300,12 @@ public class TituloPagarDao {
 			rst = true;
 			con.commit();
 
-		} catch (SQLException e) {
+		} catch (SQLException sqle) {
 			rst = false;
-			e.printStackTrace();
-
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			rst = false;
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -324,17 +319,15 @@ public class TituloPagarDao {
 	
 	public boolean salvarPagarAvulso(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, BancoBean banco, CaixaDiarioBean caixa)
 			throws ProjetoException {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		CallableStatement ps = null;
 		PreparedStatement pst = null;
 		TesourariaDAO tDAo = new TesourariaDAO();
+		boolean retorno = false;
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareCall("{ ? = call financeiro.pagdup(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }");
 
 			ps.registerOutParameter(1, Types.INTEGER);
@@ -401,7 +394,6 @@ public class TituloPagarDao {
 				ps.setDate(13, new java.sql.Date(tituloPagarBean.getDtvcto().getTime()));
 
 		
-
 			if (tituloPagarBean.getDtemissao() == null) {
 				ps.setNull(14, Types.OTHER);
 			} else
@@ -437,7 +429,6 @@ public class TituloPagarDao {
 				ps.setDouble(20, tituloPagarBean.getIcmsst());
 				ps.setNull(21, Types.OTHER);
 			
-
 			ps.execute();
 
 			String sql = "update financeiro.pagdup SET situacao = 'F' where codigo = ? ";
@@ -449,35 +440,32 @@ public class TituloPagarDao {
 
 			retornoid = ps.getInt(1);
 			for (int i = 0; i < lstRetencao.size(); i++) {
-
 				lstRetencao.get(i).setDuplicata(retornoid);
 				salvarRetencao(lstRetencao.get(i));
 			}
 			ChequeEmitidoBean cheque = new ChequeEmitidoBean();
-			  cheque.setBanco(banco);
-		        cheque.setCaixa(caixa);
-		        cheque.setTipo("CC");
-		        cheque.setStatus("OK");
-		        cheque.setValor(tituloPagarBean.getValor());
+			cheque.setBanco(banco);
+		    cheque.setCaixa(caixa);
+		    cheque.setTipo("CC");
+		    cheque.setStatus("OK");
+		    cheque.setValor(tituloPagarBean.getValor());
 		        
-		        	
-		        	java.util.Date data = new java.util.Date();
-		        	cheque.setDtvencimento(data);
-		        	cheque.setDtemissao(data);
-		        	cheque.setCompensado("S");
-		        	cheque.setDtcompensado(caixa.getDataCaixaAbertura());
-		        	
-		        	
-		        	//cheque.setNumcheque(String.valueOf(sequenciaCheque));
+			java.util.Date data = new java.util.Date();
+			cheque.setDtvencimento(data);
+			cheque.setDtemissao(data);
+			cheque.setCompensado("S");
+			cheque.setDtcompensado(caixa.getDataCaixaAbertura());
+
+			// cheque.setNumcheque(String.valueOf(sequenciaCheque));
 		       
 			tDAo.compensaTituloAvulso(cheque, tituloPagarBean, "CC", con);
 			con.commit();
-			return true;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = true;
+		}  catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				ps.close();
 				pst.close();
@@ -486,22 +474,20 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return retorno;
 
 	}
 
 	public boolean salvarPagar(TituloPagarBean tituloPagarBean, List<ImpostoBean> lstRetencao, Integer id_desistencia)
 			throws ProjetoException {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		CallableStatement ps = null;
 		PreparedStatement pst = null;
-
+		boolean retorno = false;
+		
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareCall("{ ? = call financeiro.pagdup(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }");
 
 			ps.registerOutParameter(1, Types.INTEGER);
@@ -568,7 +554,6 @@ public class TituloPagarDao {
 				ps.setDate(13, new java.sql.Date(tituloPagarBean.getDtvcto().getTime()));
 
 		
-
 			if (tituloPagarBean.getDtemissao() == null) {
 				ps.setNull(14, Types.OTHER);
 			} else
@@ -619,18 +604,17 @@ public class TituloPagarDao {
 
 			retornoid = ps.getInt(1);
 			for (int i = 0; i < lstRetencao.size(); i++) {
-
 				lstRetencao.get(i).setDuplicata(retornoid);
 				salvarRetencao(lstRetencao.get(i));
 			}
 
 			con.commit();
-			return true;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				ps.close();
 				pst.close();
@@ -639,8 +623,7 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-		return false;
-
+		return retorno;
 	}
 
 	public ArrayList<TituloPagarBean> todosFinanceiro(BuscaBeanPagar busca) throws ProjetoException {
@@ -705,8 +688,6 @@ public class TituloPagarDao {
 		}
 
 		ArrayList<TituloPagarBean> lista = new ArrayList<TituloPagarBean>();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		ResultSet set = null;
@@ -714,46 +695,36 @@ public class TituloPagarDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
 			Integer i = 2;
 
 			ps.setDate(1, new java.sql.Date(busca.getPeriodoinicial().getTime()));
-
 			ps.setDate(2, new java.sql.Date(busca.getPeriodofinal().getTime()));
 
 			if (busca.getFornecedor() != null) {
 				if ((busca.getFornecedor().getCodforn() != null) && (busca.getFornecedor().getCodforn() != 0)) {
-
 					i = i + 1;
 					ps.setInt(i, busca.getFornecedor().getCodforn());
-
 				}
 			}
 			if ((busca.getIddespesa() != null) && (busca.getIddespesa() != 0)) {
 				i = i + 1;
 				ps.setInt(i, busca.getIddespesa());
-
 			}
 
 			if ((busca.getDocumento() != null) && (!busca.getDocumento().equals(""))) {
-
 				i = i + 1;
 				ps.setString(i, busca.getDocumento());
-
 			}
 
 			if ((busca.getCodigo() != null) && (busca.getCodigo() != 0)) {
-
 				i = i + 1;
 				ps.setInt(i, busca.getCodigo());
-
 			}
 
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
 				PortadorBean portBean = new PortadorBean();
 				TituloPagarBean bean = new TituloPagarBean();
 				CentroCustoBean ccbean = new CentroCustoBean();
@@ -816,11 +787,12 @@ public class TituloPagarDao {
 				bean.setForn(fornecedor);
 
 				lista.add(bean);
-
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -830,7 +802,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
 	
@@ -860,13 +831,8 @@ public class TituloPagarDao {
 				+ "	 left join financeiro.portador pt on(pt.codportador = p.codport) where   p.codigo=?";//
 
 	
-
 		sql = sql + " )t";
 		
-
-		ArrayList<TituloPagarBean> lista = new ArrayList<TituloPagarBean>();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		ResultSet set = null;
@@ -878,26 +844,16 @@ public class TituloPagarDao {
 		FornecedorBean fornecedor = new FornecedorBean();
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, id);
 
-		
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-
-
 				ccbean.setIdccusto(set.getInt("idccusto"));
-
 				ccbean.setDescricao(set.getString("descCusto"));
-
 				portBean.setCodportador(set.getInt("codportador"));
-
 				portBean.setDescricao(set.getString("portdesc"));
-
 				despesa.setId(set.getInt("iddespesa"));
 				despesa.setDescricao(set.getString("despesa"));
 				bean.setValor(set.getDouble("valor"));
@@ -944,13 +900,12 @@ public class TituloPagarDao {
 				bean.setCcusto(ccbean);
 				bean.setDespesa(despesa);
 				bean.setForn(fornecedor);
-
-
-
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -960,7 +915,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return bean;
 	}
 
@@ -1027,8 +981,6 @@ public class TituloPagarDao {
 		}
 
 		ArrayList<TituloPagarBean> lista = new ArrayList<TituloPagarBean>();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		Connection con = null;
 		ResultSet set = null;
@@ -1041,10 +993,8 @@ public class TituloPagarDao {
 			Integer i = 2;
 
 			ps.setDate(1, new java.sql.Date(busca.getPeriodoinicial().getTime()));
-
 			ps.setDate(2, new java.sql.Date(busca.getPeriodofinal().getTime()));
 			if ((busca.getFornecedor().getCodforn() != null) && (busca.getFornecedor().getCodforn() != 0)) {
-
 				i = i + 1;
 				ps.setInt(i, busca.getFornecedor().getCodforn());
 
@@ -1053,21 +1003,16 @@ public class TituloPagarDao {
 			if ((busca.getIddespesa() != null) && (busca.getIddespesa() != 0)) {
 				i = i + 1;
 				ps.setInt(i, busca.getIddespesa());
-
 			}
 
 			if ((busca.getDocumento() != null) && (!busca.getDocumento().equals(""))) {
-
 				i = i + 1;
 				ps.setString(i, busca.getDocumento());
-
 			}
 
 			if ((busca.getCodigo() != null) && (busca.getCodigo() != 0)) {
-
 				i = i + 1;
 				ps.setInt(i, busca.getCodigo());
-
 			}
 
 			set = ps.executeQuery();
@@ -1080,35 +1025,27 @@ public class TituloPagarDao {
 				DespesaBean despesa = new DespesaBean();
 				FornecedorBean fornecedor = new FornecedorBean();
 				ccbean.setIdccusto(set.getInt("idccusto"));
-
 				ccbean.setDescricao(set.getString("descCusto"));
-
+				
 				portBean.setCodportador(set.getInt("codportador"));
-
 				portBean.setDescricao(set.getString("portdesc"));
-
+				
 				despesa.setId(set.getInt("iddespesa"));
 				despesa.setDescricao(set.getString("despesa"));
+				
 				bean.setValor(set.getDouble("valor"));
-
 				bean.setDesconto(set.getDouble("desconto"));
 				bean.setVencido(set.getBoolean("vencido"));
 				bean.setVencer(set.getBoolean("vencer"));
-
 				bean.setPago(set.getBoolean("pago"));
-
 				bean.setDuplicata(set.getString("duplicata"));
 				bean.setDtcompete(set.getString("dtcompete"));
-
 				bean.setDtvcto(set.getDate("dtvcto"));
 				bean.setDtprevisao(set.getDate("dtprevisao"));
 				bean.setDtemissao(set.getDate("dtemissao"));
-
 				bean.setHistorico(set.getString("historico"));
 				bean.setParcela(set.getString("parcela"));
-
 				bean.setCodigo(set.getInt("codigo"));
-
 				bean.setNotaFiscal(set.getString("processo"));
 				bean.setIcmsst(set.getDouble("icmssubt"));
 				bean.setJuros(set.getDouble("juros"));
@@ -1116,8 +1053,10 @@ public class TituloPagarDao {
 				bean.setSituacao(set.getString("situacao"));
 				bean.setValoraberto(set.getDouble("valoraberto"));
 				bean.setTotalpago(set.getDouble("totalpago"));
+				
 				fornecedor.setNome(set.getString("nomefornecedor"));
 				fornecedor.setCodforn(set.getInt("codforn"));
+				
 				bean.getTipoDocumento().setCodtipodocumento(set.getInt("codtipdoc"));
 				bean.getTipoDocumento().setDescricao(set.getString("desctipdoc"));
 				/*
@@ -1135,11 +1074,12 @@ public class TituloPagarDao {
 				bean.setForn(fornecedor);
 
 				lista.add(bean);
-
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1149,7 +1089,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
 
@@ -1197,9 +1136,6 @@ public class TituloPagarDao {
 		}
 		sql = sql + "         ) t" + " )w" + " )k";
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-
 		Connection con = null;
 		ResultSet set = null;
 		PreparedStatement ps = null;
@@ -1243,8 +1179,10 @@ public class TituloPagarDao {
 				tot.setTotalabertovencido(set.getDouble("valorabertovencido"));
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1263,20 +1201,20 @@ public class TituloPagarDao {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-
+		boolean retorno = false;
+		
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, t.getCodigo());
-
 			ps.execute();
 
 			con.commit();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1285,10 +1223,10 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return retorno;
 	}
 
-	public boolean editar(TituloPagarBean t, List<ImpostoBean> lstImpostos) throws ProjetoException {
+	public boolean editar(TituloPagarBean tituloPagar, List<ImpostoBean> lstImpostos) throws ProjetoException {
 
 		String sql = " UPDATE financeiro.pagdup  SET  duplicata=?, processo=?,  codforn=?, valor=?, desconto=?,"
 				+ " codport=? , historico=? , parcela=?, vlr_retencao=?, juros=?,"
@@ -1296,43 +1234,44 @@ public class TituloPagarDao {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-
+		boolean retorno = false;
+		
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 
-			ps.setString(1, t.getDuplicata());
-			ps.setString(2, t.getNotaFiscal().toUpperCase());
-			ps.setInt(3, t.getForn().getCodforn());
-			ps.setDouble(4, t.getValor());
-			ps.setDouble(5, t.getDesconto());
-			ps.setInt(6, t.getPortador().getCodportador());
-			ps.setString(7, t.getHistorico().toUpperCase());
-			ps.setString(8, t.getParcela());
-			ps.setDouble(9, t.getVlr_retencao());
-			ps.setDouble(10, t.getJuros());
-			ps.setDouble(11, t.getMulta());
-			ps.setInt(12, t.getDespesa().getId());
-			ps.setInt(13, t.getCcusto().getIdccusto());
-			ps.setDate(14, new Date(t.getDtvcto().getTime()));
-			ps.setString(15, t.getDtcompete());
-			if (t.getDtprevisao() == null) {
+			ps.setString(1, tituloPagar.getDuplicata());
+			ps.setString(2, tituloPagar.getNotaFiscal().toUpperCase());
+			ps.setInt(3, tituloPagar.getForn().getCodforn());
+			ps.setDouble(4, tituloPagar.getValor());
+			ps.setDouble(5, tituloPagar.getDesconto());
+			ps.setInt(6, tituloPagar.getPortador().getCodportador());
+			ps.setString(7, tituloPagar.getHistorico().toUpperCase());
+			ps.setString(8, tituloPagar.getParcela());
+			ps.setDouble(9, tituloPagar.getVlr_retencao());
+			ps.setDouble(10, tituloPagar.getJuros());
+			ps.setDouble(11, tituloPagar.getMulta());
+			ps.setInt(12, tituloPagar.getDespesa().getId());
+			ps.setInt(13, tituloPagar.getCcusto().getIdccusto());
+			ps.setDate(14, new Date(tituloPagar.getDtvcto().getTime()));
+			ps.setString(15, tituloPagar.getDtcompete());
+			if (tituloPagar.getDtprevisao() == null) {
 				ps.setNull(16, Types.OTHER);
 			} else {
-				ps.setDate(16, new Date(t.getDtprevisao().getTime()));
+				ps.setDate(16, new Date(tituloPagar.getDtprevisao().getTime()));
 			}
-			ps.setString(17, t.getNominal());
-			if (t.getDtemissao() == null) {
+			ps.setString(17, tituloPagar.getNominal());
+			if (tituloPagar.getDtemissao() == null) {
 				ps.setNull(18, Types.OTHER);
 			} else {
-				ps.setDate(18, new Date(t.getDtemissao().getTime()));
+				ps.setDate(18, new Date(tituloPagar.getDtemissao().getTime()));
 			}
-			if (String.valueOf(t.getIcmsst()) == null) {
+			if (String.valueOf(tituloPagar.getIcmsst()) == null) {
 				ps.setNull(19, Types.OTHER);
 			} else {
-				ps.setDouble(19, t.getIcmsst());
+				ps.setDouble(19, tituloPagar.getIcmsst());
 			}
-			ps.setInt(20, t.getCodigo());
+			ps.setInt(20, tituloPagar.getCodigo());
 
 			ps.executeUpdate();
 			ps.close();
@@ -1340,19 +1279,20 @@ public class TituloPagarDao {
 			sql = "delete from financeiro.retencao_pagar where codigo = ?";
 
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, t.getCodigo());
+			ps.setInt(1, tituloPagar.getCodigo());
 			ps.execute();
 
 			for (int i = 0; i < lstImpostos.size(); i++) {
-				lstImpostos.get(i).setDuplicata(t.getCodigo());
+				lstImpostos.get(i).setDuplicata(tituloPagar.getCodigo());
 				salvarRetencao(lstImpostos.get(i));
 			}
 
 			con.commit();
-			return true;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1361,8 +1301,7 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-		return false;
-
+		return retorno;
 	}
 
 	public void salvarRetencao(ImpostoBean impostoBean) throws ProjetoException {
@@ -1385,8 +1324,10 @@ public class TituloPagarDao {
 			ps.execute();
 
 			con.commit();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1395,7 +1336,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public ArrayList<TituloPagarBean> listaAbertos(FornecedorBean forn, java.util.Date periodiInicial,
@@ -1417,8 +1357,6 @@ public class TituloPagarDao {
 			sql = sql + " and p.codforn=?";
 		sql = sql + " group by p.codigo,p.codforn,p.dtcompete,p.juros,p.multa,p.valor,p.processo,"
 				+ "  p.desconto,p.dtemissao,p.dtvcto,p.historico,p.duplicata,c.idccusto,p.vlr_retencao,nomeFornecedor,despesa,descCusto,portdesc,pt.codportador,p.parcela, p.dtprevisao ";
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		ArrayList<TituloPagarBean> lista = new ArrayList<TituloPagarBean>();
 
@@ -1464,11 +1402,12 @@ public class TituloPagarDao {
 				despesa.setDescricao(set.getString("despesa"));
 
 				lista.add(tit);
-
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1478,7 +1417,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
 
@@ -1520,8 +1458,10 @@ public class TituloPagarDao {
 				valordesconto = rs.getDouble("desconto");
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1555,7 +1495,6 @@ public class TituloPagarDao {
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
 				BaixaPagar bean = new BaixaPagar();
 				BancoBean banco = new BancoBean();
 
@@ -1576,8 +1515,10 @@ public class TituloPagarDao {
 				lista.add(bean);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1587,7 +1528,6 @@ public class TituloPagarDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
 
@@ -1601,17 +1541,16 @@ public class TituloPagarDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				sequencia = rs.getInt("sequencia");
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -1621,7 +1560,6 @@ public class TituloPagarDao {
 				e2.printStackTrace();
 			}
 		}
-
 		if (sequencia == 0)
 			sequencia = 1;
 		return sequencia;
@@ -1638,7 +1576,6 @@ public class TituloPagarDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, codigo);
 			rs = ps.executeQuery();
@@ -1651,17 +1588,19 @@ public class TituloPagarDao {
 				lista.add(imposto);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				con.close();
-			} catch (Exception e2) {
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
 }

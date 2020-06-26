@@ -6,16 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.BuscaBeanFornecedor;
 import br.gov.al.maceio.sishosp.financeiro.model.FornecedorBean;
-
 
 
 public class FornecedorDAO {
@@ -33,7 +31,6 @@ public class FornecedorDAO {
 		Connection con = ConnectionFactory.getConnection();
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
 
 			ps.setString(1, bean.getNome().toUpperCase());
@@ -54,19 +51,17 @@ public class FornecedorDAO {
 			con.commit();
 
 			ps.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public boolean editarFornecedor(FornecedorBean bean) throws ProjetoException {
@@ -79,7 +74,6 @@ public class FornecedorDAO {
 				+ " WHERE codforn=? ";
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, bean.getNome().toUpperCase());
 			ps.setString(2, bean.getFantasia().toUpperCase());
@@ -99,23 +93,18 @@ public class FornecedorDAO {
 			result = true;
 			
 			ps.close();
-		} catch (SQLException e) {
-			result = false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					e.getMessage(), "Erro:"+e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
 		return result;
-
 	}
 
 	public boolean deleteFornecedor(FornecedorBean fornecedorBean)
@@ -126,18 +115,18 @@ public class FornecedorDAO {
 		String sql = " DELETE FROM financeiro.fornecedor WHERE codforn = ?; ";
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, fornecedorBean.getCodforn());
 			ps.execute();
 			con.commit();
-
 			ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
 			sucesso = false;
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			sucesso = false;
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
@@ -145,14 +134,10 @@ public class FornecedorDAO {
 			}
 		}
 		return sucesso;
-
 	}
 
 	public List<FornecedorBean> lstFornecedor(BuscaBeanFornecedor busca) throws ProjetoException {
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		String sql = " select codforn, nome, cpfcnpj, complemento, email, site, fone1, fantasia, cep, endereco, inscest, tipopessoa from financeiro.fornecedor where 1=1 ";
 		if ((busca.getValor()!= null) && (!busca.getValor().equals(""))) {
@@ -178,10 +163,9 @@ public class FornecedorDAO {
 
 		ResultSet set = null;
 		Connection con = ConnectionFactory.getConnection();
-		ArrayList<FornecedorBean> lst = new ArrayList<>();
+		ArrayList<FornecedorBean> lista = new ArrayList<>();
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
 
 			if ((busca.getValor()!= null) && (!busca.getValor().equals(""))) {
@@ -195,62 +179,48 @@ public class FornecedorDAO {
 			set = ps.executeQuery();
 
 			while (set.next()) {
+				FornecedorBean fornecedor = new FornecedorBean();
 
-				FornecedorBean f = new FornecedorBean();
+				fornecedor.setCodforn(set.getInt("codforn"));
+				fornecedor.setNome(set.getString("nome"));
+				fornecedor.setCpfcnpj(set.getString("cpfcnpj"));
+				fornecedor.setComplemento(set.getString("complemento"));
+				fornecedor.setEmail(set.getString("email"));
+				fornecedor.setSite(set.getString("site"));
+				fornecedor.setTelefone(set.getString("fone1"));
+				fornecedor.setFantasia(set.getString("fantasia"));
+				fornecedor.setCep(set.getString("cep"));
+				fornecedor.setEndereco(set.getString("endereco"));
+				fornecedor.setInscest(set.getString("inscest"));
+				fornecedor.setTipoPessoa(set.getString("tipopessoa"));
 
-				f.setCodforn(set.getInt("codforn"));
-				f.setNome(set.getString("nome"));
-				f.setCpfcnpj(set.getString("cpfcnpj"));
-				f.setComplemento(set.getString("complemento"));
-				f.setEmail(set.getString("email"));
-				f.setSite(set.getString("site"));
-				f.setTelefone(set.getString("fone1"));
-				f.setFantasia(set.getString("fantasia"));
-				f.setCep(set.getString("cep"));
-				f.setEndereco(set.getString("endereco"));
-				f.setInscest(set.getString("inscest"));
-				f.setTipoPessoa(set.getString("tipopessoa"));
-
-				lst.add(f);
-
+				lista.add(fornecedor);
 			}
-			
 			set.close();
 			ps.close();
-
-		} catch (SQLException e) {
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
 	public List<FornecedorBean> buscaFornecedor(String nome, String cpfcnpj)
 			throws ProjetoException {
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-
 		String sql = " select * from financeiro.fornecedor where   nome like ?;";
 		ResultSet set = null;
 		Connection con = ConnectionFactory.getConnection();
-		ArrayList<FornecedorBean> lst = new ArrayList<>();
+		ArrayList<FornecedorBean> lista = new ArrayList<>();
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
 
 			ps.setString(1, "%" + nome + "%");
@@ -258,36 +228,26 @@ public class FornecedorDAO {
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				FornecedorBean f = new FornecedorBean();
-
-				f.setCodforn(set.getInt("codforn"));
-				f.setNome(set.getString("nome"));
-				f.setCpfcnpj(set.getString("cpfcnpj"));
-
-				lst.add(f);
-
+				FornecedorBean fornecedor = new FornecedorBean();
+				fornecedor.setCodforn(set.getInt("codforn"));
+				fornecedor.setNome(set.getString("nome"));
+				fornecedor.setCpfcnpj(set.getString("cpfcnpj"));
+				lista.add(fornecedor);
 			}
-
 			set.close();
 			ps.close();
-		} catch (SQLException e) {
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return lista;
 	}
 
 }

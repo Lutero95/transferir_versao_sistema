@@ -8,14 +8,10 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.TipoPagBean;
-
 
 
 public class TipoPagDao {
@@ -23,8 +19,6 @@ public class TipoPagDao {
 	public boolean inserirTipoPag(TipoPagBean tipoPagBean) throws ProjetoException {
 
 		boolean result = true;
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		String sql = "INSERT INTO clin.tippag(descricao, tipo, vlrmin, descreduz,periodicidade, qtdparc,forma, taxaadm,codfilial, tpdoc, idfonrec, codport, baixaautomaticafin, codcliente, idbanco, status) "
 				+ "   VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?,?,?,'A');  ";
@@ -36,7 +30,6 @@ public class TipoPagDao {
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql);
-
 			ps.setString(1, tipoPagBean.getDescricao().toUpperCase());
 			ps.setString(2, tipoPagBean.getTipoDocString());
 
@@ -109,10 +102,10 @@ public class TipoPagDao {
 
 			con.commit();
 
-		} catch (SQLException e) {
-			result = false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, e.getMessage(), "Erro!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -139,7 +132,6 @@ public class TipoPagDao {
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql);
-
 			ps.setString(1, tipoPagBean.getDescricao().toUpperCase());
 			ps.setString(2, tipoPagBean.getTipoDocString());
 
@@ -212,14 +204,11 @@ public class TipoPagDao {
 			ps.setInt(15, tipoPagBean.getCodtippag());
 
 			ps.execute();
-
 			con.commit();
-
-		} catch (SQLException e) {
-			result = false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, e.getMessage(), "Erro!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			result = false;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -228,14 +217,13 @@ public class TipoPagDao {
 				e.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 
 	public List<TipoPagBean> lstTipoPagCheque() throws ProjetoException {
 
 		String sql = "select * from clin.tippag where tipo='CH'  and status = 'A' order by descricao";
-		List<TipoPagBean> lst = new ArrayList<TipoPagBean>();
+		List<TipoPagBean> listaTipoPag = new ArrayList<TipoPagBean>();
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -243,31 +231,29 @@ public class TipoPagDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				TipoPagBean tipBean = new TipoPagBean();
+				TipoPagBean tipoPagBean = new TipoPagBean();
+				tipoPagBean.setCodtippag(rs.getInt("codtippag"));
+				tipoPagBean.setDescricao(rs.getString("descricao"));
+				tipoPagBean.setDescReduz(rs.getString("descreduz"));
+				tipoPagBean.setValorMinimo(rs.getDouble("vlrmin"));
+				tipoPagBean.setTipo(rs.getString("tipo"));
+				tipoPagBean.setPeriodicidade(rs.getInt("periodicidade"));
+				tipoPagBean.setTaxaAdm(rs.getDouble("taxaadm"));
+				tipoPagBean.setQtdParc(rs.getInt("qtdparc"));
+				tipoPagBean.setForma(rs.getString("forma"));
+				tipoPagBean.setTipoDoc(rs.getInt("tpdoc"));
 
-				tipBean.setCodtippag(rs.getInt("codtippag"));
-				tipBean.setDescricao(rs.getString("descricao"));
-				tipBean.setDescReduz(rs.getString("descreduz"));
-				tipBean.setValorMinimo(rs.getDouble("vlrmin"));
-				tipBean.setTipo(rs.getString("tipo"));
-				tipBean.setPeriodicidade(rs.getInt("periodicidade"));
-				tipBean.setTaxaAdm(rs.getDouble("taxaadm"));
-				tipBean.setQtdParc(rs.getInt("qtdparc"));
-				tipBean.setForma(rs.getString("forma"));
-				tipBean.setTipoDoc(rs.getInt("tpdoc"));
-
-				lst.add(tipBean);
+				listaTipoPag.add(tipoPagBean);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -277,7 +263,7 @@ public class TipoPagDao {
 			}
 		}
 
-		return lst;
+		return listaTipoPag;
 	}
 
 	public List<TipoPagBean> lstTipoPagCartao() throws ProjetoException {
@@ -292,8 +278,6 @@ public class TipoPagDao {
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -311,9 +295,10 @@ public class TipoPagDao {
 
 				lst.add(tipBean);
 			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -323,7 +308,6 @@ public class TipoPagDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lst;
 	}
 
@@ -340,8 +324,6 @@ public class TipoPagDao {
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -356,8 +338,10 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -383,19 +367,18 @@ public class TipoPagDao {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				TipoPagBean tipBean = new TipoPagBean();
 				tipBean.setCodtippag(rs.getInt("codtippag"));
 				tipBean.setDescricao(rs.getString("descricao"));
-
 				lista.add(tipBean);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -421,11 +404,7 @@ public class TipoPagDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
-
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -440,8 +419,10 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -468,8 +449,6 @@ public class TipoPagDao {
 			con = ConnectionFactory.getConnection();
 
 			ps = con.prepareStatement(sql);
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().get("obj_usuario");
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -484,8 +463,10 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -499,9 +480,6 @@ public class TipoPagDao {
 	}
 
 	public List<TipoPagBean> lstTipoPag() throws ProjetoException {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		String sql = "select tippag.*, c.nome, b.descricao descbanco," + " case when tippag.tipo = 'CH' then 'Cheque'"
 				+ " when tippag.tipo = 'D' then 'Dinheiro' " + "  when tippag.tipo = 'CR' then 'Crédito'"
@@ -543,18 +521,17 @@ public class TipoPagDao {
 				if (rs.getInt("codcliente") != 0) {
 					tipBean.getCliente().setCodcliente(rs.getInt("codcliente"));
 					tipBean.getCliente().setNome(rs.getString("nome"));
-
 				}
 				tipBean.getBanco().setId(rs.getInt("idbanco"));
 				tipBean.getBanco().setDescricao(rs.getString("descbanco"));
 				tipBean.setNomeTipo(rs.getString("nomeTipo"));
 
 				lst.add(tipBean);
-
 			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -564,9 +541,7 @@ public class TipoPagDao {
 				e.printStackTrace();
 			}
 		}
-
 		return lst;
-
 	}
 
 	public String excluir(TipoPagBean bean) throws ProjetoException {
@@ -579,21 +554,17 @@ public class TipoPagDao {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-
 			ps.setInt(1, bean.getCodtippag());
-
 			ps.execute();
-
 			con.commit();
-
-			return retorno;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			retorno = e.getMessage();
-			return retorno;
-
-		} finally {
+		} catch (SQLException sqle) {
+			retorno = sqle.getMessage();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			retorno = ex.getMessage();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		finally {
 			try {
 				ps.close();
 				con.close();
@@ -601,7 +572,7 @@ public class TipoPagDao {
 				e.printStackTrace();
 			}
 		}
-
+		return retorno;
 	}
 
 }
