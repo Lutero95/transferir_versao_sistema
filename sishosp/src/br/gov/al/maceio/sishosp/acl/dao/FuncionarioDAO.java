@@ -42,7 +42,7 @@ public class FuncionarioDAO {
 	
 	public String autenticarUsuarioInicialNomeBancoAcesso(FuncionarioBean usuario) throws ProjetoException {
 
-		String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ??) AND ((senha) = ?) and ativo = 'S' ";
+		String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ?) AND ((senha) = ?) and ativo = 'S' ";
 		String nomeBancoAcesso = null;
 
 		try {

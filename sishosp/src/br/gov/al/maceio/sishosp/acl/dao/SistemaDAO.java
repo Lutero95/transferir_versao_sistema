@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.dao;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +20,7 @@ public class SistemaDAO {
 
 		String sql = "insert into acl.sistema (descricao, sigla, url, imagem, "
 				+ "versao, ativo) values (?, ?, ?, ?, ?, ?)";
+		boolean retorno = false;
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -32,10 +34,11 @@ public class SistemaDAO {
 			stmt.execute();
 
 			conexao.commit();
-
-			return true;
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -44,6 +47,7 @@ public class SistemaDAO {
 				System.exit(1);
 			}
 		}
+		return retorno;
 	}
 
 	public boolean alterarSistema(Sistema sistema) throws ProjetoException {
@@ -62,10 +66,11 @@ public class SistemaDAO {
 			stmt.execute();
 
 			conexao.commit();
-
 			alterou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -91,8 +96,10 @@ public class SistemaDAO {
 			conexao.commit();
 
 			excluiu = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -110,7 +117,7 @@ public class SistemaDAO {
 		String sql = "select * from acl.sistema where upper(descricao) like ? "
 				+ "order by ativo desc, descricao";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -119,23 +126,25 @@ public class SistemaDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				s.setSigla(rs.getString("sigla"));
-				s.setUrl(rs.getString("url"));
-				s.setImagem(rs.getString("imagem"));
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				sistema.setSigla(rs.getString("sigla"));
+				sistema.setUrl(rs.getString("url"));
+				sistema.setImagem(rs.getString("imagem"));
 
-				s.setImagem(s.getImagem().replace("../../imgs/", ""));
-				s.setImagem(s.getImagem().replace(".png", ""));
-				s.setImagem(s.getImagem().replace(".jpg", ""));
-				s.setImagem(s.getImagem().replace(".gif", ""));
-				s.setVersao(rs.getString("versao"));
-				s.setAtivo(rs.getBoolean("ativo"));
-				lista.add(s);
+				sistema.setImagem(sistema.getImagem().replace("../../imgs/", ""));
+				sistema.setImagem(sistema.getImagem().replace(".png", ""));
+				sistema.setImagem(sistema.getImagem().replace(".jpg", ""));
+				sistema.setImagem(sistema.getImagem().replace(".gif", ""));
+				sistema.setVersao(rs.getString("versao"));
+				sistema.setAtivo(rs.getBoolean("ativo"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -151,7 +160,7 @@ public class SistemaDAO {
 
 		String sql = "select * from acl.sistema order by ativo desc, descricao";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -159,23 +168,25 @@ public class SistemaDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				s.setSigla(rs.getString("sigla"));
-				s.setUrl(rs.getString("url"));
-				s.setImagem(rs.getString("imagem"));
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				sistema.setSigla(rs.getString("sigla"));
+				sistema.setUrl(rs.getString("url"));
+				sistema.setImagem(rs.getString("imagem"));
 
-				s.setImagem(s.getImagem().replace("../../imgs/", ""));
-				s.setImagem(s.getImagem().replace(".png", ""));
-				s.setImagem(s.getImagem().replace(".jpg", ""));
-				s.setImagem(s.getImagem().replace(".gif", ""));
-				s.setVersao(rs.getString("versao"));
-				s.setAtivo(rs.getBoolean("ativo"));
-				lista.add(s);
+				sistema.setImagem(sistema.getImagem().replace("../../imgs/", ""));
+				sistema.setImagem(sistema.getImagem().replace(".png", ""));
+				sistema.setImagem(sistema.getImagem().replace(".jpg", ""));
+				sistema.setImagem(sistema.getImagem().replace(".gif", ""));
+				sistema.setVersao(rs.getString("versao"));
+				sistema.setAtivo(rs.getBoolean("ativo"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -191,7 +202,7 @@ public class SistemaDAO {
 
 		String sql = "select id, sigla from acl.sistema order by descricao";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -204,8 +215,10 @@ public class SistemaDAO {
 				s.setSigla(rs.getString("sigla").toLowerCase());
 				lista.add(s);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -225,7 +238,7 @@ public class SistemaDAO {
 				+ "join acl.perm_perfil pp on si.id = pp.id_sistema "
 				+ "join acl.perfil pf on pf.id = pp.id_perfil where pf.id = ?)";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -234,13 +247,15 @@ public class SistemaDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				lista.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -260,7 +275,7 @@ public class SistemaDAO {
 				+ "join acl.perfil pf on pf.id = pp.id_perfil "
 				+ "where pf.id = ? group by si.id";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -269,13 +284,15 @@ public class SistemaDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				lista.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -315,8 +332,10 @@ public class SistemaDAO {
 				sis.setVersao(rs.getString("versao"));
 				sis.setAtivo(rs.getBoolean("ativo"));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -332,7 +351,7 @@ public class SistemaDAO {
 
 		String sql = "select id, descricao from acl.sistema order by descricao";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -345,8 +364,10 @@ public class SistemaDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();

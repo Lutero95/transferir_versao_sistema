@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.dao;
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +21,7 @@ public class PermissaoDAO {
 		String sql = "select id, descricao from acl.permissao where upper(descricao) "
 				+ "like ? order by descricao";
 
-		ArrayList<Permissao> lista = new ArrayList();
+		ArrayList<Permissao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -34,8 +35,10 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -51,7 +54,7 @@ public class PermissaoDAO {
 
 		String sql = "select * from acl.permissao order by descricao";
 
-		ArrayList<Permissao> lista = new ArrayList();
+		ArrayList<Permissao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -64,8 +67,10 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -94,7 +99,7 @@ public class PermissaoDAO {
 				+ "join acl.funcao fu on fu.id = pg.id_funcao "
 				+ "join acl.sistema si on si.id = fu.id_sistema order by 2,1";
 
-		ArrayList<Permissao> lista = new ArrayList();
+		ArrayList<Permissao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -102,17 +107,19 @@ public class PermissaoDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				Permissao p = new Permissao();
-				p.setId(rs.getLong("id"));
-				p.setDescricao(rs.getString("descricao"));
+				Permissao permissao = new Permissao();
+				permissao.setId(rs.getLong("id"));
+				permissao.setDescricao(rs.getString("descricao"));
 
-				p.setIdSistema(rs.getInt("id_sis"));
-				p.setDescSistema(rs.getString("desc_sis"));
-				p.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(p);
+				permissao.setIdSistema(rs.getInt("id_sis"));
+				permissao.setDescSistema(rs.getString("desc_sis"));
+				permissao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(permissao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -132,7 +139,7 @@ public class PermissaoDAO {
 				+ "join acl.perm_perfil pp on pm.id = pp.id_permissao "
 				+ "join acl.perfil pf on pf.id = pp.id_perfil where pf.id = ?)";
 
-		ArrayList<Permissao> lista = new ArrayList();
+		ArrayList<Permissao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -146,8 +153,10 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -167,7 +176,7 @@ public class PermissaoDAO {
 				+ "join acl.perfil pf on pf.id = pp.id_perfil "
 				+ "where pf.id = ? group by pm.id";
 
-		ArrayList<Permissao> lista = new ArrayList();
+		ArrayList<Permissao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -176,13 +185,15 @@ public class PermissaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Permissao p = new Permissao();
-				p.setId(rs.getLong("id"));
-				p.setDescricao(rs.getString("descricao"));
-				lista.add(p);
+				Permissao permissao = new Permissao();
+				permissao.setId(rs.getLong("id"));
+				permissao.setDescricao(rs.getString("descricao"));
+				lista.add(permissao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -202,7 +213,7 @@ public class PermissaoDAO {
 				+ "join acl.permissao pm on pm.id = pp.id_permissao "
 				+ "where pf.id = ? group by pm.id order by 1";
 
-		ArrayList<Long> lista = new ArrayList();
+		ArrayList<Long> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -213,8 +224,10 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				lista.add(rs.getLong("permid"));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -241,8 +254,10 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -257,7 +272,6 @@ public class PermissaoDAO {
 	public Long recIdPermissoesFuncao(Long idFuncao) throws ProjetoException {
 
 		String sql = "select id_permissao from acl.perm_geral where id_funcao = ?";
-
 		Long perm = null;
 
 		try {
@@ -269,8 +283,10 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -298,8 +314,10 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
