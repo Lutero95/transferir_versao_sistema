@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -38,10 +39,10 @@ public class FuncionarioDAO {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
+	
 	public String autenticarUsuarioInicialNomeBancoAcesso(FuncionarioBean usuario) throws ProjetoException {
 
-		String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ?) AND ((senha) = ?) and ativo = 'S' ";
-
+		String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ??) AND ((senha) = ?) and ativo = 'S' ";
 		String nomeBancoAcesso = null;
 
 		try {
@@ -54,14 +55,11 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				nomeBancoAcesso = rs.getString("banco_acesso");
 			}
-
 			SessionUtil.adicionarNaSessao(nomeBancoAcesso, "nomeBancoAcesso");
-
-			return nomeBancoAcesso;
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -69,6 +67,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return nomeBancoAcesso;
 	}
 
 	public Integer verificarSeTrabalhaEmMaisDeUmaEmpresa(String cpf) throws ProjetoException {
@@ -86,12 +85,10 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				quantidade = rs.getInt("quantidade");
 			}
-
-			return quantidade;
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -99,6 +96,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return quantidade;
 	}
 
 	public List<Empresa> carregarEmpresasDoFuncionario(String cpf) throws ProjetoException {
@@ -121,12 +119,10 @@ public class FuncionarioDAO {
 				empresa.setBancoAcesso(rs.getString("nome_banco"));
 				lista.add(empresa);
 			}
-
-			return lista;
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -134,6 +130,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return lista;
 	}
 
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario) throws ProjetoException {
@@ -155,8 +152,7 @@ public class FuncionarioDAO {
 				+ " left join hosp.proc on proc.id = us.codprocedimentopadrao"
 				+ " where (us.cpf = ?) and us.ativo = 'S'";
 
-		FuncionarioBean ub = null;
-		int count = 1;	
+		FuncionarioBean funcionario = null;
 		String setoresUsuario = "";
 
 		try {
@@ -165,56 +161,54 @@ public class FuncionarioDAO {
 			pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				ub = new FuncionarioBean();
-				ub.setId(rs.getLong("id_funcionario"));
-				ub.setNome(rs.getString("descfuncionario"));
-				ub.setSenha(rs.getString("senha"));
-				ub.setEmail(rs.getString("email"));
-				ub.getUnidade().setId(rs.getInt("codunidade"));
-				ub.getUnidade().setCodEmpresa(rs.getInt("cod_empresa"));
-				ub.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
-				ub.getUnidade().setNomeEmpresa(rs.getString("nome_principal"));
-				ub.getUnidade().setNomeFantasia(rs.getString("nome_fantasia"));
-				ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-				ub.getUnidade().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
-				ub.getUnidade().getParametro().setOpcaoAtendimento(rs.getString("opcao_atendimento"));
-				ub.getUnidade().getParametro().setNecessitaPresencaParaEvolucao(rs.getString("necessita_presenca_para_evolucao"));
-				ub.getUnidade().getParametro().setPtsMostrarObjGeraisCurtoPrazo(rs.getBoolean("pts_mostra_obs_gerais_curto"));
-				ub.getUnidade().getParametro().setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
-				ub.getUnidade().getParametro().setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
-				ub.getUnidade().getParametro().getOrteseProtese().getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
-				ub.getUnidade().getParametro().getOrteseProtese().getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
-				ub.getUnidade().getParametro().setOrgaoOrigemResponsavelPelaInformacao(rs.getString("orgao_origem_responsavel_pela_informacao"));
-				ub.getUnidade().getParametro().setSiglaOrgaoOrigemResponsavelPelaDigitacao(rs.getString("sigla_orgao_origem_responsavel_pela_digitacao"));
-				ub.getUnidade().getParametro().setCgcCpfPrestadorOuOrgaoPublico(rs.getString("cgcCpf_prestador_ou_orgao_publico"));
-				ub.getUnidade().getParametro().setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
-				ub.getUnidade().getParametro().setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
-				ub.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
+				funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.setSenha(rs.getString("senha"));
+				funcionario.setEmail(rs.getString("email"));
+				funcionario.getUnidade().setId(rs.getInt("codunidade"));
+				funcionario.getUnidade().setCodEmpresa(rs.getInt("cod_empresa"));
+				funcionario.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
+				funcionario.getUnidade().setNomeEmpresa(rs.getString("nome_principal"));
+				funcionario.getUnidade().setNomeFantasia(rs.getString("nome_fantasia"));
+				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				funcionario.getUnidade().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
+				funcionario.getUnidade().getParametro().setOpcaoAtendimento(rs.getString("opcao_atendimento"));
+				funcionario.getUnidade().getParametro().setNecessitaPresencaParaEvolucao(rs.getString("necessita_presenca_para_evolucao"));
+				funcionario.getUnidade().getParametro().setPtsMostrarObjGeraisCurtoPrazo(rs.getBoolean("pts_mostra_obs_gerais_curto"));
+				funcionario.getUnidade().getParametro().setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
+				funcionario.getUnidade().getParametro().setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
+				funcionario.getUnidade().getParametro().getOrteseProtese().getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
+				funcionario.getUnidade().getParametro().getOrteseProtese().getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
+				funcionario.getUnidade().getParametro().setOrgaoOrigemResponsavelPelaInformacao(rs.getString("orgao_origem_responsavel_pela_informacao"));
+				funcionario.getUnidade().getParametro().setSiglaOrgaoOrigemResponsavelPelaDigitacao(rs.getString("sigla_orgao_origem_responsavel_pela_digitacao"));
+				funcionario.getUnidade().getParametro().setCgcCpfPrestadorOuOrgaoPublico(rs.getString("cgcCpf_prestador_ou_orgao_publico"));
+				funcionario.getUnidade().getParametro().setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
+				funcionario.getUnidade().getParametro().setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
+				funcionario.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
 
 				// ACL
-				ub.setId(rs.getLong("id_funcionario"));
-				ub.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
-				ub.getPerfil().setId(rs.getLong("idperfil"));
-				ub.getPerfil().setDescricao(rs.getString("descperfil"));
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
+				funcionario.getPerfil().setId(rs.getLong("idperfil"));
+				funcionario.getPerfil().setDescricao(rs.getString("descperfil"));
 				if (rs.getString("codprocedimentopadrao") != null){
-					ub.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-					ub.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
-					ub.getProc1().setValidade_laudo(rs.getInt("validade_laudo"));
+					funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+					funcionario.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
+					funcionario.getProc1().setValidade_laudo(rs.getInt("validade_laudo"));
 				}
-
-				count++;
 			}
 
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", ub);
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", funcionario);
 
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("setores_usuario",
 					setoresUsuario);
-			return ub;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -222,6 +216,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return funcionario;
 	}
 
 	public List<Sistema> carregarSistemasUsuario(FuncionarioBean usuario) throws ProjetoException {
@@ -241,19 +236,20 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				s.setSigla(rs.getString("sigla"));
-				s.setUrl(rs.getString("url") + "?faces-redirect=true");
-				s.setImagem(rs.getString("imagem"));
-				s.setVersao(rs.getString("versao"));
-				s.setAtivo(rs.getBoolean("ativo"));
-				listaSistemas.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				sistema.setSigla(rs.getString("sigla"));
+				sistema.setUrl(rs.getString("url") + "?faces-redirect=true");
+				sistema.setImagem(rs.getString("imagem"));
+				sistema.setVersao(rs.getString("versao"));
+				sistema.setAtivo(rs.getBoolean("ativo"));
+				listaSistemas.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -322,45 +318,46 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("meid"));
-				m.setDescricao(rs.getString("medesc"));
-				m.setCodigo(rs.getString("cod_menu"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("meativo"));
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
-				m.setAction(rs.getString("action_rel"));
-				m.setOnclick(rs.getString("onclick_rel"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("meid"));
+				menu.setDescricao(rs.getString("medesc"));
+				menu.setCodigo(rs.getString("cod_menu"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("meativo"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
+				menu.setAction(rs.getString("action_rel"));
+				menu.setOnclick(rs.getString("onclick_rel"));
 
 				if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
 					// contextPath
-					m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/" + menu.getDescPagina() + menu.getExtensao());
 				}
 
 				if (rs.getString("funativa").equals("t")) {
-					m.setAtivo(true);
+					menu.setAtivo(true);
 				}
 
-				Permissoes p = new Permissoes();
-				p.setIdSistema(rs.getInt("sid"));
-				p.setDescSistema(rs.getString("sdesc"));
-				p.setDescPerfil(rs.getString("pfdesc"));
-				p.setIdPermissao(rs.getInt("pmid"));
-				p.setDescPermissao(rs.getString("pmdesc"));
-				p.setMenu(m);
+				Permissoes permissoes = new Permissoes();
+				permissoes.setIdSistema(rs.getInt("sid"));
+				permissoes.setDescSistema(rs.getString("sdesc"));
+				permissoes.setDescPerfil(rs.getString("pfdesc"));
+				permissoes.setIdPermissao(rs.getInt("pmid"));
+				permissoes.setDescPermissao(rs.getString("pmdesc"));
+				permissoes.setMenu(menu);
 
-				p.setCodigoFuncao(rs.getString("funcodigo"));
-				p.setFuncaoAtiva(rs.getBoolean("funativa"));
-				p.setIdSistemaFunc(rs.getInt("funidsis"));
+				permissoes.setCodigoFuncao(rs.getString("funcodigo"));
+				permissoes.setFuncaoAtiva(rs.getBoolean("funativa"));
+				permissoes.setIdSistemaFunc(rs.getInt("funidsis"));
 
-				lista.add(p);
+				lista.add(permissoes);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -371,7 +368,7 @@ public class FuncionarioDAO {
 		return lista;
 	}
 
-	public Boolean alterar(FuncionarioBean usuario) {
+	public Boolean alterar(FuncionarioBean usuario) throws ProjetoException {
 		boolean retorno = false;
 		String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
 				+ "senha = ?, id_perfil = ?, ativo = ?, codunidade = ? where id_funcionario = ?";
@@ -387,8 +384,6 @@ public class FuncionarioDAO {
 			stmt.setInt(7, usuario.getUnidade().getId());
 			stmt.setLong(8, usuario.getId());
 			stmt.executeUpdate();
-
-			FuncionarioBean u = usuario;
 
 			sql = "delete from acl.perm_sistema where id_usuario = ?";
 			stmt = con.prepareStatement(sql);
@@ -420,20 +415,21 @@ public class FuncionarioDAO {
 
 			con.commit();
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean alterarSemPerm(FuncionarioBean usuario) {
+	public Boolean alterarSemPerm(FuncionarioBean usuario) throws ProjetoException {
 		boolean retorno = false;
 		String sql = " update acl.funcionarios set descfuncionario = ?, cpf = ?, email = ?, "
 				+ "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ? ";
@@ -450,11 +446,11 @@ public class FuncionarioDAO {
 			stmt.setLong(7, usuario.getId());
 
 			stmt.executeUpdate();
-			FuncionarioBean u = usuario;
+			FuncionarioBean funcionario = usuario;
 
 			boolean associouSis = false;
 
-			if (u.getId() != null) {
+			if (funcionario.getId() != null) {
 				sql = "delete from acl.perm_sistema where id_usuario = ?";
 				String sql2 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
 				List<Integer> listaId = usuario.getListaIdSistemas();
@@ -463,9 +459,10 @@ public class FuncionarioDAO {
 					stmt2 = con.prepareStatement(sql);
 					stmt2.setLong(1, usuario.getId());
 					stmt2.execute();
+				} catch (SQLException sqle) {
+					throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 				} catch (Exception ex) {
-					ex.getMessage();
-					throw new RuntimeException(ex);
+					throw new ProjetoException(ex, this.getClass().getName());
 				}
 				if (!usuario.getListaIdSistemas().isEmpty()) {
 					try {
@@ -476,8 +473,10 @@ public class FuncionarioDAO {
 							stmt2.execute();
 						}
 						associouSis = true;
+					} catch (SQLException sqle) {
+						throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 					} catch (Exception ex) {
-						throw new RuntimeException(ex);
+						throw new ProjetoException(ex, this.getClass().getName());
 					}
 				}
 			}
@@ -490,23 +489,26 @@ public class FuncionarioDAO {
 					stmt3.setLong(1, usuario.getId());
 					stmt3.execute();
 					associouPerm = true;
+				} catch (SQLException sqle) {
+					throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 				} catch (Exception ex) {
-					throw new RuntimeException(ex);
+					throw new ProjetoException(ex, this.getClass().getName());
 				}
 			}
 
 			con.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public ArrayList<Menu> listarMenuItemSourcerEditUser(Long idPerfil, Integer idUsuario)
@@ -541,36 +543,42 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
 
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/" + menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
 
 			rs.close();
 			stmt.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-			con.close();
+			try {
+				con.close();				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return lista;
 	}
@@ -595,35 +603,41 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/" + menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
-
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				
+				menu.setIndiceAux(rs.getString("codigo"));
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
 
 			rs.close();
 			stmt.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-			con.close();
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return lista;
 	}
@@ -635,7 +649,7 @@ public class FuncionarioDAO {
 
 		String sql = "select * from acl.funcionarios u where codunidade = ? order by ativo,descfuncionario";
 
-		ArrayList<FuncionarioBean> lista = new ArrayList();
+		ArrayList<FuncionarioBean> lista = new ArrayList<>();
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -644,21 +658,22 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean n = new FuncionarioBean();
-				n = new FuncionarioBean();
-				n.setId(rs.getLong("id_funcionario"));
-				n.setNome(rs.getString("descfuncionario"));
-				n.setSenha(rs.getString("senha"));
-				n.setAtivo(rs.getString("ativo"));
-				n.setEmail(rs.getString("email"));
-				n.setCpf(rs.getString("cpf"));
-				n.getPerfil().setId(rs.getLong("id_perfil"));
+				FuncionarioBean funcionario = new FuncionarioBean();
+				funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.setSenha(rs.getString("senha"));
+				funcionario.setAtivo(rs.getString("ativo"));
+				funcionario.setEmail(rs.getString("email"));
+				funcionario.setCpf(rs.getString("cpf"));
+				funcionario.getPerfil().setId(rs.getLong("id_perfil"));
 
-				lista.add(n);
+				lista.add(funcionario);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -685,17 +700,18 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Permissao p = new Permissao();
-				p.setId(rs.getLong("id"));
-				p.setDescricao(rs.getString("descricao"));
-				lista.add(p);
+				Permissao permissao = new Permissao();
+				permissao.setId(rs.getLong("id"));
+				permissao.setDescricao(rs.getString("descricao"));
+				lista.add(permissao);
 			}
 			rs.close();
 			stmt.close();
 			con.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -726,17 +742,18 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Permissao p = new Permissao();
-				p.setId(rs.getLong("id"));
-				p.setDescricao(rs.getString("descricao"));
-				lista.add(p);
+				Permissao permissao = new Permissao();
+				permissao.setId(rs.getLong("id"));
+				permissao.setDescricao(rs.getString("descricao"));
+				lista.add(permissao);
 			}
 			rs.close();
 			stmt.close();
 			con.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -762,17 +779,18 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Permissao p = new Permissao();
-				p.setId(rs.getLong("id"));
-				p.setDescricao(rs.getString("descricao"));
-				lista.add(p);
+				Permissao permissao = new Permissao();
+				permissao.setId(rs.getLong("id"));
+				permissao.setDescricao(rs.getString("descricao"));
+				lista.add(permissao);
 			}
 			rs.close();
 			stmt.close();
 			con.close();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -783,7 +801,7 @@ public class FuncionarioDAO {
 		return lista;
 	}
 
-	public Boolean alterarSenha(FuncionarioBean usuario) {
+	public Boolean alterarSenha(FuncionarioBean usuario) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -806,20 +824,21 @@ public class FuncionarioDAO {
 				retorno = alterarSenhaBancoPublico(usuario);
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public Boolean alterarSenhaBancoPublico(FuncionarioBean usuario) {
+	public Boolean alterarSenhaBancoPublico(FuncionarioBean usuario) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -839,17 +858,18 @@ public class FuncionarioDAO {
 
 			retorno = true;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public String verificaLoginCadastrado(String login) throws ProjetoException {
@@ -866,17 +886,18 @@ public class FuncionarioDAO {
 				isExist = "S";
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return isExist;
 		}
+		return isExist;
 	}
 
 	public String verificaUserCadastrado(String cpf) throws ProjetoException {
@@ -897,22 +918,23 @@ public class FuncionarioDAO {
 				isExist = "S";
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return isExist;
 		}
+		return isExist;
 	}
 
 	// INICIO PROFISSIONALDAO
 
-	public boolean gravarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) {
+	public boolean gravarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) throws ProjetoException {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
@@ -927,11 +949,8 @@ public class FuncionarioDAO {
 			ps = con.prepareStatement(sql);
 
 			ps.setString(1, profissional.getNome().toUpperCase());
-
 			ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
-
 			ps.setString(3, profissional.getSenha());
-
 			ps.setLong(4, user_session.getId());
 
 			if (profissional.getEspecialidade() != null) {
@@ -971,15 +990,10 @@ public class FuncionarioDAO {
 			}
 
 			ps.setString(9, profissional.getAtivo());
-
 			ps.setBoolean(10, profissional.getRealizaAtendimento());
-
 			ps.setLong(11, profissional.getPerfil().getId());
-
 			ps.setInt(12, profissional.getUnidade().getId());
-
 			ps.setBoolean(13, profissional.getRealizaLiberacoes());
-
 			ps.setBoolean(14, profissional.getRealizaEncaixes());
 
 			ResultSet rs = ps.executeQuery();
@@ -992,7 +1006,6 @@ public class FuncionarioDAO {
 			for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
 				String sql2 = "INSERT INTO hosp.funcionario_unidades (cod_unidade, cod_funcionario) VALUES (?, ?);";
 				ps = con.prepareStatement(sql2);
-
 				ps.setInt(1, profissional.getListaUnidades().get(i).getId());
 				ps.setInt(2, idProf);
 
@@ -1034,20 +1047,21 @@ public class FuncionarioDAO {
 				con.commit();
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public boolean gravarProfissionalBancoPublico(FuncionarioBean profissional, Integer idProfissional) {
+	public boolean gravarProfissionalBancoPublico(FuncionarioBean profissional, Integer idProfissional) throws ProjetoException {
 
 		Boolean retorno = false;
 		Connection conexaoPublica = null;
@@ -1059,32 +1073,27 @@ public class FuncionarioDAO {
 			ps = conexaoPublica.prepareStatement(sql);
 
 			ps.setInt(1, idProfissional);
-
 			ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
-
 			ps.setString(3, profissional.getSenha());
-
 			ps.setString(4, "S");
-
 			ps.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
-
 			ps.setString(6, profissional.getNome());
-
 			ps.execute();
 
 			conexaoPublica.commit();
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexaoPublica.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca, Integer tipoBuscar)
@@ -1120,27 +1129,28 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.getCbo().setDescCbo(rs.getString("descricao"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getProc1().setNomeProc(rs.getString("nome"));
-				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				FuncionarioBean funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				funcionario.setCns(rs.getString("cns"));
+				funcionario.setAtivo(rs.getString("ativo"));
+				funcionario.getCbo().setDescCbo(rs.getString("descricao"));
+				funcionario.getCbo().setCodCbo(rs.getInt("codcbo"));
+				funcionario.getProc1().setNomeProc(rs.getString("nome"));
+				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				//prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
 				//prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
-				lista.add(prof);
+				lista.add(funcionario);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1180,25 +1190,26 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setDescCbo(rs.getString("desccbo"));
-				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-				prof.getProc1().setNomeProc(rs.getString("descproc"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				FuncionarioBean funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				funcionario.setCns(rs.getString("cns"));
+				funcionario.setAtivo(rs.getString("ativo"));
+				funcionario.getCbo().setCodCbo(rs.getInt("codcbo"));
+				funcionario.getCbo().setDescCbo(rs.getString("desccbo"));
+				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				funcionario.getProc1().setNomeProc(rs.getString("descproc"));
+				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
-				lista.add(prof);
+				lista.add(funcionario);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1236,30 +1247,31 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setCodigo(rs.getString("codigocbo"));
-				prof.getCbo().setDescCbo(rs.getString("desccbo"));
-				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-				prof.getProc1().setNomeProc(rs.getString("descprocpadrao"));
-				prof.getPerfil().setId(rs.getLong("id_perfil"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				FuncionarioBean funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setCpf(rs.getString("cpf"));
+				funcionario.setSenha(rs.getString("senha"));
+				funcionario.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				funcionario.setCns(rs.getString("cns"));
+				funcionario.setAtivo(rs.getString("ativo"));
+				funcionario.getCbo().setCodCbo(rs.getInt("codcbo"));
+				funcionario.getCbo().setCodigo(rs.getString("codigocbo"));
+				funcionario.getCbo().setDescCbo(rs.getString("desccbo"));
+				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				funcionario.getProc1().setNomeProc(rs.getString("descprocpadrao"));
+				funcionario.getPerfil().setId(rs.getLong("id_perfil"));
+				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
-				listaProf.add(prof);
+				listaProf.add(funcionario);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1272,9 +1284,7 @@ public class FuncionarioDAO {
 
 	public List<FuncionarioBean> listarTodosOsProfissional() throws ProjetoException {
 
-		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
+		List<FuncionarioBean> listaProfissional = new ArrayList<FuncionarioBean>();
 
 		String sql = "select * from (\n" + 
 				"select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, \n" + 
@@ -1300,30 +1310,31 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setDescCbo(rs.getString("desccbo"));
-				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-				prof.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
-				prof.getPerfil().setId(rs.getLong("id_perfil"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-				prof.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
+				FuncionarioBean profissioanl = new FuncionarioBean();
+				profissioanl.setId(rs.getLong("id_funcionario"));
+				profissioanl.setCpf(rs.getString("cpf"));
+				profissioanl.setSenha(rs.getString("senha"));
+				profissioanl.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissioanl.setNome(rs.getString("descfuncionario"));
+				profissioanl.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				profissioanl.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				profissioanl.setCns(rs.getString("cns"));
+				profissioanl.setAtivo(rs.getString("ativo"));
+				profissioanl.getCbo().setCodCbo(rs.getInt("codcbo"));
+				profissioanl.getCbo().setDescCbo(rs.getString("desccbo"));
+				profissioanl.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				profissioanl.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
+				profissioanl.getPerfil().setId(rs.getLong("id_perfil"));
+				profissioanl.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissioanl.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				profissioanl.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
 
-				listaProf.add(prof);
+				listaProfissional.add(profissioanl);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1331,7 +1342,7 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
-		return listaProf;
+		return listaProfissional;
 	}
 
 	public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo) throws ProjetoException {
@@ -1349,22 +1360,23 @@ public class FuncionarioDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				FuncionarioBean prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.setCns(rs.getString("cns"));
+				FuncionarioBean profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				profissional.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				profissional.setCns(rs.getString("cns"));
 				CboBean cbo = new CboBean();
 				cbo.setCodCbo(rs.getInt("idcbo"));
 				cbo.setCodigo(rs.getString("codcbo"));
 				cbo.setDescCbo(rs.getString("desccbo"));
-				prof.setCbo(cbo);
-				listaProf.add(prof);
+				profissional.setCbo(cbo);
+				listaProf.add(profissional);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1375,7 +1387,7 @@ public class FuncionarioDAO {
 		return listaProf;
 	}
 
-	public boolean excluirProfissional(FuncionarioBean profissional) {
+	public boolean excluirProfissional(FuncionarioBean profissional) throws ProjetoException {
 
 		Boolean retorno = false;
 
@@ -1385,13 +1397,10 @@ public class FuncionarioDAO {
 		String sql4 = "delete from acl.funcionarios where id_funcionario = ?";
 
 		try {
-
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql1);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
-
 			ps = con.prepareStatement(sql2);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
@@ -1403,24 +1412,24 @@ public class FuncionarioDAO {
 			ps = con.prepareStatement(sql4);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
-
 			con.commit();
 
 			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
-	public boolean alterarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) {
+	public boolean alterarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) throws ProjetoException {
 
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
@@ -1473,21 +1482,14 @@ public class FuncionarioDAO {
 			}
 
 			stmt.setLong(7, profissional.getPerfil().getId());
-
 			stmt.setBoolean(8, profissional.getRealizaLiberacoes());
-
 			stmt.setBoolean(9, profissional.getRealizaAtendimento());
-
 			stmt.setBoolean(10, profissional.getRealizaEncaixes());
-
 			stmt.setString(11, profissional.getSenha());
-
 			stmt.setString(12, profissional.getCpf().replaceAll("[^0-9]", ""));
 
 			stmt.setLong(13, profissional.getUnidade().getId());
-			
 			stmt.setLong(14, profissional.getId());
-
 			stmt.executeUpdate();
 
 			String sql2 = "delete from hosp.funcionario_unidades where cod_funcionario = ?";
@@ -1501,7 +1503,6 @@ public class FuncionarioDAO {
 
 				stmt.setInt(1, profissional.getListaUnidades().get(i).getId());
 				stmt.setLong(2, profissional.getId());
-
 				stmt.executeUpdate();
 			}
 
@@ -1555,17 +1556,18 @@ public class FuncionarioDAO {
 				con.commit();
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public List<Sistema> carregaSistemasListaSourceAlteracao(Long id) throws ProjetoException {
@@ -1584,22 +1586,23 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				listaSistemas.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				listaSistemas.add(sistema);
 			}
 			rs.close();
 			stmt.close();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-
 		}
 		return listaSistemas;
 	}
@@ -1617,15 +1620,17 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				listaSistemas.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				listaSistemas.add(sistema);
 			}
 			rs.close();
 			stmt.close();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1653,15 +1658,17 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				listaSistemas.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				listaSistemas.add(sistema);
 			}
 			rs.close();
 			stmt.close();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1673,7 +1680,7 @@ public class FuncionarioDAO {
 		return listaSistemas;
 	}
 
-	public boolean alterarProfissionalBancoPublico(FuncionarioBean profissional) {
+	public boolean alterarProfissionalBancoPublico(FuncionarioBean profissional) throws ProjetoException {
 
 		Connection conexaoPublica = null;
 
@@ -1696,21 +1703,22 @@ public class FuncionarioDAO {
 			conexaoPublica.commit();
 			retorno = true;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexaoPublica.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return retorno;
 		}
+		return retorno;
 	}
 
 	public FuncionarioBean buscarProfissionalPorId(Integer id) throws ProjetoException {
-		FuncionarioBean prof = null;
+		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
@@ -1723,30 +1731,29 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
-				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
-				prof.getPerfil().setId(rs.getLong("id_perfil"));
-				prof.getUnidade().setId(rs.getInt("codunidade"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.setCpf(rs.getString("cpf"));
+				profissional.setSenha(rs.getString("senha"));
+				profissional.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissional.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				profissional.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				profissional.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				profissional.setCns(rs.getString("cns"));
+				profissional.setAtivo(rs.getString("ativo"));
+				profissional.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				profissional.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				profissional.getPerfil().setId(rs.getLong("id_perfil"));
+				profissional.getUnidade().setId(rs.getInt("codunidade"));
+				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 			}
-			return prof;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1754,10 +1761,11 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return profissional;
 	}
 	
 	public FuncionarioBean buscarProfissionalPorIdParaConverter(Integer id) throws ProjetoException {
-		FuncionarioBean prof = null;
+		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, funcionarios.codcbo,c.codigo codigocbo, c.descricao desccbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
@@ -1770,28 +1778,27 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.getPerfil().setId(rs.getLong("id_perfil"));
-				prof.getUnidade().setId(rs.getInt("codunidade"));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setCodigo(rs.getString("codigocbo"));
-				prof.getCbo().setDescCbo(rs.getString("desccbo"));
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.setCpf(rs.getString("cpf"));
+				profissional.setSenha(rs.getString("senha"));
+				profissional.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissional.setCns(rs.getString("cns"));
+				profissional.setAtivo(rs.getString("ativo"));
+				profissional.getPerfil().setId(rs.getLong("id_perfil"));
+				profissional.getUnidade().setId(rs.getInt("codunidade"));
+				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				profissional.getCbo().setCodCbo(rs.getInt("codcbo"));
+				profissional.getCbo().setCodigo(rs.getString("codigocbo"));
+				profissional.getCbo().setDescCbo(rs.getString("desccbo"));
 
 			}
-			return prof;
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1799,10 +1806,11 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return profissional;
 	}	
 	
 	public FuncionarioBean buscarProfissionalConverterPorId(Integer id) throws ProjetoException {
-		FuncionarioBean prof = null;
+		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, funcionarios.codespecialidade, e.descespecialidade, \n" + 
 				"funcionarios.codcbo,c.codigo codigocbo,  c.descricao desccbo from acl.funcionarios \n" +
@@ -1817,21 +1825,20 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
-				prof.getCbo().setCodigo (rs.getString("codigocbo"));
-				prof.getCbo().setDescCbo(rs.getString("desccbo"));
-				
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				profissional.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				profissional.getCbo().setCodCbo(rs.getInt("codcbo"));
+				profissional.getCbo().setCodigo (rs.getString("codigocbo"));
+				profissional.getCbo().setDescCbo(rs.getString("desccbo"));
 			}
-			return prof;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1839,10 +1846,11 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return profissional;
 	}
 
 	public FuncionarioBean buscarProfissionalRealizaAtendimentoPorId(Integer id) throws ProjetoException {
-		FuncionarioBean prof = null;
+		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, permite_liberacao, permite_encaixe "
@@ -1855,28 +1863,27 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				prof = new FuncionarioBean();
-				prof.setId(rs.getLong("id_funcionario"));
-				prof.setNome(rs.getString("descfuncionario"));
-				prof.setCpf(rs.getString("cpf"));
-				prof.setSenha(rs.getString("senha"));
-				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
-				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
-				prof.setCns(rs.getString("cns"));
-				prof.setAtivo(rs.getString("ativo"));
-				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
-				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.setCpf(rs.getString("cpf"));
+				profissional.setSenha(rs.getString("senha"));
+				profissional.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissional.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				profissional.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				profissional.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				profissional.setCns(rs.getString("cns"));
+				profissional.setAtivo(rs.getString("ativo"));
+				profissional.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				profissional.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 			}
 
-			return prof;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -1884,9 +1891,10 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return profissional;
 	}
 
-	public List<FuncionarioBean> listarProfissionaisPorEquipe(int id, Connection conAuxiliar) {
+	public List<FuncionarioBean> listarProfissionaisPorEquipe(int id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		List<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 		String sql = "select medico from hosp.equipe_medico where equipe = ? order by medico";
@@ -1898,19 +1906,17 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				lista.add(pDao.buscarProfissionalPorId(rs.getInt("medico")));
 			}
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return lista;
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
 		}
+		return lista;
 	}
 
-	public List<ProgramaBean> listarProgProf(int idProf) {
+	public List<ProgramaBean> listarProgProf(int idProf) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<ProgramaBean>();
 		String sql = "select codprograma from hosp.profissional_programa_grupo where codprofissional = ?";
 		try {
@@ -1921,20 +1927,21 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				lista.add(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return lista;
 		}
+		return lista;
 	}
 
-	public List<GrupoBean> listarProgGrupo(int idProf) {
+	public List<GrupoBean> listarProgGrupo(int idProf) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<GrupoBean>();
 		String sql = "select codgrupo from hosp.profissional_programa_grupo where codprofissional = ?";
 		try {
@@ -1945,20 +1952,21 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				lista.add(gDao.listarGrupoPorId(rs.getInt("codgrupo")));
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return lista;
 		}
+		return lista;
 	}
 
-	public ArrayList<ProgramaBean> carregaProfissionalProgramaEGrupos(int idProf) {
+	public ArrayList<ProgramaBean> carregaProfissionalProgramaEGrupos(int idProf) throws ProjetoException {
 		ArrayList<ProgramaBean> lista = new ArrayList<ProgramaBean>();
 
 		String sql = "select ppg.codprograma, p.descprograma, ppg.codgrupo, g.descgrupo "
@@ -1971,33 +1979,33 @@ public class FuncionarioDAO {
 			stm.setInt(1, idProf);
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
-				ProgramaBean p = new ProgramaBean();
+				ProgramaBean programa = new ProgramaBean();
 
-				p.setIdPrograma(rs.getInt("codprograma"));
-				p.setDescPrograma(rs.getString("descprograma"));
-				p.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
-				p.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+				programa.setIdPrograma(rs.getInt("codprograma"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+				programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
 
-				lista.add(p);
+				lista.add(programa);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return lista;
 		}
+		return lista;
 	}
 
-	public List<UnidadeBean> listarUnidadesUsuarioVisualiza(int idFuncionario) {
+	public List<UnidadeBean> listarUnidadesUsuarioVisualiza(int idFuncionario) throws ProjetoException {
 
 		List<UnidadeBean> lista = new ArrayList<UnidadeBean>();
 		PreparedStatement stm = null;
-
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("SELECT fun.codunidade, e.nome nomeunidade ");
@@ -2019,22 +2027,22 @@ public class FuncionarioDAO {
 				UnidadeBean.setId(rs.getInt("codunidade"));
 				UnidadeBean.setNomeUnidade(rs.getString("nomeunidade"));
 				lista.add(UnidadeBean);
-
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return lista;
 		}
+		return lista;
 	}
 
-	public List<UnidadeBean> listarUnidadesDoFuncionario() {
+	public List<UnidadeBean> listarUnidadesDoFuncionario() throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -2054,7 +2062,6 @@ public class FuncionarioDAO {
 
             con = ConnectionFactory.getConnection();
             stm = con.prepareStatement(sql.toString());
-
             stm.setLong(1, user_session.getId());
             ResultSet rs = stm.executeQuery();
 
@@ -2063,24 +2070,24 @@ public class FuncionarioDAO {
                 UnidadeBean.setId(rs.getInt("cod_unidade"));
                 UnidadeBean.setNomeUnidade(rs.getString("nome"));                
                 lista.add(UnidadeBean);
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return lista;
         }
+        return lista;
     }
 
 	public FuncionarioBean validarCpfIhSenha(String cpf, String senha, String tipoValidacao) throws ProjetoException {
 
-		FuncionarioBean func = null;
+		FuncionarioBean funcionario = null;
 
 		String sql = "SELECT id_funcionario, descfuncionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
@@ -2101,14 +2108,15 @@ public class FuncionarioDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				func = new FuncionarioBean();
-				func.setId(rs.getLong("id_funcionario"));
-				func.setNome(rs.getString("descfuncionario"));
+				funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -2116,10 +2124,10 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
-		return func;
+		return funcionario;
 	}
 
-	public Integer validarIdIhSenha(String senha) {
+	public Integer validarIdIhSenha(String senha) throws ProjetoException {
 
 		Integer idFuncionario = 0;
 
@@ -2141,9 +2149,10 @@ public class FuncionarioDAO {
 				idFuncionario = rs.getInt("id_funcionario");
 			}
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -2154,7 +2163,7 @@ public class FuncionarioDAO {
 		return idFuncionario;
 	}
 
-    public List<UnidadeBean> listarTodasAsUnidadesDoUsuario(Long idUsuario){
+    public List<UnidadeBean> listarTodasAsUnidadesDoUsuario(Long idUsuario) throws ProjetoException{
 
         List<UnidadeBean> lista = new ArrayList<UnidadeBean>();
         PreparedStatement stm = null;
@@ -2183,22 +2192,22 @@ public class FuncionarioDAO {
                 UnidadeBean.setId(rs.getInt("id"));
                 UnidadeBean.setNomeUnidade(rs.getString("nome"));
                 lista.add(UnidadeBean);
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return lista;
         }
+        return lista;
     }
 
-    public String retornaNomeDaUnidadeAtual(Integer codigoDaUnidadeSelecionada){
+    public String retornaNomeDaUnidadeAtual(Integer codigoDaUnidadeSelecionada) throws ProjetoException{
         String textoUnidade = null;
         PreparedStatement stm = null;
 
@@ -2223,22 +2232,22 @@ public class FuncionarioDAO {
 
             while (rs.next()) {
                 textoUnidade = rs.getString("nome");
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return textoUnidade.toUpperCase();
         }
+        return textoUnidade.toUpperCase();
     }
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf) {
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf) throws ProjetoException {
 
 		String sql = "SELECT " +
 				"CASE WHEN coalesce(p.horario_limite_acesso,false) = FALSE THEN TRUE " +
@@ -2262,11 +2271,10 @@ public class FuncionarioDAO {
 				acessoPermitido = rs.getBoolean("acesso_permitido");
 			}
 
-			return acessoPermitido;
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -2274,9 +2282,10 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return acessoPermitido;
 	}
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) {
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException {
 
 		String sql = "SELECT " +
 				"CASE WHEN coalesce(p.horario_limite_acesso,false) = FALSE THEN TRUE " +
@@ -2299,11 +2308,11 @@ public class FuncionarioDAO {
 				acessoPermitido = rs.getBoolean("acesso_permitido");
 			}
 
-			return acessoPermitido;
 
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				con.close();
@@ -2311,6 +2320,6 @@ public class FuncionarioDAO {
 				ex.printStackTrace();
 			}
 		}
+		return acessoPermitido;
 	}
-
 }

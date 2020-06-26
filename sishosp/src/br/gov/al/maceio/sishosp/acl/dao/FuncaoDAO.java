@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.dao;
 import br.gov.al.maceio.sishosp.acl.model.Funcao;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -60,8 +61,10 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			cadastrou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -92,8 +95,10 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			alterou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -120,8 +125,10 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			excluiu = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -141,7 +148,7 @@ public class FuncaoDAO {
 				+ " join acl.sistema sis on sis.id = fun.id_sistema "
 				+ "order by fun.ativa desc, fun.descricao, sis.descricao";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -149,19 +156,21 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setCodigo(rs.getString("codigo"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setAtiva(rs.getBoolean("ativa"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setIdSistema(rs.getInt("id_sistema"));
-				f.setDescSistema(rs.getString("sis_desc"));
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sistema"));
+				funcao.setDescSistema(rs.getString("sis_desc"));
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -182,7 +191,7 @@ public class FuncaoDAO {
 				+ "join acl.funcao fu on fu.id = pg.id_funcao "
 				+ "join acl.sistema si on si.id = fu.id_sistema ";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -190,20 +199,22 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setCodigo(rs.getString("codigo"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -231,7 +242,7 @@ public class FuncaoDAO {
 				+ "join acl.funcao fu on fu.id = pg.id_funcao "
 				+ "where pp.id_perfil = ?)";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -240,20 +251,22 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setCodigo(rs.getString("codigo"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -276,7 +289,7 @@ public class FuncaoDAO {
 				+ "pf.id = pp.id_perfil join acl.sistema si on si.id = fu.id_sistema  "
 				+ " where pf.id = ?";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -285,20 +298,22 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setCodigo(rs.getString("codigo"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -324,7 +339,7 @@ public class FuncaoDAO {
 				+ "join acl.funcao fu on fu.id = pg.id_funcao "
 				+ "join acl.sistema si on si.id = fu.id_sistema where pf.id = ? ) order by fu.descricao";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -333,18 +348,20 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
-				f.setCodigo(rs.getString("codigo"));
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
+				funcao.setCodigo(rs.getString("codigo"));
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -369,7 +386,7 @@ public class FuncaoDAO {
 				+ "join acl.sistema si on si.id = fu.id_sistema "
 				+ "  where pf.id = ? " + "order by fu.descricao;";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -378,20 +395,22 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setCodigo(rs.getString("codigo"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -425,7 +444,7 @@ public class FuncaoDAO {
 				+ "join acl.sistema si on si.id = fu.id_sistema "
 				+ "where pu.id_usuario = ? " + ") order by fu.descricao;";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -435,20 +454,22 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
 
-				f.setCodigo(rs.getString("codigo"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -472,7 +493,7 @@ public class FuncaoDAO {
 				+ "join acl.sistema si on si.id = fu.id_sistema "
 				+ "where pu.id_usuario = ? order by fu.descricao;";
 
-		List<Funcao> lista = new ArrayList();
+		List<Funcao> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -481,19 +502,21 @@ public class FuncaoDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcao f = new Funcao();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setAtiva(rs.getBoolean("ativa"));
-				f.setCodigo(rs.getString("codigo"));
+				Funcao funcao = new Funcao();
+				funcao.setId(rs.getLong("id"));
+				funcao.setDescricao(rs.getString("descricao"));
+				funcao.setAtiva(rs.getBoolean("ativa"));
+				funcao.setCodigo(rs.getString("codigo"));
 
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				funcao.setIdSistema(rs.getInt("id_sis"));
+				funcao.setDescSistema(rs.getString("desc_sis"));
+				funcao.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcao);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
