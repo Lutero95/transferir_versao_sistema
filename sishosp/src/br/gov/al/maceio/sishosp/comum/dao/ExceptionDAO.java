@@ -2,9 +2,11 @@ package br.gov.al.maceio.sishosp.comum.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Types;
 
 import br.gov.al.maceio.sishosp.comum.model.ErroSistema;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 
 public class ExceptionDAO {
 	
@@ -18,8 +20,17 @@ public class ExceptionDAO {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, erroSistema.getDescricao());
-			ps.setLong(2, erroSistema.getIdUsuarioLogado());
-			ps.setString(3, erroSistema.getBanco());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(erroSistema.getIdUsuarioLogado()))
+				ps.setNull(2, Types.NULL);
+			else	
+				ps.setLong(2, erroSistema.getIdUsuarioLogado());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuVazio(erroSistema.getBanco()))
+				ps.setNull(3, Types.NULL);
+			else
+				ps.setString(3, erroSistema.getBanco());
+			
 			ps.setString(4, erroSistema.getNomeClasse());
 			ps.setString(5, erroSistema.getNomeMetodo());
 			ps.setInt(6, erroSistema.getLinhaErro());

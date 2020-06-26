@@ -16,8 +16,15 @@ public class ErrosUtil {
     	
     	ErroSistema erroSistema = new ErroSistema();
     	
-		erroSistema.setIdUsuarioLogado(user_session.getId());
-		erroSistema.setBanco(nomeBancoAcesso);
+    	if(VerificadorUtil.verificarSeObjetoNulo(user_session)) {
+    		erroSistema.setIdUsuarioLogado(null);
+    		erroSistema.setBanco(null);
+    	}
+    	else {
+    		erroSistema.setIdUsuarioLogado(user_session.getId());
+    		erroSistema.setBanco(nomeBancoAcesso);
+		}
+    	
 		erroSistema.setDescricao(exception);
 		
     	for (StackTraceElement classe : classesErro) {
