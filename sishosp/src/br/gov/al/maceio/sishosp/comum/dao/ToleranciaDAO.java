@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.faces.context.FacesContext;
-
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.model.HorarioFuncionamento;
@@ -14,11 +12,8 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 public class ToleranciaDAO {
-
-	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-			.getSessionMap().get("obj_usuario");
 	
-	public HorarioFuncionamento buscaHorarioFuncionamento() throws ProjetoException {
+	public HorarioFuncionamento buscaHorarioFuncionamento(FuncionarioBean usuario) throws ProjetoException {
 		
 		HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento();
 
@@ -26,13 +21,14 @@ public class ToleranciaDAO {
 				"	from hosp.parametro p " + 
 				"	join hosp.unidade u on p.codunidade = u.id " + 
 				"	join acl.funcionarios f on f.codunidade = u.id " + 
-				"	where f.id_funcionario = ?;";
+				"	where f.id_funcionario = ? and u.id = ?;";
 
 		Connection conexao = null;
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
-			stm.setLong(1, user_session.getId());
+			stm.setLong(1, usuario.getId());
+			stm.setInt(2, usuario.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -54,7 +50,7 @@ public class ToleranciaDAO {
 	}
 	
 	
-	public Integer buscaMinutosTolerancia() throws ProjetoException {
+	public Integer buscaMinutosTolerancia(FuncionarioBean usuario) throws ProjetoException {
 		
 		Integer minutosTolerancia = 0;
 		
@@ -62,13 +58,14 @@ public class ToleranciaDAO {
 				"	from hosp.parametro p " + 
 				"	join hosp.unidade u on p.codunidade = u.id " + 
 				"	join acl.funcionarios f on f.codunidade = u.id " + 
-				"	where f.id_funcionario = ?;";
+				"	where f.id_funcionario = ? and u.id = ?;";
 
 		Connection conexao = null;
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
-			stm.setLong(1, user_session.getId());
+			stm.setLong(1, usuario.getId());
+			stm.setInt(2, usuario.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

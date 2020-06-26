@@ -64,7 +64,8 @@
 <h:body>
 
 	<h:form>
-    	<p:poll interval="10" listener="#{tolerenciaController.buscarDados()}" immediate="true" update=":formtolerancia"/>
+    	<p:poll interval="#{tolerenciaController.INTERVALO_VERIFICACOES_EM_SEGUNDOS}"
+    	 listener="#{tolerenciaController.buscarDados()}" global="false"  immediate="true" update=":formtolerancia"/>
 	</h:form>
 	
 	<p:dialog header="Atenção!" widgetVar="dialogTolerancia" modal="true"
@@ -209,7 +210,7 @@
             <a href="#" target="_blank"> <img src="../../imgs/twitter1.png"/></a>
         </div>
         <div class="foot-text">
-            <p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos
+            <p>© 2020 EHosp Sistemas Inteligentes. Todos os direitos
                 reservados.</p>
             <p>Versão: 1.1.1</p>
         </div>

@@ -7,11 +7,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.dao.ToleranciaDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.model.HorarioFuncionamento;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 
 @ManagedBean
 @SessionScoped
@@ -27,6 +29,9 @@ public class TolerenciaController {
 	private int mesAtual;
 	private int diaDoMesAtual;
 	private boolean visualizouDialogTolerancia;
+	private boolean usuarioLogado;
+	private final Integer INTERVALO_VERIFICACOES_EM_SEGUNDOS = 30;
+	FuncionarioBean user_session;
 	
 	public TolerenciaController() {
 		this.toleranciaDAO = new ToleranciaDAO();
@@ -38,12 +43,24 @@ public class TolerenciaController {
 	}
 	
 	public void buscarDados() throws ProjetoException, IOException {
-		if(!buscouHorarioIhTolerancia) {
-			buscaHorarioFuncionamento();
-			buscaMinutosTolerancia();
-			buscouHorarioIhTolerancia = true;
+		
+		if(!usuarioLogado) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(SessionUtil.getSession().getAttribute("obj_usuario"))) {
+				this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+						.getSessionMap().get("obj_usuario");
+				usuarioLogado = true;
+			}
 		}
-		verificaTolerancia();
+		
+		if(usuarioLogado) {
+			if (!buscouHorarioIhTolerancia) {
+				buscaHorarioFuncionamento();
+				buscaMinutosTolerancia();
+				buscouHorarioIhTolerancia = true;
+			}
+			verificaTolerancia();
+		}
+		
 	}
 	
 	private  void verificaTolerancia() throws IOException {
@@ -66,11 +83,11 @@ public class TolerenciaController {
 	}
 	
 	private void buscaHorarioFuncionamento() throws ProjetoException {
-		this.horarioFuncionamento = this.toleranciaDAO.buscaHorarioFuncionamento();
+		this.horarioFuncionamento = this.toleranciaDAO.buscaHorarioFuncionamento(user_session);
 	}
 	
 	private void buscaMinutosTolerancia() throws ProjetoException {
-		this.minutosTolerancia = this.toleranciaDAO.buscaMinutosTolerancia();
+		this.minutosTolerancia = this.toleranciaDAO.buscaMinutosTolerancia(user_session);
 	}
 	
 	public boolean alcancouLimiteHorario() {
@@ -117,5 +134,9 @@ public class TolerenciaController {
 
 	public void setMinutosTolerancia(Integer minutosTolerancia) {
 		this.minutosTolerancia = minutosTolerancia;
+	}
+
+	public Integer getINTERVALO_VERIFICACOES_EM_SEGUNDOS() {
+		return INTERVALO_VERIFICACOES_EM_SEGUNDOS;
 	}
 }
