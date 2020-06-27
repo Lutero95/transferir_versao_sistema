@@ -2363,4 +2363,38 @@ public class FuncionarioDAO {
 		return acessoPermitido;
 	}
 
+	public boolean verificarSeTemPermissaoAcessoHoje(FuncionarioBean usuarioLogado, String diaDeHoje) throws ProjetoException {
+		
+		
+		String sql = "select "+ diaDeHoje +" as acesso_permitido from hosp.parametro p " + 
+				"	join hosp.unidade u on p.codunidade = u.id " + 
+				"	join acl.funcionarios f on u.id = f.codunidade " + 
+				"	where f.id_funcionario = ? and f.codunidade = ?";
+
+		Boolean acessoPermitido = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setLong(1, usuarioLogado.getId());
+			pstmt.setInt(2, usuarioLogado.getUnidade().getId());
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				acessoPermitido = rs.getBoolean("acesso_permitido");
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return acessoPermitido;
+	}
+
 }

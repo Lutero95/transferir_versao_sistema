@@ -27,6 +27,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ConfiguracaoAgendaEquipeEspecialidadeDTO;
+import net.sf.jasperreports.components.list.UnusedSpaceImageRenderer;
 
 @ManagedBean(name = "UnidadeController")
 @ViewScoped
@@ -164,8 +165,9 @@ public class UnidadeController implements Serializable {
         evolucaoAux = new ProgramaGrupoEvolucaoBean();
     }    
     public void gravarUnidade() throws ProjetoException {
-
-        boolean cadastrou = eDao.gravarUnidade(unidade);
+    	boolean cadastrou = false;
+    	if(validaDiasAcessoPermitidoAoSistema())
+    		cadastrou = eDao.gravarUnidade(unidade);
 
         if (cadastrou == true) {
             limparDados();
@@ -176,7 +178,9 @@ public class UnidadeController implements Serializable {
     }
 
     public void alterarUnidade() throws ProjetoException {
-        boolean alterou = eDao.alterarUnidade(unidade);
+        boolean alterou = false;
+        if(validaDiasAcessoPermitidoAoSistema())
+        	alterou = eDao.alterarUnidade(unidade);
 
         if (alterou == true) {
         	limpaHorarioDeInicioIhFimDeFuncionamento();
@@ -184,6 +188,17 @@ public class UnidadeController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
+    }
+    
+    private boolean validaDiasAcessoPermitidoAoSistema() {
+    	if(!unidade.getParametro().isAcessoPermitidoDomingo() && !unidade.getParametro().isAcessoPermitidoSegunda() &&
+    			!unidade.getParametro().isAcessoPermitidoTerca() && !unidade.getParametro().isAcessoPermitidoQuarta() &&
+    			!unidade.getParametro().isAcessoPermitidoQuinta() && !unidade.getParametro().isAcessoPermitidoSexta() && 
+    			!unidade.getParametro().isAcessoPermitidoSabado()) {
+    		JSFUtil.adicionarMensagemAdvertencia("Selecione pelo menos um dia de acesso permitido ao sistema", "");
+    		return false;
+    	}
+    	return true;
     }
 
 	private void limpaHorarioDeInicioIhFimDeFuncionamento() {

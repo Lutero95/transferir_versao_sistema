@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
+import br.gov.al.maceio.sishosp.acl.enums.DiaSemanaTabelaParametro;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -219,30 +221,63 @@ public class FuncionarioController implements Serializable {
 		}
 
 		usuarioLogado = fDao.autenticarUsuario(usuario);
-
+		
 		if (usuarioLogado == null) {
 			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
 			return null;
 
 		} else {
+			
+			if(usuarioPodeAcessarSistemaHoje()) {			
+				unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
+				if (unidadesDoUsuarioLogado.size() > 1) {
+					JSFUtil.abrirDialog("selecaoUnidade");
 
-			unidadesDoUsuarioLogado = fDao.listarTodasAsUnidadesDoUsuario(usuarioLogado.getId());
-			if(unidadesDoUsuarioLogado.size() > 1){
-				JSFUtil.abrirDialog("selecaoUnidade");
-
-				return null;
-			}else{
-				if ((!usuarioLogado.getExcecaoBloqueioHorario()) && (!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf()))){
-					JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
-					return  null;
-				}
-				else
-				{
-					String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
-					return url;
+					return null;
+				} else {
+					if ((!usuarioLogado.getExcecaoBloqueioHorario())
+							&& (!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf()))) {
+						JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
+						return null;
+					} else {
+						String url = carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao();
+						return url;
+					}
 				}
 			}
+			return null;
 		}
+	}
+	
+	private boolean usuarioPodeAcessarSistemaHoje() throws ProjetoException {
+		if(usuarioLogado.getExcecaoBloqueioHorario())
+			return true;
+		
+		String diaAtual = retornaDiaAtual();
+		boolean acessoPermitidoHoje = fDao.verificarSeTemPermissaoAcessoHoje(usuarioLogado, diaAtual);
+		if(!acessoPermitidoHoje)
+			JSFUtil.adicionarMensagemErro("Você só pode acessar o Sistema nos dias permitidos", "Erro");
+		return acessoPermitidoHoje;
+	}
+	
+	private String retornaDiaAtual() {
+		Calendar calendar = Calendar.getInstance();
+		int diaAtual = calendar.get(Calendar.DAY_OF_WEEK);
+		
+		if(diaAtual == 1)
+			return DiaSemanaTabelaParametro.DOMINGO.getSigla();
+		else if (diaAtual == 2)
+			return DiaSemanaTabelaParametro.SEGUNDA.getSigla();
+		else if (diaAtual == 3)
+			return DiaSemanaTabelaParametro.TERCA.getSigla();
+		else if (diaAtual == 4)
+			return DiaSemanaTabelaParametro.QUARTA.getSigla();
+		else if (diaAtual == 5)
+			return DiaSemanaTabelaParametro.QUINTA.getSigla();
+		else if (diaAtual == 6)
+			return DiaSemanaTabelaParametro.SEXTA.getSigla();
+		else
+			return DiaSemanaTabelaParametro.SABADO.getSigla();
 	}
 
 	public String associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin() throws ProjetoException {
