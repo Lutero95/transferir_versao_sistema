@@ -62,6 +62,28 @@
 
 </h:head>
 <h:body>
+
+	<h:form>
+    	<p:poll interval="#{tolerenciaController.INTERVALO_VERIFICACOES_EM_SEGUNDOS}"
+    	 listener="#{tolerenciaController.buscarDados()}" global="false"  immediate="true" update=":formtolerancia"/>
+	</h:form>
+	
+	<p:dialog header="Atenção!" widgetVar="dialogTolerancia" modal="true"
+	 	resizable="false" width="600" closable="false">
+		<h:form id="formtolerancia">
+			<h:outputLabel value="O horário limite de acesso ao sistema foi alcançado, agora você tem 
+			#{tolerenciaController.minutosTolerancia} minutos de tolerância. 
+			Após isso você será redirecionado(a) para a página de login, 
+			onde só poderá acessar o sistema no horário permitido."/>
+			<br />
+			<br />
+			<div align="center">
+				<p:commandButton value="Fechar" action="#{tolerenciaController.visualizouDialog()}"
+					 oncomplete="PF('dialogTolerancia').hide();"/>
+			</div>
+		</h:form>
+	</p:dialog>
+
     <p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
               style="z-index: 1080;" draggable="false" resizable="false"
               closable="true" modal="true" styleClass="sml-size-dlg topDialog2"
@@ -188,7 +210,7 @@
             <a href="#" target="_blank"> <img src="../../imgs/twitter1.png"/></a>
         </div>
         <div class="foot-text">
-            <p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos
+            <p>© 2020 EHosp Sistemas Inteligentes. Todos os direitos
                 reservados.</p>
             <p>Versão: 1.1.1</p>
         </div>

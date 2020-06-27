@@ -32,7 +32,7 @@ public class ParametroBean implements Serializable {
     private String versaoSistema;
     private Integer validadePadraoLaudo;
     private boolean validaDadosLaudoSigtap;
-
+    private Integer minutosTolerancia;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -262,4 +262,13 @@ public class ParametroBean implements Serializable {
     public void setValidaDadosLaudoSigtap(boolean validaDadosLaudoSigtap) {
         this.validaDadosLaudoSigtap = validaDadosLaudoSigtap;
     }
+
+	public Integer getMinutosTolerancia() {
+		return minutosTolerancia;
+	}
+
+	public void setMinutosTolerancia(Integer minutosTolerancia) {
+		this.minutosTolerancia = minutosTolerancia;
+	}
+    
 }

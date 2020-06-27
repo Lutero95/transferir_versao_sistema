@@ -144,7 +144,7 @@ public class FuncionarioDAO {
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
 				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese,"
 				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
-				+ " p.versao_sistema "
+				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario   "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -167,6 +167,7 @@ public class FuncionarioDAO {
 				funcionario.setNome(rs.getString("descfuncionario"));
 				funcionario.setSenha(rs.getString("senha"));
 				funcionario.setEmail(rs.getString("email"));
+				funcionario.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 				funcionario.getUnidade().setId(rs.getInt("codunidade"));
 				funcionario.getUnidade().setCodEmpresa(rs.getInt("cod_empresa"));
 				funcionario.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
@@ -943,8 +944,9 @@ public class FuncionarioDAO {
 		Boolean retorno = false;
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, permite_liberacao, permite_encaixe) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?) returning id_funcionario;";
+				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1004,6 +1006,7 @@ public class FuncionarioDAO {
 			ps.setBoolean(13, profissional.getRealizaLiberacoes());
 
 			ps.setBoolean(14, profissional.getRealizaEncaixes());
+			ps.setBoolean(15, profissional.getExcecaoBloqueioHorario());
 
 			ResultSet rs = ps.executeQuery();
 
@@ -1456,7 +1459,7 @@ public class FuncionarioDAO {
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
-				+ " codunidade=?"
+				+ " codunidade=?, excecao_bloqueio_horario=? "
 				+ " where id_funcionario = ?";
 
 		try {
@@ -1516,8 +1519,8 @@ public class FuncionarioDAO {
 			stmt.setString(12, profissional.getCpf().replaceAll("[^0-9]", ""));
 
 			stmt.setLong(13, profissional.getUnidade().getId());
-
-			stmt.setLong(14, profissional.getId());
+			stmt.setBoolean(14, profissional.getExcecaoBloqueioHorario());
+			stmt.setLong(15, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -1752,7 +1755,7 @@ public class FuncionarioDAO {
 		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario "
 				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
 		try {
@@ -1779,6 +1782,7 @@ public class FuncionarioDAO {
 				profissional.getUnidade().setId(rs.getInt("codunidade"));
 				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				profissional.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 			}
 
 		} catch (SQLException sqle) {
@@ -2322,7 +2326,7 @@ public class FuncionarioDAO {
 		return acessoPermitido;
 	}
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException {
+	public Boolean verificarSeTemHorarioLimiteIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException {
 
 		String sql = "SELECT " +
 				"CASE WHEN coalesce(p.horario_limite_acesso,false) = FALSE THEN TRUE " +
@@ -2344,7 +2348,6 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				acessoPermitido = rs.getBoolean("acesso_permitido");
 			}
-
 
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);

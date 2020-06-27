@@ -379,7 +379,6 @@
 									</b:row>
 
 									<b:row>
-
 										<b:column span="5" class="label-position new-col5">
 											<b:label value="Horário Início de acesso" severity="info"
 												rendered="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}" />
@@ -410,6 +409,31 @@
 											</p:inputMask>
 										</b:column>
 									</b:row>
+									
+									<p:row>
+										<p:panelGrid columns="1">
+											<p:outputLabel value="Limite de Tolerância Horário de Acesso" />
+											<p:selectOneMenu id="limiteTolerancia"
+												value="#{UnidadeController.unidade.parametro.minutosTolerancia}"
+												style="width:200px;" required="true"
+												requiredMessage="Tolerância: Campo obrigatório!">
+												<f:selectItem itemLabel="Informe a Tolerância" itemValue="" />
+												<f:selectItem itemLabel="0 minutos" itemValue="0" />
+												<f:selectItem itemLabel="05 minutos" itemValue="5" />
+												<f:selectItem itemLabel="10 minutos" itemValue="10" />
+												<f:selectItem itemLabel="15 minutos" itemValue="15" />
+												<f:selectItem itemLabel="20 minutos" itemValue="20" />
+												<f:selectItem itemLabel="25 minutos" itemValue="25" />
+												<f:selectItem itemLabel="30 minutos" itemValue="30" />
+												<f:selectItem itemLabel="35 minutos" itemValue="35" />
+												<f:selectItem itemLabel="40 minutos" itemValue="40" />
+												<f:selectItem itemLabel="45 minutos" itemValue="45" />
+												<f:selectItem itemLabel="50 minutos" itemValue="50" />
+												<f:selectItem itemLabel="55 minutos" itemValue="55" />
+												<f:selectItem itemLabel="60 minutos" itemValue="60" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+										</p:row>
 								</p:fieldset>
 							</p:outputPanel>
 

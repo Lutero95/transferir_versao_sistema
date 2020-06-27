@@ -208,8 +208,8 @@ public class FuncionarioController implements Serializable {
 		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf());
 	}
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException{
-		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(codigoUnidade);
+	public Boolean verificarSeTemHorarioLimiteIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException{
+		return fDao.verificarSeTemHorarioLimiteIhSeHorarioEhPermitidoPorUnidade(codigoUnidade);
 	}
 
 	public String autenticarUsuario() throws ProjetoException {
@@ -232,7 +232,7 @@ public class FuncionarioController implements Serializable {
 
 				return null;
 			}else{
-				if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf())){
+				if ((!usuarioLogado.getExcecaoBloqueioHorario()) && (!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf()))){
 					JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
 					return  null;
 				}
@@ -250,7 +250,7 @@ public class FuncionarioController implements Serializable {
 		UnidadeBean unidade = uDao.buscarUnidadePorId(codigoDaUnidadeSelecionada);
 		usuarioLogado.setUnidade(unidade);
 
-		if(!verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(unidade.getId())){
+		if ((!usuarioLogado.getExcecaoBloqueioHorario()) &&  (!verificarSeTemHorarioLimiteIhSeHorarioEhPermitidoPorUnidade(unidade.getId()))){
 			JSFUtil.adicionarMensagemErro("Acesso bloqueado a esta unidade nesse horário!", "");
 			return null;
 		}
