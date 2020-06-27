@@ -59,7 +59,6 @@ public class DespesaDAO {
             pstm.setString(1, despesa.getDescricao().toUpperCase());
             pstm.setInt(2, despesa.getId());
             pstm.execute();
-            
             conexao.commit();
             alterou = true;
             pstm.close();
@@ -83,7 +82,6 @@ public class DespesaDAO {
         String sql = "delete from financeiro.despesa where iddespesa = ?";
 
         boolean excluiu = false;
-
         Connection conexao = null;
         try {
             conexao = ConnectionFactory.getConnection();

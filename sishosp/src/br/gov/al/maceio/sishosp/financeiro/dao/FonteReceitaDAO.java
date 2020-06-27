@@ -20,7 +20,6 @@ public class FonteReceitaDAO {
         
         String sql = "insert into clin.fonrec(descricao, codfonrec) "
             + "values (?, ?)";
-        
         boolean cadastrou = false;
 
         try {
@@ -52,7 +51,6 @@ public class FonteReceitaDAO {
         
         String sql = "update clin.fonrec set descricao = ?, codfonrec = ? "
             + "where id = ?";
-        
         boolean alterou = false;
 
         try {
@@ -121,7 +119,6 @@ public class FonteReceitaDAO {
         	String sql = "select id, descricao, codfonrec from clin.fonrec   order by descricao";
             
             ps = con.prepareStatement(sql);
-            
             ResultSet rs = ps.executeQuery();
 			FonteReceitaBean fonteReceita = new FonteReceitaBean();
             

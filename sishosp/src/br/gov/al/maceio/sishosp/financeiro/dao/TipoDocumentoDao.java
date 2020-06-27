@@ -11,13 +11,13 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.TipoDocumentoBean;
 
 
 public class TipoDocumentoDao {
 
-	public void excluirTipoDocumento(TipoDocumentoBean t) throws ProjetoException {
+	public void excluirTipoDocumento(TipoDocumentoBean tipoDocumento) throws ProjetoException {
 		String sql = " DELETE FROM financeiro.tipodocumento WHERE codtipodocumento = ? ";
 
 		Connection con = null;
@@ -25,18 +25,15 @@ public class TipoDocumentoDao {
 
 		try {
 			con = ConnectionFactory.getConnection();
-
 			ps = con.prepareStatement(sql);
-
-			ps.setInt(1, t.getCodtipodocumento());
+			ps.setInt(1, tipoDocumento.getCodtipodocumento());
 
 			ps.execute();
-
 			con.commit();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JSFUtil.adicionarMensagemErro(e.getMessage(),"Erro");
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -48,7 +45,7 @@ public class TipoDocumentoDao {
 
 	}
 
-	public boolean editarTipoDocumento(TipoDocumentoBean t) throws ProjetoException {
+	public boolean editarTipoDocumento(TipoDocumentoBean tipoDocumento) throws ProjetoException {
 		String sql = " UPDATE financeiro.tipodocumento SET descricao=? WHERE codtipodocumento = ?";//, devolucao_venda = ?, cheque=?, cartao_debito=?, cartao_credito=?, promissoria=?  ; ";
 		boolean rst = false;
 		Connection con = null;
@@ -57,8 +54,8 @@ public class TipoDocumentoDao {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, t.getDescricao().toUpperCase());
-			ps.setInt(2, t.getCodtipodocumento());
+			ps.setString(1, tipoDocumento.getDescricao().toUpperCase());
+			ps.setInt(2, tipoDocumento.getCodtipodocumento());
 			/*
 			ps.setBoolean(2, t.getDevolucao_venda());
 			ps.setBoolean(3, t.getCheque());
@@ -68,11 +65,12 @@ public class TipoDocumentoDao {
 			
 		*/
 			ps.execute();
-
 			con.commit();
 			rst = true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -85,7 +83,7 @@ public class TipoDocumentoDao {
 
 	}
 
-	public boolean salvarDocumento(TipoDocumentoBean t) throws ProjetoException {
+	public boolean salvarDocumento(TipoDocumentoBean tipoDocumento) throws ProjetoException {
 		boolean rst = false;
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
@@ -99,7 +97,7 @@ public class TipoDocumentoDao {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, t.getDescricao().toUpperCase());
+			ps.setString(1, tipoDocumento.getDescricao().toUpperCase());
 			ps.setLong(2, user_session.getId());
 			/*
 			ps.setBoolean(3, t.getDevolucao_venda());
@@ -109,14 +107,14 @@ public class TipoDocumentoDao {
 			ps.setBoolean(7, t.getPromissoria());
 			*/
 			ps.execute();
-
 			con.commit();
 			rst = true;
-			
 		} 
 		
-		catch (SQLException e) {
-			e.printStackTrace();
+		catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -130,9 +128,7 @@ public class TipoDocumentoDao {
 
 	public List<TipoDocumentoBean> lstTipoDocumento() throws ProjetoException {
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-		ArrayList<TipoDocumentoBean> lst = new ArrayList<TipoDocumentoBean>();
+		ArrayList<TipoDocumentoBean> lista = new ArrayList<TipoDocumentoBean>();
 		String sql = " select * from financeiro.tipodocumento  ;";
 
 		Connection con = null;
@@ -144,10 +140,9 @@ public class TipoDocumentoDao {
 			ps = con.prepareStatement(sql);
 			set = ps.executeQuery();
 			while (set.next()) {
-				TipoDocumentoBean t = new TipoDocumentoBean();
-
-				t.setCodtipodocumento(set.getInt("codtipodocumento"));
-				t.setDescricao(set.getString("descricao"));
+				TipoDocumentoBean tipoDocumento = new TipoDocumentoBean();
+				tipoDocumento.setCodtipodocumento(set.getInt("codtipodocumento"));
+				tipoDocumento.setDescricao(set.getString("descricao"));
 				/*
 				t.setDevolucao_venda(set.getBoolean("devolucao_venda"));
 				t.setCheque(set.getBoolean("cheque"));
@@ -155,11 +150,13 @@ public class TipoDocumentoDao {
 				t.setCartaoCredito(set.getBoolean("cartao_credito"));
 				t.setPromissoria(set.getBoolean("promissoria"));
 				*/
-				lst.add(t);
+				lista.add(tipoDocumento);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				ps.close();
@@ -169,8 +166,7 @@ public class TipoDocumentoDao {
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
+		return lista;
 	}
 
 }

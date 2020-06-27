@@ -3,6 +3,8 @@ package br.gov.al.maceio.sishosp.acl.dao;
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,8 +46,10 @@ public class PerfilDAO {
 			conexao.commit();
 
 			cadastrou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -91,8 +95,10 @@ public class PerfilDAO {
 
 				alterou = true;
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -124,8 +130,10 @@ public class PerfilDAO {
 			conexao.commit();
 
 			excluiu = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -141,7 +149,7 @@ public class PerfilDAO {
 
 		String sql = "select * from acl.perfil order by descricao";
 
-		ArrayList<Perfil> lista = new ArrayList();
+		ArrayList<Perfil> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
@@ -153,8 +161,10 @@ public class PerfilDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -172,7 +182,7 @@ public class PerfilDAO {
 		String sql = "select id, descricao from acl.perfil "
 				+ "where upper(descricao) like ? order by descricao";
 
-		ArrayList<Perfil> lista = new ArrayList();
+		ArrayList<Perfil> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -185,8 +195,10 @@ public class PerfilDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -227,8 +239,10 @@ public class PerfilDAO {
 			associou = true;
 
 			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -248,7 +262,6 @@ public class PerfilDAO {
 		String sql2 = "insert into acl.perm_perfil (id_perfil, id_permissao) values (?, ?)";
 
 		boolean associou = false;
-
 		List<Long> listaId = perfil.getListaPermissoes();
 
 		PreparedStatement stmt;
@@ -267,10 +280,11 @@ public class PerfilDAO {
 				}
 			}
 			associou = true;
-
 			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -307,8 +321,10 @@ public class PerfilDAO {
 				associou = true;
 
 				conexao.commit();
+			} catch (SQLException sqle) {
+				throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 			} catch (Exception ex) {
-				throw new RuntimeException(ex);
+				throw new ProjetoException(ex, this.getClass().getName());
 			} finally {
 				try {
 					conexao.close();
@@ -353,8 +369,10 @@ public class PerfilDAO {
 				associou = true;
 
 				conexao.commit();
+			} catch (SQLException sqle) {
+				throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 			} catch (Exception ex) {
-				throw new RuntimeException(ex);
+				throw new ProjetoException(ex, this.getClass().getName());
 			} finally {
 				try {
 					conexao.close();

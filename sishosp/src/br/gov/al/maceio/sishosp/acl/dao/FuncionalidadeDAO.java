@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -23,7 +24,6 @@ public class FuncionalidadeDAO {
 			throws ProjetoException {
 
 		boolean cadastrou = false;
-		List<Integer> listaId = funcionalidade.getListaSistemas();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -60,8 +60,10 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			cadastrou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -80,8 +82,6 @@ public class FuncionalidadeDAO {
 				+ "extensao = ?, ativo = ?, imagem = ? where id = ?";
 
 		boolean alterou = false;
-
-		List<Integer> listaId = funcionalidade.getListaSistemas();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -116,8 +116,10 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			alterou = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -144,8 +146,10 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			excluiu = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -163,7 +167,7 @@ public class FuncionalidadeDAO {
 		String sql = "select f.id, f.descricao, f.desc_pagina, f.diretorio, f.extensao, f.imagem, f.ativo from acl.funcionalidade f "
 				+ "where upper(f.descricao) like ? order by f.ativo desc, f.descricao";
 
-		List<Funcionalidade> lista = new ArrayList();
+		List<Funcionalidade> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -172,20 +176,22 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcionalidade f = new Funcionalidade();
+				Funcionalidade funcionalidade = new Funcionalidade();
 
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setDescPagina(rs.getString("desc_pagina"));
-				f.setDiretorio(rs.getString("diretorio"));
-				f.setExtensao(rs.getString("extensao"));
-				f.setImagem(rs.getString("imagem"));
-				f.setAtivo(rs.getBoolean("ativo"));
+				funcionalidade.setId(rs.getLong("id"));
+				funcionalidade.setDescricao(rs.getString("descricao"));
+				funcionalidade.setDescPagina(rs.getString("desc_pagina"));
+				funcionalidade.setDiretorio(rs.getString("diretorio"));
+				funcionalidade.setExtensao(rs.getString("extensao"));
+				funcionalidade.setImagem(rs.getString("imagem"));
+				funcionalidade.setAtivo(rs.getBoolean("ativo"));
 
-				lista.add(f);
+				lista.add(funcionalidade);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -203,7 +209,7 @@ public class FuncionalidadeDAO {
 		String sql = "select f.id, f.descricao, f.desc_pagina, f.diretorio, f.extensao, f.imagem, f.ativo "
 				+ "from acl.funcionalidade f order by f.ativo desc, f.descricao";
 
-		List<Funcionalidade> lista = new ArrayList();
+		List<Funcionalidade> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -211,18 +217,20 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcionalidade f = new Funcionalidade();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setDescPagina(rs.getString("desc_pagina"));
-				f.setDiretorio(rs.getString("diretorio"));
-				f.setExtensao(rs.getString("extensao"));
-				f.setImagem(rs.getString("imagem"));
-				f.setAtivo(rs.getBoolean("ativo"));
-				lista.add(f);
+				Funcionalidade funcionalidade = new Funcionalidade();
+				funcionalidade.setId(rs.getLong("id"));
+				funcionalidade.setDescricao(rs.getString("descricao"));
+				funcionalidade.setDescPagina(rs.getString("desc_pagina"));
+				funcionalidade.setDiretorio(rs.getString("diretorio"));
+				funcionalidade.setExtensao(rs.getString("extensao"));
+				funcionalidade.setImagem(rs.getString("imagem"));
+				funcionalidade.setAtivo(rs.getBoolean("ativo"));
+				lista.add(funcionalidade);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -238,25 +246,27 @@ public class FuncionalidadeDAO {
 
 		String sql = "select * from acl.menu order by descricao";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setUrl(rs.getString("url"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
-				lista.add(m);
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setUrl(rs.getString("url"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -273,7 +283,7 @@ public class FuncionalidadeDAO {
 		String sql = "select * from acl.menu where tipo = 'menuPai' or tipo = 'submenu' "
 				+ "and ativo = true order by descricao, tipo";
 
-		List<Menu> lista = new ArrayList();
+		List<Menu> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -281,28 +291,29 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("descricao"));
-				lista.add(m);
+				menu.setIndiceAux(rs.getString("descricao"));
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -319,7 +330,7 @@ public class FuncionalidadeDAO {
 		String sql = "select * from acl.menu where tipo = 'menuItem' and ativo = true "
 				+ "order by descricao";
 
-		List<Menu> lista = new ArrayList();
+		List<Menu> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -327,18 +338,20 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setUrl(rs.getString("url"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
-				lista.add(m);
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setUrl(rs.getString("url"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -362,39 +375,41 @@ public class FuncionalidadeDAO {
 
 				+ "where me.tipo = 'menuItem' or me.tipo = 'menuItemRel'";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -426,7 +441,7 @@ public class FuncionalidadeDAO {
 				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ?) "
 				+ "and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -434,32 +449,33 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -495,32 +511,33 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -543,39 +560,40 @@ public class FuncionalidadeDAO {
 				+ "join acl.sistema si on si.id = ms.id_sistema "
 				+ "where me.tipo = 'menuPai' or me.tipo = 'submenu'";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -596,7 +614,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.sistema s on s.id = ms.id_sistema "
 				+ "where s.id = ? order by m.descricao";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -605,15 +623,17 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu r = new Menu();
-				r.setIdRecSistema(rs.getInt("id"));
-				r.setDescricao(rs.getString("descricao"));
-				r.setIdSistema(rs.getInt("id_sistema"));
-				r.setId(rs.getLong("id_menu"));
-				lista.add(r);
+				Menu menu = new Menu();
+				menu.setIdRecSistema(rs.getInt("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setIdSistema(rs.getInt("id_sistema"));
+				menu.setId(rs.getLong("id_menu"));
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -634,7 +654,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.menu me on me.id = ms.id_menu "
 				+ "where me.id = ?)";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -643,13 +663,15 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				lista.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -668,7 +690,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.menu_sistema ms on ms.id_sistema = si.id "
 				+ "join acl.menu me on me.id = ms.id_menu " + "where me.id = ?";
 
-		ArrayList<Sistema> lista = new ArrayList();
+		ArrayList<Sistema> lista = new ArrayList<>();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -677,13 +699,15 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Sistema s = new Sistema();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
-				lista.add(s);
+				Sistema sistema = new Sistema();
+				sistema.setId(rs.getInt("id"));
+				sistema.setDescricao(rs.getString("descricao"));
+				lista.add(sistema);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -716,7 +740,7 @@ public class FuncionalidadeDAO {
 				+ "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ?"
 				+ ") and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao;";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -724,33 +748,34 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
 
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -791,7 +816,7 @@ public class FuncionalidadeDAO {
 				+ "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ?"
 				+ ") and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao;";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -800,33 +825,34 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
 
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
-
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -851,7 +877,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.sistema si on si.id = ms.id_sistema "
 				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ?";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -859,32 +885,34 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -909,7 +937,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.perm_geral pg on pg.id_permissao = pm.id where pf.id = ?) "
 				+ "order by fu.descricao";
 
-		ArrayList<Funcionalidade> lista = new ArrayList();
+		ArrayList<Funcionalidade> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -917,21 +945,23 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcionalidade f = new Funcionalidade();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setDiretorio(rs.getString("diretorio"));
-				f.setDescPagina(rs.getString("desc_pagina"));
-				f.setExtensao(rs.getString("extensao"));
-				f.setImagem(rs.getString("imagem"));
-				f.setAtivo(rs.getBoolean("ativo"));
+				Funcionalidade funcionalidade = new Funcionalidade();
+				funcionalidade.setId(rs.getLong("id"));
+				funcionalidade.setDescricao(rs.getString("descricao"));
+				funcionalidade.setDiretorio(rs.getString("diretorio"));
+				funcionalidade.setDescPagina(rs.getString("desc_pagina"));
+				funcionalidade.setExtensao(rs.getString("extensao"));
+				funcionalidade.setImagem(rs.getString("imagem"));
+				funcionalidade.setAtivo(rs.getBoolean("ativo"));
 				// f.setIdSistema(rs.getInt("id_sis"));
 				// f.setDescSistema(rs.getString("desc_sis"));
 				// f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				lista.add(funcionalidade);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -963,21 +993,23 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Funcionalidade f = new Funcionalidade();
-				f.setId(rs.getLong("id"));
-				f.setDescricao(rs.getString("descricao"));
-				f.setDiretorio(rs.getString("diretorio"));
-				f.setDescPagina(rs.getString("desc_pagina"));
-				f.setExtensao(rs.getString("extensao"));
-				f.setImagem(rs.getString("imagem"));
-				f.setAtivo(rs.getBoolean("ativo"));
-				f.setIdSistema(rs.getInt("id_sis"));
-				f.setDescSistema(rs.getString("desc_sis"));
-				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(f);
+				Funcionalidade funcionalidade = new Funcionalidade();
+				funcionalidade.setId(rs.getLong("id"));
+				funcionalidade.setDescricao(rs.getString("descricao"));
+				funcionalidade.setDiretorio(rs.getString("diretorio"));
+				funcionalidade.setDescPagina(rs.getString("desc_pagina"));
+				funcionalidade.setExtensao(rs.getString("extensao"));
+				funcionalidade.setImagem(rs.getString("imagem"));
+				funcionalidade.setAtivo(rs.getBoolean("ativo"));
+				funcionalidade.setIdSistema(rs.getInt("id_sis"));
+				funcionalidade.setDescSistema(rs.getString("desc_sis"));
+				funcionalidade.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(funcionalidade);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();
@@ -1002,7 +1034,7 @@ public class FuncionalidadeDAO {
 				+ "join acl.sistema si on si.id = ms.id_sistema "
 				+ "where pp.id_perfil = ? order by me.descricao";
 
-		ArrayList<Menu> lista = new ArrayList();
+		ArrayList<Menu> lista = new ArrayList<>();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -1010,32 +1042,34 @@ public class FuncionalidadeDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				Menu m = new Menu();
-				m.setId(rs.getLong("id"));
-				m.setDescricao(rs.getString("descricao"));
-				m.setCodigo(rs.getString("codigo"));
-				m.setIndice(rs.getString("indice"));
-				m.setTipo(rs.getString("tipo"));
-				m.setAtivo(rs.getBoolean("ativo"));
+				Menu menu = new Menu();
+				menu.setId(rs.getLong("id"));
+				menu.setDescricao(rs.getString("descricao"));
+				menu.setCodigo(rs.getString("codigo"));
+				menu.setIndice(rs.getString("indice"));
+				menu.setTipo(rs.getString("tipo"));
+				menu.setAtivo(rs.getBoolean("ativo"));
 
-				m.setDiretorio(rs.getString("diretorio"));
-				m.setDescPagina(rs.getString("desc_pagina"));
-				m.setExtensao(rs.getString("extensao"));
+				menu.setDiretorio(rs.getString("diretorio"));
+				menu.setDescPagina(rs.getString("desc_pagina"));
+				menu.setExtensao(rs.getString("extensao"));
 
 				if (rs.getString("tipo").equals("menuItem")) {
-					m.setUrl("/pages/" + m.getDiretorio() + "/"
-							+ m.getDescPagina() + m.getExtensao());
+					menu.setUrl("/pages/" + menu.getDiretorio() + "/"
+							+ menu.getDescPagina() + menu.getExtensao());
 
 				}
-				m.setIndiceAux(rs.getString("codigo"));
+				menu.setIndiceAux(rs.getString("codigo"));
 
-				m.setIdSistema(rs.getInt("id_sis"));
-				m.setDescSistema(rs.getString("desc_sis"));
-				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
-				lista.add(m);
+				menu.setIdSistema(rs.getInt("id_sis"));
+				menu.setDescSistema(rs.getString("desc_sis"));
+				menu.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+				lista.add(menu);
 			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
 				conexao.close();

@@ -7,21 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.CentroCustoBean;
 
 public class CentroCustoDAO {
 
 	public boolean salvarCentro(CentroCustoBean bean) throws ProjetoException {
 		boolean result= false; 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
 
 		String sql = " INSERT INTO financeiro.ccusto ( descricao)  VALUES (?); ";
 
@@ -32,22 +26,18 @@ public class CentroCustoDAO {
 			ps.setString(1, bean.getDescricao().toUpperCase());
 
 			ps.execute();
-
 			con.commit();
 			
 			ps.close();
 			result= true;
-		} catch (SQLException e) {
-			result= false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					e.getMessage(), "Erro:"+e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -55,39 +45,34 @@ public class CentroCustoDAO {
 
 	}
 
-	public boolean editarCusto(CentroCustoBean c) throws ProjetoException {
+	public boolean editarCusto(CentroCustoBean centroCusto) throws ProjetoException {
 		boolean result= false; 
 		Connection con = ConnectionFactory.getConnection();
 
 		String sql = " UPDATE financeiro.ccusto SET  descricao=? WHERE idccusto = ? ";
 
 		try {
-
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, c.getDescricao().toUpperCase());
-			ps.setInt(2, c.getIdccusto());
+			ps.setString(1, centroCusto.getDescricao().toUpperCase());
+			ps.setInt(2, centroCusto.getIdccusto());
 
 			ps.execute();
 			con.commit();
 			
 			ps.close();
 			result= true;
-		} catch (SQLException e) {
-			result= false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					e.getMessage(), "Erro:"+e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return result;
-
 	}
 
 	public boolean deleteCusto(CentroCustoBean c) throws ProjetoException {
@@ -104,73 +89,53 @@ public class CentroCustoDAO {
 			ps.execute();
 			con.commit();
 			result= true;
-
 			ps.close();
-		} catch (SQLException e) {
-			result= false;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					e.getMessage(), "Erro:"+e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return result;
-
 	}
 
 	public List<CentroCustoBean> lstCustos() throws ProjetoException {
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-
 		String sql = " select * from financeiro.ccusto ";
 		ResultSet set = null;
 		Connection con = ConnectionFactory.getConnection();
-		ArrayList<CentroCustoBean> lst = new ArrayList<>();
+		ArrayList<CentroCustoBean> listaCentroCusto = new ArrayList<>();
 
 		try {
 
 			PreparedStatement ps = con.prepareStatement(sql);
-
-
 			set = ps.executeQuery();
 
 			while (set.next()) {
-
-				CentroCustoBean c = new CentroCustoBean();
-
-				c.setIdccusto(set.getInt("idccusto"));
-				c.setDescricao(set.getString("descricao"));
-				lst.add(c);
-
+				CentroCustoBean centroCusto = new CentroCustoBean();
+				centroCusto.setIdccusto(set.getInt("idccusto"));
+				centroCusto.setDescricao(set.getString("descricao"));
+				listaCentroCusto.add(centroCusto);
 			}
-
 			set.close();
 			ps.close();
-		} catch (SQLException e) {
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
-
 			try {
 				con.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		return lst;
-
+		return listaCentroCusto;
 	}
 
 }

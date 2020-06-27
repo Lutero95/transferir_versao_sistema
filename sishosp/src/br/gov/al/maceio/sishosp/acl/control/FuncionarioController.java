@@ -204,11 +204,11 @@ public class FuncionarioController implements Serializable {
 		}
 	}
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf){
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(String cpf) throws ProjetoException{
 		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUsuario(usuario.getCpf());
 	}
 
-	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade){
+	public Boolean verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(Integer codigoUnidade) throws ProjetoException{
 		return fDao.verificarSeTemHorarioLimieIhSeHorarioEhPermitidoPorUnidade(codigoUnidade);
 	}
 
@@ -1024,7 +1024,7 @@ public class FuncionarioController implements Serializable {
 
 	}
 
-	public List<UnidadeBean> listarUnidadesDoFuncionario() {
+	public List<UnidadeBean> listarUnidadesDoFuncionario() throws ProjetoException {
 		return fDao.listarUnidadesDoFuncionario();
 	}
 
@@ -1123,7 +1123,7 @@ public class FuncionarioController implements Serializable {
 		usuario.setConfirmacaoNovaSenha(null);
 	}
 
-	public void alterarSenhaFuncionario() {
+	public void alterarSenhaFuncionario() throws ProjetoException {
 
 		if (validarSeNovasSenhasSãoIguais()) {
 
@@ -1139,7 +1139,7 @@ public class FuncionarioController implements Serializable {
 		}
 	}
 
-	private void realizarAlteracaoSenha() {
+	private void realizarAlteracaoSenha() throws ProjetoException {
 		Boolean alterou = fDao.alterarSenha(usuario);
 		if (alterou) {
 			JSFUtil.adicionarMensagemSucesso("Senha alterada com sucesso!", "Sucesso!");
@@ -1505,7 +1505,7 @@ public class FuncionarioController implements Serializable {
 		this.codigoDaUnidadeSelecionada = codigoDaUnidadeSelecionada;
 	}
 
-	public String retornaTextoDaUnidadeAtual(){
+	public String retornaTextoDaUnidadeAtual() throws ProjetoException{
 		return fDao.retornaNomeDaUnidadeAtual(usuarioLogado.getCodigoDaUnidadeSelecionada());
 	}
 
