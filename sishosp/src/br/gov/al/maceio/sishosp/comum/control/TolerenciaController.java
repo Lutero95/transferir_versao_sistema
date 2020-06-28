@@ -1,6 +1,5 @@
 package br.gov.al.maceio.sishosp.comum.control;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -8,10 +7,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import br.gov.al.maceio.sishosp.acl.control.FuncionarioController;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.dao.ToleranciaDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -34,30 +30,24 @@ public class TolerenciaController {
 	private int mesAtual;
 	private int diaDoMesAtual;
 	private boolean visualizouDialogTolerancia;
-	private boolean usuarioLogado;
 	private final Integer INTERVALO_VERIFICACOES_EM_SEGUNDOS = 30;
 	FuncionarioBean user_session;
 	
 	public TolerenciaController() {
 		this.toleranciaDAO = new ToleranciaDAO();
 		this.horarioFuncionamento = new HorarioFuncionamento();
+		this.buscouHorarioIhTolerancia = false;
+		this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
 	} 
 	
 	public void visualizouDialog() {
 		this.visualizouDialogTolerancia = true;
 	}
 	
-	public void buscarDados() throws ProjetoException, IOException {
+	public void validarHorario() throws ProjetoException, IOException {
 		
-		if(!usuarioLogado) {
-			if (!VerificadorUtil.verificarSeObjetoNulo(SessionUtil.getSession().getAttribute("obj_usuario"))) {
-				this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-						.getSessionMap().get("obj_usuario");
-				usuarioLogado = true;
-			}
-		}
-		
-		if ((usuarioLogado) && (!user_session.getExcecaoBloqueioHorario())) {
+		if (!user_session.getExcecaoBloqueioHorario()) {
 			if (!buscouHorarioIhTolerancia) {
 				buscaHorarioFuncionamento();
 				buscaMinutosTolerancia();

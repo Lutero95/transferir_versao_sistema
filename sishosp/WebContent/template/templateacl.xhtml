@@ -22,7 +22,7 @@
 
 	<h:form>
     	<p:poll interval="#{tolerenciaController.INTERVALO_VERIFICACOES_EM_SEGUNDOS}"
-    	 listener="#{tolerenciaController.buscarDados()}" global="false" immediate="true" update=":formtolerancia"/>
+    	 listener="#{tolerenciaController.validarHorario()}" global="false" immediate="true" update=":formtolerancia"/>
 	</h:form>
 	
 	<p:dialog header="Atenção!" widgetVar="dialogTolerancia" modal="true"
