@@ -76,7 +76,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 	
 	public void gravarSituacaoAtendimento() throws ProjetoException {
 		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
-			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
+			if ((this.situacaoAtendimento.getAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
 					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
 
 				if (situacaoAtendimentoDAO.gravarSituacaoAtendimento(this.situacaoAtendimento)) {
@@ -89,7 +89,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 	
 	public void alterarSituacaoAtendimento() throws ProjetoException {
 		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
-			if ((this.situacaoAtendimento.getAtendimentoRealizado() && !existeOutraSituacaoComAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
+			if ((this.situacaoAtendimento.getAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
 					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
 
 				if (situacaoAtendimentoDAO.alterarSituacaoAtendimento(this.situacaoAtendimento))
@@ -98,14 +98,6 @@ public class SituacaoAtendimentoController  implements Serializable {
 		}
 	}
 	
-	private Boolean existeOutraSituacaoComAtendimentoRealizado() throws ProjetoException {
-		if(situacaoAtendimentoDAO.existeOutraSituacaoComAtendimentoRealizado(this.situacaoAtendimento.getId())) {
-			JSFUtil.adicionarMensagemErro("Já existe uma situação para atendimento realizado", "Erro");
-			return true;
-		}
-		return false;
-	}
-
 	private Boolean existeOutraSituacaoComAbonoFalta() throws ProjetoException {
 		if(situacaoAtendimentoDAO.existeOutraSituacaoComAbonoFalta(this.situacaoAtendimento.getId())) {
 			JSFUtil.adicionarMensagemErro("Já existe uma situação para Abono de Falta", "Erro");
