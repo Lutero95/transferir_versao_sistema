@@ -275,7 +275,8 @@ public class AtendimentoController implements Serializable {
     public void buscarSituacoesFiltroAtendimentoRealizado() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
                 (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
-        if (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado()){
+        if ((this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado() && (listaSituacoes.size()==1
+        ))){
             atendimento.setSituacaoAtendimento(listaSituacoes.get(0));
         }
     }

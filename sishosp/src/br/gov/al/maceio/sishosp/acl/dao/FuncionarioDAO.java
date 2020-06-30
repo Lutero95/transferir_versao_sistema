@@ -144,7 +144,7 @@ public class FuncionarioDAO {
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
 				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese,"
 				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
-				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario   "
+				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso   "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -189,6 +189,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setOrgaoDestinoInformacao(rs.getString("orgao_destino_informacao"));
 				funcionario.getUnidade().getParametro().setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
 				funcionario.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
+				funcionario.getUnidade().getParametro().setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
 
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));

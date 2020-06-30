@@ -57,7 +57,7 @@ public class TolerenciaController {
 			}
 		}
 		
-		if ((usuarioLogado) && (!user_session.getExcecaoBloqueioHorario())) {
+		if ((usuarioLogado) && (!user_session.getExcecaoBloqueioHorario()) && (user_session.getUnidade().getParametro().getUsaHorarioLimiteParaAcesso())) {
 			if (!buscouHorarioIhTolerancia) {
 				buscaHorarioFuncionamento();
 				buscaMinutosTolerancia();

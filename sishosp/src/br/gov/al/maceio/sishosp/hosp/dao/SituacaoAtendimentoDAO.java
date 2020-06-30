@@ -233,44 +233,6 @@ public class SituacaoAtendimentoDAO {
 		return situacaoAtendimento;
 	}
 
-	public Boolean existeOutraSituacaoComAtendimentoRealizado(Integer idSituacao) throws ProjetoException {
-
-		String sqlParaEdicao = "select exists " +
-				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true and sa.id != ?) " +
-				"as existe_situacao_com_atendimento_realizado";
-
-		String sqlParaCadastro = "select exists " +
-				"	(select sa.id from hosp.situacao_atendimento sa where sa.atendimento_realizado = true) " +
-				"as existe_situacao_com_atendimento_realizado";
-
-		Boolean existeSituacaoComStendimentoRealizado = true;
-
-		try {
-			conexao = ConnectionFactory.getConnection();
-			if(VerificadorUtil.verificarSeObjetoNuloOuZero(idSituacao))
-				ps = conexao.prepareStatement(sqlParaCadastro);
-			else {
-				ps = conexao.prepareStatement(sqlParaEdicao);
-				ps.setInt(1, idSituacao);
-			}
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				existeSituacaoComStendimentoRealizado = rs.getBoolean("existe_situacao_com_atendimento_realizado");
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		}finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return existeSituacaoComStendimentoRealizado;
-	}
-
 	public Boolean existeOutraSituacaoComAbonoFalta(Integer idSituacao) throws ProjetoException {
 
 		String sqlParaEdicao = "select exists " +
