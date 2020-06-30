@@ -33,20 +33,21 @@ a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
 pr.nome as nome_proc, grupo.id_grupo as codgrupo, grupo. descgrupo,
-'ATENDIDO' status
+sa.descricao status
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
+join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 inner join hosp.programa p on (a.codprograma = p.id_programa)
 inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-where a1.situacao ='A'
+where sa.atendimento_realizado is true
 and a.dtaatende between $P{dt_inicial} and $P{dt_final}
 and ((   $P{cod_programa}   is not null and a.codprograma=  $P{cod_programa}) or (( $P{cod_programa} =0 ) OR ( $P{cod_programa} is null )))
 and(($P{cod_grupo} is not null and grupo.id_grupo = $P{cod_grupo}) or ($P{cod_grupo} is null and grupo.id_grupo > 0))
 group by a.codprograma, p.descprograma, a.id_atendimento, pa.nome,
-a.dtaatende,f.descfuncionario,pr.nome, a1.situacao, grupo.id_grupo,grupo.descgrupo, pa.cns
+a.dtaatende,f.descfuncionario,pr.nome,sa.descricao , grupo.id_grupo,grupo.descgrupo, pa.cns
 order by a.codprograma, a.codgrupo, a.dtaatende, pa.nome]]>
 	</queryString>
 	<field name="cod_programa" class="java.lang.Integer">
@@ -91,6 +92,7 @@ order by a.codprograma, a.codgrupo, a.dtaatende, pa.nome]]>
 	</field>
 	<field name="status" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="situacao_atendimento"/>
 	</field>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
