@@ -211,7 +211,7 @@ public class AtendimentoController implements Serializable {
                 .getSessionMap().get("obj_usuario");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(atendimento.getDataAtendimentoInicio());
-        LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH+1), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
+        LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
         LocalDate dataAtual = LocalDate.now();
         try {
             Integer quantidadePendenciaEvolucaoAnterior = atendimentoDAO.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
@@ -395,13 +395,13 @@ public class AtendimentoController implements Serializable {
     public void insereProfissionalParaRealizarAtendimentoNaEquipe() throws ProjetoException {
         AtendimentoBean atendimentoAux = new AtendimentoBean();
         //boolean gravou = aDao.insereProfissionalParaRealizarAtendimentoNaEquipe(atendimento, funcionarioAux);
-        for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-            atendimentoAux = listAtendimentosEquipe.get(i);
-            break;
-        }
+        
+        atendimentoAux = listAtendimentosEquipe.get(0);
+
         AtendimentoBean aux = new AtendimentoBean();
         aux.setId(atendimentoAux.getId());
         aux.setCbo(atendimentoAux.getCbo());
+        aux.setDataAtendimento(atendimentoAux.getDataAtendimento());
         aux.setProcedimento(atendimento.getProcedimento());
         aux.setFuncionario(funcionarioAux);
         listAtendimentosEquipe.add(aux);
