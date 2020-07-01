@@ -48,6 +48,7 @@ local.properties
 ##########################
 nbproject/private/
 build/
+src/br/gov/al/maceio/sishosp/comum/Configuracao/Propriedades.java
 nbbuild/
 dist/
 nbdist/
