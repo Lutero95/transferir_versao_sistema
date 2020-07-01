@@ -78,7 +78,7 @@ public class OrteseProteseController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
             orteseProtese = oDao.carregarOrteseIhProtesePorId(id);
             LaudoDAO lDao = new LaudoDAO();
-            orteseProtese.setLaudo(lDao.listarLaudosVigentesPorId(orteseProtese.getLaudo().getId()));
+            orteseProtese.setLaudo(lDao.buscarLaudosPorId(orteseProtese.getLaudo().getId()));
             temOrteseIhProteseCadastrado = true;
         } else {
             orteseProtese = oDao.carregarGrupoProgramaOrteseIhProtese();
