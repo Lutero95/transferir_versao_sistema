@@ -281,7 +281,7 @@ public class OrteseProteseDAO {
             stmt.setInt(2, orteseProtese.getEquipamento().getId_equipamento());
             stmt.setInt(3, orteseProtese.getLaudo().getId());
 
-            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor().getId())) {
                 stmt.setInt(4, orteseProtese.getFornecedor().getId());
             } else {
                 stmt.setNull(4, Types.NULL);
