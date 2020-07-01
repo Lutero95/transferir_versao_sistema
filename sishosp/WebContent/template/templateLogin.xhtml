@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -9,15 +10,18 @@
 <h:head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
 	<ui:insert name="title">
 		<title>EHosp</title>
 	</ui:insert>
 
-	<link rel="styleSheet" type="text/css" href="../../css/style.css" />
-	<link rel="styleSheet" type="text/css" href="../../css/tema.css" />
-	<link rel="stylesheet" type="text/css" href="../../css/datatable.css" />
-	<link rel="stylesheet" type="text/css"
-		href="../../css/bootstrap.min.css" />
+	
+
+	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
+	<link rel="styleSheet" type="text/css"
+		href="../../css/font-awesome.css" />
 
 
 	<script type="text/javascript">
@@ -57,45 +61,38 @@
 
 <h:body>
 
-	<h:form>
-    	<p:poll interval="#{tolerenciaController.INTERVALO_VERIFICACOES_EM_SEGUNDOS}"
-    	 listener="#{tolerenciaController.validarHorario()}" global="false" immediate="true" update=":formtolerancia"/>
-	</h:form>
-	
-	<p:dialog header="Atenção!" widgetVar="dialogTolerancia" modal="true"
-	 	resizable="false" width="600" closable="false">
-		<h:form id="formtolerancia">
-			<h:outputLabel value="O horário limite de acesso ao sistema foi alcançado, agora você tem 
-			#{tolerenciaController.minutosTolerancia} minutos de tolerância. 
-			Após isso você será redirecionado(a) para a página de login, 
-			onde só poderá acessar o sistema no horário permitido."/>
-			<br />
-			<br />
-			<div align="center">
-				<p:commandButton value="Fechar" action="#{tolerenciaController.visualizouDialog()}"
-					 oncomplete="PF('dialogTolerancia').hide();"/>
-			</div>
-		</h:form>
+	<p:ajaxStatus onstart="PF('statusDialog').show();"
+		onsuccess="PF('statusDialog').hide();" />
+	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
+		showHeader="true" header="Processando..."
+		style="width:40px; height:20px; border:0;" resizable="false"
+		widgetVar="statusDialog" draggable="false" closable="false">
+		<center>
+			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
+		</center>
 	</p:dialog>
 
-	<h:form>
-
-		<b:navBar brand="EHosp" style="font-size:50px;font-weight: bold;">
-			<ui:include src="/pages/comum/menu.xhtml"></ui:include>
-		</b:navBar>
-	</h:form>
-<div class="container-fluid">
-	<ui:insert name="body" />
+	<div id="header">
+		<ui:insert name="header">
+			<ui:include src="/pages/comum/newMenu.xhtml" />
+		</ui:insert>
 	</div>
-	<br></br>
-	<footer>
-	<p>&copy; EHosp</p>
-	<p class="small">Versão: 1.1.1</p>
-	</footer>
 
+	<div id="container" class="clearfix">
+		<p:messages for="home-msg" globalOnly="true" />
+		<ui:insert name="content" />
+	</div>
 
+	<div id="foot">
+		<div class="connect">
+			<a href="#" target="_blank"> <img src="../../imgs/facebook1.png" /></a>
+			<a href="#" target="_blank"> <img src="../../imgs/twitter1.png" /></a>
+		</div>
+		<div class="foot-text">
+			<p>© 2020 EHosp. Todos os direitos reservados.</p>
+			<p>Versão: 1.1.1</p>
+		</div>
+	</div>
 
 </h:body>
-
-
 </html>

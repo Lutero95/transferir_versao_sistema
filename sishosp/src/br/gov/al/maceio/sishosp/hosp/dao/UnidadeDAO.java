@@ -35,7 +35,7 @@ public class UnidadeDAO {
         Integer codUnidade = null;
         String sql = "INSERT INTO hosp.unidade(rua, bairro, numero, cep, cidade, " +
                 " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, nome,  cod_empresa) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?, ?, ?,?, true, ?, ?) returning id";
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, true, ?, ?) returning id";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -115,8 +115,9 @@ public class UnidadeDAO {
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
                     "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap, minutos_tolerancia )" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap, minutos_tolerancia, "+
+                    "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -234,6 +235,13 @@ public class UnidadeDAO {
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
             ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
             ps.setInt(29, unidade.getParametro().getMinutosTolerancia());
+            ps.setBoolean(30, unidade.getParametro().isAcessoPermitidoDomingo());
+            ps.setBoolean(31, unidade.getParametro().isAcessoPermitidoSegunda());
+            ps.setBoolean(32, unidade.getParametro().isAcessoPermitidoTerca());
+            ps.setBoolean(33, unidade.getParametro().isAcessoPermitidoQuarta());
+            ps.setBoolean(34, unidade.getParametro().isAcessoPermitidoQuinta());
+            ps.setBoolean(35, unidade.getParametro().isAcessoPermitidoSexta());
+            ps.setBoolean(36, unidade.getParametro().isAcessoPermitidoSabado());
             ps.execute();
 
 
@@ -396,7 +404,9 @@ public class UnidadeDAO {
                     "bloqueia_por_pendencia_evolucao_anterior = ?, orgao_origem_responsavel_pela_informacao = ?, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao = ?, cgcCpf_prestador_ou_orgao_publico = ?, orgao_destino_informacao = ?, "+
                     "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?, "+
-                    "valida_dados_laudo_sigtap = ?, minutos_tolerancia = ? "+
+                    "valida_dados_laudo_sigtap = ?, minutos_tolerancia = ?, "+
+                    "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
+                    "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -480,7 +490,14 @@ public class UnidadeDAO {
             ps.setInt(27, unidade.getParametro().getValidadePadraoLaudo());
             ps.setBoolean(28, unidade.getParametro().isValidaDadosLaudoSigtap());
             ps.setInt(29, unidade.getParametro().getMinutosTolerancia());
-            ps.setInt(30, unidade.getId());
+            ps.setBoolean(30, unidade.getParametro().isAcessoPermitidoDomingo());
+            ps.setBoolean(31, unidade.getParametro().isAcessoPermitidoSegunda());
+            ps.setBoolean(32, unidade.getParametro().isAcessoPermitidoTerca());
+            ps.setBoolean(33, unidade.getParametro().isAcessoPermitidoQuarta());
+            ps.setBoolean(34, unidade.getParametro().isAcessoPermitidoQuinta());
+            ps.setBoolean(35, unidade.getParametro().isAcessoPermitidoSexta());
+            ps.setBoolean(36, unidade.getParametro().isAcessoPermitidoSabado());
+            ps.setInt(37, unidade.getId());
 
             ps.executeUpdate();
 
@@ -619,7 +636,8 @@ public class UnidadeDAO {
                 "coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, " +
                 "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
-                "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia "+
+                "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
+                "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -669,6 +687,13 @@ public class UnidadeDAO {
                 parametro.setVersaoSistema(rs.getString("versao_sistema"));
                 parametro.setValidadePadraoLaudo(rs.getInt("validade_padrao_laudo"));
                 parametro.setMinutosTolerancia(rs.getInt("minutos_tolerancia"));
+                parametro.setAcessoPermitidoDomingo(rs.getBoolean("acesso_permitido_domingo"));
+                parametro.setAcessoPermitidoSegunda(rs.getBoolean("acesso_permitido_segunda"));
+                parametro.setAcessoPermitidoTerca(rs.getBoolean("acesso_permitido_terca"));
+                parametro.setAcessoPermitidoQuarta(rs.getBoolean("acesso_permitido_quarta"));
+                parametro.setAcessoPermitidoQuinta(rs.getBoolean("acesso_permitido_quinta"));
+                parametro.setAcessoPermitidoSexta(rs.getBoolean("acesso_permitido_sexta"));
+                parametro.setAcessoPermitidoSabado(rs.getBoolean("acesso_permitido_sabado"));
             }
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();

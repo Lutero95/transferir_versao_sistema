@@ -364,7 +364,7 @@
 
 							<p:outputPanel id="horarioDeAcesso">
 
-								<p:fieldset legend="Restrição de acesso ao sistema">
+								<p:fieldset legend="Restrição de Acesso ao Sistema por Horário">
 
 									<b:row>
 
@@ -436,7 +436,36 @@
 										</p:row>
 								</p:fieldset>
 							</p:outputPanel>
-
+							<br />
+							
+							<p:outputPanel id="diaDeAcesso">
+								<p:fieldset legend="Restrição de Acesso ao Sistema">
+									<p:row>
+										<p:column class="label-position new-data-size new-comple1">
+										<p:outputLabel value="Marque os dias em que o acesso ao sistema será permitido aos usuários sem permissões especiais"/>
+										
+											<h:panelGrid columns="2" style="margin-top:1%;" cellpadding="5">
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoDomingo}"
+        										 	itemLabel="Domingo"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoSegunda}" 
+        											itemLabel="Segunda"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoTerca}" 
+        											itemLabel="Terça"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoQuarta}"
+        											 itemLabel="Quarta"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoQuinta}" 
+        											itemLabel="Quinta"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoSexta}" 
+        											itemLabel="Sexta"/>
+        										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoSabado}"
+        											itemLabel="Sábado"/>
+        									</h:panelGrid>	
+										</p:column>
+									</p:row>
+								</p:fieldset>
+							</p:outputPanel>
+							<br />
+							
 							<p:outputPanel id="oulaudo">
 
 								<p:fieldset legend="Laudo">

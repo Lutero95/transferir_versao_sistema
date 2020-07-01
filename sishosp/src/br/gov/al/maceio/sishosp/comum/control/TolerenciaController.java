@@ -23,7 +23,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 @ManagedBean
 @SessionScoped
 public class TolerenciaController {
-	
+
 	private HorarioFuncionamento horarioFuncionamento;
 	private ToleranciaDAO toleranciaDAO;
 	private Integer minutosTolerancia;
@@ -37,18 +37,21 @@ public class TolerenciaController {
 	private boolean usuarioLogado;
 	private final Integer INTERVALO_VERIFICACOES_EM_SEGUNDOS = 30;
 	FuncionarioBean user_session;
-	
+
 	public TolerenciaController() {
 		this.toleranciaDAO = new ToleranciaDAO();
 		this.horarioFuncionamento = new HorarioFuncionamento();
-	} 
-	
+		this.buscouHorarioIhTolerancia = false;
+		this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+	}
+
 	public void visualizouDialog() {
 		this.visualizouDialogTolerancia = true;
 	}
-	
+
 	public void buscarDados() throws ProjetoException, IOException {
-		
+
 		if(!usuarioLogado) {
 			if (!VerificadorUtil.verificarSeObjetoNulo(SessionUtil.getSession().getAttribute("obj_usuario"))) {
 				this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -56,7 +59,7 @@ public class TolerenciaController {
 				usuarioLogado = true;
 			}
 		}
-		
+
 		if ((usuarioLogado) && (!user_session.getExcecaoBloqueioHorario()) && (user_session.getUnidade().getParametro().getUsaHorarioLimiteParaAcesso())) {
 			if (!buscouHorarioIhTolerancia) {
 				buscaHorarioFuncionamento();
@@ -65,19 +68,32 @@ public class TolerenciaController {
 			}
 			verificaTolerancia();
 		}
-		
+
 	}
-	
+
+	public void validarHorario() throws ProjetoException, IOException {
+
+		if (!user_session.getExcecaoBloqueioHorario()) {
+			if (!buscouHorarioIhTolerancia) {
+				buscaHorarioFuncionamento();
+				buscaMinutosTolerancia();
+				buscouHorarioIhTolerancia = true;
+			}
+			verificaTolerancia();
+		}
+
+	}
+
 	private  void verificaTolerancia() throws IOException {
 		if(alcancouLimiteHorario()) {
-			
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(horarioFuncionamento.getHorarioFim());
 			calendar.set(anoAtual, mesAtual, diaDoMesAtual);
-			
+
 			calendar.add(Calendar.MINUTE, minutosTolerancia);
 			this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
-			
+
 			if(horarioExpirou()) {
 				logout();
 			}
@@ -86,36 +102,36 @@ public class TolerenciaController {
 			}
 		}
 	}
-	
+
 	private void buscaHorarioFuncionamento() throws ProjetoException {
 		this.horarioFuncionamento = this.toleranciaDAO.buscaHorarioFuncionamento(user_session);
 	}
-	
+
 	private void buscaMinutosTolerancia() throws ProjetoException {
 		this.minutosTolerancia = this.toleranciaDAO.buscaMinutosTolerancia(user_session);
 	}
-	
+
 	public boolean alcancouLimiteHorario() {
-		
+
 		Calendar calendar = Calendar.getInstance();
 		this.horarioAtualEmMilisegundos = calendar.getTimeInMillis();
-		
+
 		this.anoAtual = calendar.get(Calendar.YEAR);
 		this.mesAtual = calendar.get(Calendar.MONTH);
 		this.diaDoMesAtual = calendar.get(Calendar.DAY_OF_MONTH);
-		
+
 		calendar.setTime(horarioFuncionamento.getHorarioFim());
 		calendar.set(anoAtual, mesAtual, diaDoMesAtual);
-		
+
 		this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
-		
+
 		return horarioExpirou();
 	}
 
 	private boolean horarioExpirou() {
 		if(horarioAtualEmMilisegundos > horarioFinalEmMilisegundos) {
-	    	return true;
-	    }
+			return true;
+		}
 		return false;
 	}
 
@@ -128,7 +144,7 @@ public class TolerenciaController {
 		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
 		return scontext;
 	}
-	
+
 	private void logout() throws IOException {
 		SessionUtil.getSession().invalidate();
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "S");

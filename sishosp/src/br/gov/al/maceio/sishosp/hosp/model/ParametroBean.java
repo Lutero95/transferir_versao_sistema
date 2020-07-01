@@ -6,7 +6,9 @@ import java.util.Date;
 
 public class ParametroBean implements Serializable {
 
-    private Integer motivoDesligamento;
+
+	private static final long serialVersionUID = 1L;
+	private Integer motivoDesligamento;
     private String opcaoAtendimento;
     private Integer quantidadeSimultaneaProfissional;
     private Integer quantidadeSimultaneaEquipe;
@@ -33,6 +35,13 @@ public class ParametroBean implements Serializable {
     private Integer validadePadraoLaudo;
     private boolean validaDadosLaudoSigtap;
     private Integer minutosTolerancia;
+    private boolean acessoPermitidoDomingo;
+    private boolean acessoPermitidoSegunda;
+    private boolean acessoPermitidoTerca;
+    private boolean acessoPermitidoQuarta;
+    private boolean acessoPermitidoQuinta;
+    private boolean acessoPermitidoSexta;
+    private boolean acessoPermitidoSabado;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -270,5 +279,61 @@ public class ParametroBean implements Serializable {
 	public void setMinutosTolerancia(Integer minutosTolerancia) {
 		this.minutosTolerancia = minutosTolerancia;
 	}
-    
+
+	public boolean isAcessoPermitidoDomingo() {
+		return acessoPermitidoDomingo;
+	}
+
+	public void setAcessoPermitidoDomingo(boolean acessoPermitidoDomingo) {
+		this.acessoPermitidoDomingo = acessoPermitidoDomingo;
+	}
+
+	public boolean isAcessoPermitidoSegunda() {
+		return acessoPermitidoSegunda;
+	}
+
+	public void setAcessoPermitidoSegunda(boolean acessoPermitidoSegunda) {
+		this.acessoPermitidoSegunda = acessoPermitidoSegunda;
+	}
+
+	public boolean isAcessoPermitidoTerca() {
+		return acessoPermitidoTerca;
+	}
+
+	public void setAcessoPermitidoTerca(boolean acessoPermitidoTerca) {
+		this.acessoPermitidoTerca = acessoPermitidoTerca;
+	}
+
+	public boolean isAcessoPermitidoQuarta() {
+		return acessoPermitidoQuarta;
+	}
+
+	public void setAcessoPermitidoQuarta(boolean acessoPermitidoQuarta) {
+		this.acessoPermitidoQuarta = acessoPermitidoQuarta;
+	}
+
+	public boolean isAcessoPermitidoQuinta() {
+		return acessoPermitidoQuinta;
+	}
+
+	public void setAcessoPermitidoQuinta(boolean acessoPermitidoQuinta) {
+		this.acessoPermitidoQuinta = acessoPermitidoQuinta;
+	}
+
+	public boolean isAcessoPermitidoSexta() {
+		return acessoPermitidoSexta;
+	}
+
+	public void setAcessoPermitidoSexta(boolean acessoPermitidoSexta) {
+		this.acessoPermitidoSexta = acessoPermitidoSexta;
+	}
+
+	public boolean isAcessoPermitidoSabado() {
+		return acessoPermitidoSabado;
+	}
+
+	public void setAcessoPermitidoSabado(boolean acessoPermitidoSabado) {
+		this.acessoPermitidoSabado = acessoPermitidoSabado;
+	}
+
 }
