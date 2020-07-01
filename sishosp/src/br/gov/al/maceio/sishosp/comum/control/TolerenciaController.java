@@ -73,7 +73,7 @@ public class TolerenciaController {
 
 	public void validarHorario() throws ProjetoException, IOException {
 
-		if (!user_session.getExcecaoBloqueioHorario()) {
+		if ((!user_session.getExcecaoBloqueioHorario()) && (user_session.getUnidade().getParametro().getUsaHorarioLimiteParaAcesso())) {
 			if (!buscouHorarioIhTolerancia) {
 				buscaHorarioFuncionamento();
 				buscaMinutosTolerancia();
