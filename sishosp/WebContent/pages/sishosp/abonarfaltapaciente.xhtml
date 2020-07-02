@@ -234,7 +234,7 @@
                                          id="bgbuscar" icon="ui-icon-search"
                                          action="#{gestaoAbonoFaltaPacienteController.listarAtendimentosParaAbono()}"
                                          update="growlMsg, tabela"
-                                         class="btn-incluir"/>
+                                         class="btn-incluir" style="margin-left:1.3%;"/>
                     </b:row>
 
                     <br/>
@@ -280,6 +280,10 @@
 
                                 <p:column headerText="Equipe" width="30%">
                                     <h:outputText value="#{tab.equipe.descEquipe}"/>
+                                </p:column>
+                                
+                                <p:column headerText="Situação Atendimento" width="34%">
+                                    <h:outputText value="#{tab.situacaoAtendimento.descricao}"/>
                                 </p:column>
 
                             </p:dataTable>

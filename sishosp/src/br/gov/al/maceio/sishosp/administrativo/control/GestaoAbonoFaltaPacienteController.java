@@ -71,7 +71,7 @@ public class GestaoAbonoFaltaPacienteController {
 	}
 	
 	public void gravaAbonos() throws SQLException {
-		if(haAtendimentoSelecionadoParaAbono() && !quantidadeDeCaracteresDaJustificativaEhMaiorQue500()) {
+		if(haAtendimentoSelecionadoParaAbono() && !quantidadeDeCaracteresDaJustificativaEhMaiorQue500() && validaSituacaoAtendimentosEhAbonoFalta()) {
 			FuncionarioBean userSession = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_usuario");
 			GravarInsercaoAbonoFaltaPacienteDTO gravarInsercaoAbonoFaltaPacienteDTO = 
@@ -100,6 +100,17 @@ public class GestaoAbonoFaltaPacienteController {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean validaSituacaoAtendimentosEhAbonoFalta() {
+		for (AtendimentoBean atendimentoParaAbono : this.listaAtendimentosSelecionadosParaAbono) {
+			if(!atendimentoParaAbono.getSituacaoAtendimento().isAbonoFalta()) {
+				JSFUtil.adicionarMensagemErro
+					("Não é possível realizar o abono de falta, pois não existe uma situação de atendimento compatível", "");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private void limparDados() {
