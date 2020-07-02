@@ -48,8 +48,7 @@
 				<p:autoUpdate/>
 						<p:panelGrid columns="4">
 
-							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
-								style="margin-top: -13px">
+							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
 									itemValue="prontpaciente" />
@@ -72,7 +71,7 @@
 
 					</p:row>
 
-					<p:dataTable rows="20" paginator="true" id="tabela"
+					<p:dataTable rows="20" paginator="true" id="tabela" style="margin-top: 10px"
 						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
 						var="tab" responsive="true">
 						
