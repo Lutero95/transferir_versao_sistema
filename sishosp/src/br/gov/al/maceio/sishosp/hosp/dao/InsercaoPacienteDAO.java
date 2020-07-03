@@ -403,7 +403,7 @@ public class InsercaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(
 								listaAgendamento.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -431,6 +431,7 @@ public class InsercaoPacienteDAO {
 								ps4.setTime(5,
 										DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario()));
 							}
+							ps4.setInt(6, insercao.getLaudo().getCid1().getIdCid());
 
 							ps4.executeUpdate();
 						}
@@ -473,7 +474,7 @@ public class InsercaoPacienteDAO {
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao, cod_empresa) "
+		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao, cod_unidade) "
 				+ " values (?, ?, ?, ?, ?, ?) RETURNING id;";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -537,7 +538,7 @@ public class InsercaoPacienteDAO {
 					idAgend = rs.getInt("id_atendimento");
 				}
 
-				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 				PreparedStatement ps4 = null;
 				ps4 = con.prepareStatement(sql4);
@@ -546,6 +547,7 @@ public class InsercaoPacienteDAO {
 				ps4.setInt(2, idAgend);
 				ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
 				ps4.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
+				ps4.setInt(5, insercao.getLaudo().getCid1().getIdCid());
 
 				ps4.executeUpdate();
 			}
