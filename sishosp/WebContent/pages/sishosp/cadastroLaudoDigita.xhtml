@@ -11,6 +11,7 @@
         <f:metadata>
             <f:viewAction action="#{LaudoController.getEditLaudo}"/>
             <f:viewAction action="#{LaudoController.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()}"/>
+            <f:viewAction action="#{LaudoController.verificaSeExisteAlgumaCargaSigtap()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -22,6 +23,11 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formLaudo">
+
+					<p:row rendered="#{LaudoController.existeAlgumaCargaSigtap == false}">
+						<p:messages/>
+						<br/>
+					</p:row>
 
                     <b:row>
                         <b:column span="3"
@@ -71,8 +77,7 @@
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Profissional" severity="info"/>
-                            <p:outputPanel id="outProf"
-                            >
+                            <p:outputPanel id="outProf">
                                 <p:autoComplete value="#{LaudoController.laudo.profissionalLaudo}"
                                                 id="autoCompleteProfissional" size="31"
                                                 converter="conFuncionario" required="true"
@@ -111,6 +116,10 @@
                                 <p:ajax event="blur"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
                                         update=":formLaudo:outvalidade"/>
+                                <p:ajax event="dateSelect"
+                                        listener="#{LaudoController.existeCargaSigtapParaDataSolicitacao()}"/>
+                                <p:ajax event="blur"
+                                        listener="#{LaudoController.existeCargaSigtapParaDataSolicitacao()}"/>                                        
                             </p:calendar>
                         </b:column>
 
@@ -452,12 +461,14 @@
                         <p:commandButton action="#{LaudoController.gravarLaudo()}"
                                          update="msgPagina, formLaudo" icon="ui-icon-check"
                                          look="success" value="Gravar" class="btn-incluir"
-                                         rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}"/>
+                                         rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}"
+                                         disabled="#{LaudoController.existeAlgumaCargaSigtap == false}"/>
 
                         <p:commandButton action="#{LaudoController.alterarLaudo()}" icon="ui-icon-check"
                                          update="msgPagina" value="Alterar"
                                          look="success" class="btn-incluir"
-                                         rendered="#{LaudoController.tipo  == 2}"/>
+                                         rendered="#{LaudoController.tipo  == 2}"
+                                         disabled="#{LaudoController.existeAlgumaCargaSigtap == false}"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          class="btn-voltar" size="sm" immediate="true" look="info"

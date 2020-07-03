@@ -2185,5 +2185,68 @@ public class ProcedimentoDAO {
         }
         return ehValido;
     }
+    
+    public boolean verificaExisteCargaSigtapParaDataSolicitacao(Integer mesSolicitacao, Integer anoSolicitacao) {
+
+        PreparedStatement ps = null;
+        boolean existe = false;
+        
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "select exists (select * from sigtap.historico_consumo_sigtap hcs where hcs.mes = ? and ano = ? and hcs.status = 'A');";
+
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, mesSolicitacao);
+            ps.setInt(2, anoSolicitacao);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existe = rs.getBoolean("exists");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
+    }
+    
+    
+    public boolean verificaSeExisteAlgumaCargaSigtap() {
+
+        PreparedStatement ps = null;
+        boolean existe = false;
+        
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "select count(id) quantidade_cargas from sigtap.historico_consumo_sigtap hcs;";
+
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existe = rs.getInt("quantidade_cargas") > 0;
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
+    }
 
 }

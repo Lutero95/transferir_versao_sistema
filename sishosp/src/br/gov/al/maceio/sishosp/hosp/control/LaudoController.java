@@ -1,7 +1,11 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +57,8 @@ public class LaudoController implements Serializable {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
     private Boolean unidadeValidaDadosSigtap;
+    private boolean existeAlgumaCargaSigtap;
+    private boolean existeCargaSigtapParaDataSolicitacao;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -154,6 +160,7 @@ public class LaudoController implements Serializable {
     }
 
     public void calcularPeriodoLaudo() {
+    	
         laudo.setMesInicio(null);
         laudo.setMesFinal(null);
         if (laudo.getDataSolicitacao() != null) {
@@ -496,10 +503,13 @@ public class LaudoController implements Serializable {
     public List<CidBean> listaCidAutoCompletePorProcedimentoCid1(String query) throws ProjetoException {
         List<CidBean> result = new ArrayList<CidBean>();
         if(this.unidadeValidaDadosSigtap) {
+        	Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
+        	dataSolicitacaoPeloSigtap = retornaDataSolicitacaoMesAnterior(dataSolicitacaoPeloSigtap);
+        	
             if(dataSolicitacaoEhValidaParaCidSelecionado()) {
                 if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
                     result = cDao.listarCidsAutoCompletePorProcedimento
-                            (query, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
+                            (query, this.laudo.getProcedimentoPrimario().getCodProc(), dataSolicitacaoPeloSigtap);
             }
         }
         else
@@ -507,14 +517,28 @@ public class LaudoController implements Serializable {
         return result;
     }
 
+	private Date retornaDataSolicitacaoMesAnterior(Date dataSolicitacaoPeloSigtap) {
+		if(!existeCargaSigtapParaDataSolicitacao) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(this.laudo.getDataSolicitacao());
+			LocalDate localDate =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			dataSolicitacaoPeloSigtap = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		}
+		return dataSolicitacaoPeloSigtap;
+	}
+
     public void listarCids1(String campoBusca) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
+        	
+        	Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
+        	dataSolicitacaoPeloSigtap = retornaDataSolicitacaoMesAnterior(dataSolicitacaoPeloSigtap);
+        	
             if(dataSolicitacaoEhValidaParaCidSelecionado()) {
                 if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
                     JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
                 else
                     listaCids = cDao.listarCidsBuscaPorProcedimento
-                            (campoBusca,	this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getDataSolicitacao());
+                            (campoBusca, this.laudo.getProcedimentoPrimario().getCodProc(), dataSolicitacaoPeloSigtap);
             }
         }
         else
@@ -552,6 +576,29 @@ public class LaudoController implements Serializable {
             cabecalho = CABECALHO_RENOVACAO;
         }
         return cabecalho;
+    }
+    
+    public void verificaSeExisteAlgumaCargaSigtap() {
+    	if(this.unidadeValidaDadosSigtap) {
+			this.existeAlgumaCargaSigtap = procedimentoDAO.verificaSeExisteAlgumaCargaSigtap();
+			if (!this.existeAlgumaCargaSigtap)
+				JSFUtil.adicionarMensagemAdvertencia("ATENÇÃO FAÇA A 1ª CARGA DO SIGTAP", "");
+    	}
+    	else
+    		this.existeAlgumaCargaSigtap = true;
+    }
+    
+    public void existeCargaSigtapParaDataSolicitacao() {
+    	if(this.unidadeValidaDadosSigtap) {
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTime(this.laudo.getDataSolicitacao());
+    		int mesSolicitacao = calendar.get(Calendar.MONTH);
+    		mesSolicitacao++;
+    		int anoSolicitacao = calendar.get(Calendar.YEAR);
+    		this.existeCargaSigtapParaDataSolicitacao = procedimentoDAO.verificaExisteCargaSigtapParaDataSolicitacao(mesSolicitacao, anoSolicitacao);
+    	}
+    	else
+    		this.existeCargaSigtapParaDataSolicitacao = true;
     }
 
     public void setCabecalho(String cabecalho) {
@@ -606,4 +653,13 @@ public class LaudoController implements Serializable {
     public void setBuscaLaudoDTO(BuscaLaudoDTO buscaLaudoDTO) {
         this.buscaLaudoDTO = buscaLaudoDTO;
     }
+
+	public boolean isExisteAlgumaCargaSigtap() {
+		return existeAlgumaCargaSigtap;
+	}
+
+	public void setExisteAlgumaCargaSigtap(boolean existeAlgumaCargaSigtap) {
+		this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
+	}
+    
 }
