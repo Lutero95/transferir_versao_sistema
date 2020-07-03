@@ -2730,7 +2730,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "SELECT id_atendimentos1 FROM hosp.atendimentos1 a1 join hosp.situacao_atendimento sa " + 
         		"on a1.id_situacao_atendimento = sa.id " + 
-        		"WHERE sa.atendimento_realizado = true AND a1.id_atendimento = ?;";
+        		"WHERE sa.atendimento_realizado = true AND a1.id_atendimento = ? and coalesce(a1.excluido,'N' )='N';";
 
         try {
             con = ConnectionFactory.getConnection();
