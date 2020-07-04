@@ -234,25 +234,19 @@ public class TransferenciaPacienteController implements Serializable {
             Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
             insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
+            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
+            		listAgendamentoProfissional, insercao.getTurno());
+            				
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
             	gerarListaAgendamentosEquipeTurno();	
+            	cadastrou = aDao.gravarTransferenciaEquipeTurno(insercao,insercaoParaLaudo,
+            			listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
             }
             
             if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
             	gerarListaAgendamentosEquipeDiaHorario();
+            	cadastrou = aDao.gravarTransferenciaEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
             }
-
-            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                    listAgendamentoProfissional, insercao.getTurno());
-
-            
-        	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                cadastrou = aDao.gravarTransferenciaEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
-            	else
-                    cadastrou = aDao.gravarTransferenciaEquipeTurno(insercao,insercaoParaLaudo,
-                    		listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
-
-
 
             if (cadastrou) {
                 JSFUtil.adicionarMensagemSucesso("Transferência realizada com sucesso!", "Sucesso");

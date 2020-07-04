@@ -235,7 +235,7 @@ public class TransferenciaPacienteDAO {
 			ps4.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
 			ps4.execute();
 
-			String sql5 = "update hosp.paciente_instituicao set status='CR' where id = ?";
+			String sql5 = "update hosp.paciente_instituicao set status='CT' where id = ?";
 
 			PreparedStatement ps5 = null;
 			ps5 = conexao.prepareStatement(sql5);
@@ -338,7 +338,7 @@ public class TransferenciaPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataAtendimento()) == listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
-							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -365,6 +365,12 @@ public class TransferenciaPacienteDAO {
 							} else {
 								ps4.setTime(5,
 										DataUtil.retornarHorarioEmTime(listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario()));
+							}
+							
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
+								ps4.setNull(6, Types.NULL);
+							} else {
+								ps4.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 							}
 
 							ps4.executeUpdate();
@@ -572,7 +578,7 @@ public class TransferenciaPacienteDAO {
 						if (DataUtil.extrairDiaDeData(
 								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps10 = null;
 							ps10 = conexao.prepareStatement(sql10);
@@ -591,6 +597,12 @@ public class TransferenciaPacienteDAO {
 								ps10.setNull(4, Types.NULL);
 							} else {
 								ps10.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+							}
+							
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
+								ps10.setNull(5, Types.NULL);
+							} else {
+								ps10.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 							}
 
 							ps10.executeUpdate();
