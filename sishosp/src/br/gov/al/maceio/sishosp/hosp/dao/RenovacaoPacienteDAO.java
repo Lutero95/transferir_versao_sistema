@@ -237,7 +237,7 @@ public class RenovacaoPacienteDAO {
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {
-				idPacienteInstituicao = rs.getInt("id");
+				idPacienteInstituicao = rs.getInt("id"); 
 			}
 
 			String sql8 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
@@ -320,7 +320,7 @@ public class RenovacaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(
 								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -340,14 +340,20 @@ public class RenovacaoPacienteDAO {
 							} else {
 								ps4.setNull(4, Types.NULL);
 							}
-
+							
+							if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+								ps4.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+							} else {
+								ps4.setNull(5, Types.NULL);
+							}
+							
 							ps4.executeUpdate();
 						}
 					}
 				}
 
 			}
-
+			
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R",
 					conexao)) {
 				conexao.commit();
@@ -488,7 +494,7 @@ public class RenovacaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataAtendimento()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -515,6 +521,12 @@ public class RenovacaoPacienteDAO {
 							} else {
 								ps4.setTime(5,
 										DataUtil.retornarHorarioEmTime(listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario()));
+							}
+							
+							if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+								ps4.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+							} else {
+								ps4.setNull(6, Types.NULL);
 							}
 
 							ps4.executeUpdate();
@@ -628,7 +640,7 @@ public class RenovacaoPacienteDAO {
 					idAgend = rs.getInt("id_atendimento");
 				}
 
-				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 				PreparedStatement ps5 = null;
 				ps5 = conexao.prepareStatement(sql5);
@@ -637,6 +649,11 @@ public class RenovacaoPacienteDAO {
 				ps5.setInt(2, idAgend);
 				ps5.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
 				ps5.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
+				if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+					ps4.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+				} else {
+					ps4.setNull(5, Types.NULL);
+				}
 
 				ps5.executeUpdate();
 

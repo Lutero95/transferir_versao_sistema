@@ -633,30 +633,13 @@ public class RenovacaoPacienteController implements Serializable {
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
         	if (verificaPeriodoValidoRenovacaoLaudo()) { //Verifica se a data de renovacao está dentro do periodo do laudo ou da nova solicitacao sem laudo 
         	Integer codPaciente = null;
-        	Integer codProcPrimarioSemLaudo = null;
-        	Integer codProcSecundario1SemLaudo = null;
-        	Integer codProcSecundario2SemLaudo = null;
-        	Integer codProcSecundario3SemLaudo = null;
-        	Integer codProcSecundario4SemLaudo = null;
-        	Integer codProcSecundario5SemLaudo = null;
+        	
         	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) {
         			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
-        			codProcPrimarioSemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoPrimario().getIdProc();
-                	codProcSecundario1SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario1().getIdProc();
-                	codProcSecundario2SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario2().getIdProc();
-                	codProcSecundario3SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario3().getIdProc();
-                	codProcSecundario4SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario4().getIdProc();
-                	codProcSecundario5SemLaudo = insercaoParaLaudo.getLaudo().getProcedimentoSecundario5().getIdProc();		
         	}
         	
         	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null)) {
-        		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
-        		codProcPrimarioSemLaudo = insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc();
-            	codProcSecundario1SemLaudo = insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc();
-            	codProcSecundario2SemLaudo = insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc();
-            	codProcSecundario3SemLaudo = insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc();
-            	codProcSecundario4SemLaudo = insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc();
-            	codProcSecundario5SemLaudo = insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc();		
+        		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();		
         	}
 
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
@@ -673,17 +656,14 @@ public class RenovacaoPacienteController implements Serializable {
 
                 if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
                 	gerarListaAgendamentosEquipeTurno();	
+                	cadastrou = rDao.gravarRenovacaoEquipeTurno
+                			(insercao,insercaoParaLaudo, listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
                 }
                 
                 if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
                 	gerarListaAgendamentosEquipeDiaHorario();
+                	cadastrou = rDao.gravarRenovacaoEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal,  listaProfissionaisAdicionados);
                 }
-
-            	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                    cadastrou = rDao.gravarRenovacaoEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal,  listaProfissionaisAdicionados);
-                	else
-                        cadastrou = rDao.gravarRenovacaoEquipeTurno(insercao,insercaoParaLaudo,
-                                listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
                 
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {

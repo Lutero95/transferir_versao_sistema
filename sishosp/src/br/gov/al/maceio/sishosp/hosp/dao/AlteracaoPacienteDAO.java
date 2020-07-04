@@ -853,7 +853,7 @@ public class AlteracaoPacienteDAO {
 			}
 			
 			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
-				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(insercao.getId(), conexao);
 				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 
@@ -1018,7 +1018,7 @@ public class AlteracaoPacienteDAO {
 	
 
 	public boolean gravarAlteracaoProfissional(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
-			ArrayList<AgendaBean> listaAgendamento, Integer id_paciente) throws ProjetoException {
+			ArrayList<AgendaBean> listaAgendamento, Integer idPacienteInstituicao) throws ProjetoException {
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -1035,7 +1035,7 @@ public class AlteracaoPacienteDAO {
 
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
-			ps2.setLong(1, id_paciente);
+			ps2.setLong(1, idPacienteInstituicao);
 			ps2.execute();
 
 			rs = ps2.executeQuery();
@@ -1057,7 +1057,7 @@ public class AlteracaoPacienteDAO {
 
 			PreparedStatement ps4 = null;
 			ps4 = conexao.prepareStatement(sql4);
-			ps4.setLong(1, id_paciente);
+			ps4.setLong(1, idPacienteInstituicao);
 			ps4.execute();
 
 			String sql5 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
@@ -1088,7 +1088,7 @@ public class AlteracaoPacienteDAO {
 					ps6.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 					ps6.setString(5, insercao.getTurno());
 					ps6.setString(6, insercao.getObservacao());
-					ps6.setInt(7, id_paciente);
+					ps6.setInt(7, idPacienteInstituicao);
 					ps6.setInt(8, user_session.getUnidade().getId());
 
 					rs = ps6.executeQuery();
@@ -1114,12 +1114,11 @@ public class AlteracaoPacienteDAO {
 
 
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
-				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(
-						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(idPacienteInstituicao, conexao);
 				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 				
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
 				retorno = true;
 			}
