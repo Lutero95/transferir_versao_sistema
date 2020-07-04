@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AlteracaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
@@ -725,7 +726,8 @@ public class AlteracaoPacienteController implements Serializable {
     
     public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() throws ProjetoException {
     	Boolean dataValida = null;
-    	if ((insercaoParaLaudo.getLaudo().getId()!=null) && (insercao.isInsercaoPacienteSemLaudo()==false))
+    	
+    	if ((!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo())) && (!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo().getId())) && (insercao.isInsercaoPacienteSemLaudo()==false))
     	dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
     	else
     	if ((insercao.isInsercaoPacienteSemLaudo())) {

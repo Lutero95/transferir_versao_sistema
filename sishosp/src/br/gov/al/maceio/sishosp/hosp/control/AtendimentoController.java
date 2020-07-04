@@ -194,14 +194,13 @@ public class AtendimentoController implements Serializable {
     }
 
     public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
         if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
-
             if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
                 return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
             return null;
         }
         else {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
         }
     }

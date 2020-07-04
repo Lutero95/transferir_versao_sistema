@@ -735,35 +735,47 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void validarInsercaoPaciente() throws ProjetoException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
 			
-			  GerenciarPacienteController gerenciarPacienteController = new
-			  GerenciarPacienteController(); Date dataSolicitacaoCorreta =
-			  gerenciarPacienteController.ajustarDataDeSolicitacao(
-			  insercao.getDataSolicitacao(), insercao.getLaudo().getId(),
-			  insercao.getPaciente().getId_paciente(),
-			  insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+//			  GerenciarPacienteController gerenciarPacienteController = new
+//			  GerenciarPacienteController(); 
+//			  Date dataSolicitacaoCorreta =
+//			  gerenciarPacienteController.ajustarDataDeSolicitacao(
+//			  insercao.getDataSolicitacao(), insercao.getLaudo().getId(),
+//			  insercao.getPaciente().getId_paciente(),
+//			  insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
 			 
 			// insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 			if (VerificadorUtil.verificarSeObjetoNulo(insercao.getTurno())) {
 				JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
-			} else if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
-					insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())) {
-				JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
-			} else if (insercao.getEncaixe()) {
-				gravarInsercaoPaciente();
-			} else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-				if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
+			} else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getIdPrograma()) && !VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getGrupo().getIdGrupo())) {
+				if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+						insercao.getGrupo().getIdGrupo(), insercao.getLaudo().getPaciente().getId_paciente())) {
+					JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
+				}
+				
+				else if (insercao.getEncaixe()) {
+					gravarInsercaoPaciente();
+				} 
+				
+				else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+					if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
+						gravarInsercaoPaciente();
+					} else {
+						JSFUtil.adicionarMensagemErro(
+								"Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!", "Erro");
+					}
+				} 
+			}
+			
+			else {
+				if (insercao.getEncaixe()) {
+					gravarInsercaoPaciente();
+				}
+				else if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
 					gravarInsercaoPaciente();
 				} else {
 					JSFUtil.adicionarMensagemErro(
 							"Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
 							"Erro");
-				}
-			} else {
-				if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
-					gravarInsercaoPaciente();
-				} else {
-					JSFUtil.adicionarMensagemErro(
-							"Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!", "Erro");
 				}
 			}
     	}

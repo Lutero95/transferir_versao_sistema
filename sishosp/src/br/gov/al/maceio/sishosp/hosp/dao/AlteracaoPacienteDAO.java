@@ -424,10 +424,10 @@ public class AlteracaoPacienteDAO {
 				atendimento.getFuncionario().setId(listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
 				if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {
 				String sql8 = "INSERT INTO hosp.atendimentos1 " +
-		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento) " +
+		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) " +
 		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
 		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	  limit 1), ?, (select cod_procedimento from hosp.programa " + 
-		                "where programa.id_programa = ? )) RETURNING id_atendimentos1";
+		                "where programa.id_programa = ? ), ?) RETURNING id_atendimentos1";
 
 				PreparedStatement ps8 = null;
 				ps8 = conexao.prepareStatement(sql8);
@@ -438,6 +438,7 @@ public class AlteracaoPacienteDAO {
 				ps8.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
 				ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getCbo().getCodCbo());
 				ps8.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				ps8.setInt(8, insercao.getLaudo().getCid1().getIdCid());
 				ps8.execute();
 				
 				ps6 = null;
@@ -538,8 +539,10 @@ public class AlteracaoPacienteDAO {
 				}		
 			*/
 			
-				
-			
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId())) {
+				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(insercao.getId(), conexao);
+				atualizaCidPrimario(listaIdAtendimento1, conexao, insercao.getLaudo().getCid1().getIdCid());
+			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
@@ -717,7 +720,6 @@ public class AlteracaoPacienteDAO {
 											DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario()));
 								}
 
-
 								ps8.executeUpdate();
 							}
 						}
@@ -848,6 +850,11 @@ public class AlteracaoPacienteDAO {
 					ps6.execute();
 				}
 				}	
+			}
+			
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
+				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
@@ -1106,6 +1113,12 @@ public class AlteracaoPacienteDAO {
 				}
 
 
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
+				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(
+						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+			}
+				
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
 				conexao.commit();
 				retorno = true;
@@ -1124,6 +1137,59 @@ public class AlteracaoPacienteDAO {
 		}
 		return retorno;
 	}
+	
+	
+	public List<Integer> listaIdAtendimentos1PorPacienteInstituicao(Integer idPacienteInstituicao, Connection conexao)
+			throws ProjetoException, SQLException {
+
+		List<Integer> listaIdAtendimento1 = new ArrayList<>();
+		
+		String sql = "select a1.id_atendimentos1 from " + 
+				"	hosp.atendimentos1 a1 join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"	join hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id " + 
+				"	where pi.id = ?";
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, idPacienteInstituicao);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				listaIdAtendimento1.add(rs.getInt("id_atendimentos1"));
+			}
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return listaIdAtendimento1;
+	}
+	
+	
+	public void atualizaCidPrimario(List<Integer> listaIdAtendimento1, Connection conexao, Integer idCid)
+			throws ProjetoException, SQLException {
+		
+		String sql = "update hosp.atendimentos1 a1 set id_cidprimario = ? where a1.id_atendimentos1 = ? and id_cidprimario is null";
+		
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			for (Integer idAtendimento1 : listaIdAtendimento1) {
+				stm.setInt(1, idCid);
+				stm.setInt(2, idAtendimento1);
+				stm.executeUpdate();
+			}
+
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
 
 	public ArrayList<AgendaBean> listaAtendimentos(Integer id) throws ProjetoException {
 
