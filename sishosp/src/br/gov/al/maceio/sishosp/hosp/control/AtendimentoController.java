@@ -349,7 +349,7 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
         return unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
