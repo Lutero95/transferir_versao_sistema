@@ -175,7 +175,6 @@ public class RenovacaoPacienteDAO {
 			" codprocedimento_secundario3_laudo_anterior, codprocedimento_secundario4_laudo_anterior, "+
 			" codprocedimento_secundario5_laudo_anterior) "
 					+ " values (?, ?, ?, ?, ?, ?, ?, ?,  current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
-
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
 			ps2.setInt(1, insercao.getPrograma().getIdPrograma());
@@ -237,7 +236,7 @@ public class RenovacaoPacienteDAO {
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {
-				idPacienteInstituicao = rs.getInt("id");
+				idPacienteInstituicao = rs.getInt("id"); 
 			}
 
 			String sql8 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
@@ -320,7 +319,7 @@ public class RenovacaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(
 								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -340,14 +339,20 @@ public class RenovacaoPacienteDAO {
 							} else {
 								ps4.setNull(4, Types.NULL);
 							}
-
+							
+							if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+								ps4.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+							} else {
+								ps4.setNull(5, Types.NULL);
+							}
+							
 							ps4.executeUpdate();
 						}
 					}
 				}
 
 			}
-
+			
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R",
 					conexao)) {
 				conexao.commit();
@@ -390,8 +395,11 @@ public class RenovacaoPacienteDAO {
 			ps.setInt(1, insercao.getId());
 			ps.executeUpdate();
 
-			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-					+ " values (?, ?, ?, ?, ?,  ?, ?, ?, current_timestamp) RETURNING id;";
+			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro, id_paciente, turno, "+
+					" codprocedimento_primario_laudo_anterior, codprocedimento_secundario1_laudo_anterior, codprocedimento_secundario2_laudo_anterior, "+
+					" codprocedimento_secundario3_laudo_anterior, codprocedimento_secundario4_laudo_anterior, "+
+					" codprocedimento_secundario5_laudo_anterior) "
+					+ " values (?, ?, ?, ?, ?,  ?, ?, ?, current_timestamp, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
@@ -399,10 +407,58 @@ public class RenovacaoPacienteDAO {
 			ps2.setInt(2, insercao.getGrupo().getIdGrupo());
 			ps2.setInt(3, insercao.getEquipe().getCodEquipe());
 			ps2.setString(4, "A");
-			ps2.setInt(5, insercaoParaLaudo.getLaudo().getId());
+			if (insercaoParaLaudo.getLaudo().getId() != null) {
+				ps2.setInt(5, insercaoParaLaudo.getLaudo().getId());
+			} else {
+				ps2.setNull(5, Types.NULL);
+			}
 			ps2.setString(6, insercao.getObservacao());
 			ps2.setInt(7, user_session.getUnidade().getId());
 			ps2.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+
+			if (insercaoParaLaudo.getPaciente().getId_paciente() != null) {
+				ps2.setInt(9, insercaoParaLaudo.getPaciente().getId_paciente());
+			} else {
+				ps2.setNull(9, Types.NULL);
+			}
+			ps2.setString(10, insercao.getTurno());
+
+			if ((insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc()!= null) && (insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc()!= 0)) {
+				ps2.setInt(11, insercaoParaLaudo.getProcedimentoPrimarioSemLaudo().getIdProc());
+			} else {
+				ps2.setNull(11, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc()!= null) && (insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc()!= 0) ) {
+				ps2.setInt(12, insercaoParaLaudo.getProcedimentoSecundario1SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(12, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(13, insercaoParaLaudo.getProcedimentoSecundario2SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(13, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(14, insercaoParaLaudo.getProcedimentoSecundario3SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(14, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(15, insercaoParaLaudo.getProcedimentoSecundario4SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(15, Types.NULL);
+			}
+
+			if ((insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc() != null) && (insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc() != 0)) {
+				ps2.setInt(16, insercaoParaLaudo.getProcedimentoSecundario5SemLaudo().getIdProc());
+			} else {
+				ps2.setNull(16, Types.NULL);
+			}
+
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {
@@ -434,8 +490,10 @@ public class RenovacaoPacienteDAO {
 			ps3 = conexao.prepareStatement(sql3);
 
 			for (int i = 0; i < listaAgendamento.size(); i++) {
-
-				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+				if (insercaoParaLaudo.getLaudo().getPaciente().getId_paciente() != null)
+					ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+				else
+					ps3.setInt(1, insercaoParaLaudo.getPaciente().getId_paciente());
 				ps3.setDate(2, new java.sql.Date(listaAgendamento.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
@@ -488,7 +546,7 @@ public class RenovacaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
 								.getDataAtendimento()) ==listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getDiaSemana()) {
 
-							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -515,6 +573,12 @@ public class RenovacaoPacienteDAO {
 							} else {
 								ps4.setTime(5,
 										DataUtil.retornarHorarioEmTime(listaProfissionais.get(h).getListaDiasAtendimentoSemana().get(l).getHorario()));
+							}
+							
+							if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+								ps4.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+							} else {
+								ps4.setNull(6, Types.NULL);
 							}
 
 							ps4.executeUpdate();
@@ -628,7 +692,7 @@ public class RenovacaoPacienteDAO {
 					idAgend = rs.getInt("id_atendimento");
 				}
 
-				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 				PreparedStatement ps5 = null;
 				ps5 = conexao.prepareStatement(sql5);
@@ -637,6 +701,11 @@ public class RenovacaoPacienteDAO {
 				ps5.setInt(2, idAgend);
 				ps5.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
 				ps5.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
+				if(!insercaoParaLaudo.isInsercaoPacienteSemLaudo()) {
+					ps4.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+				} else {
+					ps4.setNull(5, Types.NULL);
+				}
 
 				ps5.executeUpdate();
 
