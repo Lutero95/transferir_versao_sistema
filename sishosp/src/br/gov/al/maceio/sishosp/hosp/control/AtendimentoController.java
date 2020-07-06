@@ -161,9 +161,15 @@ public class AtendimentoController implements Serializable {
         listarAtendimentos(campoBusca, tipoBusca);
     }
 
-    public void zeraDatasDeAtendimentoQuandoCondicaoListarEvolucoesPendentesEhAlterada() throws ProjetoException {
+    public void zeraDadosQuandoCondicaoListarEvolucoesPendentesEhAlterada() throws ProjetoException {
         this.atendimento.setDataAtendimentoInicio(null);
         this.atendimento.setDataAtendimentoFinal(null);
+        this.atendimento.setPrograma(null);
+        this.atendimento.setGrupo(null);
+        this. buscaEvolucao = "T";
+        this. buscaTurno = "A";
+        this. campoBusca = "";
+        SessionUtil.removerDaSessao(BUSCA_SESSAO);
         if(listarEvolucoesPendentes) {
             carregarGerenciamentoAtendimentoProfissionalNaEquipe();
         }
