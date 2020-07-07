@@ -37,8 +37,7 @@ public class TolerenciaController {
 		this.toleranciaDAO = new ToleranciaDAO();
 		this.horarioFuncionamento = new HorarioFuncionamento();
 		this.buscouHorarioIhTolerancia = false;
-		this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
+
 	}
 
 	public void visualizouDialog() {
@@ -46,7 +45,8 @@ public class TolerenciaController {
 	}
 
 	public void validarHorario() throws ProjetoException, IOException {
-
+		this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
 		if ((!user_session.getExcecaoBloqueioHorario()) && (user_session.getUnidade().getParametro().getUsaHorarioLimiteParaAcesso())) {
 			if (!buscouHorarioIhTolerancia) {
 				buscaHorarioFuncionamento();
