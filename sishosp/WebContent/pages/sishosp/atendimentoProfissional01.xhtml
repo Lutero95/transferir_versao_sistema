@@ -26,6 +26,12 @@ setTimeout("jQuery("#mylink").click();", 50);
 
 			<div class="panel-body table-body">
 				<h:form id="formAcoes">
+				
+					<p:row rendered="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
+						<p:messages/>
+						<br/>
+					</p:row>
+					
 					<p:row>
 						<div align="center">
 							<p:row>
@@ -39,14 +45,15 @@ setTimeout("jQuery("#mylink").click();", 50);
 									style="margin-left: 10px" icon="ui-icon-search"
 									immediate="true" update=":frmPrincipalPts"
 									action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.programa.idPrograma, AtendimentoController.atendimento.grupo.idGrupo, AtendimentoController.atendimento.paciente.id_paciente)}"
-									oncomplete="PF('dlgConsultaPTS').show();" />
+									oncomplete="PF('dlgConsultaPTS').show();"/>
 
 								<p:commandButton value="Laudo" look="success" size="sm"
 									style="margin-left: 10px" icon="ui-icon-document"
 									immediate="true" update=":frmPrincipalPts :frmlaudo"
 									actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}"
 									action="#{LaudoController.listarLaudo('', '', '')}"
-									oncomplete="PF('dlglaudo').show();">
+									oncomplete="PF('dlglaudo').show();"
+									disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
 									<f:setPropertyActionListener value="2"
 										target="#{LaudoController.tipo}" />
 
@@ -133,6 +140,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 					<div align="center" class="div-btns-atendp">
 
 						<p:commandButton
+							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}"
 							action="#{AtendimentoController.realizarAtendimentoProfissional()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
 							update=":msgPagina" class="btn-incluir" style="float:left; margin-top:6%;" />

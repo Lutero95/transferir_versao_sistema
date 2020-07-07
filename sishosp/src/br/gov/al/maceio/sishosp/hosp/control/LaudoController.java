@@ -579,7 +579,7 @@ public class LaudoController implements Serializable {
         return cabecalho;
     }
     
-    public void verificaSeExisteAlgumaCargaSigtap() {
+    private void verificaSeExisteAlgumaCargaSigtap() {
     	if(this.unidadeValidaDadosSigtap) {
 			this.existeAlgumaCargaSigtap = procedimentoDAO.verificaSeExisteAlgumaCargaSigtap();
 			if (!this.existeAlgumaCargaSigtap)

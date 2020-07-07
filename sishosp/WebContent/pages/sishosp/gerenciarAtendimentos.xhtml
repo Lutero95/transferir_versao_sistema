@@ -26,6 +26,11 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmInicial">
+				
+					<p:row rendered="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
+						<p:messages/>
+						<br/>
+					</p:row>
 
 					<b:row rendered="false">
 
@@ -94,6 +99,7 @@
 							update=":frmincprof" actionListener="#{AtendimentoController.limpaInclusaoProfissionalAtendimento()}"
 							onclick="PF('dlgincprof').show();" 
 							rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
+							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}"
 							style="float:left; margin-left:20px"
 								class="btn-prime btn-acao-table acao-confirmar btn-new-padding2" icon="ui-icon-plus"/>
 							<p:commandButton value="Consultar Evolucao"
@@ -200,7 +206,7 @@
 								<div align="center">
 									<p:commandButton icon="fa fa-fw fa-times" size="sm" id="btnCancelar"
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
-										disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == false}"
+										disabled="#{atendimento.situacaoAtendimentoAnterior.atendimentoRealizado == false or AtendimentoController.existeAlgumaCargaSigtap == false}"
 										class="btn-prime btn-acao-table acao-agend"
 										oncomplete="PF('dlgLiberacao').show();"
 										update=":frmLiberacao">
@@ -216,7 +222,8 @@
 									size="sm" ajax="true" style="margin-left:10px"
 									class="btn-acao-table acao-excluir"
 									oncomplete="PF('dlgExclusao').show()"
-									id="btnExcluir">
+									id="btnExcluir"
+									disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
 
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoAux}" />
@@ -242,13 +249,15 @@
 							action="#{AtendimentoController.realizarAtendimentoEquipe()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
 							rendered="#{AtendimentoController.ehEquipe == 'Sim'}"
-							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" />
+							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" 
+							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}"/>
 							
 						<p:commandButton
 							action="#{AtendimentoController.alterarSituacaoDeAtendimentoPorProfissional()}"
 							rendered="#{AtendimentoController.ehEquipe != 'Sim'}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
-							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" />	
+							update="msgPagina :formConsAge:dtAtendimentos" class="btn-incluir" style="float:left" 
+							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}"/>	
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							size="sm" immediate="true" look="info" update=":formConsAge"
