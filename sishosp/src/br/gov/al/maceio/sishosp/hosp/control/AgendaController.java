@@ -139,7 +139,6 @@ public class AgendaController implements Serializable {
         listaFuncionariosDual = new DualListModel<FuncionarioBean>();
         listaFuncionariosSoucer = new ArrayList<>();
         listaFuncionariosTarget = new ArrayList<>();
-
     }
 
     public void limparDados() {
@@ -754,25 +753,64 @@ public class AgendaController implements Serializable {
     }
 
     public void preparaGravarAgendaAvulsa() throws ProjetoException {
-        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
+    	if(pacienteEstaAtivo()) {
+			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
+					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
+				zerarValoresAgendaMaximoIhQuantidade();
+			}
+			
+			if(!existeDuplicidadeAgendaAvulsa())
+				gravarAgendaAvulsa();
+    	}
+    }
+    
+    private boolean pacienteEstaAtivo() throws ProjetoException {
+    	GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+    	
         Boolean pacienteAtivo = gerenciarPacienteDAO
                 .verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
-
-        if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
-                && VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
-            zerarValoresAgendaMaximoIhQuantidade();
-        }
-
-        gravarAgendaAvulsa();
-
+        
+        if(!pacienteAtivo)
+        	JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo", "");
+        
+        return pacienteAtivo;	
     }
+    
+    private boolean existeDuplicidadeAgendaAvulsa() throws ProjetoException {
+    	Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda); 
+    	if(existeDuplicidade) { 
+    		JSFUtil.abrirDialog("dlgLiberacao");
+        	limpaDadosDialogLiberacao();
+    	}
+    	
+    	return existeDuplicidade;
+    }
+    
+    public void validarSenhaLiberacaoAgendaAvulsa() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean funcionarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+
+        if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
+        	gravarAgendaAvulsa();
+    		JSFUtil.fecharDialog("dlgLiberacao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+
+	private void limpaDadosDialogLiberacao() {
+		this.funcionario.setCpf(new String());
+		this.funcionario.setSenha(new String());
+	}
 
     public void zerarValoresAgendaMaximoIhQuantidade() {
         agenda.setQtd(0);
         agenda.setMax(0);
     }
-
+    
     public void validarSenhaLiberacao() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
@@ -1382,46 +1420,6 @@ public class AgendaController implements Serializable {
 
     public void setListaEquipePorTipoAtendimento(List<EquipeBean> listaEquipePorTipoAtendimento) {
         this.listaEquipePorTipoAtendimento = listaEquipePorTipoAtendimento;
-    }
-
-    public FuncionarioDAO getfDao() {
-        return fDao;
-    }
-
-    public void setfDao(FuncionarioDAO fDao) {
-        this.fDao = fDao;
-    }
-
-    public TipoAtendimentoDAO gettDao() {
-        return tDao;
-    }
-
-    public void settDao(TipoAtendimentoDAO tDao) {
-        this.tDao = tDao;
-    }
-
-    public AgendaDAO getaDao() {
-        return aDao;
-    }
-
-    public void setaDao(AgendaDAO aDao) {
-        this.aDao = aDao;
-    }
-
-    public GrupoDAO getgDao() {
-        return gDao;
-    }
-
-    public void setgDao(GrupoDAO gDao) {
-        this.gDao = gDao;
-    }
-
-    public EquipeDAO geteDao() {
-        return eDao;
-    }
-
-    public void seteDao(EquipeDAO eDao) {
-        this.eDao = eDao;
     }
 
     public TipoAtendimentoBean getTipoAtendimentoSelecionado() {

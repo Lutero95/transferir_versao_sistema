@@ -1248,7 +1248,7 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = " select * from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
+		String sql = " select distinct a.* from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo \n" +
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE \n" +

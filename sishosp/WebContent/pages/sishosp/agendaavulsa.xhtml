@@ -314,7 +314,7 @@
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
 							action="#{AgendaController.preparaGravarAgendaAvulsa()}"
-							update=":formAgendaMedica"
+							update=":formAgendaMedica :frmLiberacao"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -591,6 +591,42 @@
 					</h:column>
 
 				</b:dataTable>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Duplicidade De Agenda Avulsa" widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					Você está tentando realizar um agendamento avulso que já possui cadastro nesta 
+					data para este programa, grupo e tipo de atendimento!
+					Digite o CPF e senha para liberação!
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{AgendaController.funcionario.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{AgendaController.funcionario.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsa()}" 
+						update="msgPagina :formAgendaMedica"/>
+						
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+
 			</h:form>
 		</p:dialog>
 

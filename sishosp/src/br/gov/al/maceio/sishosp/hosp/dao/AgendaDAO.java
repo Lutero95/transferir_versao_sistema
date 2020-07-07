@@ -2787,5 +2787,47 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
         return retorno;
     }
+    
+    
+	public Boolean verificarDuplicidadeAgendaAvulsa(AgendaBean agenda) throws ProjetoException {
+		Boolean existeAgendaAvulsa = false;
+
+		String sql = "SELECT EXISTS " + 
+				" (SELECT a.id_atendimento FROM  hosp.atendimentos a " + 
+				" LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) " + 
+				" LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + 
+				" LEFT JOIN hosp.grupo g ON a.codgrupo = g.id_grupo " + 
+				" LEFT JOIN hosp.programa pr ON a.codprograma = pr.id_programa " + 
+				" WHERE a.cod_unidade = ? AND coalesce(a.situacao,'')<>'C' " + 
+				" AND a.dtaatende = ? AND a.avulso IS TRUE " + 
+				" AND t.id = ? AND g.id_grupo = ? AND pr.id_programa = ?) existe_atendimento_avulso";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, agenda.getUnidade().getId());
+			stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
+			stm.setInt(3, agenda.getTipoAt().getIdTipo());
+			stm.setInt(4, agenda.getGrupo().getIdGrupo());
+			stm.setInt(5, agenda.getPrograma().getIdPrograma());
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				existeAgendaAvulsa = rs.getBoolean("existe_atendimento_avulso");
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return existeAgendaAvulsa;
+	}
 
 }
