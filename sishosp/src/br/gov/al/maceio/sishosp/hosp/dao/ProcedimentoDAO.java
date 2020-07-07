@@ -2186,7 +2186,7 @@ public class ProcedimentoDAO {
         return ehValido;
     }
     
-    public boolean verificaExisteCargaSigtapParaDataSolicitacao(Integer mesSolicitacao, Integer anoSolicitacao) {
+    public boolean verificaExisteCargaSigtapParaData(Integer mesSolicitacao, Integer anoSolicitacao) {
 
         PreparedStatement ps = null;
         boolean existe = false;

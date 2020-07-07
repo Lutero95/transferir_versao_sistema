@@ -70,6 +70,7 @@ public class AtendimentoController implements Serializable {
     private FuncionarioBean funcionarioLiberacao;
     private AtendimentoBean atendimentoCancelarEvolucao;
     private UnidadeDAO unidadeDAO;
+	private boolean unidadeValidaDadosSigtap;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -194,6 +195,8 @@ public class AtendimentoController implements Serializable {
     }
 
     public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
+    	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
+    	
         if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
 
             if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
@@ -201,7 +204,6 @@ public class AtendimentoController implements Serializable {
             return null;
         }
         else {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
         }
     }
@@ -240,6 +242,7 @@ public class AtendimentoController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
 
@@ -254,8 +257,9 @@ public class AtendimentoController implements Serializable {
     public void getCarregaGerenciarAtendimentos() throws ProjetoException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<String, String> params = facesContext.getExternalContext()
-                .getRequestParameterMap();
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        
         if ((params.get("id") != null) || (idAtendimentos!=null)) {
             if (idAtendimentos==null)
                 idAtendimentos = Integer.parseInt(params.get("id"));
@@ -266,6 +270,10 @@ public class AtendimentoController implements Serializable {
             recuperaIdEquipeDaSessao();
             listarAtendimentosEquipe();
         }
+    }
+    
+    private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+    	this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
     public void buscarSituacoes() throws ProjetoException {
@@ -317,7 +325,7 @@ public class AtendimentoController implements Serializable {
         //comentado enquanto nao tiver a integracao com o datasus boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
         //comentado enquanto nao tiver a integracao com o datasus    if (verificou) {
-
+        validarDadosSigtap();
         boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
 
         if (alterou == true) {
@@ -334,11 +342,12 @@ public class AtendimentoController implements Serializable {
 
     public void alterarSituacaoDeAtendimentoPorProfissional() {
         try {
-            if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap())
-                verificaSeCboProfissionalEhValidoParaProcedimento();
+            //verificaSeCboProfissionalEhValidoParaProcedimento();
+            validarDadosSigtap();
+            
             if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
                 if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional
-                        (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento.getId())) {
+                        (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento)) {
                     JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
                     this.listAtendimentosEquipe.get(0).getSituacaoAtendimentoAnterior().setId(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId());
                 }
@@ -348,19 +357,48 @@ public class AtendimentoController implements Serializable {
             e.printStackTrace();
         }
     }
+    
+    private void validarDadosSigtap() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+			Date dataAtende = this.atendimento.getDataAtendimentoInicio();
 
-    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
-        return unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+			if (!existeCargaSigtapParaDataSolicitacao()) {
+				dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+				this.atendimento.setValidadoPeloSigtapAnterior(true);
+			}
+			else {
+				this.atendimento.setValidadoPeloSigtapAnterior(false);
+			}
+			
+			LaudoController laudoController = new LaudoController();
+            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
+        }
+    }
+    
+    public boolean existeCargaSigtapParaDataSolicitacao() {
+    	boolean existeCargaSigtapParaDataSolicitacao = true;
+    	if(this.unidadeValidaDadosSigtap) {
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTime(this.atendimento.getDataAtendimentoInicio());
+    		int mesAtendimento = calendar.get(Calendar.MONTH);
+    		mesAtendimento++;
+    		int anoAtendimento = calendar.get(Calendar.YEAR);
+    		existeCargaSigtapParaDataSolicitacao = this.pDao.verificaExisteCargaSigtapParaData(mesAtendimento, anoAtendimento);
+    	}
+    	return existeCargaSigtapParaDataSolicitacao;
     }
 
     public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
-        for(AtendimentoBean atendimento: this.listAtendimentosEquipe) {
-            if(!pDao.validaCboProfissionalParaProcedimento
-                    (atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())){
-                throw new ProjetoException("O profissional " +
-                        atendimento.getFuncionario().getNome()+ " não possui um CBO válido para este procedimento");
-            }
-        }
+    	if(this.unidadeValidaDadosSigtap) {
+			for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
+				if (!pDao.validaCboProfissionalParaProcedimento(atendimento.getProcedimento().getIdProc(),
+						atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())) {
+					throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
+							+ " não possui um CBO válido para este procedimento");
+				}
+			}
+    	}
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
@@ -546,15 +584,16 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        if(verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap())
-            verificaSeCboProfissionalEhValidoParaProcedimento();
+        verificaSeCboProfissionalEhValidoParaProcedimento();
+        validarDadosSigtap();
+        
         if(!validarSeEhNecessarioInformarGrupo()) {
             if(!validarSeEhNecessarioInformarLaudo()) {
                 boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
-
+                
                 if (verificou) {
                     boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                            atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId());
+                            atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
                     if (alterou) {
                         getCarregaGerenciarAtendimentos();
                         JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");

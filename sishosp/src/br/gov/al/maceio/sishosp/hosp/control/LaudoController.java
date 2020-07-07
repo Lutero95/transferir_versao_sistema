@@ -198,7 +198,7 @@ public class LaudoController implements Serializable {
         try {
             verificaSeCid1FoiInserido();
             if (!existeLaudoComMesmosDados()) {
-                validarDadosLaudoSigtap();
+                validarDadosSigtap();
                 idLaudoGerado = null;
                 idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
@@ -220,30 +220,30 @@ public class LaudoController implements Serializable {
             throw new ProjetoException("Por favor informe o campo CID 1");
     }
 
-    private void validarDadosLaudoSigtap() throws ProjetoException {
+    private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
 			Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
 
 			if (!existeCargaSigtapParaDataSolicitacao) {
-				dataSolicitacaoPeloSigtap = retornaDataSolicitacaoMesAnterior(dataSolicitacaoPeloSigtap);
+				dataSolicitacaoPeloSigtap = DataUtil.retornaDataComMesAnterior(dataSolicitacaoPeloSigtap);
 				this.laudo.setValidadoPeloSigtapAnterior(true);
 			}
 			else {
 				this.laudo.setValidadoPeloSigtapAnterior(false);
 			}
 			
-            idadeValida(dataSolicitacaoPeloSigtap);
-            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap);
+            idadeValida(dataSolicitacaoPeloSigtap, this.laudo.getPaciente().getDtanascimento(), this.laudo.getProcedimentoPrimario().getCodProc());
+            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getPaciente().getSexo());
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap))
                 validaCidsDoLaudo(dataSolicitacaoPeloSigtap);
             validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap);
         }
     }
 
-    private void idadeValida(Date dataSolicitacaoPeloSigtap) throws ProjetoException {
+    public void idadeValida(Date dataValidacao, Date dataNascimento, String codigoProcedimento) throws ProjetoException {
 
-        BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente();
-        ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento(dataSolicitacaoPeloSigtap);
+        BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente(dataNascimento);
+        ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento(dataValidacao, codigoProcedimento);
         Boolean valido = false;
         
 
@@ -294,15 +294,15 @@ public class LaudoController implements Serializable {
         return meses;
     }
 
-    private BuscaIdadePacienteDTO obtemIdadePaciente() throws ProjetoException {
+    private BuscaIdadePacienteDTO obtemIdadePaciente(Date dataNascimento) throws ProjetoException {
         BuscaIdadePacienteDTO idadePaciente =
-                lDao.buscarIdadePacienteEmAnoIhMes(this.laudo.getPaciente().getDtanascimento());
+                lDao.buscarIdadePacienteEmAnoIhMes(dataNascimento);
         return idadePaciente;
     }
 
-    private ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento(Date dataSolicitacaoPeloSigtap) throws ProjetoException {
+    private ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento(Date dataSolicitacaoPeloSigtap, String codigoProcedimento) throws ProjetoException {
         ProcedimentoType procedimento = lDao.buscarIdadeMinimaIhMaximaDeProcedimento
-                (this.laudo.getProcedimentoPrimario().getCodProc(), dataSolicitacaoPeloSigtap);
+                (codigoProcedimento, dataSolicitacaoPeloSigtap);
         return procedimento;
     }
 
@@ -338,15 +338,9 @@ public class LaudoController implements Serializable {
         return codigoCboSelecionado;
     }
 
-    private void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap) throws ProjetoException {
-        String sexoPermitido;
-        if(this.laudo.getPaciente().getSexo().equals(ModeloSexo.FEMININO.getSigla()))
-            sexoPermitido = ModeloSexo.FEMININO.name();
-        else
-            sexoPermitido = ModeloSexo.MASCULINO.name();
-
+    public void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, String sexoPaciente) throws ProjetoException {
         if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
-                (dataSolicitacaoPeloSigtap, sexoPermitido, this.laudo.getProcedimentoPrimario().getCodProc())) {
+                (dataSolicitacaoPeloSigtap, sexoPaciente, codProcedimento)) {
             throw new ProjetoException("O sexo do paciente não compreende o permitido no SIGTAP");
         }
     }
@@ -370,7 +364,7 @@ public class LaudoController implements Serializable {
         //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
 
         verificaSeCid1FoiInserido();
-        validarDadosLaudoSigtap();
+        validarDadosSigtap();
         boolean alterou = lDao.alterarLaudo(laudo);
 
         if (alterou == true) {
@@ -521,7 +515,7 @@ public class LaudoController implements Serializable {
 				Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
 
 				if (!existeCargaSigtapParaDataSolicitacao)
-					dataSolicitacaoPeloSigtap = retornaDataSolicitacaoMesAnterior(dataSolicitacaoPeloSigtap);
+					dataSolicitacaoPeloSigtap = DataUtil.retornaDataComMesAnterior(dataSolicitacaoPeloSigtap);
 
 				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
 					result = cDao.listarCidsAutoCompletePorProcedimento(query,
@@ -533,22 +527,13 @@ public class LaudoController implements Serializable {
         return result;
     }
 
-	private Date retornaDataSolicitacaoMesAnterior(Date dataSolicitacaoPeloSigtap) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(this.laudo.getDataSolicitacao());
-		LocalDate localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH));
-		dataSolicitacaoPeloSigtap = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		return dataSolicitacaoPeloSigtap;
-	}
-
     public void listarCids1(String campoBusca) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
         	if(dataSolicitacaoNaoEhNula()) {
 				Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
 
 				if (!existeCargaSigtapParaDataSolicitacao)
-					dataSolicitacaoPeloSigtap = retornaDataSolicitacaoMesAnterior(dataSolicitacaoPeloSigtap);
+					dataSolicitacaoPeloSigtap = DataUtil.retornaDataComMesAnterior(dataSolicitacaoPeloSigtap);
 
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
 					JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
@@ -611,7 +596,7 @@ public class LaudoController implements Serializable {
     		int mesSolicitacao = calendar.get(Calendar.MONTH);
     		mesSolicitacao++;
     		int anoSolicitacao = calendar.get(Calendar.YEAR);
-    		this.existeCargaSigtapParaDataSolicitacao = procedimentoDAO.verificaExisteCargaSigtapParaDataSolicitacao(mesSolicitacao, anoSolicitacao);
+    		this.existeCargaSigtapParaDataSolicitacao = procedimentoDAO.verificaExisteCargaSigtapParaData(mesSolicitacao, anoSolicitacao);
     	}
     	else
     		this.existeCargaSigtapParaDataSolicitacao = true;
