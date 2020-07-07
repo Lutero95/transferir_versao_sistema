@@ -79,20 +79,22 @@ public class GestaoAbonoFaltaPacienteDAO {
 		List<AtendimentoBean> listaAtendimentosParaAbono = new ArrayList<>();
 
 		String sql = "SELECT distinct a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codprograma, p.descprograma, " + 
-        		"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, profissional.descfuncionario, " + 
-        		"CASE WHEN a.turno = 'T' THEN 'TARDE' " + 
-        		"WHEN a.turno = 'M' THEN 'MANHA' END AS turno, pa.nome nomepaciente, pa.id_paciente " + 
-        		"FROM hosp.atendimentos a " + 
-        		"JOIN hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
-        		"JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " + 
-        		"JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " + 
-        		"JOIN hosp.programa p ON (a.codprograma = p.id_programa) " + 
-        		"JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " + 
-        		"LEFT JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " +
-        		"LEFT JOIN acl.funcionarios profissional ON (profissional.id_funcionario = a.codmedico) " +
-        		"WHERE a.codpaciente = ?  AND a.dtaatende = ? " + 
-        		"AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null " +
-        		"AND NOT EXISTS (SELECT afp1.id FROM adm.abono_falta_paciente_1 afp1 WHERE afp1.id_atendimentos1 = a1.id_atendimentos1 ) ";
+				"a1.codprofissionalatendimento, f.descfuncionario, a.codgrupo, g.descgrupo, a.codequipe, e.descequipe, profissional.descfuncionario, " + 
+				"CASE WHEN a.turno = 'T' THEN 'TARDE' " + 
+				"WHEN a.turno = 'M' THEN 'MANHA' END AS turno, pa.nome nomepaciente, pa.id_paciente, sa.descricao AS situacao_atendimento, " + 
+				"sa.abono_falta " + 
+				"FROM hosp.atendimentos a " + 
+				"JOIN hosp.pacientes pa on pa.id_paciente = a.codpaciente " + 
+				"JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " + 
+				"JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " + 
+				"JOIN hosp.programa p ON (a.codprograma = p.id_programa) " + 
+				"JOIN hosp.grupo g ON (a.codgrupo = g.id_grupo) " + 
+				"LEFT JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) " + 
+				"LEFT JOIN acl.funcionarios profissional ON (profissional.id_funcionario = a.codmedico) " + 
+				"LEFT JOIN hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " + 
+				"WHERE a.codpaciente = ?  AND a.dtaatende = ? " + 
+				"AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and a1.evolucao is null " + 
+				"AND NOT EXISTS (SELECT afp1.id FROM adm.abono_falta_paciente_1 afp1 WHERE afp1.id_atendimentos1 = a1.id_atendimentos1 ) ";
 		
 		if (!abonoFaltaPaciente.getTurno().equals(Turno.AMBOS.getSigla())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(abonoFaltaPaciente.getTurno())) 
@@ -154,6 +156,8 @@ public class GestaoAbonoFaltaPacienteDAO {
 				atendimentoParaAbono.setTurno(rs.getString("turno"));
 				atendimentoParaAbono.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimentoParaAbono.getPaciente().setNome(rs.getString("nomepaciente"));
+				atendimentoParaAbono.getSituacaoAtendimento().setDescricao(rs.getString("situacao_atendimento"));
+				atendimentoParaAbono.getSituacaoAtendimento().setAbonoFalta(rs.getBoolean("abono_falta"));
 				listaAtendimentosParaAbono.add(atendimentoParaAbono);
 			}
 		} catch (Exception ex) {

@@ -104,7 +104,7 @@ public class SituacaoAtendimentoDAO {
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta  " +
-				"from hosp.situacao_atendimento sa where  sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true) order by sa.descricao ";
+				"from hosp.situacao_atendimento sa  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 
@@ -253,6 +253,34 @@ public class SituacaoAtendimentoDAO {
 				ps = conexao.prepareStatement(sqlParaEdicao);
 				ps.setInt(1, idSituacao);
 			}
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				existeSituacaoComAbonoFalta = rs.getBoolean("existe_situacao_com_abono_falta");
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return existeSituacaoComAbonoFalta;
+	}
+
+	public Boolean existeSituacaoAtendimentoAbonoFalta() throws ProjetoException {
+		String sql = "select exists " +
+				"	(select sa.id from hosp.situacao_atendimento sa where sa.abono_falta = true) " +
+				"as existe_situacao_com_abono_falta";
+
+		Boolean existeSituacaoComAbonoFalta = true;
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			ps = conexao.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				existeSituacaoComAbonoFalta = rs.getBoolean("existe_situacao_com_abono_falta");

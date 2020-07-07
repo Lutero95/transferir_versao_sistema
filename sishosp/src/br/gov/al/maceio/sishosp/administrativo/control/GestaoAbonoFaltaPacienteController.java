@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.SituacaoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -70,8 +71,8 @@ public class GestaoAbonoFaltaPacienteController {
 		this.listaAtendimentosParaAbono = gestaoAbonoFaltaPacienteDAO.listarAtendimentosParaAbono(abonoFaltaPaciente);
 	}
 	
-	public void gravaAbonos() throws SQLException {
-		if(haAtendimentoSelecionadoParaAbono() && !quantidadeDeCaracteresDaJustificativaEhMaiorQue500()) {
+	public void gravaAbonos() throws SQLException, ProjetoException {
+		if(haAtendimentoSelecionadoParaAbono() && !quantidadeDeCaracteresDaJustificativaEhMaiorQue500() && verificaSituacaoAtendimentoAbonoFalta()) {
 			FuncionarioBean userSession = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_usuario");
 			GravarInsercaoAbonoFaltaPacienteDTO gravarInsercaoAbonoFaltaPacienteDTO = 
@@ -100,6 +101,16 @@ public class GestaoAbonoFaltaPacienteController {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean verificaSituacaoAtendimentoAbonoFalta() throws ProjetoException{
+		SituacaoAtendimentoDAO sDao = new SituacaoAtendimentoDAO();
+		if (!sDao.existeSituacaoAtendimentoAbonoFalta()){
+				JSFUtil.adicionarMensagemErro
+					("Não é possível realizar o abono de falta, pois não existe uma situação de atendimento compatível", "");
+				return false;
+		}
+		return true;
 	}
 	
 	private void limparDados() {
