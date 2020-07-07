@@ -142,7 +142,7 @@ public class FuncionarioDAO {
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
-				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo, p.programa_ortese_protese, p.grupo_ortese_protese,"
+				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo,  p.programa_ortese_protese,progortese.descprograma descprogramaortese, p.grupo_ortese_protese, grupoortese.descgrupo descgrupoortese,"
 				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso   "
 				+ " from acl.funcionarios us "
@@ -151,6 +151,8 @@ public class FuncionarioDAO {
 				+ " join hosp.unidade u on u.id = us.codunidade "
 				+ " join hosp.empresa e on e.cod_empresa = u.cod_empresa "
 				+ " left join hosp.proc on proc.id = us.codprocedimentopadrao"
+				+ " left join hosp.programa progortese on progortese.id_programa  = p.programa_ortese_protese"
+				+ " left join hosp.grupo grupoortese on grupoortese.id_grupo  = p.grupo_ortese_protese "
 				+ " where (us.cpf = ?) and us.ativo = 'S'";
 
 		FuncionarioBean funcionario = null;
@@ -182,7 +184,9 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setPtsMostrarObjGeraisMedioPrazo(rs.getBoolean("pts_mostra_obs_gerais_medio"));
 				funcionario.getUnidade().getParametro().setPtsMostrarObjGeraisLongoPrazo(rs.getBoolean("pts_mostra_obs_gerais_longo"));
 				funcionario.getUnidade().getParametro().getOrteseProtese().getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
+				funcionario.getUnidade().getParametro().getOrteseProtese().getPrograma().setDescPrograma(rs.getString("descprogramaortese"));
 				funcionario.getUnidade().getParametro().getOrteseProtese().getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
+				funcionario.getUnidade().getParametro().getOrteseProtese().getGrupo().setDescGrupo(rs.getString("descgrupoortese"));
 				funcionario.getUnidade().getParametro().setOrgaoOrigemResponsavelPelaInformacao(rs.getString("orgao_origem_responsavel_pela_informacao"));
 				funcionario.getUnidade().getParametro().setSiglaOrgaoOrigemResponsavelPelaDigitacao(rs.getString("sigla_orgao_origem_responsavel_pela_digitacao"));
 				funcionario.getUnidade().getParametro().setCgcCpfPrestadorOuOrgaoPublico(rs.getString("cgcCpf_prestador_ou_orgao_publico"));

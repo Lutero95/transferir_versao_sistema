@@ -311,6 +311,8 @@ public class OrteseProteseController implements Serializable {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(user_session.getUnidade().getParametro().getOrteseProtese().getGrupo().getIdGrupo())
                 || !VerificadorUtil.verificarSeObjetoNuloOuZero(user_session.getUnidade().getParametro().getOrteseProtese().getPrograma().getIdPrograma())) {
             temOrteseIhProteseCadastrado = true;
+            orteseProtese.setPrograma(user_session.getUnidade().getParametro().getOrteseProtese().getPrograma());
+            orteseProtese.setGrupo(user_session.getUnidade().getParametro().getOrteseProtese().getGrupo());
         } else {
             JSFUtil.abrirDialog("dlgAviso");
         }
