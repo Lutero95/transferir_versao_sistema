@@ -761,7 +761,7 @@ public class AgendaController implements Serializable {
 			}
 			
 			if(!existeDuplicidadeAgendaAvulsa())
-				gravarAgendaAvulsa();
+				gravarAgendaAvulsa(new FuncionarioBean());
     	}
     }
     
@@ -794,7 +794,7 @@ public class AgendaController implements Serializable {
                 ValidacaoSenha.LIBERACAO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
-        	gravarAgendaAvulsa();
+        	gravarAgendaAvulsa(funcionarioLiberacao);
     		JSFUtil.fecharDialog("dlgLiberacao");
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
@@ -894,7 +894,7 @@ public class AgendaController implements Serializable {
         limparDados();
     }
 
-    private void gravarAgendaAvulsa() throws ProjetoException {
+    private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
                 || (this.agenda.getTipoAt() == null)
@@ -910,7 +910,7 @@ public class AgendaController implements Serializable {
 
         boolean cadastrou = false;
 
-        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget);
+        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao);
 
         if (cadastrou) {
             limparDados();

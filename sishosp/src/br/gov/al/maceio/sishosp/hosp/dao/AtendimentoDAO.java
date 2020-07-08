@@ -1287,7 +1287,7 @@ public class AtendimentoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1,  atendimento.getId1());
 			stm.executeUpdate();
-			gravarEvolucaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
+			gravarLiberacaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
 			con.commit();
 			alterado = true;
 		} catch (SQLException ex2) {
@@ -1304,7 +1304,7 @@ public class AtendimentoDAO {
 		return alterado;
 	}
 
-	private void gravarEvolucaoCancelamentoEvolucao
+	private void gravarLiberacaoCancelamentoEvolucao
 			(Connection conexao, Integer idAtendimento, Integer idAtendimentos1, FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
 		String sql = "INSERT INTO hosp.liberacoes " +
 				"(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " +

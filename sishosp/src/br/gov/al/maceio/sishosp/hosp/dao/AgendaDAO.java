@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
@@ -170,7 +171,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return retorno;
     }
 
-    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais) throws ProjetoException {
+    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais, FuncionarioBean usuarioLiberacao)
+    		throws ProjetoException {
 
         Boolean retorno = false;
         int idAtendimento = 0;
@@ -245,6 +247,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ps.executeUpdate();
 
             }
+            
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+            	gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao);
+            }
+            
             con.commit();
 
             retorno = true;
@@ -261,6 +268,31 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
         return retorno;
     }
+    
+	private void gravarLiberacaoDuplicidadeAgendaAvulsa(Connection conexao, Integer idAtendimento,
+			FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
+		
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		
+		String sql = "INSERT INTO hosp.liberacoes "
+				+ "(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade) "
+				+ "VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?); ";
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setString(1, MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
+			stm.setLong(2, usuarioLiberacao.getId());
+			stm.setInt(3, idAtendimento);
+			stm.setInt(4, user_session.getUnidade().getId());
+			stm.executeUpdate();
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
 
     public boolean excluirAgendamento(AgendaBean agenda) throws ProjetoException {
         Boolean retorno = false;
