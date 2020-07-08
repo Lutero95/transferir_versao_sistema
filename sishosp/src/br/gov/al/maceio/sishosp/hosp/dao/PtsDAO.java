@@ -336,7 +336,10 @@ public class PtsDAO {
             if (rs.next()) {
                 codPts = rs.getInt("id");
             }
-
+            
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId()) && statusPTS.equals(StatusPTS.RENOVADO.getSigla())) {
+            	inserirLiberacaoPts(MotivoLiberacao.RENOVAO_PTS_ANTES_VENCIMENTO.getSigla(), codPts, usuarioLiberacao, conexao);
+            }
 
             if (inserirAreaPts(pts, codPts, conexao)) {
                 if (statusPTS.equals(StatusPTS.RENOVADO.getSigla())) {
@@ -353,7 +356,7 @@ public class PtsDAO {
             } else {
                 codPts = null;
             }
-            inserirLiberacaoPts(MotivoLiberacao.ALTERAR_DATA_PTS.getSigla(), codPts, usuarioLiberacao, conexao);
+            
             retorno = codPts;
 
         } catch (SQLException sqle) {
@@ -469,14 +472,15 @@ public class PtsDAO {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, id_pts) " +
-                "values (?, ?, CURRENT_TIMESTAMP, ?);";
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, id_pts, cod_unidade) " +
+                "values (?, ?, CURRENT_TIMESTAMP, ?, ?);";
 
         try {
             PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
             ps2.setString(1, motivo);
             ps2.setLong(2, usuarioLiberacao.getId());
             ps2.setInt(3, codPts);
+            ps2.setLong(4, usuarioLiberacao.getUnidade().getId());
             ps2.execute();
             retorno = true;
 

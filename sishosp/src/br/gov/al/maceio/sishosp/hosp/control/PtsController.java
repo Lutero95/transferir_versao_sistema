@@ -293,7 +293,7 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        Integer novoIdPts = ptsDao.gravarPts(pts, existePts, StatusPTS.ATIVO.getSigla());
+        Integer novoIdPts = ptsDao.gravarPts(pts, existePts, StatusPTS.ATIVO.getSigla(), this.usuarioLiberacao);
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
@@ -326,7 +326,7 @@ public class PtsController implements Serializable {
         return retorno;
     }
 
-    public String gravarRenovacaoPts(FuncionarioBean usuarioLiberacao) throws ProjetoException {
+    public String gravarRenovacaoPts() throws ProjetoException {
 
         String retorno = null;
 
@@ -335,7 +335,7 @@ public class PtsController implements Serializable {
             return null;
         }
 
-        Integer novoIdPts = ptsDao.gravarPts(pts, false, StatusPTS.RENOVADO.getSigla());
+        Integer novoIdPts = ptsDao.gravarPts(pts, false, StatusPTS.RENOVADO.getSigla(), usuarioLiberacao);
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
@@ -390,6 +390,7 @@ public class PtsController implements Serializable {
 
         if (func!=null) {
             usuarioLiberacao.setId(func.getId());
+            usuarioLiberacao.getUnidade().setId(func.getUnidade().getId());
             JSFUtil.fecharDialog("dlgSenhaLiberacaoPts");
             liberacaoAlterarDataPts = true;
         } else {
@@ -407,6 +408,7 @@ public class PtsController implements Serializable {
 
         if (func!=null) {
             usuarioLiberacao.setId(func.getId());
+            usuarioLiberacao.getUnidade().setId(func.getUnidade().getId());
             JSFUtil.fecharDialog("dlgSenhaLiberacaoPtsVenctoAnterior");
             liberacaoIncluirPtsVencimentoAnteriorAtualPts = true;
             gravarRenovacaoPts();

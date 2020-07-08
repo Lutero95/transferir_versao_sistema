@@ -2135,7 +2135,7 @@ public class FuncionarioDAO {
 
 		FuncionarioBean funcionario = null;
 
-		String sql = "SELECT id_funcionario, descfuncionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
+		String sql = "SELECT id_funcionario, descfuncionario, codunidade FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
 		if (tipoValidacao.equals(ValidacaoSenha.LIBERACAO.getSigla())) {
 			sql = sql + " AND permite_liberacao IS TRUE;";
@@ -2157,6 +2157,7 @@ public class FuncionarioDAO {
 				funcionario = new FuncionarioBean();
 				funcionario.setId(rs.getLong("id_funcionario"));
 				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.getUnidade().setId(rs.getInt("codunidade"));
 			}
 
 		} catch (SQLException sqle) {

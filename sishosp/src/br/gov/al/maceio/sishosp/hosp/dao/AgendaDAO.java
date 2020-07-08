@@ -272,9 +272,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 	private void gravarLiberacaoDuplicidadeAgendaAvulsa(Connection conexao, Integer idAtendimento,
 			FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
 		
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
-		
 		String sql = "INSERT INTO hosp.liberacoes "
 				+ "(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade) "
 				+ "VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?); ";
@@ -283,7 +280,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			stm.setString(1, MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
 			stm.setLong(2, usuarioLiberacao.getId());
 			stm.setInt(3, idAtendimento);
-			stm.setInt(4, user_session.getUnidade().getId());
+			stm.setInt(4, usuarioLiberacao.getUnidade().getId());
 			stm.executeUpdate();
 		} catch (SQLException ex2) {
 			conexao.rollback();

@@ -1314,7 +1314,7 @@ public class AtendimentoDAO {
 			stm.setString(1, MotivoLiberacao.CANCELAR_EVOLUCAO.getSigla());
 			stm.setLong(2,  usuarioLiberacao.getId());
 			stm.setInt(3, idAtendimento);
-			stm.setInt(4, user_session.getUnidade().getId());
+			stm.setInt(4, usuarioLiberacao.getUnidade().getId());
 			stm.setInt(5, idAtendimentos1);
 			stm.executeUpdate();
 		} catch (SQLException ex2) {
