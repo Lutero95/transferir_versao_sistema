@@ -53,7 +53,7 @@ public class BpaIndividualizadoDAO {
 				" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \n" +
 				" join hosp.proc on proc.id = a1.codprocedimento  \n" +
 				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
-				" left join hosp.programa  prog on prog.id_programa  = prog.id_servico \n" +
+				" left join hosp.programa  prog on prog.id_programa  = a.codprograma \n" +
 				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
 				" left join hosp.cid on cid.cod = l.cid1  \n" +
 				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +

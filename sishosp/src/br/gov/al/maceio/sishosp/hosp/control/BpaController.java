@@ -205,7 +205,9 @@ public class BpaController {
 		Integer ano = Integer.valueOf(competencia.substring(0, 4));
 		Integer mes = Integer.valueOf(competencia.substring(4, 6));
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(ano, mes, 1);
+		//calendar.set(ano, 5, 1);
+		calendar.set(Calendar.MONTH, 3);
+		calendar.set(Calendar.YEAR, ano);
 		Integer primeiraDataMes = calendar.getMinimum(Calendar.DAY_OF_MONTH);
 		Integer ultimaDataMes = calendar.getMaximum(Calendar.DAY_OF_MONTH);
 		
