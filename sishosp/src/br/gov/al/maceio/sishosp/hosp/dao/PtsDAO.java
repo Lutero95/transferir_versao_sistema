@@ -291,7 +291,7 @@ public class PtsDAO {
         return ptsArea;
     }
 
-    public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS) throws ProjetoException {
+    public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS, FuncionarioBean usuarioLiberacao) throws ProjetoException {
 
         Integer retorno = null;
 
@@ -353,7 +353,7 @@ public class PtsDAO {
             } else {
                 codPts = null;
             }
-            conexao.close();
+            inserirLiberacaoPts(MotivoLiberacao.ALTERAR_DATA_PTS.getSigla(), codPts, usuarioLiberacao, conexao);
             retorno = codPts;
 
         } catch (SQLException sqle) {
@@ -414,7 +414,7 @@ public class PtsDAO {
             inserirAreaPts(pts, pts.getId(), conexao);
 
             if (verificarSeDataPtsMudou) {
-                inserirLiberacaoPts(pts.getId(), usuarioLiberacao, conexao);
+                inserirLiberacaoPts(MotivoLiberacao.ALTERAR_DATA_PTS.getSigla(), pts.getId(), usuarioLiberacao, conexao);
             }
 
             conexao.commit();
@@ -465,7 +465,7 @@ public class PtsDAO {
         return retorno;
     }
 
-    public Boolean inserirLiberacaoPts(Integer codPts, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) throws SQLException, ProjetoException {
+    public Boolean inserirLiberacaoPts(String motivo, Integer codPts, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) throws SQLException, ProjetoException {
 
         Boolean retorno = false;
 
@@ -474,7 +474,7 @@ public class PtsDAO {
 
         try {
             PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
-            ps2.setString(1, MotivoLiberacao.ALTERAR_DATA_PTS.getSigla());
+            ps2.setString(1, motivo);
             ps2.setLong(2, usuarioLiberacao.getId());
             ps2.setInt(3, codPts);
             ps2.execute();

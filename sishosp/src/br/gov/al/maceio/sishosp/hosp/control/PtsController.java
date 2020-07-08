@@ -326,7 +326,7 @@ public class PtsController implements Serializable {
         return retorno;
     }
 
-    public String gravarRenovacaoPts() throws ProjetoException {
+    public String gravarRenovacaoPts(FuncionarioBean usuarioLiberacao) throws ProjetoException {
 
         String retorno = null;
 
