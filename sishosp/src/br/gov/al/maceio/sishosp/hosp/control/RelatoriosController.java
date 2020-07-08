@@ -29,6 +29,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
@@ -86,6 +87,7 @@ public class RelatoriosController implements Serializable {
 	private ArrayList<String> diasSemana;
 	private ArrayList<String> turnos;
 	private String turnoSelecionado;
+	private Integer idSituacaoAtendimento;
 	private List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados;
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
@@ -351,11 +353,14 @@ public class RelatoriosController implements Serializable {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("dt_inicial", dataInicial);
 			map.put("dt_final", dataFinal);
-			if (pacienteInstituicao.getPrograma() != null)
+			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
 				map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
 
-			if (pacienteInstituicao.getGrupo() != null)
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
 				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
+				map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
 
 			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
@@ -1384,6 +1389,14 @@ public class RelatoriosController implements Serializable {
 
 	public void setFiltrarPorMunicipio(Boolean filtrarPorMunicipio) {
 		this.filtrarPorMunicipio = filtrarPorMunicipio;
+	}
+	
+	public Integer getIdSituacaoAtendimento() {
+		return idSituacaoAtendimento;
+	}
+
+	public void setIdSituacaoAtendimento(Integer idSituacaoAtendimento) {
+		this.idSituacaoAtendimento = idSituacaoAtendimento;
 	}
 
 	public List<MunicipioBean> getListaMunicipiosDePacienteAtivosSelecionados() {

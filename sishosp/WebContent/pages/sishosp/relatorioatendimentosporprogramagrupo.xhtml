@@ -10,6 +10,7 @@
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{RelatoriosController.preparaRelatorioAgendamentos()}" />
+		<f:viewAction action="#{situacaoAtendimentoController.listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo()}" />
 	</f:metadata>
 	<ui:define name="content">
 		<br />
@@ -124,7 +125,16 @@
 							</p:outputPanel>
 						</b:column>
 					</b:row>
-
+					
+					<p:row>
+						<p:selectOneMenu style="width:26.1%;"
+								value="#{RelatoriosController.idSituacaoAtendimento}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems value="#{situacaoAtendimentoController.listaSituacaoAtendimento}"
+									var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+						</p:selectOneMenu>
+					</p:row>
+					<br />
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
