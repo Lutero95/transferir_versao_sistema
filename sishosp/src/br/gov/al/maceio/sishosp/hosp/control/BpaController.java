@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,7 +103,7 @@ public class BpaController {
 		return context;
 	}
 	
-	public void gerarLayoutBpaImportacao() throws ProjetoException {
+	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException {
 		try {
 			this.competencia = formataCompetenciaParaBanco();
 			setaDataInicioIhFimAtendimento(this.competencia);
@@ -201,15 +202,19 @@ public class BpaController {
 		this.bpaCabecalho.setCbcVersao(CamposBpaCabecalho.CBC_VERSAO.preencheCaracteresRestantes(this.bpaCabecalho.getCbcVersao()));
 	}
 
-	private void setaDataInicioIhFimAtendimento(String competencia) {
+	private void setaDataInicioIhFimAtendimento(String competencia) throws ParseException {
 		Integer ano = Integer.valueOf(competencia.substring(0, 4));
 		Integer mes = Integer.valueOf(competencia.substring(4, 6));
+		String competenciaFormatada = ano+"/"+mes;
+		
+		Date data = new SimpleDateFormat("yyyy/MM").parse(competenciaFormatada);
+		
 		Calendar calendar = Calendar.getInstance();
-		//calendar.set(ano, 5, 1);
-		calendar.set(Calendar.MONTH, 3);
-		calendar.set(Calendar.YEAR, ano);
-		Integer primeiraDataMes = calendar.getMinimum(Calendar.DAY_OF_MONTH);
-		Integer ultimaDataMes = calendar.getMaximum(Calendar.DAY_OF_MONTH);
+		calendar.setTime(data);
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		
+		Integer primeiraDataMes = calendar.getMinimum(Calendar.DAY_OF_MONTH);		
+		Integer ultimaDataMes = calendar.getActualMaximum(Calendar.DATE);
 		
 		String dataInicial = ano+"/"+mes+"/"+primeiraDataMes;
 		String dataFinal = ano+"/"+mes+"/"+ultimaDataMes;
