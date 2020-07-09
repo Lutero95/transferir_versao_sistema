@@ -966,9 +966,12 @@
         <p:dialog header="Digite a senha para liberação" widgetVar="dlgSenha"
                   responsive="true" modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="frmSenha">
-                <p:growl id="grwSenha"></p:growl>
-                <h:panelGrid columns="1" cellpadding="3">
-
+            	<div class="alert alert-warning" role="alert">
+					Liberação para agendamento em equipe de um paciente que nao faz parte da mesma
+				</div>
+				<p:growl id="grow"/>
+				<br />
+                <div align="center">
                     <b:inputText mask="999-999-999-99" style="padding:10px;"
                                  required="true" value="#{InsercaoController.funcionario.cpf}"
                                  placeholder="Digite o CPF" render-label="true"
@@ -979,13 +982,12 @@
                                    placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
                                    value="#{InsercaoController.funcionario.senha}"></b:inputSecret>
                     <b:message for="@previous"/>
-
-                </h:panelGrid>
+                </div>
 
                 <div align="center">
                     <p:commandButton value="Liberar" look="success" size="sm" id="b1"
                                      style="margin-top:10px" icon="fa fa-fw fa-check"
-                                     update=":formInsercao, :formInsercao2, grwSenha"
+                                     update=":formInsercao, :formInsercao2, grow"
                                      action="#{InsercaoController.validarSenhaIhRealizarLiberacao()}"/>
                 </div>
 

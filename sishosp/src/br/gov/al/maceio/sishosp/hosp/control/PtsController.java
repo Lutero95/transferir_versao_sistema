@@ -480,6 +480,9 @@ public class PtsController implements Serializable {
             if (!ptsDao.verificarSeExistePtsParaProgramaGrupoPaciente(rowBean)) {
                 renderizarBotaoNovo = true;
             }
+            else {
+            	renderizarBotaoNovo = false;
+            }
         }
 
     }

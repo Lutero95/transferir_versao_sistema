@@ -675,7 +675,7 @@ public class InsercaoPacienteDAO {
 				ex.printStackTrace();
 			}
 		}
-		return retorno;
+		return retorno; 
 	}
 
 	public Boolean verificarSeAlgumAtendimentoDoLaudoTemPerfilAvaliacao(int codLaudo) throws ProjetoException {
