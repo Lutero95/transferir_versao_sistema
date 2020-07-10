@@ -122,21 +122,31 @@
 					</div>
 				</p:tab>
             	<p:tab title="Procedimentos para Ocupações Específicas">
-            		<h:form>
+            		<h:form id="formProcedimentosCboEspec">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
-							update=":tab:frmPrincipal msgPagina" title="Adicionar Registro"
+							title="Adicionar Registro"
+							update=":tab:frmPrincipal msgPagina :formConsulProcOcup" 
 							class="btn-acao-table acao-editar"
+							actionListener="#{ProgramaController.limparProcedimentoIhCboSelecionado()}"
 							oncomplete="PF('dlgConsulProcOcup').show();" />
 							
-						<p:dataTable var="car" value="#{dtBasicView.cars}"
+						<p:dataTable var="procEsp" value="#{ProgramaController.listaProcedimentoCboEspecificoDTO}"
 							emptyMessage="Nenhum registro foi adicionado">
 							<p:column headerText="Procedimento">
-								<h:outputText value="#{car.id}" />
+								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
+							</p:column>
+							
+							<p:column headerText="Código Procedimento" width="250">
+								<h:outputText value="#{procEsp.procedimento.codProc}" />
 							</p:column>
 
 							<p:column headerText="CBO">
-								<h:outputText value="#{car.year}" />
+								<h:outputText value="#{procEsp.cbo.descCbo}" />
+							</p:column>
+							
+							<p:column headerText="Código CBO" width="100">
+								<h:outputText value="#{procEsp.cbo.codigo}" />
 							</p:column>
 						</p:dataTable>
 					</h:form>
@@ -180,8 +190,8 @@
 							
 							<p:column headerText="Selecionar" width="100">
 							<p:commandButton actionListener="#{ProgramaController.selecionarProcedimento(proc)}"
-                                	icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-bars'}"
-                                	title="Selecionar" update="formConsulProcOcup:outproc"
+                                	icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
+                                	title="Selecionar" update="formConsulProcOcup"
                                 	style="margin-left:30%;"
                                 	class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'acao-editar' : ''}"/>
 							</p:column>
@@ -203,8 +213,8 @@
 							
 							<p:column headerText="Selecionar" width="100">
 								<p:commandButton actionListener="#{ProgramaController.selecionarCbo(cbo)}"
-                                	icon="fa fa-fw ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'fa-check' : 'fa-bars'}"
-                                	title="Selecionar" update="formConsulProcOcup:outcbo"
+                                	icon="fa fa-fw ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'fa-check' : 'fa-square-o'}"
+                                	title="Selecionar" update="formConsulProcOcup"
                                 	style="margin-left:30%;"
                                 	class="new-btn-acao-table ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'acao-editar' : ''}"/>
 							</p:column>
@@ -213,7 +223,10 @@
                 
                 <br />
                 <div align="center">
-                	<p:commandButton value="Incluir"/>
+                	<p:commandButton value="Incluir" 
+                	update=":tab:formProcedimentosCboEspec"
+                	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
+                	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
                 </div>
             </h:form>
         </p:dialog>

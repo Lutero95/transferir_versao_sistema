@@ -21,6 +21,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 
 @ManagedBean(name = "ProgramaController")
 @ViewScoped
@@ -41,6 +42,7 @@ public class ProgramaController implements Serializable {
     private CboDAO cboDAO;
     private ProcedimentoBean procedimentoSelecionado;
     private CboBean cboSelecionado;
+    private List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -62,6 +64,7 @@ public class ProgramaController implements Serializable {
         this.cboDAO = new CboDAO();
         this.procedimentoSelecionado = new ProcedimentoBean();
         this.cboSelecionado = new CboBean();
+        this.listaProcedimentoCboEspecificoDTO = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -166,9 +169,6 @@ public class ProgramaController implements Serializable {
         this.prog = prog;
     } 
 
-
-
-
     public List<ProgramaBean> getListaProgramas() {
 		return listaProgramas;
 	}
@@ -197,6 +197,34 @@ public class ProgramaController implements Serializable {
     
     private void listarCbo() throws ProjetoException {
     	this.listaCbos = this.cboDAO.listarCbo();
+    }
+    
+    public void limparProcedimentoIhCboSelecionado() {
+    	this.procedimentoSelecionado = new ProcedimentoBean();
+    	this.cboSelecionado = new CboBean();
+    }
+    
+    public void adicionarProcedimentoCboEspecifico() {
+    	ProcedimentoCboEspecificoDTO procedimentoCboEspecifico = new ProcedimentoCboEspecificoDTO();
+    	procedimentoCboEspecifico.setProcedimento(this.procedimentoSelecionado);
+    	procedimentoCboEspecifico.setCbo(this.cboSelecionado);
+    	
+    	if(!existeProcedimentoComEsteCbo(procedimentoCboEspecifico)) {
+    		this.listaProcedimentoCboEspecificoDTO.add(procedimentoCboEspecifico);
+    		JSFUtil.fecharDialog("dlgConsulProcOcup");
+    	}
+    	else
+    		JSFUtil.adicionarMensagemAdvertencia("Já exite um procedimento com este CBO!", "");
+    }
+    
+    private boolean existeProcedimentoComEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
+    	for (ProcedimentoCboEspecificoDTO procedimentoIhCbo : this.listaProcedimentoCboEspecificoDTO) {
+    		if(procedimentoIhCbo.getProcedimento().getIdProc() == procedimentoCboEspecifico.getProcedimento().getIdProc() &&
+    				procedimentoIhCbo.getCbo().getCodCbo() == procedimentoCboEspecifico.getCbo().getCodCbo()) {
+    			return true;    			
+    		}
+		}
+    	return false;
     }
     
     public void selecionarProcedimento(ProcedimentoBean procedimento) {
@@ -277,5 +305,13 @@ public class ProgramaController implements Serializable {
 
 	public void setCboSelecionado(CboBean cboSelecionado) {
 		this.cboSelecionado = cboSelecionado;
+	}
+
+	public List<ProcedimentoCboEspecificoDTO> getListaProcedimentoCboEspecificoDTO() {
+		return listaProcedimentoCboEspecificoDTO;
+	}
+
+	public void setListaProcedimentoCboEspecificoDTO(List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO) {
+		this.listaProcedimentoCboEspecificoDTO = listaProcedimentoCboEspecificoDTO;
 	}
 }
