@@ -57,6 +57,19 @@
 							</p:outputPanel>
 						</b:column>
 
+						<b:column span="9" class="label-position new-data-size new-comple1">>
+							<b:label value="Dia da Semana:" severity="info" />
+							<p:selectManyCheckbox id="diasSemana" layout="responsive" columns="4"
+												  value="#{RelatoriosController.diasSemana}">
+								<f:selectItem itemLabel="Domingo" itemValue="1" />
+								<f:selectItem itemLabel="Segunda" itemValue="2" />
+								<f:selectItem itemLabel="Terça" itemValue="3" />
+								<f:selectItem itemLabel="Quarta" itemValue="4" />
+								<f:selectItem itemLabel="Quinta" itemValue="5" />
+								<f:selectItem itemLabel="Sexta" itemValue="6" />
+								<f:selectItem itemLabel="Sábado" itemValue="7" />
+							</p:selectManyCheckbox>
+						</b:column>
 					</b:row>
 
 					<b:row>
@@ -70,19 +83,6 @@
 								<f:selectItem itemLabel="Feminino" itemValue="F" />
 								<f:selectItem itemLabel="Masculino" itemValue="M" />
 							</p:selectOneRadio>
-						</b:column>
-						<b:column span="6" class="label-position new-data-size new-comple1">>
-							<b:label value="Dia da Semana:" severity="info" />
-							<p:selectManyCheckbox id="diasSemana" layout="responsive" columns="2"
-												  value="#{RelatoriosController.diasSemana}">
-								<f:selectItem itemLabel="Domingo" itemValue="1" />
-								<f:selectItem itemLabel="Segunda" itemValue="2" />
-								<f:selectItem itemLabel="Terça" itemValue="3" />
-								<f:selectItem itemLabel="Quarta" itemValue="4" />
-								<f:selectItem itemLabel="Quinta" itemValue="5" />
-								<f:selectItem itemLabel="Sexta" itemValue="6" />
-								<f:selectItem itemLabel="Sábado" itemValue="7" />
-							</p:selectManyCheckbox>
 						</b:column>
 					</b:row>
 
@@ -103,18 +103,17 @@
 					<p:outputPanel id="intervaloIdades">
 
 						<b:row>
-
-							<b:column span="6"
+							<b:column span="1"
 									  rendered="#{RelatoriosController.atributoGenerico1=='I'}"
 									  class="label-position new-comple1">
-								<b:label value="Idade Mínima" severity="info" />
-								<p:inputText size="1"
-											 value="#{RelatoriosController.idadeMinima}" />
-
-								<b:label value=" Idade Máxima " severity="info" style="margin-left:20px"/>
-								<p:inputText value="#{RelatoriosController.idadeMaxima}"
-											 size="1"
-								/>
+								<b:column span="3" class="label-position new-data-size new-comple1">	  
+									<b:label value="Idade Mínima" severity="info" />
+									<p:inputText size="1" value="#{RelatoriosController.idadeMinima}" />
+								</b:column>
+								<b:column span="3" class="label-position new-data-size new-comple1">
+									<b:label value=" Idade Máxima " severity="info"/>
+									<p:inputText value="#{RelatoriosController.idadeMaxima}" size="1"/>
+								</b:column>	
 							</b:column>
 
 							<b:column span="3"
@@ -125,29 +124,24 @@
 								<b:label value="Acima de" severity="info" />
 								<p:inputText value="#{RelatoriosController.idadeMinima}"
 											 size="1" />
-
 							</b:column>
 
 						</b:row>
 						<b:row>
 
 							<b:column span="6">
-								<b:label value="Município:" severity="info" />
-								<br/>
-								<br/>
 								<p:selectBooleanCheckbox
 										value="#{RelatoriosController.filtrarPorMunicipio}"
 										itemLabel="Filtrar por Município">
 									<p:ajax update="rowMunicipio" />
 								</p:selectBooleanCheckbox>
+								<br />
 							</b:column>
 
 
 						</b:row>
 
 						<b:row id="rowMunicipio">
-
-
 							<b:column span="6"
 									  rendered="#{RelatoriosController.filtrarPorMunicipio eq true}"
 									  class="label-position new-data-size new-comple1">

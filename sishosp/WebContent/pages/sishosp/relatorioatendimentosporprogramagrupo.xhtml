@@ -9,8 +9,10 @@
 
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
-		<f:viewAction action="#{RelatoriosController.preparaRelatorioAgendamentos()}" />
-		<f:viewAction action="#{situacaoAtendimentoController.listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo()}" />
+		<f:viewAction
+			action="#{RelatoriosController.preparaRelatorioAgendamentos()}" />
+		<f:viewAction
+			action="#{situacaoAtendimentoController.listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo()}" />
 	</f:metadata>
 	<ui:define name="content">
 		<br />
@@ -19,7 +21,8 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Atendimentos por Programa/Grupo</h4>
+				<h4 class="panel-title">Relatório: Atendimentos por
+					Programa/Grupo</h4>
 			</div>
 			<p:growl id="grw" />
 			<div class="panel-body table-body">
@@ -45,25 +48,43 @@
 							<b:label value="Período de Atendimento:" severity="info" />
 
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="6" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período inicial de atendimento"
+								showOn="button" size="6" class="select-agendaEquipe2"
+								required="true"
+								requiredMessage="Informe o período inicial de atendimento"
 								value="#{RelatoriosController.dataInicial}" />
 							<p:outputLabel id="outdataa">
 								<h:outputLabel value="à" style="margin-left: 20px" />
 							</p:outputLabel>
 						</b:column>
-						<b:column span="2" class="label-position data-size1" style="margin-top: 12px;">
-							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" required="true" requiredMessage="Informe o período final de atendimento"
+						<b:column span="2" class="label-position data-size1"
+							style="margin-top: 12px;">
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+								required="true"
+								requiredMessage="Informe o período final de atendimento"
 								showOn="button" size="6" id="dtagen3" locale="pt"
 								value="#{RelatoriosController.dataFinal}" />
 						</b:column>
 
-
-
+						<b:column span="9"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Dia da Semana:" severity="info" />
+							<p:selectManyCheckbox id="diasSemana" layout="responsive"
+								required="true" 
+								requiredMessage="Selecione pelo menos um dia da semana"
+								columns="4" value="#{RelatoriosController.diasSemana}">
+								<f:selectItem itemLabel="Domingo" itemValue="0" />
+								<f:selectItem itemLabel="Segunda" itemValue="1" />
+								<f:selectItem itemLabel="Terça" itemValue="2" />
+								<f:selectItem itemLabel="Quarta" itemValue="3" />
+								<f:selectItem itemLabel="Quinta" itemValue="4" />
+								<f:selectItem itemLabel="Sexta" itemValue="5" />
+								<f:selectItem itemLabel="Sábado" itemValue="6" />
+							</p:selectManyCheckbox>
+						</b:column>
 					</b:row>
-					
-					
-					
-					<b:row >
+
+
+					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Programa:" severity="info" />
@@ -95,11 +116,10 @@
 
 					</b:row>
 
-					<b:row >
-
+					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
+							<b:label value="Grupo:" severity="info" />
 
 							<p:outputPanel id="outGrupo">
 								<p:autoComplete
@@ -125,15 +145,37 @@
 							</p:outputPanel>
 						</b:column>
 					</b:row>
-					
-					<p:row>
-						<p:selectOneMenu style="width:26.1%;"
-								value="#{RelatoriosController.idSituacaoAtendimento}">
-								<f:selectItem itemLabel="Selecione" itemValue="" />
-								<f:selectItems value="#{situacaoAtendimentoController.listaSituacaoAtendimento}"
-									var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+
+					<b:row>
+						<b:column span="1" class="label-position data-size1">
+							<b:label value="Situação Atendimento:" severity="info" />
+						</b:column>
+					</b:row>
+					<b:row>
+						<p:selectOneMenu style="width:26.1%; margin-left:1.1%;"
+							required="true"
+							requiredMessage="Situação Atendimento: Campo obrigatório!"
+							value="#{RelatoriosController.idSituacaoAtendimento}">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems
+								value="#{situacaoAtendimentoController.listaSituacaoAtendimento}"
+								var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
 						</p:selectOneMenu>
-					</p:row>
+					</b:row>
+
+					<b:row>
+						<br />
+						<b:column class="label-position new-data-size new-comple1">
+							<b:label value="Turno:" severity="info" />
+							<p:selectOneRadio id="turnos" layout="responsive" columns="3"
+								value="#{RelatoriosController.turnoSelecionado}">
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</p:selectOneRadio>
+						</b:column>
+	
+					</b:row>
 					<br />
 					<br />
 
@@ -252,8 +294,8 @@
 
 						</p:panelGrid>
 					</b:column>
-</b:row>
-<b:row>
+				</b:row>
+				<b:row>
 
 					<b:column span="1">
 
@@ -268,8 +310,7 @@
 					<b:column span="1"
 						style="width:140px;color: #4682B4;margin-top: -8px;">
 						<p:selectOneRadio required="true" style="margin-top: 10px"
-							 requiredMessage="Escolha a situação!"
-							layout="pageDirection"
+							requiredMessage="Escolha a situação!" layout="pageDirection"
 							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
 
 							<f:selectItem itemLabel="Ativos" itemValue="A" />
@@ -278,7 +319,7 @@
 					</b:column>
 
 				</b:row>
-<br/>
+				<br />
 				<p:dataTable rows="8" paginator="true" paginatorPosition="bottom"
 					id="dt" var="pacie"
 					value="#{GerenciarPacienteController.listaPacientes}"

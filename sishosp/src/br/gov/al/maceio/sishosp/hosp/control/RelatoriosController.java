@@ -361,6 +361,13 @@ public class RelatoriosController implements Serializable {
 			
 			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
 				map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
+			
+			if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
+				map.put("turno", this.turnoSelecionado);
+			
+			ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+			setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+			map.put("diassemanalista", diasSemanaInteger);
 
 			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
