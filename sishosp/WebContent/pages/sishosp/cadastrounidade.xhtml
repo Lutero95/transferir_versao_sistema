@@ -360,7 +360,27 @@
 									</p:selectBooleanCheckbox>
 								</b:column>
 							</b:row>
-							
+
+							<p:outputPanel id="configagenda">
+
+								<p:fieldset legend="Restrições da Agenda">
+
+									<b:row>
+
+										<b:column span="12" class="label-position new-col6">
+											<p:selectBooleanCheckbox
+													value="#{UnidadeController.unidade.parametro.permiteAgendamentoDuplicidade}"
+													itemLabel="Permitir agendamento em duplicidade">
+												<p:ajax update="configagenda"></p:ajax>
+											</p:selectBooleanCheckbox>
+										</b:column>
+
+									</b:row>
+
+
+								</p:fieldset>
+							</p:outputPanel>
+							<br />
 
 							<p:outputPanel id="horarioDeAcesso">
 
@@ -500,6 +520,7 @@
 
 							<br></br>
 
+
 							<b:row>
 
 								<p:fieldset legend="Órtese e Prótese">
@@ -507,47 +528,47 @@
 									<p:outputPanel id="idOrteseProtese">
 										<b:column span="5" class="label-position new-col5">
 											<b:label value="Programa Padrão" class="fire-label"
-												severity="info" />
+													 severity="info" />
 
 											<p:autoComplete
-												value="#{UnidadeController.unidade.parametro.orteseProtese.programa}"
-												size="31" converter="conPrograma"
-												class="select-agendaEquipe4"
-												completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-												effect="fade" var="theme" forceSelection="true"
-												minQueryLength="1" itemValue="#{theme}"
-												itemLabel="#{theme.descPrograma}">
+													value="#{UnidadeController.unidade.parametro.orteseProtese.programa}"
+													size="31" converter="conPrograma"
+													class="select-agendaEquipe4"
+													completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+													effect="fade" var="theme" forceSelection="true"
+													minQueryLength="1" itemValue="#{theme}"
+													itemLabel="#{theme.descPrograma}">
 												<p:ajax event="itemSelect" update="grupo" />
 
 											</p:autoComplete>
 
 											<p:commandButton id="btBusPr" immediate="true"
-												style="margin-left: 5px" icon="ui-icon-search"
-												actionListener="#{ProgramaController.carregaListaProgramas()}"
-												update=":formConsuProg"
-												oncomplete="PF('dlgConsuProg').show();" />
+															 style="margin-left: 5px" icon="ui-icon-search"
+															 actionListener="#{ProgramaController.carregaListaProgramas()}"
+															 update=":formConsuProg"
+															 oncomplete="PF('dlgConsuProg').show();" />
 										</b:column>
 
 										<b:column span="5" class="label-position new-col5">
 											<b:label value="Grupo Padrão" severity="info"
-												class="fire-label" />
+													 class="fire-label" />
 
 											<p:autoComplete
-												value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
-												size="31" id="grupo" converter="conGrupo"
-												class="select-agendaEquipe4"
-												completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaOPM}"
-												effect="fade" var="theme" forceSelection="true"
-												minQueryLength="1" itemValue="#{theme}"
-												itemLabel="#{theme.descGrupo}">
+													value="#{UnidadeController.unidade.parametro.orteseProtese.grupo}"
+													size="31" id="grupo" converter="conGrupo"
+													class="select-agendaEquipe4"
+													completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaOPM}"
+													effect="fade" var="theme" forceSelection="true"
+													minQueryLength="1" itemValue="#{theme}"
+													itemLabel="#{theme.descGrupo}">
 												<p:ajax event="itemSelect" />
 
 											</p:autoComplete>
 
 											<p:commandButton id="btBusGr" immediate="true"
-												style="margin-left: 5px" icon="ui-icon-search"
-												action="#{UnidadeController.listaGrupoPorProgramaOPM(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
-												update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
+															 style="margin-left: 5px" icon="ui-icon-search"
+															 action="#{UnidadeController.listaGrupoPorProgramaOPM(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
+															 update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
 
 										</b:column>
 

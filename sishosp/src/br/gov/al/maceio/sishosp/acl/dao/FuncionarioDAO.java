@@ -144,7 +144,7 @@ public class FuncionarioDAO {
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
 				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo,  p.programa_ortese_protese,progortese.descprograma descprogramaortese, p.grupo_ortese_protese, grupoortese.descgrupo descgrupoortese,"
 				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
-				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso   "
+				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade  "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -194,6 +194,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setIndicadorOrgaoDestinoInformacao(rs.getString("indicador_orgao_destino_informacao"));
 				funcionario.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
 				funcionario.getUnidade().getParametro().setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
+				funcionario.getUnidade().getParametro().setPermiteAgendamentoDuplicidade(rs.getBoolean("permite_agendamento_duplicidade"));
 
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
@@ -2135,7 +2136,7 @@ public class FuncionarioDAO {
 
 		FuncionarioBean funcionario = null;
 
-		String sql = "SELECT id_funcionario, descfuncionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
+		String sql = "SELECT id_funcionario, descfuncionario, codunidade FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
 		if (tipoValidacao.equals(ValidacaoSenha.LIBERACAO.getSigla())) {
 			sql = sql + " AND permite_liberacao IS TRUE;";
@@ -2157,6 +2158,7 @@ public class FuncionarioDAO {
 				funcionario = new FuncionarioBean();
 				funcionario.setId(rs.getLong("id_funcionario"));
 				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.getUnidade().setId(rs.getInt("codunidade"));
 			}
 
 		} catch (SQLException sqle) {

@@ -23,15 +23,13 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
-import br.gov.al.maceio.sishosp.hosp.enums.LiberacaoMotivos;
-import br.gov.al.maceio.sishosp.hosp.enums.LiberacaoRotinas;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
@@ -245,7 +243,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         if (func!=null) {
             liberacao = true;
             JSFUtil.fecharDialog("dlgSenha");
-            adicionarLiberacaoNaLista(montarLiberacao(LiberacaoMotivos.AVALIACAO.getSigla(), func.getId(), LiberacaoRotinas.INSERCAO.getSigla()));
+            adicionarLiberacaoNaLista(montarLiberacao(MotivoLiberacao.AVALIACAO.getSigla(), func.getId()));
             carregarLaudoPaciente(insercao.getLaudo().getId());
             listarProfissionaisEquipe();
         } else {
@@ -253,9 +251,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
-    public Liberacao montarLiberacao(String motivo, Long idUsuarioLiberacao, String rotina){
+    public Liberacao montarLiberacao(String motivo, Long idUsuarioLiberacao){
         Liberacao liberacao = null;
-        return liberacao = new Liberacao(motivo, idUsuarioLiberacao.intValue(), DataUtil.retornarDataIhHoraAtual(), rotina);
+        return liberacao = new Liberacao(motivo, idUsuarioLiberacao.intValue(), DataUtil.retornarDataIhHoraAtual());
     }
 
     public void adicionarLiberacaoNaLista(Liberacao liberacao){

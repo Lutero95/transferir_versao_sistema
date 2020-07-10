@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
@@ -755,13 +756,15 @@ public class AgendaController implements Serializable {
     public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
     	if(pacienteEstaAtivo()) {
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().get("obj_funcionario");
 			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
 					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
 				zerarValoresAgendaMaximoIhQuantidade();
 			}
-			
-			if(!existeDuplicidadeAgendaAvulsa())
-				gravarAgendaAvulsa();
+
+			if((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (!existeDuplicidadeAgendaAvulsa()))
+				gravarAgendaAvulsa(new FuncionarioBean());
     	}
     }
     
@@ -778,8 +781,10 @@ public class AgendaController implements Serializable {
     }
     
     private boolean existeDuplicidadeAgendaAvulsa() throws ProjetoException {
-    	Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda); 
-    	if(existeDuplicidade) { 
+    	Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda);
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+    	if((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (existeDuplicidade)) {
     		JSFUtil.abrirDialog("dlgLiberacao");
         	limpaDadosDialogLiberacao();
     	}
@@ -794,7 +799,7 @@ public class AgendaController implements Serializable {
                 ValidacaoSenha.LIBERACAO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
-        	gravarAgendaAvulsa();
+        	gravarAgendaAvulsa(funcionarioLiberacao);
     		JSFUtil.fecharDialog("dlgLiberacao");
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
@@ -894,7 +899,7 @@ public class AgendaController implements Serializable {
         limparDados();
     }
 
-    private void gravarAgendaAvulsa() throws ProjetoException {
+    private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
                 || (this.agenda.getTipoAt() == null)
@@ -910,7 +915,7 @@ public class AgendaController implements Serializable {
 
         boolean cadastrou = false;
 
-        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget);
+        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao);
 
         if (cadastrou) {
             limparDados();

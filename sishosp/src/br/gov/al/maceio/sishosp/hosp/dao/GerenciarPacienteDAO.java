@@ -1223,8 +1223,8 @@ public class GerenciarPacienteDAO {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, codatendimento, codpaciente_instituicao, cod_unidade, rotina) "
-                + " VALUES  (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)";
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, codatendimento, codpaciente_instituicao, cod_unidade) "
+                + " VALUES  (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)";
 
         try {
             ps = null;
@@ -1237,7 +1237,6 @@ public class GerenciarPacienteDAO {
                 ps.setInt(3, codAtendimento);
                 ps.setInt(4, idPacienteInstituicao);
                 ps.setInt(5, user_session.getUnidade().getId());
-                ps.setString(6, listaLiberacao.get(i).getRotina());
 
                 ps.executeUpdate();
             }

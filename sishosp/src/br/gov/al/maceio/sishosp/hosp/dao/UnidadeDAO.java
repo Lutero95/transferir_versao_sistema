@@ -116,8 +116,8 @@ public class UnidadeDAO {
                     "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, orgao_origem_responsavel_pela_informacao, "+
                     "sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
                     "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap, minutos_tolerancia, "+
-                    "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado ) "+
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
             ps = con.prepareStatement(sql);
 
@@ -242,6 +242,7 @@ public class UnidadeDAO {
             ps.setBoolean(34, unidade.getParametro().isAcessoPermitidoQuinta());
             ps.setBoolean(35, unidade.getParametro().isAcessoPermitidoSexta());
             ps.setBoolean(36, unidade.getParametro().isAcessoPermitidoSabado());
+            ps.setBoolean(37, unidade.getParametro().isPermiteAgendamentoDuplicidade());
             ps.execute();
 
 
@@ -406,7 +407,7 @@ public class UnidadeDAO {
                     "indicador_orgao_destino_informacao = ?, versao_sistema = ? , validade_padrao_laudo = ?, "+
                     "valida_dados_laudo_sigtap = ?, minutos_tolerancia = ?, "+
                     "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
-                    "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ? "+
+                    "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade=?  "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -497,7 +498,8 @@ public class UnidadeDAO {
             ps.setBoolean(34, unidade.getParametro().isAcessoPermitidoQuinta());
             ps.setBoolean(35, unidade.getParametro().isAcessoPermitidoSexta());
             ps.setBoolean(36, unidade.getParametro().isAcessoPermitidoSabado());
-            ps.setInt(37, unidade.getId());
+            ps.setBoolean(37, unidade.getParametro().isPermiteAgendamentoDuplicidade());
+            ps.setInt(38, unidade.getId());
 
             ps.executeUpdate();
 
@@ -637,7 +639,7 @@ public class UnidadeDAO {
                 "horario_limite_acesso, horario_inicio_funcionamento, horario_final_funcionamento, bloqueia_por_pendencia_evolucao_anterior, horario_limite_acesso, " +
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
-                "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado "+
+                "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade  "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -694,6 +696,7 @@ public class UnidadeDAO {
                 parametro.setAcessoPermitidoQuinta(rs.getBoolean("acesso_permitido_quinta"));
                 parametro.setAcessoPermitidoSexta(rs.getBoolean("acesso_permitido_sexta"));
                 parametro.setAcessoPermitidoSabado(rs.getBoolean("acesso_permitido_sabado"));
+                parametro.setPermiteAgendamentoDuplicidade(rs.getBoolean("permite_agendamento_duplicidade"));
             }
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
