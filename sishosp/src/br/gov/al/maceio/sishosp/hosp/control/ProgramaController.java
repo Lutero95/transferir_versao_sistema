@@ -14,8 +14,12 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name = "ProgramaController")
@@ -31,6 +35,12 @@ public class ProgramaController implements Serializable {
     private ProgramaDAO pDao = new ProgramaDAO();
     private List<ProgramaBean> listaProgramasUsuario, listaFiltradaProgramasusuario;
     private GrupoDAO gDao = new GrupoDAO();
+    private List<ProcedimentoBean> listaProcedimentos;
+    private List<CboBean> listaCbos;
+    private ProcedimentoDAO procedimentoDAO;
+    private CboDAO cboDAO;
+    private ProcedimentoBean procedimentoSelecionado;
+    private CboBean cboSelecionado;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -46,6 +56,12 @@ public class ProgramaController implements Serializable {
         listaProgramasUsuario = new ArrayList<ProgramaBean>();
         listaFiltradaProgramasusuario = new ArrayList<ProgramaBean>();
         buscalistaProgramas = null;
+        this.listaProcedimentos = new ArrayList<>();
+        this.listaCbos = new ArrayList<>();
+        this.procedimentoDAO = new ProcedimentoDAO();
+        this.cboDAO = new CboDAO();
+        this.procedimentoSelecionado = new ProcedimentoBean();
+        this.cboSelecionado = new CboBean();
     }
 
     public String redirectEdit() {
@@ -169,6 +185,27 @@ public class ProgramaController implements Serializable {
         }
         return cabecalho;
     }
+    
+    public void listarProcedimentosIhCbos() throws ProjetoException {
+    	listarProcedimentos();
+    	listarCbo();
+    }
+    
+    private void listarProcedimentos() throws ProjetoException {
+    	this.listaProcedimentos = this.procedimentoDAO.listarProcedimento();
+    }
+    
+    private void listarCbo() throws ProjetoException {
+    	this.listaCbos = this.cboDAO.listarCbo();
+    }
+    
+    public void selecionarProcedimento(ProcedimentoBean procedimento) {
+    	this.procedimentoSelecionado = procedimento;
+    }
+    
+    public void selecionarCbo(CboBean cbo) {
+    	this.cboSelecionado = cbo;
+    }
 
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
@@ -210,4 +247,35 @@ public class ProgramaController implements Serializable {
 		this.listaFiltradaProgramasusuario = listaFiltradaProgramasusuario;
 	}
 
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
+	}
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
+
+	public List<CboBean> getListaCbos() {
+		return listaCbos;
+	}
+
+	public void setListaCbos(List<CboBean> listaCbos) {
+		this.listaCbos = listaCbos;
+	}
+
+	public ProcedimentoBean getProcedimentoSelecionado() {
+		return procedimentoSelecionado;
+	}
+
+	public void setProcedimentoSelecionado(ProcedimentoBean procedimentoSelecionado) {
+		this.procedimentoSelecionado = procedimentoSelecionado;
+	}
+
+	public CboBean getCboSelecionado() {
+		return cboSelecionado;
+	}
+
+	public void setCboSelecionado(CboBean cboSelecionado) {
+		this.cboSelecionado = cboSelecionado;
+	}
 }

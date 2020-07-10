@@ -10,6 +10,7 @@
 
         <f:metadata>
             <f:viewAction action="#{ProgramaController.getEditProg()}"/>
+            <f:viewAction action="#{ProgramaController.listarProcedimentosIhCbos()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -17,129 +18,207 @@
                 <h:outputText value="#{ProgramaController.cabecalho}"
                               class="panel-title"></h:outputText>
             </div>
+            
+            <p:tabView id="tab">
+            	<p:tab title="Dados Gerais">
+					<div class="panel-body table-body sub-table-body">
 
-            <div class="panel-body table-body sub-table-body">
+						<h:form class="form-horizontal" id="frmPrincipal">
 
-                <h:form class="form-horizontal" id="frmPrincipal">
+							<b:row>
 
-                    <b:row>
+								<b:column span="12" class="label-position">
+									<b:label for="inputname" value="Descrição" severity="info" />
 
-                        <b:column span="12" class="label-position">
-                            <b:label for="inputname" value="Descrição" severity="info"/>
+									<b:inputText value="#{ProgramaController.prog.descPrograma}"
+										validator="CaractereEmBrancoValidator" class="form-control"
+										id="inputname" required="true"
+										requiredMessage="Descrição: Campo obrigatório!"
+										validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">
+										<f:validateLength minimum="2" maximum="50" />
+									</b:inputText>
+								</b:column>
+							</b:row>
 
-                            <b:inputText value="#{ProgramaController.prog.descPrograma}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" id="inputname" required="true"
-                                         requiredMessage="Descrição: Campo obrigatório!"
-                                         validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">
-                                <f:validateLength minimum="2" maximum="50"/>
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
+							<br></br>
 
-                    <br></br>
+							<br></br>
 
-                    <br></br>
-
-                    <b:row>
-                        <b:column span="2" class="label-position">
-                            <p:outputLabel value="Grupo:"
-                                           style="margin-left:-15px; margin-top: 8px;
+							<b:row>
+								<b:column span="2" class="label-position">
+									<p:outputLabel value="Grupo:"
+										style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                            <p:commandButton process="@this" size="sm"
-                                             action="#{GrupoController.listaTodosGrupos()}"
-                                             title="Incluir Grupo" icon="ui-icon-plus"
-                                             class="btn-acao-table acao-editar" style="margin-left: 20px;"
-                                             oncomplete="PF('dlgConsuGrupos').show();"
-                                             update=":formConsuGrop"/>
-                        </b:column>
+									<p:commandButton process="@this" size="sm"
+										action="#{GrupoController.listaTodosGrupos()}"
+										title="Incluir Grupo" icon="ui-icon-plus"
+										class="btn-acao-table acao-editar" style="margin-left: 20px;"
+										oncomplete="PF('dlgConsuGrupos').show();"
+										update=":formConsuGrop" />
+								</b:column>
 
-                        <b:column span="7" class="label-position">
+								<b:column span="7" class="label-position">
 
-                            <p:dataTable emptyMessage="Nenhum Grupo"
-                                         styleClass="table table-hover" id="tabela"
-                                         value="#{ProgramaController.prog.grupo}" var="tab"
-                                         paginator="true" paginatorPosition="bottom" rows="12"
-                                         resizableColumns="true">
+									<p:dataTable emptyMessage="Nenhum Grupo"
+										styleClass="table table-hover" id="tabela"
+										value="#{ProgramaController.prog.grupo}" var="tab"
+										paginator="true" paginatorPosition="bottom" rows="12"
+										resizableColumns="true">
 
-                                <p:column headerText="Cód." style="font-weight:bold;width:20%;">
-                                    <h:outputText value="#{tab.idGrupo}"/>
-                                </p:column>
+										<p:column headerText="Cód."
+											style="font-weight:bold;width:20%;">
+											<h:outputText value="#{tab.idGrupo}" />
+										</p:column>
 
-                                <p:column headerText="Nome" style="font-weight:bold;">
-                                    <h:outputText value="#{tab.descGrupo}"/>
-                                </p:column>
+										<p:column headerText="Nome" style="font-weight:bold;">
+											<h:outputText value="#{tab.descGrupo}" />
+										</p:column>
 
-                                <p:column headerText="Ação">
-                                    <div align="center">
-                                        <p:commandButton process="@this"
-                                                         class="new-btn-acao-table acao-excluir"
-                                                         action="#{ProgramaController.prog.removeGrupoLista()}"
-                                                         icon="ui-icon-trash" update=":frmPrincipal:tabela">
-                                            <f:setPropertyActionListener value="#{tab}"
-                                                                         target="#{ProgramaController.prog.grupoRmv}"/>
-                                        </p:commandButton>
-                                    </div>
-                                </p:column>
+										<p:column headerText="Ação">
+											<div align="center">
+												<p:commandButton process="@this"
+													class="new-btn-acao-table acao-excluir"
+													action="#{ProgramaController.prog.removeGrupoLista()}"
+													icon="ui-icon-trash" update=":tab:frmPrincipal:tabela">
+													<f:setPropertyActionListener value="#{tab}"
+														target="#{ProgramaController.prog.grupoRmv}" />
+												</p:commandButton>
+											</div>
+										</p:column>
 
-                            </p:dataTable>
+									</p:dataTable>
 
-                        </b:column>
-                    </b:row>
+								</b:column>
+							</b:row>
 
-                    <b:row>
+							<b:row>
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Procedimento Padrão:" severity="info"/>
+								<b:column span="3"
+									class="label-position new-data-size new-comple1">
+									<b:label value="Procedimento Padrão:" severity="info" />
 
-                            <p:outputPanel id="outProc">
-                                <p:autoComplete
-                                        value="#{ProgramaController.prog.procedimento}"
-                                        size="31" converter="conProcedimento" id="descProcP1"
-                                        required="true" class="select-agendaEquipe4"
-                                        requiredMessage="Escolha o procedimento padrão!"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.nomeProc}">
-                                    <p:ajax event="itemSelect"></p:ajax>
-                                </p:autoComplete>
+									<p:outputPanel id="outProc">
+										<p:autoComplete
+											value="#{ProgramaController.prog.procedimento}" size="31"
+											converter="conProcedimento" id="descProcP1" required="true"
+											class="select-agendaEquipe4"
+											requiredMessage="Escolha o procedimento padrão!"
+											completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.nomeProc}">
+											<p:ajax event="itemSelect"></p:ajax>
+										</p:autoComplete>
 
-                                <p:commandButton id="btBusProcP1" icon="ui-icon-search"
-                                                 onclick="PF('dlgConsulProc').show();" immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
-                            </p:outputPanel>
-                        </b:column>
+										<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+											onclick="PF('dlgConsulProc').show();" immediate="true"
+											actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+									</p:outputPanel>
+								</b:column>
 
-                    </b:row>
-                    <br></br>
+							</b:row>
+						</h:form>
+					</div>
+				</p:tab>
+            	<p:tab title="Procedimentos para Ocupações Específicas">
+            		<h:form>
+						<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							update=":tab:frmPrincipal msgPagina" title="Adicionar Registro"
+							class="btn-acao-table acao-editar"
+							oncomplete="PF('dlgConsulProcOcup').show();" />
+							
+						<p:dataTable var="car" value="#{dtBasicView.cars}"
+							emptyMessage="Nenhum registro foi adicionado">
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{car.id}" />
+							</p:column>
 
-                    <div align="center">
+							<p:column headerText="CBO">
+								<h:outputText value="#{car.year}" />
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:tab>
+            </p:tabView>
+		</div>
+		<h:form>
+			<div align="center">
+				<p:commandButton action="#{ProgramaController.gravarPrograma()}"
+					icon="ui-icon-check" size="sm" look="success"
+					update=":tab:frmPrincipal msgPagina" value="Incluir"
+					class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
 
-                        <p:commandButton action="#{ProgramaController.gravarPrograma()}"
-                                         icon="ui-icon-check" size="sm" look="success"
-                                         update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
-                                         rendered="#{ProgramaController.tipo == 1}"/>
+				<p:commandButton action="#{ProgramaController.alterarPrograma()}"
+					icon="ui-icon-check" size="sm" update=":tab:frmPrincipal msgPagina"
+					class="btn-incluir" value="Alterar" look="success"
+					rendered="#{ProgramaController.tipo  == 2}" />
 
-                        <p:commandButton action="#{ProgramaController.alterarPrograma()}"
-                                         icon="ui-icon-check" size="sm" update=":frmPrincipal msgPagina"
-                                         class="btn-incluir" value="Alterar" look="success"
-                                         rendered="#{ProgramaController.tipo  == 2}"/>
+				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					class="btn-voltar" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
+				</p:commandButton>
+			</div>
+		</h:form>
+		
+		<p:dialog header="Consultar Procedimento e Ocupações" styleClass="topDialog"
+                  widgetVar="dlgConsulProcOcup" modal="true" resizable="false" width="1000" 
+                  draggable="true" responsive="true">
+            <h:form id="formConsulProcOcup">
+                <p:outputPanel id="outproc">
+                		<p:dataTable var="proc" value="#{ProgramaController.listaProcedimentos}"
+							emptyMessage="Nenhum procedimento encontrado" paginator="true" rows="5"
+							paginatorPosition="bottom">
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{proc.nomeProc}" />
+							</p:column>
 
-                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                         class="btn-voltar" size="sm" immediate="true" look="info"
-                                         action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-                        </p:commandButton>
+							<p:column headerText="Código" width="100">
+								<h:outputText value="#{proc.codProc}" />
+							</p:column>
+							
+							<p:column headerText="Selecionar" width="100">
+							<p:commandButton actionListener="#{ProgramaController.selecionarProcedimento(proc)}"
+                                	icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-bars'}"
+                                	title="Selecionar" update="formConsulProcOcup:outproc"
+                                	style="margin-left:30%;"
+                                	class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'acao-editar' : ''}"/>
+							</p:column>
+						</p:dataTable>
+                </p:outputPanel>
+                
+                <br /><br />
+                <p:outputPanel id="outcbo">
+                		<p:dataTable var="cbo" value="#{ProgramaController.listaCbos}"
+							emptyMessage="Nenhuma ocupação encontrada" paginator="true" rows="5"
+							paginatorPosition="bottom">
+							<p:column headerText="CBO">
+								<h:outputText value="#{cbo.descCbo}" />
+							</p:column>
 
-                    </div>
+							<p:column headerText="Código" width="100">
+								<h:outputText value="#{cbo.codigo}" />
+							</p:column>
+							
+							<p:column headerText="Selecionar" width="100">
+								<p:commandButton actionListener="#{ProgramaController.selecionarCbo(cbo)}"
+                                	icon="fa fa-fw ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'fa-check' : 'fa-bars'}"
+                                	title="Selecionar" update="formConsulProcOcup:outcbo"
+                                	style="margin-left:30%;"
+                                	class="new-btn-acao-table ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'acao-editar' : ''}"/>
+							</p:column>
+						</p:dataTable>
+                </p:outputPanel>
+                
+                <br />
+                <div align="center">
+                	<p:commandButton value="Incluir"/>
+                </div>
+            </h:form>
+        </p:dialog>
 
-                </h:form>
-            </div>
-        </div>
-
-        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
                   modal="true" styleClass="topDialog" resizable="false" 
                   draggable="false" responsive="true">
             <h:form id="formConsuGrop">
@@ -168,7 +247,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":frmPrincipal:tabela, :msgPagina"
+                                    update=":tab:frmPrincipal:tabela, :msgPagina"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     onclick="PF('dlgConsuGrupos').hide();"
@@ -205,7 +284,7 @@
                             </f:facet>
                             <p:commandButton
                                     icon="fa fa-fw fa-check" title="Selecionar"
-                                    class="new-btn-acao-table acao-editar" update=":frmPrincipal:outProc"
+                                    class="new-btn-acao-table acao-editar" update=":tab:frmPrincipal:outProc"
                                     onclick="PF('dlgConsulProc').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
                                                              target="#{ProgramaController.prog.procedimento}"/>
