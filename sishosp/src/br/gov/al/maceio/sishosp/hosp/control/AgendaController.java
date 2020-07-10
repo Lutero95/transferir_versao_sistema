@@ -764,9 +764,11 @@ public class AgendaController implements Serializable {
 			}
 			
 			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
+			boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
 
-			if((existeDuplicidadeAgendaAvulsa && user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade())
-					|| !existeDuplicidadeAgendaAvulsa && !user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) {
+			if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
+					|| !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
+					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
 				gravarAgendaAvulsa(new FuncionarioBean());
 			}
     	}
