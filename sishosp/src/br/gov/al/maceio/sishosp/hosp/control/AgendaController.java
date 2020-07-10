@@ -762,9 +762,13 @@ public class AgendaController implements Serializable {
 					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
 				zerarValoresAgendaMaximoIhQuantidade();
 			}
+			
+			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
 
-			if((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (!existeDuplicidadeAgendaAvulsa()))
+			if((existeDuplicidadeAgendaAvulsa && user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade())
+					|| !existeDuplicidadeAgendaAvulsa && !user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) {
 				gravarAgendaAvulsa(new FuncionarioBean());
+			}
     	}
     }
     
