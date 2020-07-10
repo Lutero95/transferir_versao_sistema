@@ -55,7 +55,7 @@ public class BpaIndividualizadoDAO {
 				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
 				" left join hosp.programa  prog on prog.id_programa  = a.codprograma \n" +
 				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
-				" left join hosp.cid on cid.cod = l.cid1  \n" +
+				" left join hosp.cid on cid.cod = a1.id_cidprimario  \n" +
 				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
 				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
@@ -121,7 +121,7 @@ public class BpaIndividualizadoDAO {
             	bpaIndividualizado.setPrdEquipeArea(PRD_EQUIPE_AREA);
             	bpaIndividualizado.setPrdCnpj(rs.getString("cnpj"));
             	bpaIndividualizado.setPrdCepPcnte(rs.getString("cep"));
-            	bpaIndividualizado.setPrdLogradPcnte(PRD_LOGRAD_PCNTE);
+            	bpaIndividualizado.setPrdLogradPcnte(rs.getString("codlogradouro"));
             	bpaIndividualizado.setPrdEndPcnte(rs.getString("enderecopaciente"));
             	bpaIndividualizado.setPrdComplPcnte(rs.getString("complendpaciente"));
             	bpaIndividualizado.setPrdNumPcnte(rs.getString("numendpaciente"));
