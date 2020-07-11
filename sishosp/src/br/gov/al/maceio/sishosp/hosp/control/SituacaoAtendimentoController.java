@@ -57,6 +57,10 @@ public class SituacaoAtendimentoController  implements Serializable {
 		this.listaSituacaoAtendimento = situacaoAtendimentoDAO.buscarSituacaoAtendimento(this.campoBusca);
 	}
 	
+	public void listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo() throws ProjetoException {
+		this.listaSituacaoAtendimento = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo();
+	}
+	
 	public void limparCampoBusca() {
 		this.campoBusca = new String();
 	}

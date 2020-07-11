@@ -149,11 +149,36 @@ public class SituacaoAtendimentoDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
-				situacaoAtendimento.setId(rs.getInt("id"));
-				situacaoAtendimento.setDescricao(rs.getString("descricao"));
-				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
-				listaSituacoes.add(situacaoAtendimento);
+				mapearResultSetSituacaoAtendimento(listaSituacoes, rs);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaSituacoes;
+	}
+	
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo() throws ProjetoException {
+
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+				"from hosp.situacao_atendimento sa where sa.atendimento_realizado is true and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true)  order by sa.descricao ";
+
+		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			ps = conexao.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				mapearResultSetSituacaoAtendimento(listaSituacoes, rs);
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -169,6 +194,15 @@ public class SituacaoAtendimentoDAO {
 		return listaSituacoes;
 	}
 
+	private void mapearResultSetSituacaoAtendimento(List<SituacaoAtendimentoBean> listaSituacoes, ResultSet rs)
+			throws SQLException {
+		SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
+		situacaoAtendimento.setId(rs.getInt("id"));
+		situacaoAtendimento.setDescricao(rs.getString("descricao"));
+		situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+		listaSituacoes.add(situacaoAtendimento);
+	}
+
 	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
@@ -181,11 +215,7 @@ public class SituacaoAtendimentoDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
-				situacaoAtendimento.setId(rs.getInt("id"));
-				situacaoAtendimento.setDescricao(rs.getString("descricao"));
-				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
-				listaSituacoes.add(situacaoAtendimento);
+				mapearResultSetSituacaoAtendimento(listaSituacoes, rs);
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);

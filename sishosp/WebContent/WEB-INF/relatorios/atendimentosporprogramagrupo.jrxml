@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1000000000000005"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -15,6 +15,10 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -27,8 +31,11 @@
 	<parameter name="cod_grupo" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="id_situacao_atendimento" class="java.lang.Integer"/>
+	<parameter name="turno" class="java.lang.String"/>
+	<parameter name="diassemanalista" class="java.util.ArrayList"/>
 	<queryString>
-		<![CDATA[select
+		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
@@ -46,7 +53,10 @@ where sa.atendimento_realizado is true
 and a.dtaatende between $P{dt_inicial} and $P{dt_final}
 and ((   $P{cod_programa}   is not null and a.codprograma=  $P{cod_programa}) or (( $P{cod_programa} =0 ) OR ( $P{cod_programa} is null )))
 and(($P{cod_grupo} is not null and grupo.id_grupo = $P{cod_grupo}) or ($P{cod_grupo} is null and grupo.id_grupo > 0))
-order by a.codprograma, a.codgrupo, a.dtaatende, pa.nome]]>
+and ((   $P{id_situacao_atendimento}     is not null and sa.id =   $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
+and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
+and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+order by 1]]>
 	</queryString>
 	<field name="cod_programa" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
