@@ -79,8 +79,8 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?) returning id_laudo";
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -180,10 +180,9 @@ public class LaudoDAO {
             }
 
             stmt.setInt(18, user_session.getUnidade().getId());
-
             stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
-
             stmt.setLong(20, laudo.getProfissionalLaudo().getId());
+            stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
 
             ResultSet rs = stmt.executeQuery();
 
@@ -211,7 +210,8 @@ public class LaudoDAO {
         String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, "
                 + "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
                 + "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, "
-                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional=? where id_laudo = ?";
+                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ? "
+                + " where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -320,7 +320,8 @@ public class LaudoDAO {
 
             stmt.setLong(20, user_session.getId());
             stmt.setLong(21, laudo.getProfissionalLaudo().getId());
-            stmt.setInt(22, laudo.getId());
+            stmt.setBoolean(22, laudo.isValidadoPeloSigtapAnterior());
+            stmt.setInt(23, laudo.getId());
             stmt.executeUpdate();
             conexao.commit();
             retorno = true;
@@ -397,7 +398,7 @@ public class LaudoDAO {
 
         sql = sql + " order by ano_final desc, mes_final desc, nome ";
 
-        ArrayList<LaudoBean> lista = new ArrayList();
+        ArrayList<LaudoBean> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -642,10 +643,10 @@ public class LaudoDAO {
     private Date prepararDataVencimentoApenasComDiasUteis(int mesFinal, int anoFInal, Long codigoFuncionario) throws ProjetoException, SQLException {
         Date d = DataUtil.montarDataCompleta(1, mesFinal, anoFInal);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(d);
-        c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
-        Date dataMontada = c.getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(d);
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+        Date dataMontada = calendar.getTime();
 
         Boolean revalidar = true;
         Date dataSemFeriado=null;
@@ -902,7 +903,7 @@ public class LaudoDAO {
         return retorno;
     }
 
-    public BuscaIdadePacienteDTO buscarIdadePacienteEmAnoIhMes(Date dataNascimento) {
+    public BuscaIdadePacienteDTO buscarIdadePacienteEmAnoIhMes(Date dataNascimento) throws ProjetoException {
 
         PreparedStatement ps = null;
         BuscaIdadePacienteDTO idadePaciente = new BuscaIdadePacienteDTO();
@@ -923,10 +924,11 @@ public class LaudoDAO {
             	idadePaciente.setIdadeMeses(rs.getInt("idade_meses"));
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -937,7 +939,7 @@ public class LaudoDAO {
     }
     
     
-    public ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento(String codigoProcedimento, Date dataSolicitacao) {
+    public ProcedimentoType buscarIdadeMinimaIhMaximaDeProcedimento(String codigoProcedimento, Date dataSolicitacao) throws ProjetoException {
 
         PreparedStatement ps = null;
         ProcedimentoType procedimento = new ProcedimentoType();
@@ -945,11 +947,12 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql = "select pm.idade_minima, coalesce (pm.unidade_idade_minima,'MESES') unidade_idade_minima, pm.idade_maxima,coalesce (pm.unidade_idade_maxima,'MESES') unidade_idade_maxima " +
+            String sql = "select pm.idade_minima, pm.unidade_idade_minima, unidade_idade_minima, pm.idade_maxima, pm.unidade_idade_maxima, unidade_idade_maxima " +
             		" from sigtap.procedimento_mensal pm " +
             		" join sigtap.historico_consumo_sigtap hcs on hcs.id = pm.id_historico_consumo_sigtap " +
             		" where hcs.mes = extract (month from CAST(? AS date)) and hcs.ano = extract (year from CAST(? AS date)) " +
             		" and pm.codigo_procedimento = ? and hcs.status = 'A' and (hcs.ano = ? and hcs.mes = ?)";
+            
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dataSolicitacao);
             ps = conexao.prepareStatement(sql);
@@ -961,40 +964,51 @@ public class LaudoDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String unidade = rs.getString("unidade_idade_maxima");
             	IdadeLimiteType idadeMinima = new IdadeLimiteType();
-                if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
-                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima")/12);
-                else
-                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
-
-            	if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
-            		idadeMinima.setUnidadeLimite(UnidadeLimiteType.MESES);
-            	else
+            	IdadeLimiteType idadeMaxima = new IdadeLimiteType();
+            	String unidadeIdadeMinima = rs.getString("unidade_idade_minima");
+                String unidadeIdadeMaxima = rs.getString("unidade_idade_maxima");
+            	
+            	if(VerificadorUtil.verificarSeObjetoNuloOuVazio(unidadeIdadeMinima)) {
+            		idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima")/12);
             		idadeMinima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            	}
+            	
+            	else if(unidadeIdadeMinima.equals(UnidadeLimiteType.MESES.name())) {
+                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
+                    idadeMinima.setUnidadeLimite(UnidadeLimiteType.MESES);
+                }
+                else {
+                    idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
+                    idadeMinima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+                }
+
             	procedimento.setIdadeMinimaPermitida(idadeMinima);
             	
-            	IdadeLimiteType idadeMaxima = new IdadeLimiteType();
-                if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
-                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima")/12);
-                else
-                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
-
-
-            	if((unidade!=null) && (unidade.equals(UnidadeLimiteType.MESES.name())))
-            		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.MESES);
-            	else
+            	
+            	if(VerificadorUtil.verificarSeObjetoNuloOuVazio(unidadeIdadeMaxima)) {
+            		idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima")/12);
             		idadeMaxima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+            	}
+            	
+            	else if(unidadeIdadeMaxima.equals(UnidadeLimiteType.MESES.name())) {
+                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
+                    idadeMaxima.setUnidadeLimite(UnidadeLimiteType.MESES);
+                }
+                else {
+                    idadeMaxima.setQuantidadeLimite(rs.getInt("idade_maxima"));
+                    idadeMaxima.setUnidadeLimite(UnidadeLimiteType.ANOS);
+                }
 
-
-                    procedimento.setIdadeMaximaPermitida(idadeMaxima);
+                procedimento.setIdadeMaximaPermitida(idadeMaxima);
 
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        }  catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1004,7 +1018,7 @@ public class LaudoDAO {
         return procedimento;
     }
     
-    public boolean validaCodigoCidEmLaudo(String codigoCid, Date dataSolicitacao, String codigoProcedimento) {
+    public boolean validaCodigoCidEmLaudo(String codigoCid, Date dataSolicitacao, String codigoProcedimento) throws ProjetoException {
 
         PreparedStatement ps = null;
         boolean cidValido = false;
@@ -1031,10 +1045,11 @@ public class LaudoDAO {
             	cidValido = rs.getBoolean("cid_valido");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1044,7 +1059,7 @@ public class LaudoDAO {
         return cidValido;
     }
     
-    public String buscaCodigoCboProfissionalSelecionado(Long idFuncionario) {
+    public String buscaCodigoCboProfissionalSelecionado(Long idFuncionario) throws ProjetoException {
 
         PreparedStatement ps = null;
         String codigoCbo = "";
@@ -1063,10 +1078,11 @@ public class LaudoDAO {
             	codigoCbo = rs.getString("codigo");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1076,7 +1092,7 @@ public class LaudoDAO {
         return codigoCbo;
     }
     
-    public boolean validaCodigoCboEmLaudo(String codigoCbo, Date dataSolicitacao, String codigoProcedimento) {
+    public boolean validaCodigoCboEmLaudo(String codigoCbo, Date dataSolicitacao, String codigoProcedimento) throws ProjetoException {
 
         PreparedStatement ps = null;
         boolean cboValido = false;
@@ -1103,10 +1119,11 @@ public class LaudoDAO {
             	cboValido = rs.getBoolean("cbo_valido");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1116,41 +1133,7 @@ public class LaudoDAO {
         return cboValido;
     }
     
-    public boolean unidadeValidaDadosLaudoSigtap(Integer codigoUnidade) {
-
-        PreparedStatement ps = null;
-        boolean unidadValidaDadosLaudoSigtap = false;
-        
-        try {
-            conexao = ConnectionFactory.getConnection();
-
-            String sql = "select distinct p.valida_dados_laudo_sigtap from hosp.parametro p " + 
-            		"join hosp.unidade u on u.id = p.codunidade " + 
-            		"join acl.funcionarios f on f.codunidade = p.codunidade " + 
-            		"where p.codunidade = ?";
-
-            ps = conexao.prepareStatement(sql);
-            ps.setInt(1, codigoUnidade);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-            	unidadValidaDadosLaudoSigtap = rs.getBoolean("valida_dados_laudo_sigtap");
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return unidadValidaDadosLaudoSigtap;
-    }
-    
-    public boolean verificaSeProcedimentoPossuiCidsAssociados(Date dataSolicitacao, String codigoProcedimento) {
+    public boolean verificaSeProcedimentoPossuiCidsAssociados(Date dataSolicitacao, String codigoProcedimento) throws ProjetoException {
 
         PreparedStatement ps = null;
         boolean possuiCidsAssociados = true;
@@ -1175,10 +1158,11 @@ public class LaudoDAO {
             	possuiCidsAssociados = (quantidadeCidsAssociados > 0);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {
@@ -1188,7 +1172,7 @@ public class LaudoDAO {
         return possuiCidsAssociados;
     }
     
-    public boolean sexoDoPacienteValidoComProcedimentoSigtap(Date dataSolicitacao, String sexo, String codigoProcedimento) {
+    public boolean sexoDoPacienteValidoComProcedimentoSigtap(Date dataSolicitacao, String sexo, String codigoProcedimento) throws ProjetoException {
 
         PreparedStatement ps = null;
         boolean sexoValido = false;
@@ -1213,10 +1197,11 @@ public class LaudoDAO {
             	sexoValido = rs.getBoolean("sexo_permitido");
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 conexao.close();
             } catch (Exception ex) {

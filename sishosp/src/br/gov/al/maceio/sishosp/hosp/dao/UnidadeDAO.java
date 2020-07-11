@@ -938,7 +938,7 @@ public class UnidadeDAO {
         return resultado;
     }
     
-    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() {
+    public Boolean verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
 
         Boolean resultado = true;
         String sql = "select valida_dados_laudo_sigtap from hosp.parametro where codunidade = ?";
@@ -952,10 +952,11 @@ public class UnidadeDAO {
             if (rs.next()) {
                 resultado = rs.getBoolean("valida_dados_laudo_sigtap");
             }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
             try {
                 con.close();
             } catch (Exception ex) {

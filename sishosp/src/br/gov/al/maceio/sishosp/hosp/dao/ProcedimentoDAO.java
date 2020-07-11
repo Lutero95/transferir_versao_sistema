@@ -1212,8 +1212,8 @@ public class ProcedimentoDAO {
             PreparedStatement stm = null;
             for(CBOType cboType : listaCbos) {
                 stm = conexao.prepareStatement(sqlCbo);
-                stm.setString(1, cboType.getCodigo());
-                stm.setString(2, cboType.getNome());
+                stm.setString(1, cboType.getCodigo().trim());
+                stm.setString(2, cboType.getNome().trim());
                 ResultSet rs = stm.executeQuery();
                 if(rs.next()) {
                     Integer idNovoCbo = rs.getInt("id");
@@ -1288,7 +1288,7 @@ public class ProcedimentoDAO {
             PreparedStatement stm = null;
             for(CIDVinculado cidVinculado : listaCidVinculado) {
                 stm = conexao.prepareStatement(sqlCid);
-                stm.setString(1, cidVinculado.getCID().getCodigo());
+                stm.setString(1, cidVinculado.getCID().getCodigo().trim());
                 stm.setString(2, cidVinculado.getCID().getNome());
                 ResultSet rs = stm.executeQuery();
                 if(rs.next()) {
@@ -1321,7 +1321,7 @@ public class ProcedimentoDAO {
 
         for (CIDVinculado cid : listaCidsAux) {
             for (PropriedadeDeProcedimentoMensalExistenteDTO cidExistente : todosCidsExistentes) {
-                if(cid.getCID().getCodigo().equals(cidExistente.getCodigo())) {
+                if(cid.getCID().getCodigo().trim().equals(cidExistente.getCodigo().trim())) {
                     listaCids.remove(cid);
                     listaIdCidsExistentesDoProcedimento.add(cidExistente.getId());
                 }
@@ -2184,6 +2184,69 @@ public class ProcedimentoDAO {
             }
         }
         return ehValido;
+    }
+    
+    public boolean verificaExisteCargaSigtapParaData(Integer mesSolicitacao, Integer anoSolicitacao) {
+
+        PreparedStatement ps = null;
+        boolean existe = false;
+        
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "select exists (select * from sigtap.historico_consumo_sigtap hcs where hcs.mes = ? and ano = ? and hcs.status = 'A');";
+
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, mesSolicitacao);
+            ps.setInt(2, anoSolicitacao);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existe = rs.getBoolean("exists");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
+    }
+    
+    
+    public boolean verificaSeExisteAlgumaCargaSigtap() {
+
+        PreparedStatement ps = null;
+        boolean existe = false;
+        
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "select count(id) quantidade_cargas from sigtap.historico_consumo_sigtap hcs;";
+
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existe = rs.getInt("quantidade_cargas") > 0;
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
     }
 
 }

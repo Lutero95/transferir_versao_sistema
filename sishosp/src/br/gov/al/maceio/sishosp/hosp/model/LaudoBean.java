@@ -22,6 +22,7 @@ public class LaudoBean implements Serializable {
     private String situacao;
     private String vencimento;
     private Integer codUnidade;
+    private boolean validadoPeloSigtapAnterior;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -248,6 +249,14 @@ public class LaudoBean implements Serializable {
 
 	public void setCodUnidade(Integer codUnidade) {
 		this.codUnidade = codUnidade;
+	}
+	
+	public boolean isValidadoPeloSigtapAnterior() {
+		return validadoPeloSigtapAnterior;
+	}
+
+	public void setValidadoPeloSigtapAnterior(boolean validadoPeloSigtapAnterior) {
+		this.validadoPeloSigtapAnterior = validadoPeloSigtapAnterior;
 	}
 
 	public FuncionarioBean getProfissionalLaudo() {

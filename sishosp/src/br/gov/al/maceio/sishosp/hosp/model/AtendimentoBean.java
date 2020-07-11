@@ -25,6 +25,7 @@ public class AtendimentoBean implements Serializable {
     private String presenca;
     private Boolean avulso; 
     private List<String> listaNomeProfissionais;
+    private boolean validadoPeloSigtapAnterior;
     // HERDADOS
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
@@ -279,6 +280,14 @@ public class AtendimentoBean implements Serializable {
 
 	public void setListaNomeProfissionais(List<String> listaNomeProfissionais) {
 		this.listaNomeProfissionais = listaNomeProfissionais;
+	}
+
+	public boolean isValidadoPeloSigtapAnterior() {
+		return validadoPeloSigtapAnterior;
+	}
+
+	public void setValidadoPeloSigtapAnterior(boolean validadoPeloSigtapAnterior) {
+		this.validadoPeloSigtapAnterior = validadoPeloSigtapAnterior;
 	}
     
 }

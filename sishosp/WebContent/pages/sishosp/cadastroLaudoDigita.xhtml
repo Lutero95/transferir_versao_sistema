@@ -10,7 +10,6 @@
 
         <f:metadata>
             <f:viewAction action="#{LaudoController.getEditLaudo}"/>
-            <f:viewAction action="#{LaudoController.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -22,6 +21,11 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formLaudo">
+
+					<p:row rendered="#{LaudoController.existeAlgumaCargaSigtap == false}">
+						<p:messages/>
+						<br/>
+					</p:row>
 
                     <b:row>
                         <b:column span="3"
@@ -71,8 +75,7 @@
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Profissional" severity="info"/>
-                            <p:outputPanel id="outProf"
-                            >
+                            <p:outputPanel id="outProf">
                                 <p:autoComplete value="#{LaudoController.laudo.profissionalLaudo}"
                                                 id="autoCompleteProfissional" size="31"
                                                 converter="conFuncionario" required="true"
@@ -87,8 +90,7 @@
                                 <p:commandButton id="btBusProf" icon="ui-icon-search"
                                                  immediate="true"
                                                  action="#{MBFuncionarios.listarProfissionais()}"
-                                                 update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
-                                />
+                                                 update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
                             </p:outputPanel>
                         </b:column>
                     </b:row>
@@ -107,10 +109,14 @@
                                         pattern="dd/MM/yyyy" pages="1" showOn="button">
                                 <p:ajax event="dateSelect"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
-                                        update=":formLaudo:outvalidade"/>
+                                        update=":formLaudo:outvalidade :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"/>
                                 <p:ajax event="blur"
                                         listener="#{LaudoController.calcularPeriodoLaudo()}"
-                                        update=":formLaudo:outvalidade"/>
+                                        update=":formLaudo:outvalidade :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"/>
+                                <p:ajax event="dateSelect"
+                                        listener="#{LaudoController.existeCargaSigtapParaDataSolicitacao()}"/>
+                                <p:ajax event="blur"
+                                        listener="#{LaudoController.existeCargaSigtapParaDataSolicitacao()}"/>                                        
                             </p:calendar>
                         </b:column>
 
@@ -172,7 +178,9 @@
                                         itemLabel="#{theme.nomeProc}">
                                     <p:ajax event="itemSelect"
                                             listener="#{LaudoController.setaValidadeProcPrimLaudo(LaudoController.laudo.procedimentoPrimario.validade_laudo)}"
-                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
+                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"/>
+                                            
+                                    <p:ajax event="blur" listener="#{LaudoController.limpaDadosCids()}" update=":formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3" />        
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusProcP1" icon="ui-icon-search"
@@ -452,12 +460,14 @@
                         <p:commandButton action="#{LaudoController.gravarLaudo()}"
                                          update="msgPagina, formLaudo" icon="ui-icon-check"
                                          look="success" value="Gravar" class="btn-incluir"
-                                         rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}"/>
+                                         rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}"
+                                         disabled="#{LaudoController.existeAlgumaCargaSigtap == false}"/>
 
                         <p:commandButton action="#{LaudoController.alterarLaudo()}" icon="ui-icon-check"
                                          update="msgPagina" value="Alterar"
                                          look="success" class="btn-incluir"
-                                         rendered="#{LaudoController.tipo  == 2}"/>
+                                         rendered="#{LaudoController.tipo  == 2}"
+                                         disabled="#{LaudoController.existeAlgumaCargaSigtap == false}"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          class="btn-voltar" size="sm" immediate="true" look="info"
@@ -580,7 +590,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"
+                                    update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     actionListener="#{LaudoController.setaValidadeProcPrimLaudo(proc.validade_laudo)}"
@@ -917,7 +927,6 @@
 
                 </p:row>
                 <p:outputPanel>
-                    <p:autoUpdate/>
                     <p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
                                  paginator="true" id="tabelacid3" style="width:500px"
                                  value="#{LaudoController.listaCids}" var="tab">
