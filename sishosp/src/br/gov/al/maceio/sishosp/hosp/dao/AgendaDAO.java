@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +28,8 @@ import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
-    Connection con = null;
+    private static final String SEGUNDOS = ":00";
+	Connection con = null;
     PreparedStatement ps = null;
 
     public boolean gravarAgenda(AgendaBean agenda, List<AgendaBean> listaNovosAgendamentos,
@@ -232,18 +234,26 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             for (int j = 0; j < listaProfissionais.size(); j++) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+                        + " cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, listaProfissionais.get(j).getId());
                 ps.setInt(2, idAtendimento);
-                if (listaProfissionais.get(j).getCbo().getCodCbo() != null)
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo()))
                     ps.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
                 else
                     ps.setNull(3, Types.NULL);
-                if (agenda.getPrograma().getProcedimento().getIdProc() != null)
+                
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getPrograma().getProcedimento().getIdProc()))
                     ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                 else
                     ps.setNull(4, Types.NULL);
+                
+                if(VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getHorario()))
+                	ps.setNull(5, Types.NULL);
+                else {
+                	Time horario = Time.valueOf(agenda.getHorario()+SEGUNDOS);
+                	ps.setTime(5, horario);
+                }
                 ps.executeUpdate();
 
             }
