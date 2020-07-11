@@ -600,7 +600,6 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        verificaSeCboProfissionalEhValidoParaProcedimento();
         validarDadosSigtap();
 
         if(!validarSeEhNecessarioInformarGrupo()) {
