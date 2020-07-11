@@ -7,6 +7,11 @@ public class ProcedimentoCboEspecificoDTO {
 	private ProcedimentoBean procedimento;
 	private CboBean cbo;
 	
+	public ProcedimentoCboEspecificoDTO() {
+		this.procedimento = new ProcedimentoBean();
+		this.cbo = new CboBean();
+	}
+	
 	
 	public ProcedimentoBean getProcedimento() {
 		return procedimento;

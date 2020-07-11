@@ -12,7 +12,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -42,7 +42,6 @@ public class ProgramaController implements Serializable {
     private CboDAO cboDAO;
     private ProcedimentoBean procedimentoSelecionado;
     private CboBean cboSelecionado;
-    private List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -64,7 +63,6 @@ public class ProgramaController implements Serializable {
         this.cboDAO = new CboDAO();
         this.procedimentoSelecionado = new ProcedimentoBean();
         this.cboSelecionado = new CboBean();
-        this.listaProcedimentoCboEspecificoDTO = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -84,7 +82,6 @@ public class ProgramaController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.prog = pDao.listarProgramaPorId(id);
-            prog.setGrupo(gDao.listarGruposDoPrograma(prog.getIdPrograma()));
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
         }
@@ -102,17 +99,26 @@ public class ProgramaController implements Serializable {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
         	*/
-        
-            boolean cadastrou = pDao.gravarPrograma(prog);
+        	if(procedimentoPadraoNaoEhNulo()) {
+				boolean cadastrou = pDao.gravarPrograma(prog);
 
-            if (cadastrou == true) {
-                limparDados();
-                JSFUtil.adicionarMensagemSucesso("Programa cadastrado com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            }
-            listaProgramas = pDao.listarProgramas();
+				if (cadastrou == true) {
+					limparDados();
+					JSFUtil.adicionarMensagemSucesso("Programa cadastrado com sucesso!", "Sucesso");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				}
+				listaProgramas = pDao.listarProgramas();
+        	}
        // }
+    }
+    
+    private boolean procedimentoPadraoNaoEhNulo() {
+    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.prog.getProcedimento().getIdProc())) {
+    		JSFUtil.adicionarMensagemAdvertencia("Selecione um procedimento padrão", "");
+    		return false;
+    	}
+    	return true;
     }
 
     public void alterarPrograma() throws ProjetoException {
@@ -210,7 +216,7 @@ public class ProgramaController implements Serializable {
     	procedimentoCboEspecifico.setCbo(this.cboSelecionado);
     	
     	if(!existeProcedimentoComEsteCbo(procedimentoCboEspecifico)) {
-    		this.listaProcedimentoCboEspecificoDTO.add(procedimentoCboEspecifico);
+    		this.prog.getListaProcedimentoCboEspecificoDTO().add(procedimentoCboEspecifico);
     		JSFUtil.fecharDialog("dlgConsulProcOcup");
     	}
     	else
@@ -218,13 +224,17 @@ public class ProgramaController implements Serializable {
     }
     
     private boolean existeProcedimentoComEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
-    	for (ProcedimentoCboEspecificoDTO procedimentoIhCbo : this.listaProcedimentoCboEspecificoDTO) {
+    	for (ProcedimentoCboEspecificoDTO procedimentoIhCbo : this.prog.getListaProcedimentoCboEspecificoDTO()) {
     		if(procedimentoIhCbo.getProcedimento().getIdProc() == procedimentoCboEspecifico.getProcedimento().getIdProc() &&
     				procedimentoIhCbo.getCbo().getCodCbo() == procedimentoCboEspecifico.getCbo().getCodCbo()) {
     			return true;    			
     		}
 		}
     	return false;
+    }
+    
+    public void removerProcedimentoCboEspecifico(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
+    	this.prog.getListaProcedimentoCboEspecificoDTO().remove(procedimentoCboEspecifico);
     }
     
     public void selecionarProcedimento(ProcedimentoBean procedimento) {
@@ -305,13 +315,5 @@ public class ProgramaController implements Serializable {
 
 	public void setCboSelecionado(CboBean cboSelecionado) {
 		this.cboSelecionado = cboSelecionado;
-	}
-
-	public List<ProcedimentoCboEspecificoDTO> getListaProcedimentoCboEspecificoDTO() {
-		return listaProcedimentoCboEspecificoDTO;
-	}
-
-	public void setListaProcedimentoCboEspecificoDTO(List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO) {
-		this.listaProcedimentoCboEspecificoDTO = listaProcedimentoCboEspecificoDTO;
 	}
 }

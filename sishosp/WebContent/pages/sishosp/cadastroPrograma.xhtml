@@ -31,10 +31,9 @@
 									<b:label for="inputname" value="Descrição" severity="info" />
 
 									<b:inputText value="#{ProgramaController.prog.descPrograma}"
-										validator="CaractereEmBrancoValidator" class="form-control"
-										id="inputname" required="true"
+										class="form-control" id="inputname" required="true"
 										requiredMessage="Descrição: Campo obrigatório!"
-										validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">
+										validatorMessage="Descrição: deve conter entre 2 e 50 caracteres.">
 										<f:validateLength minimum="2" maximum="50" />
 									</b:inputText>
 								</b:column>
@@ -126,12 +125,12 @@
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":tab:frmPrincipal msgPagina :formConsulProcOcup" 
+							update=":msgPagina :formConsulProcOcup" 
 							class="btn-acao-table acao-editar"
 							actionListener="#{ProgramaController.limparProcedimentoIhCboSelecionado()}"
 							oncomplete="PF('dlgConsulProcOcup').show();" />
 							
-						<p:dataTable var="procEsp" value="#{ProgramaController.listaProcedimentoCboEspecificoDTO}"
+						<p:dataTable id="tabProcCbo" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoCboEspecificoDTO}"
 							emptyMessage="Nenhum registro foi adicionado">
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
@@ -148,6 +147,14 @@
 							<p:column headerText="Código CBO" width="100">
 								<h:outputText value="#{procEsp.cbo.codigo}" />
 							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerProcedimentoCboEspecifico(procEsp)}"
+                                	title="Remover" update=":tab:formProcedimentosCboEspec"
+                                	style="margin-left:28%;"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
 						</p:dataTable>
 					</h:form>
 				</p:tab>
@@ -157,11 +164,11 @@
 			<div align="center">
 				<p:commandButton action="#{ProgramaController.gravarPrograma()}"
 					icon="ui-icon-check" size="sm" look="success"
-					update=":tab:frmPrincipal msgPagina" value="Incluir"
+					update=":tab:frmPrincipal :tab:formProcedimentosCboEspec msgPagina" value="Incluir"
 					class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
 
 				<p:commandButton action="#{ProgramaController.alterarPrograma()}"
-					icon="ui-icon-check" size="sm" update=":tab:frmPrincipal msgPagina"
+					icon="ui-icon-check" size="sm" update=":tab:frmPrincipal :tab:formProcedimentosCboEspec msgPagina"
 					class="btn-incluir" value="Alterar" look="success"
 					rendered="#{ProgramaController.tipo  == 2}" />
 
@@ -224,7 +231,7 @@
                 <br />
                 <div align="center">
                 	<p:commandButton value="Incluir" 
-                	update=":tab:formProcedimentosCboEspec"
+                	update="tab:formProcedimentosCboEspec:tabProcCbo :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
                 	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
                 </div>
