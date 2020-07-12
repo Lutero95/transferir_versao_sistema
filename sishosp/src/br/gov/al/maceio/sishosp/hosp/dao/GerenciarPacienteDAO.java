@@ -283,8 +283,8 @@ public class GerenciarPacienteDAO {
         Boolean retorno = false;
 
         String sql = " SELECT id FROM hosp.paciente_instituicao pi " + 
-        		" join hosp.laudo l on l.id_laudo = pi.codlaudo" + 
-        		" WHERE pi.status = 'A' AND l.codpaciente = ?";
+        		" left join hosp.laudo l on (l.id_laudo = pi.codlaudo) " +
+        		" WHERE pi.status = 'A' AND coalesce(l.codpaciente, pi.id_paciente) = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);

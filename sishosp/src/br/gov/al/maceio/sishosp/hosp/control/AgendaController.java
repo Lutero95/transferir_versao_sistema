@@ -755,7 +755,7 @@ public class AgendaController implements Serializable {
 
     public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
-    	if(pacienteEstaAtivo()) {
+    	//if(pacienteEstaAtivo()) {
             FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_funcionario");
 			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
@@ -771,7 +771,7 @@ public class AgendaController implements Serializable {
 					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
 				gravarAgendaAvulsa(new FuncionarioBean());
 			}
-    	}
+    	//}
     }
     
     private boolean pacienteEstaAtivo() throws ProjetoException {
