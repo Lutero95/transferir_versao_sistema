@@ -128,6 +128,22 @@
 									</b:row>
 									<b:row>
 										<b:column span="12">
+											<h:outputLabel value="CNS: " />
+											<h:outputLabel value="#{evo.funcionario.cns}"
+														   style="font-weight:bold; margin-left:10px" />
+										</b:column>
+									</b:row>
+
+									<b:row>
+										<b:column span="12">
+											<h:outputLabel value="CBO: " />
+											<h:outputLabel value="#{evo.funcionario.cbo.descCbo}"
+														   style="font-weight:bold; margin-left:10px" />
+										</b:column>
+									</b:row>
+
+									<b:row>
+										<b:column span="12">
 											<h:outputLabel value="Situação do Atendimento:" />
 											<br />
 											<h:outputLabel value="#{evo.situacaoAtendimento.descricao}" escape="false"

@@ -84,8 +84,7 @@ public class EquipeBean implements Serializable {
 		} else {
 
 			for (int i = 0; i < profissionais.size(); i++) {
-				if (profissionais.get(i).getId() == profAdd
-						.getId()) {
+				if (profissionais.get(i).getId() .equals(profAdd.getId())) {
 					existe = true;
 				}
 			}

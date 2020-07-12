@@ -1163,7 +1163,7 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
 
-		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo, sa.descricao  situacaoatendimento FROM hosp.atendimentos1 a1 "
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo FROM hosp.atendimentos1 a1 "
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ " left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento "
 				+ " left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento "
@@ -1171,6 +1171,7 @@ public class AtendimentoDAO {
 				+ " left join hosp.grupo g on g.id_grupo = a.codgrupo "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
+				+ " left join hosp.cbo c on c.id  = f.codcbo "
 				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' ";
 		if (periodoInicialEvolucao != null)
 			sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
@@ -1195,12 +1196,17 @@ public class AtendimentoDAO {
 				AtendimentoBean at = new AtendimentoBean();
 				at.getProcedimento().setNomeProc(rs.getString("nome"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.getFuncionario().setCns(rs.getString("cns"));
+				at.getFuncionario().getCbo().setCodCbo(rs.getInt("idcbo"));
+				at.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
+				at.getFuncionario().getCbo().setDescCbo(rs.getString("desccbo"));
 				at.setEvolucao(rs.getString("evolucao"));
 				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
 				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				at.getSituacaoAtendimento().setDescricao(rs.getString("situacaoatendimento"));
+
 
 				lista.add(at);
 			}
