@@ -162,13 +162,13 @@
 		</div>
 		<h:form>
 			<div align="center">
-				<p:commandButton action="#{ProgramaController.gravarPrograma()}"
+				<p:commandButton actionListener="#{ProgramaController.gravarPrograma()}"
 					icon="ui-icon-check" size="sm" look="success"
-					update=":tab:frmPrincipal :tab:formProcedimentosCboEspec msgPagina" value="Incluir"
+					update="tab msgPagina" value="Incluir"
 					class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
 
-				<p:commandButton action="#{ProgramaController.alterarPrograma()}"
-					icon="ui-icon-check" size="sm" update=":tab:frmPrincipal :tab:formProcedimentosCboEspec msgPagina"
+				<p:commandButton actionListener="#{ProgramaController.alterarPrograma()}"
+					icon="ui-icon-check" size="sm" update="tab msgPagina"
 					class="btn-incluir" value="Alterar" look="success"
 					rendered="#{ProgramaController.tipo  == 2}" />
 
@@ -267,7 +267,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":tab:frmPrincipal:tabela, :msgPagina"
+                                    update="tab:frmPrincipal:tabela, :msgPagina"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     onclick="PF('dlgConsuGrupos').hide();"

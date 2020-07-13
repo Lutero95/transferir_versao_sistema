@@ -101,6 +101,9 @@ public class ProgramaDAO {
                     stmt3.execute();
                 }
             }
+            
+            excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
+            inserirProcedimentosIhCbosEspecificos(prog, con);
 
             con.commit();
             retorno = true;
@@ -129,6 +132,8 @@ public class ProgramaDAO {
             PreparedStatement stmt = con.prepareStatement(sql1);
             stmt.setLong(1, prog.getIdPrograma());
             stmt.execute();
+            
+            excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
 
             String sql2 = "delete from hosp.programa where id_programa = ?";
             stmt = con.prepareStatement(sql2);
@@ -587,6 +592,24 @@ public class ProgramaDAO {
         return lista;
     }
     
+	private void excluirProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_procedimento_cbo_especifico where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+    
     private void inserirProcedimentosIhCbosEspecificos (ProgramaBean programa, Connection conAuxiliar) 
     			throws ProjetoException, SQLException {
 
@@ -595,8 +618,8 @@ public class ProgramaDAO {
             		"(id_programa, id_procedimento, id_cbo) " + 
             		"VALUES(?, ?, ?); ";
             
+            PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
             for (ProcedimentoCboEspecificoDTO procedimentoCboEspecificoDTO : programa.getListaProcedimentoCboEspecificoDTO()) {
-            	PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
             	stmt.setInt(1, programa.getIdPrograma());
             	stmt.setInt(2, procedimentoCboEspecificoDTO.getProcedimento().getIdProc());
             	stmt.setInt(3, procedimentoCboEspecificoDTO.getCbo().getCodCbo());

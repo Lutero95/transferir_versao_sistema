@@ -88,7 +88,7 @@ public class ProgramaController implements Serializable {
 
     }
 
-    public void limparDados() throws ProjetoException {
+    private void limparDados() throws ProjetoException {
         prog = new ProgramaBean();
         listaProgramas = pDao.listarProgramas();
     }
@@ -100,8 +100,7 @@ public class ProgramaController implements Serializable {
         } else {
         	*/
         	if(procedimentoPadraoNaoEhNulo()) {
-				boolean cadastrou = pDao.gravarPrograma(prog);
-
+				boolean cadastrou = pDao.gravarPrograma(this.prog);
 				if (cadastrou == true) {
 					limparDados();
 					JSFUtil.adicionarMensagemSucesso("Programa cadastrado com sucesso!", "Sucesso");
@@ -125,7 +124,7 @@ public class ProgramaController implements Serializable {
         if (this.prog.getGrupo().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
-            boolean alterou = pDao.alterarPrograma(prog);
+            boolean alterou = pDao.alterarPrograma(this.prog);
             if (alterou == true) {
                 JSFUtil.adicionarMensagemSucesso("Programa alterado com sucesso!", "Sucesso");
             } else {

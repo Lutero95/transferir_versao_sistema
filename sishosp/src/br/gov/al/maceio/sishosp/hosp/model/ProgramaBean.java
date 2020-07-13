@@ -11,8 +11,10 @@ import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 
 public class ProgramaBean implements Serializable {
 
-	private Integer idPrograma;
+	
+	private static final long serialVersionUID = 1L;
 	private String descPrograma;
+	private Integer idPrograma;
 
 	// LISTAS
 	private List<GrupoBean> grupo;
@@ -46,7 +48,7 @@ public class ProgramaBean implements Serializable {
 	public void setIdPrograma(Integer idPrograma) {
 		this.idPrograma = idPrograma;
 	}
-
+	
 	public String getDescPrograma() {
 		return descPrograma;
 	}
