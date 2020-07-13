@@ -219,13 +219,12 @@ public class ProgramaController implements Serializable {
     		JSFUtil.fecharDialog("dlgConsulProcOcup");
     	}
     	else
-    		JSFUtil.adicionarMensagemAdvertencia("Já exite um procedimento com este CBO!", "");
+    		JSFUtil.adicionarMensagemAdvertencia("Já exite um CBO inserido!", "");
     }
     
     private boolean existeProcedimentoComEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
     	for (ProcedimentoCboEspecificoDTO procedimentoIhCbo : this.prog.getListaProcedimentoCboEspecificoDTO()) {
-    		if(procedimentoIhCbo.getProcedimento().getIdProc() == procedimentoCboEspecifico.getProcedimento().getIdProc() &&
-    				procedimentoIhCbo.getCbo().getCodCbo() == procedimentoCboEspecifico.getCbo().getCodCbo()) {
+    		if(procedimentoIhCbo.getCbo().getCodCbo() == procedimentoCboEspecifico.getCbo().getCodCbo()) {
     			return true;    			
     		}
 		}
