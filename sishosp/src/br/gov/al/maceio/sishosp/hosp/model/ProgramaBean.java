@@ -7,10 +7,14 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
+
 public class ProgramaBean implements Serializable {
 
-	private Integer idPrograma;
+	
+	private static final long serialVersionUID = 1L;
 	private String descPrograma;
+	private Integer idPrograma;
 
 	// LISTAS
 	private List<GrupoBean> grupo;
@@ -23,6 +27,7 @@ public class ProgramaBean implements Serializable {
 	private ProcedimentoBean procedimento;
 	private Integer codUnidade;
 	private String descricaoUnidade;  
+	private List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -33,6 +38,7 @@ public class ProgramaBean implements Serializable {
 		this.idPrograma = null;
 		this.descPrograma = new String();
 		this.procedimento = new ProcedimentoBean();
+		this.listaProcedimentoCboEspecificoDTO = new ArrayList<>();
 	}
 
 	public Integer getIdPrograma() {
@@ -42,7 +48,7 @@ public class ProgramaBean implements Serializable {
 	public void setIdPrograma(Integer idPrograma) {
 		this.idPrograma = idPrograma;
 	}
-
+	
 	public String getDescPrograma() {
 		return descPrograma;
 	}
@@ -140,5 +146,11 @@ public class ProgramaBean implements Serializable {
 		this.descricaoUnidade = descricaoUnidade;
 	}
 
-	
+	public List<ProcedimentoCboEspecificoDTO> getListaProcedimentoCboEspecificoDTO() {
+		return listaProcedimentoCboEspecificoDTO;
+	}
+
+	public void setListaProcedimentoCboEspecificoDTO(List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO) {
+		this.listaProcedimentoCboEspecificoDTO = listaProcedimentoCboEspecificoDTO;
+	}
 }

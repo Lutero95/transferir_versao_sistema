@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 
 public class ProgramaDAO {
 
@@ -37,9 +38,8 @@ public class ProgramaDAO {
             ps.setInt(3, prog.getProcedimento().getIdProc());
             ResultSet rs = ps.executeQuery();
 
-            int idProg = 0;
             if (rs.next()) {
-                idProg = rs.getInt("id_programa");
+                prog.setIdPrograma(rs.getInt("id_programa"));
             }
 
             String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
@@ -47,12 +47,14 @@ public class ProgramaDAO {
 
             if (prog.getGrupo().size() > 0) {
                 for (int i = 0; i < prog.getGrupo().size(); i++) {
-                    ps2.setInt(1, idProg);
+                    ps2.setInt(1, prog.getIdPrograma());
                     ps2.setInt(2, prog.getGrupo().get(i).getIdGrupo());
-
                     ps2.execute();
                 }
             }
+            
+            inserirProcedimentosIhCbosEspecificos(prog, con);
+            
             con.commit();
 
             retorno = true;
@@ -99,6 +101,9 @@ public class ProgramaDAO {
                     stmt3.execute();
                 }
             }
+            
+            excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
+            inserirProcedimentosIhCbosEspecificos(prog, con);
 
             con.commit();
             retorno = true;
@@ -127,6 +132,8 @@ public class ProgramaDAO {
             PreparedStatement stmt = con.prepareStatement(sql1);
             stmt.setLong(1, prog.getIdPrograma());
             stmt.execute();
+            
+            excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
 
             String sql2 = "delete from hosp.programa where id_programa = ?";
             stmt = con.prepareStatement(sql2);
@@ -360,8 +367,8 @@ public class ProgramaDAO {
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
-                programa.setGrupo(gDao.listarGruposPorProgramaComConexao(rs
-                        .getInt("id_programa"), con));
+                programa.setGrupo(gDao.listarGruposPorProgramaComConexao(rs.getInt("id_programa"), con));
+                programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(rs.getInt("id_programa"), con));
             }
 
         } catch (SQLException sqle) {
@@ -573,6 +580,88 @@ public class ProgramaDAO {
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
                 lista.add(programa);
+            }
+
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+    
+	private void excluirProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_procedimento_cbo_especifico where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+    
+    private void inserirProcedimentosIhCbosEspecificos (ProgramaBean programa, Connection conAuxiliar) 
+    			throws ProjetoException, SQLException {
+
+        try {
+            String sql = "INSERT INTO hosp.programa_procedimento_cbo_especifico " + 
+            		"(id_programa, id_procedimento, id_cbo) " + 
+            		"VALUES(?, ?, ?); ";
+            
+            PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+            for (ProcedimentoCboEspecificoDTO procedimentoCboEspecificoDTO : programa.getListaProcedimentoCboEspecificoDTO()) {
+            	stmt.setInt(1, programa.getIdPrograma());
+            	stmt.setInt(2, procedimentoCboEspecificoDTO.getProcedimento().getIdProc());
+            	stmt.setInt(3, procedimentoCboEspecificoDTO.getCbo().getCodCbo());
+            	stmt.executeUpdate();				
+			}
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+        	conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        } 
+    }
+    
+    public List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
+
+    	List<ProcedimentoCboEspecificoDTO> lista = new ArrayList<>();
+
+        
+        String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc, " + 
+        		"c.id id_cbo, c.descricao nome_cbo, c.codigo " + 
+        		"	from hosp.programa_procedimento_cbo_especifico ppc " + 
+        		"	join hosp.programa p on ppc.id_programa = p.id_programa " + 
+        		"	join hosp.proc pr on ppc.id_procedimento = pr.id " + 
+        		"	join hosp.cbo c on ppc.id_cbo = c.id " + 
+        		"	where p.id_programa = ? and p.cod_unidade = ?;";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ProcedimentoCboEspecificoDTO procedimentoCboEspecificoDTO = new ProcedimentoCboEspecificoDTO();
+            	procedimentoCboEspecificoDTO.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+            	procedimentoCboEspecificoDTO.getProcedimento().setNomeProc(rs.getString("nome_procedimento"));
+            	procedimentoCboEspecificoDTO.getProcedimento().setCodProc(rs.getString("codproc"));
+            	procedimentoCboEspecificoDTO.getCbo().setCodCbo(rs.getInt("id_cbo"));
+            	procedimentoCboEspecificoDTO.getCbo().setDescCbo(rs.getString("nome_cbo"));
+            	procedimentoCboEspecificoDTO.getCbo().setCodigo(rs.getString("codigo"));
+            	
+                lista.add(procedimentoCboEspecificoDTO);
             }
 
         } catch (SQLException sqle) {
