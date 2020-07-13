@@ -219,7 +219,7 @@ public class ProgramaController implements Serializable {
     		JSFUtil.fecharDialog("dlgConsulProcOcup");
     	}
     	else
-    		JSFUtil.adicionarMensagemAdvertencia("Já exite um CBO inserido!", "");
+    		JSFUtil.adicionarMensagemAdvertencia("Já exite este CBO inserido!", "");
     }
     
     private boolean existeProcedimentoComEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {

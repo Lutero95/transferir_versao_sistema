@@ -108,19 +108,33 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
 
                 for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
+                	
+                	Integer idPrograma;
+                	if (agenda.getAvaliacao()) {
+                		idPrograma = agenda.getProgramaAvaliacao().getIdPrograma();
+                	} else {
+                		idPrograma = agenda.getPrograma().getIdPrograma();
+                	}
+                	
                     String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                             + " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
                     ps = con.prepareStatement(sql2);
                     if (agenda.getProfissional().getId() != null) {
+                    	
+                        Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(idPrograma, agenda.getProfissional().getCbo().getCodCbo(), con);
+                    	
                         ps.setLong(1, agenda.getProfissional().getId());
                         ps.setInt(2, idAtendimento);
-                        if ((agenda.getProfissional().getCbo().getCodCbo() != null) && (agenda.getProfissional().getCbo().getCodCbo() != 0))
+                        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getCbo().getCodCbo()))
                             ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
                         else
                             ps.setNull(3, Types.NULL);
                         
                         
-                        if (agenda.getAvaliacao()) {
+                        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
+                        	ps.setInt(4, idProcedimentoEspecifico);
+                        }
+                        else if (agenda.getAvaliacao()) {
                             ps.setInt(4, agenda.getProgramaAvaliacao().getProcedimento().getIdProc());
                         } else {
                             ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
@@ -130,19 +144,27 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     	agenda.getEquipe().setProfissionais(new EquipeDAO().listarProfissionaisDaEquipe(agenda.getEquipe().getCodEquipe()));
                     	
                         for (FuncionarioBean prof : agenda.getEquipe().getProfissionais()) {
+                        	
+                            Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(idPrograma, prof.getCbo().getCodCbo(), con);
+                        	
                             ps.setLong(1, prof.getId());
                             ps.setInt(2, idAtendimento);
-                            if (prof.getCbo().getCodCbo() != null)
+                            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getCbo().getCodCbo()))
                                 ps.setInt(3, prof.getCbo().getCodCbo());
                             else
                                 ps.setNull(3, Types.NULL);
-                            if (agenda.getAvaliacao()) {
-                                if (agenda.getProgramaAvaliacao().getProcedimento().getIdProc() != null)
+                            
+                            
+                            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
+                            	ps.setInt(4, idProcedimentoEspecifico);
+                            }
+                            else if (agenda.getAvaliacao()) {
+                                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProgramaAvaliacao().getProcedimento().getIdProc()))
                                     ps.setInt(4, agenda.getProgramaAvaliacao().getProcedimento().getIdProc());
                                 else
                                     ps.setNull(4, Types.NULL);
                             } else {
-                                if (agenda.getPrograma().getProcedimento().getIdProc() != null)
+                                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getPrograma().getProcedimento().getIdProc()))
                                     ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                                 else
                                     ps.setNull(4, Types.NULL);
@@ -2828,6 +2850,39 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			}
 		}
 		return existeAgendaAvulsa;
+	}
+	
+	public Integer retornaIdProcedimentoEspecifico(Integer idPrograma, Integer idCbo, Connection conAuxiliar) 
+			throws ProjetoException, SQLException {
+		
+		Integer idProcedimento = null;
+
+		String sql = "select ppc.id_procedimento from hosp.cbo c " + 
+				"join hosp.programa_procedimento_cbo_especifico ppc on c.id = ppc.id_cbo " + 
+				"where ppc.id_programa = ? and ppc.id_cbo = ?;";
+
+		try {
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+			stm.setInt(1, idPrograma);
+            if (VerificadorUtil.verificarSeObjetoNuloOuZero(idCbo))
+            	ps.setNull(3, Types.NULL);
+            else
+            	stm.setInt(2, idCbo);
+                
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				idProcedimento = rs.getInt("id_procedimento");
+			}
+
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return idProcedimento;
 	}
 
 }
