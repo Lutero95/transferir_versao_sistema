@@ -187,7 +187,7 @@
                 		<p:dataTable var="proc" value="#{ProgramaController.listaProcedimentos}"
 							emptyMessage="Nenhum procedimento encontrado" paginator="true" rows="5"
 							paginatorPosition="bottom">
-							<p:column headerText="Procedimento">
+							<p:column filterBy="#{proc.nomeProc}"  footerText="contains" filterMatchMode="contains" headerText="Procedimento">
 								<h:outputText value="#{proc.nomeProc}" />
 							</p:column>
 
@@ -210,7 +210,7 @@
                 		<p:dataTable var="cbo" value="#{ProgramaController.listaCbos}"
 							emptyMessage="Nenhuma ocupação encontrada" paginator="true" rows="5"
 							paginatorPosition="bottom">
-							<p:column headerText="CBO">
+							<p:column filterBy="#{cbo.descCbo}" footerText="contains" filterMatchMode="contains" headerText="CBO">
 								<h:outputText value="#{cbo.descCbo}" />
 							</p:column>
 
