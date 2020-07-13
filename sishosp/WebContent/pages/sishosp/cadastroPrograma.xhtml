@@ -31,7 +31,7 @@
 									<b:label for="inputname" value="Descrição" severity="info" />
 
 									<b:inputText value="#{ProgramaController.prog.descPrograma}"
-										class="form-control" id="inputname" required="true"
+										class="form-control" id="inputname" required="true" ajax="true" 
 										requiredMessage="Descrição: Campo obrigatório!"
 										validatorMessage="Descrição: deve conter entre 2 e 50 caracteres.">
 										<f:validateLength minimum="2" maximum="50" />
@@ -160,15 +160,15 @@
 				</p:tab>
             </p:tabView>
 		</div>
-		<h:form>
-			<div align="center">
+		<div align="center">
+			<h:form id="form-acao">
 				<p:commandButton actionListener="#{ProgramaController.gravarPrograma()}"
 					icon="ui-icon-check" size="sm" look="success"
-					update="tab msgPagina" value="Incluir"
+					update="tab msgPagina" value="Incluir" process="@all" 
 					class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
 
 				<p:commandButton actionListener="#{ProgramaController.alterarPrograma()}"
-					icon="ui-icon-check" size="sm" update="tab msgPagina"
+					icon="ui-icon-check" size="sm" update="tab msgPagina" process="@all"
 					class="btn-incluir" value="Alterar" look="success"
 					rendered="#{ProgramaController.tipo  == 2}" />
 
@@ -176,8 +176,8 @@
 					class="btn-voltar" size="sm" immediate="true" look="info"
 					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
 				</p:commandButton>
-			</div>
-		</h:form>
+			</h:form>
+		</div>
 		
 		<p:dialog header="Consultar Procedimento e Ocupações" styleClass="topDialog"
                   widgetVar="dlgConsulProcOcup" modal="true" resizable="false" width="1000" 
