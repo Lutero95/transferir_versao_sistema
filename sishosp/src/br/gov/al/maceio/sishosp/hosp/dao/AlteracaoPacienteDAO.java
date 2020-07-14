@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.*;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -339,20 +340,22 @@ public class AlteracaoPacienteDAO {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
+								Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+								
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
-								if ((listaProfissionais.get(j).getCbo().getCodCbo() != null)
-										&& (listaProfissionais.get(j).getCbo().getCodCbo() != 0)) {
+								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
 									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
 								} else {
 									ps8.setNull(3, Types.NULL);
 								}
-
-								if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
-										&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+								
+								if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									ps8.setInt(4, idProcedimentoEspecifico);
+								else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
 									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
@@ -544,7 +547,7 @@ public class AlteracaoPacienteDAO {
 				atualizaCidPrimario(listaIdAtendimento1, conexao, insercao.getLaudo().getCid1().getIdCid());
 			}
 
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
 
 				retorno = true;
@@ -692,21 +695,23 @@ public class AlteracaoPacienteDAO {
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
-
+								
+								Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+								
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
-								if ((listaProfissionais.get(j).getCbo().getCodCbo() != null)
-										&& (listaProfissionais.get(j).getCbo().getCodCbo() != 0)) {
+								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
 									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
 								} else {
 									ps8.setNull(3, Types.NULL);
 								}
 
-								if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
-										&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									ps8.setInt(4, idProcedimentoEspecifico);
+								else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
 									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
@@ -857,7 +862,7 @@ public class AlteracaoPacienteDAO {
 				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
 
 				retorno = true;
@@ -970,20 +975,22 @@ public class AlteracaoPacienteDAO {
 
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
+								Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+								
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
-								if ((listaProfissionais.get(j).getCbo().getCodCbo() != null)
-										&& (listaProfissionais.get(j).getCbo().getCodCbo() != 0)) {
+								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
 									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
 								} else {
 									ps8.setNull(3, Types.NULL);
 								}
 
-								if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
-										&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+								if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									ps8.setInt(4, idProcedimentoEspecifico);
+								else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
 									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
@@ -997,7 +1004,7 @@ public class AlteracaoPacienteDAO {
 			}
 
 			
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
 				retorno = true;
 			}
@@ -1100,13 +1107,19 @@ public class AlteracaoPacienteDAO {
 
 					String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
+					Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), conexao);
+					
 					PreparedStatement ps7 = null;
 					ps7 = conexao.prepareStatement(sql7);
 
 					ps7.setLong(1, insercao.getFuncionario().getId());
 					ps7.setInt(2, idAgend);
 					ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-					ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
+					
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+						ps7.setInt(4, idProcedimentoEspecifico);
+					else
+						ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
 
 					ps7.executeUpdate();
 
@@ -1118,7 +1131,7 @@ public class AlteracaoPacienteDAO {
 				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 				
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "A", conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
 				retorno = true;
 			}

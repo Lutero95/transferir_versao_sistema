@@ -216,7 +216,7 @@ public class TransferenciaPacienteController implements Serializable {
 
 
     public void excluirFuncionarioIhDiasDeAtendimento() {
-        funcionario.getListaDiasAtendimentoSemana().remove(funcionario);
+        funcionario.getListaDiasAtendimentoSemana().clear();
         listaProfissionaisAdicionados.remove(funcionario);
     }
 
@@ -282,7 +282,7 @@ public class TransferenciaPacienteController implements Serializable {
 
     public void abrirDialog() {
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
-            //funcionario.setListDiasSemana(new ArrayList<>());
+            funcionario.setListDiasSemana(new ArrayList<>());
             JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
             JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
         } else {
