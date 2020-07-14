@@ -19,11 +19,11 @@
                               class="panel-title"></h:outputText>
             </div>
             
+						<h:form class="form-horizontal" id="frmPrincipal">
             <p:tabView id="tab">
             	<p:tab title="Dados Gerais">
 					<div class="panel-body table-body sub-table-body">
 
-						<h:form class="form-horizontal" id="frmPrincipal">
 
 							<b:row>
 
@@ -79,7 +79,7 @@
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
 													action="#{ProgramaController.prog.removeGrupoLista()}"
-													icon="ui-icon-trash" update=":tab:frmPrincipal:tabela">
+													icon="ui-icon-trash" update="frmPrincipal:tab:tabela">
 													<f:setPropertyActionListener value="#{tab}"
 														target="#{ProgramaController.prog.grupoRmv}" />
 												</p:commandButton>
@@ -117,11 +117,9 @@
 								</b:column>
 
 							</b:row>
-						</h:form>
 					</div>
 				</p:tab>
             	<p:tab title="Procedimentos para Ocupações Específicas">
-            		<h:form id="formProcedimentosCboEspec">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
@@ -151,31 +149,32 @@
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoCboEspecifico(procEsp)}"
-                                	title="Remover" update=":tab:formProcedimentosCboEspec"
+                                	title="Remover" update="frmPrincipal"
                                 	style="margin-left:28%;"
                                 	class="new-btn-acao-table acao-excluir"/>
 							</p:column>
 						</p:dataTable>
-					</h:form>
 				</p:tab>
             </p:tabView>
-		</div>
-		<div align="center">
-			<h:form id="form-acao">
-				<p:commandButton actionListener="#{ProgramaController.gravarPrograma()}"
-					icon="ui-icon-check" size="sm" look="success"
-					update="tab msgPagina" value="Incluir" process="@all" 
-					class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
+				<div align="center">
+					<br />
+					<p:commandButton
+						actionListener="#{ProgramaController.gravarPrograma()}"
+						icon="ui-icon-check" size="sm" look="success"
+						update="tab msgPagina" value="Incluir" process="@all"
+						class="btn-incluir" rendered="#{ProgramaController.tipo == 1}" />
 
-				<p:commandButton actionListener="#{ProgramaController.alterarPrograma()}"
-					icon="ui-icon-check" size="sm" update="tab msgPagina" process="@all"
-					class="btn-incluir" value="Alterar" look="success"
-					rendered="#{ProgramaController.tipo  == 2}" />
+					<p:commandButton
+						actionListener="#{ProgramaController.alterarPrograma()}"
+						icon="ui-icon-check" size="sm" update="tab msgPagina"
+						process="@all" class="btn-incluir" value="Alterar" look="success"
+						rendered="#{ProgramaController.tipo  == 2}" />
 
-				<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					class="btn-voltar" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-				</p:commandButton>
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						class="btn-voltar" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
+					</p:commandButton>
+				</div>
 			</h:form>
 		</div>
 		
@@ -231,7 +230,7 @@
                 <br />
                 <div align="center">
                 	<p:commandButton value="Incluir" 
-                	update="tab:formProcedimentosCboEspec:tabProcCbo :msgPagina" immediate="true"
+                	update=":frmPrincipal :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
                 	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
                 </div>
@@ -267,7 +266,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update="tab:frmPrincipal:tabela, :msgPagina"
+                                    update=":frmPrincipal:tab:tabela, :msgPagina"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     onclick="PF('dlgConsuGrupos').hide();"
@@ -304,7 +303,7 @@
                             </f:facet>
                             <p:commandButton
                                     icon="fa fa-fw fa-check" title="Selecionar"
-                                    class="new-btn-acao-table acao-editar" update=":tab:frmPrincipal:outProc"
+                                    class="new-btn-acao-table acao-editar" update=":frmPrincipal"
                                     onclick="PF('dlgConsulProc').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
                                                              target="#{ProgramaController.prog.procedimento}"/>
