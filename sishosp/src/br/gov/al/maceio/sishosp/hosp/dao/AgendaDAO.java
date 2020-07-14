@@ -250,17 +250,23 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 idAtendimento = rs.getInt("id_atendimento");
             }
 
-            for (int j = 0; j < listaProfissionais.size(); j++) {
+            for (FuncionarioBean funcionario : listaProfissionais) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                         + " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+                
+                Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(), funcionario.getCbo().getCodCbo(), con);
+                
                 ps = con.prepareStatement(sql2);
-                ps.setLong(1, listaProfissionais.get(j).getId());
+                ps.setLong(1, funcionario.getId());
                 ps.setInt(2, idAtendimento);
-                if (listaProfissionais.get(j).getCbo().getCodCbo() != null)
-                    ps.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo()))
+                    ps.setInt(3, funcionario.getCbo().getCodCbo());
                 else
                     ps.setNull(3, Types.NULL);
-                if (agenda.getPrograma().getProcedimento().getIdProc() != null)
+                
+                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                	ps.setInt(4, idProcedimentoEspecifico);
+                else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getPrograma().getProcedimento().getIdProc()))
                     ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                 else
                     ps.setNull(4, Types.NULL);
