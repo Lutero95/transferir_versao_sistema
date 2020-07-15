@@ -183,6 +183,7 @@ public class AtendimentoDAO {
 			stmt2.setInt(1, atendimento.getId());
 
 			stmt2.executeUpdate();
+			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 
 			con.commit();
 

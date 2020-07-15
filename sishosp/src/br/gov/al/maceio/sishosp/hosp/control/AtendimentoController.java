@@ -72,6 +72,8 @@ public class AtendimentoController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
     private Boolean existeAlgumaCargaSigtap;
+    private  Date dataAtende;
+	private Boolean existeCargaSigtapParaEsteMesOuAnterior;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -255,6 +257,14 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
+            
+            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
+            
+            if(this.unidadeValidaDadosSigtap) {
+            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende);
+            }
+            
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
@@ -273,6 +283,14 @@ public class AtendimentoController implements Serializable {
                 idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPorId(idAtendimentos);
+            
+            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
+            
+            if(this.unidadeValidaDadosSigtap) {
+            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende);
+            }
+            
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
@@ -293,6 +311,12 @@ public class AtendimentoController implements Serializable {
         else
             this.existeAlgumaCargaSigtap = true;
     }
+    
+	private void existeCargaSigtapParaEsteMesOuAnterior(Date dataAtende) throws ProjetoException {
+		this.existeCargaSigtapParaEsteMesOuAnterior = procedimentoDAO.houveCargaDoSigtapEsteMes(DataUtil.extrairMesDeData(dataAtende), DataUtil.extrairAnoDeData(dataAtende));
+		if(!existeCargaSigtapParaEsteMesOuAnterior)
+			JSFUtil.adicionarMensagemAdvertencia("Não é possível evoluir o atendimento pois não existe Dados do Sigtap para o mês/ano do atendimento", "");
+	}
 
     public void buscarSituacoes() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
@@ -350,9 +374,6 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
             return null;
         }
-        //comentado enquanto nao tiver a integracao com o datasus    } else {
-        //comentado enquanto nao tiver a integracao com o datasus       JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
-        //comentado enquanto nao tiver a integracao com o datasus   }
     }
 
     public void alterarSituacaoDeAtendimentoPorProfissional() {
@@ -375,22 +396,23 @@ public class AtendimentoController implements Serializable {
 
     private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-            Date dataAtende = this.atendimento.getDataAtendimentoInicio();
-
-            if (!existeCargaSigtapParaDataSolicitacao()) {
-                dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
-                this.atendimento.setValidadoPeloSigtapAnterior(true);
-            }
-            else {
-                this.atendimento.setValidadoPeloSigtapAnterior(false);
-            }
-
             LaudoController laudoController = new LaudoController();
-            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
-            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
-            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.idadeValida(this.dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.validaSexoDoPacienteProcedimentoSigtap(this.dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
+            laudoController.validaCboDoProfissionalLaudo(this.dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
         }
     }
+
+	private Date setaAtendimentoValidadoPeloSigtapAnterior(Date dataAtende) {
+		if (!existeCargaSigtapParaDataSolicitacao()) {
+		    dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+		    this.atendimento.setValidadoPeloSigtapAnterior(true);
+		}
+		else {
+		    this.atendimento.setValidadoPeloSigtapAnterior(false);
+		}
+		return dataAtende;
+	}
 
     public boolean existeCargaSigtapParaDataSolicitacao() {
         boolean existeCargaSigtapParaDataSolicitacao = true;
@@ -961,4 +983,11 @@ public class AtendimentoController implements Serializable {
         this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
     }
 
+	public Boolean getExisteCargaSigtapParaEsteMesOuAnterior() {
+		return existeCargaSigtapParaEsteMesOuAnterior;
+	}
+
+	public void setExisteCargaSigtapParaEsteMesOuAnterior(Boolean existeCargaSigtapParaEsteMesOuAnterior) {
+		this.existeCargaSigtapParaEsteMesOuAnterior = existeCargaSigtapParaEsteMesOuAnterior;
+	}
 }

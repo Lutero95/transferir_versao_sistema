@@ -1469,17 +1469,9 @@ public class ProcedimentoDAO {
 
     public Boolean houveCargaDoSigtapEsteMes(Integer mes, Integer ano) throws ProjetoException {
 
-        String sql = "select\n" +
-                "\texists (\n" +
-                "\tselect\n" +
-                "\t\tid\n" +
-                "\tfrom\n" +
-                "\t\tsigtap.historico_consumo_sigtap\n" +
-                "\twhere\n" +
-                "\tstatus = 'A'\n" +
-                "\t\tand mes = ?\n" +
-                "\t\tand ano = ?\n" +
-                "\t\t) houve_carga_este_mes";
+        String sql = "select exists (select id from sigtap.historico_consumo_sigtap " +
+                "where status = 'A' and mes = ? and ano = ? ) houve_carga_este_mes";
+        
         Boolean houveCargaDoSigtap = false;
         try {
             con = ConnectionFactory.getConnection();

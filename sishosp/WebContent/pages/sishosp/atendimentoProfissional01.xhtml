@@ -27,7 +27,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 			<div class="panel-body table-body">
 				<h:form id="formAcoes">
 				
-					<p:row rendered="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
+					<p:row rendered="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 						<p:messages/>
 						<br/>
 					</p:row>
@@ -53,7 +53,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 									actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}"
 									action="#{LaudoController.listarLaudo('', '', '')}"
 									oncomplete="PF('dlglaudo').show();"
-									disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}">
+									disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 									<f:setPropertyActionListener value="2"
 										target="#{LaudoController.tipo}" />
 
@@ -140,7 +140,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 					<div align="center" class="div-btns-atendp">
 
 						<p:commandButton
-							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false}"
+							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}"
 							action="#{AtendimentoController.realizarAtendimentoProfissional()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
 							update=":msgPagina" class="btn-incluir" style="float:left; margin-top:6%;" />
