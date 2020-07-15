@@ -41,6 +41,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -755,13 +756,16 @@ public class AgendaController implements Serializable {
 
     public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
-    	//if(pacienteEstaAtivo()) {
+    	if(pacienteEstaAtivo()) {
             FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_funcionario");
+            
 			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
 					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
 				zerarValoresAgendaMaximoIhQuantidade();
 			}
+			
+			insereIdCidPrimarioEmAgendaAvulsa(user_session);
 			
 			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
 			boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
@@ -771,8 +775,13 @@ public class AgendaController implements Serializable {
 					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
 				gravarAgendaAvulsa(new FuncionarioBean());
 			}
-    	//}
+    	}
     }
+
+	private void insereIdCidPrimarioEmAgendaAvulsa(FuncionarioBean user_session) throws ProjetoException {
+		Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId());
+		this.agenda.setIdCidPrimario(idCid);;
+	}
     
     private boolean pacienteEstaAtivo() throws ProjetoException {
     	GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
