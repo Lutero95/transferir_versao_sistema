@@ -7,6 +7,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import javax.faces.context.FacesContext;
@@ -250,7 +251,7 @@ public class TransferenciaPacienteDAO {
 
 			ps6.setLong(1, id_paciente);
 			ps6.setString(2, insercao.getObservacao());
-			ps6.setString(3, "T");
+			ps6.setString(3, TipoGravacaoHistoricoPaciente.TRANSFERENCIA.getSigla());
 			ps6.setLong(4, user_session.getId());
 
 			ps6.executeUpdate();
@@ -340,20 +341,22 @@ public class TransferenciaPacienteDAO {
 
 							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
+							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), conexao);
+							
 							ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
 
 							ps4.setLong(1, listaProfissionais.get(h).getId());
 							ps4.setInt(2, idAgend);
-							if ((listaProfissionais.get(h).getCbo().getCodCbo() != null)
-									&& (listaProfissionais.get(h).getCbo().getCodCbo() != 0)) {
+							if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(h).getCbo().getCodCbo())) {
 								ps4.setInt(3, listaProfissionais.get(h).getCbo().getCodCbo());
 							} else {
 								ps4.setNull(3, Types.NULL);
 							}
-
-							if ((insercao.getPrograma().getProcedimento().getIdProc() != null)
-									&& (insercao.getPrograma().getProcedimento().getIdProc() != 0)) {
+							
+							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								ps4.setInt(4, idProcedimentoEspecifico);
+							else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
 								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 							} else {
 								ps4.setNull(4, Types.NULL);
@@ -379,7 +382,7 @@ public class TransferenciaPacienteDAO {
 				}
 
 			}
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "IT",
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.INSERCAO_VIA_TRANSFERENCIA.getSigla(),
 					conexao)) {
 				conexao.commit();
 				retorno = true;
@@ -473,7 +476,7 @@ public class TransferenciaPacienteDAO {
 
 			ps6.setLong(1, id_paciente);
 			ps6.setString(2, insercao.getObservacao());
-			ps6.setString(3, "T");
+			ps6.setString(3, TipoGravacaoHistoricoPaciente.TRANSFERENCIA.getSigla());
 			ps6.setLong(4, user_session.getId());
 
 			ps6.executeUpdate();
@@ -579,21 +582,24 @@ public class TransferenciaPacienteDAO {
 								listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
-
+							
+							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+							
 							PreparedStatement ps10 = null;
 							ps10 = conexao.prepareStatement(sql10);
 
 							ps10.setLong(1, listaProfissionais.get(j).getId());
 							ps10.setInt(2, idAgend);
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									listaProfissionais.get(j).getCbo().getCodCbo())) {
+							
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
 								ps10.setNull(3, Types.NULL);
 							} else {
 								ps10.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
 							}
 							
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(
-									insercao.getPrograma().getProcedimento().getIdProc())) {
+							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								ps10.setInt(4, idProcedimentoEspecifico);
+							else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
 								ps10.setNull(4, Types.NULL);
 							} else {
 								ps10.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
@@ -646,7 +652,7 @@ public class TransferenciaPacienteDAO {
 				ps6.execute();
 			}
 
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicaoNovo, insercao.getObservacao(), "IT",
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicaoNovo, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.INSERCAO_VIA_TRANSFERENCIA.getSigla(),
 					conexao)) {
 				conexao.commit();
 

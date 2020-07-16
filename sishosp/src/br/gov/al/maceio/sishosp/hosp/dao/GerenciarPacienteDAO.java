@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
@@ -192,7 +193,6 @@ public class GerenciarPacienteDAO {
     		throws ProjetoException {
 
         Boolean retorno = false;
-        final String DESLIGADO = "D";
 
         String sql = "update hosp.paciente_instituicao set status = ? "
                 + " where id = ?";
@@ -208,7 +208,7 @@ public class GerenciarPacienteDAO {
             
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            stmt.setString(1, DESLIGADO);
+            stmt.setString(1, TipoGravacaoHistoricoPaciente.DESLIGAMENTO.getSigla());
             stmt.setInt(2, gerenciarRow.getId());
             stmt.executeUpdate();
 
@@ -217,7 +217,7 @@ public class GerenciarPacienteDAO {
             stmt = conexao.prepareStatement(sql2);
             stmt.setLong(1, gerenciarRow.getId());
             stmt.setInt(2, gerenciar.getMotivo_desligamento());
-            stmt.setString(3, DESLIGADO);
+            stmt.setString(3, TipoGravacaoHistoricoPaciente.DESLIGAMENTO.getSigla());
             stmt.setString(4, gerenciar.getObservacao());
             stmt.setLong(5, user_session.getId());
             stmt.setDate(6, new java.sql.Date(gerenciar.getDataDesligamento().getTime()));
@@ -258,7 +258,7 @@ public class GerenciarPacienteDAO {
                     + " VALUES  (?, current_timestamp, (select motivo_padrao_desligamento_opm from hosp.parametro), ?, ?, ?)";
             stmt = conexao.prepareStatement(sql2);
             stmt.setLong(1, row.getLaudo().getPaciente().getId_paciente());
-            stmt.setString(2, "D");
+            stmt.setString(2, TipoGravacaoHistoricoPaciente.DESLIGAMENTO.getSigla());
             stmt.setString(3, gerenciar.getObservacao());
             stmt.setLong(4, user_session.getId());
             stmt.executeUpdate();
