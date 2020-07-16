@@ -40,6 +40,7 @@ public class AtendimentoBean implements Serializable {
     private GrupoBean grupoAvaliacao;
     private SituacaoAtendimentoBean situacaoAtendimento;
     private SituacaoAtendimentoBean situacaoAtendimentoAnterior;
+    private CidBean cidPrimario;
     
 
     public AtendimentoBean() {
@@ -56,6 +57,7 @@ public class AtendimentoBean implements Serializable {
         this.grupo = new GrupoBean();
         this.situacaoAtendimento = new SituacaoAtendimentoBean();
         this.situacaoAtendimentoAnterior = new SituacaoAtendimentoBean();
+        this.cidPrimario = new CidBean();
     }
 
     public Integer getId() {
@@ -289,5 +291,12 @@ public class AtendimentoBean implements Serializable {
 	public void setValidadoPeloSigtapAnterior(boolean validadoPeloSigtapAnterior) {
 		this.validadoPeloSigtapAnterior = validadoPeloSigtapAnterior;
 	}
-    
+
+	public CidBean getCidPrimario() {
+		return cidPrimario;
+	}
+
+	public void setCidPrimario(CidBean cidPrimario) {
+		this.cidPrimario = cidPrimario;
+	}
 }

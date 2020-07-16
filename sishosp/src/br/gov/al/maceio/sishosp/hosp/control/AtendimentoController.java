@@ -72,8 +72,11 @@ public class AtendimentoController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
     private Boolean existeAlgumaCargaSigtap;
+    private Boolean comCids;
+    private CidDAO cidDao;
+    private List<CidBean> listaCids;
     private  Date dataAtende;
-	private Boolean existeCargaSigtapParaEsteMesOuAnterior;
+    private Boolean existeCargaSigtapParaEsteMesOuAnterior;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -116,6 +119,9 @@ public class AtendimentoController implements Serializable {
         this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
         this.funcionarioLiberacao = new FuncionarioBean();
         unidadeDAO = new UnidadeDAO();
+        this.comCids = false;
+        this.cidDao = new CidDAO();
+        this.listaCids = new ArrayList<>();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -257,14 +263,6 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
-            
-            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
-            
-            if(this.unidadeValidaDadosSigtap) {
-            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
-            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende);
-            }
-            
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
@@ -283,14 +281,6 @@ public class AtendimentoController implements Serializable {
                 idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPorId(idAtendimentos);
-            
-            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
-            
-            if(this.unidadeValidaDadosSigtap) {
-            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
-            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende);
-            }
-            
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
@@ -298,7 +288,7 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+    public void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
         this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
@@ -311,12 +301,6 @@ public class AtendimentoController implements Serializable {
         else
             this.existeAlgumaCargaSigtap = true;
     }
-    
-	private void existeCargaSigtapParaEsteMesOuAnterior(Date dataAtende) throws ProjetoException {
-		this.existeCargaSigtapParaEsteMesOuAnterior = procedimentoDAO.houveCargaDoSigtapEsteMes(DataUtil.extrairMesDeData(dataAtende), DataUtil.extrairAnoDeData(dataAtende));
-		if(!existeCargaSigtapParaEsteMesOuAnterior)
-			JSFUtil.adicionarMensagemAdvertencia("Não é possível evoluir o atendimento pois não existe Dados do Sigtap para o mês/ano do atendimento", "");
-	}
 
     public void buscarSituacoes() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
@@ -396,29 +380,28 @@ public class AtendimentoController implements Serializable {
 
     private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
+            Date dataAtende = this.atendimento.getDataAtendimentoInicio();
+
+            if (!existeCargaSigtapParaDataAtende(this.atendimento.getDataAtendimentoInicio())) {
+                dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+                this.atendimento.setValidadoPeloSigtapAnterior(true);
+            }
+            else {
+                this.atendimento.setValidadoPeloSigtapAnterior(false);
+            }
+
             LaudoController laudoController = new LaudoController();
-            laudoController.idadeValida(this.dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
-            laudoController.validaSexoDoPacienteProcedimentoSigtap(this.dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
-            laudoController.validaCboDoProfissionalLaudo(this.dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
+            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
         }
     }
 
-	private Date setaAtendimentoValidadoPeloSigtapAnterior(Date dataAtende) {
-		if (!existeCargaSigtapParaDataSolicitacao()) {
-		    dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
-		    this.atendimento.setValidadoPeloSigtapAnterior(true);
-		}
-		else {
-		    this.atendimento.setValidadoPeloSigtapAnterior(false);
-		}
-		return dataAtende;
-	}
-
-    public boolean existeCargaSigtapParaDataSolicitacao() {
+    public boolean existeCargaSigtapParaDataAtende(Date dataAtende) {
         boolean existeCargaSigtapParaDataSolicitacao = true;
         if(this.unidadeValidaDadosSigtap) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(this.atendimento.getDataAtendimentoInicio());
+            calendar.setTime(dataAtende);
             int mesAtendimento = calendar.get(Calendar.MONTH);
             mesAtendimento++;
             int anoAtendimento = calendar.get(Calendar.YEAR);
@@ -728,6 +711,37 @@ public class AtendimentoController implements Serializable {
         return null;
     }
 
+    public void listaAtendimentos1FiltroCid() throws ProjetoException {
+        this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroCid
+                (atendimentoAux.getDataAtendimentoInicio(), atendimentoAux.getDataAtendimentoFinal(), this.comCids);
+    }
+
+    public void listarCids1() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+            Date dataAtende = this.atendimento.getDataAtendimento();
+
+            if (!existeCargaSigtapParaDataAtende(dataAtende))
+                dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+
+            listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
+                    this.atendimento.getProcedimento().getCodProc(), dataAtende);
+        }
+        else
+            listaCids = cidDao.listarCidsBusca(campoBusca);
+    }
+
+    public void limparDialogBuscaCid() {
+        this.listaCids.clear();
+        this.campoBusca = new String();
+    }
+
+    public void atualizaCidDeAtendimento() throws ProjetoException {
+        boolean alterou =
+                atendimentoDAO.atualizaCidDeAtendimento(atendimento.getCidPrimario().getIdCid(), atendimento.getId1());
+        if(alterou)
+            listaAtendimentos1FiltroCid();
+    }
+
     public AtendimentoBean getAtendimento() {
         return atendimento;
     }
@@ -983,11 +997,26 @@ public class AtendimentoController implements Serializable {
         this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
     }
 
-	public Boolean getExisteCargaSigtapParaEsteMesOuAnterior() {
-		return existeCargaSigtapParaEsteMesOuAnterior;
-	}
+    public Boolean getExisteCargaSigtapParaEsteMesOuAnterior() {
+        return existeCargaSigtapParaEsteMesOuAnterior;
+    }
 
-	public void setExisteCargaSigtapParaEsteMesOuAnterior(Boolean existeCargaSigtapParaEsteMesOuAnterior) {
-		this.existeCargaSigtapParaEsteMesOuAnterior = existeCargaSigtapParaEsteMesOuAnterior;
-	}
+    public void setExisteCargaSigtapParaEsteMesOuAnterior(Boolean existeCargaSigtapParaEsteMesOuAnterior) {
+        this.existeCargaSigtapParaEsteMesOuAnterior = existeCargaSigtapParaEsteMesOuAnterior;
+    }
+    public Boolean getComCids() {
+        return comCids;
+    }
+
+    public void setComCids(Boolean comCids) {
+        this.comCids = comCids;
+    }
+
+    public List<CidBean> getListaCids() {
+        return listaCids;
+    }
+
+    public void setListaCids(List<CidBean> listaCids) {
+        this.listaCids = listaCids;
+    }
 }
