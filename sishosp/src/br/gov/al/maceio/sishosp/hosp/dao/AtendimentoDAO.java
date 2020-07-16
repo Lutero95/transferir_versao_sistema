@@ -1391,4 +1391,93 @@ public class AtendimentoDAO {
 		}
 	}
 	
+	public List<AtendimentoBean> listaAtendimentos1FiltroCid(Date dataInicio, Date dataFim, boolean comCids) throws ProjetoException {
+
+		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
+		
+		String sql = "select a1.id_atendimentos1, f.descfuncionario, pa.nome as paciente, p.id as id_procedimento, " + 
+				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccid, p.codproc " + 
+				"from hosp.atendimentos1 a1 " + 
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
+				"join hosp.proc p on a1.codprocedimento = p.id " + 
+				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
+				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
+				"where a.dtaatende between ? and ? ";
+		
+		String filtroSql = "and a1.id_cidprimario is null "; 
+		String ordenacaoSql = "order by a.dtaatende, pa.nome; ";
+		
+		if(comCids) 
+			sql += ordenacaoSql;
+		else
+			sql += filtroSql + ordenacaoSql;
+		
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setDate(1, new java.sql.Date(dataInicio.getTime()));
+			stm.setDate(2,  new java.sql.Date(dataFim.getTime()));
+
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()) {
+				AtendimentoBean atendimento = new AtendimentoBean();
+				
+				atendimento.setId1(rs.getInt("id_atendimentos1"));
+				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimento.getPaciente().setNome(rs.getString("paciente"));
+				atendimento.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+				atendimento.getProcedimento().setNomeProc(rs.getString("procedimento"));
+				atendimento.getProcedimento().setCodProc(rs.getString("codproc"));
+				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
+				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
+				atendimento.getCidPrimario().setCid(rs.getString("desccid"));
+				
+				listaAtendimentos.add(atendimento);
+			}
+				
+		}catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaAtendimentos;
+	}
+	
+	
+	public boolean atualizaCidDeAtendimento(Integer idCid, Integer idAtendimento1) throws ProjetoException {
+
+		boolean alterou = false;
+		
+		String sql = "UPDATE hosp.atendimentos1 SET id_cidprimario = ? WHERE id_atendimentos1 = ?;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, idCid);
+			stm.setInt(2, idAtendimento1);
+			stm.executeUpdate();
+			alterou = true;
+			con.commit();	
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
+	}
 }

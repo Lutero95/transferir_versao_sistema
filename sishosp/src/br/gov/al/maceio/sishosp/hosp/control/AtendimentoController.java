@@ -72,6 +72,9 @@ public class AtendimentoController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
     private Boolean existeAlgumaCargaSigtap;
+    private Boolean comCids;
+    private CidDAO cidDao;
+    private List<CidBean> listaCids;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -114,6 +117,9 @@ public class AtendimentoController implements Serializable {
         this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
         this.funcionarioLiberacao = new FuncionarioBean();
         unidadeDAO = new UnidadeDAO();
+        this.comCids = false;
+        this.cidDao = new CidDAO();
+        this.listaCids = new ArrayList<>();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -280,7 +286,7 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+    public void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
         this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
@@ -377,7 +383,7 @@ public class AtendimentoController implements Serializable {
         if(this.unidadeValidaDadosSigtap) {
             Date dataAtende = this.atendimento.getDataAtendimentoInicio();
 
-            if (!existeCargaSigtapParaDataSolicitacao()) {
+            if (!existeCargaSigtapParaDataAtende(this.atendimento.getDataAtendimentoInicio())) {
                 dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
                 this.atendimento.setValidadoPeloSigtapAnterior(true);
             }
@@ -392,11 +398,11 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public boolean existeCargaSigtapParaDataSolicitacao() {
+    public boolean existeCargaSigtapParaDataAtende(Date dataAtende) {
         boolean existeCargaSigtapParaDataSolicitacao = true;
         if(this.unidadeValidaDadosSigtap) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(this.atendimento.getDataAtendimentoInicio());
+            calendar.setTime(dataAtende);
             int mesAtendimento = calendar.get(Calendar.MONTH);
             mesAtendimento++;
             int anoAtendimento = calendar.get(Calendar.YEAR);
@@ -705,6 +711,37 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem permissão!", "Erro!");
         return null;
     }
+    
+    public void listaAtendimentos1FiltroCid() throws ProjetoException {
+    	this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroCid
+    			(atendimentoAux.getDataAtendimentoInicio(), atendimentoAux.getDataAtendimentoFinal(), this.comCids);
+    }
+    
+    public void listarCids1() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+				Date dataAtende = this.atendimento.getDataAtendimento();
+
+				if (!existeCargaSigtapParaDataAtende(dataAtende))
+					dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+
+				listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
+							this.atendimento.getProcedimento().getCodProc(), dataAtende);
+        }
+        else
+            listaCids = cidDao.listarCidsBusca(campoBusca);
+    }
+    
+    public void limparDialogBuscaCid() {
+    	this.listaCids.clear();
+    	this.campoBusca = new String();
+    }
+    
+    public void atualizaCidDeAtendimento() throws ProjetoException {
+    	boolean alterou = 
+    			atendimentoDAO.atualizaCidDeAtendimento(atendimento.getCidPrimario().getIdCid(), atendimento.getId1());
+    	if(alterou)
+    		listaAtendimentos1FiltroCid();
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
@@ -961,4 +998,20 @@ public class AtendimentoController implements Serializable {
         this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
     }
 
+	public Boolean getComCids() {
+		return comCids;
+	}
+
+	public void setComCids(Boolean comCids) {
+		this.comCids = comCids;
+	}
+
+	public List<CidBean> getListaCids() {
+		return listaCids;
+	}
+
+	public void setListaCids(List<CidBean> listaCids) {
+		this.listaCids = listaCids;
+	}
+	
 }
