@@ -635,7 +635,8 @@ public class ProgramaDAO {
     }
     
     public List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
     	List<ProcedimentoCboEspecificoDTO> lista = new ArrayList<>();
 
         

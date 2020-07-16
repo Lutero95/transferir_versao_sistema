@@ -234,7 +234,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             for (int j = 0; j < listaProfissionais.size(); j++) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+                        + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, listaProfissionais.get(j).getId());
                 ps.setInt(2, idAtendimento);
@@ -254,6 +254,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 	Time horario = Time.valueOf(agenda.getHorario()+SEGUNDOS);
                 	ps.setTime(5, horario);
                 }
+                
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getIdCidPrimario()))
+                	ps.setNull(6, Types.NULL);
+                else
+                	ps.setInt(6, agenda.getIdCidPrimario());
+                
                 ps.executeUpdate();
 
             }
@@ -2867,6 +2873,50 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			}
 		}
 		return existeAgendaAvulsa;
+	}
+	
+	public Integer retornaIdCidDoLaudo(AgendaBean agenda, Integer codUnidade) throws ProjetoException {
+		Integer idCid = null;
+		
+		String sql = "select " + 
+				"	l.cid1 " + 
+				"from " + 
+				"	hosp.paciente_instituicao p " + 
+				"left join hosp.laudo l on " + 
+				"	(l.id_laudo = p.codlaudo) " + 
+				"where 1=1 " + 
+				"	and p.cod_unidade = ? " + 
+				"	and p.codprograma = ? " + 
+				"	and p.codgrupo = ? " + 
+				"	and p.status = 'A' " + 
+				"and coalesce(l.codpaciente, p.id_paciente) = ? " + 
+				"limit 1;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, codUnidade);
+            ps.setInt(2, agenda.getPrograma().getIdPrograma());
+            ps.setInt(3, agenda.getGrupo().getIdGrupo());
+            ps.setInt(4, agenda.getPaciente().getId_paciente());
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				idCid = rs.getInt("cid1");
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return idCid;
 	}
 
 }

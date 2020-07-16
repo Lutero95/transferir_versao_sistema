@@ -31,6 +31,7 @@ public class AgendaBean implements Serializable {
     private Boolean avulso;
     private String situacaoAtendimentoInformado;
     private List<String> listaNomeProfissionais;
+    private Integer idCidPrimario;
     
     // HERDADOS
     private PacienteBean paciente;
@@ -305,4 +306,13 @@ public class AgendaBean implements Serializable {
 	public void setListaNomeProfissionais(List<String> listaNomeProfissionais) {
 		this.listaNomeProfissionais = listaNomeProfissionais;
 	}
+
+	public Integer getIdCidPrimario() {
+		return idCidPrimario;
+	}
+
+	public void setIdCidPrimario(Integer idCidPrimario) {
+		this.idCidPrimario = idCidPrimario;
+	}
+	
 }
