@@ -30,7 +30,7 @@
 
 					<p:row>
 						<b:label value="Dia de Atendimento:" severity="info" style="margin-left: 0px;"/>
-						<p:panelGrid columns="5" style="margin-left: 1%;">
+						<p:panelGrid columns="5" style="margin-left: 1.3%;">
 							<p:column span="3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									required="true" requiredMessage="Insira a data inicial"
@@ -40,7 +40,7 @@
 
 							<p:column span="1" class="data-size4">
 								<p:outputLabel id="outdataa">
-									<h:outputLabel value="à" />
+									<h:outputLabel value="à"/>
 								</p:outputLabel>
 							</p:column>
 
@@ -51,12 +51,30 @@
 									id="dtagen3" locale="pt"
 									value="#{AtendimentoController.atendimentoAux.dataAtendimentoFinal}" />
 							</p:column>
+						</p:panelGrid>
+					</p:row>
+					
+					<p:row>
+						<p:panelGrid columns="4">
+						
+							<p:selectOneMenu value="#{AtendimentoController.tipoBusca}">
+								<f:selectItem itemLabel="Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente"
+									itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente"
+									itemValue="matpaciente" />
+								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+							</p:selectOneMenu>
 							
+							<p:inputText value="#{AtendimentoController.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar"
+								style="margin-left: 10px;width:300px" />
+								
 							<p:column class="label-position data-size3">
-								<p:commandButton title="Alterar cid" icon="ui-icon-search"
+								<p:commandButton icon="ui-icon-search"
 								 	update="frmPrincipal:dataTablePrincipal :msgPagina"
 									size="sm" action="#{AtendimentoController.listaAtendimentos1FiltroCid()}"/>
-							</p:column>
+							</p:column>	
 						</p:panelGrid>
 					</p:row>
 					

@@ -748,8 +748,7 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listaAtendimentos1FiltroCid() throws ProjetoException {
-        this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroCid
-                (atendimentoAux.getDataAtendimentoInicio(), atendimentoAux.getDataAtendimentoFinal(), this.comCids);
+        this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroCid(atendimentoAux, this.comCids, this.campoBusca, this.tipoBusca);
     }
 
     public void listarCids1() throws ProjetoException {
