@@ -85,6 +85,8 @@ public class AtendimentoController implements Serializable {
     private static final String ENDERECO_ATENDIMENTO_PROFISSIONAL = "atendimentoprofissionalnaequipe?faces-redirect=true";
     private static final String ENDERECO_ATENDIMENTO = "atendimento?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
+    private static final String EH_EVOLUCAO = "ehEvolucao";
+    private static final String NAO_EH_EVOLUCAO = "naoEhEvolucao";
 
     public AtendimentoController() {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -263,6 +265,14 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
+            
+            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
+            
+            if(this.unidadeValidaDadosSigtap) {
+            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
+            }
+            
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
@@ -281,14 +291,29 @@ public class AtendimentoController implements Serializable {
                 idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPorId(idAtendimentos);
+            
+            this.dataAtende = this.atendimento.getDataAtendimentoInicio();
+            
+            if(this.unidadeValidaDadosSigtap) {
+            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
+            }
+            
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
             listarAtendimentosEquipe();
         }
     }
+    
+    public void executaMetodosInicializadoresAtendimentosSemCid() throws ProjetoException {
+    	verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+    	verificaSeExisteAlgumaCargaSigtap();
+    	this.atendimentoAux.setDataAtendimentoInicio(this.atendimento.getDataAtendimentoInicio());
+    	this.atendimentoAux.setDataAtendimentoFinal(this.atendimento.getDataAtendimentoFinal());
+    }
 
-    public void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+    private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
         this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
@@ -301,6 +326,16 @@ public class AtendimentoController implements Serializable {
         else
             this.existeAlgumaCargaSigtap = true;
     }
+    
+	private void existeCargaSigtapParaEsteMesOuAnterior(Date dataAtende, String ehEvolucao) throws ProjetoException {
+		this.existeCargaSigtapParaEsteMesOuAnterior = procedimentoDAO.houveCargaDoSigtapEsteMes(DataUtil.extrairMesDeData(dataAtende), DataUtil.extrairAnoDeData(dataAtende));
+		if(!existeCargaSigtapParaEsteMesOuAnterior) {
+			if(ehEvolucao.equals(EH_EVOLUCAO))
+				JSFUtil.adicionarMensagemAdvertencia("Não é possível evoluir o atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
+			else
+				JSFUtil.adicionarMensagemAdvertencia("Não é possível alterar o cid do atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
+		}
+	}
 
     public void buscarSituacoes() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
@@ -380,22 +415,23 @@ public class AtendimentoController implements Serializable {
 
     private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-            Date dataAtende = this.atendimento.getDataAtendimentoInicio();
-
-            if (!existeCargaSigtapParaDataAtende(this.atendimento.getDataAtendimentoInicio())) {
-                dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
-                this.atendimento.setValidadoPeloSigtapAnterior(true);
-            }
-            else {
-                this.atendimento.setValidadoPeloSigtapAnterior(false);
-            }
-
             LaudoController laudoController = new LaudoController();
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
         }
     }
+    
+	private Date setaAtendimentoValidadoPeloSigtapAnterior(Date dataAtende) {
+		if (!existeCargaSigtapParaDataAtende(dataAtende)) {
+		    dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+		    this.atendimento.setValidadoPeloSigtapAnterior(true);
+		}
+		else {
+		    this.atendimento.setValidadoPeloSigtapAnterior(false);
+		}
+		return dataAtende;
+	}
 
     public boolean existeCargaSigtapParaDataAtende(Date dataAtende) {
         boolean existeCargaSigtapParaDataSolicitacao = true;
@@ -718,13 +754,13 @@ public class AtendimentoController implements Serializable {
 
     public void listarCids1() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-            Date dataAtende = this.atendimento.getDataAtendimento();
-
-            if (!existeCargaSigtapParaDataAtende(dataAtende))
-                dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
-
-            listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
-                    this.atendimento.getProcedimento().getCodProc(), dataAtende);
+        	Date dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(this.atendimento.getDataAtendimento());
+        	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, NAO_EH_EVOLUCAO);
+        	
+        	if(existeCargaSigtapParaEsteMesOuAnterior) {
+        		listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
+        				this.atendimento.getProcedimento().getCodProc(), dataAtende);
+        	}
         }
         else
             listaCids = cidDao.listarCidsBusca(campoBusca);
@@ -736,10 +772,11 @@ public class AtendimentoController implements Serializable {
     }
 
     public void atualizaCidDeAtendimento() throws ProjetoException {
-        boolean alterou =
-                atendimentoDAO.atualizaCidDeAtendimento(atendimento.getCidPrimario().getIdCid(), atendimento.getId1());
-        if(alterou)
-            listaAtendimentos1FiltroCid();
+		boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento);
+		if (alterou) {
+			JSFUtil.adicionarMensagemSucesso("CID adicionado ao atendimento com sucesso!", "");
+			listaAtendimentos1FiltroCid();
+		}
     }
 
     public AtendimentoBean getAtendimento() {

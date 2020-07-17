@@ -1396,7 +1396,8 @@ public class AtendimentoDAO {
 
 		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
 		
-		String sql = "select a1.id_atendimentos1, f.descfuncionario, pa.nome as paciente, p.id as id_procedimento, " + 
+		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
+				"f.descfuncionario, pa.nome as paciente, p.id as id_procedimento, " + 
 				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccid, p.codproc " + 
 				"from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
@@ -1425,7 +1426,9 @@ public class AtendimentoDAO {
 			while(rs.next()) {
 				AtendimentoBean atendimento = new AtendimentoBean();
 				
+				atendimento.setId(rs.getInt("id_atendimento"));
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
+				atendimento.setValidadoPeloSigtapAnterior(rs.getBoolean("validado_pelo_sigtap_anterior"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getPaciente().setNome(rs.getString("paciente"));
 				atendimento.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
@@ -1453,7 +1456,7 @@ public class AtendimentoDAO {
 	}
 	
 	
-	public boolean atualizaCidDeAtendimento(Integer idCid, Integer idAtendimento1) throws ProjetoException {
+	public boolean atualizaCidDeAtendimento(AtendimentoBean atendimento) throws ProjetoException {
 
 		boolean alterou = false;
 		
@@ -1463,9 +1466,10 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 
-			stm.setInt(1, idCid);
-			stm.setInt(2, idAtendimento1);
+			stm.setInt(1, atendimento.getCidPrimario().getIdCid());
+			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
+			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 			alterou = true;
 			con.commit();	
 		} catch (SQLException ex2) {

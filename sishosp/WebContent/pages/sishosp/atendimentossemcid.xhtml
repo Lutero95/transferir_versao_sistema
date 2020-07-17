@@ -9,7 +9,7 @@
 	<ui:define name="content">
 	
 	    <f:metadata>
-            <f:viewAction action="#{AtendimentoController.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap()}"/>
+            <f:viewAction action="#{AtendimentoController.executaMetodosInicializadoresAtendimentosSemCid()}"/>
         </f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -115,7 +115,8 @@
 
 							<p:commandButton title="Alterar cid" icon="fa fa-fw fa-bars"
 								size="sm" oncomplete="PF('dlgConsulCid1').show();"
-								action="#{AtendimentoController.limparDialogBuscaCid()}" update=":formConsulCid1">
+								action="#{AtendimentoController.limparDialogBuscaCid()}" update=":formConsulCid1"
+								disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{AtendimentoController.atendimento}" />
 							</p:commandButton>
