@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.control.FuncionarioController;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import org.primefaces.event.SelectEvent;
@@ -942,16 +943,34 @@ public class AgendaController implements Serializable {
         limparDados();
     }
 
+    public void contalistafunctarget(){
+       System.out.println(this.listaFuncionariosTarget.size());
+    }
+
     public void onTransferFuncionario(TransferEvent event) {
     	
         StringBuilder builder = new StringBuilder();
 
         for (Object item : event.getItems()) {
-            builder.append(((FuncionarioBean) item).getId());
-            if (listaFuncionariosTarget.contains(item)) {
-                listaFuncionariosTarget.remove(item);
-            } else {
-                listaFuncionariosTarget.add((FuncionarioBean) item);
+        	FuncionarioBean funcionario = (FuncionarioBean) item;
+            builder.append(funcionario.getId());
+            
+            if(listaFuncionariosTarget.isEmpty()) {
+            	listaFuncionariosTarget.add(funcionario);
+            }
+            
+            else {
+            	List<FuncionarioBean> listaFuncionariosTargetAux = new ArrayList<>();
+            	listaFuncionariosTargetAux.addAll(listaFuncionariosTarget);
+            	
+				for (Integer i = 0; i < listaFuncionariosTargetAux.size(); i++) {
+					if (listaFuncionariosTarget.get(i).getId().equals(funcionario.getId())) {
+						listaFuncionariosTarget.remove(i.intValue());
+						break;
+					} else {
+						listaFuncionariosTarget.add(funcionario);
+					}
+				}
             }
         }
     }

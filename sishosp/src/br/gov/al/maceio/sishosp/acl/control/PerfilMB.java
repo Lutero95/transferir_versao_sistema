@@ -9,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -129,17 +129,15 @@ public class PerfilMB implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Perfil cadastrado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				JSFUtil.fecharDialog("dlgCadPerfil");
 
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgCadPerfil').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				JSFUtil.fecharDialog("dlgCadPerfil");
 
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgCadPerfil').hide();");
 			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -180,17 +178,14 @@ public class PerfilMB implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Perfil alterado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgAltPerfil').hide();");
+				JSFUtil.fecharDialog("dlgAltPerfil");
 			} else {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Ocorreu um erro durante a alteração!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgAltPerfil').hide();");
+				JSFUtil.fecharDialog("dlgAltPerfil");
 			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -212,15 +207,13 @@ public class PerfilMB implements Serializable {
 					"Perfil excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcPerfil').hide();");
+			JSFUtil.fecharDialog("dlgExcPerfil");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcPerfil').hide();");
+			JSFUtil.fecharDialog("dlgExcPerfil");
 		}
 	}
 
@@ -253,7 +246,7 @@ public class PerfilMB implements Serializable {
 		sisPreMenu = sdao.buscarSisMenuPreview(Integer
 				.parseInt(sisSelecionadoPreMenu));
 
-		RequestContext.getCurrentInstance().execute("dlgMenuPreview.show();");
+		JSFUtil.abrirDialog("dlgMenuPreview");
 	}
 
 	public void onTransferMenu(TransferEvent event) {

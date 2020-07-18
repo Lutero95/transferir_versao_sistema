@@ -165,8 +165,7 @@ public class FuncionarioController implements Serializable {
 
 	public void onTransferSistema(TransferEvent event) {
 		StringBuilder builder = new StringBuilder();
-
-		for (Object item : event.getItems()) {
+	for (Object item : event.getItems()) {
 			builder.append(((Sistema) item).getId());
 			if (listaSistemasTarget.contains(item)) {
 				listaSistemasTarget.remove(item);
@@ -1013,6 +1012,10 @@ public class FuncionarioController implements Serializable {
 			carregaListaSistemasDualInsercao();
 		}
 
+	}
+
+	public void contalistafunctarget(){
+		System.out.println(this.listaSistemasTarget.size());
 	}
 
 	public void onTransferMenu(TransferEvent event) {

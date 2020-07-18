@@ -8,9 +8,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.TipoDocumentoDao;
 import br.gov.al.maceio.sishosp.financeiro.model.TipoDocumentoBean;
 
@@ -45,7 +44,7 @@ public class TipoDocumentoController implements Serializable {
 	public void salvar() throws ProjetoException {
 		TipoDocumentoDao dao = new TipoDocumentoDao();
 		if (dao.salvarDocumento(tipoDoc)) {
-		RequestContext.getCurrentInstance().execute("PF('dlginc').hide();");
+			JSFUtil.fecharDialog("dlginc");
 		lstTipo = null;
 		FacesContext.getCurrentInstance().addMessage(
 				null,
@@ -60,8 +59,8 @@ public class TipoDocumentoController implements Serializable {
 		if (dao.editarTipoDocumento(rowBean)) {
 		rowBean = null;
 		lstTipo = null;
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
-		RequestContext.getCurrentInstance().execute("PF('dlgedit').hide();");
+			JSFUtil.fecharDialog("dlginc");
+			JSFUtil.atualizarComponente("frm:outBotoes");
 
 		FacesContext.getCurrentInstance().addMessage(
 				null,
@@ -73,8 +72,7 @@ public class TipoDocumentoController implements Serializable {
 	
 	public void acaoExcluir() {
 		if (rowBean != null) {
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').show();");
+			JSFUtil.abrirDialog("dialogAtencao");
 
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -91,8 +89,8 @@ public class TipoDocumentoController implements Serializable {
 		dao.excluirTipoDocumento(rowBean);
 		rowBean = null;
 		lstTipo = null;
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
-		RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+		JSFUtil.abrirDialog("dialogAtencao");
+		JSFUtil.atualizarComponente("frm:outBotoes");
 
 		FacesContext.getCurrentInstance().addMessage(
 				null,
@@ -114,8 +112,7 @@ public class TipoDocumentoController implements Serializable {
 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (rowBean != null) {
-			RequestContext.getCurrentInstance()
-					.execute("PF('dlgedit').show();");
+			JSFUtil.abrirDialog("dlgedit");
 		} else
 			facesContext.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_INFO, "Selecione um Tipo de Documento antes.",
@@ -128,7 +125,7 @@ public class TipoDocumentoController implements Serializable {
 		} else {
 			rowBean = null;
 		}
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
+		JSFUtil.atualizarComponente("frm:outBotoes");
 	}
 
 	public TipoDocumentoBean getTipoDoc() {

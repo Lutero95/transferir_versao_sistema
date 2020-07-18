@@ -9,9 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.BuscaDAO;
 import br.gov.al.maceio.sishosp.financeiro.dao.FornecedorDAO;
 import br.gov.al.maceio.sishosp.financeiro.model.BuscaBeanFornecedor;
@@ -58,7 +57,7 @@ public class FornecedorController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		FornecedorDAO dao = new FornecedorDAO();
 		dao.salvarFornecedor(this.func);
-		RequestContext.getCurrentInstance().execute("PF('dlginc').hide();");
+		JSFUtil.fecharDialog("dlginc");
 		facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Salvo com Sucesso!", "Alerta"));
 
 		this.func = new FornecedorBean();
@@ -71,8 +70,8 @@ public class FornecedorController implements Serializable {
 		FornecedorDAO dao = new FornecedorDAO();
 		if (dao.editarFornecedor(this.rowBean)) {
 			rowBean = null;
-			RequestContext.getCurrentInstance().update("frm:outBotoes");
-			RequestContext.getCurrentInstance().execute("PF('dlgedit').hide();");
+			JSFUtil.atualizarComponente("frm:outBotoes");
+			JSFUtil.fecharDialog("dlgedit");
 			facesContext.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Alterado com sucesso", "Alerta"));
 
@@ -95,8 +94,8 @@ public class FornecedorController implements Serializable {
 		}
 		rowBean = null;
 		lstFornecedorALL = null;
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
-		RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+		JSFUtil.atualizarComponente("frm:outBotoes");
+		JSFUtil.fecharDialog("dialogAtencao");
 	}
 
 	public void acaoEditar() throws ProjetoException {
@@ -104,8 +103,7 @@ public class FornecedorController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 
 		if (rowBean != null) {
-
-			RequestContext.getCurrentInstance().execute("PF('dlgedit').show();");
+			JSFUtil.abrirDialog("dlgedit");
 		} else
 			facesContext.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Selecione um Fornecedor antes", "Alerta"));
@@ -115,7 +113,7 @@ public class FornecedorController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 
 		if (rowBean != null) {
-			RequestContext.getCurrentInstance().execute("PF('dialogAtencao').show();");
+			JSFUtil.abrirDialog("dialogAtencao");
 		} else
 			facesContext.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Selecione um Fornecedor antes", "Alerta"));
@@ -132,7 +130,7 @@ public class FornecedorController implements Serializable {
 
 	public void onRowSelect(FornecedorBean event) {
 		rowBean = event;
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
+		JSFUtil.atualizarComponente("frm:outBotoes");
 	}
 
 	public void buscarFornecedores() throws ProjetoException {

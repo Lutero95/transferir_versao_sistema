@@ -9,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 
@@ -102,16 +102,16 @@ public class FuncionalidadeMB implements Serializable {
 						"Funcionalidade cadastrada com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgCadMenu').hide();");
+				JSFUtil.fecharDialog("dlgCadMenu");
+
 			} else {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
-						"PF('dlgCadMenu').hide();");
+				JSFUtil.fecharDialog("dlgCadMenu");
+
 			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -148,15 +148,13 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgAltMenu').hide();");
+			JSFUtil.fecharDialog("dlgAltMenu");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.fecharDialog("dlgAltMenu");
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgAltMenu').hide();");
 		}
 
 	}
@@ -174,15 +172,14 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcMenu').hide();");
+			JSFUtil.fecharDialog("dlgExcMenu");
+
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Ocorreu um erro durante a exclusão!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.fecharDialog("dlgExcMenu");
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcMenu').hide();");
 		}
 	}
 

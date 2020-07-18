@@ -9,11 +9,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 @ManagedBean
 @ViewScoped
@@ -70,15 +70,15 @@ public class SistemaMB implements Serializable {
 					"Sistema cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgCadSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgCadSistema");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgCadSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgCadSistema");
 		}
 	}
 
@@ -99,15 +99,15 @@ public class SistemaMB implements Serializable {
 					"Sistema alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgAltSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgAltSistema");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgAltSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgAltSistema");
 		}
 	}
 
@@ -124,15 +124,15 @@ public class SistemaMB implements Serializable {
 					"Sistema excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgExcSistema");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgExcSistema').hide();");
+			JSFUtil.fecharDialog(
+					"dlgExcSistema");
 		}
 	}
 

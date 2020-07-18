@@ -9,9 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.DespesaDAO;
 import br.gov.al.maceio.sishosp.financeiro.model.DespesaBean;
 
@@ -46,7 +45,7 @@ public class DespesaController implements Serializable {
                 "Despesa cadastrada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("PF('dlgCadDespesa').hide();");
+            JSFUtil.fecharDialog("dlgCadDespesa");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao cadastrarPaciente!", "Erro");
@@ -67,8 +66,8 @@ public class DespesaController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Despesa alterada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgAltDespesa').hide();");
+
+            JSFUtil.fecharDialog("dlgAltDespesa");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao alterarPaciente!", "Erro");
@@ -95,14 +94,14 @@ public class DespesaController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Despesa excluída com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcDespesa').hide();");
+
+            JSFUtil.fecharDialog("dlgExcDespesa");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao excluir!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcDespesa').hide();");
+
+            JSFUtil.fecharDialog("dlgExcDespesa");
         }
     }
     
@@ -123,8 +122,8 @@ public class DespesaController implements Serializable {
     
     public void onRowSelect(DespesaBean desp) {
     	despesaSelecionada = desp;
-    	RequestContext.getCurrentInstance().update("formPrincipal:growl");
-    	RequestContext.getCurrentInstance().update("formPrincipal:outBotoes");
+    	JSFUtil.atualizarComponente("formPrincipal:growl");
+        JSFUtil.atualizarComponente("formPrincipal:outBotoes");
     }
 
     public DespesaBean getDespesa() {

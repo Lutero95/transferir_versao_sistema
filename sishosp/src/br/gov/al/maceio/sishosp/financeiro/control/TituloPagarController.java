@@ -21,7 +21,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -319,7 +318,7 @@ public class TituloPagarController implements Serializable {
 		} else if (gravou == true) {
 			limparDados();
 			rowBean = new TituloPagarBean();
-			RequestContext.getCurrentInstance().execute("PF('dlgRepetir').hide();");
+			JSFUtil.fecharDialog("dlgRepetir");
 
 			JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Sucesso");
 			lstTitPagar = null;
@@ -334,7 +333,7 @@ public class TituloPagarController implements Serializable {
 		if (tituloPagarBean.getParcela().equals("UN") || tituloPagarBean.getParcela().equals("1")) {
 			salvarDocumentoPagarUnico();
 		} else {
-			RequestContext.getCurrentInstance().execute("PF('simounao').show();");
+			JSFUtil.abrirDialog("simounao");
 		}
 	}
 
@@ -342,7 +341,7 @@ public class TituloPagarController implements Serializable {
 		if (tituloPagarBean.getParcela().equals("UN") || tituloPagarBean.getParcela().equals("1")) {
 			salvarDocumentoPagarUnico();
 		} else {
-			RequestContext.getCurrentInstance().execute("PF('simounao').show();");
+			JSFUtil.abrirDialog("simounao");
 		}
 	}
 
@@ -410,7 +409,8 @@ public class TituloPagarController implements Serializable {
 							this.pagamentoDesi.getId_desistencia());
 					c.set(ano, mes, 1);
 					c.add(Calendar.MONTH, 1);
-					RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
+					JSFUtil.fecharDialog("simounao");
+
 				}
 			}
 		} else {
@@ -423,7 +423,7 @@ public class TituloPagarController implements Serializable {
 		} else {
 			if (gravou == true) {
 				limparDados();
-				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
+				JSFUtil.fecharDialog("dlgNovo");
 
 				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
 				lstTitPagar = null;
@@ -472,8 +472,8 @@ public class TituloPagarController implements Serializable {
 		} else {
 			if (gravou == true) {
 				limparDados();
-				RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
-				RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
+				JSFUtil.fecharDialog("dlgNovo");
+				JSFUtil.fecharDialog("simounao");
 
 				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
 				lstTitPagar = null;
@@ -492,7 +492,7 @@ public class TituloPagarController implements Serializable {
 		TituloPagarDao pagarDao = new TituloPagarDao();
 		excluiu = pagarDao.excluir(this.rowBean);
 		if (excluiu == true) {
-			RequestContext.getCurrentInstance().execute("PF('dlgAt').hide();");
+			JSFUtil.fecharDialog("dlgAt");
 
 			JSFUtil.adicionarMensagemSucesso("Excluído com sucesso!", "Atenção");
 			lstTitPagar = null;
@@ -518,7 +518,7 @@ public class TituloPagarController implements Serializable {
 					ec.redirect(ec.getRequestContextPath()
 							+ "/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true");
 					lstTitPagar = null;
-					RequestContext.getCurrentInstance().execute("PF('dlgEditRet').hide();");
+					JSFUtil.fecharDialog("dlgEditRet");
 				} else {
 					JSFUtil.adicionarMensagemErro("Erro ao realizar a alteração!", "Atenção");
 				}
@@ -689,7 +689,8 @@ public class TituloPagarController implements Serializable {
 				rowBeanBaixa = new BaixaPagar();
 				msg.addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "Título estornado com sucesso.", "Sucesso"));
-				RequestContext.getCurrentInstance().execute("PF('dlgBaixa').hide();");
+				JSFUtil.fecharDialog("dlgBaixa");
+
 			} else {
 				msg.addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro ao realizar estorno.", "Aviso"));
@@ -911,7 +912,7 @@ public class TituloPagarController implements Serializable {
 			}
 			rowBeanImposto = new ImpostoBean();
 		}
-		RequestContext.getCurrentInstance().execute("PF('dlgAltRetencao').hide();");
+		JSFUtil.fecharDialog("dlgAltRetencao");
 	}
 
 	public ArrayList<BancoBean> lstBancosTotal() throws ProjetoException {
@@ -934,7 +935,8 @@ public class TituloPagarController implements Serializable {
 
 		}
 		this.rowBeanImposto = new ImpostoBean();
-		RequestContext.getCurrentInstance().execute("PF('dlgEditRetencao').hide();");
+		JSFUtil.fecharDialog("dlgEditRetencao");
+
 	}
 
 	public ArrayList<TituloPagarBean> getLstTituloPagar() {

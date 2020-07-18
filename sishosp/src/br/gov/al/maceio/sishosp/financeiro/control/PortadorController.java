@@ -8,9 +8,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.model.PortadorBean;
 
-import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.financeiro.dao.PortadorDAO;
@@ -52,9 +52,9 @@ public class PortadorController implements Serializable {
 
 	public void acaoEditar() {
 		if (port != null) {
-			RequestContext.getCurrentInstance().execute(
-					"PF('dlgedit').show();");
-			
+			JSFUtil.abrirDialog("dlgedit");
+
+
 			this.operacao = "E";
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -67,8 +67,7 @@ public class PortadorController implements Serializable {
 
 	public void acaoExcluir() {
 		if (port != null) {
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').show();");
+			JSFUtil.abrirDialog("dialogAtencao");
 
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -102,8 +101,8 @@ public class PortadorController implements Serializable {
 							new FacesMessage(FacesMessage.SEVERITY_INFO,
 									"CADASTRADO COM SUCESSO !", "teste"));
 
-					RequestContext.getCurrentInstance().execute(
-							"PF('dlginc').hide();");
+					JSFUtil.fecharDialog("dlginc");
+
 					lstportador = null;
 
 				}
@@ -141,9 +140,8 @@ public class PortadorController implements Serializable {
 								null,
 								new FacesMessage(FacesMessage.SEVERITY_INFO,
 										"ALTERADO COM SUCESSO !", "teste"));
+						JSFUtil.fecharDialog("dlgedit");
 
-						RequestContext.getCurrentInstance().execute(
-								"PF('dlgedit').hide();");
 						lstportador = null;
 
 					}
@@ -175,13 +173,12 @@ public class PortadorController implements Serializable {
 		PortadorDAO dao = new PortadorDAO();
 		String retorno = dao.excluir(this.rowBean);
 		if ((retorno.equals("OK"))) {
+			JSFUtil.fecharDialog("dialogAtencao");
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
 			rowBean = null;
 			lstportador = null;
 			lstportador();
-			RequestContext.getCurrentInstance().update("formUsuarios:outBotoes");
+			JSFUtil.atualizarComponente("formUsuarios:outBotoes");
 
 		} else {
 
@@ -205,7 +202,8 @@ public class PortadorController implements Serializable {
 	
 	public void onRowSelect(PortadorBean event) {
 		rowBean = event;
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
+
+		JSFUtil.atualizarComponente("frm:outBotoes");
 	}
 
 	/* Gets e Sets */

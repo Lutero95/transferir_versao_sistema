@@ -17,7 +17,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -226,8 +225,8 @@ public class TesourariaController implements Serializable {
         boolean rst = icdao.abreCaixa(banco.getId());
         if (rst) {
             caixa = icdao.retornaCaixaAtual();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlgabrecaixa').hide();");
+            JSFUtil.fecharDialog(
+                    "dlgabrecaixa");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Caixa Aberto com Sucesso.", "Alerta"));
             listabancos = null;
         } else {
@@ -249,8 +248,8 @@ public class TesourariaController implements Serializable {
         if (rst) {
             caixa = icdao.retornaCaixaAtual();
             listaMovimentacaoCaixa();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlglancto').hide();");
+            JSFUtil.fecharDialog(
+                    "dlglancto");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Lançamento efetuado com Sucesso.", "Alerta"));
         } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Erro ao efetuar lançamento.", "Alerta"));
@@ -269,8 +268,8 @@ public void gravaAcerto() throws ProjetoException, ParseException {
         if (rst == true) {
             caixa = icdao.retornaCaixaAtual();
             listaMovimentacaoCaixa();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlgacerto').hide();");
+            JSFUtil.fecharDialog(
+                    "dlgacerto");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acerto efetuado com Sucesso.", "Alerta"));
             
         } else {
@@ -287,8 +286,8 @@ public void gravaAcerto() throws ProjetoException, ParseException {
             listachequesemitidos = icdao.pesquisaChequesEmitidos(banco.getId(),chequeBusca);
             idSelecionado = 0;
             //caixa =  icdao.retornaCaixaAtual();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlgcomp').hide();");
+            JSFUtil.fecharDialog(
+                    "dlgcomp");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Cheque compensado com Sucesso.", "Alerta"));
         } else {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Erro ao compensar Cheque.", "Alerta"));
@@ -304,7 +303,7 @@ public void gravaAcerto() throws ProjetoException, ParseException {
             listaChequesRecebidos = icdao.pesquisaChequesRecebido(banco.getId(),chequeRecebidobusca);
             idSelecionadoChequeReceb = 0;
             //caixa =  icdao.retornaCaixaAtual();
-            RequestContext.getCurrentInstance().execute(
+            JSFUtil.fecharDialog(
                     "PF('dlgcompreceb').hide();");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Cheque recebido compensado com Sucesso.", "Alerta"));
         } else {
@@ -419,8 +418,8 @@ public void gravaAcerto() throws ProjetoException, ParseException {
         if (rst) {
             listaMovimentacaoCaixa();
             caixa = icdao.retornaCaixaAtual();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlgchqemi').hide();");
+            JSFUtil.fecharDialog(
+                    "dlgchqemi");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Pagamento efetuado com Sucesso.", "Alerta"));
             limparDados();
             
@@ -441,7 +440,7 @@ public void gravaAcerto() throws ProjetoException, ParseException {
     	FacesContext msg = FacesContext.getCurrentInstance();
     	if (cancelou) {
 			msg.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Cheque cancelado com sucesso.", "Sucesso"));
-			RequestContext.getCurrentInstance().execute("PF('dlgConfExc').hide();");
+            JSFUtil.fecharDialog("dlgConfExc");
 		} else {
 			msg.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro ao realizar cancelamento.", "Aviso"));
 		}
@@ -505,7 +504,7 @@ public void gravaAcerto() throws ProjetoException, ParseException {
 		} else {
 			if (gravou == true) {
 				limparDados();
-				RequestContext.getCurrentInstance().execute("PF('dlgtituloavulso').hide();");
+                JSFUtil.fecharDialog("dlgtituloavulso");
 				JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!", "Atenção");
 				onBancoSelect(null);
 				tituloAvulso  = new TituloPagarBean();
@@ -533,9 +532,9 @@ public void gravaAcerto() throws ProjetoException, ParseException {
         if (rst) {
             listamovimentacao = new ArrayList<TesourariaBean>();
             caixa = icdao.retornaCaixaAtual();
-        
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dlgfechacaixa').hide();");
+
+            JSFUtil.fecharDialog(
+                    "dlgfechacaixa");
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Caixa fechado com Sucesso.", "Alerta"));
             listabancos = null;
             listabancos = new ArrayList<>();
@@ -562,7 +561,7 @@ public void gravaAcerto() throws ProjetoException, ParseException {
         			JSFUtil.adicionarMensagemErro("Você já inseriu este documento.","Erro");
         		} else {
         			listatitulosbaixar.add(tituloselecionado);
-            		RequestContext.getCurrentInstance().execute("PF('dlgliqtitchq').hide();");
+                    JSFUtil.fecharDialog("dlgliqtitchq");
         		}
         		
         	} else {
@@ -576,7 +575,7 @@ public void gravaAcerto() throws ProjetoException, ParseException {
             			JSFUtil.adicionarMensagemErro("Você já inseriu este documento.","Erro");
             		} else {
             		listatitulosbaixar.add(tituloselecionado);
-            		RequestContext.getCurrentInstance().execute("PF('dlgliqtitchq').hide();");
+                        JSFUtil.fecharDialog("dlgliqtitchq");
             		}
             	} else {
             		JSFUtil.adicionarMensagemErro("Valor a pagar deve ser menor que o valor em aberto","Erro");

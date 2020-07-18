@@ -8,9 +8,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.BancoDAO;
 import br.gov.al.maceio.sishosp.financeiro.model.BancoBean;
 
@@ -48,8 +48,8 @@ public class BancoController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Banco cadastrado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgCadBanco').hide();");
+
+            JSFUtil.fecharDialog("dlgCadBanco");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao cadastrarPaciente!", "Erro");
@@ -70,8 +70,8 @@ public class BancoController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Banco alterado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgAltBanco').hide();");
+
+            JSFUtil.fecharDialog("dlgAltBanco");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao alterarPaciente!", "Erro");
@@ -98,14 +98,14 @@ public class BancoController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Banco excluído com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcBanco').hide();");
+
+            JSFUtil.fecharDialog("dlgExcBanco");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Erro ao excluir!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcBanco').hide();");
+
+            JSFUtil.fecharDialog("dlgExcBanco");
         }
     }
     
@@ -136,9 +136,9 @@ public class BancoController implements Serializable {
     	else {
     		bancoSelecionado = null;
     	}
-    	
-    	RequestContext.getCurrentInstance().update("formPrincipal:outBotoes");
-    	RequestContext.getCurrentInstance().update("formPrincipal:growl");
+
+        JSFUtil.atualizarComponente("formPrincipal:outBotoes");
+        JSFUtil.atualizarComponente("formPrincipal:growl");
     }
     
     public void limparDados() {

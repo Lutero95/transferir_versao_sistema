@@ -8,13 +8,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.CentroCustoDAO;
-import br.gov.al.maceio.sishosp.financeiro.dao.DespesaDAO;
 import br.gov.al.maceio.sishosp.financeiro.model.CentroCustoBean;
-import br.gov.al.maceio.sishosp.financeiro.model.DespesaBean;
+
 
 @ManagedBean
 @ViewScoped
@@ -44,7 +43,7 @@ public class CentroDeCustoController implements Serializable {
 					"Centro de Custo Gravado com Sucesso",
 					"Centro de Custo Gravado com Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute("PF('dlginc').hide();");
+			JSFUtil.fecharDialog("dlginc");
 
 		}
 
@@ -58,8 +57,7 @@ public class CentroDeCustoController implements Serializable {
 					"Centro de Custo Alterado com Sucesso",
 					"Centro de Custo Alterado com Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance()
-					.execute("PF('dlgedit').hide();");
+			JSFUtil.fecharDialog("dlgedit");
 
 		}
 
@@ -74,8 +72,8 @@ public class CentroDeCustoController implements Serializable {
 					"Centro de Custo Excluído com Sucesso",
 					"Centro de Custo Excluído com Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
+			JSFUtil.fecharDialog(
+					"dialogAtencao");
 
 		}
 
@@ -94,8 +92,7 @@ public class CentroDeCustoController implements Serializable {
 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (rowBean != null) {
-			RequestContext.getCurrentInstance()
-					.execute("PF('dlgedit').show();");
+			JSFUtil.abrirDialog("dlgedit");
 		} else
 			facesContext.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_INFO, "Selecione um Estado antes.",
@@ -106,8 +103,8 @@ public class CentroDeCustoController implements Serializable {
 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (rowBean != null) {
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').show();");
+			JSFUtil.abrirDialog(
+					"dialogAtencao");
 		} else
 			facesContext.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_INFO, "Selecione um Estado antes.",
@@ -120,7 +117,7 @@ public class CentroDeCustoController implements Serializable {
 		} else {
 			rowBean = null;
 		}
-		RequestContext.getCurrentInstance().update("frm:outBotoes");
+		JSFUtil.atualizarComponente("frm:outBotoes");
 	}
 
 	public CentroCustoBean getBean() {
