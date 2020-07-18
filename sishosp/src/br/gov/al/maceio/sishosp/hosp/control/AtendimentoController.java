@@ -777,6 +777,26 @@ public class AtendimentoController implements Serializable {
 			listaAtendimentos1FiltroCid();
 		}
     }
+    
+    public void listarProcedimentosPorCboDoProfissional() throws ProjetoException {
+        this.listaProcedimentos = procedimentoDAO.listarProcedimentosPorCbo
+        			(atendimento.getFuncionario().getCbo().getCodCbo(), atendimento.getPrograma().getIdPrograma());
+        adicionaProcedimentoAtualNaLista();
+    }
+    
+    private void adicionaProcedimentoAtualNaLista() {
+    	List<Integer> listaIdProcedimentos = new ArrayList<>();
+    	for (ProcedimentoBean procedimento : this.listaProcedimentos) {
+			listaIdProcedimentos.add(procedimento.getIdProc());
+		}
+    	
+    	if(!listaIdProcedimentos.contains(this.atendimento.getProcedimento().getIdProc()))
+    		this.listaProcedimentos.add(this.atendimento.getProcedimento());
+    }
+    
+    public void listarProcedimentoPorId() throws ProjetoException {
+    	this.atendimento.setProcedimento(procedimentoDAO.listarProcedimentoPorId(this.atendimento.getProcedimento().getIdProc()));
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
