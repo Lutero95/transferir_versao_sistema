@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
@@ -325,11 +327,21 @@ public class FuncionarioController implements Serializable {
 	}
 
 
+	private FacesContext getFacesContext() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return context;
+	}
+
+	private ServletContext getServleContext() {
+		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
+		return scontext;
+	}
+
 
 	private String carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao() throws ProjetoException {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
 				usuarioLogado);
-
+		String root =  getServleContext().getContextPath();
 		// ACL =============================================================
 
 		List<Sistema> sistemas = fDao.carregarSistemasUsuario(usuarioLogado);
@@ -383,12 +395,14 @@ public class FuncionarioController implements Serializable {
 
 		String url = "";
 
-		if (sistemas.size() > 1)
+
+		if (sistemas.size() > 1) {
 			url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+		}
 		else {
 			recSistemaLogado(sistemas.get(0));
 			gerarMenus(sistemaLogado);
-			url = sistemas.get(0).getUrl() + "?faces-redirect=true";
+			url = root+sistemas.get(0).getUrl() + "?faces-redirect=true";
 		}
 
 		return url;
@@ -478,6 +492,7 @@ public class FuncionarioController implements Serializable {
 		// HttpServletRequest request = (HttpServletRequest)
 		// fc.getExternalContext().getRequest();
 		// String contextPath = request.getServletContext().getContextPath();
+		String root =  getServleContext().getContextPath();
 		limparMenuModel();
 		List<DefaultSubMenu> menuPai = new ArrayList<>();
 		List<DefaultSubMenu> submenu = new ArrayList<>();
@@ -492,7 +507,7 @@ public class FuncionarioController implements Serializable {
 		DefaultMenuItem item1 = new DefaultMenuItem();
 		item1.setValue("InÍcio");
 		// contextPath+
-		item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
+		item1.setUrl(root+sistema.getUrl().replace("?faces-redirect=true", ""));
 		// item1.setStyle("overflow: auto; !important");
 		menuModel.addElement(item1);
 
@@ -548,7 +563,7 @@ public class FuncionarioController implements Serializable {
 				Menu mi = p.getMenu();
 				DefaultMenuItem item = new DefaultMenuItem();
 				item.setValue(mi.getDescricao());
-				item.setUrl(mi.getUrl());
+				item.setUrl(root+mi.getUrl());
 				item.setIcon(p.getMenu().getCodigo());// coloca o submenu dentro
 				// do menu
 				item.setId(mi.getIndice());
@@ -651,13 +666,13 @@ public class FuncionarioController implements Serializable {
 		DefaultMenuItem item2 = new DefaultMenuItem();
 		item2.setValue("Fale Conosco");
 		// item2.setUrl("/pages/comum/contato.faces");
-		item2.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
+		item2.setUrl(root+sistema.getUrl().replace("?faces-redirect=true", ""));
 		menuModel.addElement(item2);
 
 		// Gerar menu sistemas.
 		DefaultMenuItem item3 = new DefaultMenuItem();
 		item3.setValue("Sistemas");
-		item3.setUrl("/pages/comum/selecaoSistema.faces");
+		item3.setUrl(root+"/pages/comum/selecaoSistema.faces");
 		menuModel.addElement(item3);
 
 		// Gerar menu sair.
