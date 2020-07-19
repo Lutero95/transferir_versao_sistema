@@ -286,29 +286,70 @@
 						</p:outputPanel>
 					</b:row>
 
-							<p:panelGrid columns="2" style="border:none">
-								<p:pickList id="pick"
-									value="#{AgendaController.listaFuncionariosDual}" var="sis"
-									itemLabel="#{sis.nome}" itemValue="#{sis}"
-									showCheckbox="true" converter="conFuncionario"
-									required="true"
-									requiredMessage="Informe pelo menos um Profissional"
-									showSourceFilter="true" showTargetFilter="true"
-									filterMatchMode="contains">
+					<div style="display: flex;">
+						<div style="width:48%">
+							<p:dataTable var="funcionariosSoucer" value="#{AgendaController.listaFuncionariosSoucer}"
+								id="tbfuncionarios"
+								filteredValue="#{AgendaController.listaFuncionariosSoucerFiltro}"
+								emptyMessage="Nenhum profissional encontrado"
+								paginator="true" rows="10" paginatorPosition="bottom" 
+								style="margin-right: 1%;">
 
-									<f:facet name="sourceCaption">
-										<h:outputText value="Funcionários não associados"
-											style="color:black" />
-									</f:facet>
-									<f:facet name="targetCaption">
-										<h:outputText value="Funcionários Associados" style="color:black" />
-									</f:facet>
+								<p:column filterBy="#{funcionariosSoucer.nome}" headerText="Profissional">
+									<h:outputText value="#{funcionariosSoucer.nome}" />
+								</p:column>
 
-									<p:ajax event="transfer"
-										listener="#{AgendaController.onTransferFuncionario}" />
-								</p:pickList>
-							</p:panelGrid>
+								<p:column headerText="Adicionar" width="20%">
+									<div align="center">
+										<p:commandButton action="#{AgendaController.adicionarFuncionario(funcionariosSoucer)}"
+											icon="fa fa-angle-right" title="Adicionar Funcionário" immediate="true"
+											update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"/>
+									</div>
+								</p:column>
+							</p:dataTable>
+						</div>
+						
+						<div>
+							<div align="right">
+								<p:commandButton
+									action="#{AgendaController.adicionarTodosFuncionarios()}"
+									icon="fa fa-angle-double-right"
+									title="Adicionar Todos Funcionários" immediate="true"
+									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado" />
+							</div>
 
+							<div align="left">
+								<p:commandButton
+									action="#{AgendaController.removerTodosFuncionarios()}"
+									icon="fa fa-angle-double-left"
+									title="Remover Todos Funcionários" immediate="true"
+									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado" />
+							</div>
+						</div>
+						
+						<div style="width:48%;">
+							<p:dataTable var="funcionariosTarget" value="#{AgendaController.listaFuncionariosTarget}"
+								id="tbfuncionarioselecionado"
+								filteredValue="#{AgendaController.listaFuncionariosTargetFiltro}"
+								emptyMessage="Nenhum profissional adicionado"
+								paginator="true" rows="10" paginatorPosition="bottom"
+								style="margin-left: 1%;">
+
+								<p:column headerText="Remover" width="20%">
+									<div align="center">
+										<p:commandButton action="#{AgendaController.removerFuncionario(funcionariosTarget)}"
+											icon="fa fa-angle-left" title="Remover Funcionário" immediate="true"
+											update="tbfuncionarioselecionado :formAgendaMedica:tbfuncionarios"/>
+									</div>
+								</p:column>
+								
+								<p:column filterBy="#{funcionariosTarget.nome}" headerText="Profissional">
+									<h:outputText value="#{funcionariosTarget.nome}" />
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>	
+						
 					<div align="center">
 
 						<p:commandButton value="Gravar" look="success" size="sm"

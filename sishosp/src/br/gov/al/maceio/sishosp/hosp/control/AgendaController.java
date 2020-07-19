@@ -67,10 +67,10 @@ public class AgendaController implements Serializable {
     private String tipoBusca;
     private String campoBusca;
 
-    // Dual Funcionarios
-    private DualListModel<FuncionarioBean> listaFuncionariosDual;
     private List<FuncionarioBean> listaFuncionariosSoucer;
+    private List<FuncionarioBean> listaFuncionariosSoucerFiltro;
     private List<FuncionarioBean> listaFuncionariosTarget;
+    private List<FuncionarioBean> listaFuncionariosTargetFiltro;
 
     public AgendaBean getRowBean() {
         return rowBean;
@@ -139,9 +139,10 @@ public class AgendaController implements Serializable {
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
         funcionario = new FuncionarioBean();
         listaHorarios = new ArrayList<>();
-        listaFuncionariosDual = new DualListModel<FuncionarioBean>();
-        listaFuncionariosSoucer = new ArrayList<>();
-        listaFuncionariosTarget = new ArrayList<>();
+        this.listaFuncionariosSoucer = new ArrayList<>();
+        this.listaFuncionariosTarget = new ArrayList<>();
+        this.listaFuncionariosSoucerFiltro = new ArrayList<>();
+        this.listaFuncionariosTargetFiltro = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -169,18 +170,47 @@ public class AgendaController implements Serializable {
     }
 
     public void carregaListaFuncionariosDual() throws ProjetoException {
-        listaFuncionariosSoucer = null;
+        listaFuncionariosSoucer = new ArrayList<>();
         listaFuncionariosTarget = new ArrayList<>();
+        listaFuncionariosSoucerFiltro = new ArrayList<>();
+        listaFuncionariosTargetFiltro = new ArrayList<>();
         listaFuncionariosSoucer();
-        listaFuncionariosDual = new DualListModel<>(listaFuncionariosSoucer, listaFuncionariosTarget);
     }
 
     public List<FuncionarioBean> listaFuncionariosSoucer() throws ProjetoException {
-        if (listaFuncionariosSoucer == null) {
+        if (listaFuncionariosSoucer.isEmpty()) {
             FuncionarioDAO udao = new FuncionarioDAO();
             listaFuncionariosSoucer = udao.listarProfissionalAtendimento();
         }
         return listaFuncionariosSoucer;
+    }
+    
+    public void adicionarFuncionario(FuncionarioBean funcionarioSelecionado) {
+    	this.listaFuncionariosTarget.add(funcionarioSelecionado);
+    	this.listaFuncionariosTargetFiltro.add(funcionarioSelecionado);
+    	this.listaFuncionariosSoucer.remove(funcionarioSelecionado);
+    	this.listaFuncionariosSoucerFiltro.remove(funcionarioSelecionado);
+    }
+    
+    public void adicionarTodosFuncionarios() {
+    	this.listaFuncionariosTarget.addAll(this.listaFuncionariosSoucerFiltro);
+    	this.listaFuncionariosTargetFiltro.addAll(this.listaFuncionariosSoucerFiltro);
+    	this.listaFuncionariosSoucer.removeAll(this.listaFuncionariosSoucerFiltro);
+    	this.listaFuncionariosSoucerFiltro.clear();
+    }
+    
+    public void removerFuncionario(FuncionarioBean funcionarioSelecionado) {
+    	this.listaFuncionariosTarget.remove(funcionarioSelecionado);
+    	this.listaFuncionariosTargetFiltro.remove(funcionarioSelecionado);
+    	this.listaFuncionariosSoucer.add(funcionarioSelecionado);
+    	this.listaFuncionariosSoucerFiltro.add(funcionarioSelecionado);
+    }
+    
+    public void removerTodosFuncionarios() {
+    	this.listaFuncionariosSoucer.addAll(this.listaFuncionariosTargetFiltro);
+    	this.listaFuncionariosSoucerFiltro.addAll(this.listaFuncionariosTargetFiltro);
+    	this.listaFuncionariosTarget.removeAll(this.listaFuncionariosTargetFiltro);
+    	this.listaFuncionariosTargetFiltro.clear();
     }
 
     public void agendaAvulsaInit() throws ProjetoException, ParseException {
@@ -1541,20 +1571,12 @@ public class AgendaController implements Serializable {
         this.campoBusca = campoBusca;
     }
 
-    public DualListModel<FuncionarioBean> getListaFuncionariosDual() {
-        return listaFuncionariosDual;
-    }
-
     public List<FuncionarioBean> getListaFuncionariosSoucer() {
         return listaFuncionariosSoucer;
     }
 
     public List<FuncionarioBean> getListaFuncionariosTarget() {
         return listaFuncionariosTarget;
-    }
-
-    public void setListaFuncionariosDual(DualListModel<FuncionarioBean> listaFuncionariosDual) {
-        this.listaFuncionariosDual = listaFuncionariosDual;
     }
 
     public void setListaFuncionariosSoucer(List<FuncionarioBean> listaFuncionariosSoucer) {
@@ -1564,4 +1586,21 @@ public class AgendaController implements Serializable {
     public void setListaFuncionariosTarget(List<FuncionarioBean> listaFuncionariosTarget) {
         this.listaFuncionariosTarget = listaFuncionariosTarget;
     }
+
+	public List<FuncionarioBean> getListaFuncionariosSoucerFiltro() {
+		return listaFuncionariosSoucerFiltro;
+	}
+
+	public void setListaFuncionariosSoucerFiltro(List<FuncionarioBean> listaFuncionariosSoucerFiltro) {
+		this.listaFuncionariosSoucerFiltro = listaFuncionariosSoucerFiltro;
+	}
+
+	public List<FuncionarioBean> getListaFuncionariosTargetFiltro() {
+		return listaFuncionariosTargetFiltro;
+	}
+
+	public void setListaFuncionariosTargetFiltro(List<FuncionarioBean> listaFuncionariosTargetFiltro) {
+		this.listaFuncionariosTargetFiltro = listaFuncionariosTargetFiltro;
+	}
+    
 }
