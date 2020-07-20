@@ -39,7 +39,8 @@ public class LaudoDAO {
         String sql = "select exists ( " + 
         		"	select l.id_laudo from hosp.laudo l " + 
         		"		where l.codpaciente = ? and l.mes_inicio = ? and l.ano_inicio = ? " + 
-        		"		and l.mes_final = ? and l.ano_final = ? and l.codprocedimento_primario = ?) existe_laudo_com_mesmos_dados";
+        		"		and l.mes_final = ? and l.ano_final = ? and l.codprocedimento_primario = ? "+
+        		"		and l.cod_profissional = ?) existe_laudo_com_mesmos_dados";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -50,6 +51,7 @@ public class LaudoDAO {
             stm.setInt(4, laudo.getMesFinal());
             stm.setInt(5, laudo.getAnoFinal());
             stm.setInt(6, laudo.getProcedimentoPrimario().getIdProc());
+            stm.setLong(7, laudo.getProfissionalLaudo().getId());
             ResultSet rs = stm.executeQuery();
 
             if (rs.next()) 
