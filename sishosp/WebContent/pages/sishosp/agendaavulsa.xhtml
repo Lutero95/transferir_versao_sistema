@@ -180,7 +180,7 @@
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-											update=":formAgendaMedica, msgPagina, outTipoAt" />
+											update=":msgPagina, outTipoAt" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" immediate="true"
@@ -289,7 +289,7 @@
 					<div style="display: flex;">
 						<div style="width:48%">
 							<p:dataTable var="funcionariosSoucer" value="#{AgendaController.listaFuncionariosSoucer}"
-								id="tbfuncionarios"
+								id="tbfuncionarios" 
 								filteredValue="#{AgendaController.listaFuncionariosSoucerFiltro}"
 								emptyMessage="Nenhum profissional encontrado"
 								paginator="true" rows="10" paginatorPosition="bottom" 
@@ -301,8 +301,8 @@
 
 								<p:column headerText="Adicionar" width="20%">
 									<div align="center">
-										<p:commandButton action="#{AgendaController.adicionarFuncionario(funcionariosSoucer)}"
-											icon="fa fa-angle-right" title="Adicionar Funcionário" immediate="true"
+										<p:commandButton actionListener="#{AgendaController.adicionarFuncionario(funcionariosSoucer)}"
+											icon="fa fa-angle-right" title="Adicionar Funcionário"  ajax="true" process="@this" immediate="true"
 											update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"/>
 									</div>
 								</p:column>
@@ -354,8 +354,9 @@
 
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
-							action="#{AgendaController.preparaGravarAgendaAvulsa()}"
+							actionListener="#{AgendaController.preparaGravarAgendaAvulsa()}"
 							update=":formAgendaMedica :frmLiberacao"
+							process="@all"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -590,7 +591,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
+							update=":formAgendaMedica:outTipoAt, :msgPagina" 
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuTipoAt').hide();">

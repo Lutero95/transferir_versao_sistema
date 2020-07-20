@@ -170,10 +170,10 @@ public class AgendaController implements Serializable {
     }
 
     public void carregaListaFuncionariosDual() throws ProjetoException {
-        listaFuncionariosSoucer = new ArrayList<>();
-        listaFuncionariosTarget = new ArrayList<>();
-        listaFuncionariosSoucerFiltro = new ArrayList<>();
-        listaFuncionariosTargetFiltro = new ArrayList<>();
+        listaFuncionariosSoucer.clear();
+        listaFuncionariosTarget.clear();
+        listaFuncionariosSoucerFiltro.clear();
+        listaFuncionariosTargetFiltro.clear();
         listaFuncionariosSoucer();
     }
 
@@ -182,21 +182,49 @@ public class AgendaController implements Serializable {
             FuncionarioDAO udao = new FuncionarioDAO();
             listaFuncionariosSoucer = udao.listarProfissionalAtendimento();
         }
+        listaFuncionariosSoucerFiltro.addAll(listaFuncionariosSoucer);
         return listaFuncionariosSoucer;
     }
     
     public void adicionarFuncionario(FuncionarioBean funcionarioSelecionado) {
-    	this.listaFuncionariosTarget.add(funcionarioSelecionado);
-    	this.listaFuncionariosTargetFiltro.add(funcionarioSelecionado);
+    	if(!funcionarioExisteLista(funcionarioSelecionado)) {
+    		this.listaFuncionariosTarget.add(funcionarioSelecionado);
+    		this.listaFuncionariosTargetFiltro.add(funcionarioSelecionado);
+    	}
     	this.listaFuncionariosSoucer.remove(funcionarioSelecionado);
     	this.listaFuncionariosSoucerFiltro.remove(funcionarioSelecionado);
     }
     
     public void adicionarTodosFuncionarios() {
-    	this.listaFuncionariosTarget.addAll(this.listaFuncionariosSoucerFiltro);
-    	this.listaFuncionariosTargetFiltro.addAll(this.listaFuncionariosSoucerFiltro);
-    	this.listaFuncionariosSoucer.removeAll(this.listaFuncionariosSoucerFiltro);
-    	this.listaFuncionariosSoucerFiltro.clear();
+    	if(this.listaFuncionariosSoucerFiltro.isEmpty()) {
+    		this.listaFuncionariosTarget.removeAll(this.listaFuncionariosSoucer);
+    		this.listaFuncionariosTargetFiltro.removeAll(this.listaFuncionariosSoucer);
+    		
+    		this.listaFuncionariosTarget.addAll(this.listaFuncionariosSoucer);
+    		this.listaFuncionariosTargetFiltro.addAll(this.listaFuncionariosSoucer);
+    		
+    		this.listaFuncionariosSoucer.clear();
+    	}
+    	else {
+    		this.listaFuncionariosTarget.removeAll(this.listaFuncionariosSoucerFiltro);
+    		this.listaFuncionariosTargetFiltro.removeAll(this.listaFuncionariosSoucerFiltro);
+    		
+    		this.listaFuncionariosTarget.addAll(this.listaFuncionariosSoucerFiltro);
+    		this.listaFuncionariosTargetFiltro.addAll(this.listaFuncionariosSoucerFiltro);
+    		
+    		this.listaFuncionariosSoucer.removeAll(this.listaFuncionariosSoucerFiltro);
+    		this.listaFuncionariosSoucerFiltro.clear();    		
+    	}
+    }
+    
+    private boolean funcionarioExisteLista(FuncionarioBean funcionarioSelecionado) {
+    	if(!listaFuncionariosTarget.isEmpty()) {
+			for (int i = 0; i < listaFuncionariosTarget.size(); i++) {
+				if (listaFuncionariosTarget.get(i).getId().equals(funcionarioSelecionado.getId()))
+					return true;
+			}
+    	}
+    	return false;
     }
     
     public void removerFuncionario(FuncionarioBean funcionarioSelecionado) {
