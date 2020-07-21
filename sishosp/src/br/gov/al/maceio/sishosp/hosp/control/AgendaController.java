@@ -735,7 +735,7 @@ public class AgendaController implements Serializable {
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean pacienteAtivo = gerenciarPacienteDAO
-                .verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
+                .verificarPacienteAtivoInstituicao(agenda);
 
         if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
                 && VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
@@ -788,10 +788,10 @@ public class AgendaController implements Serializable {
     	GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
     	
         Boolean pacienteAtivo = gerenciarPacienteDAO
-                .verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
+                .verificarPacienteAtivoInstituicao(agenda);
         
         if(!pacienteAtivo)
-        	JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo", "");
+        	JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo neste programa e grupo", "");
         
         return pacienteAtivo;	
     }
