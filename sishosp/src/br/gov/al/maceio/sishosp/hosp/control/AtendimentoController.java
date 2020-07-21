@@ -224,21 +224,15 @@ public class AtendimentoController implements Serializable {
     private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_usuario");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(atendimento.getDataAtendimentoInicio());
-        LocalDate dataAtendimento =  LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).plusMonths(1);
-        LocalDate dataAtual = LocalDate.now();
+
         try {
             Integer quantidadePendenciaEvolucaoAnterior = atendimentoDAO.retornaQuantidadeDePendenciasAnterioresDeEvolucao(
-                    atendimento.getUnidade().getId(), user_session.getId());
+                    atendimento.getUnidade().getId(), user_session.getId(), atendimento.getDataAtendimentoInicio());
 
             if (quantidadePendenciaEvolucaoAnterior == 0)
                 return true;
             else
-            if ((dataAtendimento.isAfter(dataAtual)) || (dataAtendimento.isEqual(dataAtual)))
                 JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
-            else
-                return true;
 
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");

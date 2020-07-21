@@ -684,7 +684,7 @@ public class AtendimentoDAO {
 	}
 
 	public Integer retornaQuantidadeDePendenciasAnterioresDeEvolucao
-			(Integer idUnidade, Long codigoProfissionalAtendimento) throws ProjetoException {
+			(Integer idUnidade, Long codigoProfissionalAtendimento, Date dataAtende) throws ProjetoException {
 
 		Integer quantidadeDePendenciasAnterioresDeEvolucao = 0;
 		String sql = "select count(*) qtd from hosp.atendimentos1 a1 " +
@@ -701,7 +701,7 @@ public class AtendimentoDAO {
 				"and a.codprograma = ceu.codprograma " +
 				"and a.codgrupo = ceu.codgrupo " +
 				"and a.dtaatende>=ceu.inicio_evolucao " +
-				"and a.dtaatende<current_date " +
+				"and a.dtaatende<? " +
 				"and a1.codprofissionalatendimento = ?" +
 				"and coalesce(a.situacao,'A')<>'C'" +
 				"and coalesce(a1.excluido,'N' )='N'";
@@ -709,7 +709,8 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
 			preparedStatement.setInt(1, idUnidade);
-			preparedStatement.setLong(2, codigoProfissionalAtendimento);
+			preparedStatement.setDate(2, new java.sql.Date(dataAtende.getTime()));
+			preparedStatement.setLong(3, codigoProfissionalAtendimento);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				quantidadeDePendenciasAnterioresDeEvolucao = rs.getInt("qtd");
