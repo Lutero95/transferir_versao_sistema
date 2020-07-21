@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
@@ -278,17 +279,22 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean verificarPacienteAtivoInstituicao(Integer codPaciente) throws ProjetoException {
+    public Boolean verificarPacienteAtivoInstituicao(AgendaBean agenda) throws ProjetoException {
 
         Boolean retorno = false;
 
         String sql = " SELECT id FROM hosp.paciente_instituicao pi " + 
-        		" left join hosp.laudo l on (l.id_laudo = pi.codlaudo) " +
-        		" WHERE pi.status = 'A' AND coalesce(l.codpaciente, pi.id_paciente) = ?";
+        		" left join hosp.laudo l on (l.id_laudo = pi.codlaudo) " + 
+        		" left join hosp.programa p on pi.codprograma = p.id_programa " + 
+        		" left join hosp.grupo g on pi.codgrupo = g.id_grupo " + 
+        		" WHERE pi.status = 'A' AND coalesce(l.codpaciente, pi.id_paciente) = ? " + 
+        		" and p.id_programa = ? and g.id_grupo = ?;";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, codPaciente);
+            stmt.setInt(1, agenda.getPaciente().getId_paciente());
+            stmt.setInt(2, agenda.getPrograma().getIdPrograma());
+            stmt.setInt(3, agenda.getGrupo().getIdGrupo());
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
