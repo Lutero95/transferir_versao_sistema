@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AlteracaoPacienteDAO;
@@ -563,8 +564,29 @@ public class RenovacaoPacienteController implements Serializable {
 
     }
 
-    public void abrirDialog(){
-        JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+    public void abrirDialog() throws ParseException, ProjetoException { 
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+            funcionario.setListDiasSemana(new ArrayList<>());
+            JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
+            JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+        } else {
+        	gerarHorariosAtendimento();
+            limparHorariosProfissional();
+            JSFUtil.abrirDialog("dlgDiasAtendimentoHorario");
+        }
+    }
+    
+    private void limparHorariosProfissional() {
+        insercao.setHorarioAtendimento(new HorarioAtendimento());
+        listaHorarioAtendimentos = new ArrayList<>();
+    }
+    
+    private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
+    }
+    
+    public void excluirDiasHorariosDoFuncionario(HorarioAtendimento horarioAtendimento) {
+        listaHorarioAtendimentos.remove(horarioAtendimento);
     }
 
     public void adicionarFuncionarioParaRenovacao(FuncionarioBean funcionario) {
@@ -939,7 +961,7 @@ public class RenovacaoPacienteController implements Serializable {
 		this.listaHorariosAgenda = listaHorariosAgenda;
 	}
 
-	public ArrayList<String> getListaHorarios() {
+	public ArrayList<String> getListaHorarios() throws ParseException, ProjetoException {
 		return listaHorarios;
 	}
 
