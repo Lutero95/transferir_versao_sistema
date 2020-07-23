@@ -278,17 +278,22 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean verificarPacienteAtivoInstituicao(Integer codPaciente) throws ProjetoException {
+    public Boolean verificarPacienteAtivoInstituicao(Integer idPaciente, Integer idPrograma, Integer idGrupo) throws ProjetoException {
 
         Boolean retorno = false;
 
         String sql = " SELECT id FROM hosp.paciente_instituicao pi " + 
-        		" left join hosp.laudo l on (l.id_laudo = pi.codlaudo) " +
-        		" WHERE pi.status = 'A' AND coalesce(l.codpaciente, pi.id_paciente) = ?";
+        				" left join hosp.laudo l on (l.id_laudo = pi.codlaudo) " + 
+        				" left join hosp.programa p on pi.codprograma = p.id_programa " + 
+        				" left join hosp.grupo g on pi.codgrupo = g.id_grupo " + 
+        				" WHERE pi.status = 'A' AND coalesce(l.codpaciente, pi.id_paciente) = ? " + 
+        				" and p.id_programa = ? and g.id_grupo = ?;";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, codPaciente);
+            stmt.setInt(1, idPaciente);
+            stmt.setInt(2, idPrograma);
+            stmt.setInt(3, idGrupo);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

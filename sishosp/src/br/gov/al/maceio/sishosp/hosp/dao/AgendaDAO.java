@@ -26,6 +26,7 @@ import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
     private static final String SEGUNDOS = ":00";
@@ -309,6 +310,132 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
         return retorno;
     }
+    
+    
+    public boolean gravarAgendamentosInformandoAtendimento
+    	(AgendaBean agenda, List<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoAtendimentoDTO, FuncionarioBean usuarioLiberacao)
+            throws ProjetoException {
+
+			
+    	
+        Boolean retorno = false;
+        int idAtendimento = 0;
+
+        String sql = "INSERT INTO hosp.atendimentos(codpaciente,  codprograma,"
+                + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
+                + " turno,  observacao, ativo, cod_unidade, codgrupo, encaixe, "
+                + " funcionario_liberacao, horario,  avulso, codatendente, presenca)"
+                + " VALUES " + "(?, ?, ?, ?, current_timestamp ," + " ?, ?, ?, ?, ?,"
+                + " ?, ?, ?, ?,  true, ?, ?) RETURNING id_atendimento;";
+        try {
+        	for (PacientesComInformacaoAtendimentoDTO pacienteComInformacaoAtendimentoDTO : listaPacientesComInformacaoAtendimentoDTO) {
+				con = ConnectionFactory.getConnection();
+
+				ps = con.prepareStatement(sql);
+
+				ps.setInt(1, pacienteComInformacaoAtendimentoDTO.getPaciente().getId_paciente());
+				ps.setInt(2, agenda.getPrograma().getIdPrograma());
+
+				ps.setDate(3, new java.sql.Date(agenda.getDataAtendimento().getTime()));
+				ps.setString(4, "A");
+				ps.setInt(5, agenda.getTipoAt().getIdTipo());
+
+				if (agenda.getTurno() != null) {
+					ps.setString(6, agenda.getTurno().toUpperCase());
+				} else {
+					ps.setNull(6, Types.NULL);
+				}
+
+				ps.setString(7, agenda.getObservacao().toUpperCase());
+				ps.setString(8, "S");
+				ps.setInt(9, agenda.getUnidade().getId());
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
+					ps.setInt(10, agenda.getGrupo().getIdGrupo());
+				} else {
+					ps.setNull(10, Types.NULL);
+				}
+
+				ps.setBoolean(11, false);
+
+				ps.setNull(12, Types.NULL);
+
+				if (agenda.getHorario() != null) {
+					ps.setTime(13, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+				} else {
+					ps.setNull(13, Types.NULL);
+				}
+				FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+						.getSessionMap().get("obj_funcionario");
+				ps.setLong(14, user_session.getId());
+				
+				if(pacienteComInformacaoAtendimentoDTO.isPresenca())
+					ps.setString(15, "S");
+				else
+					ps.setString(15, "N");
+
+				ResultSet rs = ps.executeQuery();
+
+				if (rs.next()) {
+					idAtendimento = rs.getInt("id_atendimento");
+				}
+
+				String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
+						+ " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
+
+				Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
+						agenda.getProfissional().getCbo().getCodCbo(), con);
+				ps = con.prepareStatement(sql2);
+				ps.setLong(1, agenda.getProfissional().getId());
+				ps.setInt(2, idAtendimento);
+				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getCbo().getCodCbo()))
+					ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+				else
+					ps.setNull(3, Types.NULL);
+
+				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+					ps.setInt(4, idProcedimentoEspecifico);
+				else if (!VerificadorUtil
+						.verificarSeObjetoNuloOuZero(agenda.getPrograma().getProcedimento().getIdProc()))
+					ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
+				else
+					ps.setNull(4, Types.NULL);
+
+				if (VerificadorUtil.verificarSeObjetoNuloOuVazio(agenda.getHorario()))
+					ps.setNull(5, Types.NULL);
+				else {
+					Time horario = Time.valueOf(agenda.getHorario() + SEGUNDOS);
+					ps.setTime(5, horario);
+				}
+
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteComInformacaoAtendimentoDTO.getIdCidPrimario()))
+					ps.setNull(6, Types.NULL);
+				else
+					ps.setInt(6, pacienteComInformacaoAtendimentoDTO.getIdCidPrimario());
+
+				ps.executeUpdate();
+
+				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+					gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao);
+				}
+        	}
+            con.commit();
+
+            retorno = true;
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+    
 
     private void gravarLiberacaoDuplicidadeAgendaAvulsa(Connection conexao, Integer idAtendimento,
                                                         FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
@@ -2900,7 +3027,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return existeAgendaAvulsa;
     }
 
-    public Integer retornaIdCidDoLaudo(AgendaBean agenda, Integer codUnidade) throws ProjetoException {
+    public Integer retornaIdCidDoLaudo(AgendaBean agenda, Integer codUnidade, Integer idPaciente) throws ProjetoException {
         Integer idCid = null;
 
         String sql = "select " +
@@ -2923,7 +3050,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             ps.setInt(1, codUnidade);
             ps.setInt(2, agenda.getPrograma().getIdPrograma());
             ps.setInt(3, agenda.getGrupo().getIdGrupo());
-            ps.setInt(4, agenda.getPaciente().getId_paciente());
+            ps.setInt(4, idPaciente);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
