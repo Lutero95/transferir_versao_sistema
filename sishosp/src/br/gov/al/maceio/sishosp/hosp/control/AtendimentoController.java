@@ -629,14 +629,33 @@ public class AtendimentoController implements Serializable {
     }
 
     public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
-        if ((periodoFinalEvolucao!=null) || (periodoInicialEvolucao!=null)) {
-            if ((periodoFinalEvolucao==null) || (periodoInicialEvolucao==null)) {
-                JSFUtil.adicionarMensagemAdvertencia("Informe o período Inicial e Final da Evolução", "Atenção!");
-                return;
-            }
-            else
-                listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
-        }
+    	
+    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
+    		if ((!VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+    			if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+    				JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
+    			}
+    			else
+    				listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    		}
+    		else {
+    			JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ou o Período Inicial e Final da Evolução", "Atenção!");
+    		}
+    	}
+    	
+    	else if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) && (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+    		if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
+				JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ", "Atenção!");
+    		}
+    		else
+    			listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    	}
+    	
+    	else if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente) && 
+    			((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) ) {
+    		JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
+    	}
+    	
         else
             listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
     }

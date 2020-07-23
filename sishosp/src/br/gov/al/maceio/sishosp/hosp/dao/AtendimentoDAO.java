@@ -1165,52 +1165,65 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
 
-		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma, g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo FROM hosp.atendimentos1 a1 "
-				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
-				+ " left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento "
-				+ " left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento "
-				+ " left join hosp.programa  on programa.id_programa = a.codprograma "
-				+ " left join hosp.grupo g on g.id_grupo = a.codgrupo "
-				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
-				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ " left join hosp.cbo c on c.id  = f.codcbo "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' ";
-		if (periodoInicialEvolucao != null)
-			sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
-		sql = sql + "ORDER BY a.dtaatende ";
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,  " + 
+				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, pa.nome as nome_paciente " + 
+				"FROM hosp.atendimentos1 a1  " + 
+				"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
+				" left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento  " + 
+				" left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento  " + 
+				" left join hosp.pacientes pa on a.codpaciente = pa.id_paciente  " + 
+				" left join hosp.programa  on programa.id_programa = a.codprograma  " + 
+				" left join hosp.grupo g on g.id_grupo = a.codgrupo  " + 
+				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " + 
+				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
+				" left join hosp.cbo c on c.id  = f.codcbo  " + 
+				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' ";
+		
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente))
+			sql += "AND a.codpaciente = ? ";
+		
+		if (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))
+			sql += " AND a.dtaatende >= ? AND a.dtaatende <= ? ";
+		
+		sql += "ORDER BY pa.nome, a.dtaatende ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, codPaciente);
-			int i = 2;
-			if (periodoInicialEvolucao != null) {
-				stm.setDate(i, new java.sql.Date(periodoInicialEvolucao.getTime()));
-				i = i + 1;
-				stm.setDate(i, new java.sql.Date(periodoFinalEvolucao.getTime()));
-				i = i + 1;
+			int i = 1;
+			
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
+				stm.setInt(i, codPaciente);
+				i++;
 			}
+				
+			if (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao)) {
+				stm.setDate(i, new java.sql.Date(periodoInicialEvolucao.getTime()));
+				i++;
+				stm.setDate(i, new java.sql.Date(periodoFinalEvolucao.getTime()));
+			}
+			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				AtendimentoBean at = new AtendimentoBean();
-				at.getProcedimento().setNomeProc(rs.getString("nome"));
-				at.getFuncionario().setNome(rs.getString("descfuncionario"));
-				at.getFuncionario().setCns(rs.getString("cns"));
-				at.getFuncionario().getCbo().setCodCbo(rs.getInt("idcbo"));
-				at.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
-				at.getFuncionario().getCbo().setDescCbo(rs.getString("desccbo"));
-				at.setEvolucao(rs.getString("evolucao"));
-				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
-				at.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
-				at.getPrograma().setDescPrograma(rs.getString("descprograma"));
-				at.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				at.getSituacaoAtendimento().setDescricao(rs.getString("situacaoatendimento"));
+				AtendimentoBean atendimento = new AtendimentoBean();
+				atendimento.getProcedimento().setNomeProc(rs.getString("nome"));
+				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimento.getFuncionario().setCns(rs.getString("cns"));
+				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("idcbo"));
+				atendimento.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
+				atendimento.getFuncionario().getCbo().setDescCbo(rs.getString("desccbo"));
+				atendimento.setEvolucao(rs.getString("evolucao"));
+				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				atendimento.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
+				atendimento.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				atendimento.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("situacaoatendimento"));
+				atendimento.getPaciente().setNome(rs.getString("nome_paciente"));
 
-
-				lista.add(at);
+				lista.add(atendimento);
 			}
 
 		} catch (SQLException ex2) {
