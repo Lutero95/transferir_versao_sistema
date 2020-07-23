@@ -103,7 +103,7 @@
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-											update=":formAgendaMedica, msgPagina, outTipoAt" />
+											update="msgPagina, outTipoAt" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" immediate="true"
@@ -111,6 +111,7 @@
 										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 										action="#{AgendaController.limparNaBuscaTipo()}"
 										update=":formConsuTipoAt"
+										process="@this"
 										onclick="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
@@ -132,16 +133,14 @@
 										completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.nome}">
-										
-									</p:autoComplete>
+										itemLabel="#{theme.nome}"/>
 
 									<p:commandButton id="btBusProf" icon="ui-icon-search"
 										immediate="true"
 										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 										action="#{AgendaController.limparNaBuscaEquipeProf()}"
 										process="@this formConsuProf"
-										update=":formAgendaMedica" oncomplete="PF('dlgConsuProf').show();" />
+										update=":formConsuProf" oncomplete="PF('dlgConsuProf').show();" />
 								</p:outputPanel>
 						</b:column>
 						<b:column span="7" class="label-position">
@@ -275,7 +274,7 @@
 					<div align="center">
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
-							action="#{AgendaController.gravarAgendamentosInformandoAtendimento()}"
+							action="#{AgendaController.validarAgendamentosInformandoAtendimento()}"
 							update=":formAgendaMedica :frmLiberacao"
 							class="btn-incluir" />
 
@@ -420,9 +419,10 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
+							update=":formAgendaMedica:outTipoAt"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
+							process="@this"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{AgendaController.agenda.tipoAt}" />
@@ -452,7 +452,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar" update=":formAgendaMedica"
+							class="new-btn-acao-table acao-editar" update=":formAgendaMedica:outProf"
 							oncomplete="PF('dlgConsuProf').hide();">
 
 							<f:setPropertyActionListener value="#{profi}"
@@ -467,7 +467,7 @@
 			modal="true" width="400" responsive="true" resizable="false">
 			<h:form id="frmLiberacao">
 				<div class="alert alert-warning" role="alert">
-					Você está tentando realizar um agendamento avulso que já possui cadastro nesta 
+					Você está tentando realizar agendamento(s) avulso(s) que possui(em) cadastro nesta 
 					data para este programa, grupo e tipo de atendimento!
 					Digite o CPF e senha para liberação!
 				</div>
@@ -489,7 +489,7 @@
 				<div align="center">
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
-						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsa()}" 
+						action="#{AgendaController.validarSenhaLiberacaoAgendamentosInformandoAtendimento()}" 
 						update="msgPagina :formAgendaMedica"/>
 						
 					<p:commandButton value="Cancelar" look="cancel" size="sm"

@@ -29,7 +29,12 @@ import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
-    private static final String SEGUNDOS = ":00";
+    private static final String NAO = "N";
+
+	private static final String SIM = "S";
+
+	private static final String SEGUNDOS = ":00";
+    
     Connection con = null;
     PreparedStatement ps = null;
 
@@ -77,7 +82,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     ps.setNull(8, Types.NULL);
                 }
                 ps.setString(9, agenda.getObservacao().toUpperCase());
-                ps.setString(10, "S");
+                ps.setString(10, SIM);
                 ps.setInt(11, agenda.getUnidade().getId());
 
                 if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
@@ -226,7 +231,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
 
             ps.setString(7, agenda.getObservacao().toUpperCase());
-            ps.setString(8, "S");
+            ps.setString(8, SIM);
             ps.setInt(9, agenda.getUnidade().getId());
 
             if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
@@ -328,8 +333,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " VALUES " + "(?, ?, ?, ?, current_timestamp ," + " ?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?,  true, ?, ?) RETURNING id_atendimento;";
         try {
+        	con = ConnectionFactory.getConnection();
         	for (PacientesComInformacaoAtendimentoDTO pacienteComInformacaoAtendimentoDTO : listaPacientesComInformacaoAtendimentoDTO) {
-				con = ConnectionFactory.getConnection();
 
 				ps = con.prepareStatement(sql);
 
@@ -347,7 +352,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				}
 
 				ps.setString(7, agenda.getObservacao().toUpperCase());
-				ps.setString(8, "S");
+				ps.setString(8, SIM);
 				ps.setInt(9, agenda.getUnidade().getId());
 
 				if (!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
@@ -370,9 +375,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				ps.setLong(14, user_session.getId());
 				
 				if(pacienteComInformacaoAtendimentoDTO.isPresenca())
-					ps.setString(15, "S");
+					ps.setString(15, SIM);
 				else
-					ps.setString(15, "N");
+					ps.setString(15, NAO);
 
 				ResultSet rs = ps.executeQuery();
 
@@ -490,10 +495,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
-            if (agenda.getPresenca().equals("S"))
-                stmt.setString(1, "N");
-            if (agenda.getPresenca().equals("N"))
-                stmt.setString(1, "S");
+            if (agenda.getPresenca().equals(SIM))
+                stmt.setString(1, NAO);
+            if (agenda.getPresenca().equals(NAO))
+                stmt.setString(1, SIM);
             stmt.setLong(2, agenda.getIdAgenda());
             stmt.execute();
             con.commit();

@@ -168,12 +168,12 @@ public class AgendaController implements Serializable {
         this.tipoC = new TipoAtendimentoBean();
         this.habilitarDetalhes = false;
         this.situacao = new String();
-        agenda.setTurno(Turno.MANHA.getSigla());
+        agenda.setTurno(new String());
         rowBean = new AgendaBean();
         agenda.getUnidade().setId(SessionUtil.recuperarDadosSessao().getUnidade().getId());
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
-        
+        this.listaPacientesSelecionadosComInformacaoDTO.clear();
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
@@ -934,11 +934,13 @@ public class AgendaController implements Serializable {
 
         if (cadastrou) {
             limparDados();
+            this.agenda.setTurno(Turno.MANHA.getSigla());
             JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
         limparDados();
+        this.agenda.setTurno(Turno.MANHA.getSigla());
     }
 
     private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
@@ -969,14 +971,47 @@ public class AgendaController implements Serializable {
         limparDados();
     }
     
-    public void gravarAgendamentosInformandoAtendimento() throws ProjetoException {
+    public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
     	if(existemPacientesAdicionados() /*&& todosPacienteSelecionadoSaoAtivos()*/) {
     		insereIdCidPrimarioEmPacientesSelecionados();
-    		for (PacientesComInformacaoAtendimentoDTO paciente : listaPacientesSelecionadosComInformacaoDTO) {
-    			System.out.println("WORKED SUCCESSFUL");
-    			
-    		}
+    		
+			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
+			boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
+
+			if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
+					|| !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
+					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
+				gravarAgendamentosInformandoAtendimento(new FuncionarioBean());
+			}
     	}
+    }
+    
+    private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
+    	boolean cadastrou = false;
+        cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao);
+
+        if (cadastrou) {
+            limparDados();
+            listarPacientes();
+            JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+        limparDados();
+    }
+    
+    public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean funcionarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+
+        if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
+        	gravarAgendamentosInformandoAtendimento(funcionarioLiberacao);
+    		JSFUtil.fecharDialog("dlgLiberacao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
     }
     
     private boolean todosPacienteSelecionadoSaoAtivos() throws ProjetoException {
@@ -1004,6 +1039,7 @@ public class AgendaController implements Serializable {
 	}
     
     public void listarPacientes() throws ProjetoException {
+    	this.listaPacientesComInformacaoDTOFiltro.clear();
     	this.listaPacientesComInformacaoDTO = pacienteDAO.listaPacientesComInformacaoDTO();
     	this.listaPacientesComInformacaoDTOFiltro.addAll(listaPacientesComInformacaoDTO);
     }
