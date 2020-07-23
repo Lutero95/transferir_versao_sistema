@@ -23,8 +23,7 @@
 							class="label-position new-data-size new-comple1">
 							<b:label value="Paciente" severity="info" />
 							<p:autoComplete value="#{AtendimentoController.paciente}"
-								size="31" converter="conPaciente" required="true"
-								requiredMessage="Paciente: Campo obrigatório!"
+								size="31" converter="conPaciente"
 								class="select-agendaEquipe4"
 								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -35,39 +34,38 @@
 							</p:autoComplete>
 
 							<p:commandButton id="btBPa" immediate="true"
-								style="margin-left: 5px;"
-								icon="ui-icon-search" update=":formConsuPac"
-								oncomplete="PF('dlgConsuPac').show();" />
+								style="margin-left: 5px;" icon="ui-icon-search"
+								update=":formConsuPac" oncomplete="PF('dlgConsuPac').show();" />
 
 
 						</b:column>
-						
 
 
-							<b:column span="1" class="label-position" style="width: 150px;">
-								<b:label value="Período da Evolução:" severity="info" />
 
-								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="7" class="select-agendaEquipe2"
-									value="#{AtendimentoController.periodoInicialEvolucao}" />
-							</b:column>
+						<b:column span="1" class="label-position" style="width: 150px;">
+							<b:label value="Período da Evolução:" severity="info" />
+
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+								showOn="button" size="7" class="select-agendaEquipe2"
+								value="#{AtendimentoController.periodoInicialEvolucao}" />
+						</b:column>
 
 
-							<b:column span="1" class="data-size4">
-								<p:outputLabel id="outdataa">
-									<h:outputLabel value="a" />
-								</p:outputLabel>
-							</b:column>
+						<b:column span="1" class="data-size4">
+							<p:outputLabel id="outdataa">
+								<h:outputLabel value="a" />
+							</p:outputLabel>
+						</b:column>
 
-							<b:column span="1" class="label-position data-size3">
-								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									class="select-agendaEquipe2" showOn="button" size="7"
-									id="dtagen3" locale="pt"
-									value="#{AtendimentoController.periodoFinalEvolucao}">
+						<b:column span="1" class="label-position data-size3">
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+								class="select-agendaEquipe2" showOn="button" size="7"
+								id="dtagen3" locale="pt"
+								value="#{AtendimentoController.periodoFinalEvolucao}">
 
-								</p:calendar>
-							</b:column>
-<b:column span="1">
+							</p:calendar>
+						</b:column>
+						<b:column span="1">
 
 							<p:commandButton value="Consultar" look="success" size="sm"
 								id="b1" icon="ui-icon-check" style="margin-top:20px"
@@ -75,26 +73,31 @@
 								update="outDtEvolucoes msgPagina" class="btn-incluir" />
 						</b:column>
 					</b:row>
+					
+					<b:row>
 
-		<b:row>
-						
-						
-
-						
-
-					</b:row>					
+					</b:row>
 
 					<p:outputPanel id="outDtEvolucoes">
 
 						<b:row>
 							<b:column span="12"
 								style="	line-height: 1.5;margin-left: 10px;
-	color: #1d5987;border: 1px solid transparent;
-	padding: 0px;">
+								color: #1d5987;border: 1px solid transparent;
+								padding: 0px;">
 								<ui:repeat var="evo"
 									value="#{AtendimentoController.listaEvolucoes}"
 									varStatus="status">
 
+									<b:row>
+										<b:column span="12">
+											<h:outputLabel value="Paciente: " />
+											<h:outputLabel value="#{evo.paciente.nome}"
+												style="font-weight:bold; margin-left:10px;">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputLabel>
+										</b:column>
+									</b:row>
 									<b:row>
 										<b:column span="12">
 											<h:outputLabel value="Data Atendimento: " />
@@ -107,7 +110,8 @@
 									<b:row rendered="#{evo.tipoAt.descTipoAt!=null}">
 										<b:column span="12">
 											<h:outputLabel value="Tipo de Atendimento: " />
-											<h:outputLabel value="#{evo.tipoAt.descTipoAt}"  style="margin-left:10px">
+											<h:outputLabel value="#{evo.tipoAt.descTipoAt}"
+												style="margin-left:10px">
 											</h:outputLabel>
 										</b:column>
 									</b:row>
@@ -115,7 +119,9 @@
 									<b:row rendered="#{evo.programa!=null}">
 										<b:column span="12">
 											<h:outputLabel value="Programa: " />
-											<h:outputLabel value="#{evo.programa.descPrograma} - #{evo.grupo.descGrupo}"  style="margin-left:10px">
+											<h:outputLabel
+												value="#{evo.programa.descPrograma} - #{evo.grupo.descGrupo}"
+												style="margin-left:10px">
 											</h:outputLabel>
 										</b:column>
 									</b:row>
@@ -130,7 +136,7 @@
 										<b:column span="12">
 											<h:outputLabel value="CNS: " />
 											<h:outputLabel value="#{evo.funcionario.cns}"
-														   style="font-weight:bold; margin-left:10px" />
+												style="font-weight:bold; margin-left:10px" />
 										</b:column>
 									</b:row>
 
@@ -138,7 +144,7 @@
 										<b:column span="12">
 											<h:outputLabel value="CBO: " />
 											<h:outputLabel value="#{evo.funcionario.cbo.descCbo}"
-														   style="font-weight:bold; margin-left:10px" />
+												style="font-weight:bold; margin-left:10px" />
 										</b:column>
 									</b:row>
 
@@ -146,8 +152,8 @@
 										<b:column span="12">
 											<h:outputLabel value="Situação do Atendimento:" />
 											<br />
-											<h:outputLabel value="#{evo.situacaoAtendimento.descricao}" escape="false"
-														   style="font-weight:bold" />
+											<h:outputLabel value="#{evo.situacaoAtendimento.descricao}"
+												escape="false" style="font-weight:bold" />
 										</b:column>
 									</b:row>
 									<b:row>
@@ -173,96 +179,96 @@
 
 		</div>
 
-<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
-                  dynamic="true" modal="true" width="750px" height="400px"
-                  responsive="true">
-            <h:form id="formConsuPac">
-                <p:growl id="msgC"/>
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			responsive="true">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
 
-                <div class="form-group row">
-                    <div class="col-sm-2"></div>
-                </div>
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
 
-                <p:row>
+				<p:row>
 
-                    <p:panelGrid columns="4">
+					<p:panelGrid columns="4">
 
-                        <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
-                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
-                            <f:selectItem itemLabel="Prontuário" itemValue="prontuario"/>
-                            <f:selectItem itemLabel="Matrícula" itemValue="matricula"/>
-                            <f:selectItem itemLabel="CPF" itemValue="cpf"/>
-                            <f:selectItem itemLabel="CNS" itemValue="cns"/>
-                        </p:selectOneMenu>
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
 
-                        <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca"
-                                     style="margin-left: 10px;"/>
+						<p:inputText value="#{PacienteController.campoBusca}"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
 
-                        <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}"
-                                         update="tabelapacientes"
-                                         icon="ui-icon-search" style="margin-left: 10px;"/>
+						<p:commandButton
+							action="#{PacienteController.buscarPacientesPorTipo()}"
+							update="tabelapacientes" icon="ui-icon-search"
+							style="margin-left: 10px;" />
 
-                        <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
-                                         icon="limpar" style="margin-left: 10px;"/>
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
 
-                    </p:panelGrid>
+					</p:panelGrid>
 
-                </p:row>
-                <p:dataTable paginator="true" rows="10" id="tabelapacientes"
-                             var="pacie" value="#{PacienteController.listaPacientes}"
-                             emptyMessage="Nenhum Paciente">
+				</p:row>
+				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
 
-                    <p:column width="100">
-                        <f:facet name="header">
+					<p:column width="100">
+						<f:facet name="header">
                             Prontuário
                         </f:facet>
 
-                        <p:outputLabel value="#{pacie.id_paciente}"/>
-                    </p:column>
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
 
-                    <p:column>
-                        <f:facet name="header">
+					<p:column>
+						<f:facet name="header">
                             Nome
                         </f:facet>
 
-                        <p:outputLabel value="#{pacie.nome}"/>
-                    </p:column>
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
 
-                    <p:column>
-                        <f:facet name="header">
+					<p:column>
+						<f:facet name="header">
                             Matrícula
                         </f:facet>
-                        <p:outputLabel value="#{pacie.matricula}"/>
-                    </p:column>
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
 
-                    <p:column>
-                        <f:facet name="header">
+					<p:column>
+						<f:facet name="header">
                             CNS
                         </f:facet>
-                        <p:outputLabel value="#{pacie.cns}"/>
-                    </p:column>
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
 
-                    <p:column>
-                        <f:facet name="header">
+					<p:column>
+						<f:facet name="header">
                             Selecionar
                         </f:facet>
-                        <p:commandButton
-                               update=":frmPrincipal"
-                                icon="fa fa-fw fa-check" title="Selecionar"
-                                class="new-btn-acao-table acao-editar"
-                                oncomplete="PF('dlgConsuPac').hide();">
-                           <f:setPropertyActionListener value="#{pacie}"
+						<p:commandButton update=":frmPrincipal" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							oncomplete="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
 								target="#{AtendimentoController.paciente}" />
-                        </p:commandButton>
+						</p:commandButton>
 
-                    </p:column>
+					</p:column>
 
 
-                </p:dataTable>
-            </h:form>
-        </p:dialog>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 
-	
+
 
 	</ui:define>
 </ui:composition>
