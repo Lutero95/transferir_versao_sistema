@@ -380,6 +380,41 @@ public class RelatoriosController implements Serializable {
 			//this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 	}
+	
+	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+
+		pacienteInstituicao.setPrograma(programa);
+		pacienteInstituicao.setGrupo(grupo);
+		int randomico = JSFUtil.geraNumeroRandomico();
+		RelatorioDAO rDao = new RelatorioDAO();
+		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "pacientespresentes.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dt_inicial", dataInicial);
+		map.put("dt_final", dataFinal);
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
+			map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+		if (this.turnoSelecionado.equals(Turno.MANHA.getSigla())
+				|| this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
+			map.put("turno", this.turnoSelecionado);
+
+		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+		map.put("diassemanalista", diasSemanaInteger);
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		this.executeReport(relatorio, map, "relatorio_presenca.pdf");
+
+		rDao.limparTabelaTemporariaFrequencia(randomico);
+	}
 
 	public void atualizaListaMunicipiosDePacientesAtivosSelecionados(MunicipioBean municipioSelecionado) {
 		List<Integer> idMunicipios = retornaIdDosMunicipiosSelecionados();
