@@ -9,13 +9,14 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{AgendaController.agendaAvulsaInit()}" />
+			<f:viewAction action="#{AgendaController.carregarHorarioOuTurno()}" />
 			<f:viewAction action="#{AgendaController.limparTurno()}" />
+			<f:viewAction action="#{AgendaController.listarPacientes()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Agenda Avulsa</h4>
+				<h4 class="panel-title">Agendamento Com Informação do Atendimento</h4>
 			</div>
 
 			<div class="panel-body table-body">
@@ -25,83 +26,7 @@
 				<h:form id="formAgendaMedica">
 
 					<p:growl id="growlMsg"></p:growl>
-
-
 					<br></br>
-
-					<b:row>
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Paciente" severity="info" />
-
-							<p:outputPanel id="outPa">
-								<p:autoComplete value="#{AgendaController.agenda.paciente}"
-									size="31" converter="conPaciente" required="true"
-									requiredMessage="Paciente: Campo obrigatório!"
-									class="select-agendaEquipe4"
-									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect"
-										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, "
-										global="false" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBPa" immediate="true"
-									icon="ui-icon-search" update=":formConsuPac"
-									oncomplete="PF('dlgConsuPac').show();" />
-							</p:outputPanel>
-						</b:column>
-
-					</b:row>
-
-					<p:outputPanel id="rowProgramaTipoAtendimento">
-						<b:row rendered="#{AgendaController.agenda.avaliacao == true}">
-
-							<b:column span="3"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Programa" severity="info" />
-
-								<p:outputPanel id="outProg2">
-									<p:autoComplete
-										value="#{AgendaController.agenda.programaAvaliacao}" size="31"
-										converter="conPrograma" required="true"
-										class="select-agendaEquipe4"
-										requiredMessage="Programa: Campo obrigatório!"
-										disabled="#{AgendaController.agenda.paciente==null}"
-										completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descPrograma}">
-										<p:ajax event="itemSelect"
-											listener="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao}"
-											update="outTip2, :formAgendaMedica, msgPagina, outTipoAt, :formAgendaMedica:outEquipeAvaliacaoRow" />
-
-									</p:autoComplete>
-
-									<p:commandButton id="btBusPr2" immediate="true"
-										disabled="#{AgendaController.agenda.paciente==null}"
-										icon="ui-icon-search"
-										action="#{AgendaController.limparNaBuscaPrograma()}"
-										actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-										update=":formConsuProg2" onclick="PF('dlgConsuProg2').show();" />
-								</p:outputPanel>
-							</b:column>
-
-							<b:column span="3"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Tipo Atendimento" severity="info" />
-
-								<b:inputText id="outTip2"
-									value="#{AgendaController.agenda.tipoAt.descTipoAt}"
-									class="select-agendaEquipe2" readonly="true" />
-
-							</b:column>
-
-						</b:row>
-					</p:outputPanel>
 
 					<p:outputPanel id="rowProgramaGrupoTipoAtendimento">
 						<b:row rendered="#{AgendaController.agenda.avaliacao != true}">
@@ -112,7 +37,7 @@
 
 								<p:outputPanel id="outProg">
 									<p:autoComplete value="#{AgendaController.agenda.programa}"
-										size="31" converter="conPrograma" required="true"
+										size="32" converter="conPrograma" required="true"
 										class="select-agendaEquipe4"
 										requiredMessage="Programa: Campo obrigatório!"
 										disabled="#{AgendaController.agenda.paciente==null}"
@@ -123,8 +48,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectPrograma}"
 											update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt" />
-
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusPr" immediate="true"
@@ -142,7 +65,7 @@
 
 								<p:outputPanel id="outGrupo">
 									<p:autoComplete value="#{AgendaController.agenda.grupo}"
-										size="31" converter="conGrupo" required="true"
+										size="32" converter="conGrupo" required="true"
 										requiredMessage="Grupo: Campo obrigatório!"
 										class="select-agendaEquipe4"
 										disabled="#{AgendaController.agenda.programa.idPrograma == null}"
@@ -152,8 +75,7 @@
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectGrupo}"
-											update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi" />
-
+											update="outTipoAt, outGrupo, :formAgendaMedica:outProf, :formConsuTipoAt:dtTipoAt, btBusTi" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusGr" immediate="true"
@@ -171,7 +93,7 @@
 
 								<p:outputPanel id="outTipoAt">
 									<p:autoComplete value="#{AgendaController.agenda.tipoAt}"
-										size="31" converter="conTipoAtendimento" required="true"
+										size="32" converter="conTipoAtendimento" required="true"
 										requiredMessage="Tipo Atendimento: Campo obrigatório!"
 										class="select-agendaEquipe4"
 										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
@@ -181,7 +103,7 @@
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-											update=":msgPagina, outTipoAt" />
+											update="msgPagina, outTipoAt" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" immediate="true"
@@ -189,76 +111,130 @@
 										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 										action="#{AgendaController.limparNaBuscaTipo()}"
 										update=":formConsuTipoAt"
+										process="@this"
 										onclick="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
-
 					</p:outputPanel>
 
-
-					
-					
-
 					<b:row>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							
+								<b:label value="Profissional" severity="info"/>
+								<p:outputPanel id="outProf">
+									<p:autoComplete value="#{AgendaController.agenda.profissional}"
+										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+										id="autoCompleteProfissional" size="32"
+										converter="conFuncionario" required="true"
+										requiredMessage="Profissional: Campo obrigatório!"
+										class="select-agendaEquipe4"
+										completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nome}"/>
 
-						<b:column span="11" class="label-position">
+									<p:commandButton id="btBusProf" icon="ui-icon-search"
+										immediate="true"
+										disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+										action="#{AgendaController.limparNaBuscaEquipeProf()}"
+										process="@this formConsuProf"
+										update=":formConsuProf" oncomplete="PF('dlgConsuProf').show();" />
+								</p:outputPanel>
+						</b:column>
+						<b:column span="7" class="label-position">
 							<b:label for="obs" value="Observação" severity="info" />
 
 							<b:inputTextarea id="obs" rows="1" class="select-agendaEquipe2"
-								value="#{AgendaController.agenda.observacao}" autoResize="false" />
+								value="#{AgendaController.agenda.observacao}" autoResize="false"/>
 						</b:column>
-
 					</b:row>
-
-					<b:row>
-
-						<b:column span="3" class="label-position data-size new-comple1">
-							<b:label value="Data" severity="info" />
-							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-										showOn="button" size="5" class="select-agendaEquipe2"
-										required="true" requiredMessage="Data: Campo obrigatório!"
-										rendered="#{AgendaController.tipoData == 'U'}"
-										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
-										locale="pt" style="margin-left:10px;">
-							</p:calendar>
-
-						</b:column>
-
-					</b:row>
-					<!-- 
 					
-					<p:outputPanel id="outQtdIhMax">
-						<b:row rendered="#{AgendaController.tipoData == 'U'}">
-							<b:column span="2" class="label-position">
-								<b:label for="qtd" value="Quantidade" severity="info"
-									rendered="#{AgendaController.tipoData == 'U'}" />
+					<b:row>
+						<b:column span="12">
+							<div style="display: flex;">
+								<div style="width: 60%;">
+									<p:dataTable paginator="true" rows="10" id="tabelapacientes" paginatorPosition="bottom"
+										filteredValue="#{AgendaController.listaPacientesComInformacaoDTOFiltro}"
+										var="pacie" value="#{AgendaController.listaPacientesComInformacaoDTO}"
+										emptyMessage="Nenhum Paciente" style="margin-right:1%;">
 
-								<b:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
-									class="select-agendaEquipe2"
-									rendered="#{AgendaController.tipoData == 'U'}" readonly="true" />
-							</b:column>
+										<p:column headerText="Prontuário" width="16%" filterBy="#{pacie.paciente.id_paciente}">
+											<p:outputLabel value="#{pacie.paciente.id_paciente}" />
+										</p:column>
 
-							<b:column span="2" class="label-position">
-								<b:label for="max" value="Máximo" severity="info"
-									rendered="#{AgendaController.tipoData == 'U'}" />
+										<p:column headerText="Nome" filterBy="#{pacie.paciente.nome}" width="40%">
+											<p:outputLabel value="#{pacie.paciente.nome}" />
+										</p:column>
 
-								<b:inputText id="max" value="#{AgendaController.agenda.max}"
-									rendered="#{AgendaController.tipoData == 'U'}"
-									class="select-agendaEquipe2" readonly="true" />
-							</b:column>
+										<p:column headerText="Matrícula" filterBy="#{pacie.paciente.matricula}">
+											<p:outputLabel value="#{pacie.paciente.matricula}" />
+										</p:column>
+										
+										<p:column headerText="Presença">
+											<div align="center">
+												<p:inputSwitch id="presenca" value="#{pacie.presenca}"
+													onLabel="Sim" offLabel="Não"
+													style="${pacie.presenca == 'true' ? 'color:#38c;' : 'color:#b91b19;'}"
+													immediate="true">
+													<p:ajax event="change" update="tabelapacientes" />
+												</p:inputSwitch>
+											</div>
+										</p:column>
 
-						</b:row>
-					</p:outputPanel>
+										<p:column headerText="Ação" width="10%">
+											<div align="center">
+												<p:commandButton
+													action="#{AgendaController.adicionarPacienteSelecionado(pacie)}"
+													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina"
+													process="@this :formAgendaMedica:tabelaPacientesSelecionados"
+													icon="fa fa-fw fa-plus" title="Adicionar paciente"
+													immediate="true" class="new-btn-acao-table acao-editar"/>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							
+								<div style="width: 40%;">
+									<p:dataTable var="paci"
+										value="#{AgendaController.listaPacientesSelecionadosComInformacaoDTO}"
+										emptyMessage="Nenhum paciente adicionado" paginator="true"
+										id="tabelaPacientesSelecionados" rows="10" paginatorPosition="bottom"
+										style="width:96%; margin-left:1%;">
+										<p:column headerText="Paciente" width="70%">
+											<h:outputText value="#{paci.paciente.nome}" />
+										</p:column>
 
- -->
+										<p:column headerText="Presença" width="20%">
+											<div align="center">
+												<h:outputText value="${paci.presenca == 'true' ? 'Sim' : 'Não'}" />
+											</div>
+										</p:column>
+
+										<p:column headerText="Ação">
+											<div align="center">
+												<p:commandButton
+													action="#{AgendaController.removerPacienteSelecionado(paci)}"
+													update="tabelaPacientesSelecionados, :msgPagina"
+													process="@this"
+													icon="fa fa-fw fa-times" title="Remover paciente"
+													immediate="true" class="new-btn-acao-table acao-excluir" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</b:column>
+					</b:row>
+					
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 						<b:column span="1" class="label-position btn-radio-table">
+							<br />
 							<b:label value="Turno" severity="info" />
-							<p:selectOneRadio value="#{AgendaController.agenda.turno}"
-								required="true" requiredMessage="Turno: Campo obrigatório!" 
-								style="margin-left:-15px;margin-top:10px">
+							<p:selectOneRadio  value="#{AgendaController.agenda.turno}"
+								required="true" requiredMessage="Turno: Campo obrigatório!"
+							 	style="margin-left:-15px;margin-top:10px">
 								<f:selectItem itemLabel="Manhã" itemValue="M" />
 								<f:selectItem itemLabel="Tarde" itemValue="T" />
 							</p:selectOneRadio>
@@ -268,89 +244,38 @@
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
 						<p:outputPanel>
 							<b:column span="3" class="label-position">
+								<br />
 								<b:label value="Horário:" severity="info" class="fire-label" />
 
 								<b:selectOneMenu class="select-agendaEquipe2" required="true"
 									requiredMessage="Horário: Campo obrigatório!"
 									value="#{AgendaController.agenda.horario}">
 									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-									<f:selectItems value="#{AgendaController.listaHorarios}" />
+									<f:selectItems value="#{AgendaController.listaHorarios}"/>
 								</b:selectOneMenu>
 							</b:column>
 						</p:outputPanel>
 					</b:row>
 
-					<div style="display: flex;">
-						<div style="width:48%">
-							<p:dataTable var="funcionariosSoucer" value="#{AgendaController.listaFuncionariosSoucer}"
-								id="tbfuncionarios" 
-								filteredValue="#{AgendaController.listaFuncionariosSoucerFiltro}"
-								emptyMessage="Nenhum profissional encontrado"
-								paginator="true" rows="10" paginatorPosition="bottom" 
-								style="margin-right: 1%;">
+					<b:row>
+						<b:column span="3" class="label-position data-size new-comple1">
+							<b:label value="Data" severity="info" />
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+										showOn="button" size="7" class="select-agendaEquipe2"
+										required="true" requiredMessage="Data: Campo obrigatório!"
+										rendered="#{AgendaController.tipoData == 'U'}"
+										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+										locale="pt" style="margin-left:10px;">
+							</p:calendar>
 
-								<p:column filterBy="#{funcionariosSoucer.nome}" headerText="Profissional">
-									<h:outputText value="#{funcionariosSoucer.nome}" />
-								</p:column>
+						</b:column>
+					</b:row>
 
-								<p:column headerText="Adicionar" width="20%">
-									<div align="center">
-										<p:commandButton actionListener="#{AgendaController.adicionarFuncionario(funcionariosSoucer)}"
-											icon="fa fa-angle-right" title="Adicionar Funcionário"  ajax="true" process="@this" immediate="true"
-											update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"/>
-									</div>
-								</p:column>
-							</p:dataTable>
-						</div>
-						
-						<div>
-							<div align="right">
-								<p:commandButton
-									action="#{AgendaController.adicionarTodosFuncionarios()}"
-									icon="fa fa-angle-double-right"
-									title="Adicionar Todos Funcionários" immediate="true"
-									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado" />
-							</div>
-
-							<div align="left">
-								<p:commandButton
-									action="#{AgendaController.removerTodosFuncionarios()}"
-									icon="fa fa-angle-double-left"
-									title="Remover Todos Funcionários" immediate="true"
-									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado" />
-							</div>
-						</div>
-						
-						<div style="width:48%;">
-							<p:dataTable var="funcionariosTarget" value="#{AgendaController.listaFuncionariosTarget}"
-								id="tbfuncionarioselecionado"
-								filteredValue="#{AgendaController.listaFuncionariosTargetFiltro}"
-								emptyMessage="Nenhum profissional adicionado"
-								paginator="true" rows="10" paginatorPosition="bottom"
-								style="margin-left: 1%;">
-
-								<p:column headerText="Remover" width="20%">
-									<div align="center">
-										<p:commandButton action="#{AgendaController.removerFuncionario(funcionariosTarget)}"
-											icon="fa fa-angle-left" title="Remover Funcionário" immediate="true"
-											update="tbfuncionarioselecionado :formAgendaMedica:tbfuncionarios"/>
-									</div>
-								</p:column>
-								
-								<p:column filterBy="#{funcionariosTarget.nome}" headerText="Profissional">
-									<h:outputText value="#{funcionariosTarget.nome}" />
-								</p:column>
-							</p:dataTable>
-						</div>
-					</div>	
-						
 					<div align="center">
-
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
-							actionListener="#{AgendaController.preparaGravarAgendaAvulsa()}"
+							action="#{AgendaController.validarAgendamentosInformandoAtendimento()}"
 							update=":formAgendaMedica :frmLiberacao"
-							process="@all"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -359,104 +284,12 @@
 							actionListener="#{AgendaController.limparDados()}"
 							action="/pages/sishosp/principal.xhtml?faces-redirect=true">
 						</p:commandButton>
-
 					</div>
 
 				</h:form>
 			</div>
 		</div>
-
-		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
-			dynamic="true" modal="true" width="750px" height="400px"
-			responsive="true">
-			<h:form id="formConsuPac">
-				<p:growl id="msgC" />
-
-				<div class="form-group row">
-					<div class="col-sm-2"></div>
-				</div>
-
-				<p:row>
-
-					<p:panelGrid columns="4">
-
-						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
-							style="margin-top: -13px">
-							<f:selectItem itemLabel="Nome" itemValue="nome" />
-							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
-							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
-							<f:selectItem itemLabel="CPF" itemValue="cpf" />
-							<f:selectItem itemLabel="CNS" itemValue="cns" />
-						</p:selectOneMenu>
-
-						<p:inputText value="#{PacienteController.campoBusca}"
-							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
-
-						<p:commandButton
-							action="#{PacienteController.buscarPacientesPorTipo()}"
-							update="tabelapacientes" icon="ui-icon-search"
-							style="margin-left: 10px;" />
-
-						<p:commandButton action="#{PacienteController.listarPacientes()}"
-							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
-
-					</p:panelGrid>
-
-				</p:row>
-				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
-					var="pacie" value="#{PacienteController.listaPacientes}"
-					emptyMessage="Nenhum Paciente">
-
-					<p:column width="100">
-						<f:facet name="header">
-                            Prontuário
-                        </f:facet>
-
-						<p:outputLabel value="#{pacie.id_paciente}" />
-					</p:column>
-
-					<p:column>
-						<f:facet name="header">
-                            Nome
-                        </f:facet>
-
-						<p:outputLabel value="#{pacie.nome}" />
-					</p:column>
-
-					<p:column>
-						<f:facet name="header">
-                            Matrícula
-                        </f:facet>
-						<p:outputLabel value="#{pacie.matricula}" />
-					</p:column>
-
-					<p:column>
-						<f:facet name="header">
-                            CNS
-                        </f:facet>
-						<p:outputLabel value="#{pacie.cns}" />
-					</p:column>
-
-					<p:column>
-						<f:facet name="header">
-                            Selecionar
-                        </f:facet>
-						<p:commandButton
-							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuPac').hide();">
-							<f:setPropertyActionListener value="#{pacie}"
-								target="#{AgendaController.agenda.paciente}" />
-						</p:commandButton>
-
-					</p:column>
-
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
+		
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			dynamic="true" modal="true" responsive="true">
 			<h:form id="formConsuProg">
@@ -552,7 +385,8 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
-							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt,
+							 :formAgendaMedica:outProf"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();"
@@ -585,9 +419,10 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outTipoAt, :msgPagina" 
+							update=":formAgendaMedica:outTipoAt"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
+							process="@this"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{AgendaController.agenda.tipoAt}" />
@@ -598,11 +433,41 @@
 			</h:form>
 		</p:dialog>
 		
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+			dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsuProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AgendaController.listaProfissionalPorGrupo}" id="dtProf"
+					var="profi" display="Nenhum Profissional">
+
+					<h:column>
+						<f:facet name="header">
+                            Profissional
+                        </f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar" update=":formAgendaMedica:outProf"
+							oncomplete="PF('dlgConsuProf').hide();">
+
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{AgendaController.agenda.profissional}" />
+						</p:commandButton>
+					</h:column>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+		
 		<p:dialog header="Duplicidade De Agenda Avulsa" widgetVar="dlgLiberacao"
 			modal="true" width="400" responsive="true" resizable="false">
 			<h:form id="frmLiberacao">
 				<div class="alert alert-warning" role="alert">
-					Você está tentando realizar um agendamento avulso que já possui cadastro nesta 
+					Você está tentando realizar agendamento(s) avulso(s) que possui(em) cadastro nesta 
 					data para este programa, grupo e tipo de atendimento!
 					Digite o CPF e senha para liberação!
 				</div>
@@ -624,7 +489,7 @@
 				<div align="center">
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
-						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsa()}" 
+						action="#{AgendaController.validarSenhaLiberacaoAgendamentosInformandoAtendimento()}" 
 						update="msgPagina :formAgendaMedica"/>
 						
 					<p:commandButton value="Cancelar" look="cancel" size="sm"

@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
 import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 
 public class PacienteDAO {
@@ -638,7 +639,7 @@ public class PacienteDAO {
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns, pacientes.dtanascimento "
                 + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
 
-        ArrayList<PacienteBean> lista = new ArrayList();
+        ArrayList<PacienteBean> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -653,6 +654,40 @@ public class PacienteDAO {
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
                 paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                lista.add(paciente);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+    
+    public ArrayList<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoDTO() throws ProjetoException {
+
+        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.matricula "
+                + " from hosp.pacientes order by pacientes.nome ";
+
+        ArrayList<PacientesComInformacaoAtendimentoDTO> lista = new ArrayList<>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	PacientesComInformacaoAtendimentoDTO paciente = new PacientesComInformacaoAtendimentoDTO();
+
+                paciente.getPaciente().setId_paciente(rs.getInt("id_paciente"));
+                paciente.getPaciente().setNome(rs.getString("nome").toUpperCase());
+                paciente.getPaciente().setMatricula(rs.getString("matricula"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
