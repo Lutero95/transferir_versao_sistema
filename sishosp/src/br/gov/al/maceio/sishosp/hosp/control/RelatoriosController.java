@@ -383,7 +383,7 @@ public class RelatoriosController implements Serializable {
 		}
 	}
 	
-	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
 		pacienteInstituicao.setPrograma(programa);
@@ -407,6 +407,9 @@ public class RelatoriosController implements Serializable {
 		if (this.turnoSelecionado.equals(Turno.MANHA.getSigla())
 				|| this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			map.put("turno", this.turnoSelecionado);
+		
+		if (!VerificadorUtil.verificarSeObjetoNulo(paciente) && !VerificadorUtil.verificarSeObjetoNuloOuZero(paciente.getId_paciente()))
+			map.put("id_paciente", paciente.getId_paciente());
 
 		map.put("codunidade", user_session.getUnidade().getId());
 
