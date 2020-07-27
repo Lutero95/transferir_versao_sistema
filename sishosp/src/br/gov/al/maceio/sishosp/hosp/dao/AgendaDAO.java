@@ -3089,7 +3089,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idPrograma);
             if (VerificadorUtil.verificarSeObjetoNuloOuZero(idCbo))
-                ps.setNull(3, Types.NULL);
+                stm.setNull(2, Types.NULL);
             else
                 stm.setInt(2, idCbo);
 
