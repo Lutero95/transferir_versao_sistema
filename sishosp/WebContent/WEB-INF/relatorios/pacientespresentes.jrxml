@@ -126,6 +126,9 @@ order by 1]]>
 	<variable name="nome_paciente2" class="java.lang.Integer" resetType="Group" resetGroup="grpgrupo" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
+	<variable name="nome_profissional1" class="java.lang.Integer" resetType="Group" resetGroup="paciente" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_profissional}]]></variableExpression>
+	</variable>
 	<group name="grupoPrograma" isStartNewPage="true" isReprintHeaderOnEachPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
 		<groupHeader>
@@ -165,7 +168,7 @@ order by 1]]>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="paciente">
+	<group name="paciente" minHeightToStartNewPage="100">
 		<groupExpression><![CDATA[$F{nome_paciente}]]></groupExpression>
 		<groupHeader>
 			<band height="33">
@@ -188,7 +191,7 @@ order by 1]]>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
-						<font size="8"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 				</textField>
@@ -198,12 +201,25 @@ order by 1]]>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
-						<font size="8"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement x="1" y="1" width="249" height="16" uuid="d00a5957-ecf0-468c-82af-6e7dad4f0f93">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TOTAL PACIENTE: "+$V{nome_profissional1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
 	</group>
 	<group name="data">
 		<groupExpression><![CDATA[$F{data_agend}]]></groupExpression>
