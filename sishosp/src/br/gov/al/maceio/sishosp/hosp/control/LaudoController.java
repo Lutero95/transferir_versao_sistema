@@ -349,7 +349,7 @@ public class LaudoController implements Serializable {
         try {
             if(lDao.existeLaudoComMesmosDados(laudo)) {
                 JSFUtil.adicionarMensagemErro
-                        ("Já existe laudo para este Paciente, com as mesmas condições digitadas!", "Erro");
+                        ("Já existe laudo para este Paciente, com o mesmo profissional, data de vencimento e procedimento!", "Erro");
                 return true;
             }
         } catch (ProjetoException e) {
