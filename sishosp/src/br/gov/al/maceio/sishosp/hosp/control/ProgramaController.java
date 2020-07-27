@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
@@ -42,6 +43,7 @@ public class ProgramaController implements Serializable {
     private CboDAO cboDAO;
     private ProcedimentoBean procedimentoSelecionado;
     private CboBean cboSelecionado;
+    private GrupoBean grupo;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -235,6 +237,16 @@ public class ProgramaController implements Serializable {
     	this.prog.getListaProcedimentoCboEspecificoDTO().remove(procedimentoCboEspecifico);
     }
     
+    public void validaFrequencia() {
+    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(grupo.getQtdFrequencia()))
+    		JSFUtil.adicionarMensagemErro("Frequência: Campo Obrigatório", "");
+    	else {
+    		JSFUtil.fecharDialog("dlgFreq");
+    		JSFUtil.fecharDialog("dlgConsuGrupos");
+    		prog.addGrupoLista();
+    	}
+    }
+    
     public void selecionarProcedimento(ProcedimentoBean procedimento) {
     	this.procedimentoSelecionado = procedimento;
     }
@@ -314,4 +326,13 @@ public class ProgramaController implements Serializable {
 	public void setCboSelecionado(CboBean cboSelecionado) {
 		this.cboSelecionado = cboSelecionado;
 	}
+
+	public GrupoBean getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
+	
 }

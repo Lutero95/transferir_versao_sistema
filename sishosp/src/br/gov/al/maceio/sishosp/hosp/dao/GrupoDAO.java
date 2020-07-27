@@ -241,7 +241,7 @@ public class GrupoDAO {
                 GrupoBean grupo = new GrupoBean();
                 grupo.setIdGrupo(rs.getInt("id_grupo"));
                 grupo.setDescGrupo(rs.getString("descgrupo"));
-                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setQtdFrequencia(buscaFrequenciaDeGrupoPrograma(codPrograma, rs.getInt("id_grupo"), conAuxiliar));
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
                 grupo.setEquipeSim(rs.getBoolean("equipe"));
                 grupo.setinsercao_pac_institut(rs
@@ -257,6 +257,31 @@ public class GrupoDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
         return lista;
+    }
+    
+    public Integer buscaFrequenciaDeGrupoPrograma(Integer idPrograma, Integer idGrupo, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+    	Integer frequencia = 0;
+    	String sql = "SELECT qtdfrequencia FROM hosp.grupo_programa where codprograma = ? and codgrupo = ?; ";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, idGrupo);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                frequencia = rs.getInt("qtdfrequencia");
+            }
+
+        } catch (SQLException sqle) {
+        	conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return frequencia;
     }
 
     public List<GrupoBean> listarGruposPorTipoAtend(int idTipo, Connection conAuxiliar)
@@ -305,7 +330,7 @@ public class GrupoDAO {
                 GrupoBean grupo = new GrupoBean();
                 grupo.setIdGrupo(rs.getInt("id_grupo"));
                 grupo.setDescGrupo(rs.getString("descgrupo"));
-                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                //grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
                 grupo.setinsercao_pac_institut(rs
                         .getBoolean("insercao_pac_institut"));

@@ -57,24 +57,28 @@
 										update=":formConsuGrop" />
 								</b:column>
 
-								<b:column span="7" class="label-position">
+								<b:column span="9" class="label-position">
 
 									<p:dataTable emptyMessage="Nenhum Grupo"
 										styleClass="table table-hover" id="tabela"
 										value="#{ProgramaController.prog.grupo}" var="tab"
 										paginator="true" paginatorPosition="bottom" rows="12"
-										resizableColumns="true">
+										resizableColumns="true" style="width:100%" scrollable="false">
 
-										<p:column headerText="Cód."
-											style="font-weight:bold;width:20%;">
+										<p:column width="20%" headerText="Cód."
+											style="font-weight:bold;">
 											<h:outputText value="#{tab.idGrupo}" />
 										</p:column>
 
 										<p:column headerText="Nome" style="font-weight:bold;">
 											<h:outputText value="#{tab.descGrupo}" />
 										</p:column>
+										
+										<p:column headerText="Frequê. para o Programa" style="font-weight:bold;">
+											<h:outputText value="#{tab.qtdFrequencia}" />
+										</p:column>
 
-										<p:column headerText="Ação">
+										<p:column width="10%" headerText="Ação">
 											<div align="center">
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
@@ -125,6 +129,7 @@
 							title="Adicionar Registro"
 							update=":msgPagina :formConsulProcOcup" 
 							class="btn-acao-table acao-editar"
+							process="@this"
 							actionListener="#{ProgramaController.limparProcedimentoIhCboSelecionado()}"
 							oncomplete="PF('dlgConsulProcOcup').show();" />
 							
@@ -179,8 +184,8 @@
 		</div>
 		
 		<p:dialog header="Consultar Procedimento e Ocupações" styleClass="topDialog"
-                  widgetVar="dlgConsulProcOcup" modal="true" resizable="false" width="1000" 
-                  draggable="true" responsive="true">
+                  widgetVar="dlgConsulProcOcup" modal="true" resizable="false" height="400" width="70%" 
+                  draggable="true" responsive="true" dynamic="true" minHeight="200">
             <h:form id="formConsulProcOcup">
                 <p:outputPanel id="outproc">
                 		<p:dataTable var="proc" value="#{ProgramaController.listaProcedimentos}"
@@ -256,23 +261,15 @@
 
                         <h:column>
                             <f:facet name="header">
-                                Quantidade Frequência
-                            </f:facet>
-                            <p:outputLabel value="#{grupo.qtdFrequencia}"/>
-                        </h:column>
-
-                        <h:column>
-                            <f:facet name="header">
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":frmPrincipal:tab:tabela, :msgPagina"
+                                    update=":formFreq, :msgPagina"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
-                                    onclick="PF('dlgConsuGrupos').hide();"
-                                    action="#{ProgramaController.prog.addGrupoLista()}">
+                                    oncomplete="PF('dlgFreq').show();">
                                 <f:setPropertyActionListener value="#{grupo}"
-                                                             target="#{ProgramaController.prog.grupoParaAdd}"/>
+                                                             target="#{ProgramaController.grupo}"/>
                             </p:commandButton>
                         </h:column>
 
@@ -280,6 +277,32 @@
                 </p:outputPanel>
             </h:form>
         </p:dialog>
+        
+        
+        <p:dialog header="Selecione Frequência"
+        		  widgetVar="dlgFreq" draggable="true" responsive="true"
+                  modal="true" styleClass="topDialog" resizable="false">
+            <h:form id="formFreq">
+            	<h:outputLabel value="Frequência do Grupo #{ProgramaController.grupo.descGrupo} para o Programa"/>
+				
+				<div align="center">
+					<div>
+						<p:spinner value="#{ProgramaController.grupo.qtdFrequencia}"/>
+					</div>
+
+					<div>
+						<br /><br />
+						<p:commandButton update=":frmPrincipal:tab:tabela, :msgPagina"
+							value="Confirmar" title="Confirmar"
+							action="#{ProgramaController.validaFrequencia()}">
+							<f:setPropertyActionListener value="#{ProgramaController.grupo}"
+								target="#{ProgramaController.prog.grupoParaAdd}" />
+						</p:commandButton>
+					</div>
+				</div>
+			</h:form>
+        </p:dialog>
+        
 
         <p:dialog header="Consultar Procedimento" styleClass="topDialog"
                   widgetVar="dlgConsulProc" modal="true" resizable="false" 
