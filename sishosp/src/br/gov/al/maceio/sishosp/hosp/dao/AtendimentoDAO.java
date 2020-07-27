@@ -959,7 +959,7 @@ public class AtendimentoDAO {
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, a1.codprocedimento, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca,  pr.codproc, p.dtanascimento, p.sexo, "
-				+ " a.codgrupo, g.descgrupo from hosp.atendimentos a "
+				+ " a.codgrupo, g.descgrupo, f.codcbo from hosp.atendimentos a "
 				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.programa pro on (pro.id_programa = a.codprograma)"
@@ -986,6 +986,7 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setCodProc(rs.getString("codproc"));
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));

@@ -2240,5 +2240,43 @@ public class ProcedimentoDAO {
         }
         return existe;
     }
+    
+    
+    public List<ProcedimentoBean> listarProcedimentosPorCbo(Integer idCbo, Integer idPrograma) throws ProjetoException {
+        List<ProcedimentoBean> listaProcedimento = new ArrayList<>();
+        String sql = "select p.id, p.codproc, p.nome " + 
+        		"from hosp.proc p " + 
+        		"join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " + 
+        		"where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?; ";
+        
+        
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getUnidade().getId());
+            stm.setInt(2, idCbo);
+            stm.setInt(3, idPrograma);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id"));
+                procedimento.setCodProc(rs.getString("codproc"));
+                procedimento.setNomeProc(rs.getString("nome"));
+                listaProcedimento.add(procedimento);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaProcedimento;
+    }
 
 }

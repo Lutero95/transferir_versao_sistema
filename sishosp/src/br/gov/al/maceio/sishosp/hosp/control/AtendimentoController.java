@@ -338,10 +338,6 @@ public class AtendimentoController implements Serializable {
     public void buscarSituacoesFiltroAtendimentoRealizado() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimentoFiltro
                 (this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado());
-        if ((this.atendimento.getSituacaoAtendimento().getAtendimentoRealizado() && (listaSituacoes.size()==1
-        ))){
-            atendimento.setSituacaoAtendimento(listaSituacoes.get(0));
-        }
     }
 
 
@@ -789,6 +785,26 @@ public class AtendimentoController implements Serializable {
 			JSFUtil.adicionarMensagemSucesso("CID adicionado ao atendimento com sucesso!", "");
 			listaAtendimentos1FiltroCid();
 		}
+    }
+    
+    public void listarProcedimentosPorCboDoProfissional() throws ProjetoException {
+        this.listaProcedimentos = procedimentoDAO.listarProcedimentosPorCbo
+        			(atendimento.getFuncionario().getCbo().getCodCbo(), atendimento.getPrograma().getIdPrograma());
+        adicionaProcedimentoAtualNaLista();
+    }
+    
+    private void adicionaProcedimentoAtualNaLista() {
+    	List<Integer> listaIdProcedimentos = new ArrayList<>();
+    	for (ProcedimentoBean procedimento : this.listaProcedimentos) {
+			listaIdProcedimentos.add(procedimento.getIdProc());
+		}
+    	
+    	if(!listaIdProcedimentos.contains(this.atendimento.getProcedimento().getIdProc()))
+    		this.listaProcedimentos.add(this.atendimento.getProcedimento());
+    }
+    
+    public void listarProcedimentoPorId() throws ProjetoException {
+    	this.atendimento.setProcedimento(procedimentoDAO.listarProcedimentoPorId(this.atendimento.getProcedimento().getIdProc()));
     }
 
     public AtendimentoBean getAtendimento() {
