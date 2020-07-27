@@ -42,13 +42,14 @@ public class ProgramaDAO {
                 prog.setIdPrograma(rs.getInt("id_programa"));
             }
 
-            String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
+            String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?, ?, ?);";
             PreparedStatement ps2 = con.prepareStatement(sql2);
 
             if (prog.getGrupo().size() > 0) {
                 for (int i = 0; i < prog.getGrupo().size(); i++) {
                     ps2.setInt(1, prog.getIdPrograma());
                     ps2.setInt(2, prog.getGrupo().get(i).getIdGrupo());
+                    ps2.setInt(3, prog.getGrupo().get(i).getQtdFrequencia());
                     ps2.execute();
                 }
             }
@@ -90,14 +91,14 @@ public class ProgramaDAO {
             stmt2.setLong(1, prog.getIdPrograma());
             stmt2.execute();
 
-            String sql3 = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
+            String sql3 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?,?,?);";
             PreparedStatement stmt3 = con.prepareStatement(sql3);
 
             if (prog.getGrupo().size() > 0) {
                 for (int i = 0; i < prog.getGrupo().size(); i++) {
                     stmt3.setInt(1, prog.getIdPrograma());
                     stmt3.setInt(2, prog.getGrupo().get(i).getIdGrupo());
-
+                    stmt3.setInt(3, prog.getGrupo().get(i).getQtdFrequencia());
                     stmt3.execute();
                 }
             }

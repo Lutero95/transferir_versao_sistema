@@ -287,7 +287,9 @@ order by 1]]>
 				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="228" y="1" width="46" height="12" uuid="26312ea1-2412-454f-b934-865d46f0062b"/>
+				<reportElement x="228" y="1" width="48" height="12" uuid="26312ea1-2412-454f-b934-865d46f0062b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
