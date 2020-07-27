@@ -74,53 +74,60 @@
 					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							<b:label value="Paciente" severity="info" />
 
-							<p:outputPanel id="outPa">
-								<p:autoComplete value="#{RelatoriosController.paciente}"
-									size="31" converter="conPaciente"
-									class="select-agendaEquipe4"
-									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect"
-										update="msgPagina :frm:outPa" global="false" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBPa" immediate="true"
-									icon="ui-icon-search" update=":formConsuPac"
-									oncomplete="PF('dlgConsuPac').show();" />
-							</p:outputPanel>
-						</b:column>
-					
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
 							<b:label value="Programa:" severity="info" />
 
 							<p:outputPanel id="outProg">
 								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.programa}"
-									size="31" converter="conPrograma" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
+										value="#{RelatoriosController.programa}"
+										size="31" converter="conPrograma" class="select-agendaEquipe4"
+										disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
+										completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}"
-										update="outProg,  outGrupo" />
+											listener="#{AgendaController.selectPrograma}"
+											update="outProg,  outGrupo" />
 
 
 								</p:autoComplete>
 
 								<p:commandButton id="btBusPr" immediate="true"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									icon="ui-icon-search"
-									action="#{AgendaController.limparNaBuscaPrograma()}"
-									actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
+												 disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
+												 icon="ui-icon-search"
+												 action="#{AgendaController.limparNaBuscaPrograma()}"
+												 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+												 update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
+							</p:outputPanel>
+						</b:column>
+					
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+
+							<b:label value="Grupo:" severity="info" />
+
+							<p:outputPanel id="outGrupo">
+								<p:autoComplete
+										value="#{RelatoriosController.grupo}"
+										size="31" converter="conGrupo" class="select-agendaEquipe4"
+										disabled="#{RelatoriosController.programa.idPrograma == null}"
+										completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descGrupo}">
+									<p:ajax event="itemSelect"
+											listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBusGr" immediate="true"
+												 icon="ui-icon-search"
+												 disabled="#{RelatoriosController.programa.idPrograma == null}"
+												 actionListener="#{AgendaController.limparNaBuscaGrupo()}"
+												 action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
+												 update=":frm formConsuGrop"
+												 oncomplete="PF('dlgConsuGrop').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -129,30 +136,26 @@
 					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo:" severity="info" />
+							<b:label value="Paciente" severity="info" />
 
-							<p:outputPanel id="outGrupo">
-								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.grupo}"
-									size="31" converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
-									completeMethod="#{AgendaController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{RelatoriosController.paciente}"
+												size="31" converter="conPaciente"
+												class="select-agendaEquipe4"
+												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
+											update="msgPagina :frm:outPa" global="false" />
 
 								</p:autoComplete>
 
-								<p:commandButton id="btBusGr" immediate="true"
-									icon="ui-icon-search"
-									disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
-									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
-									update=":frm formConsuGrop"
-									oncomplete="PF('dlgConsuGrop').show();" />
+								<p:commandButton id="btBPa" immediate="true"
+												 icon="ui-icon-search" update=":formConsuPac"
+												 oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
+
 						</b:column>
 					</b:row>
 
@@ -175,7 +178,7 @@
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						target="_blank" style="font-size: 12px;  text-align: right;"
 						update="grw"
-						actionListener="#{RelatoriosController.gerarRelatorioPresenca(RelatoriosController.pacienteInstituicao, RelatoriosController.pacienteInstituicao.programa, RelatoriosController.pacienteInstituicao.grupo, RelatoriosController.paciente)}"
+						actionListener="#{RelatoriosController.gerarRelatorioPresenca(RelatoriosController.pacienteInstituicao, RelatoriosController.programa, RelatoriosController.grupo, RelatoriosController.paciente)}"
 						ajax="false" />
 
 
@@ -204,11 +207,11 @@
 						<p:commandButton update=":frm:outProg, :frm:outGrupo"
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
-							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
+							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
 							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
 							oncomplete="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
-								target="#{RelatoriosController.pacienteInstituicao.programa}" />
+								target="#{RelatoriosController.programa}" />
 						</p:commandButton>
 					</h:column>
 
