@@ -11,7 +11,6 @@ public class GrupoBean implements Serializable {
 
 	private Integer idGrupo;
 	private String descGrupo;
-	private Integer qtdFrequencia;
 	private boolean auditivo;
 	private boolean equipeSim;
 	private boolean insercao_pac_institut;
@@ -27,7 +26,6 @@ public class GrupoBean implements Serializable {
 
 	public GrupoBean() {
 		this.idGrupo = null;
-		this.qtdFrequencia = 1;
 		this.equipes = new ArrayList<EquipeBean>();
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
@@ -49,14 +47,6 @@ public class GrupoBean implements Serializable {
 
 	public void setDescGrupo(String descGrupo) {
 		this.descGrupo = descGrupo;
-	}
-
-	public Integer getQtdFrequencia() {
-		return qtdFrequencia;
-	}
-
-	public void setQtdFrequencia(Integer qtdFrequencia) {
-		this.qtdFrequencia = qtdFrequencia;
 	}
 
 	public boolean isAuditivo() {

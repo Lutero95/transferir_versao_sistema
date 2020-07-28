@@ -50,8 +50,6 @@
 									value="#{RelatoriosController.pacienteInstituicao.laudo.paciente.nome}"
 									size="31" disabled="true" class="select-agendaEquipe4" />
 
-
-
 								<p:commandButton id="btBPa" immediate="true"
 									icon="ui-icon-search" update=":formConsuPac"
 									oncomplete="PF('dlgConsuPac').show();" />
@@ -63,13 +61,13 @@
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<h:outputText class="select-agendaEquipe4"
-								value="Programa: #{RelatoriosController.pacienteInstituicao.programa.descPrograma}"
+								value="Programa: #{RelatoriosController.programa.descPrograma}"
 								severity="info" />
 							<br />
 							<br />
 							<h:outputText class="select-agendaEquipe4"
 								style="padding-bottom:20px !important"
-								value="Grupo: #{RelatoriosController.pacienteInstituicao.grupo.descGrupo}"
+								value="Grupo: #{RelatoriosController.grupo.descGrupo}"
 								severity="info" />
 							<br />
 							<br />
@@ -87,7 +85,7 @@
 
 							<p:outputPanel id="outProg">
 								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.programa}"
+									value="#{RelatoriosController.programa}"
 									size="31" converter="conPrograma" class="select-agendaEquipe4"
 									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
 									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -116,50 +114,39 @@
 
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
+							<b:label value="Grupo:" severity="info" />
 
 							<p:outputPanel id="outGrupo">
 								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.grupo}"
+									value="#{RelatoriosController.grupo}"
 									size="31" converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
-									completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+									disabled="#{RelatoriosController.programa.idPrograma == null}"
+									completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
+										listener="#{AgendaController.selectGrupo}" update="outGrupo" />
 
 								</p:autoComplete>
 
 								<p:commandButton id="btBusGr" immediate="true"
 									icon="ui-icon-search"
-									disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
+									disabled="#{RelatoriosController.programa.idPrograma == null}"
 									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
+									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
 									update=":frm formConsuGrop"
 									oncomplete="PF('dlgConsuGrop').show();" />
 							</p:outputPanel>
 						</b:column>
 					</b:row>
-
-
-
-
-
-
-
-
-
-
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						target="_blank" style="font-size: 12px;  text-align: right;"
 						update="grw"
-						actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, RelatoriosController.pacienteInstituicao.programa, RelatoriosController.pacienteInstituicao.grupo)}"
+						actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, RelatoriosController.programa, RelatoriosController.grupo)}"
 						ajax="false" />
-
 
 				</h:form>
 			</div>
@@ -186,11 +173,11 @@
 						<p:commandButton update=":frm:outProg, :frm:outGrupo"
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
-							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
+							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
 							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
 							oncomplete="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
-								target="#{RelatoriosController.pacienteInstituicao.programa}" />
+								target="#{RelatoriosController.programa}" />
 						</p:commandButton>
 					</h:column>
 
@@ -215,13 +202,6 @@
 
 					<h:column>
 						<f:facet name="header">
-                            Quantidade Frequência
-                        </f:facet>
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frm:outProg, :frm:outGrupo"
@@ -229,7 +209,7 @@
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{RelatoriosController.pacienteInstituicao.grupo}" />
+								target="#{RelatoriosController.grupo}" />
 						</p:commandButton>
 					</h:column>
 
@@ -238,7 +218,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Pacientes Em Terapia"
-			widgetVar="dlgConsuPac" dynamic="true" modal="true" width="750px"
+			widgetVar="dlgConsuPac" dynamic="true" modal="true" width="70%"
 			height="400px" responsive="true">
 			<h:form id="formConsuPac">
 				<p:growl id="msgC" />
@@ -247,8 +227,7 @@
 					<b:column>
 						<p:panelGrid columns="4">
 
-							<p:selectOneMenu value="#{GerenciarPacienteController.tipoBusca}"
-								style="margin-top: -13px">
+							<p:selectOneMenu value="#{GerenciarPacienteController.tipoBusca}">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
 									itemValue="prontpaciente" />
@@ -269,18 +248,14 @@
 
 						</p:panelGrid>
 					</b:column>
-</b:row>
-<b:row>
+				</b:row>
+				<b:row>
 
-					<b:column span="1">
-
+					<b:column span="2">
 						<p:outputLabel value="Situação:"
 							style="margin-top: 8px;color:#2e84ce;">
 						</p:outputLabel>
-
 					</b:column>
-
-
 
 					<b:column span="1"
 						style="width:140px;color: #4682B4;margin-top: -8px;">
@@ -288,72 +263,63 @@
 							 requiredMessage="Escolha a situação!"
 							layout="pageDirection"
 							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
-
 							<f:selectItem itemLabel="Ativos" itemValue="A" />
-
 						</p:selectOneRadio>
 					</b:column>
 
 				</b:row>
-<br/>
+				<br/>
+				
 				<p:dataTable rows="8" paginator="true" paginatorPosition="bottom"
 					id="dt" var="pacie"
 					value="#{GerenciarPacienteController.listaPacientes}"
 					emptyMessage="Nenhum Paciente">
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Prontuário
-                        </f:facet>
+					<p:column headerText="Prontuário">
 						<p:outputLabel value="#{pacie.laudo.paciente.id_paciente}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            Nome
-                        </f:facet>
-
+					<p:column headerText="Nome">
 						<p:outputLabel value="#{pacie.laudo.paciente.nome}" />
 					</p:column>
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Matrícula
-                        </f:facet>
+					<p:column headerText="Matrícula" >
 						<p:outputLabel value="#{pacie.laudo.paciente.matricula}" />
 					</p:column>
+					
+					<p:column headerText="Programa">
+						<p:outputLabel value="#{pacie.programa.descPrograma}" />
+					</p:column>
+					
+					<p:column headerText="Grupo">
+						<p:outputLabel value="#{pacie.grupo.descGrupo}" />
+					</p:column>
 
-
-					<p:column>
-						<f:facet name="header">
-                            Procedimento
-                        </f:facet>
+					<p:column headerText="Procedimento">
 						<p:outputLabel value="#{pacie.laudo.procedimentoPrimario.codProc}" />
 						<p:outputLabel
 							value="#{pacie.laudo.procedimentoPrimario.nomeProc}" />
 					</p:column>
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Selecionar
-                        </f:facet>
-						<p:commandButton update=":frm" icon="fa fa-fw fa-check"
-							title="Selecionar" class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuPac').hide();">
-							<f:setPropertyActionListener value="#{pacie.laudo.paciente}"
-								target="#{RelatoriosController.pacienteInstituicao.laudo.paciente}" />
-							<f:setPropertyActionListener
-								value="#{pacie.laudo.procedimentoPrimario}"
-								target="#{RelatoriosController.procedimento}" />
-							<f:setPropertyActionListener value="#{pacie.grupo}"
-								target="#{RelatoriosController.pacienteInstituicao.grupo}" />
-							<f:setPropertyActionListener value="#{pacie.programa}"
-								target="#{RelatoriosController.pacienteInstituicao.programa}" />
+					<p:column headerText="Selecionar">
+						<div align="center">
+							<p:commandButton update=":frm" icon="fa fa-fw fa-check"
+								title="Selecionar" class="new-btn-acao-table acao-editar"
+								onclick="PF('dlgConsuPac').hide();">
+								<f:setPropertyActionListener value="#{pacie.laudo.paciente}"
+									target="#{RelatoriosController.pacienteInstituicao.laudo.paciente}" />
+								<f:setPropertyActionListener
+									value="#{pacie.laudo.procedimentoPrimario}"
+									target="#{RelatoriosController.procedimento}" />
+								<f:setPropertyActionListener value="#{pacie.grupo}"
+									target="#{RelatoriosController.grupo}" />
+								<f:setPropertyActionListener value="#{pacie.programa}"
+									target="#{RelatoriosController.programa}" />
 
-							<f:setPropertyActionListener value="#{pacie.id}"
-								target="#{RelatoriosController.pacienteInstituicao.id}" />
-						</p:commandButton>
-
+								<f:setPropertyActionListener value="#{pacie.id}"
+									target="#{RelatoriosController.pacienteInstituicao.id}" />
+							</p:commandButton>
+						</div>
 					</p:column>
 
 

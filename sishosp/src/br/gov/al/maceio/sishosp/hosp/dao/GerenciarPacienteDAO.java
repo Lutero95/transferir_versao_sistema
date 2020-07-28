@@ -36,7 +36,7 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar, String campoBusca, String tipoBusca) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo, coalesce(gp.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
                 + "coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))),\n" +
                 " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal "
@@ -48,7 +48,8 @@ public class GerenciarPacienteDAO {
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
                 + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
-                + " where p.cod_unidade=?";
+                + " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) "
+                + " where p.cod_unidade = ? ";
         if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
             sql = sql + " and  p.codprograma = ?";
         }
@@ -122,7 +123,7 @@ public class GerenciarPacienteDAO {
                 gerenciarPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 gerenciarPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gerenciarPaciente.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                gerenciarPaciente.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                //gerenciarPaciente.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 gerenciarPaciente.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 gerenciarPaciente.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gerenciarPaciente.getFuncionario().setId(rs.getLong("codprofissional"));

@@ -541,13 +541,6 @@
 
 					<h:column>
 						<f:facet name="header">
-                            Quantidade Frequência
-                        </f:facet>
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
                             Adicionar
                         </f:facet>
 						<p:commandButton
@@ -558,7 +551,7 @@
 							onclick="PF('dlgConsuGrop').hide();"
 							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{AgendaController.agenda.grupo}" />
+								target="#{AgendaController.agenda.grupo}" />	
 						</p:commandButton>
 					</h:column>
 
