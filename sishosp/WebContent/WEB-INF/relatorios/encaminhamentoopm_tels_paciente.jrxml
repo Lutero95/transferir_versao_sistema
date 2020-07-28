@@ -7,13 +7,13 @@
 	<queryString language="SQL">
 		<![CDATA[select ddd, telefone, responsavel, p.descparentesco	 from hosp.telefone_paciente t
 left join hosp.parentesco p on p.id_parentesco = t.id_parentesco
-where id_paciente=  $P{id_paciente} ]]>
+where id_paciente=  $P{id_paciente}]]>
 	</queryString>
 	<field name="ddd" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="ddd"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<field name="telefone" class="java.lang.Integer">
+	<field name="telefone" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="telefone"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
