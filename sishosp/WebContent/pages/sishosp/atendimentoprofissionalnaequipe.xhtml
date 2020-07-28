@@ -182,7 +182,7 @@
 
 					<p:dataTable id="dtAtendimentos" emptyMessage="Nenhum Registro"
 						reflow="true" paginator="true" rows="15" var="atendimento"
-						value="#{AtendimentoController.listAtendimentos}"
+						value="#{AtendimentoController.listAtendimentos}" rowStyleClass="#{atendimento.situacao == 'Evolução Realizada' ? 'row-evoluido' : 'row-nao-evoluido'}"
 						styleClass="table table-hover" paginatorPosition="bottom">
 
 						<p:column width="80">
@@ -195,82 +195,49 @@
 
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Data
-                    </f:facet>
+						<p:column headerText="Data">
 							<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Paciente
-                    </f:facet>
+						<p:column headerText="Paciente">
 							<p:outputLabel value="#{atendimento.paciente.nome}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        CNS
-                    </f:facet>
+						<p:column headerText="CNS">
 							<p:outputLabel value="#{atendimento.paciente.cns}" />
 						</p:column>
 
-						<p:column
+						<p:column headerText="Turno"
 							rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
-							<f:facet name="header">
-                        Turno
-                    </f:facet>
 							<h:outputLabel value="MANHÃ"
 								rendered="#{atendimento.turno == 'M'}" />
 							<h:outputLabel value="TARDE"
 								rendered="#{atendimento.turno == 'T'}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Profissional
-                    </f:facet>
+						<p:column headerText="Profissional">
 							<p:outputLabel value="#{atendimento.funcionario.nome}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Programa
-                    </f:facet>
+						<p:column headerText="Programa">
 							<p:outputLabel value="#{atendimento.programa.descPrograma}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
+						<p:column headerText="Tipo de Atendimento">
 							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        Nome Equipe
-                    </f:facet>
+						<p:column headerText="Nome Equipe">
 							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
 						</p:column>
 
-
-						<p:column>
-							<f:facet name="header">
-                        		Sit. Evolução
-                    		</f:facet>
-
+						<p:column headerText="Sit. Evolução">
 							<p:outputLabel value="#{atendimento.situacao}" />
-							
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                        		Atendimento
-                   		 	</f:facet>
+						<p:column headerText="Atendimento">
 							<div align="center">
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento Realizado"
 								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
