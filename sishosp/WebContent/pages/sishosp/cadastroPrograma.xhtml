@@ -61,32 +61,29 @@
 
 									<p:dataTable emptyMessage="Nenhum Grupo"
 										styleClass="table table-hover" id="tabela"
-										value="#{ProgramaController.prog.grupo}" var="tab"
+										value="#{ProgramaController.prog.listaGrupoFrequenciaDTO}" var="tab"
 										paginator="true" paginatorPosition="bottom" rows="12"
 										resizableColumns="true" style="width:100%" scrollable="false">
 
-										<p:column width="20%" headerText="Cód."
+										<p:column width="20%" headerText="Código"
 											style="font-weight:bold;">
-											<h:outputText value="#{tab.idGrupo}" />
+											<h:outputText value="#{tab.grupo.idGrupo}" />
 										</p:column>
 
 										<p:column headerText="Nome" style="font-weight:bold;">
-											<h:outputText value="#{tab.descGrupo}" />
+											<h:outputText value="#{tab.grupo.descGrupo}" />
 										</p:column>
 										
-										<p:column headerText="Frequê. para o Programa" style="font-weight:bold;">
-											<h:outputText value="#{tab.qtdFrequencia}" />
+										<p:column headerText="Frequência para o Programa" style="font-weight:bold;">
+											<h:outputText value="#{tab.frequencia}" />
 										</p:column>
 
 										<p:column width="10%" headerText="Ação">
 											<div align="center">
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
-													action="#{ProgramaController.prog.removeGrupoLista()}"
-													icon="ui-icon-trash" update="frmPrincipal:tab:tabela">
-													<f:setPropertyActionListener value="#{tab}"
-														target="#{ProgramaController.prog.grupoRmv}" />
-												</p:commandButton>
+													action="#{ProgramaController.removerGrupoFrequenciaDTO(tab)}"
+													icon="ui-icon-trash" update="frmPrincipal:tab:tabela"/>
 											</div>
 										</p:column>
 
@@ -235,7 +232,7 @@
                 <br />
                 <div align="center">
                 	<p:commandButton value="Incluir" 
-                	update=":frmPrincipal :msgPagina" immediate="true"
+                	update=":frmPrincipal:tab:tabProcCbo :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
                 	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
                 </div>
@@ -267,7 +264,8 @@
                                     update=":formFreq, :msgPagina"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
-                                    oncomplete="PF('dlgFreq').show();">
+                                    oncomplete="PF('dlgFreq').show();"
+                                    action="#{ProgramaController.limparFrequencia()}">
                                 <f:setPropertyActionListener value="#{grupo}"
                                                              target="#{ProgramaController.grupo}"/>
                             </p:commandButton>
@@ -287,17 +285,14 @@
 				
 				<div align="center">
 					<div>
-						<p:spinner value="#{ProgramaController.grupo.qtdFrequencia}"/>
+						<p:spinner value="#{ProgramaController.frequencia}"/>
 					</div>
 
 					<div>
 						<br /><br />
 						<p:commandButton update=":frmPrincipal:tab:tabela, :msgPagina"
 							value="Confirmar" title="Confirmar"
-							action="#{ProgramaController.validaFrequencia()}">
-							<f:setPropertyActionListener value="#{ProgramaController.grupo}"
-								target="#{ProgramaController.prog.grupoParaAdd}" />
-						</p:commandButton>
+							action="#{ProgramaController.validaFrequencia()}"/>
 					</div>
 				</div>
 			</h:form>

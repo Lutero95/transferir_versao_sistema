@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 
 public class ProgramaDAO {
@@ -45,11 +46,11 @@ public class ProgramaDAO {
             String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?, ?, ?);";
             PreparedStatement ps2 = con.prepareStatement(sql2);
 
-            if (prog.getGrupo().size() > 0) {
-                for (int i = 0; i < prog.getGrupo().size(); i++) {
+            if (!prog.getListaGrupoFrequenciaDTO().isEmpty()) {
+                for (int i = 0; i < prog.getListaGrupoFrequenciaDTO().size(); i++) {
                     ps2.setInt(1, prog.getIdPrograma());
-                    ps2.setInt(2, prog.getGrupo().get(i).getIdGrupo());
-                    ps2.setInt(3, prog.getGrupo().get(i).getQtdFrequencia());
+                    ps2.setInt(2, prog.getListaGrupoFrequenciaDTO().get(i).getGrupo().getIdGrupo());
+                    ps2.setInt(3, prog.getListaGrupoFrequenciaDTO().get(i).getFrequencia());
                     ps2.execute();
                 }
             }
@@ -94,11 +95,11 @@ public class ProgramaDAO {
             String sql3 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?,?,?);";
             PreparedStatement stmt3 = con.prepareStatement(sql3);
 
-            if (prog.getGrupo().size() > 0) {
-                for (int i = 0; i < prog.getGrupo().size(); i++) {
+            if (!prog.getListaGrupoFrequenciaDTO().isEmpty()) {
+                for (int i = 0; i < prog.getListaGrupoFrequenciaDTO().size(); i++) {
                     stmt3.setInt(1, prog.getIdPrograma());
-                    stmt3.setInt(2, prog.getGrupo().get(i).getIdGrupo());
-                    stmt3.setInt(3, prog.getGrupo().get(i).getQtdFrequencia());
+                    stmt3.setInt(2, prog.getListaGrupoFrequenciaDTO().get(i).getGrupo().getIdGrupo());
+                    stmt3.setInt(3, prog.getListaGrupoFrequenciaDTO().get(i).getFrequencia());
                     stmt3.execute();
                 }
             }
@@ -368,7 +369,7 @@ public class ProgramaDAO {
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
-                programa.setGrupo(gDao.listarGruposPorProgramaComConexao(rs.getInt("id_programa"), con));
+                programa.setListaGrupoFrequenciaDTO(gDao.buscaGruposComFrequecia(rs.getInt("id_programa"), con));
                 programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(rs.getInt("id_programa"), con));
             }
 
