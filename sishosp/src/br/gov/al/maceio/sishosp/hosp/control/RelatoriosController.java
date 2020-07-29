@@ -91,6 +91,7 @@ public class RelatoriosController implements Serializable {
 	private List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados;
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
+	private GrupoDAO grupoDao;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -114,6 +115,7 @@ public class RelatoriosController implements Serializable {
 		listaEquipePorTipoAtendimento = new ArrayList<>();
 		this.turnos = new ArrayList<String>();
 		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
+		this.grupoDao = new GrupoDAO();
 	}
 
 	public void limparDados() {
@@ -180,10 +182,9 @@ public class RelatoriosController implements Serializable {
 		atualizaListaGrupos(programa);
 	}
 
-	public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
-		this.programa = p;
-		GrupoDAO gDao = new GrupoDAO();
-		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
+	public void atualizaListaGrupos(ProgramaBean programa) throws ProjetoException {
+		this.programa = programa;
+		this.listaGruposProgramas = grupoDao.listarGruposPorPrograma(programa.getIdPrograma());
 
 		listaTipos = new ArrayList<>();
 
@@ -192,9 +193,8 @@ public class RelatoriosController implements Serializable {
 	// LISTAS E AUTOCOMPLETES INICIO
 	public List<GrupoBean> listaGrupoAutoComplete(String query) throws ProjetoException {
 
-		if (programa.getIdPrograma() != null) {
-			GrupoDAO gDao = new GrupoDAO();
-			return gDao.listarGruposNoAutoComplete(query, programa.getIdPrograma());
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdPrograma())) {
+			return grupoDao.listarGruposNoAutoComplete(query, programa.getIdPrograma());
 		} else {
 			return null;
 		}
@@ -303,38 +303,58 @@ public class RelatoriosController implements Serializable {
 
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		// lista criada para ser populada e mostrar as linhas na frequencia
-		pacienteInstituicao.setPrograma(programa);
-		pacienteInstituicao.setGrupo(grupo);
-		int randomico = JSFUtil.geraNumeroRandomico();
-		RelatorioDAO rDao = new RelatorioDAO();
-		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
+		
+		if(camposvalidos(programa, grupo)) {
+			
+			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
+			pacienteInstituicao.setPrograma(programa);
+			pacienteInstituicao.setGrupo(grupo);
+			int randomico = JSFUtil.geraNumeroRandomico();
+			RelatorioDAO rDao = new RelatorioDAO();
+			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
 
-		if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
-			JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
-		} else {
-			String caminho = "/WEB-INF/relatorios/";
-			String relatorio = "";
-			relatorio = caminho + "frequencia.jasper";
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("chave", randomico);
-			map.put("codunidade", user_session.getUnidade().getId());
-			if (pacienteInstituicao.getPrograma() != null)
-				map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
+				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
+			} else {
+				String caminho = "/WEB-INF/relatorios/";
+				String relatorio = "";
+				relatorio = caminho + "frequencia.jasper";
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("chave", randomico);
+				map.put("codunidade", user_session.getUnidade().getId());
+				if (pacienteInstituicao.getPrograma() != null)
+					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 
-			if (pacienteInstituicao.getGrupo() != null)
-				map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+				if (pacienteInstituicao.getGrupo() != null)
+					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 
-			if (pacienteInstituicao.getId() != null)
-				map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+				if (pacienteInstituicao.getId() != null)
+					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-			this.executeReport(relatorio, map, "relatorio.pdf");
-			// this.executeReportNewTab(relatorio, "frequencia.pdf",
+				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+				this.executeReport(relatorio, map, "relatorio.pdf");
+				// this.executeReportNewTab(relatorio, "frequencia.pdf",
 //                    map);
-			rDao.limparTabelaTemporariaFrequencia(randomico);
+				rDao.limparTabelaTemporariaFrequencia(randomico);
 
+			}
 		}
+	}
+	
+	private boolean camposvalidos(ProgramaBean programa, GrupoBean grupo) {
+		
+		boolean valido = true;
+		
+		if (VerificadorUtil.verificarSeObjetoNulo(programa) || VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdPrograma())){
+			JSFUtil.adicionarMensagemErro("Programa: Campo obrigatório!", "");
+			valido = false;			
+		}
+		
+		if(VerificadorUtil.verificarSeObjetoNulo(grupo) || VerificadorUtil.verificarSeObjetoNuloOuZero(grupo.getIdGrupo())) {
+			JSFUtil.adicionarMensagemErro("Grupo: Campo obrigatório!", "");
+			valido = false;
+		}
+		return valido;	
 	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
@@ -344,7 +364,6 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setGrupo(grupo);
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
-		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
 
 		if (atributoGenerico1.equalsIgnoreCase("A")) {
 			String caminho = "/WEB-INF/relatorios/";
@@ -388,9 +407,6 @@ public class RelatoriosController implements Serializable {
 
 		pacienteInstituicao.setPrograma(programa);
 		pacienteInstituicao.setGrupo(grupo);
-		int randomico = JSFUtil.geraNumeroRandomico();
-		RelatorioDAO rDao = new RelatorioDAO();
-		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
 
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = caminho + "pacientespresentes.jasper";
@@ -420,7 +436,6 @@ public class RelatoriosController implements Serializable {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio_presenca.pdf");
 
-		rDao.limparTabelaTemporariaFrequencia(randomico);
 	}
 
 	public void atualizaListaMunicipiosDePacientesAtivosSelecionados(MunicipioBean municipioSelecionado) {

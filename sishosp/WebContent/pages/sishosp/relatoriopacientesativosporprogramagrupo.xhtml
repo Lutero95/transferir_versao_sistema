@@ -67,7 +67,7 @@
 							<p:outputPanel id="outGrupo">
 								<p:autoComplete
 										value="#{RelatoriosController.grupo}"
-										size="31" converter="conGrupo" class="select-agendaEquipe4"
+										size="31" class="select-agendaEquipe4"
 										disabled="#{RelatoriosController.programa.idPrograma == null}"
 										completeMethod="#{AgendaController.listaGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
@@ -287,13 +287,6 @@
 							Grupo
 						</f:facet>
 						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-							Quantidade Frequência
-						</f:facet>
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
 					</h:column>
 
 					<h:column>
