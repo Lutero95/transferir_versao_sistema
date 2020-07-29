@@ -59,6 +59,8 @@ and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno} 
 and ((  $P{id_paciente}  is not null and pa.id_paciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 and a.presenca = 'S'
+and coalesce(a1.excluido,'N') <>'S'
+and a.situacao <>'C'
 order by 1]]>
 	</queryString>
 	<field name="row" class="java.lang.Object">
