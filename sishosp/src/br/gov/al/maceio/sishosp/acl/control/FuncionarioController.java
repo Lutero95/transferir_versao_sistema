@@ -46,6 +46,9 @@ import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 public class FuncionarioController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final String TRANSPARENTE = "transparent !important";
+	private static final String VERMELHO = "#ff8f8f !important";
+	private static final String VERDE = "#dcffb8 !important";
 	private FuncionarioBean usuario;
 	private FuncionarioBean profissional;
 	private List<FuncionarioBean> listaProfissional;
@@ -95,6 +98,8 @@ public class FuncionarioController implements Serializable {
 	private List<Sistema> listaSistemasSoucer;
 	private List<Sistema> listaSistemasTarget;
 	private List<Integer> codigoSistema;
+	private String corEvoluido;
+	private String corNaoEvoluido;
 
 	// MENU
 	private MenuModel menuModel;
@@ -107,7 +112,7 @@ public class FuncionarioController implements Serializable {
 	private static final String CABECALHO_ALTERACAO = "Alteração de Profissional";
 
 	public FuncionarioController() {
-
+		
 		// Profissional
 		listaProfissional = new ArrayList<FuncionarioBean>();
 		this.profissional = null;
@@ -1406,6 +1411,17 @@ public class FuncionarioController implements Serializable {
 	public void setListaFuncoesTargetEdit(List<Funcao> listaFuncoesTargetEdit) {
 		this.listaFuncoesTargetEdit = listaFuncoesTargetEdit;
 	}
+	
+	public void atribuiCoresTabelaAtendimentoProfissionalNaEquipe() {
+		if(usuarioLogado.getUnidade().getParametro().isAtribuirCorTabelaTelaEvolucaoProfissional()) {
+			this.corEvoluido = VERDE;
+			this.corNaoEvoluido = VERMELHO;
+		}
+		else {
+			this.corEvoluido = TRANSPARENTE; 
+			this.corNaoEvoluido = TRANSPARENTE;		
+		}
+	}
 
 	public void setListaFuncoesSource(List<Funcao> listaFuncoesSource) {
 		this.listaFuncoesSource = listaFuncoesSource;
@@ -1592,5 +1608,21 @@ public class FuncionarioController implements Serializable {
 
 	public void setUnidadeParaProgramasIhGrupos(UnidadeBean unidadeParaProgramasIhGrupos) {
 		this.unidadeParaProgramasIhGrupos = unidadeParaProgramasIhGrupos;
+	}
+
+	public String getCorEvoluido() {
+		return corEvoluido;
+	}
+
+	public void setCorEvoluido(String corEvoluido) {
+		this.corEvoluido = corEvoluido;
+	}
+
+	public String getCorNaoEvoluido() {
+		return corNaoEvoluido;
+	}
+
+	public void setCorNaoEvoluido(String corNaoEvoluido) {
+		this.corNaoEvoluido = corNaoEvoluido;
 	}
 }

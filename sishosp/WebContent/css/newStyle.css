@@ -2347,14 +2347,3 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
 	}
 }
 
-.row-evoluido{
-   background-color: #b4fca4 !important;
-   background-image: none !important;
-   color: #000000 !important;
-} 
-
-.row-nao-evoluido{
-   background-color: #ff765e !important;
-   background-image: none !important;
-   color: #000000 !important;
-}

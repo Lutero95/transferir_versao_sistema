@@ -9,9 +9,23 @@
 	<f:metadata>
 		<f:viewAction
 			action="#{AtendimentoController.carregarGerenciamentoAtendimentoProfissionalNaEquipe()}" />
+		<f:viewAction action="#{MBFuncionarios.atribuiCoresTabelaAtendimentoProfissionalNaEquipe()}"/>	
 	</f:metadata>
+	
 
 	<ui:define name="content">
+	<style type="text/css">
+		
+		.row-evoluido{
+   			background: #{MBFuncionarios.corEvoluido};
+   			color: #000000 !important;
+		} 
+
+		.row-nao-evoluido{
+   			background: #{MBFuncionarios.corNaoEvoluido};
+   			color: #000000 !important;
+		}
+	</style>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
@@ -177,12 +191,12 @@
 								update="dtAtendimentos, msgPagina">
 							</p:commandButton>
 						</b:column>
-
 					</b:row>
 
 					<p:dataTable id="dtAtendimentos" emptyMessage="Nenhum Registro"
 						reflow="true" paginator="true" rows="15" var="atendimento"
-						value="#{AtendimentoController.listAtendimentos}" rowStyleClass="#{atendimento.situacao == 'Evolução Realizada' ? 'row-evoluido' : 'row-nao-evoluido'}"
+						value="#{AtendimentoController.listAtendimentos}"
+						rowStyleClass="#{atendimento.situacao == 'Evolução Realizada' ? 'row-evoluido' : 'row-nao-evoluido'}"
 						styleClass="table table-hover" paginatorPosition="bottom">
 
 						<p:column width="80">

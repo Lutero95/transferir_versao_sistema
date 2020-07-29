@@ -43,6 +43,7 @@ public class ParametroBean implements Serializable {
     private boolean acessoPermitidoSexta;
     private boolean acessoPermitidoSabado;
     private boolean permiteAgendamentoDuplicidade;
+    private boolean atribuirCorTabelaTelaEvolucaoProfissional;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -344,4 +345,13 @@ public class ParametroBean implements Serializable {
     public void setPermiteAgendamentoDuplicidade(boolean permiteAgendamentoDuplicidade) {
         this.permiteAgendamentoDuplicidade = permiteAgendamentoDuplicidade;
     }
+
+	public boolean isAtribuirCorTabelaTelaEvolucaoProfissional() {
+		return atribuirCorTabelaTelaEvolucaoProfissional;
+	}
+
+	public void setAtribuirCorTabelaTelaEvolucaoProfissional(boolean atribuirCorTabelaTelaEvolucaoProfissional) {
+		this.atribuirCorTabelaTelaEvolucaoProfissional = atribuirCorTabelaTelaEvolucaoProfissional;
+	}
+    
 }

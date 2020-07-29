@@ -138,7 +138,7 @@ public class FuncionarioDAO {
 
 		String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
 				+ "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
-				+ "then true else false end as usuarioativo, p.opcao_atendimento, "
+				+ "then true else false end as usuarioativo, p.opcao_atendimento, atribuir_cor_tabela_tela_evolucao_profissional, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
@@ -195,6 +195,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
 				funcionario.getUnidade().getParametro().setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
 				funcionario.getUnidade().getParametro().setPermiteAgendamentoDuplicidade(rs.getBoolean("permite_agendamento_duplicidade"));
+				funcionario.getUnidade().getParametro().setAtribuirCorTabelaTelaEvolucaoProfissional(rs.getBoolean("atribuir_cor_tabela_tela_evolucao_profissional"));
 
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
