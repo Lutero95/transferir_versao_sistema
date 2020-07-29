@@ -22,6 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 
 @ManagedBean(name = "ProgramaController")
@@ -44,6 +45,8 @@ public class ProgramaController implements Serializable {
     private ProcedimentoBean procedimentoSelecionado;
     private CboBean cboSelecionado;
     private GrupoBean grupo;
+    private BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado;
+    private Integer frequencia;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -96,11 +99,10 @@ public class ProgramaController implements Serializable {
     }
 
     public void gravarPrograma() throws ProjetoException {
-       /*
-    	if (this.prog.getGrupo().isEmpty()) {
+       
+    	if (this.prog.getListaGrupoFrequenciaDTO().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
-        	*/
         	if(procedimentoPadraoNaoEhNulo()) {
 				boolean cadastrou = pDao.gravarPrograma(this.prog);
 				if (cadastrou == true) {
@@ -111,7 +113,7 @@ public class ProgramaController implements Serializable {
 				}
 				listaProgramas = pDao.listarProgramas();
         	}
-       // }
+       }
     }
     
     private boolean procedimentoPadraoNaoEhNulo() {
@@ -123,7 +125,7 @@ public class ProgramaController implements Serializable {
     }
 
     public void alterarPrograma() throws ProjetoException {
-        if (this.prog.getGrupo().isEmpty()) {
+        if (this.prog.getListaGrupoFrequenciaDTO().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
             boolean alterou = pDao.alterarPrograma(this.prog);
@@ -238,17 +240,39 @@ public class ProgramaController implements Serializable {
     }
     
     public void validaFrequencia() {
-    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(grupo.getQtdFrequencia()))
+    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.frequencia))
     		JSFUtil.adicionarMensagemErro("Frequência: Campo Obrigatório", "");
     	else {
     		JSFUtil.fecharDialog("dlgFreq");
     		JSFUtil.fecharDialog("dlgConsuGrupos");
-    		prog.addGrupoLista();
+    		
+    		if(!grupoFoiAdicionado(this.grupo)) {
+    			BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO(this.grupo, this.frequencia);
+    			this.prog.getListaGrupoFrequenciaDTO().add(buscaGrupoFrequenciaDTO);
+    		}
     	}
+    }
+    
+    private boolean grupoFoiAdicionado(GrupoBean grupo) {
+    	for(BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO : this.prog.getListaGrupoFrequenciaDTO()) {
+    		if(buscaGrupoFrequenciaDTO.getGrupo().getIdGrupo().equals(grupo.getIdGrupo())) {
+    			JSFUtil.adicionarMensagemErro("Grupo "+grupo.getDescGrupo()+" já foi adicionado", "");
+    			return true;    			
+    		}
+    	}
+    	return false;
+    }
+    
+    public void removerGrupoFrequenciaDTO(BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO) {
+    	this.prog.getListaGrupoFrequenciaDTO().remove(buscaGrupoFrequenciaDTO);
     }
     
     public void selecionarProcedimento(ProcedimentoBean procedimento) {
     	this.procedimentoSelecionado = procedimento;
+    }
+    
+    public void limparFrequencia() {
+    	this.frequencia = 0;
     }
     
     public void selecionarCbo(CboBean cbo) {
@@ -333,6 +357,22 @@ public class ProgramaController implements Serializable {
 
 	public void setGrupo(GrupoBean grupo) {
 		this.grupo = grupo;
+	}
+
+	public Integer getFrequencia() {
+		return frequencia;
+	}
+
+	public void setFrequencia(Integer frequencia) {
+		this.frequencia = frequencia;
+	}
+
+	public BuscaGrupoFrequenciaDTO getGrupoFrequenciaDTOSelecionado() {
+		return grupoFrequenciaDTOSelecionado;
+	}
+
+	public void setGrupoFrequenciaDTOSelecionado(BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado) {
+		this.grupoFrequenciaDTOSelecionado = grupoFrequenciaDTOSelecionado;
 	}
 	
 }
