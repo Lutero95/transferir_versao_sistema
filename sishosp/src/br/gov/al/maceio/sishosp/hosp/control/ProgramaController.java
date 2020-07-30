@@ -24,6 +24,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
 
 @ManagedBean(name = "ProgramaController")
 @ViewScoped
@@ -47,6 +48,8 @@ public class ProgramaController implements Serializable {
     private GrupoBean grupo;
     private BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado;
     private Integer frequencia;
+    private boolean adicionarProcedimentoPadrao;
+    private ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -54,6 +57,7 @@ public class ProgramaController implements Serializable {
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO = "Inclusão de Programa";
     private static final String CABECALHO_ALTERACAO = "Alteração de Programa";
+    private static final Integer VALOR_MAXIMO_IDADE = 130; 
 
     public ProgramaController() {
         this.prog = new ProgramaBean();
@@ -96,6 +100,13 @@ public class ProgramaController implements Serializable {
     private void limparDados() throws ProjetoException {
         prog = new ProgramaBean();
         listaProgramas = pDao.listarProgramas();
+    }
+    
+    public void adicionarProcedimentoPadrao(ProcedimentoBean procedimento) {
+    	if(!existeProcedimentoCbo(procedimento) && !existeProcedimentoComIdadeAdicionado(procedimento)) {
+    		this.prog.setProcedimento(procedimento);
+    		JSFUtil.fecharDialog("dlgConsulProc");
+    	}
     }
 
     public void gravarPrograma() throws ProjetoException {
@@ -218,17 +229,18 @@ public class ProgramaController implements Serializable {
     	procedimentoCboEspecifico.setProcedimento(this.procedimentoSelecionado);
     	procedimentoCboEspecifico.setCbo(this.cboSelecionado);
     	
-    	if(!existeProcedimentoComEsteCbo(procedimentoCboEspecifico)) {
+    	if(!existeEsteCbo(procedimentoCboEspecifico)
+    			&& !existeProcedimentoComIdadeAdicionado(procedimentoCboEspecifico.getProcedimento())
+    			&& !existeProcedimentoPadrao(procedimentoCboEspecifico.getProcedimento())) {
     		this.prog.getListaProcedimentoCboEspecificoDTO().add(procedimentoCboEspecifico);
     		JSFUtil.fecharDialog("dlgConsulProcOcup");
     	}
-    	else
-    		JSFUtil.adicionarMensagemAdvertencia("Já exite este CBO inserido!", "");
     }
     
-    private boolean existeProcedimentoComEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
+    private boolean existeEsteCbo(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
     	for (ProcedimentoCboEspecificoDTO procedimentoIhCbo : this.prog.getListaProcedimentoCboEspecificoDTO()) {
-    		if(procedimentoIhCbo.getCbo().getCodCbo() == procedimentoCboEspecifico.getCbo().getCodCbo()) {
+    		if(procedimentoIhCbo.getCbo().getCodCbo().equals(procedimentoCboEspecifico.getCbo().getCodCbo())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Já exite este CBO inserido!", "");
     			return true;    			
     		}
 		}
@@ -242,6 +254,8 @@ public class ProgramaController implements Serializable {
     public void validaFrequencia() {
     	if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.frequencia))
     		JSFUtil.adicionarMensagemErro("Frequência: Campo Obrigatório", "");
+    	else if (VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(this.frequencia))
+    		JSFUtil.adicionarMensagemErro("Frequência não pode ser menor ou igual a zero", "");
     	else {
     		JSFUtil.fecharDialog("dlgFreq");
     		JSFUtil.fecharDialog("dlgConsuGrupos");
@@ -269,6 +283,97 @@ public class ProgramaController implements Serializable {
     
     public void selecionarProcedimento(ProcedimentoBean procedimento) {
     	this.procedimentoSelecionado = procedimento;
+    }
+    
+    public void configuraDialogProcedimentosParaProcedimentoPadrao() {
+    	this.adicionarProcedimentoPadrao = true;
+    }
+    
+    public void configuraDialogProcedimentosParaProcedimentoIdade() {
+    	this.adicionarProcedimentoPadrao = false;
+    }
+    
+    public void selecionaProcedimentoIdadeEspecifica() {
+    	this.procedimentoIdadeEspecificaSelecionado = new ProcedimentoIdadeEspecificaDTO();
+    	this.procedimentoIdadeEspecificaSelecionado.setProcedimento(this.procedimentoSelecionado);
+    }
+    
+    public void adicionarProcedimentoIdadeEspecifica() {
+    	
+    	Integer idadeMinima = procedimentoIdadeEspecificaSelecionado.getIdadeMinima();
+    	Integer idadeMaxima = procedimentoIdadeEspecificaSelecionado.getIdadeMaxima();
+    	
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(idadeMinima) && 
+    			!VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(idadeMaxima)
+    			&& !idadeMinimaEhMaiorIdadeMaxima(idadeMinima, idadeMaxima)
+    			&& !idadeMaiorLimitePermitido(idadeMinima, idadeMaxima)) {
+    		
+			if (!existeProcedimentoComIdadeAdicionado(procedimentoIdadeEspecificaSelecionado.getProcedimento())
+					&& !existeProcedimentoPadrao(procedimentoIdadeEspecificaSelecionado.getProcedimento())
+					&& !existeProcedimentoCbo(procedimentoIdadeEspecificaSelecionado.getProcedimento())) {
+				this.prog.getListaProcedimentoIdadeEspecificaDTO().add(procedimentoIdadeEspecificaSelecionado);
+				JSFUtil.fecharDialog("dlgConsulProc");
+				JSFUtil.fecharDialog("dlgIdade");
+			}
+    	}
+    	else {
+    		JSFUtil.adicionarMensagemErro("Há um valor inválido!", "Erro");
+    	}
+    }
+    
+    
+    private boolean existeProcedimentoComIdadeAdicionado(ProcedimentoBean procedimento) {
+    	for (ProcedimentoIdadeEspecificaDTO procedimentoIdade : this.prog.getListaProcedimentoIdadeEspecificaDTO()) {
+    		if(procedimentoIdade.getProcedimento().getIdProc().equals(procedimento.getIdProc())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Procedimento já foi inserido na lista de Procedimentos para Idades Específicas!", "");
+    			return true;    			
+    		}
+		}
+    	return false;
+    }
+    
+    private boolean existeProcedimentoPadrao(ProcedimentoBean procedimento) {
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.prog.getProcedimento().getIdProc()) 
+    			&& this.prog.getProcedimento().getIdProc().equals(procedimento.getIdProc())) {
+    		JSFUtil.adicionarMensagemAdvertencia("Não é possível adicionar o procedimento padrão novamente", "");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private boolean existeProcedimentoCbo(ProcedimentoBean procedimento) {
+    	for (ProcedimentoCboEspecificoDTO procedimentoCbo : this.prog.getListaProcedimentoCboEspecificoDTO()) {
+    		if(procedimentoCbo.getProcedimento().getIdProc().equals(procedimento.getIdProc())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Procedimento já foi inserido na lista de Procedimentos para Ocupações Específicas", "");
+    			return true;    			
+    		}
+		}
+    	return false;
+    }
+    
+    private boolean idadeMinimaEhMaiorIdadeMaxima(Integer idadeMinima, Integer idadeMaxima) {
+    	if(idadeMinima > idadeMaxima) {
+    		JSFUtil.adicionarMensagemErro("Idade Mínima não pode ser maior que a Idade Máxima", "Erro");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private boolean idadeMaiorLimitePermitido(Integer idadeMinima, Integer idadeMaxima) {
+    	if(idadeMinima > VALOR_MAXIMO_IDADE || idadeMaxima > VALOR_MAXIMO_IDADE) {
+    		JSFUtil.adicionarMensagemErro("Idade não pode ser maior que 130", "Erro");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void removerProcedimentoIdadeEspecifica(ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaDTO) {
+     	for (int i = 0; i < this.prog.getListaProcedimentoIdadeEspecificaDTO().size(); i++) {
+    		if(this.prog.getListaProcedimentoIdadeEspecificaDTO().get(i).getProcedimento().getIdProc().equals(procedimentoIdadeEspecificaDTO.getProcedimento().getIdProc())) {
+    			this.prog.getListaProcedimentoIdadeEspecificaDTO().remove(i);
+    			break;
+    		}
+		}
     }
     
     public void limparFrequencia() {
@@ -373,6 +478,23 @@ public class ProgramaController implements Serializable {
 
 	public void setGrupoFrequenciaDTOSelecionado(BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado) {
 		this.grupoFrequenciaDTOSelecionado = grupoFrequenciaDTOSelecionado;
+	}
+
+	public boolean isAdicionarProcedimentoPadrao() {
+		return adicionarProcedimentoPadrao;
+	}
+
+	public void setAdicionarProcedimentoPadrao(boolean adicionarProcedimentoPadrao) {
+		this.adicionarProcedimentoPadrao = adicionarProcedimentoPadrao;
+	}
+
+	public ProcedimentoIdadeEspecificaDTO getProcedimentoIdadeEspecificaSelecionado() {
+		return procedimentoIdadeEspecificaSelecionado;
+	}
+
+	public void setProcedimentoIdadeEspecificaSelecionado(
+			ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado) {
+		this.procedimentoIdadeEspecificaSelecionado = procedimentoIdadeEspecificaSelecionado;
 	}
 	
 }

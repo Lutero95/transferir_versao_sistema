@@ -63,6 +63,7 @@
 										styleClass="table table-hover" id="tabela"
 										value="#{ProgramaController.prog.listaGrupoFrequenciaDTO}" var="tab"
 										paginator="true" paginatorPosition="bottom" rows="12"
+										reflow="true"
 										resizableColumns="true" style="width:100%" scrollable="false">
 
 										<p:column width="20%" headerText="Código"
@@ -112,7 +113,9 @@
 										</p:autoComplete>
 
 										<p:commandButton id="btBusProcP1" icon="ui-icon-search"
-											onclick="PF('dlgConsulProc').show();" immediate="true"
+											update=":formConsulProc"
+											oncomplete="PF('dlgConsulProc').show();" immediate="true"
+											action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPadrao()}"
 											actionListener="#{ProcedimentoController.listarProcedimentos()}" />
 									</p:outputPanel>
 								</b:column>
@@ -131,7 +134,7 @@
 							oncomplete="PF('dlgConsulProcOcup').show();" />
 							
 						<p:dataTable id="tabProcCbo" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoCboEspecificoDTO}"
-							emptyMessage="Nenhum registro foi adicionado">
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
 							</p:column>
@@ -151,8 +154,49 @@
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoCboEspecifico(procEsp)}"
-                                	title="Remover" update="frmPrincipal"
-                                	style="margin-left:28%;"
+                                	title="Remover" update="frmPrincipal:tab:tabProcCbo"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
+				<p:tab title="Procedimentos para Idades Específicas">
+						<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulProc" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoIdade()}"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}"
+							oncomplete="PF('dlgConsulProc').show();" />
+							
+						<p:dataTable id="tabProcIdade" var="procIdade" 
+							value="#{ProgramaController.prog.listaProcedimentoIdadeEspecificaDTO}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
+							
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{procIdade.procedimento.nomeProc}" />
+							</p:column>
+							
+							<p:column headerText="Código Procedimento" width="250">
+								<h:outputText value="#{procIdade.procedimento.codProc}" />
+							</p:column>
+
+							<p:column headerText="Idade Mínima" width="100">
+									<h:outputText value="#{procIdade.idadeMinima}" />
+							</p:column>
+							
+							<p:column headerText="Idade Máxima" width="100">
+									<h:outputText value="#{procIdade.idadeMaxima}" />
+							</p:column>
+
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerProcedimentoIdadeEspecifica(procIdade)}"
+                                	title="Remover" update="frmPrincipal:tab:tabProcIdade"
+                                	style="margin-left:28%;" process="@this" immediate="true"
                                 	class="new-btn-acao-table acao-excluir"/>
 							</p:column>
 						</p:dataTable>
@@ -260,15 +304,17 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton
-                                    update=":formFreq, :msgPagina"
-                                    icon="fa fa-fw fa-check" title="Selecionar"
-                                    class="new-btn-acao-table acao-editar"
-                                    oncomplete="PF('dlgFreq').show();"
-                                    action="#{ProgramaController.limparFrequencia()}">
-                                <f:setPropertyActionListener value="#{grupo}"
-                                                             target="#{ProgramaController.grupo}"/>
-                            </p:commandButton>
+                            
+                            <div align="center">
+								<p:commandButton update=":formFreq, :msgPagina"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar"
+									oncomplete="PF('dlgFreq').show();"
+									action="#{ProgramaController.limparFrequencia()}">
+									<f:setPropertyActionListener value="#{grupo}"
+										target="#{ProgramaController.grupo}" />
+								</p:commandButton>
+							</div>
                         </h:column>
 
                     </b:dataTable>
@@ -277,7 +323,7 @@
         </p:dialog>
         
         
-        <p:dialog header="Selecione Frequência"
+        <p:dialog header="Selecione a Frequência"
         		  widgetVar="dlgFreq" draggable="true" responsive="true"
                   modal="true" styleClass="topDialog" resizable="false">
             <h:form id="formFreq">
@@ -301,7 +347,7 @@
 
         <p:dialog header="Consultar Procedimento" styleClass="topDialog"
                   widgetVar="dlgConsulProc" modal="true" resizable="false" 
-                  draggable="false" responsive="true">
+                  draggable="false" responsive="true" width="40%">
             <h:form id="formConsulProc">
                 <p:outputPanel >
                 <p:autoUpdate/>
@@ -319,17 +365,53 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton
-                                    icon="fa fa-fw fa-check" title="Selecionar"
-                                    class="new-btn-acao-table acao-editar" update=":frmPrincipal"
-                                    onclick="PF('dlgConsulProc').hide();">
-                                <f:setPropertyActionListener value="#{proc}"
-                                                             target="#{ProgramaController.prog.procedimento}"/>
-                            </p:commandButton>
+                            <div align="center">
+								<p:commandButton
+									rendered="#{ProgramaController.adicionarProcedimentoPadrao == true}"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar" update=":frmPrincipal :msgPagina"
+									action="#{ProgramaController.adicionarProcedimentoPadrao(proc)}"/>
+								
+								<p:commandButton
+									rendered="#{ProgramaController.adicionarProcedimentoPadrao == false}"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar" update=":formIdade :msgPagina"
+									oncomplete="PF('dlgIdade').show();"
+									action="#{ProgramaController.selecionaProcedimentoIdadeEspecifica()}">
+									<f:setPropertyActionListener value="#{proc}"
+										target="#{ProgramaController.procedimentoSelecionado}" />
+								</p:commandButton>
+							</div>
                         </h:column>
                     </b:dataTable>
                 </p:outputPanel>
             </h:form>
+        </p:dialog>
+        
+        <p:dialog header="Selecione o Intervalo de Idade"
+        		  widgetVar="dlgIdade" draggable="true" responsive="true"
+                  modal="true" styleClass="topDialog" resizable="false">
+            <h:form id="formIdade">
+            	<h:outputLabel value="Procedimento: #{ProgramaController.procedimentoIdadeEspecificaSelecionado.procedimento.nomeProc} "/>
+				
+				<div align="center">
+					<p:panelGrid columns="2">
+						<b:label value="Idade Mínima" for="idadeMinima" severity="info"/>
+						<p:spinner id="idadeMinima" value="#{ProgramaController.procedimentoIdadeEspecificaSelecionado.idadeMinima}"
+							required="true" requiredMessage="Idade Mínima: Campo obrigatório" />
+					
+						<b:label value="Idade Máxima" for="idadeMaxima" severity="info"/>
+						<p:spinner value="#{ProgramaController.procedimentoIdadeEspecificaSelecionado.idadeMaxima}"
+							required="true" requiredMessage="Idade Máxima: Campo obrigatório" />
+					</p:panelGrid>
+					<div>
+						<br /><br />
+						<p:commandButton update=":frmPrincipal:tab:tabProcIdade, :msgPagina"
+							value="Confirmar" title="Confirmar"
+							action="#{ProgramaController.adicionarProcedimentoIdadeEspecifica()}"/>
+					</div>
+				</div>
+			</h:form>
         </p:dialog>
 
     </ui:define>
