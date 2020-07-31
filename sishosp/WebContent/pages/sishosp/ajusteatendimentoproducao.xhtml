@@ -1,0 +1,329 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+	
+	    <f:metadata>
+            <f:viewAction action="#{AtendimentoController.executaMetodosInicializadoresAjustesAtendimentos()}"/>
+        </f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Ajuste em Atendimentos - Produção</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+				<h:form id="frmPrincipal">
+				
+					<p:row rendered="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
+						<p:messages/>
+						<br/>
+					</p:row>
+
+					<br></br>
+
+					<p:row>
+						<b:label value="Dia de Atendimento:" severity="info" style="margin-left: 0px;"/>
+						<p:panelGrid columns="5" style="margin-left: 1.3%;">
+							<p:column span="3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									required="true" requiredMessage="Insira a data inicial"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{AtendimentoController.atendimentoAux.dataAtendimentoInicio}"/>
+							</p:column>
+
+							<p:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="à"/>
+								</p:outputLabel>
+							</p:column>
+
+							<p:column span="2" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									required="true" requiredMessage="Insira a data final"
+									class="select-agendaEquipe2" showOn="button" size="15"
+									id="dtagen3" locale="pt"
+									value="#{AtendimentoController.atendimentoAux.dataAtendimentoFinal}" />
+							</p:column>
+						</p:panelGrid>
+					</p:row>
+					
+					<p:row>
+						<p:panelGrid columns="4">
+						
+							<p:selectOneMenu value="#{AtendimentoController.tipoBusca}">
+								<f:selectItem itemLabel="Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente"
+									itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente"
+									itemValue="matpaciente" />
+								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+							</p:selectOneMenu>
+							
+							<p:inputText value="#{AtendimentoController.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar"
+								style="margin-left: 10px;width:300px" />
+								
+							<p:column class="label-position data-size3">
+								<p:commandButton icon="ui-icon-search"
+								 	update="frmPrincipal:dataTablePrincipal :msgPagina"
+									size="sm" action="#{AtendimentoController.listaAtendimentos1Ajustes()}"/>
+							</p:column>	
+						</p:panelGrid>
+					</p:row>
+					
+					<p:row>
+						<br />
+						<p:panelGrid columns="1">
+							<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
+								itemLabel="Listar Apenas Atendimentos sem Cid" />
+						</p:panelGrid>
+					</p:row>
+
+					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" paginator="true" rows="20" style="margin-top: 10px"
+						value="#{AtendimentoController.listAtendimentos}">
+
+						<p:column>
+							<f:facet name="header">
+                            	Profissional
+                        	</f:facet>
+							<h:outputText value="#{tab.funcionario.nome}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+                            	Paciente
+                        	</f:facet>
+							<h:outputText value="#{tab.paciente.nome}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+                            	Procedimento
+                        	</f:facet>
+							<h:outputText value="#{tab.procedimento.nomeProc}" />
+						</p:column>
+						
+						<p:column>
+							<f:facet name="header">
+                            	CID
+                        	</f:facet>
+							<h:outputText value="#{tab.cidPrimario.cid}" />
+						</p:column>
+						
+						<p:column width="80">
+							<f:facet name="header">
+                            	Data
+                        	</f:facet>
+							<h:outputText value="#{tab.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column width="70">
+							<f:facet name="header">
+                            	Alterar Cid
+                        	</f:facet>
+
+							<p:commandButton title="Alterar cid" icon="ui-icon-pencil"
+								size="sm" oncomplete="PF('dlgConsulCid1').show();"
+								action="#{AtendimentoController.limparDialogBuscaCid()}" update=":formConsulCid1"
+								disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{AtendimentoController.atendimento}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column width="70">
+							<f:facet name="header">
+								Alterar Proced.
+							</f:facet>
+
+							<p:commandButton title="Alterar Procedimento" icon="ui-icon-pencil"
+											 size="sm" oncomplete="PF('dlgConsulProc').show();"
+											 actionListener="#{AtendimentoController.listarProcedimentos()}" update=":formConsulProc"
+											 disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
+								<f:setPropertyActionListener value="#{tab}"
+															 target="#{AtendimentoController.atendimento}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+		</div>
+		
+		<p:dialog header="Alteração de CID " widgetVar="dlgConsulCid1"
+                  responsive="true" height="350" modal="true" dynamic="true">
+            <h:form id="formConsulCid1">
+                <p:outputPanel id="outcid1">
+                    <p:row>
+
+                        <p:panelGrid columns="4">
+
+                            <p:selectOneMenu value="#{AtendimentoController.tipoBusca}"
+                                             style="margin-top: -13px">
+                                <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
+                            </p:selectOneMenu>
+
+                            <p:inputText value="#{AtendimentoController.campoBusca}"
+                                         required="true"
+                                         requiredMessage="Informe a descrição da doença ou o Código do CID"
+                                         placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
+
+                            <p:commandButton
+                                    action="#{AtendimentoController.listarCids1()}"
+                                    update="tabelacid1 :msgPagina" icon="ui-icon-search"
+                                    style="margin-left: 10px;">
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                    </p:row>
+                    <p:dataTable emptyMessage="Nenhum CID listado" rows="10"
+                                 paginator="true" id="tabelacid1" style="width:500px"
+                                 value="#{AtendimentoController.listaCids}" var="tab">
+
+                        <p:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+
+                            <h:outputText value="#{tab.descCidAbrev}"/>
+                        </p:column>
+
+
+                        <p:column>
+                            <f:facet name="header">
+                                CID
+                            </f:facet>
+
+                            <h:outputText value="#{tab.cid}"/>
+                        </p:column>
+
+
+                        <p:column>
+                            <f:facet name="header">
+                                Selecionar
+                            </f:facet>
+
+                            <p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+                                             size="sm" class="new-btn-acao-table acao-editar"
+                                             update=":formConfirmacao"
+                                             oncomplete="PF('dlgConfirmacao').show();">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{AtendimentoController.atendimento.cidPrimario}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog header="Confirmar Edição do Cid" widgetVar="dlgConfirmacao"
+                  responsive="true" height="130" width="400" modal="true" resizable="false">
+            <h:form id="formConfirmacao">
+            	<p>
+            		Deseja mesmo atribuir o cid 
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.atendimento.cidPrimario.descCidAbrev}"/>
+            		</STRONG>
+            		ao atendimento do(a) paciente
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.atendimento.paciente.nome}"/>
+            		</STRONG>	
+            		com o(a) profissional
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.atendimento.funcionario.nome}?"/>
+            		</STRONG>	
+            	</p>
+            	
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+						action="#{AtendimentoController.atualizaCidDeAtendimento()}"
+						oncomplete="PF('dlgConsulCid1').hide(); PF('dlgConfirmacao').hide();"
+						update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgConfirmacao').hide();"
+						style="margin-left: 10px;" />	
+				</div>
+			</h:form>
+        </p:dialog>
+
+		<p:dialog header="Confirmar Edição de Procedimento" widgetVar="dlgConfirmacaoProc"
+				  responsive="true" height="130" width="400" modal="true" resizable="false">
+			<h:form id="formConfirmacaoproc">
+				<p>
+					Deseja mesmo atribuir o Procedimento
+					<STRONG>
+						<h:outputText value="#{AtendimentoController.atendimento.procedimento.nomeProc}"/>
+					</STRONG>
+					ao atendimento do(a) paciente
+					<STRONG>
+						<h:outputText value="#{AtendimentoController.atendimento.paciente.nome}"/>
+					</STRONG>
+					com o(a) profissional
+					<STRONG>
+						<h:outputText value="#{AtendimentoController.atendimento.funcionario.nome}?"/>
+					</STRONG>
+				</p>
+
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+									 action="#{AtendimentoController.atualizaProcedimentoDoAtendimento()}"
+									 update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+									 oncomplete="PF('dlgConfirmacaoproc').hide();"
+									 style="margin-left: 10px;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Consultar Procedimento"
+				  widgetVar="dlgConsulProc" modal="true" resizable="false"
+				  draggable="false" responsive="true">
+			<h:form id="formConsulProc">
+				<p:outputPanel >
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{AtendimentoController.listaProcedimentos}" var="proc">
+
+						<h:column>
+							<f:facet name="header">
+								Descrição
+							</f:facet>
+							<p:outputLabel value="#{proc.nomeProc}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+
+							<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+											 size="sm" class="new-btn-acao-table acao-editar"
+											 update=":formConfirmacaoproc"
+											 oncomplete="PF('dlgConfirmacaoProc').show();">
+								<f:setPropertyActionListener value="#{proc}"
+															 target="#{AtendimentoController.atendimento.procedimento}"/>
+							</p:commandButton>
+
+						</h:column>
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>

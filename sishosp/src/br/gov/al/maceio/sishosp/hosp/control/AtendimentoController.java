@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -72,7 +70,7 @@ public class AtendimentoController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
     private Boolean existeAlgumaCargaSigtap;
-    private Boolean comCids;
+    private Boolean semCids;
     private CidDAO cidDao;
     private List<CidBean> listaCids;
     private  Date dataAtende;
@@ -121,7 +119,7 @@ public class AtendimentoController implements Serializable {
         this.situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
         this.funcionarioLiberacao = new FuncionarioBean();
         unidadeDAO = new UnidadeDAO();
-        this.comCids = false;
+        this.semCids = false;
         this.cidDao = new CidDAO();
         this.listaCids = new ArrayList<>();
     }
@@ -300,7 +298,7 @@ public class AtendimentoController implements Serializable {
         }
     }
     
-    public void executaMetodosInicializadoresAtendimentosSemCid() throws ProjetoException {
+    public void executaMetodosInicializadoresAjustesAtendimentos() throws ProjetoException {
     	verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     	verificaSeExisteAlgumaCargaSigtap();
     	this.atendimentoAux.setDataAtendimentoInicio(this.atendimento.getDataAtendimentoInicio());
@@ -756,8 +754,8 @@ public class AtendimentoController implements Serializable {
         return null;
     }
 
-    public void listaAtendimentos1FiltroCid() throws ProjetoException {
-        this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroCid(atendimentoAux, this.comCids, this.campoBusca, this.tipoBusca);
+    public void listaAtendimentos1Ajustes() throws ProjetoException {
+        this.listAtendimentos = atendimentoDAO.listaAtendimentos1FiltroAjustes(atendimentoAux, this.semCids, this.campoBusca, this.tipoBusca);
     }
 
     public void listarCids1() throws ProjetoException {
@@ -782,10 +780,21 @@ public class AtendimentoController implements Serializable {
     public void atualizaCidDeAtendimento() throws ProjetoException {
 		boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento);
 		if (alterou) {
-			JSFUtil.adicionarMensagemSucesso("CID adicionado ao atendimento com sucesso!", "");
-			listaAtendimentos1FiltroCid();
+			JSFUtil.adicionarMensagemSucesso("CID alterado no atendimento com sucesso!", "");
+			listaAtendimentos1Ajustes();
 		}
     }
+
+    public void atualizaProcedimentoDoAtendimento() throws ProjetoException {
+        boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento);
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("Procedimento alterado no atendimento com sucesso!", "");
+            JSFUtil.fecharDialog("dlgConsulProc");
+            JSFUtil.fecharDialog("dlgConfirmacaoProc");
+            listaAtendimentos1Ajustes();
+        }
+    }
+
     
     public void listarProcedimentosPorCboDoProfissional() throws ProjetoException {
         this.listaProcedimentos = procedimentoDAO.listarProcedimentosPorCbo
@@ -1069,12 +1078,12 @@ public class AtendimentoController implements Serializable {
     public void setExisteCargaSigtapParaEsteMesOuAnterior(Boolean existeCargaSigtapParaEsteMesOuAnterior) {
         this.existeCargaSigtapParaEsteMesOuAnterior = existeCargaSigtapParaEsteMesOuAnterior;
     }
-    public Boolean getComCids() {
-        return comCids;
+    public Boolean getSemCids() {
+        return semCids;
     }
 
-    public void setComCids(Boolean comCids) {
-        this.comCids = comCids;
+    public void setSemCids(Boolean semCids) {
+        this.semCids = semCids;
     }
 
     public List<CidBean> getListaCids() {

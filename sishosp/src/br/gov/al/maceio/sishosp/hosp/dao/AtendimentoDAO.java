@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 import javax.faces.context.FacesContext;
 
@@ -1407,14 +1408,14 @@ public class AtendimentoDAO {
 		}
 	}
 	
-	public List<AtendimentoBean> listaAtendimentos1FiltroCid(AtendimentoBean atendimentoBusca, boolean comCids,
-			String campoBusca, String tipoBusca) throws ProjetoException {
+	public List<AtendimentoBean> listaAtendimentos1FiltroAjustes(AtendimentoBean atendimentoBusca, boolean apenasSemCids,
+																 String campoBusca, String tipoBusca) throws ProjetoException {
 
 		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
 		
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
 				"f.descfuncionario, pa.nome as paciente, p.id as id_procedimento, " + 
-				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccid, p.codproc " + 
+				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, p.codproc " +
 				"from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
 				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
@@ -1438,7 +1439,7 @@ public class AtendimentoDAO {
 		String filtroSql = "and a1.id_cidprimario is null "; 
 		String ordenacaoSql = "order by a.dtaatende, pa.nome; ";
 		
-		if(comCids) 
+		if(!apenasSemCids)
 			sql += ordenacaoSql;
 		else
 			sql += filtroSql + ordenacaoSql;
@@ -1476,7 +1477,7 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setCodProc(rs.getString("codproc"));
 				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
-				atendimento.getCidPrimario().setCid(rs.getString("desccid"));
+				atendimento.getCidPrimario().setCid(rs.getString("desccidabrev"));
 				
 				listaAtendimentos.add(atendimento);
 			}
@@ -1525,4 +1526,35 @@ public class AtendimentoDAO {
 		}
 		return alterou;
 	}
+
+	public boolean atualizaProcedimentoDoAtendimento(AtendimentoBean atendimento) throws ProjetoException {
+
+		boolean alterou = false;
+
+		String sql = "UPDATE hosp.atendimentos1 SET codprocedimento = ? WHERE id_atendimentos1 = ?;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, atendimento.getProcedimento().getIdProc());
+			stm.setInt(2, atendimento.getId1());
+			stm.executeUpdate();
+			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+			alterou = true;
+			con.commit();
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
+	}
+
 }
