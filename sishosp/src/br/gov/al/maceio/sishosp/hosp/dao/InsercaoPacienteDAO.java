@@ -261,7 +261,9 @@ public class InsercaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), lista.get(j).getCbo().getCodCbo(), con);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), lista.get(j).getCbo().getCodCbo(),
+											insercao.getLaudo().getPaciente().getId_paciente(), con);
 							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -414,7 +416,9 @@ public class InsercaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), con);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
+											insercao.getLaudo().getPaciente().getId_paciente(), con);
 							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -550,7 +554,9 @@ public class InsercaoPacienteDAO {
 
 				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
-				Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), con);
+				Integer idProcedimentoEspecifico = new AgendaDAO().
+						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
+								insercao.getLaudo().getPaciente().getId_paciente(), con);
 				PreparedStatement ps4 = null;
 				ps4 = con.prepareStatement(sql4);
 

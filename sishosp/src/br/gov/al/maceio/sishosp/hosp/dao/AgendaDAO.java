@@ -130,8 +130,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     ps = con.prepareStatement(sql2);
                     if (agenda.getProfissional().getId() != null) {
 
-                        Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(idPrograma, agenda.getProfissional().getCbo().getCodCbo(), con);
-
+                        Integer idProcedimentoEspecifico = 
+                        		retornaIdProcedimentoEspecifico(idPrograma, agenda.getProfissional().getCbo().getCodCbo(), agenda.getPaciente().getId_paciente(), con);
+                        
                         ps.setLong(1, agenda.getProfissional().getId());
                         ps.setInt(2, idAtendimento);
                         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getCbo().getCodCbo()))
@@ -154,7 +155,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                         for (FuncionarioBean prof : agenda.getEquipe().getProfissionais()) {
 
-                            Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(idPrograma, prof.getCbo().getCodCbo(), con);
+                            Integer idProcedimentoEspecifico = 
+                            		retornaIdProcedimentoEspecifico(idPrograma, prof.getCbo().getCodCbo(), agenda.getPaciente().getId_paciente(), con);
 
                             ps.setLong(1, prof.getId());
                             ps.setInt(2, idAtendimento);
@@ -263,7 +265,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             for (FuncionarioBean funcionario : listaProfissionais) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                         + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
-                Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(), funcionario.getCbo().getCodCbo(), con);
+                Integer idProcedimentoEspecifico = 
+                		retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(), funcionario.getCbo().getCodCbo(), agenda.getPaciente().getId_paciente(), con);
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, funcionario.getId());
                 ps.setInt(2, idAtendimento);
@@ -388,7 +391,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 						+ " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
-				Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
+				Integer idProcedimentoEspecifico = retornaIdProcedimentoCboEspecifico(agenda.getPrograma().getIdPrograma(),
 						agenda.getProfissional().getCbo().getCodCbo(), con);
 				ps = con.prepareStatement(sql2);
 				ps.setLong(1, agenda.getProfissional().getId());
@@ -3075,8 +3078,26 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
         return idCid;
     }
+    
+    public Integer retornaIdProcedimentoEspecifico(Integer idPrograma, Integer idCbo, Integer idPaciente, Connection conAuxiliar) throws ProjetoException, SQLException {
+    	Integer idProcedimentoEspecifico = null;
+    	try {
+			idProcedimentoEspecifico = retornaIdProcedimentoCboEspecifico(idPrograma, idCbo, conAuxiliar);
+			if (VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
+				idProcedimentoEspecifico = retornaIdProcedimentoIdadeEspecifica(idPrograma, idPaciente, conAuxiliar);
+			}
+    	} catch (SQLException ex2) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+    	
+    	return idProcedimentoEspecifico;
+    }
 
-    public Integer retornaIdProcedimentoEspecifico(Integer idPrograma, Integer idCbo, Connection conAuxiliar)
+    private Integer retornaIdProcedimentoCboEspecifico(Integer idPrograma, Integer idCbo, Connection conAuxiliar)
             throws ProjetoException, SQLException {
 
         Integer idProcedimento = null;
@@ -3092,6 +3113,40 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 stm.setNull(2, Types.NULL);
             else
                 stm.setInt(2, idCbo);
+
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                idProcedimento = rs.getInt("id_procedimento");
+            }
+
+        } catch (SQLException ex2) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return idProcedimento;
+    }
+    
+    
+    private Integer retornaIdProcedimentoIdadeEspecifica(Integer idPrograma, Integer idPaciente, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+        Integer idProcedimento = null;
+
+        String sql = "select ppie.id_procedimento from hosp.proc p " + 
+        		"join hosp.programa_procedimento_idade_especifica ppie on p.id = ppie.id_procedimento " + 
+        		"where ppie.id_programa = ? and ( " + 
+        		"	(select extract (year from age(p.dtanascimento)) idade from hosp.pacientes p " + 
+        		"	where p.id_paciente = ?)" + 
+        		"between ppie.idade_minima and ppie.idade_maxima);";
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, idPaciente);
 
             ResultSet rs = stm.executeQuery();
 

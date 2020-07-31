@@ -205,7 +205,7 @@
                                             itemLabel="#{theme.descGrupo}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{TransferenciaPacienteController.selecionarGrupo()}"
-                                                update="outEquipe"/>
+                                                update="outEquipe outTabelas"/>
                                     </p:autoComplete>
 
                                 </b:column>
@@ -233,7 +233,7 @@
                                             itemLabel="#{theme.descEquipe}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"
-                                                update="dtEquipe, :msgPagina, opturno"/>
+                                                update="dtEquipe, :msgPagina, opturno, outTabelas"/>
                                     </p:autoComplete>
 
                                     <p:commandButton icon="ui-icon-search"
@@ -253,7 +253,7 @@
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
                                                      action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"/>
                                 </b:column>
-                                <b:column span="2">
+                                <b:column span="2" rendered="false">
                                     <p:commandButton value="Visualizar" look="success" size="sm"
                                                      id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
@@ -530,7 +530,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina, :formInsercao2:opturno"
+                                update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina, :formInsercao2:opturno, formInsercao2:outTabelas"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"

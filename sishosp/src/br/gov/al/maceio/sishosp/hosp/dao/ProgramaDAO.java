@@ -140,6 +140,7 @@ public class ProgramaDAO {
             stmt.execute();
             
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
+            excluirProcedimentosParaIdadesEspecificas(prog.getIdPrograma(), con);
 
             String sql2 = "delete from hosp.programa where id_programa = ?";
             stmt = con.prepareStatement(sql2);

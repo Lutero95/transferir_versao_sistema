@@ -260,12 +260,15 @@ public class RenovacaoPacienteDAO {
 			PreparedStatement ps3 = null;
 			rs = null;
 			ps3 = conexao.prepareStatement(sql3);
+			
+			Integer codPaciente;
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente()))
+				codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+			else
+				codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
 
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
-				if (insercaoParaLaudo.getLaudo().getPaciente().getId_paciente() != null)
-					ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				else
-					ps3.setInt(1, insercaoParaLaudo.getPaciente().getId_paciente());
+				ps3.setInt(1, codPaciente);
 				ps3.setDate(2,
 						new java.sql.Date(listAgendamentoProfissional.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
@@ -322,7 +325,8 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, conexao);
 							
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -492,11 +496,14 @@ public class RenovacaoPacienteDAO {
 			rs = null;
 			ps3 = conexao.prepareStatement(sql3);
 
+			Integer codPaciente;
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente()))
+				codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+			else
+				codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
+			
 			for (int i = 0; i < listaAgendamento.size(); i++) {
-				if (insercaoParaLaudo.getLaudo().getPaciente().getId_paciente() != null)
-					ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				else
-					ps3.setInt(1, insercaoParaLaudo.getPaciente().getId_paciente());
+				ps3.setInt(1, codPaciente);
 				ps3.setDate(2, new java.sql.Date(listaAgendamento.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
@@ -551,7 +558,8 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), conexao);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), codPaciente, conexao);
 							
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -699,7 +707,9 @@ public class RenovacaoPacienteDAO {
 
 				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 				
-				Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), conexao);
+				Integer idProcedimentoEspecifico = new AgendaDAO().
+						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), 
+								insercao.getLaudo().getPaciente().getId_paciente(), conexao);
 				PreparedStatement ps5 = null;
 				ps5 = conexao.prepareStatement(sql5);
 

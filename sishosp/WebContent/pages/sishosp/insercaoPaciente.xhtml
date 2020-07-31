@@ -179,7 +179,7 @@
                                                     itemLabel="#{theme.descPrograma}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{InsercaoController.selectPrograma}"
-                                                update=":formInsercao2:outGrupo"/>
+                                                update=":formInsercao2:outGrupo :formConsuGrop"/>
 
                                     </p:autoComplete>
 
@@ -217,7 +217,7 @@
                                                     itemLabel="#{theme.descGrupo}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{InsercaoController.selectGrupo}"
-                                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"/>
+                                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe, :formInsercao2:outTabelas"/>
 
                                     </p:autoComplete>
 
@@ -251,7 +251,7 @@
                                                     minQueryLength="1" itemValue="#{theme}" required="true"
                                                     requiredMessage="Campo equipe obrigatório "
                                                     itemLabel="#{theme.descEquipe}">
-                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina, opturno" />
+                                        <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina, opturno, :formInsercao2:outTabelas" />
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
@@ -262,7 +262,7 @@
                                                      rendered="#{InsercaoController.tipo == 'E'}"/>
                                 </b:column>
 
-                                <b:column span="2">
+                                <b:column span="2" rendered="false">
                                     <p:commandButton value="Visualizar" look="success" size="sm"
                                                      id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
                                                      rendered="#{InsercaoController.tipo == 'E'}"
@@ -846,7 +846,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formInsercao2:outProg, :formInsercao2:outGrupo"
+                                update=":formInsercao2:outProg, :formInsercao2:outGrupo :formConsuGrop"
                                 class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
                                 title="Selecionar"
                                 action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
@@ -880,7 +880,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"
+                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe, :formInsercao2:outTabelas"
                                 icon="fa fa-fw fa-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();"
@@ -912,7 +912,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina :formInsercao2:opturno"
+                        <p:commandButton update=":formInsercao2:outEquipe, :formInsercao2:dtEquipe, :msgPagina :formInsercao2:opturno, :formInsercao2:outTabelas"
                                          action="#{InsercaoController.listarProfissionaisEquipe()}"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"

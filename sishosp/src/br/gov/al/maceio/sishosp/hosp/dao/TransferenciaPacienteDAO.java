@@ -341,7 +341,9 @@ public class TransferenciaPacienteDAO {
 
 							sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), conexao);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), 
+											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
 							
 							ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -583,7 +585,9 @@ public class TransferenciaPacienteDAO {
 
 							String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 							
-							Integer idProcedimentoEspecifico = new AgendaDAO().retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), conexao);
+							Integer idProcedimentoEspecifico = new AgendaDAO().
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), 
+											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
 							
 							PreparedStatement ps10 = null;
 							ps10 = conexao.prepareStatement(sql10);
