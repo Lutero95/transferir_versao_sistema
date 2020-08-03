@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
@@ -147,6 +148,10 @@ public class AtendimentoController implements Serializable {
                 atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
                 atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
+                this.campoBusca = buscaSessaoDTO.getCampoBusca();
+                this.tipoBusca = buscaSessaoDTO.getTipoBusca();
+                this.buscaEvolucao = buscaSessaoDTO.getBuscaEvolucao();
+                this.listarEvolucoesPendentes = buscaSessaoDTO.isListarEvolucoesPendentes();
             }
         }
 
@@ -194,7 +199,10 @@ public class AtendimentoController implements Serializable {
             }
         }
         SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
-                atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
+                atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(),
+                TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla(), this.campoBusca, this.tipoBusca, 
+                this.buscaEvolucao, this.listarEvolucoesPendentes);
+        
         listarAtendimentosProfissionalNaEquipe(campoBusca, tipoBusca);
     }
 

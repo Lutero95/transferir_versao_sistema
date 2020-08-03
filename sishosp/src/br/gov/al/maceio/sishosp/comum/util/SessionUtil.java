@@ -46,6 +46,15 @@ public class SessionUtil {
         SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
     
+    public static void adicionarBuscaPtsNaSessao(ProgramaBean programa, GrupoBean grupo, Date periodoInicial, Date periodoFinal, String tela,
+    		String campoBusca, String tipoBusca, String buscaEvolucao, boolean listarEvolucoesPendentes){
+    	
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(programa, grupo, periodoInicial, periodoFinal, tela, 
+        		campoBusca, tipoBusca, buscaEvolucao, listarEvolucoesPendentes);
+
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
+    }
+    
     public static void removerDaSessao(String nomeObjetoSessao){
     	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(nomeObjetoSessao);
     }

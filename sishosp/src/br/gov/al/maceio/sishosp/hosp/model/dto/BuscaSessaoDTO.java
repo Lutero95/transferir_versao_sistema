@@ -14,6 +14,10 @@ public class BuscaSessaoDTO implements Serializable {
     private Date periodoInicial;
     private Date periodoFinal;
     private String tela;
+    private String campoBusca;
+    private String tipoBusca;
+    private String buscaEvolucao;
+    private boolean listarEvolucoesPendentes;
 
     public BuscaSessaoDTO() {
         programaBean = new ProgramaBean();
@@ -26,6 +30,19 @@ public class BuscaSessaoDTO implements Serializable {
         this.periodoInicial = periodoInicial;
         this.periodoFinal = periodoFinal;
         this.tela = tela;
+    }
+    
+    public BuscaSessaoDTO(ProgramaBean programaBean, GrupoBean grupoBean, Date periodoInicial, Date periodoFinal, String tela,
+    		String campoBusca, String tipoBusca, String buscaEvolucao, boolean listarEvolucoesPendentes) {
+        this.programaBean = programaBean;
+        this.grupoBean = grupoBean;
+        this.periodoInicial = periodoInicial;
+        this.periodoFinal = periodoFinal;
+        this.tela = tela;
+        this.campoBusca = campoBusca;
+        this.tipoBusca = tipoBusca;
+        this.buscaEvolucao = buscaEvolucao;
+        this.listarEvolucoesPendentes = listarEvolucoesPendentes;
     }
 
     public ProgramaBean getProgramaBean() {
@@ -67,8 +84,40 @@ public class BuscaSessaoDTO implements Serializable {
     public void setTela(String tela) {
         this.tela = tela;
     }
+    
+    public String getCampoBusca() {
+		return campoBusca;
+	}
 
-    @Override
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
+	
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public String getBuscaEvolucao() {
+		return buscaEvolucao;
+	}
+
+	public void setBuscaEvolucao(String buscaEvolucao) {
+		this.buscaEvolucao = buscaEvolucao;
+	}
+	
+	public boolean isListarEvolucoesPendentes() {
+		return listarEvolucoesPendentes;
+	}
+
+	public void setListarEvolucoesPendentes(boolean listarEvolucoesPendentes) {
+		this.listarEvolucoesPendentes = listarEvolucoesPendentes;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -77,12 +126,16 @@ public class BuscaSessaoDTO implements Serializable {
                 Objects.equals(grupoBean, that.grupoBean) &&
                 Objects.equals(periodoInicial, that.periodoInicial) &&
                 Objects.equals(periodoFinal, that.periodoFinal) &&
-                Objects.equals(tela, that.tela);
+                Objects.equals(tela, that.tela) &&
+                Objects.equals(campoBusca, that.campoBusca) &&
+                Objects.equals(tipoBusca, that.tipoBusca) &&
+                Objects.equals(buscaEvolucao, that.buscaEvolucao) &&
+                Objects.equals(listarEvolucoesPendentes, that.listarEvolucoesPendentes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(programaBean, grupoBean, periodoInicial, periodoFinal, tela);
+        return Objects.hash(programaBean, grupoBean, periodoInicial, periodoFinal, tela, campoBusca, tipoBusca, buscaEvolucao, listarEvolucoesPendentes);
     }
 
     @Override
@@ -93,6 +146,10 @@ public class BuscaSessaoDTO implements Serializable {
                 ", periodoInicial=" + periodoInicial +
                 ", periodoFinal=" + periodoFinal +
                 ", tela='" + tela + '\'' +
+                ", campoBusca=" +campoBusca +
+                ", tipoBusca=" +tipoBusca +
+                ", buscaEvolucao=" +buscaEvolucao +
+                ", listarEvolucoesPendentes=" +listarEvolucoesPendentes +
                 '}';
     }
 }
