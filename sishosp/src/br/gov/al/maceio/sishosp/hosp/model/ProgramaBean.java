@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
 
 public class ProgramaBean implements Serializable {
 
@@ -30,6 +31,7 @@ public class ProgramaBean implements Serializable {
 	private String descricaoUnidade;  
 	private List<ProcedimentoCboEspecificoDTO> listaProcedimentoCboEspecificoDTO;
 	private List<BuscaGrupoFrequenciaDTO> listaGrupoFrequenciaDTO;
+	private List<ProcedimentoIdadeEspecificaDTO> listaProcedimentoIdadeEspecificaDTO;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -42,6 +44,7 @@ public class ProgramaBean implements Serializable {
 		this.procedimento = new ProcedimentoBean();
 		this.listaProcedimentoCboEspecificoDTO = new ArrayList<>();
 		this.listaGrupoFrequenciaDTO = new ArrayList<>();
+		this.listaProcedimentoIdadeEspecificaDTO = new ArrayList<>();
 	}
 
 	public Integer getIdPrograma() {
@@ -163,5 +166,14 @@ public class ProgramaBean implements Serializable {
 
 	public void setListaGrupoFrequenciaDTO(List<BuscaGrupoFrequenciaDTO> listaGrupoFrequenciaDTO) {
 		this.listaGrupoFrequenciaDTO = listaGrupoFrequenciaDTO;
+	}
+
+	public List<ProcedimentoIdadeEspecificaDTO> getListaProcedimentoIdadeEspecificaDTO() {
+		return listaProcedimentoIdadeEspecificaDTO;
+	}
+
+	public void setListaProcedimentoIdadeEspecificaDTO(
+			List<ProcedimentoIdadeEspecificaDTO> listaProcedimentoIdadeEspecificaDTO) {
+		this.listaProcedimentoIdadeEspecificaDTO = listaProcedimentoIdadeEspecificaDTO;
 	}
 }

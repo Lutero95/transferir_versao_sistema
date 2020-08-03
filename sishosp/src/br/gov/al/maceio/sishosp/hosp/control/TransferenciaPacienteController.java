@@ -79,6 +79,7 @@ public class TransferenciaPacienteController implements Serializable {
         listaHorarioAtendimentos = new ArrayList<>();
         listaHorarios = new ArrayList<>();
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+        listaProfissionaisEquipe = new ArrayList<>();
 
     }
     public void carregarTransferencia() throws ProjetoException, ParseException {
@@ -491,18 +492,17 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void listarProfissionaisEquipe() throws ProjetoException {
-            if (insercao.getEquipe() != null) {
-                if (insercao.getEquipe().getCodEquipe() != null) {
-                    listaProfissionaisEquipe = eDao
-                            .listarProfissionaisDaEquipeInsercao(insercao.getEquipe()
-                                    .getCodEquipe(), todosOsProfissionais);
-                }
-            } else {
-                JSFUtil.adicionarMensagemErro("Escolha uma equipe!",
-                        "Bloqueio");
-            }
+    	limparTabelasProfissionais();
+		if (insercao.getEquipe() != null) {
+			if (insercao.getEquipe().getCodEquipe() != null) {
+				listaProfissionaisEquipe = eDao.listarProfissionaisDaEquipeInsercao(insercao.getEquipe().getCodEquipe(),
+						todosOsProfissionais);
+			}
+		} else {
+			JSFUtil.adicionarMensagemErro("Escolha uma equipe!", "Bloqueio");
+		}
 
-        turnoInsercaoReceberValorTurnoEquipe();
+		turnoInsercaoReceberValorTurnoEquipe();
     }
 
     public void turnoInsercaoReceberValorTurnoEquipe(){
@@ -698,6 +698,12 @@ public class TransferenciaPacienteController implements Serializable {
 
     public void selecionarGrupo(){
         insercao.setEquipe(new EquipeBean());
+        limparTabelasProfissionais();
+    }
+    
+    private void limparTabelasProfissionais() {
+    	this.listaProfissionaisEquipe.clear();
+    	this.listaProfissionaisAdicionados.clear();
     }
 
     public void carregaHorariosEquipe() throws ProjetoException {

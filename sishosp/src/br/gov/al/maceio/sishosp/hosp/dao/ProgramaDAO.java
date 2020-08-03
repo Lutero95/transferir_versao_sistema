@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
 
 public class ProgramaDAO {
 
@@ -56,6 +57,7 @@ public class ProgramaDAO {
             }
             
             inserirProcedimentosIhCbosEspecificos(prog, con);
+            inserirProcedimentosParaIdadesEspecificas(prog, con);
             
             con.commit();
 
@@ -106,6 +108,8 @@ public class ProgramaDAO {
             
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
             inserirProcedimentosIhCbosEspecificos(prog, con);
+            excluirProcedimentosParaIdadesEspecificas(prog.getIdPrograma(), con);
+            inserirProcedimentosParaIdadesEspecificas(prog, con);
 
             con.commit();
             retorno = true;
@@ -136,6 +140,7 @@ public class ProgramaDAO {
             stmt.execute();
             
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
+            excluirProcedimentosParaIdadesEspecificas(prog.getIdPrograma(), con);
 
             String sql2 = "delete from hosp.programa where id_programa = ?";
             stmt = con.prepareStatement(sql2);
@@ -371,6 +376,7 @@ public class ProgramaDAO {
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
                 programa.setListaGrupoFrequenciaDTO(gDao.buscaGruposComFrequecia(rs.getInt("id_programa"), con));
                 programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(rs.getInt("id_programa"), con));
+                programa.setListaProcedimentoIdadeEspecificaDTO(listarProcedimentosIdadeEspecifica(rs.getInt("id_programa"), con));
             }
 
         } catch (SQLException sqle) {
@@ -636,6 +642,48 @@ public class ProgramaDAO {
         } 
     }
     
+	private void excluirProcedimentosParaIdadesEspecificas (Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_procedimento_idade_especifica where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+    
+    private void inserirProcedimentosParaIdadesEspecificas (ProgramaBean programa, Connection conAuxiliar) 
+			throws ProjetoException, SQLException {
+
+    try {
+        String sql = "INSERT INTO hosp.programa_procedimento_idade_especifica " + 
+        		"(id_programa, id_procedimento, idade_minima, idade_maxima) VALUES(?, ?, ?, ?); ";
+        
+        PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+        for (ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaDTO : programa.getListaProcedimentoIdadeEspecificaDTO()) {
+        	stmt.setInt(1, programa.getIdPrograma());
+        	stmt.setInt(2, procedimentoIdadeEspecificaDTO.getProcedimento().getIdProc());
+        	stmt.setInt(3, procedimentoIdadeEspecificaDTO.getIdadeMinima());
+        	stmt.setInt(4, procedimentoIdadeEspecificaDTO.getIdadeMaxima());
+        	stmt.executeUpdate();				
+		}
+    } catch (SQLException sqle) {
+    	conAuxiliar.rollback();
+        throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+    } catch (Exception ex) {
+    	conAuxiliar.rollback();
+        throw new ProjetoException(ex, this.getClass().getName());
+    } 
+}
+    
     public List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -677,4 +725,42 @@ public class ProgramaDAO {
         return lista;
     }
 
+    
+    public List<ProcedimentoIdadeEspecificaDTO> listarProcedimentosIdadeEspecifica(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+    	List<ProcedimentoIdadeEspecificaDTO> lista = new ArrayList<>();
+
+        
+        String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc, ppie.idade_minima, ppie.idade_maxima " + 
+        		"	from hosp.programa_procedimento_idade_especifica ppie " + 
+        		"	join hosp.programa p on ppie.id_programa = p.id_programa " + 
+        		"	join hosp.proc pr on ppie.id_procedimento = pr.id " + 
+        		"	where p.id_programa = ? and p.cod_unidade = ?;";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaDTO = new ProcedimentoIdadeEspecificaDTO();
+            	procedimentoIdadeEspecificaDTO.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+            	procedimentoIdadeEspecificaDTO.getProcedimento().setNomeProc(rs.getString("nome_procedimento"));
+            	procedimentoIdadeEspecificaDTO.getProcedimento().setCodProc(rs.getString("codproc"));
+            	procedimentoIdadeEspecificaDTO.setIdadeMinima(rs.getInt("idade_minima"));
+            	procedimentoIdadeEspecificaDTO.setIdadeMaxima(rs.getInt("idade_maxima"));
+            	
+                lista.add(procedimentoIdadeEspecificaDTO);
+            }
+
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
 }

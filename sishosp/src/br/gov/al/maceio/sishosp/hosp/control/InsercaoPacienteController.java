@@ -164,6 +164,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void limparEquipeSelecionada() {
+    	limparTabelasProfissionais();
         this.insercao.setEquipe(new EquipeBean());
     }
 
@@ -890,6 +891,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void listarProfissionaisEquipe() throws ProjetoException {
+    	limparTabelasProfissionais();
         if (insercao.getLaudo().getId() != null) {
             if (insercao.getEquipe() != null) {
                 if (insercao.getEquipe().getCodEquipe() != null) {
@@ -953,7 +955,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         return tDao.listarTipoAtBusca(query, 1);
-
+    }
+    
+    private void limparTabelasProfissionais() {
+    	this.listaProfissionaisEquipe.clear();
+    	this.listaProfissionaisAdicionados.clear();
     }
 
     // AUTOCOMPLETE FIM
