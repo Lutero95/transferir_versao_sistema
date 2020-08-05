@@ -101,7 +101,7 @@ public class TransferenciaPacienteDAO {
                     "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
                     "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  " +
                     "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " +
-                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL) " +
                     "ORDER BY a1.id_atendimento;";
 
 
@@ -200,7 +200,7 @@ public class TransferenciaPacienteDAO {
 					+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 					+ "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  "
 					+ "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = "
-					+ "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) "
+					+ "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL) "
 					+ "ORDER BY a1.id_atendimento;";
 
 			PreparedStatement ps2 = null;
@@ -227,7 +227,7 @@ public class TransferenciaPacienteDAO {
 			String sql4 = "delete from hosp.atendimentos a\n" + 
 					" WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? \n" + 
 					" AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a.id_atendimento) =\n" + 
-					" (SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a.id_atendimento AND situacao IS NULL) \n" + 
+					" (SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a.id_atendimento AND aaa1.id_situacao_atendimento IS NULL) \n" +
 					"";
 
 			PreparedStatement ps4 = null;
@@ -422,7 +422,7 @@ public class TransferenciaPacienteDAO {
 					+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 					+ "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  "
 					+ "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = "
-					+ "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) "
+					+ "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL) "
 					+ "ORDER BY a1.id_atendimento;";
 
 			PreparedStatement ps2 = null;
