@@ -7,6 +7,7 @@ public class PacientesComInformacaoAtendimentoDTO {
 	private PacienteBean paciente;
 	private boolean presenca;
 	private Integer idCidPrimario;
+	private boolean duplicidadeEspecialidade;
 	
 	public PacientesComInformacaoAtendimentoDTO() {
 		this.paciente = new PacienteBean();
@@ -31,5 +32,13 @@ public class PacientesComInformacaoAtendimentoDTO {
 
 	public void setIdCidPrimario(Integer idCidPrimario) {
 		this.idCidPrimario = idCidPrimario;
+	}
+
+	public boolean isDuplicidadeEspecialidade() {
+		return duplicidadeEspecialidade;
+	}
+
+	public void setDuplicidadeEspecialidade(boolean duplicidadeEspecialidade) {
+		this.duplicidadeEspecialidade = duplicidadeEspecialidade;
 	}
 }

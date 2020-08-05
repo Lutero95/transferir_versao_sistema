@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,7 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.control.FuncionarioController;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
@@ -39,13 +39,13 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -120,6 +120,12 @@ public class AgendaController implements Serializable {
     private List<PacientesComInformacaoAtendimentoDTO> listaPacientesSelecionadosComInformacaoDTO;
     private PacienteDAO pacienteDAO;
     private FuncionarioBean user_session;
+    private String mensagemDialogLiberacao;
+    private boolean liberacaoEspecialidade;
+    private FuncionarioBean usuarioLiberacao;
+    private List<String> listaLiberacoes;
+    private FuncionarioBean funcionarioSelecionado;
+    private PacientesComInformacaoAtendimentoDTO pacienteSelecionado;
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -161,6 +167,7 @@ public class AgendaController implements Serializable {
         this.pacienteDAO = new PacienteDAO();
         this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
+        this.listaLiberacoes = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -179,7 +186,6 @@ public class AgendaController implements Serializable {
         agenda.getUnidade().setId(SessionUtil.recuperarDadosSessao().getUnidade().getId());
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
-        this.listaPacientesSelecionadosComInformacaoDTO.clear();
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
@@ -192,6 +198,7 @@ public class AgendaController implements Serializable {
         listaFuncionariosTarget.clear();
         listaFuncionariosSoucerFiltro.clear();
         listaFuncionariosTargetFiltro.clear();
+        listaLiberacoes.clear();
         listaFuncionariosSoucer();
     }
 
@@ -204,13 +211,22 @@ public class AgendaController implements Serializable {
         return listaFuncionariosSoucer;
     }
 
-    public void adicionarFuncionario(FuncionarioBean funcionarioSelecionado) {
-        if(!funcionarioExisteLista(funcionarioSelecionado)) {
-            this.listaFuncionariosTarget.add(funcionarioSelecionado);
-            this.listaFuncionariosTargetFiltro.add(funcionarioSelecionado);
-        }
-        this.listaFuncionariosSoucer.remove(funcionarioSelecionado);
-        this.listaFuncionariosSoucerFiltro.remove(funcionarioSelecionado);
+    public void validaFuncionarioParaAdicionar(FuncionarioBean funcionarioSelecionado) throws ProjetoException, SQLException {
+    	agenda.setDataAtendimento(dataAtendimentoC);
+    	if(camposValidosParaValidarEspecialidadePaciente(agenda.getPaciente(), agenda.getDataAtendimento()) 
+    			&& !existeEspecialidaAgendaAvulsaNaInsercaoFuncionario(agenda, funcionarioSelecionado)) {
+    		adicionarFuncionario(funcionarioSelecionado);    		
+    	}
+    }
+    
+    private void adicionarFuncionario(FuncionarioBean funcionarioSelecionado) throws ProjetoException, SQLException {
+		if (!funcionarioExisteLista(funcionarioSelecionado)) {
+			this.listaFuncionariosTarget.add(funcionarioSelecionado);
+			this.listaFuncionariosTargetFiltro.add(funcionarioSelecionado);
+			this.listaFuncionariosSoucer.remove(funcionarioSelecionado);
+			this.listaFuncionariosSoucerFiltro.remove(funcionarioSelecionado);
+			this.funcionarioSelecionado = null;
+		} 		
     }
 
     public void adicionarTodosFuncionarios() {
@@ -245,11 +261,13 @@ public class AgendaController implements Serializable {
         return false;
     }
 
-    public void removerFuncionario(FuncionarioBean funcionarioSelecionado) {
+    public void removerFuncionario(FuncionarioBean funcionarioSelecionado) throws ProjetoException, SQLException {
         this.listaFuncionariosTarget.remove(funcionarioSelecionado);
         this.listaFuncionariosTargetFiltro.remove(funcionarioSelecionado);
         this.listaFuncionariosSoucer.add(funcionarioSelecionado);
         this.listaFuncionariosSoucerFiltro.add(funcionarioSelecionado);
+        if(!existeEspecialidaAgendaAvulsaNaRemocaoProfissional(agenda, funcionarioSelecionado))
+        	this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
     }
 
     public void removerTodosFuncionarios() {
@@ -257,6 +275,7 @@ public class AgendaController implements Serializable {
         this.listaFuncionariosSoucerFiltro.addAll(this.listaFuncionariosTargetFiltro);
         this.listaFuncionariosTarget.removeAll(this.listaFuncionariosTargetFiltro);
         this.listaFuncionariosTargetFiltro.clear();
+        this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
     }
 
     public void agendaAvulsaInit() throws ProjetoException, ParseException {
@@ -860,6 +879,7 @@ public class AgendaController implements Serializable {
 
         insereIdCidPrimarioEmAgendaAvulsa();
 
+        limpaDadosDialogLiberacao();
         boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
         boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
 
@@ -892,8 +912,11 @@ public class AgendaController implements Serializable {
         Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda);
 
         if((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (existeDuplicidade)) {
+        	mensagemDialogLiberacao = "Você está tentando realizar um agendamento avulso que já possui cadastro nesta \n" + 
+        							  "data para este programa, grupo e tipo de atendimento! \n" + 
+        							  "Digite o CPF e senha para liberação!";
+        	this.liberacaoEspecialidade = false;
             JSFUtil.abrirDialog("dlgLiberacao");
-            limpaDadosDialogLiberacao();
         }
 
         return existeDuplicidade;
@@ -902,14 +925,44 @@ public class AgendaController implements Serializable {
     public void validarSenhaLiberacaoAgendaAvulsa() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-        FuncionarioBean funcionarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+        usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
 
-        if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
-            gravarAgendaAvulsa(funcionarioLiberacao);
+        if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+            gravarAgendaAvulsa(usuarioLiberacao);
             JSFUtil.fecharDialog("dlgLiberacao");
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+    
+    public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaPaciente() 
+    		throws ProjetoException, SQLException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+        
+        if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+        	if(!listaLiberacoes.contains(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla()))        	
+        		listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
+        	
+        	adicionarFuncionario(this.funcionarioSelecionado);
+        	JSFUtil.fecharDialog("dlgLiberacao");
+        }
+    }
+    
+    public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional() 
+    		throws ProjetoException, SQLException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+        
+        if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+        	listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
+        	adicionarPacienteSelecionado(this.pacienteSelecionado);
+        	JSFUtil.fecharDialog("dlgLiberacao");
         }
     }
 
@@ -1017,14 +1070,15 @@ public class AgendaController implements Serializable {
             return;
         }
 
-        if (this.listaFuncionariosTarget.size() == 0) {
+        if (this.listaFuncionariosTarget.isEmpty()) {
             JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
             return;
         }
 
         boolean cadastrou = false;
 
-        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao);
+        listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
+        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao, listaLiberacoes);
 
         if (cadastrou) {
             limparDados();
@@ -1040,6 +1094,7 @@ public class AgendaController implements Serializable {
         if(existemPacientesAdicionados() /*&& todosPacienteSelecionadoSaoAtivos()*/) {
             insereIdCidPrimarioEmPacientesSelecionados();
 
+            limpaDadosDialogLiberacao();
             boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
             boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
 
@@ -1053,8 +1108,9 @@ public class AgendaController implements Serializable {
 
     private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
         boolean cadastrou = false;
-        cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao);
-
+        listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
+        cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoes);
+        
         if (cadastrou) {
             limparDados();
             listarPacientes();
@@ -1104,9 +1160,19 @@ public class AgendaController implements Serializable {
     }
 
     public void listarPacientes() throws ProjetoException {
+        this.listaPacientesSelecionadosComInformacaoDTO.clear();
         this.listaPacientesComInformacaoDTOFiltro.clear();
         this.listaPacientesComInformacaoDTO = pacienteDAO.listaPacientesComInformacaoDTO();
         this.listaPacientesComInformacaoDTOFiltro.addAll(listaPacientesComInformacaoDTO);
+        this.listaLiberacoes.clear();
+    }
+    
+    public void validaPacienteParaAdicionar(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
+    	agenda.setDataAtendimento(dataAtendimentoC);
+    	if(camposValidosParaValidarEspecialidadeProfissional(agenda.getProfissional(), agenda.getDataAtendimento()) 
+    			&& !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {
+    		adicionarPacienteSelecionado(pacienteSelecionado);
+    	}
     }
 
     public void adicionarPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
@@ -1124,7 +1190,7 @@ public class AgendaController implements Serializable {
         return false;
     }
 
-    public void removerPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
+    public void removerPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
 
         int tamanhoLista = listaPacientesSelecionadosComInformacaoDTO.size();
 
@@ -1132,11 +1198,13 @@ public class AgendaController implements Serializable {
             if(listaPacientesSelecionadosComInformacaoDTO.get(i).getPaciente().getId_paciente()
                     .equals(pacienteSelecionado.getPaciente().getId_paciente())) {
                 this.listaPacientesSelecionadosComInformacaoDTO.remove(i);
+                this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
                 break;
             }
         }
+        
     }
-
+    
     private void insereIdCidPrimarioEmPacientesSelecionados() throws ProjetoException {
         for(int i = 0; i < listaPacientesSelecionadosComInformacaoDTO.size(); i++) {
             Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(),
@@ -1468,8 +1536,122 @@ public class AgendaController implements Serializable {
         rowBean = new AgendaBean();
         JSFUtil.fecharDialog("dialogCancelamento");
     }
+    
+    private boolean camposValidosParaValidarEspecialidadePaciente(PacienteBean paciente, Date dataAtende) {
+    	boolean valido = true;
+    	valido = validaPaciente(paciente, valido);    	
+    	valido = validaData(dataAtende, valido);
+    	
+    	return valido;
+    }
+    
+    private boolean camposValidosParaValidarEspecialidadeProfissional(FuncionarioBean funcionario, Date dataAtende) {
+    	boolean valido = true;
+    	valido = validaProfissional(funcionario, valido); 
+    	valido = validaData(dataAtende, valido);
+    	
+    	return valido;
+    }
+    
+	private boolean validaPaciente(PacienteBean paciente, boolean valido) {
+		if(VerificadorUtil.verificarSeObjetoNulo(paciente) 
+    			|| VerificadorUtil.verificarSeObjetoNuloOuZero(paciente.getId_paciente())) {
+    		JSFUtil.adicionarMensagemErro("Adicione um paciente", "Erro");
+    		valido = false; 
+    	}
+		return valido;
+	}
+	
+	private boolean validaProfissional(FuncionarioBean funcionario, boolean valido) {
+		if(VerificadorUtil.verificarSeObjetoNulo(funcionario) 
+    			|| VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getId())) {
+    		JSFUtil.adicionarMensagemErro("Adicione um profissional", "Erro");
+    		valido = false;
+    	}
+		return valido;
+	}
 
-
+	private boolean validaData(Date dataAtende, boolean valido) {
+		if(VerificadorUtil.verificarSeObjetoNulo(dataAtende)) {
+    		JSFUtil.adicionarMensagemErro("Adicione a data", "Erro");
+    		valido = false;
+    	}
+		return valido;
+	}
+    
+    private boolean existeEspecialidaAgendaAvulsaNaInsercaoFuncionario(AgendaBean agenda, FuncionarioBean funcionario)
+    		throws ProjetoException, SQLException {
+    	this.liberacaoEspecialidade = false;
+    	if(aDao.verificaExisteEspecialidadeNestaData
+    			(agenda.getPaciente().getId_paciente(), agenda.getDataAtendimento(), funcionario.getEspecialidade().getCodEspecialidade())) {
+    		mensagemDialogLiberacao = "Não é possível adicionar o profissional "+funcionario.getNome()+ 
+    								  ".\n Já existe um agendamento nessa data na mesma especialidade para o paciente";
+    		this.liberacaoEspecialidade = true;
+    	}
+    	
+    	else {
+    		for (FuncionarioBean funcionarioAdicionado : this.listaFuncionariosTarget) {
+				if(funcionarioAdicionado.getEspecialidade().getCodEspecialidade().
+						equals(funcionario.getEspecialidade().getCodEspecialidade())) {
+		    		mensagemDialogLiberacao = "Não é possível adicionar o profissional "+funcionario.getNome()+ 
+		    								  "\n Já existe um agendamento nessa data na mesma especialidade para o paciente";
+		    		this.liberacaoEspecialidade = true;
+				}
+			} 
+    	}
+    	
+    	if(this.liberacaoEspecialidade) {
+    		funcionarioSelecionado = funcionario;
+        	limpaDadosDialogLiberacao();
+    		JSFUtil.abrirDialog("dlgLiberacao");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private boolean existeEspecialidaAgendaAvulsaNaInsercaoPaciente(AgendaBean agenda, PacientesComInformacaoAtendimentoDTO paciente)
+    		throws ProjetoException, SQLException {
+    	this.liberacaoEspecialidade = false;
+    	if(aDao.verificaExisteEspecialidadeNestaData
+    			(paciente.getPaciente().getId_paciente(), agenda.getDataAtendimento(), agenda.getProfissional().getEspecialidade().getCodEspecialidade())) {
+    		mensagemDialogLiberacao = "Não é possível adicionar o paciente "+paciente.getPaciente().getNome()+ 
+    								  ".\n Já existe um agendamento nessa data na mesma especialidade para este paciente";
+    		this.liberacaoEspecialidade = true;
+    	}
+    	
+    	if(this.liberacaoEspecialidade) {
+    		pacienteSelecionado = paciente;
+    		pacienteSelecionado.setDuplicidadeEspecialidade(true);
+        	limpaDadosDialogLiberacao();
+    		JSFUtil.abrirDialog("dlgLiberacao");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private boolean existeEspecialidaAgendaAvulsaNaRemocaoProfissional(AgendaBean agenda, FuncionarioBean funcionario)
+    		throws ProjetoException, SQLException {
+    	
+		for (FuncionarioBean funcionarioAdicionado : this.listaFuncionariosTarget) {
+			if (funcionarioAdicionado.getEspecialidade().getCodEspecialidade()
+					.equals(funcionario.getEspecialidade().getCodEspecialidade())) {
+				return true;
+			}
+		} 
+    	
+    	return false;
+    }
+    
+    //METODOS CRIADOS PARA SUPLIR O NÃO PROCESSAMENTO DA VARIAVEL NO BOTÃO DE ADICIONAR PACIENTE/PROFISSIONAL DAS AGENDAS AVULSAS 
+    public void setaDataAtendeParaValidacaoPaciente(Date data) throws ProjetoException {
+    	this.dataAtendimentoC = data;
+    	carregaListaFuncionariosDual();
+    }
+    
+    public void setaDataAtendeParaValidacaoProfissional(Date data) throws ProjetoException {
+    	this.dataAtendimentoC = data;
+    	listarPacientes();
+    }
 
     public ProgramaBean getProgramaSelecionado() {
         return programaSelecionado;
@@ -1809,4 +1991,20 @@ public class AgendaController implements Serializable {
             List<PacientesComInformacaoAtendimentoDTO> listaPacientesSelecionadosComInformacaoDTO) {
         this.listaPacientesSelecionadosComInformacaoDTO = listaPacientesSelecionadosComInformacaoDTO;
     }
+
+	public String getMensagemDialogLiberacao() {
+		return mensagemDialogLiberacao;
+	}
+
+	public void setMensagemDialogLiberacao(String mensagemDialogLiberacao) {
+		this.mensagemDialogLiberacao = mensagemDialogLiberacao;
+	}
+
+	public boolean isLiberacaoEspecialidade() {
+		return liberacaoEspecialidade;
+	}
+
+	public void setLiberacaoEspecialidade(boolean liberacaoEspecialidade) {
+		this.liberacaoEspecialidade = liberacaoEspecialidade;
+	}
 }

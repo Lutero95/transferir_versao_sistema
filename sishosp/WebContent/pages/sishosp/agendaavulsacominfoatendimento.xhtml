@@ -133,7 +133,12 @@
 										completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.nome}"/>
+										itemLabel="#{theme.nome}">
+										
+									<p:ajax event="itemSelect"
+										update=":formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+										global="false" listener="#{AgendaController.listarPacientes()}"/>
+									</p:autoComplete>
 
 									<p:commandButton id="btBusProf" icon="ui-icon-search"
 										immediate="true"
@@ -148,6 +153,55 @@
 
 							<b:inputTextarea id="obs" rows="1" class="select-agendaEquipe2"
 								value="#{AgendaController.agenda.observacao}" autoResize="false"/>
+						</b:column>
+					</b:row>
+					
+										<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
+						<b:column span="1" class="label-position btn-radio-table">
+							<br />
+							<b:label value="Turno" severity="info" />
+							<p:selectOneRadio  value="#{AgendaController.agenda.turno}"
+								required="true" requiredMessage="Turno: Campo obrigatório!"
+							 	style="margin-left:-15px;margin-top:10px">
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</p:selectOneRadio>
+						</b:column>
+					</b:row>
+
+					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
+						<p:outputPanel>
+							<b:column span="3" class="label-position">
+								<br />
+								<b:label value="Horário:" severity="info" class="fire-label" />
+
+								<b:selectOneMenu class="select-agendaEquipe2" required="true"
+									requiredMessage="Horário: Campo obrigatório!"
+									value="#{AgendaController.agenda.horario}">
+									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+									<f:selectItems value="#{AgendaController.listaHorarios}"/>
+								</b:selectOneMenu>
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+
+					<b:row>
+						<b:column span="3" class="label-position data-size new-comple1">
+							<b:label value="Data" severity="info" />
+							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+										showOn="button" size="7" class="select-agendaEquipe2"
+										required="true" requiredMessage="Data: Campo obrigatório!"
+										rendered="#{AgendaController.tipoData == 'U'}"
+										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+										locale="pt" style="margin-left:10px;">
+										
+									<p:ajax event="blur" update=":formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+										listener="#{AgendaController.setaDataAtendeParaValidacaoProfissional(AgendaController.agenda.dataAtendimento)}"/>
+									<p:ajax event="dateSelect" update=":formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+										listener="#{AgendaController.setaDataAtendeParaValidacaoProfissional(AgendaController.agenda.dataAtendimento)}"/>
+				
+							</p:calendar>
+
 						</b:column>
 					</b:row>
 					
@@ -186,8 +240,8 @@
 										<p:column headerText="Ação" width="10%">
 											<div align="center">
 												<p:commandButton
-													action="#{AgendaController.adicionarPacienteSelecionado(pacie)}"
-													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina"
+													action="#{AgendaController.validaPacienteParaAdicionar(pacie)}"
+													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina, :frmLiberacao"
 													process="@this :formAgendaMedica:tabelaPacientesSelecionados"
 													icon="fa fa-fw fa-plus" title="Adicionar paciente"
 													immediate="true" class="new-btn-acao-table acao-editar"/>
@@ -226,50 +280,7 @@
 								</div>
 							</div>
 						</b:column>
-					</b:row>
-					
-					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
-						<b:column span="1" class="label-position btn-radio-table">
-							<br />
-							<b:label value="Turno" severity="info" />
-							<p:selectOneRadio  value="#{AgendaController.agenda.turno}"
-								required="true" requiredMessage="Turno: Campo obrigatório!"
-							 	style="margin-left:-15px;margin-top:10px">
-								<f:selectItem itemLabel="Manhã" itemValue="M" />
-								<f:selectItem itemLabel="Tarde" itemValue="T" />
-							</p:selectOneRadio>
-						</b:column>
-					</b:row>
-
-					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<br />
-								<b:label value="Horário:" severity="info" class="fire-label" />
-
-								<b:selectOneMenu class="select-agendaEquipe2" required="true"
-									requiredMessage="Horário: Campo obrigatório!"
-									value="#{AgendaController.agenda.horario}">
-									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-									<f:selectItems value="#{AgendaController.listaHorarios}"/>
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-						<b:column span="3" class="label-position data-size new-comple1">
-							<b:label value="Data" severity="info" />
-							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-										showOn="button" size="7" class="select-agendaEquipe2"
-										required="true" requiredMessage="Data: Campo obrigatório!"
-										rendered="#{AgendaController.tipoData == 'U'}"
-										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
-										locale="pt" style="margin-left:10px;">
-							</p:calendar>
-
-						</b:column>
-					</b:row>
+					</b:row>					
 
 					<div align="center">
 						<p:commandButton value="Gravar" look="success" size="sm"
@@ -445,8 +456,10 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar" update=":formAgendaMedica:outProf"
-							oncomplete="PF('dlgConsuProf').hide();">
+							class="new-btn-acao-table acao-editar" 
+							update=":formAgendaMedica:outProf :formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+							oncomplete="PF('dlgConsuProf').hide();"
+							action="#{AgendaController.listarPacientes()}">
 
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AgendaController.agenda.profissional}" />
@@ -460,9 +473,7 @@
 			modal="true" width="400" responsive="true" resizable="false">
 			<h:form id="frmLiberacao">
 				<div class="alert alert-warning" role="alert">
-					Você está tentando realizar agendamento(s) avulso(s) que possui(em) cadastro nesta 
-					data para este programa, grupo e tipo de atendimento!
-					Digite o CPF e senha para liberação!
+					<h:outputLabel value="#{AgendaController.mensagemDialogLiberacao}"/>
 				</div>
 				<br />
 				<div align="center">
@@ -483,8 +494,15 @@
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendamentosInformandoAtendimento()}" 
-						update="msgPagina :formAgendaMedica"/>
+						update="msgPagina :formAgendaMedica"
+						rendered="#{AgendaController.liberacaoEspecialidade == false}"/>
 						
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AgendaController.validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional()}" 
+						update="msgPagina :formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+						rendered="#{AgendaController.liberacaoEspecialidade == true}"/>
+							
 					<p:commandButton value="Cancelar" look="cancel" size="sm"
 						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
 				</div>
