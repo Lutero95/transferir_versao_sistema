@@ -849,26 +849,24 @@ public class AgendaController implements Serializable {
 
     public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
-        //	if(pacienteEstaAtivo()) {:TODO PARAMETRIZAR ISSO
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+        if(validarPacienteAtivo()) {
 
-        if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
-                && VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
-            zerarValoresAgendaMaximoIhQuantidade();
+			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
+					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
+				zerarValoresAgendaMaximoIhQuantidade();
+			}
+
+			insereIdCidPrimarioEmAgendaAvulsa();
+
+			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
+			boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
+
+			if ((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
+					|| !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
+					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
+				gravarAgendaAvulsa(new FuncionarioBean());
+			}
         }
-
-        insereIdCidPrimarioEmAgendaAvulsa();
-
-        boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
-        boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
-
-        if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
-                || !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
-                || !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
-            gravarAgendaAvulsa(new FuncionarioBean());
-        }
-        //}
     }
 
     private void insereIdCidPrimarioEmAgendaAvulsa() throws ProjetoException {
@@ -876,16 +874,19 @@ public class AgendaController implements Serializable {
         this.agenda.setIdCidPrimario(idCid);
     }
 
-    private boolean pacienteEstaAtivo() throws ProjetoException {
-        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+    private boolean validarPacienteAtivo() throws ProjetoException {
+    	
+    	if(user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(
+					agenda.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(),
+					agenda.getGrupo().getIdGrupo());
 
-        Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao
-                (agenda.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(), agenda.getGrupo().getIdGrupo());
-
-        if(!pacienteAtivo)
-            JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo neste programa e grupo", "");
-
-        return pacienteAtivo;
+			if (!pacienteAtivo)
+				JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo neste programa e grupo", "");
+			return pacienteAtivo;
+        }
+    	return true;
     }
 
     private boolean existeDuplicidadeAgendaAvulsa() throws ProjetoException {
@@ -1037,7 +1038,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
-        if(existemPacientesAdicionados() /*&& todosPacienteSelecionadoSaoAtivos()*/) {
+        if(existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
             insereIdCidPrimarioEmPacientesSelecionados();
 
             boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
@@ -1083,14 +1084,18 @@ public class AgendaController implements Serializable {
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean retorno = true;
-        for (PacientesComInformacaoAtendimentoDTO pacienteDTO : listaPacientesSelecionadosComInformacaoDTO) {
-            Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao
-                    (pacienteDTO.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(), agenda.getGrupo().getIdGrupo());
+        if(user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
+			for (PacientesComInformacaoAtendimentoDTO pacienteDTO : listaPacientesSelecionadosComInformacaoDTO) {
+				Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(
+						pacienteDTO.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(),
+						agenda.getGrupo().getIdGrupo());
 
-            if(!pacienteAtivo) {
-                JSFUtil.adicionarMensagemErro("Paciente "+pacienteDTO.getPaciente().getNome()+" não está ativo neste programa e grupo", "");
-                retorno = false;
-            }
+				if (!pacienteAtivo) {
+					JSFUtil.adicionarMensagemErro("Paciente " + pacienteDTO.getPaciente().getNome()
+							+ " não está ativo neste programa e grupo", "");
+					retorno = false;
+				}
+			}
         }
         return retorno;
     }

@@ -142,9 +142,12 @@ public class FuncionarioDAO {
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
 				+ " coalesce(necessita_presenca_para_evolucao,'N') necessita_presenca_para_evolucao, "
 				+ " coalesce(pts_mostra_obs_gerais_curto, false) pts_mostra_obs_gerais_curto, "
-				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo,  p.programa_ortese_protese,progortese.descprograma descprogramaortese, p.grupo_ortese_protese, grupoortese.descgrupo descgrupoortese,"
-				+ " p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
-				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade  "
+				+ " coalesce(pts_mostra_obs_gerais_medio,false) pts_mostra_obs_gerais_medio, coalesce(pts_mostra_obs_gerais_longo,false) pts_mostra_obs_gerais_longo, "
+				+ " us.codprocedimentopadrao, proc.nome descprocedimentopadrao, proc.validade_laudo,  p.programa_ortese_protese,progortese.descprograma descprogramaortese, "
+				+ " p.grupo_ortese_protese, grupoortese.descgrupo descgrupoortese, p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, "
+				+ " p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
+				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
+				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo  "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -195,6 +198,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setVersaoSistema(rs.getString("versao_sistema"));
 				funcionario.getUnidade().getParametro().setUsaHorarioLimiteParaAcesso(rs.getBoolean("horario_limite_acesso"));
 				funcionario.getUnidade().getParametro().setPermiteAgendamentoDuplicidade(rs.getBoolean("permite_agendamento_duplicidade"));
+				funcionario.getUnidade().getParametro().setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
 
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
