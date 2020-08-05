@@ -2946,7 +2946,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
                 resultado = true;
             }
 
@@ -2962,6 +2962,39 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
         return resultado;
+    }
+    
+    public Boolean verificarSeAtendimentoFoiEvoluido(Integer idAtendimento) throws ProjetoException {
+
+        Boolean existe = false;
+
+        String sql = "SELECT EXISTS (SELECT id_atendimentos1 FROM hosp.atendimentos1 a1 " + 
+        		"WHERE a1.id_situacao_atendimento is not null AND a1.id_atendimento = ? and coalesce(a1.excluido,'N' )='N') existe;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idAtendimento);
+
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                existe = rs.getBoolean("existe");
+            }
+
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
     }
 
     public boolean cancelarAgendamento(Integer idAgenda) throws ProjetoException {
