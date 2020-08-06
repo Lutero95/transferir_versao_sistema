@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -126,6 +127,7 @@ public class AgendaController implements Serializable {
     private List<String> listaLiberacoes;
     private FuncionarioBean funcionarioSelecionado;
     private PacientesComInformacaoAtendimentoDTO pacienteSelecionado;
+    private List<Long> listaIdFuncionariosComDuplicidadeEspecialidade;
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -168,6 +170,8 @@ public class AgendaController implements Serializable {
         this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
         this.listaLiberacoes = new ArrayList<>();
+        this.usuarioLiberacao = new FuncionarioBean();
+        this.listaIdFuncionariosComDuplicidadeEspecialidade = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -266,8 +270,11 @@ public class AgendaController implements Serializable {
         this.listaFuncionariosTargetFiltro.remove(funcionarioSelecionado);
         this.listaFuncionariosSoucer.add(funcionarioSelecionado);
         this.listaFuncionariosSoucerFiltro.add(funcionarioSelecionado);
-        if(!existeEspecialidaAgendaAvulsaNaRemocaoProfissional(agenda, funcionarioSelecionado))
+        
+        if(listaIdFuncionariosComDuplicidadeEspecialidade.contains(funcionarioSelecionado.getId()))
         	this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
+        if(listaLiberacoes.isEmpty())
+            usuarioLiberacao = new FuncionarioBean();
     }
 
     public void removerTodosFuncionarios() {
@@ -275,7 +282,9 @@ public class AgendaController implements Serializable {
         this.listaFuncionariosSoucerFiltro.addAll(this.listaFuncionariosTargetFiltro);
         this.listaFuncionariosTarget.removeAll(this.listaFuncionariosTargetFiltro);
         this.listaFuncionariosTargetFiltro.clear();
-        this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
+
+        listaLiberacoes.clear();
+        usuarioLiberacao = new FuncionarioBean();
     }
 
     public void agendaAvulsaInit() throws ProjetoException, ParseException {
@@ -886,7 +895,7 @@ public class AgendaController implements Serializable {
         if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
                 || !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
                 || !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
-            gravarAgendaAvulsa(new FuncionarioBean());
+        		gravarAgendaAvulsa(usuarioLiberacao);
         }
         //}
     }
@@ -929,6 +938,7 @@ public class AgendaController implements Serializable {
                 ValidacaoSenha.LIBERACAO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+        	listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
             gravarAgendaAvulsa(usuarioLiberacao);
             JSFUtil.fecharDialog("dlgLiberacao");
         } else {
@@ -943,14 +953,17 @@ public class AgendaController implements Serializable {
         usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
         
-        if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-        	if(!listaLiberacoes.contains(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla()))        	
-        		listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
-        	
-        	adicionarFuncionario(this.funcionarioSelecionado);
+        adicionarLiberacaoEspecialidade();
+        listaIdFuncionariosComDuplicidadeEspecialidade.add(this.funcionarioSelecionado.getId());
+    	adicionarFuncionario(this.funcionarioSelecionado);
+    }
+
+	private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
+		if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+        	listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
         	JSFUtil.fecharDialog("dlgLiberacao");
         }
-    }
+	}
     
     public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional() 
     		throws ProjetoException, SQLException {
@@ -958,12 +971,8 @@ public class AgendaController implements Serializable {
 
         usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
-        
-        if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-        	listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
-        	adicionarPacienteSelecionado(this.pacienteSelecionado);
-        	JSFUtil.fecharDialog("dlgLiberacao");
-        }
+        adicionarLiberacaoEspecialidade();
+        adicionarPacienteSelecionado(pacienteSelecionado);
     }
 
     private void limpaDadosDialogLiberacao() {
@@ -1076,9 +1085,10 @@ public class AgendaController implements Serializable {
         }
 
         boolean cadastrou = false;
+        
+        List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
 
-        listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
-        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao, listaLiberacoes);
+        cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao, listaLiberacoesFiltradas);
 
         if (cadastrou) {
             limparDados();
@@ -1089,6 +1099,15 @@ public class AgendaController implements Serializable {
         }
         limparDados();
     }
+
+	private List<String> retornaLiberacoesNaoRepetidas() {
+		List<String> listaLiberacoesFiltradas = new ArrayList<>();
+        for (String liberacao : listaLiberacoes) {
+        	if(!listaLiberacoesFiltradas.contains(liberacao))
+        		listaLiberacoesFiltradas.add(liberacao);
+		}
+		return listaLiberacoesFiltradas;
+	}
 
     public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
         if(existemPacientesAdicionados() /*&& todosPacienteSelecionadoSaoAtivos()*/) {
@@ -1101,15 +1120,16 @@ public class AgendaController implements Serializable {
             if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
                     || !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
                     || !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
-                gravarAgendamentosInformandoAtendimento(new FuncionarioBean());
+                gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
             }
         }
     }
 
     private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
         boolean cadastrou = false;
-        listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
-        cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoes);
+        
+        List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
+        cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoesFiltradas);
         
         if (cadastrou) {
             limparDados();
@@ -1124,11 +1144,12 @@ public class AgendaController implements Serializable {
     public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-        FuncionarioBean funcionarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+        usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
 
-        if (!VerificadorUtil.verificarSeObjetoNulo(funcionarioLiberacao)) {
-            gravarAgendamentosInformandoAtendimento(funcionarioLiberacao);
+        if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+        	listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
+            gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
             JSFUtil.fecharDialog("dlgLiberacao");
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
@@ -1202,6 +1223,9 @@ public class AgendaController implements Serializable {
                 break;
             }
         }
+        
+        if(this.listaLiberacoes.isEmpty())
+        	usuarioLiberacao = new FuncionarioBean();
         
     }
     
@@ -1626,19 +1650,6 @@ public class AgendaController implements Serializable {
     		JSFUtil.abrirDialog("dlgLiberacao");
     		return true;
     	}
-    	return false;
-    }
-    
-    private boolean existeEspecialidaAgendaAvulsaNaRemocaoProfissional(AgendaBean agenda, FuncionarioBean funcionario)
-    		throws ProjetoException, SQLException {
-    	
-		for (FuncionarioBean funcionarioAdicionado : this.listaFuncionariosTarget) {
-			if (funcionarioAdicionado.getEspecialidade().getCodEspecialidade()
-					.equals(funcionario.getEspecialidade().getCodEspecialidade())) {
-				return true;
-			}
-		} 
-    	
     	return false;
     }
     

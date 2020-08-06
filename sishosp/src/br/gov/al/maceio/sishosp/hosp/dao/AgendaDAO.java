@@ -296,7 +296,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             }
 
-            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+            if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
             	for (String motivo : listaMotivosLiberacao) {
             		gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);					
 				}
@@ -423,14 +424,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
 				ps.executeUpdate();
 
-				boolean inseriuUmaDuplicidadeEspecialidade = false;
-				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+				if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
+						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+					
 					for (String motivo : listaMotivosLiberacao) {
 						if(pacienteComInformacaoAtendimentoDTO.isDuplicidadeEspecialidade() 
-								&& motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())
-								&& !inseriuUmaDuplicidadeEspecialidade) {
+								&& motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
 							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
-							inseriuUmaDuplicidadeEspecialidade = true;
 						}
 						else if (motivo.equals(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla()))
 							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);	
