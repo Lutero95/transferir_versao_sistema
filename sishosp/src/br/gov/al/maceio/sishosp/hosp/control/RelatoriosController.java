@@ -30,6 +30,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
@@ -92,6 +93,7 @@ public class RelatoriosController implements Serializable {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 	private GrupoDAO grupoDao;
+	private List<Integer> listaAnos;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -116,6 +118,7 @@ public class RelatoriosController implements Serializable {
 		this.turnos = new ArrayList<String>();
 		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
 		this.grupoDao = new GrupoDAO();
+		this.listaAnos = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -153,8 +156,9 @@ public class RelatoriosController implements Serializable {
 		atributoGenerico2 = "P";
 	}
 
-	public void preparaRelFrequencia() {
+	public void preparaRelFrequencia() throws ProjetoException {
 		atributoGenerico1 = "P";
+		listarAnosAtendimentos();
 	}
 
 	public void preparaRelatorioAgendamentos() {
@@ -321,6 +325,8 @@ public class RelatoriosController implements Serializable {
 				relatorio = caminho + "frequencia.jasper";
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("chave", randomico);
+				map.put("ano", this.ano);
+				map.put("mes", this.mes);
 				map.put("codunidade", user_session.getUnidade().getId());
 				if (pacienteInstituicao.getPrograma() != null)
 					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
@@ -339,6 +345,10 @@ public class RelatoriosController implements Serializable {
 
 			}
 		}
+	}
+	
+	private void listarAnosAtendimentos() throws ProjetoException {
+		this.listaAnos = new AtendimentoDAO().listaAnosDeAtendimentos();
 	}
 	
 	private boolean camposvalidos(ProgramaBean programa, GrupoBean grupo) {
@@ -1471,5 +1481,13 @@ public class RelatoriosController implements Serializable {
 	public void setListaMunicipiosDePacienteAtivosSelecionados(
 			List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados) {
 		this.listaMunicipiosDePacienteAtivosSelecionados = listaMunicipiosDePacienteAtivosSelecionados;
+	}
+
+	public List<Integer> getListaAnos() {
+		return listaAnos;
+	}
+
+	public void setListaAnos(List<Integer> listaAnos) {
+		this.listaAnos = listaAnos;
 	}
 }
