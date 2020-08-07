@@ -85,7 +85,7 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS e
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5,
-programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade
+programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade, programa.id_programa, grupo.id_grupo
 FROM hosp.paciente_instituicao pi 
 left join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente =coalesce(l.codpaciente, pi.id_paciente) 
@@ -332,6 +332,8 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
 	<field name="cidade" class="java.lang.String"/>
+	<field name="id_programa" class="java.lang.Integer"/>
+	<field name="id_grupo" class="java.lang.Integer"/>
 	<group name="grpfreq" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{codpacienteinstituicao}]]></groupExpression>
 		<groupHeader>
@@ -862,7 +864,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					</graphicElement>
 				</line>
 				<staticText>
-					<reportElement x="279" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
+					<reportElement x="280" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
 			</band>
@@ -908,10 +910,10 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<subreportParameterExpression><![CDATA[$P{chave}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="codprograma">
-					<subreportParameterExpression><![CDATA[$P{codprograma}]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[$F{id_programa}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="codgrupo">
-					<subreportParameterExpression><![CDATA[$P{codgrupo}]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[$F{id_grupo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="ano">
 					<subreportParameterExpression><![CDATA[$P{ano}]]></subreportParameterExpression>
@@ -920,7 +922,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="codpacienteinstituicao">
-					<subreportParameterExpression><![CDATA[$P{codpacienteinstituicao}]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[$F{codpacienteinstituicao}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"frequencia_detalhe.jasper"]]></subreportExpression>

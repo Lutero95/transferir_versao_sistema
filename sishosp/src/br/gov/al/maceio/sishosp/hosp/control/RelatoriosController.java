@@ -337,7 +337,7 @@ public class RelatoriosController implements Serializable {
 				if (pacienteInstituicao.getId() != null)
 					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
 
-				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)  + File.separator);
 				this.executeReport(relatorio, map, "relatorio.pdf");
 				// this.executeReportNewTab(relatorio, "frequencia.pdf",
 //                    map);
