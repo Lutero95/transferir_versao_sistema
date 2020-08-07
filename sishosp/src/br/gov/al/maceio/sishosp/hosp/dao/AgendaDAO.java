@@ -203,7 +203,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return retorno;
     }
 
-    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais, FuncionarioBean usuarioLiberacao)
+    public boolean gravarAgendaAvulsa(AgendaBean agenda, List<FuncionarioBean> listaProfissionais, 
+    		FuncionarioBean usuarioLiberacao, List<String> listaMotivosLiberacao)
             throws ProjetoException {
 
         Boolean retorno = false;
@@ -298,8 +299,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             }
 
-            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
-                gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao);
+            if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+            	for (String motivo : listaMotivosLiberacao) {
+            		gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);					
+				}
             }
 
             con.commit();
@@ -320,8 +324,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
     
     
-    public boolean gravarAgendamentosInformandoAtendimento
-    	(AgendaBean agenda, List<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoAtendimentoDTO, FuncionarioBean usuarioLiberacao)
+    public boolean gravarAgendamentosInformandoAtendimento(AgendaBean agenda, List<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoAtendimentoDTO,
+    		FuncionarioBean usuarioLiberacao, List<String> listaMotivosLiberacao)
             throws ProjetoException {
 
 			
@@ -423,8 +427,17 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
 				ps.executeUpdate();
 
-				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
-					gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao);
+				if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
+						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+					
+					for (String motivo : listaMotivosLiberacao) {
+						if(pacienteComInformacaoAtendimentoDTO.isDuplicidadeEspecialidade() 
+								&& motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
+							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
+						}
+						else if (motivo.equals(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla()))
+							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);	
+					}
 				}
         	}
             con.commit();
@@ -446,14 +459,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     
 
     private void gravarLiberacaoDuplicidadeAgendaAvulsa(Connection conexao, Integer idAtendimento,
-                                                        FuncionarioBean usuarioLiberacao) throws SQLException, ProjetoException {
+                                                        FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
 
         String sql = "INSERT INTO hosp.liberacoes "
                 + "(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade) "
                 + "VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?); ";
         try {
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setString(1, MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
+            stm.setString(1, motivoLiberacao);
             stm.setLong(2, usuarioLiberacao.getId());
             stm.setInt(3, idAtendimento);
             stm.setInt(4, usuarioLiberacao.getUnidade().getId());
@@ -3164,4 +3177,43 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return idProcedimento;
     }
 
+    
+    public Boolean verificaExisteEspecialidadeNestaData (Integer idPaciente, Date dataAtende, Integer idEspecialidade)
+            throws ProjetoException, SQLException {
+
+        Boolean existe = true;
+
+        String sql = "select exists (select f.codespecialidade, a.dtaatende from hosp.atendimentos a " + 
+        		"		join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento " + 
+        		"		join hosp.pacientes p on a.codpaciente = p.id_paciente " + 
+        		"		join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
+        		"		join hosp.especialidade e on f.codespecialidade = e.id_especialidade " + 
+        		"		where p.id_paciente = ? and a.dtaatende = ? and f.codespecialidade = ?) existe; ";
+
+        try {
+        	con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPaciente);
+            stm.setDate(2, new java.sql.Date(dataAtende.getTime()));
+            stm.setInt(3, idEspecialidade);
+
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                existe = rs.getBoolean("existe");
+            }
+
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
+    }
 }

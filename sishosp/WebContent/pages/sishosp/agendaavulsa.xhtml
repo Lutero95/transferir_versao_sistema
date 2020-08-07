@@ -44,8 +44,9 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
-										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, "
-										global="false" />
+										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, 
+										:formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+										global="false" listener="#{AgendaController.carregaListaFuncionariosDual()}"/>
 
 								</p:autoComplete>
 
@@ -215,15 +216,19 @@
 					<b:row>
 
 						<b:column span="3" class="label-position data-size new-comple1">
-							<b:label value="Data" severity="info" />
-							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-										showOn="button" size="5" class="select-agendaEquipe2"
-										required="true" requiredMessage="Data: Campo obrigatório!"
-										rendered="#{AgendaController.tipoData == 'U'}"
-										value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
-										locale="pt" style="margin-left:10px;">
-							</p:calendar>
-
+								<b:label value="Data" severity="info" />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="5" class="select-agendaEquipe2"
+									required="true" requiredMessage="Data: Campo obrigatório!"
+									rendered="#{AgendaController.tipoData == 'U'}" 
+									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+									locale="pt" style="margin-left:10px;">
+									
+									<p:ajax event="blur" update=":formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+										listener="#{AgendaController.setaDataAtendeParaValidacaoPaciente(AgendaController.agenda.dataAtendimento)}"/>
+									<p:ajax event="dateSelect" update=":formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+										listener="#{AgendaController.setaDataAtendeParaValidacaoPaciente(AgendaController.agenda.dataAtendimento)}"/>		
+								</p:calendar>
 						</b:column>
 
 					</b:row>
@@ -295,9 +300,10 @@
 
 								<p:column headerText="Adicionar" width="20%">
 									<div align="center">
-										<p:commandButton actionListener="#{AgendaController.adicionarFuncionario(funcionariosSoucer)}"
-											icon="fa fa-angle-right" title="Adicionar Funcionário"  ajax="true" process="@this" immediate="true"
-											update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"/>
+										<p:commandButton actionListener="#{AgendaController.validaFuncionarioParaAdicionar(funcionariosSoucer)}"
+											icon="fa fa-angle-right" title="Adicionar Funcionário"  ajax="true" 
+											process="@this" immediate="true"
+											update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado :msgPagina :frmLiberacao"/>
 									</div>
 								</p:column>
 							</p:dataTable>
@@ -309,7 +315,8 @@
 									action="#{AgendaController.adicionarTodosFuncionarios()}"
 									icon="fa fa-angle-double-right"
 									title="Adicionar Todos Funcionários" immediate="true"
-									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado" />
+									update="tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+									rendered="false" />
 							</div>
 
 							<div align="left">
@@ -442,9 +449,11 @@
                             Selecionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg,
+							:formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
+							action="#{AgendaController.carregaListaFuncionariosDual()}"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
 								target="#{AgendaController.agenda.paciente}" />
@@ -595,9 +604,7 @@
 			modal="true" width="400" responsive="true" resizable="false">
 			<h:form id="frmLiberacao">
 				<div class="alert alert-warning" role="alert">
-					Você está tentando realizar um agendamento avulso que já possui cadastro nesta 
-					data para este programa, grupo e tipo de atendimento!
-					Digite o CPF e senha para liberação!
+					<h:outputLabel value="#{AgendaController.mensagemDialogLiberacao}"/>
 				</div>
 				<br />
 				<div align="center">
@@ -618,7 +625,14 @@
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsa()}" 
-						update="msgPagina :formAgendaMedica"/>
+						update="msgPagina :formAgendaMedica"
+						rendered="#{AgendaController.liberacaoEspecialidade == false}"/>
+						
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AgendaController.validarSenhaLiberacaoEspecialidadeAgendaAvulsaPaciente()}" 
+						update="msgPagina :formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+						rendered="#{AgendaController.liberacaoEspecialidade == true}"/>	
 						
 					<p:commandButton value="Cancelar" look="cancel" size="sm"
 						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
