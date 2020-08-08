@@ -1194,9 +1194,9 @@ public class FuncionarioDAO {
 		StringBuilder sql = new StringBuilder();
 
 		sql.append(
-				"SELECT DISTINCT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, h.permite_liberacao, ");
+				"SELECT DISTINCT h.id_funcionario,  h.descfuncionario AS descfuncionario, h.codespecialidade, h.permite_liberacao, ");
 		sql.append(
-				"h.permite_encaixe, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
+				"h.permite_encaixe, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade,c.codigo codigocbo, c.descricao AS desccbo, p.nome AS descproc ");
 		sql.append("FROM acl.funcionarios h ");
 		sql.append("JOIN hosp.profissional_programa_grupo ppg ON (h.id_funcionario = ppg.codprofissional)");
 		sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
@@ -1224,6 +1224,7 @@ public class FuncionarioDAO {
 				funcionario.setCns(rs.getString("cns"));
 				funcionario.setAtivo(rs.getString("ativo"));
 				funcionario.getCbo().setCodCbo(rs.getInt("codcbo"));
+				funcionario.getCbo().setCodigo(rs.getString("codigocbo"));
 				funcionario.getCbo().setDescCbo(rs.getString("desccbo"));
 				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				funcionario.getProc1().setNomeProc(rs.getString("descproc"));

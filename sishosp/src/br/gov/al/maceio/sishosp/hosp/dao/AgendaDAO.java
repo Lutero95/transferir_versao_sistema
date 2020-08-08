@@ -3011,7 +3011,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         Boolean existeAgendaAvulsa = false;
 
         String sql = "SELECT EXISTS " +
-                " (SELECT a.id_atendimento FROM  hosp.atendimentos a " +
+                " (SELECT distinct a.id_atendimento FROM  hosp.atendimentos a join hosp.atendimentos1 a1 on a1.id_atendimento  = a.id_atendimento " +
                 " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) " +
                 " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " +
                 " LEFT JOIN hosp.grupo g ON a.codgrupo = g.id_grupo " +

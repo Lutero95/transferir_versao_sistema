@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -89,6 +90,7 @@ public class FuncionarioBean implements Serializable {
         novaSenha = "";
         confirmacaoNovaSenha = "";
         listDiasSemana = new ArrayList<String>();
+        System.out.println("construtor funcionario");
     }
 
 
@@ -510,4 +512,61 @@ public class FuncionarioBean implements Serializable {
 	public void setExcecaoBloqueioHorario(Boolean excecaoBloqueioHorario) {
 		this.excecaoBloqueioHorario = excecaoBloqueioHorario;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FuncionarioBean)) return false;
+        FuncionarioBean that = (FuncionarioBean) o;
+        return isPrimeiroAcesso() == that.isPrimeiroAcesso() &&
+                isUsuarioAtivo() == that.isUsuarioAtivo() &&
+                Objects.equals(getNome(), that.getNome()) &&
+                Objects.equals(getSenha(), that.getSenha()) &&
+                Objects.equals(getNovaSenha(), that.getNovaSenha()) &&
+                Objects.equals(getConfirmacaoNovaSenha(), that.getConfirmacaoNovaSenha()) &&
+                Objects.equals(getDatacriacao(), that.getDatacriacao()) &&
+                Objects.equals(getAtivo(), that.getAtivo()) &&
+                Objects.equals(getEmail(), that.getEmail()) &&
+                Objects.equals(getCpf(), that.getCpf()) &&
+                Objects.equals(getRealizaAtendimento(), that.getRealizaAtendimento()) &&
+                Objects.equals(getRealizaLiberacoes(), that.getRealizaLiberacoes()) &&
+                Objects.equals(getRealizaEncaixes(), that.getRealizaEncaixes()) &&
+                Objects.equals(getCns(), that.getCns()) &&
+                Objects.equals(getDiasSemana(), that.getDiasSemana()) &&
+                Objects.equals(getListaDiasAtendimentoSemana(), that.getListaDiasAtendimentoSemana()) &&
+                Objects.equals(getDiaSemana(), that.getDiaSemana()) &&
+                Objects.equals(getUnidadeExtra(), that.getUnidadeExtra()) &&
+                Objects.equals(getNomeBancoAcesso(), that.getNomeBancoAcesso()) &&
+                Objects.equals(getHorarioAtendimento(), that.getHorarioAtendimento()) &&
+                Objects.equals(getListDiasSemana(), that.getListDiasSemana()) &&
+                Objects.equals(getCodigoDaUnidadeSelecionada(), that.getCodigoDaUnidadeSelecionada()) &&
+                Objects.equals(getPrograma(), that.getPrograma()) &&
+                Objects.equals(getProgramaNovo(), that.getProgramaNovo()) &&
+                Objects.equals(getGrupo(), that.getGrupo()) &&
+                Objects.equals(getGrupoNovo(), that.getGrupoNovo()) &&
+                Objects.equals(getListaUnidades(), that.getListaUnidades()) &&
+                Objects.equals(getEspecialidade(), that.getEspecialidade()) &&
+                Objects.equals(getCbo(), that.getCbo()) &&
+                Objects.equals(getProc1(), that.getProc1()) &&
+                Objects.equals(getProc2(), that.getProc2()) &&
+                Objects.equals(getProgAdd(), that.getProgAdd()) &&
+                Objects.equals(getGrupoAdd(), that.getGrupoAdd()) &&
+                Objects.equals(getProgRmv(), that.getProgRmv()) &&
+                Objects.equals(getGrupoRmv(), that.getGrupoRmv()) &&
+                Objects.equals(getPermissao(), that.getPermissao()) &&
+                Objects.equals(getUnidade(), that.getUnidade()) &&
+                Objects.equals(getPerfil(), that.getPerfil()) &&
+                Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getListaIdSistemas(), that.getListaIdSistemas()) &&
+                Objects.equals(getListaIdMenus(), that.getListaIdMenus()) &&
+                Objects.equals(getListaIdPermissoes(), that.getListaIdPermissoes()) &&
+                Objects.equals(getExcecaoBloqueioHorario(), that.getExcecaoBloqueioHorario()) &&
+                Objects.equals(getListaSecreFolha(), that.getListaSecreFolha());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getCbo(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha());
+    }
 }
+

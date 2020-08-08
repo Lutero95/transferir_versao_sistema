@@ -119,9 +119,10 @@
 					</p:outputPanel>
 
 					<b:row>
+
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							
+
 								<b:label value="Profissional" severity="info"/>
 								<p:outputPanel id="outProf">
 									<p:autoComplete value="#{AgendaController.agenda.profissional}"
@@ -242,9 +243,9 @@
 												<p:commandButton
 													action="#{AgendaController.validaPacienteParaAdicionar(pacie)}"
 													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina, :frmLiberacao"
-													process="@this :formAgendaMedica:tabelaPacientesSelecionados"
+													process="@this @form :formAgendaMedica:tabelaPacientesSelecionados"
 													icon="fa fa-fw fa-plus" title="Adicionar paciente"
-													immediate="true" class="new-btn-acao-table acao-editar"/>
+													class="new-btn-acao-table acao-editar"/>
 											</div>
 										</p:column>
 									</p:dataTable>
