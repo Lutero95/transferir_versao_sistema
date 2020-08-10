@@ -32,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -420,8 +421,12 @@ public class AlteracaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
-            if (insercao.getLaudo().getId()!=null) 
+            laudo = new LaudoBean();
+            laudo.setAnoFinal(this.insercao.getLaudo().getAnoFinal());
+            laudo.setMesFinal(this.insercao.getLaudo().getMesFinal());
+            if (insercao.getLaudo().getId()!=null) {
             	carregarLaudoPaciente();
+            }
             
             
             if (insercao.getEquipe().getCodEquipe() != null
@@ -728,11 +733,9 @@ public class AlteracaoPacienteController implements Serializable {
     	Boolean dataValida = null;
     	
     	if ((!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo())) && (!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo().getId())) && (insercao.isInsercaoPacienteSemLaudo()==false))
-    	dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
-    	else
-    	if ((insercao.isInsercaoPacienteSemLaudo())) {
+    		dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    	else if ((insercao.isInsercaoPacienteSemLaudo())) {
     		dataValida = validarDataLaudoPacienteSemLaudo();
-    		
     	}
     	else
     		dataValida = true;
@@ -833,29 +836,47 @@ public class AlteracaoPacienteController implements Serializable {
     }    
     
     public boolean validarDataLaudoPacienteSemLaudo() throws ProjetoException {
-    	boolean rst = false;
+    	boolean resultado = false;
     	Date dataSolicitacaoPacienteTerapia = insercao.getDataSolicitacao();
     	Date dataVigenciaFinalLaudo = insercao.getLaudo().getVigenciaFinal();
-    	if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)){
+    	
+    	if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId())
+    			&& VerificadorUtil.verificarSeObjetoNulo(dataVigenciaFinalLaudo)) {
+    		resultado = true;
+    	}
+    	else if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)) {
             JSFUtil.adicionarMensagemErro("A data do laudo selecionado é menor que a data de inclusão do paciente na Terapia", "Erro!");
-            insercao.setLaudo(null);
+            insercao.setLaudo(new LaudoBean());
             insercaoParaLaudo.setLaudo(null);
         }
     	else 
-    		rst = true;
-        return rst;
+    		resultado = true;
+        return resultado;
     }
     
     public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
+    	carregarLaudoPaciente();
     	validarDataLaudoPacienteSemLaudo();
     }    
 
     public void carregarLaudoPaciente() throws ProjetoException {
-        insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
-                .getId());
-        insercao = aDao
-                .carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
+        
+    	String condicao_datas_laudo = new RenovacaoPacienteController().compararDatasLaudo(laudo.getMesFinal(), laudo.getAnoFinal(),
+                insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
 
+        if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
+            JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
+            insercao.setLaudo(new LaudoBean());
+        }
+        else if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.MAIS_DE_UM_MES.getSigla())){
+            JSFUtil.adicionarMensagemAdvertencia("O novo laudo tem início com mais de 30 dias a mais que o término do que o lado atual!", "Observação!");
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+            insercao = rDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+        }
+        else {    	
+			insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+			insercao = aDao.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
+        }
     }
     
     public static void carregarLaudoPacienteDuplicado() throws ProjetoException {
