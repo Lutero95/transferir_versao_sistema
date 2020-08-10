@@ -310,12 +310,13 @@ public class LaudoController implements Serializable {
 
         List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
         listaCidsLaudo.add(this.laudo.getCid1());
-
+    /*
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid2().getCid()))
             listaCidsLaudo.add(this.laudo.getCid2());
 
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid3().getCid()))
             listaCidsLaudo.add(this.laudo.getCid3());
+        */
 
         for (CidBean cidBean : listaCidsLaudo) {
             if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc())) {
@@ -484,27 +485,12 @@ public class LaudoController implements Serializable {
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
-        List<CidBean> result = new ArrayList<CidBean>();
-        if(this.unidadeValidaDadosSigtap) {
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
-                result = cDao.listarCidsAutoCompletePorProcedimento(query,
-                        this.laudo.getProcedimentoPrimario().getCodProc(), null);
-        }
-        else
-            result = cDao.listarCidsAutoComplete(query);
+        List<CidBean> result = cDao.listarCidsAutoComplete(query);
         return result;
 
     }
 
     public void listarCids(String campoBusca) throws ProjetoException {
-        if(this.unidadeValidaDadosSigtap) {
-            if (VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getProcedimentoPrimario().getIdProc()))
-                JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
-            else
-                listaCids = cDao.listarCidsBuscaPorProcedimento(campoBusca,
-                        this.laudo.getProcedimentoPrimario().getCodProc(), null);
-        }
-        else
             listaCids = cDao.listarCidsBusca(campoBusca);
     }
 

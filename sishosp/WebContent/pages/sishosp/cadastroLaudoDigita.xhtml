@@ -178,9 +178,9 @@
                                         itemLabel="#{theme.nomeProc}">
                                     <p:ajax event="itemSelect"
                                             listener="#{LaudoController.setaValidadeProcPrimLaudo(LaudoController.laudo.procedimentoPrimario.validade_laudo)}"
-                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"/>
+                                            update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1"/>
                                             
-                                    <p:ajax event="blur" listener="#{LaudoController.limpaDadosCids()}" update=":formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3" />        
+                                    <p:ajax event="blur" listener="#{LaudoController.limpaDadosCids()}" update=":formConsulCid1, :formLaudo:outCid1" />        
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusProcP1" icon="ui-icon-search"
@@ -590,7 +590,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1, :formConsulCid2, :formLaudo:outCid2, :formConsulCid3, :formLaudo:outCid3"
+                                    update=":formLaudo:outvalidade :formLaudo:outProcP1, :formConsulCid1, :formLaudo:outCid1"
                                     icon="fa fa-fw fa-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     actionListener="#{LaudoController.setaValidadeProcPrimLaudo(proc.validade_laudo)}"
