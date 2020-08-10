@@ -484,14 +484,7 @@ public class LaudoController implements Serializable {
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query) throws ProjetoException {
-        List<CidBean> result = new ArrayList<CidBean>();
-        if(this.unidadeValidaDadosSigtap) {
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getProcedimentoPrimario().getCodProc()))
-                result = cDao.listarCidsAutoCompletePorProcedimento(query,
-                        this.laudo.getProcedimentoPrimario().getCodProc(), null);
-        }
-        else
-            result = cDao.listarCidsAutoComplete(query);
+        List<CidBean> result = cDao.listarCidsAutoComplete(query);
         return result;
 
     }

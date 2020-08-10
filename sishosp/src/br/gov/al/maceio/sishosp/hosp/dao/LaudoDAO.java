@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
@@ -382,20 +383,29 @@ public class LaudoDAO {
             sql = sql + " AND l.situacao = ? ";
         }
 
-        if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        if (((tipoBusca.equals(TipoBuscaLaudo.NOME_PACIENTE.getSigla())) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and p.nome ilike ?";
         }
 
-        if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((tipoBusca.equals(TipoBuscaLaudo.CODIGO_PROCEDIMENTO.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and pr.codproc = ?";
         }
 
-        if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((tipoBusca.equals(TipoBuscaLaudo.MATRICULA.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and upper(p.matricula) = ?";
         }
 
-        if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((tipoBusca.equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and p.id_paciente = ?";
+        }
+        
+        else if(tipoBusca.equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE_ANTIGO.getSigla())
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)) {
+        	sql = sql + " and p.codprontuario_anterior = ?";
         }
 
         sql = sql + " order by ano_final desc, mes_final desc, nome ";
@@ -412,18 +422,23 @@ public class LaudoDAO {
                 i++;
             }
 
-            if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            if (((tipoBusca.equals(TipoBuscaLaudo.NOME_PACIENTE.getSigla())) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
                 i++;
             }
 
 
-            if (((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
+            if (((tipoBusca.equals(TipoBuscaLaudo.CODIGO_PROCEDIMENTO.getSigla())) 
+            		|| (tipoBusca.equals(TipoBuscaLaudo.MATRICULA.getSigla())))
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)) {
                 stm.setString(i, campoBusca.toUpperCase());
                 i++;
             }
 
-            if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            if ((tipoBusca.equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE.getSigla())
+            		|| (tipoBusca.equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE_ANTIGO.getSigla()))
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stm.setInt(i, Integer.valueOf(campoBusca));
                 i++;
             }
