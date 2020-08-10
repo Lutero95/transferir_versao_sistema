@@ -43,6 +43,7 @@ public class ParametroBean implements Serializable {
     private boolean acessoPermitidoSexta;
     private boolean acessoPermitidoSabado;
     private boolean permiteAgendamentoDuplicidade;
+    private boolean agendaAvulsaValidaPacienteAtivo;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -344,4 +345,13 @@ public class ParametroBean implements Serializable {
     public void setPermiteAgendamentoDuplicidade(boolean permiteAgendamentoDuplicidade) {
         this.permiteAgendamentoDuplicidade = permiteAgendamentoDuplicidade;
     }
+
+	public boolean isAgendaAvulsaValidaPacienteAtivo() {
+		return agendaAvulsaValidaPacienteAtivo;
+	}
+
+	public void setAgendaAvulsaValidaPacienteAtivo(boolean agendaAvulsaValidaPacienteAtivo) {
+		this.agendaAvulsaValidaPacienteAtivo = agendaAvulsaValidaPacienteAtivo;
+	}
+    
 }

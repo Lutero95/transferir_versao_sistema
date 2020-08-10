@@ -356,8 +356,10 @@
 								
 								<b:column span="5" class="label-position new-col5">
 									<p:selectBooleanCheckbox itemLabel="Bloquear Evolução caso exista Atendimento Anterior Pendente de Evolução" 
-										value="#{UnidadeController.unidade.parametro.bloqueiaPorPendenciaEvolucaoAnterior}">
-									</p:selectBooleanCheckbox>
+										value="#{UnidadeController.unidade.parametro.bloqueiaPorPendenciaEvolucaoAnterior}"/>
+									
+									<p:selectBooleanCheckbox itemLabel="Validar Paciente Ativo na Agenda Avulsa" 
+										value="#{UnidadeController.unidade.parametro.agendaAvulsaValidaPacienteAtivo}"/>
 								</b:column>
 							</b:row>
 
