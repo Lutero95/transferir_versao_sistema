@@ -3189,7 +3189,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         		"		join hosp.pacientes p on a.codpaciente = p.id_paciente " + 
         		"		join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
         		"		join hosp.especialidade e on f.codespecialidade = e.id_especialidade " + 
-        		"		where p.id_paciente = ? and a.dtaatende = ? and f.codespecialidade = ?) existe; ";
+        		"		where p.id_paciente = ? and a.dtaatende = ? and f.codespecialidade = ? and coalesce(a1.excluido,'N')='N'  and coalesce(a.situacao,'')<>'C') existe; ";
 
         try {
         	con = ConnectionFactory.getConnection();
