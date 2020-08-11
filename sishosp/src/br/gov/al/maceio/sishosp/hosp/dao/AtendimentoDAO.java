@@ -17,7 +17,6 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 import javax.faces.context.FacesContext;
 
@@ -1555,6 +1554,38 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+	
+	public List<Integer> listaAnosDeAtendimentos() throws ProjetoException {
+		
+		String sql = "select distinct extract (year from a.dtaatende) as ano " + 
+				"	from hosp.atendimentos a " + 
+				"	where extract (year from a.dtaatende) <= extract (year from current_date) " + 
+				"	and extract (year from a.dtaatende) >= 2000	order by ano desc; ";
+		
+		List<Integer> listaAnos = new ArrayList<>(); 
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()) {
+				listaAnos.add(rs.getInt("ano"));
+			}
+			
+		}catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaAnos;
 	}
 
 }

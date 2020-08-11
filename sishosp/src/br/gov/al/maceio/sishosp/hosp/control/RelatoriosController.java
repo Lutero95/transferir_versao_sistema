@@ -30,6 +30,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
@@ -92,6 +93,7 @@ public class RelatoriosController implements Serializable {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 	private GrupoDAO grupoDao;
+	private List<Integer> listaAnos;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -116,6 +118,7 @@ public class RelatoriosController implements Serializable {
 		this.turnos = new ArrayList<String>();
 		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
 		this.grupoDao = new GrupoDAO();
+		this.listaAnos = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -153,8 +156,13 @@ public class RelatoriosController implements Serializable {
 		atributoGenerico2 = "P";
 	}
 
-	public void preparaRelFrequencia() {
+	public void preparaRelFrequencia() throws ProjetoException {
 		atributoGenerico1 = "P";
+	}
+	
+	public void preparaRelFrequenciaPreenchida() throws ProjetoException {
+		atributoGenerico1 = "P";
+		listarAnosAtendimentos();
 	}
 
 	public void preparaRelatorioAgendamentos() {
@@ -301,6 +309,48 @@ public class RelatoriosController implements Serializable {
 	}
 
 
+	public void geraFrequenciaPreenchida(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+		
+		if(camposvalidos(programa, grupo)) {
+			
+			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
+			pacienteInstituicao.setPrograma(programa);
+			pacienteInstituicao.setGrupo(grupo);
+			int randomico = JSFUtil.geraNumeroRandomico();
+			RelatorioDAO rDao = new RelatorioDAO();
+			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+
+			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
+				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
+			} else {
+				String caminho = "/WEB-INF/relatorios/";
+				String relatorio = "";
+				relatorio = caminho + "frequencia_preenchida.jasper";
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("chave", randomico);
+				map.put("ano", this.ano);
+				map.put("mes", this.mes);
+				map.put("codunidade", user_session.getUnidade().getId());
+				if (pacienteInstituicao.getPrograma() != null)
+					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+
+				if (pacienteInstituicao.getGrupo() != null)
+					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+				if (pacienteInstituicao.getId() != null)
+					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+
+				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)  + File.separator);
+				this.executeReport(relatorio, map, "relatorio.pdf");
+				// this.executeReportNewTab(relatorio, "frequencia.pdf",
+//                    map);
+				rDao.limparTabelaTemporariaFrequencia(randomico);
+
+			}
+		}
+	}
+	
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		
@@ -339,6 +389,10 @@ public class RelatoriosController implements Serializable {
 
 			}
 		}
+	}
+	
+	private void listarAnosAtendimentos() throws ProjetoException {
+		this.listaAnos = new AtendimentoDAO().listaAnosDeAtendimentos();
 	}
 	
 	private boolean camposvalidos(ProgramaBean programa, GrupoBean grupo) {
@@ -1471,5 +1525,13 @@ public class RelatoriosController implements Serializable {
 	public void setListaMunicipiosDePacienteAtivosSelecionados(
 			List<MunicipioBean> listaMunicipiosDePacienteAtivosSelecionados) {
 		this.listaMunicipiosDePacienteAtivosSelecionados = listaMunicipiosDePacienteAtivosSelecionados;
+	}
+
+	public List<Integer> getListaAnos() {
+		return listaAnos;
+	}
+
+	public void setListaAnos(List<Integer> listaAnos) {
+		this.listaAnos = listaAnos;
 	}
 }

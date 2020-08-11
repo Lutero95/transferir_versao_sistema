@@ -1198,11 +1198,11 @@ public class AgendaController implements Serializable {
         }
 
         public void validaPacienteParaAdicionar(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
-            agenda.setDataAtendimento(dataAtendimentoC);
+          /*  agenda.setDataAtendimento(dataAtendimentoC);
             if(camposValidosParaValidarEspecialidadeProfissional(agenda.getProfissional(), agenda.getDataAtendimento())
-                    && !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {
+                    && !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {*/
                 adicionarPacienteSelecionado(pacienteSelecionado);
-            }
+        //    }
         }
 
         public void adicionarPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
