@@ -1329,24 +1329,33 @@ public class AgendaController implements Serializable {
         }
 
         public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
-            boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
-            if (mudouStatusPresenca) {
-                if (agendaSelecionada.getPresenca().equals("S"))
-                    rowBean.setPresenca("N");
-                else
-                if (agendaSelecionada.getPresenca().equals("N"))
-                    rowBean.setPresenca("S");
-                String presenca =""; rowBean.getPresenca();
-                AgendaBean linhaCapturada = rowBean;
-                consultarAgenda(agenda.getPresenca());
-                rowBean = linhaCapturada;
-                //rowBean = new AgendaBean();
-                JSFUtil.adicionarMensagemSucesso("ação concluída com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+            if(!atendimentoFoiEvoluido(agendaSelecionada)) {
+                boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
+                if (mudouStatusPresenca) {
+                    if (agendaSelecionada.getPresenca().equals("S"))
+                        rowBean.setPresenca("N");
+                    else if (agendaSelecionada.getPresenca().equals("N"))
+                        rowBean.setPresenca("S");
+                    rowBean.getPresenca();
+                    AgendaBean linhaCapturada = rowBean;
+                    consultarAgenda(agenda.getPresenca());
+                    rowBean = linhaCapturada;
+                    // rowBean = new AgendaBean();
+                    JSFUtil.adicionarMensagemSucesso("ação concluída com sucesso!", "Sucesso");
+                } else {
+                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+                }
             }
 
         }
+
+    private boolean atendimentoFoiEvoluido(AgendaBean agenda) throws ProjetoException {
+        if (aDao.verificarSeAtendimentoFoiEvoluido(agenda.getIdAgenda())) {
+            JSFUtil.adicionarMensagemAdvertencia("Não é possível alterar a presença de um atendimento evoluído", "Atenção");
+            return true;
+        }
+        return false;
+    }
 
         public void limparNaBuscaPaciente() {
             this.agenda.setTipoAt(null);

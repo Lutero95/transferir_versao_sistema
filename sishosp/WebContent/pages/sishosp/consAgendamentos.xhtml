@@ -128,30 +128,36 @@
 						<div align="center">
 
 							<p:outputPanel id="botoes" autoUpdate="true">
-							<b:column span="2" rendered="#{AgendaController.rowBean.idAgenda == null or (AgendaController.rowBean.presenca=='N' and AgendaController.rowBean.situacao != 'C')}" >
-								<p:commandButton value="Marcar Presença" style="margin-top:5px;width:120px !important"
-									id="btnmarca" immediate="true" 
-									disabled="#{AgendaController.rowBean.idAgenda == null or (AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C')}"
-									class="btn-acao-table acao-confirmar btn-new-padding2"
-									update=":formConsAge" icon="ui-icon-check"
-									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
-									</b:column>
-									<b:column span="2" rendered="#{AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C'}">
-								<p:commandButton value="Retirar Presença"
-									style="margin-top:5px;width:120px !important" id="btnretira" immediate="true"
-									
-									class="btn-acao-table acao-cancelar btn-new-padding2"
-									update=":formConsAge" icon="ui-icon-close"
-									action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
-									</b:column>
-									<b:column span="2" >
-								<p:commandButton value="Cancelar Agendamento" 
-												 style="margin-top:5px;width:120px !important" id="btncancela" immediate="true"
-												 disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
-												 class="btn-acao-table acao-cancelar btn-new-padding2"
-												 update=":formConsAge, mensagem" icon="ui-icon-close"
-												 action="#{AgendaController.verificarSeAtendimentoFoiRealizado()}" />
-							</b:column>
+								<b:column span="2"
+									rendered="#{AgendaController.rowBean.idAgenda == null or (AgendaController.rowBean.presenca=='N' and AgendaController.rowBean.situacao != 'C')}">
+									<p:commandButton value="Marcar Presença"
+										style="margin-top:5px;width:120px !important" id="btnmarca"
+										immediate="true"
+										disabled="#{AgendaController.rowBean.idAgenda == null or (AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C')}"
+										class="btn-acao-table acao-confirmar btn-new-padding2"
+										update=":formConsAge" icon="ui-icon-check"
+										action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
+								</b:column>
+								
+								<b:column span="2"
+									rendered="#{AgendaController.rowBean.presenca=='S' and AgendaController.rowBean.situacao != 'C'}">
+									<p:commandButton value="Retirar Presença"
+										style="margin-top:5px;width:120px !important" id="btnretira"
+										immediate="true"
+										class="btn-acao-table acao-cancelar btn-new-padding2"
+										update=":formConsAge" icon="ui-icon-close"
+										action="#{AgendaController.mudaStatusPresenca(AgendaController.rowBean)}" />
+								</b:column>
+								
+								<b:column span="2">
+									<p:commandButton value="Cancelar Agendamento"
+										style="margin-top:5px;width:120px !important" id="btncancela"
+										immediate="true"
+										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
+										class="btn-acao-table acao-cancelar btn-new-padding2"
+										update=":formConsAge, mensagem" icon="ui-icon-close"
+										action="#{AgendaController.verificarSeAtendimentoFoiRealizado()}" />
+								</b:column>
 
 							</p:outputPanel>
 
