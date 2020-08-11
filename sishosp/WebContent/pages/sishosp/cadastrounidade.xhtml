@@ -366,9 +366,7 @@
 							<p:outputPanel id="configagenda">
 
 								<p:fieldset legend="Restrições da Agenda">
-
 									<b:row>
-
 										<b:column span="12" class="label-position new-col6">
 											<p:selectBooleanCheckbox
 													value="#{UnidadeController.unidade.parametro.permiteAgendamentoDuplicidade}"
@@ -376,10 +374,7 @@
 												<p:ajax update="configagenda"></p:ajax>
 											</p:selectBooleanCheckbox>
 										</b:column>
-
 									</b:row>
-
-
 								</p:fieldset>
 							</p:outputPanel>
 							<br />
@@ -583,9 +578,7 @@
 							<br></br>
 
 							<b:row>
-
 								<p:fieldset legend="PTS">
-
 									<b:column span="6" class="label-position new-col6">
 										<p:selectBooleanCheckbox
 											value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisCurtoPrazo}"
@@ -597,16 +590,11 @@
 											value="#{UnidadeController.unidade.parametro.ptsMostrarObjGeraisLongoPrazo}"
 											itemLabel="Mostrar Observações Gerais - Longo Prazo" />
 									</b:column>
-
-
 								</p:fieldset>
-
 							</b:row>
-
 							<br></br>
 
 							<b:row>
-
 								<b:column span="5">
 
 									<p:selectBooleanCheckbox label="Matriz" itemLabel="Matriz"
@@ -614,7 +602,6 @@
 										style="margin-rigth: 10px;color:#2e84ce;">
 									</p:selectBooleanCheckbox>
 								</b:column>
-
 							</b:row>
 
 						</p:tab>
@@ -824,6 +811,20 @@
 									</b:column>
 								</b:row>
 							</p:outputPanel>
+						</p:tab>
+						
+						<p:tab title="Cores em Tabelas">
+								<p:fieldset legend="Tabela Tela de Evolução do Profissional" title="Cor verde evolução realizada e vermelho para evolução não realizada">
+									<b:row>
+										<b:column span="12" class="label-position new-col6">
+											<p:selectBooleanCheckbox
+													value="#{UnidadeController.unidade.parametro.atribuirCorTabelaTelaEvolucaoProfissional}"
+													itemLabel="Atribuir cores">
+												<p:ajax update="configagenda"></p:ajax>
+											</p:selectBooleanCheckbox>
+										</b:column>
+									</b:row>
+								</p:fieldset>
 						</p:tab>
 					</p:tabView>
 

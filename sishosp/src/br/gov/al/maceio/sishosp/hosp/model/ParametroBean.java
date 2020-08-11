@@ -7,8 +7,8 @@ import java.util.Date;
 public class ParametroBean implements Serializable {
 
 
-	private static final long serialVersionUID = 1L;
-	private Integer motivoDesligamento;
+    private static final long serialVersionUID = 1L;
+    private Integer motivoDesligamento;
     private String opcaoAtendimento;
     private Integer quantidadeSimultaneaProfissional;
     private Integer quantidadeSimultaneaEquipe;
@@ -44,6 +44,7 @@ public class ParametroBean implements Serializable {
     private boolean acessoPermitidoSabado;
     private boolean permiteAgendamentoDuplicidade;
     private boolean agendaAvulsaValidaPacienteAtivo;
+    private boolean atribuirCorTabelaTelaEvolucaoProfissional;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -274,69 +275,69 @@ public class ParametroBean implements Serializable {
         this.validaDadosLaudoSigtap = validaDadosLaudoSigtap;
     }
 
-	public Integer getMinutosTolerancia() {
-		return minutosTolerancia;
-	}
+    public Integer getMinutosTolerancia() {
+        return minutosTolerancia;
+    }
 
-	public void setMinutosTolerancia(Integer minutosTolerancia) {
-		this.minutosTolerancia = minutosTolerancia;
-	}
+    public void setMinutosTolerancia(Integer minutosTolerancia) {
+        this.minutosTolerancia = minutosTolerancia;
+    }
 
-	public boolean isAcessoPermitidoDomingo() {
-		return acessoPermitidoDomingo;
-	}
+    public boolean isAcessoPermitidoDomingo() {
+        return acessoPermitidoDomingo;
+    }
 
-	public void setAcessoPermitidoDomingo(boolean acessoPermitidoDomingo) {
-		this.acessoPermitidoDomingo = acessoPermitidoDomingo;
-	}
+    public void setAcessoPermitidoDomingo(boolean acessoPermitidoDomingo) {
+        this.acessoPermitidoDomingo = acessoPermitidoDomingo;
+    }
 
-	public boolean isAcessoPermitidoSegunda() {
-		return acessoPermitidoSegunda;
-	}
+    public boolean isAcessoPermitidoSegunda() {
+        return acessoPermitidoSegunda;
+    }
 
-	public void setAcessoPermitidoSegunda(boolean acessoPermitidoSegunda) {
-		this.acessoPermitidoSegunda = acessoPermitidoSegunda;
-	}
+    public void setAcessoPermitidoSegunda(boolean acessoPermitidoSegunda) {
+        this.acessoPermitidoSegunda = acessoPermitidoSegunda;
+    }
 
-	public boolean isAcessoPermitidoTerca() {
-		return acessoPermitidoTerca;
-	}
+    public boolean isAcessoPermitidoTerca() {
+        return acessoPermitidoTerca;
+    }
 
-	public void setAcessoPermitidoTerca(boolean acessoPermitidoTerca) {
-		this.acessoPermitidoTerca = acessoPermitidoTerca;
-	}
+    public void setAcessoPermitidoTerca(boolean acessoPermitidoTerca) {
+        this.acessoPermitidoTerca = acessoPermitidoTerca;
+    }
 
-	public boolean isAcessoPermitidoQuarta() {
-		return acessoPermitidoQuarta;
-	}
+    public boolean isAcessoPermitidoQuarta() {
+        return acessoPermitidoQuarta;
+    }
 
-	public void setAcessoPermitidoQuarta(boolean acessoPermitidoQuarta) {
-		this.acessoPermitidoQuarta = acessoPermitidoQuarta;
-	}
+    public void setAcessoPermitidoQuarta(boolean acessoPermitidoQuarta) {
+        this.acessoPermitidoQuarta = acessoPermitidoQuarta;
+    }
 
-	public boolean isAcessoPermitidoQuinta() {
-		return acessoPermitidoQuinta;
-	}
+    public boolean isAcessoPermitidoQuinta() {
+        return acessoPermitidoQuinta;
+    }
 
-	public void setAcessoPermitidoQuinta(boolean acessoPermitidoQuinta) {
-		this.acessoPermitidoQuinta = acessoPermitidoQuinta;
-	}
+    public void setAcessoPermitidoQuinta(boolean acessoPermitidoQuinta) {
+        this.acessoPermitidoQuinta = acessoPermitidoQuinta;
+    }
 
-	public boolean isAcessoPermitidoSexta() {
-		return acessoPermitidoSexta;
-	}
+    public boolean isAcessoPermitidoSexta() {
+        return acessoPermitidoSexta;
+    }
 
-	public void setAcessoPermitidoSexta(boolean acessoPermitidoSexta) {
-		this.acessoPermitidoSexta = acessoPermitidoSexta;
-	}
+    public void setAcessoPermitidoSexta(boolean acessoPermitidoSexta) {
+        this.acessoPermitidoSexta = acessoPermitidoSexta;
+    }
 
-	public boolean isAcessoPermitidoSabado() {
-		return acessoPermitidoSabado;
-	}
+    public boolean isAcessoPermitidoSabado() {
+        return acessoPermitidoSabado;
+    }
 
-	public void setAcessoPermitidoSabado(boolean acessoPermitidoSabado) {
-		this.acessoPermitidoSabado = acessoPermitidoSabado;
-	}
+    public void setAcessoPermitidoSabado(boolean acessoPermitidoSabado) {
+        this.acessoPermitidoSabado = acessoPermitidoSabado;
+    }
 
     public boolean isPermiteAgendamentoDuplicidade() {
         return permiteAgendamentoDuplicidade;
@@ -346,12 +347,19 @@ public class ParametroBean implements Serializable {
         this.permiteAgendamentoDuplicidade = permiteAgendamentoDuplicidade;
     }
 
-	public boolean isAgendaAvulsaValidaPacienteAtivo() {
-		return agendaAvulsaValidaPacienteAtivo;
-	}
+    public boolean isAgendaAvulsaValidaPacienteAtivo() {
+        return agendaAvulsaValidaPacienteAtivo;
+    }
 
-	public void setAgendaAvulsaValidaPacienteAtivo(boolean agendaAvulsaValidaPacienteAtivo) {
-		this.agendaAvulsaValidaPacienteAtivo = agendaAvulsaValidaPacienteAtivo;
-	}
-    
+    public void setAgendaAvulsaValidaPacienteAtivo(boolean agendaAvulsaValidaPacienteAtivo) {
+        this.agendaAvulsaValidaPacienteAtivo = agendaAvulsaValidaPacienteAtivo;
+    }
+    public boolean isAtribuirCorTabelaTelaEvolucaoProfissional() {
+        return atribuirCorTabelaTelaEvolucaoProfissional;
+    }
+
+    public void setAtribuirCorTabelaTelaEvolucaoProfissional(boolean atribuirCorTabelaTelaEvolucaoProfissional) {
+        this.atribuirCorTabelaTelaEvolucaoProfissional = atribuirCorTabelaTelaEvolucaoProfissional;
+    }
+
 }
