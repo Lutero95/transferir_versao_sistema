@@ -61,5 +61,5 @@ public class BuscaLaudoDTO {
 	public void setTipoPeriodoData(String tipoPeriodoData) {
 		this.tipoPeriodoData = tipoPeriodoData;
 	}
-
+ 
 }
