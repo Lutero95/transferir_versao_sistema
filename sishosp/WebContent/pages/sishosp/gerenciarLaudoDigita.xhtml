@@ -1,16 +1,16 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:b="http://bootsfaces.net/ui"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="../../template/template.xhtml">
 
 	<ui:define name="content">
 
 		<f:metadata>
 			<f:viewAction
-				action="#{LaudoController.listarLaudo('P', LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}" />
+					action="#{LaudoController.listarLaudo(LaudoController.buscaLaudoDTO)}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -24,49 +24,92 @@
 
 
 					<p:commandButton id="btninc" value="Novo" title="Incluir"
-						action="#{LaudoController.redirectInsert()}" icon="ui-icon-plus"
-						class="btn-addNovo">
+									 action="#{LaudoController.redirectInsert()}" icon="ui-icon-plus"
+									 class="btn-addNovo">
 						<f:setPropertyActionListener value="1"
-							target="#{LaudoController.tipo}" />
-						
+													 target="#{LaudoController.tipo}" />
+
 					</p:commandButton>
 
 					<p:selectOneRadio id="console"
-						value="#{LaudoController.buscaLaudoDTO.situacao}" required="true"
-						requiredMessage="Informe o tipo de Pessoa">
+									  value="#{LaudoController.buscaLaudoDTO.situacao}" required="true"
+									  requiredMessage="Informe o tipo de Pessoa">
 						<f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Autorizados" itemValue="A" />
 						<f:selectItem itemLabel="Pendentes" itemValue="P" />
+
+						<p:ajax
+								listener="#{LaudoController.alterarCheckboxPeriodoData(LaudoController.buscaLaudoDTO)}"
+								update=":frmPrincipal" process="@form"/>
 					</p:selectOneRadio>
 
-					<br></br>
+					<br />
 
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
 					<p:row>
-				<p:autoUpdate/>
+						<p:autoUpdate/>
+
+						<p:outputPanel id="outdata">
+							<p:panelGrid columns="9" id="panelperiodo">
+								<b:column span="2" class="label-position data-size3"
+										  style="margin-left:-1%;">
+									<b:label value="Perído de Data:" severity="info" />
+
+									<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+												showOn="button" size="15" class="select-agendaEquipe2"
+												value="#{LaudoController.buscaLaudoDTO.dataInicial}" />
+								</b:column>
+
+								<b:column span="1" class="data-size4">
+									<p:outputLabel id="outdataa">
+										<h:outputLabel value="à" />
+									</p:outputLabel>
+								</b:column>
+
+								<b:column span="2" class="label-position data-size3">
+									<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+												class="select-agendaEquipe2" showOn="button" size="15"
+												id="dtagen3" locale="pt"
+												value="#{LaudoController.buscaLaudoDTO.dataFinal}" />
+								</b:column>
+
+								<b:column span="4" class="label-position data-size3">
+									<p:autoUpdate/>
+									<strong>Período Referente a:</strong>
+									<p:selectOneRadio id="opcaoData"
+													  value="#{LaudoController.buscaLaudoDTO.tipoPeriodoData}"
+													  required="true" requiredMessage="Informe o tipo ">
+										<f:selectItem itemLabel="Data de Autorização" itemValue="A" />
+										<f:selectItem itemLabel="Data de Solicitação" itemValue="P" />
+									</p:selectOneRadio>
+								</b:column>
+							</p:panelGrid>
+						</p:outputPanel>
+
+
 						<p:panelGrid columns="4">
 
 							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
-									itemValue="prontpaciente" />
+											  itemValue="prontpaciente" />
 								<f:selectItem itemLabel="Protuário Antigo"
-									itemValue="prontpacienteant" />	
+											  itemValue="prontpacienteant" />
 								<f:selectItem itemLabel="Matrícula Paciente"
-									itemValue="matpaciente" />
+											  itemValue="matpaciente" />
 								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
 							</p:selectOneMenu>
 
 							<p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
-								placeholder="Digite aqui o que deseja buscar"
-								style="margin-left: 10px;width:300px" />
+										 placeholder="Digite aqui o que deseja buscar"
+										 style="margin-left: 10px;width:300px" />
 
 							<p:commandButton
-								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}"
-								update="tabela msgPagina" icon="ui-icon-search"
-								style="margin-left: 10px;" />
+									action="#{LaudoController.validaPeriodoBusca(LaudoController.buscaLaudoDTO)}"
+									update="tabela msgPagina" icon="ui-icon-search"
+									style="margin-left: 10px;" />
 
 
 						</p:panelGrid>
@@ -74,105 +117,84 @@
 					</p:row>
 
 					<p:dataTable rows="20" paginator="true" id="tabela" style="margin-top: 10px"
-						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
-						var="tab" responsive="true">
-						
-						<p:column >
-							<f:facet name="header">
-                                Prontuário
-                            </f:facet>
-							<h:outputText value="#{tab.paciente.id_paciente}" />
-						</p:column>						
+								 emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
+								 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+								 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								 rowsPerPageTemplate="5,10,15"
+								 var="tab" responsive="true">
 
-						<p:column>
-							<f:facet name="header">
-                                Matrícula
-                            </f:facet>
+						<p:column headerText="Prontuário">
+							<h:outputText value="#{tab.paciente.id_paciente}" />
+						</p:column>
+
+						<p:column headerText="Matrícula">
 							<h:outputText value="#{tab.paciente.matricula}" />
 						</p:column>
 
 
-						<p:column width="200">
-							<f:facet name="header">
-                                Paciente
-                            </f:facet>
+						<p:column headerText="Paciente" width="200">
 							<h:outputText value="#{tab.paciente.nome}" />
 						</p:column>
 
 
-						<p:column width="200">
-							<f:facet name="header">
-                                Profissional
-                            </f:facet>
+						<p:column headerText="Profissional" width="200">
 							<h:outputText value="#{tab.profissionalLaudo.nome}" />
 						</p:column>
-						
 
-						<p:column width="250">
-							<f:facet name="header">
-                                Procedimento Primário
-                            </f:facet>
+
+						<p:column headerText="Procedimento Primário" width="250">
 							<h:outputText value="#{tab.procedimentoPrimario.codProc}" />-<h:outputText
 								value="#{tab.procedimentoPrimario.nomeProc}" />
 						</p:column>
 
 
-						<p:column width="90">
-							<f:facet name="header">
-                                Vencimento
-                            </f:facet>
+						<p:column headerText="Vencimento" width="90">
 							<h:outputText value="#{tab.vencimento}" />
 						</p:column>
 
-						<p:column width="80">
-							<f:facet name="header">
-                                Situação
-                            </f:facet>
+						<p:column headerText="Situação" width="80">
 							<h:outputText value="#{tab.situacao}" />
 						</p:column>
 
-						<p:column width="170">
-							<f:facet name="header">
-                                Ação
-                            </f:facet>
+						<p:column headerText="Ação" width="170">
 
 							<p:commandButton title="Alterar" icon="ui-icon-pencil"
-								size="sm" class="btn-acao-table acao-editar"
-								action="#{LaudoController.redirectEdit()}">
+											 size="sm" class="btn-acao-table acao-editar"
+											 action="#{LaudoController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
-									target="#{LaudoController.laudo}" />
+															 target="#{LaudoController.laudo}" />
 
 								<f:setPropertyActionListener value="2"
-									target="#{LaudoController.tipo}" />
+															 target="#{LaudoController.tipo}" />
 							</p:commandButton>
 
 							<p:commandButton title="Renovar" icon="ui-icon-refresh"
-								style="margin-left:10px" size="sm"
-								class="btn-acao-table acao-editar"
-								action="#{LaudoController.redirectEdit()}">
+											 style="margin-left:10px" size="sm"
+											 class="btn-acao-table acao-editar"
+											 action="#{LaudoController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
-									target="#{LaudoController.laudo}" />
+															 target="#{LaudoController.laudo}" />
 
 								<f:setPropertyActionListener value="3"
-									target="#{LaudoController.tipo}" />
+															 target="#{LaudoController.tipo}" />
 							</p:commandButton>
 
 
 							<p:commandButton title="Imprimir Laudo" icon="ui-icon-print"
-								size="sm" class="btn-acao-table acao-editar"
-								style="margin-left:10px"  onclick="this.form.target='_blank'"
-								action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
+											 size="sm" class="btn-acao-table acao-editar"
+											 style="margin-left:10px"  onclick="this.form.target='_blank'"
+											 action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
 
 							</p:commandButton>
 
 
 							<p:commandButton title="Excluir" icon="ui-icon-trash"
-								class="btn-acao-table acao-excluir" size="sm" ajax="true"
-								style="margin-left:10px"
-								oncomplete="PF('dialogExclusao').show()">
+											 class="btn-acao-table acao-excluir" size="sm" ajax="true"
+											 style="margin-left:10px"
+											 oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab}"
-									target="#{LaudoController.laudo}" />
+															 target="#{LaudoController.laudo}" />
 							</p:commandButton>
 
 						</p:column>
@@ -183,7 +205,7 @@
 		</div>
 
 		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-			resizable="false" showEffect="clip" hideEffect="clip">
+				  resizable="false" showEffect="clip" hideEffect="clip">
 
 			<h:form id="dlgexcluir">
 				<h:panelGrid columns="1">
@@ -200,14 +222,14 @@
 					<p:separator />
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
-						action="#{LaudoController.excluirLaudo()}" ajax="true"
-						icon="ui-icon-check" update="frmPrincipal" class="btn-sim">
+									 action="#{LaudoController.excluirLaudo()}" ajax="true"
+									 icon="ui-icon-check" update="frmPrincipal" class="btn-sim">
 					</p:commandButton>
 
 
 					<p:commandButton value="Não" class="btn-nao"
-						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-						icon="ui-icon-close" style="margin-left:5px;float:right;" />
+									 oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+									 icon="ui-icon-close" style="margin-left:5px;float:right;" />
 
 				</div>
 

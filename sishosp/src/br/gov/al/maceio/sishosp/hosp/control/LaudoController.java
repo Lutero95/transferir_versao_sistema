@@ -27,6 +27,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -436,6 +437,33 @@ public class LaudoController implements Serializable {
             JSFUtil.fecharDialog("dialogExclusao");
         }
 
+    }
+    
+    public void alterarCheckboxPeriodoData(BuscaLaudoDTO buscaLaudoDTO) {
+    	if(buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla()) || buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.PENDENTE.getSigla()))
+    		buscaLaudoDTO.setTipoPeriodoData(SituacaoLaudo.PENDENTE.getSigla());
+    	else
+    		buscaLaudoDTO.setTipoPeriodoData(SituacaoLaudo.AUTORIZADO.getSigla());
+    	
+    	this.buscaLaudoDTO = buscaLaudoDTO;
+    }
+    
+    public void validaPeriodoBusca(BuscaLaudoDTO buscaLaudoDTO) throws ProjetoException {
+    	
+    	if( (!VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataInicial()) 
+    			&& VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataFinal())) ||
+    		(VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataInicial()) 
+    	    			&& !VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataFinal()))) {
+    		JSFUtil.adicionarMensagemErro("Insira as duas datas do período de busca", "");
+    	}
+    	
+    	if(buscaLaudoDTO.getDataFinal().before(buscaLaudoDTO.getDataInicial())) {
+    		JSFUtil.adicionarMensagemErro("Data Final não pode ser menor que a Inicial", "");
+    	}
+    	
+    	else {
+    		listarLaudo(buscaLaudoDTO);
+    	}
     }
 
     public void listarLaudo(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
