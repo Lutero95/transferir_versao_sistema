@@ -3222,7 +3222,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         		"		join hosp.pacientes p on a.codpaciente = p.id_paciente " + 
         		"		join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
         		"		join hosp.especialidade e on f.codespecialidade = e.id_especialidade " + 
-        		"		where p.id_paciente = ? and a.dtaatende = ? and f.codespecialidade = ? and coalesce(a1.excluido,'N')='N'  and coalesce(a.situacao,'')<>'C') existe; ";
+        		"		where p.id_paciente = ? and a.dtaatende = ? and f.codespecialidade = ? and coalesce(a1.excluido,'N')='N'  and coalesce(a.situacao,'')<>'C' and a.cod_unidade=?) existe; ";
 
         try {
         	con = ConnectionFactory.getConnection();
@@ -3230,6 +3230,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setInt(1, idPaciente);
             stm.setDate(2, new java.sql.Date(dataAtende.getTime()));
             stm.setInt(3, idEspecialidade);
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().get("obj_funcionario");
+            stm.setLong(4, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 
