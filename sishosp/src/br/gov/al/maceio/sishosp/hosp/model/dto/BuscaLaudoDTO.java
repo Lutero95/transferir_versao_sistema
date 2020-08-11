@@ -32,6 +32,6 @@ public class BuscaLaudoDTO {
 	public void setTipoBusca(String tipoBusca) {
 		this.tipoBusca = tipoBusca;
 	}
-
+ 
   
 }
