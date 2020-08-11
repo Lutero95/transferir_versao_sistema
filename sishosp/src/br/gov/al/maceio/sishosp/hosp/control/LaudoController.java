@@ -77,6 +77,7 @@ public class LaudoController implements Serializable {
         renderizarDataAutorizacao = false;
         buscaLaudoDTO = new BuscaLaudoDTO();
         buscaLaudoDTO.setSituacao("P");
+        buscaLaudoDTO.setTipoPeriodoData("P");
         buscaLaudoDTO.setTipoBusca("paciente");
         buscaLaudoDTO.setCampoBusca("");
         tipo = 0;
@@ -437,7 +438,10 @@ public class LaudoController implements Serializable {
 
     }
 
-    public void listarLaudo(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
+    public void listarLaudo(BuscaLaudoDTO buscaLaudoDTO) throws ProjetoException {
+    	if(VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO)) {
+    		buscaLaudoDTO = new BuscaLaudoDTO();
+    	}
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
         Integer campoBuscaSeTemPacienteLaudoNaSessao = verificarSeExistePacienteLaudoNaSessao();
@@ -447,7 +451,7 @@ public class LaudoController implements Serializable {
             buscaLaudoDTO.setSituacao("T");
         }
 
-        listaLaudo = lDao.listaLaudos(buscaLaudoDTO.getSituacao(), buscaLaudoDTO.getCampoBusca(), buscaLaudoDTO.getTipoBusca());
+        listaLaudo = lDao.listaLaudos(buscaLaudoDTO);
     }
 
     public void iniciaNovoLaudoTelaEvolucao() {

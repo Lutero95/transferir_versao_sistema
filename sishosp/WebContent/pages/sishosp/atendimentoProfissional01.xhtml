@@ -51,7 +51,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 									style="margin-left: 10px" icon="ui-icon-document"
 									immediate="true" update=":frmPrincipalPts :frmlaudo"
 									actionListener="#{AtendimentoController.adicionarPacienteLaudoNaSessao()}"
-									action="#{LaudoController.listarLaudo('', '', '')}"
+									action="#{LaudoController.listarLaudo(null)}"
 									oncomplete="PF('dlglaudo').show();"
 									disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 									<f:setPropertyActionListener value="2"

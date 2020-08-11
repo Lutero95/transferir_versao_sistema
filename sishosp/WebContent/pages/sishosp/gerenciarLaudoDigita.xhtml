@@ -10,7 +10,7 @@
 
 		<f:metadata>
 			<f:viewAction
-				action="#{LaudoController.listarLaudo('P', LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}" />
+				action="#{LaudoController.listarLaudo(LaudoController.buscaLaudoDTO)}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -38,16 +38,50 @@
 						<f:selectItem itemLabel="Autorizados" itemValue="A" />
 						<f:selectItem itemLabel="Pendentes" itemValue="P" />
 					</p:selectOneRadio>
-
-					<br></br>
+					
+					<br />
 
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
 					<p:row>
-				<p:autoUpdate/>
-						<p:panelGrid columns="4">
+						<p:autoUpdate/>
+				
+						<p:panelGrid columns="9">
+							<b:column span="2" class="label-position data-size3" style="margin-left:-1%;">
+								<b:label value="Perído de Data por:" severity="info" />
 
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{LaudoController.buscaLaudoDTO.dataInicial}" />
+							</b:column>
+
+							<b:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="à" />
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="2" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									class="select-agendaEquipe2" showOn="button" size="15"
+									id="dtagen3" locale="pt"
+									value="#{LaudoController.buscaLaudoDTO.dataFinal}" />
+							</b:column>	
+							
+							<b:column span="4" class="label-position data-size3">
+								<p:selectOneRadio id="opcaoData" label="adsd"
+									value="#{LaudoController.buscaLaudoDTO.tipoPeriodoData}"
+									required="true" requiredMessage="Informe o tipo ">
+									<f:selectItem itemLabel="Todos" itemValue="T" />
+									<f:selectItem itemLabel="Autorização" itemValue="A" />
+									<f:selectItem itemLabel="Pendentes" itemValue="P" />
+								</p:selectOneRadio>
+							</b:column>
+						</p:panelGrid>
+						
+
+						<p:panelGrid columns="4">
 							<p:selectOneMenu value="#{LaudoController.buscaLaudoDTO.tipoBusca}">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
@@ -62,11 +96,9 @@
 								style="margin-left: 10px;width:300px" />
 
 							<p:commandButton
-								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.buscaLaudoDTO.campoBusca, LaudoController.buscaLaudoDTO.tipoBusca)}"
+								action="#{LaudoController.listarLaudo(LaudoController.buscaLaudoDTO)}"
 								update="tabela msgPagina" icon="ui-icon-search"
 								style="margin-left: 10px;" />
-
-
 						</p:panelGrid>
 
 					</p:row>
@@ -75,64 +107,40 @@
 						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
 						var="tab" responsive="true">
 						
-						<p:column >
-							<f:facet name="header">
-                                Prontuário
-                            </f:facet>
+						<p:column headerText="Prontuário">
 							<h:outputText value="#{tab.paciente.id_paciente}" />
 						</p:column>						
 
-						<p:column>
-							<f:facet name="header">
-                                Matrícula
-                            </f:facet>
+						<p:column headerText="Matrícula">
 							<h:outputText value="#{tab.paciente.matricula}" />
 						</p:column>
 
 
-						<p:column width="200">
-							<f:facet name="header">
-                                Paciente
-                            </f:facet>
+						<p:column headerText="Paciente" width="200">
 							<h:outputText value="#{tab.paciente.nome}" />
 						</p:column>
 
 
-						<p:column width="200">
-							<f:facet name="header">
-                                Profissional
-                            </f:facet>
+						<p:column headerText="Profissional" width="200">
 							<h:outputText value="#{tab.profissionalLaudo.nome}" />
 						</p:column>
 						
 
-						<p:column width="250">
-							<f:facet name="header">
-                                Procedimento Primário
-                            </f:facet>
+						<p:column headerText="Procedimento Primário" width="250">
 							<h:outputText value="#{tab.procedimentoPrimario.codProc}" />-<h:outputText
 								value="#{tab.procedimentoPrimario.nomeProc}" />
 						</p:column>
 
 
-						<p:column width="90">
-							<f:facet name="header">
-                                Vencimento
-                            </f:facet>
+						<p:column headerText="Vencimento" width="90">
 							<h:outputText value="#{tab.vencimento}" />
 						</p:column>
 
-						<p:column width="80">
-							<f:facet name="header">
-                                Situação
-                            </f:facet>
+						<p:column headerText="Situação" width="80">
 							<h:outputText value="#{tab.situacao}" />
 						</p:column>
 
-						<p:column width="170">
-							<f:facet name="header">
-                                Ação
-                            </f:facet>
+						<p:column headerText="Ação" width="170">
 
 							<p:commandButton title="Alterar" icon="ui-icon-pencil"
 								size="sm" class="btn-acao-table acao-editar"

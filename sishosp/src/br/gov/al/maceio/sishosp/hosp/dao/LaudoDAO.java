@@ -16,9 +16,11 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
@@ -367,7 +369,7 @@ public class LaudoDAO {
         return retorno;
     }
 
-    public ArrayList<LaudoBean> listaLaudos(String situacao, String campoBusca, String tipoBusca)
+    public ArrayList<LaudoBean> listaLaudos(BuscaLaudoDTO buscaLaudoDTO)
             throws ProjetoException {
 
         String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
@@ -378,24 +380,52 @@ public class LaudoDAO {
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
                 + " where l.ativo is true and l.cod_unidade = ? ";
 
-        if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
+        if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
             sql = sql + " AND l.situacao = ? ";
         }
+        
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getTipoPeriodoData())) {
+			if (buscaLaudoDTO.getTipoPeriodoData().equals(SituacaoLaudo.AUTORIZADO.getSigla())
+					&& (!VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataInicial())
+							&& !VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataFinal()))) {
+				sql = sql + " and (l.data_autorizacao between ? and ?) ";
+			}
 
-        if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			else if (buscaLaudoDTO.getTipoPeriodoData().equals(SituacaoLaudo.PENDENTE.getSigla())
+					&& (!VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataInicial())
+							&& !VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataFinal()))) {
+				sql = sql + " and (l.data_solicitacao between ? and ?) ";
+			}
+
+			else if (buscaLaudoDTO.getTipoPeriodoData().equals(SituacaoLaudo.TODOS.getSigla())) {
+				sql = sql + " and (l.data_solicitacao between ? and ?) ";
+			}
+        }
+        
+
+        if (((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.NOME_PACIENTE.getSigla())) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
             sql = sql + " and p.nome ilike ?";
         }
 
-        if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.CODIGO_PROCEDIMENTO.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
             sql = sql + " and pr.codproc = ?";
         }
 
-        if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.MATRICULA.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
             sql = sql + " and upper(p.matricula) = ?";
         }
 
-        if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        else if ((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE.getSigla()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
             sql = sql + " and p.id_paciente = ?";
+        }
+        
+        else if(buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE_ANTIGO.getSigla())
+           		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca())) {
+                sql = sql + " and p.codprontuario_anterior = ?";
         }
 
         sql = sql + " order by ano_final desc, mes_final desc, nome ";
@@ -407,24 +437,37 @@ public class LaudoDAO {
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setInt(1, user_session.getUnidade().getId());
             int i = 2;
-            if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
-                stm.setString(i, situacao);
+            
+            if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
+                stm.setString(i, buscaLaudoDTO.getSituacao());
+                i++;
+                if(!VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataInicial()) 
+						&& !VerificadorUtil.verificarSeObjetoNulo(buscaLaudoDTO.getDataFinal())) {
+					stm.setDate(i, new java.sql.Date(buscaLaudoDTO.getDataInicial().getTime()));
+					i++;
+					stm.setDate(i, new java.sql.Date(buscaLaudoDTO.getDataFinal().getTime()));
+					i++;
+                }
+            }
+
+            if (((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.NOME_PACIENTE.getSigla())) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
+                stm.setString(i, "%" + buscaLaudoDTO.getCampoBusca().toUpperCase() + "%");
                 i++;
             }
 
-            if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-                stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
+
+            else if (((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.CODIGO_PROCEDIMENTO.getSigla())) 
+            		|| (buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.MATRICULA.getSigla())))
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca())) {
+                stm.setString(i, buscaLaudoDTO.getCampoBusca().toUpperCase());
                 i++;
             }
 
-
-            if (((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
-                stm.setString(i, campoBusca.toUpperCase());
-                i++;
-            }
-
-            if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-                stm.setInt(i, Integer.valueOf(campoBusca));
+            else if ((buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE.getSigla())
+            		|| (buscaLaudoDTO.getTipoBusca().equals(TipoBuscaLaudo.PRONTUARIO_PACIENTE_ANTIGO.getSigla()))
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaLaudoDTO.getCampoBusca()))) {
+                stm.setInt(i, Integer.valueOf(buscaLaudoDTO.getCampoBusca()));
                 i++;
             }
 
