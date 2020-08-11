@@ -34,9 +34,11 @@
 					<p:selectOneRadio id="console"
 						value="#{LaudoController.buscaLaudoDTO.situacao}" required="true"
 						requiredMessage="Informe o tipo de Pessoa">
-						<f:selectItem itemLabel="Todos" itemValue="T" />
+						<f:selectItem itemLabel="Todos" itemValue="T"/>
 						<f:selectItem itemLabel="Autorizados" itemValue="A" />
 						<f:selectItem itemLabel="Pendentes" itemValue="P" />
+
+						
 					</p:selectOneRadio>
 					
 					<br />
@@ -47,38 +49,42 @@
 					<p:row>
 						<p:autoUpdate/>
 				
-						<p:panelGrid columns="9">
-							<b:column span="2" class="label-position data-size3" style="margin-left:-1%;">
-								<b:label value="Perído de Data por:" severity="info" />
+						<p:outputPanel id="outdata">
+							<p:panelGrid columns="9" id="panelperiodo">
+								<b:column span="2" class="label-position data-size3"
+									style="margin-left:-1%;">
+									<b:label value="Perído de Data:" severity="info" />
 
-								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15" class="select-agendaEquipe2"
-									value="#{LaudoController.buscaLaudoDTO.dataInicial}" />
-							</b:column>
+									<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+										showOn="button" size="15" class="select-agendaEquipe2"
+										value="#{LaudoController.buscaLaudoDTO.dataInicial}" />
+								</b:column>
 
-							<b:column span="1" class="data-size4">
-								<p:outputLabel id="outdataa">
-									<h:outputLabel value="à" />
-								</p:outputLabel>
-							</b:column>
+								<b:column span="1" class="data-size4">
+									<p:outputLabel id="outdataa">
+										<h:outputLabel value="à" />
+									</p:outputLabel>
+								</b:column>
 
-							<b:column span="2" class="label-position data-size3">
-								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									class="select-agendaEquipe2" showOn="button" size="15"
-									id="dtagen3" locale="pt"
-									value="#{LaudoController.buscaLaudoDTO.dataFinal}" />
-							</b:column>	
-							
-							<b:column span="4" class="label-position data-size3">
-								<p:selectOneRadio id="opcaoData" label="adsd"
-									value="#{LaudoController.buscaLaudoDTO.tipoPeriodoData}"
-									required="true" requiredMessage="Informe o tipo ">
-									<f:selectItem itemLabel="Todos" itemValue="T" />
-									<f:selectItem itemLabel="Autorização" itemValue="A" />
-									<f:selectItem itemLabel="Pendentes" itemValue="P" />
-								</p:selectOneRadio>
-							</b:column>
-						</p:panelGrid>
+								<b:column span="2" class="label-position data-size3">
+									<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+										class="select-agendaEquipe2" showOn="button" size="15"
+										id="dtagen3" locale="pt"
+										value="#{LaudoController.buscaLaudoDTO.dataFinal}" />
+								</b:column>
+
+								<b:column span="4" class="label-position data-size3">
+									<p:autoUpdate/>
+									<strong>Período Referente a:</strong>
+									<p:selectOneRadio id="opcaoData"
+										value="#{LaudoController.buscaLaudoDTO.tipoPeriodoData}"
+										required="true" requiredMessage="Informe o tipo ">
+										<f:selectItem itemLabel="Data de Autorização" itemValue="A" />
+										<f:selectItem itemLabel="Data de Solicitação" itemValue="P" />
+									</p:selectOneRadio>
+								</b:column>
+							</p:panelGrid>
+						</p:outputPanel>
 						
 
 						<p:panelGrid columns="4">
@@ -96,7 +102,7 @@
 								style="margin-left: 10px;width:300px" />
 
 							<p:commandButton
-								action="#{LaudoController.listarLaudo(LaudoController.buscaLaudoDTO)}"
+								action="#{LaudoController.validaPeriodoBusca(LaudoController.buscaLaudoDTO)}"
 								update="tabela msgPagina" icon="ui-icon-search"
 								style="margin-left: 10px;" />
 						</p:panelGrid>
@@ -105,6 +111,9 @@
 
 					<p:dataTable rows="20" paginator="true" id="tabela" style="margin-top: 10px"
 						emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+						 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15"
 						var="tab" responsive="true">
 						
 						<p:column headerText="Prontuário">

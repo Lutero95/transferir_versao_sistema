@@ -397,9 +397,9 @@ public class LaudoDAO {
 				sql = sql + " and (l.data_solicitacao between ? and ?) ";
 			}
 
-			else if (buscaLaudoDTO.getTipoPeriodoData().equals(SituacaoLaudo.TODOS.getSigla())) {
-				sql = sql + " and (l.data_solicitacao between ? and ?) ";
-			}
+//			else if (buscaLaudoDTO.getTipoPeriodoData().equals(SituacaoLaudo.TODOS.getSigla())) {
+//				sql = sql + " and (l.data_solicitacao between ? and ?) ";
+//			}
         }
         
 
