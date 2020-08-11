@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,12 +33,12 @@ public class GestaoAbonoFaltaPacienteDAO {
 				"afp.cod_grupo, afp.cod_equipe, afp.data_abono, afp.codpaciente, " + 
 				"pa.nome paciente, pro.descprograma, g.descgrupo, e.descequipe, " + 
 				"CASE WHEN afp.turno = 'T' THEN 'TARDE' " + 
-        		"WHEN afp.turno = 'M' THEN 'MANH�' END AS turno "+
+        		"WHEN afp.turno = 'M' THEN 'MANHA' END AS turno "+
 				"	from adm.abono_falta_paciente afp " + 
 				"	join acl.funcionarios f on f.id_funcionario = afp.codusuario_operacao " + 
 				"	join hosp.programa pro on pro.id_programa = afp.cod_programa " + 
 				"	join hosp.grupo g on g.id_grupo = afp.cod_grupo " + 
-				"	join hosp.equipe e on e.id_equipe = afp.cod_equipe " + 
+				"	left join hosp.equipe e on afp.cod_equipe = e.id_equipe " + 
 				"	join hosp.pacientes pa on pa.id_paciente = afp.codpaciente ";
 
 		try {
@@ -189,7 +190,13 @@ public class GestaoAbonoFaltaPacienteDAO {
         	ps.setLong(1, gravarInsercaoAbonoFaltaPacienteDTO.getIdUsuarioOperacao());
         	ps.setInt(2, atendimentoBean.getPrograma().getIdPrograma());
         	ps.setInt(3, atendimentoBean.getGrupo().getIdGrupo());
-        	ps.setInt(4, atendimentoBean.getEquipe().getCodEquipe());
+        	
+        	if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBean.getEquipe().getCodEquipe()))
+        		ps.setNull(4, Types.NULL);
+        	else
+        		ps.setInt(4, atendimentoBean.getEquipe().getCodEquipe());        		
+        	
+        	
         	ps.setDate(5, new Date(atendimentoBean.getDataAtendimentoInicio().getTime()));
         	if(atendimentoBean.getTurno().equalsIgnoreCase(Turno.MANHA.name()))
         		ps.setString(6, Turno.MANHA.getSigla());
