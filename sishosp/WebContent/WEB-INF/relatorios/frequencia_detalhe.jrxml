@@ -1,38 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="frequencia_detalhe" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="393fe5ed-cdef-4852-ae81-9e051ea3e92f">
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="550"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="436"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="368"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="625"/>
 	<parameter name="chave" class="java.lang.Integer"/>
-	<parameter name="codprograma" class="java.lang.Integer"/>
-	<parameter name="codgrupo" class="java.lang.Integer"/>
-	<parameter name="mes" class="java.lang.Integer"/>
-	<parameter name="ano" class="java.lang.Integer"/>
-	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select a.dtaatende, f.descfuncionario, e.descespecialidade
-from hosp.atendimentos a
-join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento 
-join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario
-join hosp.especialidade e on f.codespecialidade = e.id_especialidade 
-join hosp.pacientes p on a.codpaciente = p.id_paciente 
-join hosp.paciente_instituicao pi on p.id_paciente = pi.id_paciente 
-where a.codprograma =  $P{codprograma} 
-and a.codgrupo =  $P{codgrupo} 
-and pi.id =  $P{codpacienteinstituicao}
-and extract (year from a.dtaatende) =  $P{ano} 
-and extract (month from a.dtaatende) =  $P{mes} 
-and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, '')<>'S'
-order by a.dtaatende desc
-limit (select count(*) from temporaria_frequencia where chave=  $P{chave} );]]>
+		<![CDATA[select * from temporaria_frequencia where chave= $P{chave}]]>
 	</queryString>
-	<field name="dtaatende" class="java.util.Date"/>
-	<field name="descfuncionario" class="java.lang.String"/>
-	<field name="descespecialidade" class="java.lang.String"/>
+	<field name="chave" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="chave"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="temporaria_frequencia"/>
+	</field>
 	<detail>
 		<band height="18" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -45,46 +21,19 @@ limit (select count(*) from temporaria_frequencia where chave=  $P{chave} );]]>
 				</reportElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="40" y="0" width="50" height="18" uuid="bf775bd8-0455-4031-89c4-f49a9edb2ed9"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ /      /]]></text>
+			</staticText>
 			<line>
-				<reportElement x="76" y="0" width="1" height="18" uuid="2b09dd0c-2b1d-48cc-bfb7-604acf3d4b51"/>
+				<reportElement x="90" y="0" width="1" height="18" uuid="2b09dd0c-2b1d-48cc-bfb7-604acf3d4b51"/>
 			</line>
 			<line>
-				<reportElement x="366" y="0" width="1" height="18" uuid="9550a00f-86ac-423d-bb4c-98996da30df9">
+				<reportElement x="244" y="0" width="1" height="18" uuid="9550a00f-86ac-423d-bb4c-98996da30df9">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</line>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement x="25" y="2" width="50" height="14" uuid="0134c0fa-7008-4e50-a8f5-fbe57439e6f4">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{dtaatende}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="264" y="0" width="1" height="18" uuid="69154c4b-6972-42ff-9518-f49e681ab809">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-			</line>
-			<textField>
-				<reportElement x="79" y="3" width="183" height="14" uuid="7b38d717-e159-462b-a678-c746b8b613a8">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descfuncionario}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="266" y="2" width="100" height="14" uuid="263453f9-8f59-4b71-bd50-5b2fb624ae19">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
-			</textField>
 		</band>
 	</detail>
 </jasperReport>

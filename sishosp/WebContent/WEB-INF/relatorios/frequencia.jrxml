@@ -64,8 +64,6 @@
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="chave" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
-	<parameter name="ano" class="java.lang.Integer"/>
-	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
@@ -85,7 +83,7 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS e
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5,
-programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade, programa.id_programa, grupo.id_grupo
+programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade
 FROM hosp.paciente_instituicao pi 
 left join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente =coalesce(l.codpaciente, pi.id_paciente) 
@@ -332,12 +330,10 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
 	<field name="cidade" class="java.lang.String"/>
-	<field name="id_programa" class="java.lang.Integer"/>
-	<field name="id_grupo" class="java.lang.Integer"/>
 	<group name="grpfreq" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{codpacienteinstituicao}]]></groupExpression>
 		<groupHeader>
-			<band height="358">
+			<band height="354">
 				<rectangle>
 					<reportElement positionType="Float" x="0" y="271" width="541" height="69" uuid="daabbd09-6893-4ae7-aebb-b5cd53c7d73f"/>
 				</rectangle>
@@ -754,17 +750,15 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<text><![CDATA[Assinatura/Carimbo do Diretor da Unidade]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="32" y="340" width="32" height="13" uuid="5c172dda-f014-4bdd-9154-3699a702b979">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
+					<reportElement x="43" y="340" width="56" height="13" uuid="5c172dda-f014-4bdd-9154-3699a702b979"/>
 					<text><![CDATA[DATA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="127" y="340" width="80" height="13" uuid="871aa1d9-c3c2-44fb-b58b-6de3bee924a7"/>
+					<reportElement x="102" y="340" width="80" height="13" uuid="871aa1d9-c3c2-44fb-b58b-6de3bee924a7"/>
 					<text><![CDATA[PROFISSIONAL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="414" y="340" width="80" height="13" uuid="889baee0-423b-4718-b658-5ffdbf415185"/>
+					<reportElement x="253" y="340" width="80" height="13" uuid="889baee0-423b-4718-b658-5ffdbf415185"/>
 					<text><![CDATA[ASSINATURA]]></text>
 				</staticText>
 				<staticText>
@@ -863,10 +857,6 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 						<pen lineWidth="0.5"/>
 					</graphicElement>
 				</line>
-				<staticText>
-					<reportElement x="280" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
-					<text><![CDATA[ESPECIALIDADE]]></text>
-				</staticText>
 			</band>
 		</groupHeader>
 	</group>
@@ -902,27 +892,12 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="9" splitType="Stretch">
+		<band height="10" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement stretchType="ContainerHeight" x="3" y="-1" width="538" height="10" uuid="a3028ba1-b34a-4aba-ab36-92ff138f096a"/>
+				<reportElement stretchType="ContainerHeight" x="3" y="0" width="538" height="10" uuid="a3028ba1-b34a-4aba-ab36-92ff138f096a"/>
 				<subreportParameter name="chave">
 					<subreportParameterExpression><![CDATA[$P{chave}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="codprograma">
-					<subreportParameterExpression><![CDATA[$F{id_programa}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="codgrupo">
-					<subreportParameterExpression><![CDATA[$F{id_grupo}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ano">
-					<subreportParameterExpression><![CDATA[$P{ano}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="mes">
-					<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="codpacienteinstituicao">
-					<subreportParameterExpression><![CDATA[$F{codpacienteinstituicao}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"frequencia_detalhe.jasper"]]></subreportExpression>

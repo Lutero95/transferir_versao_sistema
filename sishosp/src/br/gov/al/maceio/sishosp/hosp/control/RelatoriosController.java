@@ -158,6 +158,10 @@ public class RelatoriosController implements Serializable {
 
 	public void preparaRelFrequencia() throws ProjetoException {
 		atributoGenerico1 = "P";
+	}
+	
+	public void preparaRelFrequenciaPreenchida() throws ProjetoException {
+		atributoGenerico1 = "P";
 		listarAnosAtendimentos();
 	}
 
@@ -305,6 +309,48 @@ public class RelatoriosController implements Serializable {
 	}
 
 
+	public void geraFrequenciaPreenchida(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+		
+		if(camposvalidos(programa, grupo)) {
+			
+			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
+			pacienteInstituicao.setPrograma(programa);
+			pacienteInstituicao.setGrupo(grupo);
+			int randomico = JSFUtil.geraNumeroRandomico();
+			RelatorioDAO rDao = new RelatorioDAO();
+			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+
+			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
+				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
+			} else {
+				String caminho = "/WEB-INF/relatorios/";
+				String relatorio = "";
+				relatorio = caminho + "frequencia_preenchida.jasper";
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("chave", randomico);
+				map.put("ano", this.ano);
+				map.put("mes", this.mes);
+				map.put("codunidade", user_session.getUnidade().getId());
+				if (pacienteInstituicao.getPrograma() != null)
+					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+
+				if (pacienteInstituicao.getGrupo() != null)
+					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+				if (pacienteInstituicao.getId() != null)
+					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+
+				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)  + File.separator);
+				this.executeReport(relatorio, map, "relatorio.pdf");
+				// this.executeReportNewTab(relatorio, "frequencia.pdf",
+//                    map);
+				rDao.limparTabelaTemporariaFrequencia(randomico);
+
+			}
+		}
+	}
+	
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		
@@ -325,8 +371,6 @@ public class RelatoriosController implements Serializable {
 				relatorio = caminho + "frequencia.jasper";
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("chave", randomico);
-				map.put("ano", this.ano);
-				map.put("mes", this.mes);
 				map.put("codunidade", user_session.getUnidade().getId());
 				if (pacienteInstituicao.getPrograma() != null)
 					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
@@ -337,7 +381,7 @@ public class RelatoriosController implements Serializable {
 				if (pacienteInstituicao.getId() != null)
 					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
 
-				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)  + File.separator);
+				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 				this.executeReport(relatorio, map, "relatorio.pdf");
 				// this.executeReportNewTab(relatorio, "frequencia.pdf",
 //                    map);
