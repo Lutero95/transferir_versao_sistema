@@ -38,7 +38,9 @@
 						<f:selectItem itemLabel="Autorizados" itemValue="A" />
 						<f:selectItem itemLabel="Pendentes" itemValue="P" />
 
-						
+						<p:ajax
+							listener="#{LaudoController.alterarCheckboxPeriodoData(LaudoController.buscaLaudoDTO)}"
+							update=":frmPrincipal" process="@form"/>
 					</p:selectOneRadio>
 					
 					<br />

@@ -90,7 +90,6 @@ public class FuncionarioBean implements Serializable {
         novaSenha = "";
         confirmacaoNovaSenha = "";
         listDiasSemana = new ArrayList<String>();
-        System.out.println("construtor funcionario");
     }
 
 
