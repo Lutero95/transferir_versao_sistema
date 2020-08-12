@@ -7,14 +7,14 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="368"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="625"/>
-	<parameter name="chave" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<parameter name="ano" class="java.lang.Integer"/>
 	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
+	<parameter name="qtdfrequencia" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select a.dtaatende, f.descfuncionario, e.descespecialidade
+		<![CDATA[select distinct a.dtaatende, f.descfuncionario, e.descespecialidade
 from hosp.atendimentos a
 join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento 
 join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario
@@ -23,12 +23,12 @@ join hosp.pacientes p on a.codpaciente = p.id_paciente
 join hosp.paciente_instituicao pi on p.id_paciente = pi.id_paciente 
 where a.codprograma =  $P{codprograma} 
 and a.codgrupo =  $P{codgrupo} 
-and pi.id =  $P{codpacienteinstituicao}
-and extract (year from a.dtaatende) =  $P{ano} 
-and extract (month from a.dtaatende) =  $P{mes} 
+and pi.id =  $P{codpacienteinstituicao} and pi.status = 'A'
 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, '')<>'S'
+and extract (year from a.dtaatende) =    $P{ano} 
+and extract (month from a.dtaatende) =   $P{mes} 
 order by a.dtaatende desc
-limit (select count(*) from temporaria_frequencia where chave=  $P{chave} );]]>
+limit  $P{qtdfrequencia}  ;]]>
 	</queryString>
 	<field name="dtaatende" class="java.util.Date"/>
 	<field name="descfuncionario" class="java.lang.String"/>

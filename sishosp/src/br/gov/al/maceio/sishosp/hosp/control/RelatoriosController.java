@@ -312,42 +312,30 @@ public class RelatoriosController implements Serializable {
 	public void geraFrequenciaPreenchida(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		
-		if(camposvalidos(programa, grupo)) {
-			
-			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
-			pacienteInstituicao.setPrograma(programa);
-			pacienteInstituicao.setGrupo(grupo);
-			int randomico = JSFUtil.geraNumeroRandomico();
-			RelatorioDAO rDao = new RelatorioDAO();
-			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+		pacienteInstituicao.setPrograma(programa);
+		pacienteInstituicao.setGrupo(grupo);
 
-			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
-				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
-			} else {
-				String caminho = "/WEB-INF/relatorios/";
-				String relatorio = "";
-				relatorio = caminho + "frequencia_preenchida.jasper";
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("chave", randomico);
-				map.put("ano", this.ano);
-				map.put("mes", this.mes);
-				map.put("codunidade", user_session.getUnidade().getId());
-				if (pacienteInstituicao.getPrograma() != null)
-					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+		if (pacienteInstituicao.getLaudo().getPaciente() == null) {
+			JSFUtil.adicionarMensagemErro("Informe o Paciente obrigatoriamente!", "Erro!");
+		} else {
+			String caminho = "/WEB-INF/relatorios/";
+			String relatorio = "";
+			relatorio = caminho + "frequencia_preenchida.jasper";
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("ano", this.ano);
+			map.put("mes", this.mes);
+			map.put("codunidade", user_session.getUnidade().getId());
+			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+				map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 
-				if (pacienteInstituicao.getGrupo() != null)
-					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
+				map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 
-				if (pacienteInstituicao.getId() != null)
-					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getId()))
+				map.put("codpacienteinstituicao", pacienteInstituicao.getId());
 
-				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)  + File.separator);
-				this.executeReport(relatorio, map, "relatorio.pdf");
-				// this.executeReportNewTab(relatorio, "frequencia.pdf",
-//                    map);
-				rDao.limparTabelaTemporariaFrequencia(randomico);
-
-			}
+			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			this.executeReport(relatorio, map, "relatorio.pdf");
 		}
 	}
 	
