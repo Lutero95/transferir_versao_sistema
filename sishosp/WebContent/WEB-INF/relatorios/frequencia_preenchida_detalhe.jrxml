@@ -3,36 +3,44 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="frequencia_preenchida_detalhe" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="393fe5ed-cdef-4852-ae81-9e051ea3e92f">
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="550"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="436"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="368"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="625"/>
-	<parameter name="chave" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<parameter name="ano" class="java.lang.Integer"/>
-	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
+	<parameter name="codpaciente" class="java.lang.Integer"/>
+	<parameter name="qtdfrequencia" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select a.dtaatende, f.descfuncionario, e.descespecialidade
+		<![CDATA[select distinct a.dtaatende, f.descfuncionario, e.descespecialidade
 from hosp.atendimentos a
 join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento 
 join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario
 join hosp.especialidade e on f.codespecialidade = e.id_especialidade 
 join hosp.pacientes p on a.codpaciente = p.id_paciente 
-join hosp.paciente_instituicao pi on p.id_paciente = pi.id_paciente 
 where a.codprograma =  $P{codprograma} 
 and a.codgrupo =  $P{codgrupo} 
-and pi.id =  $P{codpacienteinstituicao}
-and extract (year from a.dtaatende) =  $P{ano} 
-and extract (month from a.dtaatende) =  $P{mes} 
+and a.codpaciente= $P{codpaciente} 
 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, '')<>'S'
-order by a.dtaatende desc
-limit (select count(*) from temporaria_frequencia where chave=  $P{chave} );]]>
+and extract (year from a.dtaatende) =    $P{ano} 
+and extract (month from a.dtaatende) =   $P{mes} 
+order by a.dtaatende
+limit  coalesce ($P{qtdfrequencia} ,0) ;]]>
 	</queryString>
-	<field name="dtaatende" class="java.util.Date"/>
-	<field name="descfuncionario" class="java.lang.String"/>
-	<field name="descespecialidade" class="java.lang.String"/>
+	<field name="dtaatende" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="dtaatende"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="descfuncionario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descfuncionario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<field name="descespecialidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="especialidade"/>
+	</field>
 	<detail>
 		<band height="18" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>

@@ -208,16 +208,16 @@ order by 1, a.dtaatende]]>
 	<group name="paciente" minHeightToStartNewPage="100">
 		<groupExpression><![CDATA[$F{nome_paciente}]]></groupExpression>
 		<groupHeader>
-			<band height="33">
+			<band height="61">
 				<staticText>
 					<reportElement x="0" y="4" width="141" height="13" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Paciente]]></text>
+					<text><![CDATA[PACIENTE]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="1" y="19" width="158" height="12" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
+					<reportElement x="1" y="19" width="259" height="12" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
@@ -225,6 +225,22 @@ order by 1, a.dtaatende]]>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="1" y="46" width="259" height="12" uuid="4890bdb6-f792-4a84-a1ee-ae644240ac88">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="1" y="32" width="141" height="13" uuid="3ae3f446-7809-4a1e-a71a-ac7d10fdbf1f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CNS]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -252,7 +268,7 @@ order by 1, a.dtaatende]]>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Profissional]]></text>
+					<text><![CDATA[PROFISSIONAL]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="123" y="1" width="105" height="12" uuid="ec3309ac-9050-44b0-a309-dec9de9d89f7">
@@ -262,7 +278,7 @@ order by 1, a.dtaatende]]>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Especialidade]]></text>
+					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="228" y="1" width="44" height="12" uuid="ea4ba4f7-4869-4e73-b99b-65042db4d77b">
@@ -272,7 +288,7 @@ order by 1, a.dtaatende]]>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Data]]></text>
+					<text><![CDATA[DATA]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
