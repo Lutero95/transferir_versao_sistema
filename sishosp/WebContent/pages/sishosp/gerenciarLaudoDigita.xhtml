@@ -7,7 +7,11 @@
 				template="../../template/template.xhtml">
 
 	<ui:define name="content">
-
+		<style type="text/css">
+			.ui-paginator a {
+				margin-right: -10px;
+			}
+		</style>
 		<f:metadata>
 			<f:viewAction
 					action="#{LaudoController.listarLaudo(LaudoController.buscaLaudoDTO)}" />
@@ -116,18 +120,27 @@
 
 					</p:row>
 
+
 					<p:dataTable rows="20" paginator="true" id="tabela" style="margin-top: 10px"
 								 emptyMessage="Nenhum Laudo" value="#{LaudoController.listaLaudo}"
 								 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-								 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								 rowsPerPageTemplate="5,10,15"
+								 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {Exporters}"
 								 var="tab" responsive="true">
+						<f:facet name="{Exporters}">
+							<div style="float:right !important;margin-right: 10px">
+								<h:commandLink title="Exportar para PDF">
+									<h:graphicImage url="../../imgs/file-pdf.jpg"  width="24px"/>
+									<p:dataExporter encoding="iso-8859-1" type="pdf" target="tabela" fileName="listagemlaudo" preProcessor="#{exportacaoMB.preProcessLaudo}"/>
+								</h:commandLink>
 
-						<p:column headerText="Prontuário">
+							</div>
+						</f:facet>
+
+						<p:column headerText="Prontuário" width="80">
 							<h:outputText value="#{tab.paciente.id_paciente}" />
 						</p:column>
 
-						<p:column headerText="Matrícula">
+						<p:column headerText="Matrícula" exportable="false"  width="80">
 							<h:outputText value="#{tab.paciente.matricula}" />
 						</p:column>
 
@@ -142,13 +155,13 @@
 						</p:column>
 
 
-						<p:column headerText="Procedimento Primário" width="250">
+						<p:column headerText="Procedimento Primário" width="244">
 							<h:outputText value="#{tab.procedimentoPrimario.codProc}" />-<h:outputText
 								value="#{tab.procedimentoPrimario.nomeProc}" />
 						</p:column>
 
 
-						<p:column headerText="Vencimento" width="90">
+						<p:column headerText="Vencimento" width="95">
 							<h:outputText value="#{tab.vencimento}" />
 						</p:column>
 
@@ -156,7 +169,7 @@
 							<h:outputText value="#{tab.situacao}" />
 						</p:column>
 
-						<p:column headerText="Ação" width="170">
+						<p:column headerText="Ação" width="177" exportable="false">
 
 							<p:commandButton title="Alterar" icon="ui-icon-pencil"
 											 size="sm" class="btn-acao-table acao-editar"
