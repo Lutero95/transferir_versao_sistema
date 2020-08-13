@@ -66,7 +66,7 @@
 	<parameter name="ano" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
+		<![CDATA[select distinct(hosp.listagrupospacienteatendimentosmesano(v.id_paciente,v.id_programa, 7, 2020))grupos,  v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
 	, (select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
@@ -84,14 +84,14 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS e
 prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5,
-programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade, programa.id_programa, grupo.id_grupo, grupo.id_grupo, gp.qtdfrequencia 
+programa.descprograma, grupo.descgrupo, p.matricula, empresa.cidade, programa.id_programa, grupo.id_grupo, grupo.id_grupo
 FROM hosp.atendimentos a 
+inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 left JOIN  hosp.paciente_instituicao pi ON a.id_paciente_instituicao = pi.id 
 left join hosp.laudo l on pi.codlaudo = l.id_laudo
-JOIN hosp.pacientes p ON p.id_paciente =coalesce(l.codpaciente, pi.id_paciente) 
-left JOIN hosp.programa on programa.id_programa = pi.codprograma
+JOIN hosp.pacientes p ON p.id_paciente =a.codpaciente 
+left JOIN hosp.programa on programa.id_programa = a.codprograma
 left JOIN hosp.grupo on grupo.id_grupo = pi.codgrupo
-JOIN hosp.grupo_programa gp ON (gp.codgrupo = grupo.id_grupo AND gp.codprograma = programa.id_programa)
 LEFT JOIN hosp.proc prp ON prp.id =  coalesce(l.codprocedimento_primario, pi.codprocedimento_primario_laudo_anterior)
 LEFT JOIN hosp.proc prs1 ON prs1.id = coalesce(l.codprocedimento_secundario1, pi.codprocedimento_secundario1_laudo_anterior)
 LEFT JOIN hosp.proc prs2 ON prs2.id = coalesce(l.codprocedimento_secundario2, pi.codprocedimento_secundario2_laudo_anterior)
@@ -108,7 +108,9 @@ LEFT JOIN hosp.cid c1 ON c1.cod = l.cid1
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
+ join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 WHERE 1=1
+and sa.atendimento_realizado is true
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
 and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))
@@ -122,6 +124,9 @@ left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
 left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
 order by  nome]]>
 	</queryString>
+	<field name="grupos" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="grupos"/>
+	</field>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
 	</field>
@@ -327,13 +332,9 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
 	</field>
-	<field name="COLUMN_53" class="java.lang.Integer">
+	<field name="COLUMN_54" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
-	</field>
-	<field name="qtdfrequencia" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="qtdfrequencia"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="grupo_programa"/>
 	</field>
 	<field name="tel_id2" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
@@ -353,8 +354,8 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="tel3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<group name="grpfreq" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{codpacienteinstituicao}]]></groupExpression>
+	<group name="grpfreq" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{id_paciente}]]></groupExpression>
 		<groupHeader>
 			<band height="358">
 				<rectangle>
@@ -892,7 +893,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 	<pageHeader>
 		<band height="79">
 			<textField>
-				<reportElement x="80" y="14" width="400" height="16" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
+				<reportElement x="80" y="14" width="395" height="16" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -908,7 +909,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 			<textField>
 				<reportElement x="80" y="47" width="400" height="13" uuid="a81e7b5a-b186-41b9-bb58-9061c27cee09"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descprograma}]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement x="0" y="5" width="80" height="74" uuid="0b6b7762-b34f-40a0-8ac2-57e8d37e34d8"/>
@@ -918,6 +919,11 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 				<reportElement x="475" y="5" width="80" height="74" uuid="d0ef7868-e5ec-4005-838a-e48cc9fd618f"/>
 				<imageExpression><![CDATA[$F{logomarca2}]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="80" y="60" width="400" height="13" uuid="ba66e18e-5452-4209-8dd7-d8a057ef3c3f"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{grupos}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -928,9 +934,6 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 				<subreportParameter name="codprograma">
 					<subreportParameterExpression><![CDATA[$F{id_programa}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="codgrupo">
-					<subreportParameterExpression><![CDATA[$F{id_grupo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="ano">
 					<subreportParameterExpression><![CDATA[$P{ano}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -939,9 +942,6 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 				</subreportParameter>
 				<subreportParameter name="codpaciente">
 					<subreportParameterExpression><![CDATA[$F{id_paciente}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="qtdfrequencia">
-					<subreportParameterExpression><![CDATA[$F{qtdfrequencia}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"frequencia_preenchida_detalhe.jasper"]]></subreportExpression>

@@ -8,7 +8,6 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="368"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="625"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
-	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<parameter name="ano" class="java.lang.Integer"/>
 	<parameter name="codpaciente" class="java.lang.Integer"/>
@@ -20,14 +19,15 @@ join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento
 join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario
 join hosp.especialidade e on f.codespecialidade = e.id_especialidade 
 join hosp.pacientes p on a.codpaciente = p.id_paciente 
+ join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 where a.codprograma =  $P{codprograma} 
-and a.codgrupo =  $P{codgrupo} 
 and a.codpaciente= $P{codpaciente} 
 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, '')<>'S'
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
+and sa.atendimento_realizado is true
 order by a.dtaatende
-limit  coalesce ($P{qtdfrequencia} ,0) ;]]>
+]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.label" value="dtaatende"/>

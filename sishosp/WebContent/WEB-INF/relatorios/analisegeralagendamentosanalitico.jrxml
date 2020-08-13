@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="210"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="779"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="cod_profissional" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select empresa.nome_principal nomeinstituicao, a.dtaatende dt_atend,programa.id_programa,programa.descprograma, g.id_grupo, g.descgrupo grupo,a.turno,  case when coalesce(a.presenca,'N')='N' then 'NÃO' else 'SIM' end  presenca,
+p2.id_paciente pront, p2.nome nome_paciente,coalesce(sa.descricao,'PENDENTE DE EVOLUÇÃO')  situacaoatendimento ,f.id_funcionario, f.descfuncionario
+    FROM  hosp.atendimentos a
+LEFT JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) 
+    join hosp.unidade u on u.id = a.cod_unidade 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
+join hosp.pacientes p2 on p2.id_paciente  = a.codpaciente 
+ left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento 
+left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento 
+ left join hosp.programa  on programa.id_programa = a.codprograma 
+ left join hosp.grupo g on g.id_grupo = a.codgrupo 
+LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) 
+LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) 
+WHERE 1=1 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
+ AND a.dtaatende >=  $P{dt_inicial}  AND a.dtaatende <=  $P{dt_final} 
+ and a.cod_unidade =  $P{codunidade} 
+ and ((   $P{codprograma}   is not null and a.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and a.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+  order by f.descfuncionario ,a.codprograma, a.codgrupo,f.id_funcionario,a.dtaatende]]>
+	</queryString>
+	<field name="nomeinstituicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="dt_atend" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="dt_atend"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="id_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="id_grupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="grupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="turno" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="turno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="presenca" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="presenca"/>
+	</field>
+	<field name="pront" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pront"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="nome_paciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="situacaoatendimento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="situacaoatendimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="situacao_atendimento"/>
+	</field>
+	<field name="id_funcionario" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_funcionario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<field name="descfuncionario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descfuncionario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grpgrupo" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	</variable>
+	<group name="grpprofissional">
+		<groupExpression><![CDATA[$F{id_funcionario}]]></groupExpression>
+		<groupHeader>
+			<band height="14"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="47"/>
+		</groupFooter>
+	</group>
+	<group name="grpgrupo">
+		<groupExpression><![CDATA[$F{id_grupo}]]></groupExpression>
+		<groupHeader>
+			<band height="61">
+				<textField>
+					<reportElement x="0" y="20" width="552" height="13" uuid="a29de9d8-9adb-49e5-a380-822d2b4cf0c5">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{grupo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="40" width="50" height="16" uuid="77a0ec35-4b43-40c2-a8e2-b07236fa02c4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[DATA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="51" y="40" width="143" height="16" uuid="4d91ccdc-db2c-4881-aef6-8e1e3c7c36c4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[PACIENTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="299" y="40" width="38" height="16" uuid="2bba0ab0-211a-4933-8c8a-82a5bd8b5330">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[TURNO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="343" y="40" width="58" height="16" uuid="7586cccb-36ea-4836-b48a-310dee6118f9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[PRESENÇA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="405" y="40" width="147" height="16" uuid="54320ce7-8478-4e38-bbc0-427c69c5f209"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[SITUAÇÃO ATENDIMENTO]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="3" width="552" height="13" uuid="f2f04e67-7e71-4468-be60-031a87b31e45">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PROFISSIONAL: "+$F{descfuncionario}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="47">
+				<textField>
+					<reportElement x="0" y="8" width="390" height="13" uuid="ea55e276-3efb-4202-a3ad-5dc54d727cf7">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$V{nome_paciente1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="84" splitType="Stretch">
+			<textField>
+				<reportElement x="4" y="0" width="545" height="20" uuid="d6536674-de12-488f-ba56-dfbe859f5cf3"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="30" width="549" height="20" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[AGENDAMENTOS POR PROFISSIONAL]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="14">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="50" y="2" width="236" height="11" uuid="7677cc95-193a-42db-b4d0-0deaa5da1e49"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="299" y="2" width="40" height="11" uuid="96202ce0-1c2b-4311-80a7-32be72138755">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="2" width="50" height="11" uuid="27bf9cf7-4779-4350-b166-c6bc2d51e135">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dt_atend}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="343" y="2" width="58" height="11" uuid="1e5fcb04-66ce-4322-8111-aa6afb3a2c98">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{presenca}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="405" y="2" width="147" height="11" uuid="91e2a16a-6320-4ae3-a8cf-263bdc80f98d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{situacaoatendimento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="418" y="34" width="23" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="441" y="34" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="481" y="34" width="68" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
