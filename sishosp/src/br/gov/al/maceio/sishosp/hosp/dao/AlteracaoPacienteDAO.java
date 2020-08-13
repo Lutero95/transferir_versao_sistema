@@ -204,6 +204,7 @@ public class AlteracaoPacienteDAO {
 	}
 
 	public boolean gravarAlteracaoEquipeTurno(InsercaoPacienteBean insercao,
+			InsercaoPacienteBean insercaoParaLaudo,
 			List<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
@@ -242,8 +243,8 @@ public class AlteracaoPacienteDAO {
             stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             stmt.setString(2, insercao.getObservacao());
             stmt.setString(3, insercao.getTurno());
-            if (insercao.getLaudo().getId()!=null) 
-            	stmt.setInt(4,insercao.getLaudo().getId());
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) 
+            	stmt.setInt(4, insercaoParaLaudo.getLaudo().getId());
             else
             	stmt.setNull(4, Types.NULL);
             stmt.setInt(5, insercao.getId());
@@ -543,9 +544,9 @@ public class AlteracaoPacienteDAO {
 				}		
 			*/
 			
-			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId())) {
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
 				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(insercao.getId(), conexao);
-				atualizaCidPrimario(listaIdAtendimento1, conexao, insercao.getLaudo().getCid1().getIdCid());
+				atualizaCidPrimario(listaIdAtendimento1, conexao, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 			}
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
@@ -596,20 +597,21 @@ public class AlteracaoPacienteDAO {
 					(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaAtendimento1ComLiberacao)) {
 
 				conexao.close();
-
 				return retorno;
 			}
-			
 		
-			
-			String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=? "
+			String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao=?, codlaudo=?  "
 	                + " where id = ?";
 	        
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
             stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             stmt.setString(2, insercao.getObservacao());
-            stmt.setInt(3, insercao.getId());
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId()))
+            	stmt.setInt(3, insercaoParaLaudo.getLaudo().getId());
+            else
+            	stmt.setNull(3, Types.NULL);
+            stmt.setInt(4, insercao.getId());
             stmt.executeUpdate();
 			
 
@@ -638,9 +640,9 @@ public class AlteracaoPacienteDAO {
 
 				if (!verificarSeAtendimentoExistePorEquipe(insercao,
 						listAgendamentoProfissional.get(i).getDataAtendimento(),
-						insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao)) {
+						insercao.getPaciente().getId_paciente(), conexao)) {
 
-					ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+					ps7.setInt(1, insercao.getPaciente().getId_paciente());
 					ps7.setNull(2, Types.NULL);
 					ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(
 							listAgendamentoProfissional.get(i).getDataAtendimento()));
@@ -699,7 +701,7 @@ public class AlteracaoPacienteDAO {
 								
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
-												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+												insercao.getPaciente().getId_paciente(), conexao);
 								
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);

@@ -127,6 +127,9 @@
                                     requiredMessage="Data de Inclusão: Campo obrigatório!"
                                     class="select-agendaEquipe2" showOn="button"
                                     pattern="dd/MM/yyyy" size="15">
+                                    
+                                    <p:ajax event="dateSelect" 
+                                    	listener="#{AlteracaoPacienteController.atualizaarDataSolicitacao(AlteracaoPacienteController.insercao.dataSolicitacao)}" />
                             </p:calendar>
 
                         </b:column>
@@ -724,7 +727,7 @@
 						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuLaudo').hide();"
-							class="new-btn-acao-table acao-editar"
+							class="new-btn-acao-table acao-editar" 
 							action="#{AlteracaoPacienteController.validaSelecaoLaudoPacienteSemLaudo()}">
 							<f:setPropertyActionListener value="#{insercao.laudo}"
 								target="#{AlteracaoPacienteController.insercao.laudo}" />

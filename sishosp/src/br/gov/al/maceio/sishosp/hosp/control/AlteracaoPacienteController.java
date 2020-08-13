@@ -421,9 +421,7 @@ public class AlteracaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
-            laudo = new LaudoBean();
-            laudo.setAnoFinal(this.insercao.getLaudo().getAnoFinal());
-            laudo.setMesFinal(this.insercao.getLaudo().getMesFinal());
+            this.laudo = this.insercao.getLaudo();
             if (insercao.getLaudo().getId()!=null) {
             	carregarLaudoPaciente();
             }
@@ -490,16 +488,18 @@ public class AlteracaoPacienteController implements Serializable {
     	
     	if  ((insercao.getPaciente() != null) && (insercao.getPaciente().getId_paciente() != null))
     		codPaciente = insercao.getPaciente().getId_paciente();
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente()))
+    		codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+    	
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
         Date d2 =null;
-        if ((insercao.getLaudo().getId()!=null) && (insercao.getLaudo().getId()!=0))
-         d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-        else
-        {
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId()))
+        	d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        else {
              Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
              Calendar cal = Calendar.getInstance();
              cal.setTime(dataFinalSemLaudo);
@@ -569,9 +569,22 @@ public class AlteracaoPacienteController implements Serializable {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
-        Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        
+        Date d2 = null;
+        
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId()))
+        		d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        else {
+            Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, insercao.getPaciente().getId_paciente());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dataFinalSemLaudo);
+            cal.add(Calendar.MONTH, 2);
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            d2 = cal.getTime();
+        }
+        	
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
@@ -606,9 +619,7 @@ public class AlteracaoPacienteController implements Serializable {
                     }
                 }
             }
-
         }
-
 
     }
     
@@ -732,8 +743,12 @@ public class AlteracaoPacienteController implements Serializable {
     public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() throws ProjetoException {
     	Boolean dataValida = null;
     	
-    	if ((!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo())) && (!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo().getId())) && (insercao.isInsercaoPacienteSemLaudo()==false))
-    		dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    	if ((!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo())) && (!VerificadorUtil.verificarSeObjetoNulo(insercaoParaLaudo.getLaudo().getId())) && (insercao.isInsercaoPacienteSemLaudo()==false)) {
+    		if(ehNovoLaudo())
+    			dataValida = iDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    		else
+    			dataValida = aDao.dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(insercaoParaLaudo.getLaudo().getId(), insercao.getDataSolicitacao());
+    	}
     	else if ((insercao.isInsercaoPacienteSemLaudo())) {
     		dataValida = validarDataLaudoPacienteSemLaudo();
     	}
@@ -742,6 +757,10 @@ public class AlteracaoPacienteController implements Serializable {
     	if(!dataValida)
     		JSFUtil.adicionarMensagemErro("Data de Inclusão não está dentro do intervalo da data do laudo", "Erro!");
     	return dataValida; 
+    }
+    
+    private boolean ehNovoLaudo() {
+    	return VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getId());
     }
 
     public void gravarAlteracaoPaciente() throws ProjetoException {
@@ -754,7 +773,7 @@ public class AlteracaoPacienteController implements Serializable {
 
 			GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
 			Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
-					insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
+					insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
 					insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
 			insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
@@ -774,13 +793,16 @@ public class AlteracaoPacienteController implements Serializable {
 					listaAgendamentosProfissionalFinal = insercaoPacienteController
 							.validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
-					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
 						cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
 								listaAgendamentosProfissionalFinal, id_paciente_insituicao,
 								listaProfissionaisAdicionados);
-					else
-						cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, listaAgendamentosProfissionalFinal,
+					}
+					else {
+						cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, insercaoParaLaudo,
+								listaAgendamentosProfissionalFinal,
 								id_paciente_insituicao, listaProfissionaisAdicionados);
+					}
 				}
 			}
 			if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
@@ -828,55 +850,60 @@ public class AlteracaoPacienteController implements Serializable {
                     listAgendamentoProfissionalDuplicado, insercaoDuplicado.getTurno());
             	cadastrou = aDaoDuplicado.gravarAlteracaoEquipeDiaHorarioDuplicado(insercaoDuplicado, insercaoParaLaudoDuplicado,
                         listaAgendamentosProfissionalFinal, id_paciente_insituicaoDuplicado, listaProfissionaisAdicionadosDuplicado);
-            	
-
         }
-
-       
+    }
+    
+    public void atualizaarDataSolicitacao(Date dataSolicitacaoNova) {
+    	insercao.setDataSolicitacao(dataSolicitacaoNova);
+    }
+    
+    public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
+    	if(validarDataLaudoPacienteSemLaudo())
+    		validaDataLaudoComDataAnteriorPacienteSemLaudo();
     }    
     
-    public boolean validarDataLaudoPacienteSemLaudo() throws ProjetoException {
+    private boolean validarDataLaudoPacienteSemLaudo() throws ProjetoException {
     	boolean resultado = false;
     	Date dataSolicitacaoPacienteTerapia = insercao.getDataSolicitacao();
     	Date dataVigenciaFinalLaudo = insercao.getLaudo().getVigenciaFinal();
     	
-    	if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId())
-    			&& VerificadorUtil.verificarSeObjetoNulo(dataVigenciaFinalLaudo)) {
-    		resultado = true;
-    	}
-    	else if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)) {
+    	if (dataVigenciaFinalLaudo.before(dataSolicitacaoPacienteTerapia)) {
             JSFUtil.adicionarMensagemErro("A data do laudo selecionado é menor que a data de inclusão do paciente na Terapia", "Erro!");
-            insercao.setLaudo(new LaudoBean());
-            insercaoParaLaudo.setLaudo(null);
+            insercao.setLaudo(this.laudo);
+            insercaoParaLaudo.setLaudo(new LaudoBean());
         }
     	else 
     		resultado = true;
         return resultado;
     }
     
-    public void validaSelecaoLaudoPacienteSemLaudo() throws ProjetoException {
-    	carregarLaudoPaciente();
-    	validarDataLaudoPacienteSemLaudo();
-    }    
-
-    public void carregarLaudoPaciente() throws ProjetoException {
-        
+    private void validaDataLaudoComDataAnteriorPacienteSemLaudo() throws ProjetoException {
     	String condicao_datas_laudo = new RenovacaoPacienteController().compararDatasLaudo(laudo.getMesFinal(), laudo.getAnoFinal(),
                 insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
 
         if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
             JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
-            insercao.setLaudo(new LaudoBean());
+            insercao.setLaudo(this.laudo);
         }
         else if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.MAIS_DE_UM_MES.getSigla())){
             JSFUtil.adicionarMensagemAdvertencia("O novo laudo tem início com mais de 30 dias a mais que o término do que o lado atual!", "Observação!");
-            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+            Integer idNovoLaudo = insercao.getLaudo().getId();
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(idNovoLaudo);
             insercao = rDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+            insercao.setPaciente(insercaoParaLaudo.getLaudo().getPaciente());
         }
         else {    	
-			insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
-			insercao = aDao.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
+            Integer idNovoLaudo = insercao.getLaudo().getId();
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(idNovoLaudo);
+            insercao = rDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+            insercao.setPaciente(insercaoParaLaudo.getLaudo().getPaciente());
         }
+    }
+    
+    public void carregarLaudoPaciente() throws ProjetoException {
+		insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+		insercao = aDao.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
+		insercao.setPaciente(insercaoParaLaudo.getLaudo().getPaciente());
     }
     
     public static void carregarLaudoPacienteDuplicado() throws ProjetoException {
