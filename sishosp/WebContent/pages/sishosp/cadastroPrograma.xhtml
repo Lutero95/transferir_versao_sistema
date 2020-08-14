@@ -11,6 +11,7 @@
         <f:metadata>
             <f:viewAction action="#{ProgramaController.getEditProg()}"/>
             <f:viewAction action="#{ProgramaController.listarProcedimentosIhCbos()}"/>
+            <f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -19,7 +20,7 @@
                               class="panel-title"></h:outputText>
             </div>
             
-						<h:form class="form-horizontal" id="frmPrincipal">
+		<h:form class="form-horizontal" id="frmPrincipal">
             <p:tabView id="tab">
             	<p:tab title="Dados Gerais">
 					<div class="panel-body table-body sub-table-body">
@@ -94,7 +95,6 @@
 							</b:row>
 
 							<b:row>
-
 								<b:column span="6"
 									class="label-position new-data-size new-comple1">
 									<b:label value="Procedimento Padrão:" severity="info" />
@@ -115,11 +115,9 @@
 										<p:commandButton id="btBusProcP1" icon="ui-icon-search"
 											update=":formConsulProc"
 											oncomplete="PF('dlgConsulProc').show();" immediate="true"
-											action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPadrao()}"
-											actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+											action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPadrao()}"/>
 									</p:outputPanel>
 								</b:column>
-
 							</b:row>
 					</div>
 				</p:tab>
@@ -169,7 +167,6 @@
 							class="btn-acao-table acao-editar"
 							process="@this"
 							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoIdade()}"
-							actionListener="#{ProcedimentoController.listarProcedimentos()}"
 							oncomplete="PF('dlgConsulProc').show();" />
 							
 						<p:dataTable id="tabProcIdade" var="procIdade" 
@@ -201,6 +198,98 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
+				
+				<p:tab title="Especialidades Permitidas">
+						<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulProc" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							action="#{EspecialidadeController.listarTodasEspecialidades()}"
+							oncomplete="PF('dlgConsulEspecialidade').show();" />
+							
+						<p:dataTable id="tabEspecialidade" var="espec" 
+							value="#{ProgramaController.prog.listaEspecialidadesEspecificas}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
+							
+							<p:column headerText="Especialidade">
+								<h:outputText value="#{espec.descEspecialidade}" />
+							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerEspecialidade(espec)}"
+                                	title="Remover" update="frmPrincipal:tab:tabEspecialidade"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
+				<p:tab title="Procedimentos Permitidas">
+						<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulProc" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPermitido()}"
+							oncomplete="PF('dlgConsulProc').show();" />
+							
+						<p:dataTable id="tabProcedimento" var="proc" 
+							value="#{ProgramaController.prog.listaProcedimentosPermitidos}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
+							
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{proc.nomeProc}" />
+							</p:column>
+							
+							<p:column headerText="Código Procedimento">
+								<h:outputText value="#{proc.codProc}" />
+							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerProcedimentoPermitido(proc)}"
+                                	title="Remover" update="frmPrincipal:tab:tabProcedimento"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
+				<p:tab title="Cids Permitidas">
+						<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulCid" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							oncomplete="PF('dlgConsulCid').show();" />
+							
+						<p:dataTable id="tabCids" var="cid" 
+							value="#{ProgramaController.prog.listaCidsPermitidos}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
+							
+							<p:column headerText="CID">
+								<h:outputText value="#{cid.descCidAbrev}" />
+							</p:column>
+							
+							<p:column headerText="Código CID">
+								<h:outputText value="#{cid.cid}" />
+							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerCidPermitido(cid)}"
+                                	title="Remover" update="frmPrincipal:tab:tabCids"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
             </p:tabView>
 				<div align="center">
 					<br />
@@ -367,13 +456,13 @@
                             </f:facet>
                             <div align="center">
 								<p:commandButton
-									rendered="#{ProgramaController.adicionarProcedimentoPadrao == true}"
+									rendered="#{ProgramaController.tipoProcedimento == 'P'}"
 									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar" update=":frmPrincipal :msgPagina"
 									action="#{ProgramaController.adicionarProcedimentoPadrao(proc)}"/>
 								
 								<p:commandButton
-									rendered="#{ProgramaController.adicionarProcedimentoPadrao == false}"
+									rendered="#{ProgramaController.tipoProcedimento == 'I'}"
 									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar" update=":formIdade :msgPagina"
 									oncomplete="PF('dlgIdade').show();"
@@ -381,6 +470,13 @@
 									<f:setPropertyActionListener value="#{proc}"
 										target="#{ProgramaController.procedimentoSelecionado}" />
 								</p:commandButton>
+								
+								<p:commandButton
+									rendered="#{ProgramaController.tipoProcedimento == 'PP'}"
+									icon="fa fa-fw fa-plus" title="Selecionar"
+									class="new-btn-acao-table acao-editar" 
+									update=":frmPrincipal:tab:tabProcedimento :msgPagina"
+									action="#{ProgramaController.adicionarProcedimentoPermitido(proc)}"/>
 							</div>
                         </h:column>
                     </b:dataTable>
@@ -413,6 +509,86 @@
 				</div>
 			</h:form>
         </p:dialog>
+        
+        <p:dialog header="Consultar Especialidade" modal="true" dynamic="true"
+				  widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
+			<h:form id="formConsulEspec">
+				<p:outputPanel>
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{EspecialidadeController.listaEspecialidade}"
+								 page-length="5" page-length-menu="5,10,20" var="espec"
+								 display="Nenhuma Especialidade">
+
+						<h:column>
+							<f:facet name="header">
+								Especialidade
+							</f:facet>
+							<p:outputLabel value="#{espec.descEspecialidade}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<p:commandButton update=":frmPrincipal:tab:tabEspecialidade :msgPagina" icon="fa fa-fw fa-check"
+											 title="Selecionar" class="new-btn-acao-table acao-editar"
+											 action="#{ProgramaController.adicionarEspecialidade(espec)}"/>
+						</h:column>
+
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Consultar CID" widgetVar="dlgConsulCid"
+			responsive="true" height="350" modal="true" dynamic="true">
+			<h:form id="formConsulCid">
+				<p:outputPanel id="outcid">
+					<p:row>
+						<p:panelGrid columns="4">
+							<p:selectOneMenu
+								value="#{LaudoController.buscaLaudoDTO.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Descrição ou CID" itemValue="desccid" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{LaudoController.buscaLaudoDTO.campoBusca}"
+								required="true"
+								requiredMessage="Informe a descrição da doença ou o Código do CID"
+								placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+							<p:commandButton
+								action="#{LaudoController.listarCids(LaudoController.buscaLaudoDTO.campoBusca)}"
+								update="tabelacid1 msgPagina" icon="ui-icon-search"
+								style="margin-left: 10px;" />
+						</p:panelGrid>
+					</p:row>
+					
+					<p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
+						paginator="true" id="tabelacid1" style="width:500px"
+						value="#{LaudoController.listaCids}" var="cid" reflow="true">
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{cid.descCidAbrev}" />
+						</p:column>
+
+						<p:column headerText="CID">
+							<h:outputText value="#{cid.cid}" />
+						</p:column>
+
+						<p:column headerText="Ação">
+							<div align="center">
+								<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+									size="sm" class="new-btn-acao-table acao-editar"
+									update=":frmPrincipal:tab:tabCids :msgPagina"
+									action="#{ProgramaController.adicionarCidPermitido(cid)}"/>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 
     </ui:define>
 </ui:composition>

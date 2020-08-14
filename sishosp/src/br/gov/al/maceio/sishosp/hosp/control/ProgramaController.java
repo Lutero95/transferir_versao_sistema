@@ -18,7 +18,10 @@ import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoPrograma;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -48,7 +51,7 @@ public class ProgramaController implements Serializable {
     private GrupoBean grupo;
     private BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado;
     private Integer frequencia;
-    private boolean adicionarProcedimentoPadrao;
+    private String tipoProcedimento;
     private ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado;
 
     //CONSTANTES
@@ -103,7 +106,9 @@ public class ProgramaController implements Serializable {
     }
     
     public void adicionarProcedimentoPadrao(ProcedimentoBean procedimento) {
-    	if(!existeProcedimentoCbo(procedimento) && !existeProcedimentoComIdadeAdicionado(procedimento)) {
+    	if(!existeProcedimentoCbo(procedimento) 
+    			&& !existeProcedimentoComIdadeAdicionado(procedimento)
+    			&& !existeProcedimentoPermitido(procedimento)) {
     		this.prog.setProcedimento(procedimento);
     		JSFUtil.fecharDialog("dlgConsulProc");
     	}
@@ -231,7 +236,8 @@ public class ProgramaController implements Serializable {
     	
     	if(!existeEsteCbo(procedimentoCboEspecifico)
     			&& !existeProcedimentoComIdadeAdicionado(procedimentoCboEspecifico.getProcedimento())
-    			&& !existeProcedimentoPadrao(procedimentoCboEspecifico.getProcedimento())) {
+    			&& !existeProcedimentoPadrao(procedimentoCboEspecifico.getProcedimento())
+    			&& !existeProcedimentoPermitido(procedimentoCboEspecifico.getProcedimento())) {
     		this.prog.getListaProcedimentoCboEspecificoDTO().add(procedimentoCboEspecifico);
     		JSFUtil.fecharDialog("dlgConsulProcOcup");
     	}
@@ -286,11 +292,15 @@ public class ProgramaController implements Serializable {
     }
     
     public void configuraDialogProcedimentosParaProcedimentoPadrao() {
-    	this.adicionarProcedimentoPadrao = true;
+    	this.tipoProcedimento = TipoProcedimentoPrograma.PROCEDIMENTO_PADRAO.getSigla();
     }
     
     public void configuraDialogProcedimentosParaProcedimentoIdade() {
-    	this.adicionarProcedimentoPadrao = false;
+    	this.tipoProcedimento = TipoProcedimentoPrograma.PROCEDIMENTO_IDADE.getSigla();
+    }
+    
+    public void configuraDialogProcedimentosParaProcedimentoPermitido() {
+    	this.tipoProcedimento = TipoProcedimentoPrograma.PROCEDIMENTO_PERMITIDO.getSigla();
     }
     
     public void selecionaProcedimentoIdadeEspecifica() {
@@ -310,7 +320,8 @@ public class ProgramaController implements Serializable {
     		
 			if (!existeProcedimentoComIdadeAdicionado(procedimentoIdadeEspecificaSelecionado.getProcedimento())
 					&& !existeProcedimentoPadrao(procedimentoIdadeEspecificaSelecionado.getProcedimento())
-					&& !existeProcedimentoCbo(procedimentoIdadeEspecificaSelecionado.getProcedimento())) {
+					&& !existeProcedimentoCbo(procedimentoIdadeEspecificaSelecionado.getProcedimento())
+					&& !existeProcedimentoPermitido(procedimentoIdadeEspecificaSelecionado.getProcedimento())) {
 				this.prog.getListaProcedimentoIdadeEspecificaDTO().add(procedimentoIdadeEspecificaSelecionado);
 				JSFUtil.fecharDialog("dlgConsulProc");
 				JSFUtil.fecharDialog("dlgIdade");
@@ -374,6 +385,73 @@ public class ProgramaController implements Serializable {
     			break;
     		}
 		}
+    }
+    
+    public void adicionarEspecialidade(EspecialidadeBean especialidade) {
+    	if(!existeEspecialidade(especialidade)) {
+    		prog.getListaEspecialidadesEspecificas().add(especialidade);
+    		JSFUtil.fecharDialog("dlgConsulEspecialidade");
+    	}
+    }
+    
+    private boolean existeEspecialidade(EspecialidadeBean especialidadeSelecionada) {
+    	
+    	for (EspecialidadeBean especialidade : prog.getListaEspecialidadesEspecificas()) {
+    		if(especialidadeSelecionada.getCodEspecialidade().equals(especialidade.getCodEspecialidade())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Não é possível adicionar a especialidade novamente", "");
+    			return true;
+    		}			
+		} 
+    	return false;
+    }
+    
+    public void removerEspecialidade(EspecialidadeBean especialidadeSelecionada) {
+    	prog.getListaEspecialidadesEspecificas().remove(especialidadeSelecionada);
+    }
+    
+    public void adicionarProcedimentoPermitido(ProcedimentoBean procedimento) {
+    	if (!existeProcedimentoPermitido(procedimento)
+    			&& !existeProcedimentoComIdadeAdicionado(procedimento)
+				&& !existeProcedimentoPadrao(procedimento)
+				&& !existeProcedimentoCbo(procedimento)) {
+    		prog.getListaProcedimentosPermitidos().add(procedimento);
+    		JSFUtil.fecharDialog("dlgConsulProc");
+    	}
+    }
+    
+    private boolean existeProcedimentoPermitido(ProcedimentoBean procedimentoSelecionado) {
+    	for (ProcedimentoBean procedimento : prog.getListaProcedimentosPermitidos()) {
+    		if(procedimentoSelecionado.getIdProc().equals(procedimento.getIdProc())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Não é possível adicionar o procedimento permitido novamente", "");
+    			return true;
+    		}			
+		} 
+    	return false;
+    }
+    
+    public void removerProcedimentoPermitido(ProcedimentoBean procedimentoSelecionado) {
+    	prog.getListaProcedimentosPermitidos().remove(procedimentoSelecionado);
+    }
+    
+    public void adicionarCidPermitido(CidBean cid) {
+    	if (!existeCidPermitido(cid)) {
+    		prog.getListaCidsPermitidos().add(cid);
+    		JSFUtil.fecharDialog("dlgConsulCid");
+    	}
+    }
+    
+    private boolean existeCidPermitido(CidBean cidSelecionado) {
+    	for (CidBean cid : prog.getListaCidsPermitidos()) {
+    		if(cidSelecionado.getIdCid().equals(cid.getIdCid())) {
+    			JSFUtil.adicionarMensagemAdvertencia("Não é possível adicionar o CID novamente", "");
+    			return true;
+    		}			
+		} 
+    	return false;
+    }
+    
+    public void removerCidPermitido(CidBean cidSelecionado) {
+    	prog.getListaCidsPermitidos().remove(cidSelecionado);
     }
     
     public void limparFrequencia() {
@@ -480,12 +558,12 @@ public class ProgramaController implements Serializable {
 		this.grupoFrequenciaDTOSelecionado = grupoFrequenciaDTOSelecionado;
 	}
 
-	public boolean isAdicionarProcedimentoPadrao() {
-		return adicionarProcedimentoPadrao;
+	public String getTipoProcedimento() {
+		return tipoProcedimento;
 	}
 
-	public void setAdicionarProcedimentoPadrao(boolean adicionarProcedimentoPadrao) {
-		this.adicionarProcedimentoPadrao = adicionarProcedimentoPadrao;
+	public void setTipoProcedimento(String tipoProcedimento) {
+		this.tipoProcedimento = tipoProcedimento;
 	}
 
 	public ProcedimentoIdadeEspecificaDTO getProcedimentoIdadeEspecificaSelecionado() {
