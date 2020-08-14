@@ -254,7 +254,7 @@
 						<p:column headerText="Atendimento">
 							<div align="center">
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento Realizado"
-								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
+								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge :msgPagina"
 								 rendered="#{atendimento.presenca=='S'}" style="padding-bottom:20%; color:green;">
 								 	<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
@@ -262,7 +262,7 @@
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 												rendered="#{atendimento.presenca=='N'}"
 									action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
-										update=":formConsAge" style="background-color: white;">
+										update=":formConsAge :msgPagina" style="background-color: white;">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
@@ -281,13 +281,13 @@
 								 rendered="#{atendimento.presenca=='N'}" style="padding-bottom:20%; color:green;">
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 										action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
-										update=":formConsAge" style="background-color: white;">
+										update=":formConsAge :msgPagina" style="background-color: white;">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
 									
 									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
-										update=":frmLiberacao" style="background-color: white;"
+										update=":frmLiberacao :msgPagina" style="background-color: white;"
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
 										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"

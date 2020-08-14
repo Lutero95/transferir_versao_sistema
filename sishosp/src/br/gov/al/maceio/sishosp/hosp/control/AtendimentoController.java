@@ -219,14 +219,26 @@ public class AtendimentoController implements Serializable {
 
     public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
-        if(this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
-            if(quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
-                return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
-            return null;
+        if(!ehAbonoFalta(atendimento)) {
+			if (this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
+				if (quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
+					return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
+							this.atendimento.getId());
+				return null;
+			} else {
+				return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
+						this.atendimento.getId());
+			}
         }
-        else {
-            return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
-        }
+        return null;
+    }
+    
+    private boolean ehAbonoFalta(AtendimentoBean atendimento) {
+    	if(atendimento.getSituacaoAtendimento().isAbonoFalta()) {
+    		JSFUtil.adicionarMensagemErro("Não é possível Evoluir um Atendimento Abonado por Falta", "");
+    		return true;
+    	}
+    	return false;
     }
 
     private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {

@@ -739,28 +739,29 @@ public class AtendimentoDAO {
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno,a1.codprofissionalatendimento, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, "
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, sa.abono_falta, "
 
 				+ " case when exists (select a11.id_atendimento "
 				+ "		from hosp.atendimentos1 a11	left join hosp.situacao_atendimento sa1 on a11.id_situacao_atendimento = sa1.id"
 				+ "  where "
 				+ "			a11.id_atendimento = a.id_atendimento "
 				+ "			and a11.codprofissionalatendimento=? "
-				+ "			and a11.evolucao is null and coalesce(sa1.abono_falta, false)=false and coalesce(a11.excluido,'N')='N')  then 'Evolução Não Realizada' "
+				+ "			and sa1.id is null and coalesce(sa1.abono_falta, false)=false and coalesce(a11.excluido,'N')='N')  then 'Evolução Não Realizada' "
 				+ "		 else 'Evolução Realizada'\n" + "	end as situacao  "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
 				+ " JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
-				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
-				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
-				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
-				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
-				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
+				+ " left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id "
+				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) "
+				+ " left join hosp.programa pr on (pr.id_programa = a.codprograma) "
+				+ " left join hosp.grupo g on (g.id_grupo = a.codgrupo) "
+				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento) "
+				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
 				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 
 		if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade and ceu.codprograma = a.codprograma and ceu.codgrupo = a.codgrupo  "
-					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.evolucao is null";
+					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null ";
 		}
 
 		else
@@ -778,10 +779,10 @@ public class AtendimentoDAO {
 		}
 
 		if (buscaEvolucao.equals(BuscaEvolucao.COM_EVOLUCAO.getSigla())) {
-			sql = sql + " and a1.evolucao IS NOT NULL ";
+			sql = sql + " and a1.id_situacao_atendimento IS NOT NULL ";
 		}
 		if (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla())) {
-			sql = sql + " and a1.evolucao IS NULL ";
+			sql = sql + " and a1.id_situacao_atendimento IS NULL ";
 		}
 
 		if (!buscaTurno.equals("A")) {
@@ -880,6 +881,7 @@ public class AtendimentoDAO {
 				atendimentoBean.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior
 						(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
 				atendimentoBean.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
+				atendimentoBean.getSituacaoAtendimento().setAbonoFalta(rs.getBoolean("abono_falta"));
 				lista.add(atendimentoBean);
 			}
 
