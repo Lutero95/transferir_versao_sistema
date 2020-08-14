@@ -741,11 +741,12 @@ public class AtendimentoDAO {
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, "
 
-				+ " case\n" + "		when exists (\n" + "		select\n" + "			a11.id_atendimento\n"
-				+ "		from\n" + "			hosp.atendimentos1 a11\n" + "		where\n"
-				+ "			a11.id_atendimento = a.id_atendimento\n"
-				+ "			and a11.codprofissionalatendimento=?\n"
-				+ "			and a11.evolucao is null and coalesce(a11.excluido,'N')='N')  then 'Evolução Não Realizada'\n"
+				+ " case when exists (select a11.id_atendimento "
+				+ "		from hosp.atendimentos1 a11	left join hosp.situacao_atendimento sa1 on a11.id_situacao_atendimento = sa1.id"
+				+ "  where "
+				+ "			a11.id_atendimento = a.id_atendimento "
+				+ "			and a11.codprofissionalatendimento=? "
+				+ "			and a11.evolucao is null and coalesce(sa1.abono_falta, false)=false and coalesce(a11.excluido,'N')='N')  then 'Evolução Não Realizada' "
 				+ "		 else 'Evolução Realizada'\n" + "	end as situacao  "
 
 				+ " from hosp.atendimentos a" + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
