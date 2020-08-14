@@ -44,6 +44,7 @@
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="periodolaudovencer" class="java.lang.String"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="mostrarlaudosvencidos" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
@@ -83,11 +84,13 @@ LEFT JOIN hosp.cid c1 ON c1.cod = l.cid1
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
-WHERE l.cod_unidade=$P{codunidade} 
+WHERE pi.cod_unidade=$P{codunidade} 
+and pi.status ='A'
 and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_laudo} =0 ) OR ($P{cod_laudo} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and ((   $P{codpaciente}   is not null and l.codpaciente=  $P{codpaciente}) or (( $P{codpaciente} =0 ) OR ( $P{codpaciente} is null )))
+and ((   $P{mostrarlaudosvencidos}  is not null  and hosp.fn_getlastdayofmonth(to_date('01/'||lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0'),'dd/mm/yyyy'))<current_date ) or ( ( $P{mostrarlaudosvencidos} ='' ) OR ($P{mostrarlaudosvencidos} is null) ))
 and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer} ) or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
 and ((exists (
 select pi2.id from hosp.paciente_instituicao pi2 where pi2.id_paciente = l.codpaciente and pi2.status='A'

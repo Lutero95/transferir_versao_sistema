@@ -64,6 +64,8 @@ public class RelatoriosController implements Serializable {
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
 	private String atributoGenerico2;
+	private String atributoGenerico3;
+	private String atributoGenerico4;
 	private UnidadeBean unidade;
 	private List<GrupoBean> listaGruposProgramas;
 	private List<EquipeBean> listaEquipePorTipoAtendimento;
@@ -259,7 +261,7 @@ public class RelatoriosController implements Serializable {
 			else
 				relatorio = caminho + "laudovencer.jasper";
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("periodolaudovencer", this.atributoGenerico2);
+			map.put("periodolaudovencer", this.atributoGenerico4);
 			map.put("codunidade", user_session.getUnidade().getId());
 			map.put("codempresa", user_session.getUnidade().getCodEmpresa());
 			if (programa != null)
@@ -271,6 +273,11 @@ public class RelatoriosController implements Serializable {
 			if (paciente != null)
 				map.put("codpaciente", paciente.getId_paciente());
 			map.put("cod_laudo", null);
+
+			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
+				map.put("mostrarlaudosvencidos", atributoGenerico3);
+			else
+			map.put("mostrarlaudosvencidos", null);
 			this.executeReport(relatorio, map, "relatorio.pdf");
 			// this.executeReportNewTab(relatorio, "laudovencer.pdf",
 			// map);
@@ -1521,5 +1528,21 @@ public class RelatoriosController implements Serializable {
 
 	public void setListaAnos(List<Integer> listaAnos) {
 		this.listaAnos = listaAnos;
+	}
+
+	public String getAtributoGenerico3() {
+		return atributoGenerico3;
+	}
+
+	public void setAtributoGenerico3(String atributoGenerico3) {
+		this.atributoGenerico3 = atributoGenerico3;
+	}
+
+	public String getAtributoGenerico4() {
+		return atributoGenerico4;
+	}
+
+	public void setAtributoGenerico4(String atributoGenerico4) {
+		this.atributoGenerico4 = atributoGenerico4;
 	}
 }

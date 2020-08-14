@@ -58,6 +58,18 @@
 
 					</b:row>
 					<hr />
+					<b:row>
+
+						<p:outputPanel id="outlaudosvencidos">
+						<b:column span="4" style="top: -14px;">
+							<p:selectBooleanCheckbox label="Todos os Pacientes ativos com Laudo Vencido"
+													 itemLabel="Todos os Pacientes ativos com Laudo Vencido" style="color:#2e84ce;"
+													 value="#{RelatoriosController.atributoGenerico3}">
+								<p:ajax update="outlaudosvencidos periodovencer"></p:ajax>
+							</p:selectBooleanCheckbox>
+						</b:column>
+						</p:outputPanel>
+					</b:row>
 
 					<b:row>
 
@@ -66,7 +78,8 @@
 								style="margin-left:0px !important" value="A vencer no período"
 								severity="info" />
 							<p:inputMask required="true"
-								value="#{RelatoriosController.atributoGenerico2}"
+										 disabled="#{RelatoriosController.atributoGenerico3=='true'}"
+								value="#{RelatoriosController.atributoGenerico4}"
 								requiredMessage="Informe o período a Vencer" mask="99/9999"
 								style="padding:10px !important;font-size:1em;"
 								id="periodovencer" size="5"></p:inputMask>
