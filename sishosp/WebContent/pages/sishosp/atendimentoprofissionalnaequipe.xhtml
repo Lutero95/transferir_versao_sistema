@@ -209,7 +209,7 @@
 
 						</p:column>
 
-						<p:column headerText="Data">
+						<p:column headerText="Data" width="80">
 							<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
@@ -219,11 +219,7 @@
 							<p:outputLabel value="#{atendimento.paciente.nome}" />
 						</p:column>
 
-						<p:column headerText="CNS">
-							<p:outputLabel value="#{atendimento.paciente.cns}" />
-						</p:column>
-
-						<p:column headerText="Turno"
+						<p:column headerText="Turno" width="60"
 							rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
 							<h:outputLabel value="MANHÃ"
 								rendered="#{atendimento.turno == 'M'}" />
@@ -243,18 +239,18 @@
 							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
 						</p:column>
 
-						<p:column headerText="Nome Equipe">
-							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
-						</p:column>
-
-						<p:column headerText="Sit. Evolução">
+						<p:column headerText="Evolução" width="80">
 							<p:outputLabel value="#{atendimento.situacao}" />
 						</p:column>
 
-						<p:column headerText="Atendimento">
+						<p:column headerText="Sit. Atendimento">
+							<p:outputLabel value="#{atendimento.situacaoAtendimento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Atendimento" width="80">
 							<div align="center">
 								<p:splitButton icon="fa fa-fw fa-pencil-square-o" title="Evoluir Atendimento Realizado"
-								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge"
+								 action="#{AtendimentoController.redirectAtendimentoProfissional(true)}" update=":formConsAge :msgPagina"
 								 rendered="#{atendimento.presenca=='S'}" style="padding-bottom:20%; color:green;">
 								 	<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
@@ -262,7 +258,7 @@
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 												rendered="#{atendimento.presenca=='N'}"
 									action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
-										update=":formConsAge" style="background-color: white;">
+										update=":formConsAge :msgPagina" style="background-color: white;">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
@@ -281,13 +277,13 @@
 								 rendered="#{atendimento.presenca=='N'}" style="padding-bottom:20%; color:green;">
 									<p:menuitem value="Evoluir Atend. Não Realizado"
 										action="#{AtendimentoController.redirectAtendimentoProfissional(false)}"
-										update=":formConsAge" style="background-color: white;">
+										update=":formConsAge :msgPagina" style="background-color: white;">
 										<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimento}" />
 									</p:menuitem>
 									
 									<p:menuitem value="Cancelar Evolução" oncomplete="PF('dlgLiberacao').show();"
-										update=":frmLiberacao" style="background-color: white;"
+										update=":frmLiberacao :msgPagina" style="background-color: white;"
 										action="#{AtendimentoController.limparFuncionarioLiberacao()}"
 										disabled="#{atendimento.situacaoAtendimento.id == null || atendimento.situacaoAtendimento.id == 0}">
 										<f:setPropertyActionListener value="#{atendimento}"
