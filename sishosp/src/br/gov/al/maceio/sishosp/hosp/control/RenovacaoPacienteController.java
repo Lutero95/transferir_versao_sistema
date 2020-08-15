@@ -30,6 +30,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
@@ -665,56 +666,64 @@ public class RenovacaoPacienteController implements Serializable {
     public void gravarRenovacaoPaciente() throws ProjetoException {
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
-        	if (verificaPeriodoValidoRenovacaoLaudo()) { //Verifica se a data de renovacao está dentro do periodo do laudo ou da nova solicitacao sem laudo 
-        	Integer codPaciente = null;
-        	
-        	if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) {
-        			codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
-        	}
-        	
-        	if  ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null)) {
-        		codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();		
-        	}
+			if (verificaPeriodoValidoRenovacaoLaudo()) { 
+																					// Verifica se a data de renovacao
+																					// está dentro do periodo do laudo
+																					// ou da nova solicitacao sem laudo
+				Integer codPaciente = null;
 
-            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+				if ((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) {
+					codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+				}
 
-            Boolean cadastrou = null;
+				if ((insercaoParaLaudo.getPaciente() != null)
+						&& (insercaoParaLaudo.getPaciente().getId_paciente() != null)) {
+					codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
+				}
 
-            GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(),codPaciente, insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-            insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+				InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
-            ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getTurno());
+				Boolean cadastrou = null;
 
-            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+				GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+				Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
+						insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), codPaciente,
+						insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+				insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
-                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
-                	gerarListaAgendamentosEquipeTurno();	
-                	cadastrou = rDao.gravarRenovacaoEquipeTurno
-                			(insercao,insercaoParaLaudo, listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
-                }
-                
-                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
-                	gerarListaAgendamentosEquipeDiaHorario();
-                	cadastrou = rDao.gravarRenovacaoEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal,  listaProfissionaisAdicionados);
-                }
-                
-            }
-            if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
+				ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = insercaoPacienteController
+						.validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
-                gerarListaAgendamentosProfissional();
+				if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-                cadastrou = rDao.gravarInsercaoProfissional(insercao,
-                        insercaoParaLaudo, listaAgendamentosProfissionalFinal);
-            }
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+						gerarListaAgendamentosEquipeTurno();
+						cadastrou = rDao.gravarRenovacaoEquipeTurno(insercao, insercaoParaLaudo,
+								listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
+					}
 
-            if (cadastrou == true) {
-                JSFUtil.adicionarMensagemSucesso("Renovação de Paciente cadastrada com sucesso!", "Sucesso");
-                JSFUtil.abrirDialog("dlgRenovacaoEfetuada");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            }
-        }
+					if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+						gerarListaAgendamentosEquipeDiaHorario();
+						cadastrou = rDao.gravarRenovacaoEquipeDiaHorario(insercao, insercaoParaLaudo,
+								listaAgendamentosProfissionalFinal, listaProfissionaisAdicionados);
+					}
+
+				}
+				if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
+
+					gerarListaAgendamentosProfissional();
+
+					cadastrou = rDao.gravarInsercaoProfissional(insercao, insercaoParaLaudo,
+							listaAgendamentosProfissionalFinal);
+				}
+
+				if (cadastrou == true) {
+					JSFUtil.adicionarMensagemSucesso("Renovação de Paciente cadastrada com sucesso!", "Sucesso");
+					JSFUtil.abrirDialog("dlgRenovacaoEfetuada");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+				}
+			}
         } else {
             JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo ou selecione um Paciente!", "Bloqueio");
         }
@@ -747,10 +756,8 @@ public class RenovacaoPacienteController implements Serializable {
                     .carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
         }
         else{
-            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
-                    .getId());
-            insercao = rDao
-                    .carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+            insercao = rDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
         }
     }
 
@@ -774,7 +781,6 @@ public class RenovacaoPacienteController implements Serializable {
         }
         else if(totalDiasGeral > 30){
             retorno = RetornoLaudoRenovacao.MAIS_DE_UM_MES.getSigla();
-
         }
         else{
             retorno = RetornoLaudoRenovacao.DATA_OK.getSigla();
