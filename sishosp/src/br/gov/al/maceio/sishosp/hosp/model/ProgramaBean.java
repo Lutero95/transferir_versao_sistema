@@ -35,6 +35,8 @@ public class ProgramaBean implements Serializable {
     private List<EspecialidadeBean> listaEspecialidadesEspecificas;
     private List<ProcedimentoBean> listaProcedimentosPermitidos;
     private List<CidBean> listaCidsPermitidos;
+    private boolean permitePacienteSemLaudo;
+    private Integer diasPacienteSemLaudoAtivo;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -205,6 +207,22 @@ public class ProgramaBean implements Serializable {
 
 	public void setListaCidsPermitidos(List<CidBean> listaCidsPermitidos) {
 		this.listaCidsPermitidos = listaCidsPermitidos;
+	}
+	
+	public boolean isPermitePacienteSemLaudo() {
+		return permitePacienteSemLaudo;
+	}
+
+	public void setPermitePacienteSemLaudo(boolean permitePacienteSemLaudo) {
+		this.permitePacienteSemLaudo = permitePacienteSemLaudo;
+	}
+
+	public Integer getDiasPacienteSemLaudoAtivo() {
+		return diasPacienteSemLaudoAtivo;
+	}
+
+	public void setDiasPacienteSemLaudoAtivo(Integer diasPacienteSemLaudoAtivo) {
+		this.diasPacienteSemLaudoAtivo = diasPacienteSemLaudoAtivo;
 	}
 	
 }

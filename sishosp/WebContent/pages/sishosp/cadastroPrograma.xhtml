@@ -97,7 +97,7 @@
 							<b:row>
 								<b:column span="6"
 									class="label-position new-data-size new-comple1">
-									<b:label value="Procedimento Padrão:" severity="info" />
+									<b:label value="Procedimento Padrão" severity="info" />
 
 									<p:outputPanel id="outProc">
 										<p:autoComplete
@@ -117,6 +117,23 @@
 											oncomplete="PF('dlgConsulProc').show();" immediate="true"
 											action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPadrao()}"/>
 									</p:outputPanel>
+								</b:column>
+								
+								<b:column span="3">
+									<p:selectBooleanCheckbox value="#{ProgramaController.prog.permitePacienteSemLaudo}"
+									 itemLabel="Permite Paciente sem Laudo">
+									 	<p:ajax update="diasPaciente" 
+									 	listener="#{ProgramaController.corrigeDiasAtivoPacienteSemLaudo(ProgramaController.prog.permitePacienteSemLaudo)}"/>
+									 </p:selectBooleanCheckbox>
+								</b:column>
+								
+								<b:column span="3" class="label-position new-data-size new-comple1">
+									<b:label value="Dias Ativo Paciente sem Laudo:" severity="info" />
+									
+									<p:spinner id="diasPaciente" value="#{ProgramaController.prog.diasPacienteSemLaudoAtivo}"
+									style="margin-left: -5%;"
+									disabled="#{ProgramaController.prog.permitePacienteSemLaudo == false}"
+									min="0" max="180" required="true" requiredMessage="Dias Ativo Paciente sem Laudo: campo obrigatório"/>
 								</b:column>
 							</b:row>
 					</div>

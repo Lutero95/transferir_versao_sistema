@@ -119,7 +119,7 @@ public class ProgramaController implements Serializable {
     	if (this.prog.getListaGrupoFrequenciaDTO().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
-        	if(procedimentoPadraoNaoEhNulo()) {
+        	if(procedimentoPadraoNaoEhNulo() && validarDiasAtivoPacienteSemLaudo()) {
 				boolean cadastrou = pDao.gravarPrograma(this.prog);
 				if (cadastrou == true) {
 					limparDados();
@@ -143,7 +143,7 @@ public class ProgramaController implements Serializable {
     public void alterarPrograma() throws ProjetoException {
         if (this.prog.getListaGrupoFrequenciaDTO().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
-        } else {
+        } else if (validarDiasAtivoPacienteSemLaudo()){
             boolean alterou = pDao.alterarPrograma(this.prog);
             if (alterou == true) {
                 JSFUtil.adicionarMensagemSucesso("Programa alterado com sucesso!", "Sucesso");
@@ -456,6 +456,21 @@ public class ProgramaController implements Serializable {
     
     public void limparFrequencia() {
     	this.frequencia = 0;
+    }
+    
+    public void corrigeDiasAtivoPacienteSemLaudo(boolean permitePacienteSemLaudo) {
+    	if(!permitePacienteSemLaudo)
+    		this.prog.setDiasPacienteSemLaudoAtivo(0);
+    }
+    
+    private boolean validarDiasAtivoPacienteSemLaudo() {
+    	if(this.prog.isPermitePacienteSemLaudo() && 
+    			VerificadorUtil.verificarSeObjetoNuloOuMenorQueUm(this.prog.getDiasPacienteSemLaudoAtivo())){
+    		JSFUtil.adicionarMensagemErro("Dias Ativo Paciente sem Laudo deve ser maior que zero", "");
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     public void selecionarCbo(CboBean cbo) {
