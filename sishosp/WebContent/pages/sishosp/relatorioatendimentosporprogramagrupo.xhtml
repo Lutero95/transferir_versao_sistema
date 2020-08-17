@@ -151,6 +151,61 @@
 					</b:row>
 
 					<b:row>
+						<b:column span="3"
+								  class="label-position new-data-size new-comple1">
+							<b:label value="Paciente" severity="info" />
+
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{RelatoriosController.paciente}"
+												size="31" converter="conPaciente"
+												class="select-agendaEquipe4"
+												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect"
+											update="msgPagina :frm:outPa" global="false" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBPa" immediate="true"
+												 icon="ui-icon-search" update=":formConsuPac"
+												 oncomplete="PF('dlgConsuPac').show();" />
+							</p:outputPanel>
+
+						</b:column>
+					</b:row>
+
+					<b:row>
+
+					<b:column span="3"
+							  class="label-position new-data-size new-comple1">
+						<b:label value="Especialidade" severity="info" />
+
+						<p:outputPanel id="outEspeci">
+
+							<p:autoComplete
+									value="#{RelatoriosController.especialidade}"
+									size="31" converter="conEspecialidade" id="descE"
+									completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									required="false" class="select-agendaEquipe4"
+									requiredMessage="Especialidade: Campo obrigatório!"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descEspecialidade}">
+							</p:autoComplete>
+
+							<p:commandButton id="btBusEsp" icon="ui-icon-search"
+											 style="margin-top: 5px;" update=":formConsulEspec"
+											 onclick="PF('dlgConsulEspecialidade').show();"
+											 immediate="true"
+											 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
+
+						</p:outputPanel>
+
+					</b:column>
+					</b:row>
+					<b:row>
 						<b:column span="1" class="label-position data-size1">
 							<b:label value="Situação Atendimento:" severity="info" />
 						</b:column>
@@ -362,23 +417,48 @@
 							title="Selecionar" class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie.laudo.paciente}"
-								target="#{RelatoriosController.pacienteInstituicao.laudo.paciente}" />
-							<f:setPropertyActionListener
-								value="#{pacie.laudo.procedimentoPrimario}"
-								target="#{RelatoriosController.procedimento}" />
-							<f:setPropertyActionListener value="#{pacie.grupo}"
-								target="#{RelatoriosController.pacienteInstituicao.grupo}" />
-							<f:setPropertyActionListener value="#{pacie.programa}"
-								target="#{RelatoriosController.programa}" />
+								target="#{RelatoriosController.paciente}" />
 
-							<f:setPropertyActionListener value="#{pacie.id}"
-								target="#{RelatoriosController.pacienteInstituicao.id}" />
 						</p:commandButton>
 
 					</p:column>
 
 
 				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Especialidade" modal="true" dynamic="true"
+				  widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
+			<h:form id="formConsulEspec">
+				<p:outputPanel>
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{EspecialidadeController.listaEspecialidade}"
+								 page-length="5" page-length-menu="5,10,20" var="espec"
+								 display="Nenhuma Especialidade">
+
+						<h:column>
+							<f:facet name="header">
+								Especialidade
+							</f:facet>
+							<p:outputLabel value="#{espec.descEspecialidade}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<p:commandButton update=":frm:outEspeci" icon="fa fa-fw fa-check"
+											 title="Selecionar" class="new-btn-acao-table acao-editar"
+											 onclick="PF('dlgConsulEspecialidade').hide();">
+								<f:setPropertyActionListener value="#{espec}"
+															 target="#{RelatoriosController.especialidade}" />
+							</p:commandButton>
+						</h:column>
+
+					</b:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 

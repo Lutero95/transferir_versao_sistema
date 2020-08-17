@@ -35,6 +35,8 @@
 	<parameter name="turno" class="java.lang.String"/>
 	<parameter name="diassemanalista" class="java.util.ArrayList"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="id_paciente" class="java.lang.Integer"/>
+	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -52,6 +54,7 @@ inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funciona
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
 JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
+left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 where sa.atendimento_realizado is true
 and a.dtaatende between $P{dt_inicial} and $P{dt_final}
 and ((   $P{cod_programa}   is not null and a.codprograma=  $P{cod_programa}) or (( $P{cod_programa} =0 ) OR ( $P{cod_programa} is null )))
@@ -59,6 +62,8 @@ and(($P{cod_grupo} is not null and grupo.id_grupo = $P{cod_grupo}) or ($P{cod_gr
 AND (($P{codunidade} IS NOT NULL AND a.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 and ((   $P{id_situacao_atendimento}     is not null and sa.id =   $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
+and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
+and ((  $P{codespecialidade}  is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or ( $P{codespecialidade}  is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 order by 1]]>
 	</queryString>
@@ -216,7 +221,7 @@ order by 1]]>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ATENDIMENTOS POR PROGRAMA E GRUPO]]></text>
+				<text><![CDATA[ATENDIMENTOS REALIZADOS POR PROGRAMA E GRUPO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="1" y="14" width="571" height="16" uuid="d9d9191b-085d-488c-84b9-3adb8497b51f"/>

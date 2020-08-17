@@ -56,7 +56,7 @@ and ((   $P{cod_programa}   is not null and a.codprograma=  $P{cod_programa}) or
 and(($P{cod_grupo} is not null and grupo.id_grupo = $P{cod_grupo}) or ($P{cod_grupo} is null and grupo.id_grupo > 0))
 AND (($P{codunidade} IS NOT NULL AND a.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
 and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
-and ((  $P{id_paciente}  is not null and pa.id_paciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
+and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 and a.presenca = 'S'
 and coalesce(a1.excluido,'N') <>'S'

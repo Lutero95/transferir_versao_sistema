@@ -54,6 +54,7 @@ public class RelatoriosController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ProgramaBean programa;
 	private PacienteBean paciente;
+	private EspecialidadeBean especialidade;
 	private GrupoBean grupo;
 	private GerenciarPacienteBean pacienteInstituicao;
 	private TipoAtendimentoBean tipoAtendimento;
@@ -101,6 +102,7 @@ public class RelatoriosController implements Serializable {
 		this.programa = new ProgramaBean();
 		agendaController = new AgendaController();
 		this.grupo = new GrupoBean();
+		especialidade = new EspecialidadeBean();
 		this.tipoAtendimento = new TipoAtendimentoBean();
 		this.prof = new FuncionarioBean();
 		this.listaGrupos = new ArrayList<GrupoBean>();
@@ -432,6 +434,13 @@ public class RelatoriosController implements Serializable {
 			
 			if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 				map.put("turno", this.turnoSelecionado);
+
+
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+				map.put("id_paciente", paciente.getId_paciente());
+
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade))
+				map.put("codespecialidade", especialidade.getCodEspecialidade());
 
 			map.put("codunidade", user_session.getUnidade().getId());
 			
@@ -1544,5 +1553,13 @@ public class RelatoriosController implements Serializable {
 
 	public void setAtributoGenerico4(String atributoGenerico4) {
 		this.atributoGenerico4 = atributoGenerico4;
+	}
+
+	public EspecialidadeBean getEspecialidade() {
+		return especialidade;
+	}
+
+	public void setEspecialidade(EspecialidadeBean especialidade) {
+		this.especialidade = especialidade;
 	}
 }

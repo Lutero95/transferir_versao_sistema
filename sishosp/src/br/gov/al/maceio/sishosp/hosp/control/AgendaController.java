@@ -1198,11 +1198,11 @@ public class AgendaController implements Serializable {
         }
 
         public void validaPacienteParaAdicionar(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
-          /*  agenda.setDataAtendimento(dataAtendimentoC);
+           agenda.setDataAtendimento(dataAtendimentoC);
             if(camposValidosParaValidarEspecialidadeProfissional(agenda.getProfissional(), agenda.getDataAtendimento())
-                    && !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {*/
+                    && !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {
                 adicionarPacienteSelecionado(pacienteSelecionado);
-        //    }
+           }
         }
 
         public void adicionarPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
@@ -1657,7 +1657,7 @@ public class AgendaController implements Serializable {
             if(aDao.verificaExisteEspecialidadeNestaData
                     (paciente.getPaciente().getId_paciente(), agenda.getDataAtendimento(), agenda.getProfissional().getEspecialidade().getCodEspecialidade())) {
                 mensagemDialogLiberacao = "Não é possível adicionar o paciente "+paciente.getPaciente().getNome()+
-                        ".\n Já existe um agendamento nessa data na mesma especialidade para este paciente";
+                        ".\n Já existe um agendamento nessa data na mesma especialidade para este paciente. Para continuar, digite seu CPF e senha";
                 this.liberacaoEspecialidade = true;
             }
 
