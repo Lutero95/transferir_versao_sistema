@@ -13,9 +13,10 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
 
@@ -31,13 +32,16 @@ public class ProgramaDAO {
         Boolean retorno = false;
         PreparedStatement ps = null;
 
-        String sql = "insert into hosp.programa (descprograma, cod_unidade, cod_procedimento) values (?, ?, ?) RETURNING id_programa;";
+        String sql = "insert into hosp.programa (descprograma, cod_unidade, cod_procedimento, permite_paciente_sem_laudo, dias_paciente_sem_laudo_ativo)"
+        		+ " values (?, ?, ?, ?, ?) RETURNING id_programa;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, prog.getDescPrograma().toUpperCase());
             ps.setInt(2, user_session.getUnidade().getId());
             ps.setInt(3, prog.getProcedimento().getIdProc());
+            ps.setBoolean(4, prog.isPermitePacienteSemLaudo());
+            ps.setInt(5, prog.getDiasPacienteSemLaudoAtivo());
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -58,6 +62,9 @@ public class ProgramaDAO {
             
             inserirProcedimentosIhCbosEspecificos(prog, con);
             inserirProcedimentosParaIdadesEspecificas(prog, con);
+            inserirEspecialidadesPrograma(prog, con);
+            inserirProcedimentosPermitidos(prog, con);
+            inserirCidsPermitidos(prog, con);
             
             con.commit();
 
@@ -79,14 +86,18 @@ public class ProgramaDAO {
     public Boolean alterarPrograma(ProgramaBean prog) throws ProjetoException {
 
         Boolean retorno = false;
-        String sql = "update hosp.programa set descprograma = ?, cod_procedimento = ? where id_programa = ?";
+        String sql = "update hosp.programa set descprograma = ?, cod_procedimento = ?, "
+        		+ "permite_paciente_sem_laudo = ?, dias_paciente_sem_laudo_ativo = ? "
+        		+ " where id_programa = ?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, prog.getDescPrograma().toUpperCase());
             stmt.setInt(2, prog.getProcedimento().getIdProc());
-            stmt.setInt(3, prog.getIdPrograma());
+            stmt.setBoolean(3, prog.isPermitePacienteSemLaudo());
+            stmt.setInt(4, prog.getDiasPacienteSemLaudoAtivo());
+            stmt.setInt(5, prog.getIdPrograma());
             stmt.executeUpdate();
 
             String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
@@ -108,8 +119,18 @@ public class ProgramaDAO {
             
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
             inserirProcedimentosIhCbosEspecificos(prog, con);
+            
             excluirProcedimentosParaIdadesEspecificas(prog.getIdPrograma(), con);
             inserirProcedimentosParaIdadesEspecificas(prog, con);
+            
+            excluirEspecialidadesPrograma(prog.getIdPrograma(), con);
+            inserirEspecialidadesPrograma(prog, con);
+            
+            excluirProcedimentosPermitidos(prog.getIdPrograma(), con);
+            inserirProcedimentosPermitidos(prog, con);
+            
+            excluirCidsPermitidos(prog.getIdPrograma(), con);
+            inserirCidsPermitidos(prog, con);
 
             con.commit();
             retorno = true;
@@ -141,6 +162,9 @@ public class ProgramaDAO {
             
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
             excluirProcedimentosParaIdadesEspecificas(prog.getIdPrograma(), con);
+            excluirEspecialidadesPrograma(prog.getIdPrograma(), con);
+            excluirProcedimentosPermitidos(prog.getIdPrograma(), con);
+            excluirCidsPermitidos(prog.getIdPrograma(), con);
 
             String sql2 = "delete from hosp.programa where id_programa = ?";
             stmt = con.prepareStatement(sql2);
@@ -208,7 +232,7 @@ public class ProgramaDAO {
                 + "where programa.cod_unidade = ? "
                 + "order by descprograma";
         GrupoDAO gDao = new GrupoDAO();
-        ArrayList<ProgramaBean> lista = new ArrayList();
+        ArrayList<ProgramaBean> lista = new ArrayList<>();
         try {
             ps = con.prepareStatement(sql);
             ps.setInt(1, user_session.getUnidade().getId());
@@ -363,7 +387,8 @@ public class ProgramaDAO {
 
         ProgramaBean programa = new ProgramaBean();
         GrupoDAO gDao = new GrupoDAO();
-        String sql = "select id_programa, descprograma, cod_procedimento from hosp.programa where id_programa = ? order by descprograma";
+        String sql = "select id_programa, descprograma, cod_procedimento, permite_paciente_sem_laudo, dias_paciente_sem_laudo_ativo"
+        		+ " from hosp.programa where id_programa = ? order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -371,12 +396,18 @@ public class ProgramaDAO {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 programa = new ProgramaBean();
-                programa.setIdPrograma(rs.getInt("id_programa"));
+                Integer idPrograma = rs.getInt("id_programa");
+                programa.setIdPrograma(idPrograma);
                 programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setPermitePacienteSemLaudo(rs.getBoolean("permite_paciente_sem_laudo"));
+                programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
-                programa.setListaGrupoFrequenciaDTO(gDao.buscaGruposComFrequecia(rs.getInt("id_programa"), con));
-                programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(rs.getInt("id_programa"), con));
-                programa.setListaProcedimentoIdadeEspecificaDTO(listarProcedimentosIdadeEspecifica(rs.getInt("id_programa"), con));
+                programa.setListaGrupoFrequenciaDTO(gDao.buscaGruposComFrequecia(idPrograma, con));
+                programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(idPrograma, con));
+                programa.setListaProcedimentoIdadeEspecificaDTO(listarProcedimentosIdadeEspecifica(idPrograma, con));
+                programa.setListaEspecialidadesEspecificas(listarEspecialidadePrograma(idPrograma, con));
+                programa.setListaProcedimentosPermitidos(listarProcedimentosPermitidos(idPrograma, con));
+                programa.setListaCidsPermitidos(listarCidsPermitidos(idPrograma, con));
             }
 
         } catch (SQLException sqle) {
@@ -663,30 +694,151 @@ public class ProgramaDAO {
     private void inserirProcedimentosParaIdadesEspecificas (ProgramaBean programa, Connection conAuxiliar) 
 			throws ProjetoException, SQLException {
 
-    try {
-        String sql = "INSERT INTO hosp.programa_procedimento_idade_especifica " + 
-        		"(id_programa, id_procedimento, idade_minima, idade_maxima) VALUES(?, ?, ?, ?); ";
-        
-        PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
-        for (ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaDTO : programa.getListaProcedimentoIdadeEspecificaDTO()) {
-        	stmt.setInt(1, programa.getIdPrograma());
-        	stmt.setInt(2, procedimentoIdadeEspecificaDTO.getProcedimento().getIdProc());
-        	stmt.setInt(3, procedimentoIdadeEspecificaDTO.getIdadeMinima());
-        	stmt.setInt(4, procedimentoIdadeEspecificaDTO.getIdadeMaxima());
-        	stmt.executeUpdate();				
+		try {
+			String sql = "INSERT INTO hosp.programa_procedimento_idade_especifica "
+					+ "(id_programa, id_procedimento, idade_minima, idade_maxima) VALUES(?, ?, ?, ?); ";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			for (ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaDTO : programa
+					.getListaProcedimentoIdadeEspecificaDTO()) {
+				stmt.setInt(1, programa.getIdPrograma());
+				stmt.setInt(2, procedimentoIdadeEspecificaDTO.getProcedimento().getIdProc());
+				stmt.setInt(3, procedimentoIdadeEspecificaDTO.getIdadeMinima());
+				stmt.setInt(4, procedimentoIdadeEspecificaDTO.getIdadeMaxima());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
 		}
-    } catch (SQLException sqle) {
-    	conAuxiliar.rollback();
-        throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-    } catch (Exception ex) {
-    	conAuxiliar.rollback();
-        throw new ProjetoException(ex, this.getClass().getName());
-    } 
-}
+    }
     
-    public List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+	private void excluirEspecialidadesPrograma (Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_especialidade where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+    
+    private void inserirEspecialidadesPrograma (ProgramaBean programa, Connection conAuxiliar) 
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "INSERT INTO hosp.programa_especialidade (id_programa, id_especialidade) VALUES(?, ?); ";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			for (EspecialidadeBean especialidade : programa.getListaEspecialidadesEspecificas()) {
+				stmt.setInt(1, programa.getIdPrograma());
+				stmt.setInt(2, especialidade.getCodEspecialidade());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+    }
+    
+	private void excluirProcedimentosPermitidos (Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_procedimento_permitido where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+    
+    private void inserirProcedimentosPermitidos (ProgramaBean programa, Connection conAuxiliar) 
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "INSERT INTO hosp.programa_procedimento_permitido (id_programa, id_procedimento) VALUES(?, ?); ";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			for (ProcedimentoBean procedimento : programa.getListaProcedimentosPermitidos()) {
+				stmt.setInt(1, programa.getIdPrograma());
+				stmt.setInt(2, procedimento.getIdProc());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+    }
+    
+	private void excluirCidsPermitidos (Integer idPrograma, Connection conAuxiliar)
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "delete from hosp.programa_cid where id_programa = ?;";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			stmt.setInt(1, idPrograma);
+			stmt.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+	
+    private void inserirCidsPermitidos (ProgramaBean programa, Connection conAuxiliar) 
+			throws ProjetoException, SQLException {
+
+		try {
+			String sql = "INSERT INTO hosp.programa_cid (id_programa, id_cid) VALUES(?, ?); ";
+
+			PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			for (CidBean cid : programa.getListaCidsPermitidos()) {
+				stmt.setInt(1, programa.getIdPrograma());
+				stmt.setInt(2, cid.getIdCid());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+    }
+    
+    private List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar) 
+    		throws SQLException, ProjetoException {
+
     	List<ProcedimentoCboEspecificoDTO> lista = new ArrayList<>();
 
         
@@ -726,9 +878,9 @@ public class ProgramaDAO {
     }
 
     
-    public List<ProcedimentoIdadeEspecificaDTO> listarProcedimentosIdadeEspecifica(Integer idPrograma, Connection conAuxiliar) throws SQLException, ProjetoException {
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+    private List<ProcedimentoIdadeEspecificaDTO> listarProcedimentosIdadeEspecifica(Integer idPrograma, Connection conAuxiliar) 
+    		throws SQLException, ProjetoException {
+
     	List<ProcedimentoIdadeEspecificaDTO> lista = new ArrayList<>();
 
         
@@ -752,6 +904,107 @@ public class ProgramaDAO {
             	procedimentoIdadeEspecificaDTO.setIdadeMaxima(rs.getInt("idade_maxima"));
             	
                 lista.add(procedimentoIdadeEspecificaDTO);
+            }
+
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+    
+    private List<EspecialidadeBean> listarEspecialidadePrograma(Integer idPrograma, Connection conAuxiliar)
+    		throws SQLException, ProjetoException {
+
+    	List<EspecialidadeBean> lista = new ArrayList<>();
+
+        
+        String sql = "select e.id_especialidade, e.descespecialidade from hosp.programa_especialidade pe " + 
+        		"join hosp.programa p on pe.id_programa = p.id_programa " + 
+        		"join hosp.especialidade e on pe.id_especialidade = e.id_especialidade " + 
+        		"where p.id_programa = ? and p.cod_unidade = ?; ";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	EspecialidadeBean especialidade = new EspecialidadeBean();
+            	especialidade.setCodEspecialidade(rs.getInt("id_especialidade"));
+            	especialidade.setDescEspecialidade(rs.getString("descespecialidade"));
+            	
+                lista.add(especialidade);
+            }
+
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+    
+    private List<ProcedimentoBean> listarProcedimentosPermitidos(Integer idPrograma, Connection conAuxiliar)
+    		throws SQLException, ProjetoException {
+
+    	List<ProcedimentoBean> lista = new ArrayList<>();
+        
+        String sql = "select proc.id, proc.nome, proc.codproc " + 
+        		"from hosp.programa_procedimento_permitido ppp " + 
+        		"join hosp.programa p on ppp.id_programa = p.id_programa " + 
+        		"join hosp.proc on ppp.id_procedimento = proc.id " + 
+        		"where ppp.id_programa = ? and p.cod_unidade = ? ;";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ProcedimentoBean procedimento = new ProcedimentoBean();
+            	procedimento.setIdProc(rs.getInt("id"));
+            	procedimento.setNomeProc(rs.getString("nome"));
+            	procedimento.setCodProc(rs.getString("codproc"));
+                lista.add(procedimento);
+            }
+
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+    
+    private List<CidBean> listarCidsPermitidos(Integer idPrograma, Connection conAuxiliar)
+    		throws SQLException, ProjetoException {
+
+    	List<CidBean> lista = new ArrayList<>();
+        
+        String sql = "select c.cod, c.desccidabrev, c.cid from hosp.programa_cid pc " + 
+        		"join hosp.programa p on pc.id_programa = p.id_programa " + 
+        		"join hosp.cid c on pc.id_cid = c.cod " + 
+        		"where pc.id_programa = ? and p.cod_unidade = ?";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	CidBean cid = new CidBean();
+            	cid.setIdCid(rs.getInt("cod"));
+            	cid.setDescCidAbrev(rs.getString("desccidabrev"));
+            	cid.setCid(rs.getString("cid"));
+                lista.add(cid);
             }
 
         } catch (SQLException sqle) {

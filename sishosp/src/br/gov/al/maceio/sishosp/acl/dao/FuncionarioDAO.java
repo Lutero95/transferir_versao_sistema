@@ -1814,9 +1814,10 @@ public class FuncionarioDAO {
 	public FuncionarioBean buscarProfissionalPorIdParaConverter(Integer id) throws ProjetoException {
 		FuncionarioBean profissional = null;
 
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, funcionarios.codcbo,c.codigo codigocbo, c.descricao desccbo, codprocedimentopadrao,"
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, e.descespecialidade , cns, ativo, funcionarios.codcbo,c.codigo codigocbo, c.descricao desccbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
-				+ " from acl.funcionarios LEFT JOIN hosp.cbo c ON (funcionarios.codcbo = c.id) where id_funcionario = ? and ativo = 'S' order by descfuncionario";
+				+ " from acl.funcionarios LEFT JOIN hosp.cbo c ON (funcionarios.codcbo = c.id) left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
+				+	" where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1837,6 +1838,8 @@ public class FuncionarioDAO {
 				profissional.getUnidade().setId(rs.getInt("codunidade"));
 				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				profissional.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				profissional.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				profissional.getCbo().setCodCbo(rs.getInt("codcbo"));
 				profissional.getCbo().setCodigo(rs.getString("codigocbo"));
 				profissional.getCbo().setDescCbo(rs.getString("desccbo"));

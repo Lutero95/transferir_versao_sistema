@@ -66,5 +66,15 @@ public final class VerificadorUtil {
 
         return retorno;
     }
+    
+    public static Boolean verificarSeObjetoNuloOuMenorQueUm(Object object) {
+        Boolean retorno = true;
+
+        if((object != null) && (object != null && Long.valueOf(object.toString()) > 0)){
+            retorno = false;
+        }
+
+        return retorno;
+    }
 
 }
