@@ -840,7 +840,8 @@ public class ProgramaDAO {
     		throws SQLException, ProjetoException {
 
     	List<ProcedimentoCboEspecificoDTO> lista = new ArrayList<>();
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
         
         String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc, " + 
         		"c.id id_cbo, c.descricao nome_cbo, c.codigo " + 
@@ -882,7 +883,8 @@ public class ProgramaDAO {
     		throws SQLException, ProjetoException {
 
     	List<ProcedimentoIdadeEspecificaDTO> lista = new ArrayList<>();
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
         
         String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc, ppie.idade_minima, ppie.idade_maxima " + 
         		"	from hosp.programa_procedimento_idade_especifica ppie " + 
@@ -920,7 +922,8 @@ public class ProgramaDAO {
     		throws SQLException, ProjetoException {
 
     	List<EspecialidadeBean> lista = new ArrayList<>();
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
         
         String sql = "select e.id_especialidade, e.descespecialidade from hosp.programa_especialidade pe " + 
         		"join hosp.programa p on pe.id_programa = p.id_programa " + 
@@ -952,7 +955,8 @@ public class ProgramaDAO {
     
     private List<ProcedimentoBean> listarProcedimentosPermitidos(Integer idPrograma, Connection conAuxiliar)
     		throws SQLException, ProjetoException {
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
     	List<ProcedimentoBean> lista = new ArrayList<>();
         
         String sql = "select proc.id, proc.nome, proc.codproc " + 
@@ -986,7 +990,8 @@ public class ProgramaDAO {
     
     private List<CidBean> listarCidsPermitidos(Integer idPrograma, Connection conAuxiliar)
     		throws SQLException, ProjetoException {
-
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
     	List<CidBean> lista = new ArrayList<>();
         
         String sql = "select c.cod, c.desccidabrev, c.cid from hosp.programa_cid pc " + 
