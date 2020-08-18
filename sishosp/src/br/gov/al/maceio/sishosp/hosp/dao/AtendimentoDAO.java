@@ -697,7 +697,8 @@ public class AtendimentoDAO {
 				"join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id " +
 				"join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa " +
 				"join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo " +
-				"where a.presenca='S' and a1.evolucao is null " +
+				" left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id" +
+				" where a.presenca='S' and a1.id_situacao_atendimento is null " +
 				"and a.codprograma = ceu.codprograma " +
 				"and a.codgrupo = ceu.codgrupo " +
 				"and a.dtaatende>=ceu.inicio_evolucao " +
