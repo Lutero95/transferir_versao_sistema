@@ -213,7 +213,7 @@
 									<p:dataTable paginator="true" rows="10" id="tabelapacientes" paginatorPosition="bottom"
 										filteredValue="#{AgendaController.listaPacientesComInformacaoDTOFiltro}"
 										var="pacie" value="#{AgendaController.listaPacientesComInformacaoDTO}"
-										emptyMessage="Nenhum Paciente" style="margin-right:1%;">
+										emptyMessage="Nenhum Paciente" styleClass="table-right">
 
 										<p:column headerText="Prontuário" width="16%" filterBy="#{pacie.paciente.id_paciente}">
 											<p:outputLabel value="#{pacie.paciente.id_paciente}" />
@@ -256,7 +256,7 @@
 										value="#{AgendaController.listaPacientesSelecionadosComInformacaoDTO}"
 										emptyMessage="Nenhum paciente adicionado" paginator="true"
 										id="tabelaPacientesSelecionados" rows="10" paginatorPosition="bottom"
-										style="width:96%; margin-left:1%;">
+										style="width:96%;" styleClass="table-left">
 										<p:column headerText="Paciente" width="70%">
 											<h:outputText value="#{paci.paciente.nome}" />
 										</p:column>

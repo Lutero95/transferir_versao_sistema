@@ -21,6 +21,9 @@ import javax.faces.context.FacesContext;
 public class InsercaoPacienteDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
+	
+	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_funcionario");
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes(String campoBusca, String tipoBusca)
 			throws ProjetoException {
@@ -165,9 +168,6 @@ public class InsercaoPacienteDAO {
 	public boolean gravarInsercaoEquipeTurno(InsercaoPacienteBean insercao, List<FuncionarioBean> lista,
 			ArrayList<AgendaBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao)
 			throws ProjetoException {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
 
 		Boolean retorno = false;
 		int idAtendimento = 0;
@@ -325,9 +325,6 @@ public class InsercaoPacienteDAO {
 			ArrayList<AgendaBean> listaAgendamento, ArrayList<Liberacao> listaLiberacao,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
-
 		Boolean retorno = false;
 		int idAtendimento = 0;
 
@@ -480,9 +477,6 @@ public class InsercaoPacienteDAO {
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
 			ArrayList<AgendaBean> listaAgendamento) throws ProjetoException {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
 
 		Boolean retorno = false;
 
@@ -877,7 +871,7 @@ public class InsercaoPacienteDAO {
 		return retorno;
 	}
 
-public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) throws ProjetoException {
+	public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) throws ProjetoException {
 		
 		boolean dataValida = false;
 		String sql = "select exists ( " + 
@@ -912,4 +906,161 @@ public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer id
 		return dataValida;
 	}
 	
+	public boolean gravarInsercaoTurnoSemLaudo(InsercaoPacienteBean insercao, List<FuncionarioBean> lista,
+			ArrayList<AgendaBean> listaAgendamento) throws ProjetoException {
+		
+		boolean inseriu = false;
+		
+		String sql = "insert into hosp.paciente_instituicao (codprograma, status, observacao, cod_unidade, data_solicitacao, data_cadastro, turno) "
+						+ " values (?, ?, ?, ?, ?, current_timestamp, ?) RETURNING id;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, insercao.getPrograma().getIdPrograma());
+			ps.setString(2, "A");
+			ps.setString(3, insercao.getObservacao());
+			ps.setInt(4, user_session.getUnidade().getId());
+			ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+			ps.setString(6, insercao.getTurno());
+			ResultSet rs = ps.executeQuery();
+			Integer idPacienteInstituicao = 0;
+			if (rs.next()) {
+				idPacienteInstituicao = rs.getInt("id");
+			}
+			inserirDiasAtendimentoTurno(idPacienteInstituicao, lista, con);
+			inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, lista, listaAgendamento, con);
+			new GerenciarPacienteDAO().gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.INSERCAO.getSigla(), con);
+			con.commit();
+			inseriu = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return inseriu;
+	}
+	
+	
+	private void inserirDiasAtendimentoTurno(Integer idPacienteInstituicao, List<FuncionarioBean> lista,
+			Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+
+		try {
+			ps = conAuxiliar.prepareStatement(sql);
+
+			for (int i = 0; i < lista.size(); i++) {
+				ps.setLong(1, idPacienteInstituicao);
+				ps.setLong(2, lista.get(i).getId());
+				for (int j = 0; j < lista.get(i).getListaDiasAtendimentoSemana().size(); j++) {
+					ps.setInt(3, lista.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+					ps.executeUpdate();
+				}
+			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+
+	private void inserirAtendimentoSemLaudo(Integer idPacienteInstituicao, InsercaoPacienteBean insercao,
+			List<FuncionarioBean> lista, ArrayList<AgendaBean> listaAgendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "INSERT INTO hosp.atendimentos(codpaciente, situacao, dtaatende, codtipoatendimento, turno, "
+				+ " observacao, ativo, id_paciente_instituicao, cod_unidade, encaixe, codatendente, dtamarcacao, codprograma, codgrupo)"
+				+ " VALUES (?, 'A', ?, ?, ?, ?, 'S', ?, ?, false, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
+
+		try {
+			ps = conAuxiliar.prepareStatement(sql);
+
+			for (int i = 0; i < listaAgendamento.size(); i++) {
+
+				ps.setInt(1, insercao.getPaciente().getId_paciente());
+				ps.setDate(2,
+						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataAtendimento()));
+				ps.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+
+				if (VerificadorUtil.verificarSeObjetoNuloOuVazio(insercao.getTurno())) {
+					ps.setString(4, insercao.getTurno());
+				} else {
+					ps.setNull(4, Types.NULL);
+				}
+
+				ps.setString(5, insercao.getObservacao());
+				ps.setInt(6, idPacienteInstituicao);
+				ps.setInt(7, user_session.getUnidade().getId());
+				ps.setLong(8, user_session.getId());
+				ps.setLong(9, insercao.getPrograma().getIdPrograma());
+				ps.setLong(10, insercao.getGrupo().getIdGrupo());
+				
+
+				ResultSet rs = ps.executeQuery();
+
+				Integer idAtendimento = 0;
+				if (rs.next()) {
+					idAtendimento = rs.getInt("id_atendimento");
+				}
+				
+				for (FuncionarioBean profissional : lista) {
+					inserirAtendimentos1SemLaudo(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar);
+				}
+			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
+	private void inserirAtendimentos1SemLaudo(InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
+			AgendaBean agendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		try {
+			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
+
+				if (DataUtil.extrairDiaDeData(agendamento.getDataAtendimento()) == 
+						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+
+					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
+
+					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+					ps = con.prepareStatement(sql);
+
+					ps.setLong(1, profissional.getId());
+					ps.setInt(2, idAtendimento);
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getCbo().getCodCbo())) {
+						ps.setNull(3, Types.NULL);
+					} else {
+						ps.setInt(3, profissional.getCbo().getCodCbo());
+					}
+
+					ps.setNull(4, Types.NULL);
+					ps.setNull(5, Types.NULL);
+					ps.executeUpdate();
+				}
+			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+
 }

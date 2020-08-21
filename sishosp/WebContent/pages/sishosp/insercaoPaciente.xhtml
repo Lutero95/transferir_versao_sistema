@@ -7,7 +7,7 @@
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
-<p:growl id="grw"/>
+		<p:growl id="grw"/>
         <f:metadata>
             <f:viewAction
                     action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}"/>
@@ -183,7 +183,7 @@
 
                                     </p:autoComplete>
 
-                                    <p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
+                                    <p:commandButton id="btBusPr" immediate="true"
                                                      disabled="#{InsercaoController.ehAvaliacao == true}"
                                                      icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
                                                      actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
@@ -221,7 +221,7 @@
 
                                     </p:autoComplete>
 
-                                    <p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
+                                    <p:commandButton id="btBusGr" immediate="true"
                                                      icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
                                                      disabled="#{InsercaoController.insercao.programa.idPrograma == null || InsercaoController.ehAvaliacao == true}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
@@ -254,7 +254,7 @@
                                         <p:ajax event="itemSelect" listener="#{InsercaoController.listarProfissionaisEquipe()}" update="dtEquipe, :msgPagina, opturno, :formInsercao2:outTabelas" />
                                     </p:autoComplete>
 
-                                    <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
+                                    <p:commandButton id="btBusEqui" immediate="true"
                                                      disabled="#{InsercaoController.insercao.grupo.idGrupo == null || InsercaoController.ehAvaliacao == true}"
                                                      icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
                                                      actionListener="#{InsercaoController.carregaListaEquipePorTipoAtendimento()}"
@@ -311,7 +311,7 @@
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
-                                                     immediate="true" style="margin-left: 5px"
+                                                     immediate="true"
                                                      action="#{InsercaoController.listarProfissionais()}"
                                                      update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
                                                      rendered="#{InsercaoController.tipo == 'P'}"/>
@@ -424,7 +424,7 @@
                                             <div align="center">
                                                 <p:commandButton icon="ui-icon-trash" immediate="true"
                                                                  actionListener="#{InsercaoController.excluirFuncionarioIhDiasDeAtendimento}"
-                                                                 title="Excluir" class="new-btn-acao-table acao-editar"
+                                                                 title="Excluir" class="btn-acao-table acao-excluir"
                                                                  update=":formInsercao2:dtAdicionados">
                                                     <f:setPropertyActionListener value="#{funcionario}"
                                                                                  target="#{InsercaoController.funcionario}"/>

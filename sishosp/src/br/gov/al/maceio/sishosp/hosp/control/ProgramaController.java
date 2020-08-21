@@ -175,7 +175,7 @@ public class ProgramaController implements Serializable {
         List<ProgramaBean> result = pDao.listarProgramasBuscaUsuario(query, 1);
         return result;
     }
-
+    
     public void carregaListaProgramasUsuario()
             throws ProjetoException {
        listaProgramasUsuario = pDao.listarProgramasUsuario();
@@ -374,6 +374,17 @@ public class ProgramaController implements Serializable {
     			break;
     		}
 		}
+    }
+    
+    public List<ProgramaBean> listaProgramaSemLaudoAutoComplete(String query)
+            throws ProjetoException {
+        List<ProgramaBean> result = pDao.listarProgramasSemLaudoBusca(query);
+        return result;
+    }
+    
+    public void carregaListaProgramasSemLaudo()
+            throws ProjetoException {
+       listaProgramasUsuario = pDao.listarProgramasSemLaudo();
     }
     
     public void limparFrequencia() {

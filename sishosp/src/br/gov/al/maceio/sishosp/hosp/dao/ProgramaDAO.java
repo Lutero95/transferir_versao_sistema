@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
@@ -318,6 +319,47 @@ public class ProgramaDAO {
         }
         return lista;
     }
+    
+    
+	public List<ProgramaBean> listarProgramasSemLaudoBusca(String descricao) throws ProjetoException {
+		List<ProgramaBean> lista = new ArrayList<>();
+		String sql = "select distinct id_programa, id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
+				+ "dias_paciente_sem_laudo_ativo from hosp.programa "
+				+ "where programa.permite_paciente_sem_laudo = true and programa.cod_unidade = ? "
+				+ "and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setLong(1, user_session.getUnidade().getId());
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProgramaBean programa = new ProgramaBean();
+				programa.setIdPrograma(rs.getInt("id_programa"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
+				programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
+				lista.add(programa);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+    
 
     public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
@@ -343,6 +385,42 @@ public class ProgramaDAO {
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
                 programa.getProcedimento().setNomeProc(rs.getString("descproc"));
+                lista.add(programa);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+    
+    public List<ProgramaBean> listarProgramasSemLaudo() throws ProjetoException {
+        List<ProgramaBean> lista = new ArrayList<>();
+        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
+        		+ " dias_paciente_sem_laudo_ativo from hosp.programa "
+                + "where programa.cod_unidade = ? and permite_paciente_sem_laudo = true order by descprograma";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setLong(1, user_session.getUnidade().getId());
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
+                programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
@@ -396,7 +474,7 @@ public class ProgramaDAO {
     public ProgramaBean listarProgramaPorIdParaConverter(int id) throws ProjetoException {
 
         ProgramaBean programa = new ProgramaBean();
-        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc from hosp.programa join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? order by descprograma";
+        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo from hosp.programa join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -408,6 +486,7 @@ public class ProgramaDAO {
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
                 programa.getProcedimento().setNomeProc(rs.getString("descproc"));
+                programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
             }
 
         } catch (SQLException sqle) {
