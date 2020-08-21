@@ -82,11 +82,10 @@
 
                                     <b:label for="prog" value="Programa:" id="prog"
                                              class="fire-label"
-                                             rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
+                                             severity="info"/>
 
                                     <p:autoComplete value="#{InsercaoController.insercao.programa}"
-                                                    readonly="#{InsercaoController.ehAvaliacao == true}"
-                                                    rendered="#{InsercaoController.tipo == 'E'}" size="31"
+                                                    size="31"
                                                     converter="conPrograma" class="select-agendaEquipe4"
                                                     completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
@@ -104,8 +103,7 @@
 									</p:autoComplete>
 
                                     <p:commandButton id="btBusPr" immediate="true" 
-                                                     disabled="#{InsercaoController.ehAvaliacao == true}"
-                                                     icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
+                                                     icon="ui-icon-search"
                                                      actionListener="#{ProgramaController.carregaListaProgramasSemLaudo()}"
                                                      action="#{InsercaoController.limparNaBuscaPrograma()}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
@@ -119,11 +117,10 @@
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="prog" value="Grupo:" id="grupo"
                                              class="fire-label"
-                                             rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
+                                             severity="info"/>
 
                                     <p:autoComplete value="#{InsercaoController.insercao.grupo}"
-                                                    readonly="#{InsercaoController.ehAvaliacao == true}"
-                                                    rendered="#{InsercaoController.tipo == 'E'}" size="31"
+                                                    size="31"
                                                     converter="conGrupo" class="select-agendaEquipe4"
                                                     disabled="#{InsercaoController.insercao.programa==null}"
                                                     completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
@@ -143,8 +140,8 @@
 									</p:autoComplete>
 
                                     <p:commandButton id="btBusGr" immediate="true"
-                                                     icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
-                                                     disabled="#{InsercaoController.insercao.programa.idPrograma == null || InsercaoController.ehAvaliacao == true}"
+                                                     icon="ui-icon-search"
+                                                     disabled="#{InsercaoController.insercao.programa.idPrograma == null}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
                                 </b:column>
                             </p:outputPanel>
@@ -155,7 +152,6 @@
 							<div style="display: flex;">
 								<div class="content-div-flex">
 									<p:dataTable id="dtEquipe" resizableColumns="true"
-										rendered="#{InsercaoController.tipo == 'E'}"
 										value="#{InsercaoController.listaProfissionais}" var="func"
 										emptyMessage="Sem registros." styleClass="table-right"
 										reflow="true">
@@ -184,7 +180,6 @@
 
 								<div class="content-div-flex">
 									<p:dataTable id="dtAdicionados" resizableColumns="true"
-										rendered="#{InsercaoController.tipo == 'E'}"
 										value="#{InsercaoController.listaProfissionaisAdicionados}"
 										var="funcionario" emptyMessage="Sem registros."
 										styleClass="table-left" reflow="true">
@@ -379,8 +374,6 @@
                                     <b:label value="Turno:" severity="info" class="fire-label"/>
 
                                     <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                     readonly="#{InsercaoController.insercao.equipe.turno != 'A'
-                                                     and InsercaoController.tipo == 'E'}"
                                                      requiredMessage="Informe o Turno"
                                                      value="#{InsercaoController.insercao.turno}">
                                         <f:selectItem itemLabel="Selecione" itemValue="" />
@@ -413,128 +406,6 @@
             </div>
         </div>
 
-
-
-
-
-        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" dynamic="true"
-                  modal="true" width="900" responsive="true" height="400">
-            <h:form id="formConsuLaudo">
-                <p:row>
-
-                    <p:panelGrid columns="4">
-
-                        <h:selectOneMenu value="#{InsercaoController.tipoBusca}" style="padding:10px"
-                        >
-                            <f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
-                            <f:selectItem itemLabel="Protuário Paciente" itemValue="prontpaciente" />
-                            <f:selectItem itemLabel="Matrícula Paciente" itemValue="matpaciente" />
-                            <f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
-                        </h:selectOneMenu>
-
-                        <p:inputText value="#{InsercaoController.campoBusca}"
-                                     placeholder="Digite aqui o que deseja buscar"
-                                     style="margin-left: 10px;width:300px" />
-
-                        <p:commandButton
-                                action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
-                                update="dtLaudo msgPagina" icon="ui-icon-search"
-                                style="margin-left: 10px;" />
-
-
-                    </p:panelGrid>
-
-                </p:row>
-                <p:dataTable rows="6" paginator="true" style="font-size:13px"
-                             value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
-                             var="insercao" emptyMessage="Nenhum Laudo">
-
-                    <p:column width="80">
-                        <f:facet name="header">
-                            Prontuário
-                        </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.paciente.id_paciente}" />
-                    </p:column>
-
-                    <p:column width="200">
-                        <f:facet name="header">
-                            Paciente
-                        </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.paciente.nome}" />
-                    </p:column>
-
-                    <p:column width="80">
-                        <f:facet name="header">
-                            Matrícula
-                        </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.paciente.matricula}" />
-                    </p:column>
-
-                    <p:column width="200">
-                        <f:facet name="header">
-                            Procedimento Primário
-                        </f:facet>
-                        <h:outputText
-                                value="#{insercao.laudo.procedimentoPrimario.codProc}" />-<h:outputText
-                            value="#{insercao.laudo.procedimentoPrimario.nomeProc}" />
-                    </p:column>
-
-
-                    <p:column width="100">
-                        <f:facet name="header">
-                            Vencimento
-                        </f:facet>
-                        <h:outputLabel
-										value="Janeiro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 1}" />
-									<h:outputLabel
-										value="Fevereiro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 2}" />
-									<h:outputLabel value="Março/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 3}" />
-									<h:outputLabel value="Abril/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 4}" />
-									<h:outputLabel value="Maio/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 5}" />
-									<h:outputLabel value="Junho/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 6}" />
-									<h:outputLabel value="Julho/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 7}" />
-									<h:outputLabel value="Agosto/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 8}" />
-									<h:outputLabel
-										value="Setembro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 9}" />
-									<h:outputLabel
-										value="Outubro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 10}" />
-									<h:outputLabel
-										value="Novembro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 11}" />
-									<h:outputLabel
-										value="Dezembro/#{insercao.laudo.anoFinal}"
-										rendered="#{insercao.laudo.mesFinal == 12}" />
-                    </p:column>
-
-                    <p:column width="80">
-                        <f:facet name="header">
-                            Selecionar
-                        </f:facet>
-                        <p:commandButton update=":formInsercao2 msgPagina"
-                                         icon="fa fa-fw fa-check" title="Selecionar"
-                                         onclick="PF('dlgConsuLaudo').hide();"
-                                         class="new-btn-acao-table acao-editar"
-                                         action="#{InsercaoController.validarCarregarLaudoPaciente()}">
-                            <f:setPropertyActionListener value="#{insercao}"
-                                                         target="#{InsercaoController.insercao}" />
-                        </p:commandButton>
-                    </p:column>
-
-                </p:dataTable>
-            </h:form>
-        </p:dialog>
-
-
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimentoTurno">
@@ -560,63 +431,6 @@
                                      id="b2" icon="ui-icon-check"
                                      action="#{InsercaoController.validarAdicionarFuncionarioTurno()}"/>
                 </div>
-            </h:form>
-        </p:dialog>
-
-        <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog" 
-                  dynamic="true" responsive="true" widgetVar="dlgQtdAgendamentos"
-                  modal="true">
-            <h:form id="formQtdAgendamentos">
-                <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
-                             value="#{InsercaoController.listaHorariosDaEquipe}" var="ag"
-                             emptyMessage="Sem registros.">
-
-                    <p:column headerText="Equipe">
-                        <h:outputLabel value="#{ag.equipe.descEquipe}"/>
-                    </p:column>
-
-                    <p:column headerText="Manhã Segunda ">
-                        <h:outputLabel value="#{ag.qtdAtendimentosManha[0]}"/>
-                    </p:column>
-
-                    <p:column headerText="Tarde Segunda">
-                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[0]}"/>
-                    </p:column>
-
-                    <p:column headerText="Manhã Terça ">
-                        <h:outputLabel value="#{ag.qtdAtendimentosManha[1]}"/>
-                    </p:column>
-
-                    <p:column headerText="Tarde Terça">
-                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[1]}"/>
-                    </p:column>
-
-                    <p:column headerText="Manhã Quarta ">
-                        <h:outputLabel value="#{ag.qtdAtendimentosManha[2]}"/>
-                    </p:column>
-
-                    <p:column headerText="Tarde Quarta">
-                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[2]}"/>
-                    </p:column>
-
-                    <p:column headerText="Manhã Quinta ">
-                        <h:outputLabel value="#{ag.qtdAtendimentosManha[3]}"/>
-                    </p:column>
-
-                    <p:column headerText="Tarde Quinta">
-                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[3]}"/>
-                    </p:column>
-
-                    <p:column headerText="Manhã Sexta ">
-                        <h:outputLabel value="#{ag.qtdAtendimentosManha[4]}"/>
-                    </p:column>
-
-                    <p:column headerText="Tarde Sexta">
-                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[4]}"/>
-                    </p:column>
-
-                </p:dataTable>
-
             </h:form>
         </p:dialog>
 
