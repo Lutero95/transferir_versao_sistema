@@ -15,7 +15,6 @@ import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -39,9 +38,6 @@ public class GerenciarPacienteController implements Serializable {
 	private Boolean apenasLeitura;
 	private InsercaoPacienteBean insercao;
 	private String tipo;
-	private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
-	private InsercaoPacienteDAO iDao;
-	private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
 	private String tipoBusca;
 	private String campoBusca;
 
@@ -49,23 +45,20 @@ public class GerenciarPacienteController implements Serializable {
 	private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
 	private static final String ENDERECO_TRANSFERENCIA = "transferenciaPaciente?faces-redirect=true";
 	private static final String ENDERECO_ALTERACAO = "alteracaoPaciente?faces-redirect=true";
+	private static final String ENDERECO_ALTERACAO_SEM_LAUDO = "alteracaopacientesemlaudo?faces-redirect=true";
 	private static final String ENDERECO_GERENCIAMENTO = "gerenciamentoPacientes?faces-redirect=true";
-	private static final String ENDERECO_PTS = "pts?faces-redirect=true";
 	private static final String ENDERECO_ID = "&amp;id=";
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
 		gerenciarpaciente.setPrograma(null);
-		listaGrupos = new ArrayList();
+		listaGrupos = new ArrayList<>();
 		gerenciarpaciente.setStatus("A");
 		listaPacientes = new ArrayList<GerenciarPacienteBean>();
 		apenasLeitura = false;
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
 		tipo = "";
-		listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
-		iDao = new InsercaoPacienteDAO();
-		listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
 	}
 
 	public void carregarBuscaGerenciamentoPaciente() {
@@ -195,6 +188,10 @@ public class GerenciarPacienteController implements Serializable {
 
 	public String redirectAlteracao() {
 		return RedirecionarUtil.redirectEditSemTipo(ENDERECO_ALTERACAO, ENDERECO_ID, this.rowBean.getId());
+	}
+	
+	public String redirectAlteracaoSemLaudo() {
+		return RedirecionarUtil.redirectEditSemTipo(ENDERECO_ALTERACAO_SEM_LAUDO, ENDERECO_ID, this.rowBean.getId());
 	}
 
 	public String redirectGerenciamento() {

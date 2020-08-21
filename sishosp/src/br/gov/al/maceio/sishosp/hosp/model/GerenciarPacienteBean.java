@@ -7,6 +7,8 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class GerenciarPacienteBean implements Serializable {
 
+	
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String status;
 	private Date data_operacao;
@@ -16,6 +18,7 @@ public class GerenciarPacienteBean implements Serializable {
 	private String observacao;
 	private String tipo;
 	private Integer motivo_desligamento;
+	private boolean inclusaoSemLaudo;
 
 	// HERDADOS
 	private GrupoBean grupo;
@@ -147,6 +150,12 @@ public class GerenciarPacienteBean implements Serializable {
 		this.dataDesligamento = dataDesligamento;
 	}
 
+	public boolean isInclusaoSemLaudo() {
+		return inclusaoSemLaudo;
+	}
 
+	public void setInclusaoSemLaudo(boolean inclusaoSemLaudo) {
+		this.inclusaoSemLaudo = inclusaoSemLaudo;
+	}
 
 }

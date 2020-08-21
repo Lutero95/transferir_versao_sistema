@@ -170,7 +170,7 @@
 									<p:splitButton id="btnInserir" value="Inserir"
 										update=":formGerenPaci" icon="ui-icon-plus"
 										action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"
-										immediate="true">
+										immediate="true" style="margin-top: 5px;">
 										<p:menuitem value="Inserir sem Laudo" 
 											action="/pages/sishosp/insercaopacientesemlaudo.xhtml?faces-redirect=true"
 											icon="pi pi-refresh" styleClass="split-item"/>
@@ -179,14 +179,24 @@
                                 </b:column>
 
                                 <b:column span="2" class="new-span2">
-                                    <p:commandButton value="Alterar" style="margin-top:5px;"
-                                                     disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
-                                                     id="btnAlterar" immediate="true"
-                                                     class="btn-acao-table acao-altera2 btn-new-padding2"
-                                                     update=":formGerenPaci"
-                                                     icon="ui-icon-pencil"
-                                                     action="#{GerenciarPacienteController.redirectAlteracao()}"/>
-                                </b:column>
+									<p:outputPanel id="outAlterar">
+										<p:commandButton value="Alterar" style="margin-top:5px;"
+											disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+											rendered="#{GerenciarPacienteController.rowBean.inclusaoSemLaudo != true}"
+											id="btnAlterar" immediate="true"
+											class="btn-acao-table acao-altera2 btn-new-padding2"
+											update=":formGerenPaci" icon="ui-icon-pencil"
+											action="#{GerenciarPacienteController.redirectAlteracao()}" />
+
+										<p:commandButton value="Alterar Inserido sem Laudo"
+											style="margin-top:5px;"
+											rendered="#{GerenciarPacienteController.rowBean.inclusaoSemLaudo == true}"
+											action="#{GerenciarPacienteController.redirectAlteracaoSemLaudo()}"
+											id="btnAlterarSemLaudo" immediate="true"
+											class="btn-acao-table acao-altera2 btn-new-padding2"
+											update=":formGerenPaci" icon="ui-icon-pencil" />
+									</p:outputPanel>
+								</b:column>
 
                                 <b:column span="2" class="new-span2">
                                     <p:commandButton value="Renovar" style="margin-top:5px;"
@@ -241,7 +251,7 @@
                                  rowKey="#{pacie.id}">
 
                         <p:ajax event="rowSelect"
-                                update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento"/>
+                                update=":formGerenPaci:btnRenovar :formGerenPaci:outAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento"/>
 
                         <p:column width="15%">
                             <f:facet name="header">

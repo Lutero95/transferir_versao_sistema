@@ -1380,7 +1380,39 @@ public class AlteracaoPacienteController implements Serializable {
 
     public void visualizarHorariosEquipe() throws ProjetoException {
     	listaHorariosEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
-         
+    }
+    
+    public void carregaAlteracaoInsercaoSemLaudo() throws ProjetoException, ParseException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            
+            listaDias = new ArrayList<>();
+            Integer id = Integer.parseInt(params.get("id"));
+            id_paciente_insituicao = id;
+            this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
+            
+            
+            if (insercao.getEquipe().getCodEquipe() != null
+                    && insercao.getEquipe().getCodEquipe() > 0) {
+                listaProfissionaisEquipe = agendaDAO.listaProfissionaisAtendimetoParaPacienteInstituicao(id);
+                tipo = TipoAtendimento.EQUIPE.getSigla();
+                listarProfissionaisEquipe();
+
+                List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
+                adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
+                
+            }
+            if (insercao.getFuncionario().getId() != null
+                    && insercao.getFuncionario().getId() > 0) {
+                tipo = TipoAtendimento.PROFISSIONAL.getSigla();
+            }
+
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
+        }
+
     }
 
     public InsercaoPacienteBean getInsercao() {
