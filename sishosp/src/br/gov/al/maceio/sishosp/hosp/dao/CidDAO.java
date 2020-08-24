@@ -367,40 +367,4 @@ public class CidDAO {
 
 		lista.add(cid);
 	}
-
-	public List<CidBean> listarCidsPermitidos(Integer idPrograma)
-			throws ProjetoException {
-		
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-		
-		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cid, c.desccidabrev, c.cod from hosp.cid c " + 
-				"join hosp.programa_cid pc on (c.cod = pc.id_cid) " + 
-				"join hosp.programa p on (pc.id_programa = p.id_programa) " + 
-				"where pc.id_programa = ? and p.cod_unidade = ?";
-		
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, idPrograma);
-			stm.setInt(2, user_session.getUnidade().getId());
-			
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				mapearResultSet(lista, rs);
-			}
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-
-		return lista;
-	}
 }

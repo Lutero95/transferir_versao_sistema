@@ -30,14 +30,14 @@ public class AlteracaoPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id) throws ProjetoException {
 
-		String sql = "select id, codprograma, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
+		String sql = "select id, dias_paciente_sem_laudo_ativo, codprograma, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
 				"codpaciente_instituicao, nome, codequipe, descequipe, turno, horario, mes_final, ano_final,\n" +
 				"codprofissional,descfuncionario, observacao , codlaudo, data_solicitacao ,\n" +
 				"codprocedimento_primario, codprocedimento_secundario1, \n" +
 				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5,\n" +
 				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario " +
 				" from (\n" +
-				"select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
+				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
 				"l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, \n" +
 				" pi.codequipe, e.descequipe, pi.turno, pi.horario, \n" +
 				"  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n" +
@@ -53,7 +53,7 @@ public class AlteracaoPacienteDAO {
 				" where pi.id = ?    \n" +
 				" )a";
 
-		InsercaoPacienteBean ip = new InsercaoPacienteBean();
+		InsercaoPacienteBean insercaoPaciente = new InsercaoPacienteBean();
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -63,46 +63,47 @@ public class AlteracaoPacienteDAO {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				ip = new InsercaoPacienteBean();
+				insercaoPaciente = new InsercaoPacienteBean();
 
-				ip.setId(rs.getInt("id"));
-				ip.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-				ip.getPrograma().setDescPrograma(rs.getString("descprograma"));
-				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				insercaoPaciente.setId(rs.getInt("id"));
+				insercaoPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				insercaoPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				insercaoPaciente.getPrograma().setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
+				insercaoPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				insercaoPaciente.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				if ((rs.getString("codpaciente_laudo"))!=null) {
-					ip.getLaudo().setId(rs.getInt("codlaudo"));
-					ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
-					ip.getLaudo().getPaciente().setNome(rs.getString("nome"));
-					ip.getLaudo().getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
-					ip.getLaudo().getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-					ip.getLaudo().getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-					ip.getLaudo().getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-					ip.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-					ip.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
-					ip.getLaudo().getCid1().setIdCid(rs.getInt("id_cidprimario"));
-					ip.setInsercaoPacienteSemLaudo(false);
+					insercaoPaciente.getLaudo().setId(rs.getInt("codlaudo"));
+					insercaoPaciente.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
+					insercaoPaciente.getLaudo().getPaciente().setNome(rs.getString("nome"));
+					insercaoPaciente.getLaudo().getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+					insercaoPaciente.getLaudo().getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+					insercaoPaciente.getLaudo().getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+					insercaoPaciente.getLaudo().getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+					insercaoPaciente.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+					insercaoPaciente.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+					insercaoPaciente.getLaudo().getCid1().setIdCid(rs.getInt("id_cidprimario"));
+					insercaoPaciente.setInsercaoPacienteSemLaudo(false);
 				} else
 				{
-					ip.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
-					ip.getPaciente().setNome(rs.getString("nome"));	
-					ip.setInsercaoPacienteSemLaudo(true);
+					insercaoPaciente.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
+					insercaoPaciente.getPaciente().setNome(rs.getString("nome"));	
+					insercaoPaciente.setInsercaoPacienteSemLaudo(true);
 				}
-					ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-				ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
-				ip.getFuncionario().setId(rs.getLong("codprofissional"));
-				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
-				ip.setObservacao(rs.getString("observacao"));
-				ip.setTurno(rs.getString("turno"));
+					insercaoPaciente.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				insercaoPaciente.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				insercaoPaciente.getFuncionario().setId(rs.getLong("codprofissional"));
+				insercaoPaciente.getFuncionario().setNome(rs.getString("descfuncionario"));
+				insercaoPaciente.setObservacao(rs.getString("observacao"));
+				insercaoPaciente.setTurno(rs.getString("turno"));
 			/*	if (user_session.getUnidade().getParametro().getOpcaoAtendimento().equals("H"))
 					ip.setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"),
 							limitadorHorarioParaStringInicio, limitadorHorarioParaStringFinal));
 			*/
-				ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
-				ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
-				ip.getLaudo().setVigenciaFinal(rs.getDate("vigencia_final"));
-				ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
-				ip.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
+				insercaoPaciente.getLaudo().setAnoFinal(rs.getInt("ano_final"));
+				insercaoPaciente.getLaudo().setMesFinal(rs.getInt("mes_final"));
+				insercaoPaciente.getLaudo().setVigenciaFinal(rs.getDate("vigencia_final"));
+				insercaoPaciente.setDataSolicitacao(rs.getDate("data_solicitacao"));
+				insercaoPaciente.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 
 			}
 
@@ -117,7 +118,7 @@ public class AlteracaoPacienteDAO {
 				ex.printStackTrace();
 			}
 		}
-		return ip;
+		return insercaoPaciente;
 	}
 
 	public ArrayList<GerenciarPacienteBean> listarDiasAtendimentoProfissionalEquipe(Integer id)
@@ -218,7 +219,7 @@ public class AlteracaoPacienteDAO {
 			
 			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 			
-			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
 			
 			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 
@@ -422,42 +423,49 @@ public class AlteracaoPacienteDAO {
 			ps6 = conexao.prepareStatement(sql6);
 			for (int i = 0; i < listaProfissionaisInseridosAtendimentoEquipe.size(); i++) {
 				AtendimentoBean atendimento = new AtendimentoBean();
-				atendimento.setDataAtendimentoInicio( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento());
-				atendimento.getPrograma().setIdPrograma(listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
-				atendimento.getGrupo().setIdGrupo(listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
-				atendimento.getEquipe().setCodEquipe(listaProfissionaisInseridosAtendimentoEquipe.get(i).getEquipe().getCodEquipe());
-				atendimento.getFuncionario().setId(listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
-				if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento) ) {
-				String sql8 = "INSERT INTO hosp.atendimentos1 " +
-		                "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) " +
-		                "VALUES (?, (select id_atendimento from hosp.atendimentos aa " + 
-		                " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	  limit 1), ?, (select cod_procedimento from hosp.programa " + 
-		                "where programa.id_programa = ? ), ?) RETURNING id_atendimentos1";
+				atendimento.setDataAtendimentoInicio(
+						listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento());
+				atendimento.getPrograma().setIdPrograma(
+						listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+				atendimento.getGrupo()
+						.setIdGrupo(listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+				atendimento.getEquipe()
+						.setCodEquipe(listaProfissionaisInseridosAtendimentoEquipe.get(i).getEquipe().getCodEquipe());
+				atendimento.getFuncionario()
+						.setId(listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+				if (aDAo.verificaSeExisteAtendimentoparaProfissionalNaDataNaEquipe(atendimento)) {
+					String sql8 = "INSERT INTO hosp.atendimentos1 "
+							+ "(codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) "
+							+ "VALUES (?, (select id_atendimento from hosp.atendimentos aa "
+							+ " where aa.dtaatende=? and  aa.codprograma=? and aa.codgrupo=? and aa.codpaciente  = ? and coalesce(aa.situacao, 'A')<> 'C'	  limit 1), ?, (select cod_procedimento from hosp.programa "
+							+ "where programa.id_programa = ? ), ?) RETURNING id_atendimentos1";
 
-				PreparedStatement ps8 = null;
-				ps8 = conexao.prepareStatement(sql8);
-				ps8.setLong(1, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
-				ps8.setDate(2,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
-				ps8.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
-				ps8.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
-				ps8.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
-				ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getCbo().getCodCbo());
-				ps8.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
-				ps8.setInt(8, insercao.getLaudo().getCid1().getIdCid());
-				ps8.execute();
-				
-				ps6 = null;
-				ps6 = conexao.prepareStatement(sql6);
-				
-				ps6.setDate(1,new java.sql.Date( listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
-				ps6.setLong(2, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
-				ps6.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
-				ps6.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
-				ps6.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
-				ps6.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getId());
-				ps6.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
-				ps6.execute();
-			}
+					PreparedStatement ps8 = null;
+					ps8 = conexao.prepareStatement(sql8);
+					ps8.setLong(1, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps8.setDate(2, new java.sql.Date(listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+					ps8.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					ps8.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					ps8.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean().getPaciente().getId_paciente());
+					ps8.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getCbo().getCodCbo());
+					ps8.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					ps8.setInt(8, insercao.getLaudo().getCid1().getIdCid());
+					ps8.execute();
+
+					ps6 = null;
+					ps6 = conexao.prepareStatement(sql6);
+
+					ps6.setDate(1, new java.sql.Date(
+							listaProfissionaisInseridosAtendimentoEquipe.get(i).getDataAtendimento().getTime()));
+					ps6.setLong(2, listaProfissionaisInseridosAtendimentoEquipe.get(i).getPrograma().getIdPrograma());
+					ps6.setLong(3, listaProfissionaisInseridosAtendimentoEquipe.get(i).getGrupo().getIdGrupo());
+					ps6.setLong(4, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps6.setLong(5, listaProfissionaisInseridosAtendimentoEquipe.get(i).getAtendimentoBean()
+							.getPaciente().getId_paciente());
+					ps6.setLong(6, listaProfissionaisInseridosAtendimentoEquipe.get(i).getId());
+					ps6.setLong(7, listaProfissionaisInseridosAtendimentoEquipe.get(i).getFuncionario().getId());
+					ps6.execute();
+				}
 			}
 			
 			
@@ -1346,6 +1354,105 @@ public class AlteracaoPacienteDAO {
 			}
 		}
 		return dataValida;
-	}	
+	}
+	
+	
+	public boolean gravarAlteracaoTurnoSemLaudo(InsercaoPacienteBean insercao,
+			ArrayList<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
+			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
+		
+		boolean alterado = false;
+        String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao = ?, turno = ? where id = ?";
+		
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			
+			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
+			
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
+			
+			//ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
+
+			//ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;			
+			
+			
+			
+			if (!gerenciarPacienteDAO.apagarAtendimentos
+					(id_paciente, conexao, true, listaSubstituicao, new ArrayList<>(), new ArrayList<>(), listaAtendimento1ComLiberacao)) {
+				conexao.close();
+				return alterado;
+			}
+			
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+            stmt.setString(2, insercao.getObservacao());
+            stmt.setString(3, insercao.getTurno());
+            stmt.setInt(4, insercao.getId());
+            stmt.executeUpdate();
+
+            InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();
+            
+            insercaoPacienteDAO.inserirDiasAtendimentoTurno(id_paciente, listaProfissionais, conexao);
+            
+            List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
+            listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);
+            for(AgendaBean agenda : listAgendamentoProfissionalAux) {
+            	if(verificarSeExisteAtendimentoSemLaudo(insercao, agenda.getDataAtendimento(), insercao.getPaciente().getId_paciente(), conexao)) {
+            		listAgendamentoProfissional.remove(agenda);
+            	}
+            }
+            
+            insercaoPacienteDAO.inserirAtendimentoSemLaudo(id_paciente, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
+            
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
+				conexao.commit();
+				alterado = true;
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterado;
+	}
+	
+	public Boolean verificarSeExisteAtendimentoSemLaudo(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data,
+			Integer codPaciente, Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		Boolean retorno = false;
+
+		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND dtaatende = ? and codpaciente=? and coalesce(situacao,'')<>'C'";
+
+		try {
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+
+			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
+			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
+			stm.setDate(3, DataUtil.converterDateUtilParaDateSql(data));
+			stm.setInt(4, codPaciente);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				retorno = true;
+			}
+
+		} catch (SQLException ex2) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return retorno;
+	}
 
 }

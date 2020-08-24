@@ -911,22 +911,22 @@ public class InsercaoPacienteDAO {
 		
 		boolean inseriu = false;
 		
-		String sql = "insert into hosp.paciente_instituicao (codprograma, status, observacao, "
+		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, status, observacao, "
 						+ "cod_unidade, data_solicitacao, data_cadastro, turno, id_paciente, inclusao_sem_laudo) "
-						+ " values (?, ?, ?, ?, ?, current_timestamp, ?, ?, true) RETURNING id;";
+						+ " values (?, ?, 'A', ?, ?, ?, current_timestamp, ?, ?, true) RETURNING id;";
 		
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
-			ps.setString(2, "A");
+			ps.setInt(2, insercao.getGrupo().getIdGrupo());
 			ps.setString(3, insercao.getObservacao());
 			ps.setInt(4, user_session.getUnidade().getId());
 			ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			ps.setString(6, insercao.getTurno());
 			ps.setInt(7, insercao.getPaciente().getId_paciente());
 			ResultSet rs = ps.executeQuery();
-			Integer idPacienteInstituicao = 0;
+			Integer idPacienteInstituicao = null;
 			if (rs.next()) {
 				idPacienteInstituicao = rs.getInt("id");
 			}
@@ -950,7 +950,7 @@ public class InsercaoPacienteDAO {
 	}
 	
 	
-	private void inserirDiasAtendimentoTurno(Integer idPacienteInstituicao, List<FuncionarioBean> lista,
+	public void inserirDiasAtendimentoTurno(Integer idPacienteInstituicao, List<FuncionarioBean> lista,
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		String sql = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
@@ -976,7 +976,7 @@ public class InsercaoPacienteDAO {
 		} 
 	}
 
-	private void inserirAtendimentoSemLaudo(Integer idPacienteInstituicao, InsercaoPacienteBean insercao,
+	public void inserirAtendimentoSemLaudo(Integer idPacienteInstituicao, InsercaoPacienteBean insercao,
 			List<FuncionarioBean> lista, ArrayList<AgendaBean> listaAgendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		String sql = "INSERT INTO hosp.atendimentos(codpaciente, situacao, dtaatende, codtipoatendimento, turno, "

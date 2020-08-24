@@ -101,7 +101,7 @@
                                 <b:column span="3"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="prog" value="Grupo:" id="grupo"
-                                             class="fire-label" everity="info"/>
+                                             class="fire-label" severity="info"/>
 
                                     <p:autoComplete value="#{AlteracaoPacienteController.insercao.grupo}"
                                                     size="31" converter="conGrupo" class="select-agendaEquipe4"
@@ -363,7 +363,7 @@
                                              icon="ui-icon-check"
                                              update=":msgPagina :formInsercao2"
                                              class="btn-incluir"
-                                             action="#{AlteracaoPacienteController.inserirPacienteSemLaudo()}"
+                                             action="#{AlteracaoPacienteController.alterarPacienteInseridoSemLaudo()}"
                                              process="@all"/>
 
                             <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"

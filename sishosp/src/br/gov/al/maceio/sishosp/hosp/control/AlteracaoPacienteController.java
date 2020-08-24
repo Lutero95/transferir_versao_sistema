@@ -22,11 +22,14 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AlteracaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RenovacaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
@@ -34,11 +37,13 @@ import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name = "AlteracaoPacienteController")
 @ViewScoped
@@ -71,6 +76,7 @@ public class AlteracaoPacienteController implements Serializable {
     private static ArrayList<FuncionarioBean> listaProfissionaisEquipeDuplicado;
     private List<AgendaBean> listaHorariosEquipe;
     private EquipeDAO eDao = new EquipeDAO();
+    private ProgramaDAO programaDAO = new ProgramaDAO();
     private FuncionarioBean funcionario;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
     private Boolean todosOsProfissionais;
@@ -80,6 +86,9 @@ public class AlteracaoPacienteController implements Serializable {
     private ArrayList<String> listaHorarios;
     private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
+	private List<ProcedimentoBean> listaProcedimentos;
+	private List<CidBean> listaCids;
+	private List<FuncionarioBean> listaProfissionais;
 
     public AlteracaoPacienteController() throws ProjetoException, ParseException {
         insercao = new InsercaoPacienteBean();
@@ -102,6 +111,9 @@ public class AlteracaoPacienteController implements Serializable {
         listaHorarios = new ArrayList<>();
         laudo = new LaudoBean();
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+    	listaProcedimentos = new ArrayList<>();
+    	listaCids = new ArrayList<>();
+    	listaProfissionais = new ArrayList<>();
     }
     
     
@@ -1392,28 +1404,158 @@ public class AlteracaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
-            
-            
-            if (insercao.getEquipe().getCodEquipe() != null
-                    && insercao.getEquipe().getCodEquipe() > 0) {
-                listaProfissionaisEquipe = agendaDAO.listaProfissionaisAtendimetoParaPacienteInstituicao(id);
-                tipo = TipoAtendimento.EQUIPE.getSigla();
-                listarProfissionaisEquipe();
-
-                List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
-                adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
-                
-            }
-            if (insercao.getFuncionario().getId() != null
-                    && insercao.getFuncionario().getId() > 0) {
-                tipo = TipoAtendimento.PROFISSIONAL.getSigla();
-            }
-
+            listarDadosPermitidosDoPrograma(insercao.getPrograma().getIdPrograma());
+            List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
+            adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
         }
-
     }
+    
+    private void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
+        this.listaProcedimentos = new ProcedimentoDAO().listarProcedimentosPermitidos(idPrograma);
+        this.listaCids = programaDAO.listarCidsPermitidos(idPrograma);
+		this.listaProfissionais = programaDAO.listarProfissionaisInsercaoSemlaudo
+				(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+    }
+    
+    public void abrirDialogTurno() {
+        JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
+        JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+    }
+    
+    public void validarAdicionarFuncionarioTurno() {
+        Boolean existe = false;
+        if (listaProfissionaisAdicionados.isEmpty()) {
+        	adicionarFuncionarioTurno();
+        } else {
+
+            for (FuncionarioBean profissional :  listaProfissionaisAdicionados) {
+                if (profissional.getId() == funcionario.getId()) {
+                    existe = true;
+                }
+            }
+            if (existe == false) {
+            	adicionarFuncionarioTurno();
+            } else {
+                JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
+                JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
+            }
+        }
+    }
+    
+    public void adicionarFuncionarioTurno() {
+        String dias = "";
+
+        for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
+        	HorarioAtendimento horarioAtendimento = new HorarioAtendimento();
+        	horarioAtendimento.setDiaSemana(Integer.parseInt(funcionario.getListDiasSemana().get(i)));
+            	funcionario.getListaDiasAtendimentoSemana().add(horarioAtendimento);
+            
+        }
+
+        for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
+                dias = dias + "Domingo";
+
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                dias = dias + "Segunda";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
+                dias = dias + "Terça";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
+                dias = dias + "Quarta";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
+                dias = dias + "Quinta";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
+                dias = dias + "Sexta";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
+                dias = dias + "Sábado";
+                if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+        }
+        dias = dias + ".";
+
+        funcionario.setDiasSemana(dias);
+        listaProfissionaisAdicionados.add(funcionario);
+
+        JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
+    }
+    
+    public void validarProcedimentoParaAdicionar(ProcedimentoBean procedimentoSelecionado) {
+    	for (ProcedimentoBean procedimento : insercao.getPrograma().getListaProcedimentosPermitidos()) {
+			if(procedimento.getIdProc().equals(procedimentoSelecionado.getIdProc())) {
+				JSFUtil.adicionarMensagemSucesso("Este procedimento já foi adicionado", "");
+				return;
+			}
+		}
+    	insercao.getPrograma().getListaProcedimentosPermitidos().add(procedimentoSelecionado);
+    	//listaProcedimentosAux = insercao.getPrograma().getListaProcedimentosPermitidos();
+    }
+    
+    public void removerProcedimento(ProcedimentoBean procedimentoSelecionado) {
+    	insercao.getPrograma().getListaProcedimentosPermitidos().remove(procedimentoSelecionado);
+    }
+    
+    public void validarCidParaAdicionar(CidBean cidSelecionado) {
+    	for (CidBean cid : insercao.getPrograma().getListaCidsPermitidos()) {
+			if(cid.getIdCid().equals(cidSelecionado.getIdCid())) {
+				JSFUtil.adicionarMensagemSucesso("Este CID já foi adicionado", "");
+				return;
+			}
+		}
+    	insercao.getPrograma().getListaCidsPermitidos().add(cidSelecionado);
+    }
+    
+    public void removerCid(CidBean cidSelecionado) {
+    	insercao.getPrograma().getListaCidsPermitidos().remove(cidSelecionado);
+    }
+    
+	public void alterarPacienteInseridoSemLaudo() throws ProjetoException {
+		InsercaoPacienteController insercaoController = new InsercaoPacienteController();
+		if(!insercaoController.listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
+    			&& !insercaoController.listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
+    			&& !insercaoController.listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
+			
+			listAgendamentoProfissional = insercaoController.gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
+			
+			if(aDao.gravarAlteracaoTurnoSemLaudo(insercao, listAgendamentoProfissional, id_paciente_insituicao, listaProfissionais)) {
+				JSFUtil.adicionarMensagemSucesso("Paciente Alterado com Sucesso", "");
+			}
+		}
+	}
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1534,8 +1676,37 @@ public class AlteracaoPacienteController implements Serializable {
 		return listaLaudosVigentes;
 	}
 
-
 	public void setListaLaudosVigentes(ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
 		this.listaLaudosVigentes = listaLaudosVigentes;
+	}
+
+
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
+	}
+
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
+
+
+	public List<CidBean> getListaCids() {
+		return listaCids;
+	}
+
+
+	public void setListaCids(List<CidBean> listaCids) {
+		this.listaCids = listaCids;
+	}
+
+
+	public List<FuncionarioBean> getListaProfissionais() {
+		return listaProfissionais;
+	}
+
+
+	public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
+		this.listaProfissionais = listaProfissionais;
 	}
 }
