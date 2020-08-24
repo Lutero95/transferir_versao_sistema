@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{AgendaController.carregarHorarioOuTurno()}" />
+			<f:viewAction action="#{AgendaController.limparTurno()}" />
+			<f:viewAction action="#{AgendaController.listarPacientes()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Cadastro de Pesquisa</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+
+
+				<h:form id="formAgendaMedica">
+
+					<p:growl id="growlMsg"></p:growl>
+					<br></br>
+
+					<p:outputPanel id="rowProgramaGrupoTipoAtendimento">
+						<b:row rendered="#{AgendaController.agenda.avaliacao != true}">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Título" severity="info" />
+								<p:outputPanel>
+									<p:inputText class="select-agendaEquipe4"/>
+								</p:outputPanel>
+							</b:column>
+
+							<b:column span="4">
+								<b:label value="Data Inicial" severity="info" />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="7"
+									required="true" requiredMessage="Data Inicial: Campo obrigatório!"
+									value="#{AgendaController.agenda.dataAtendimento}" id="dataInicial"
+									locale="pt" style="margin-left:1px;"/>
+							</b:column>
+							
+							<b:column span="4">
+								<b:label value="Data Final" severity="info" />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="7"
+									required="true" requiredMessage="Data Final: Campo obrigatório!"
+									value="#{AgendaController.agenda.dataAtendimento}" id="dataFinal"
+									locale="pt" style="margin-left:1px;"/>
+							</b:column>
+						</b:row>
+					</p:outputPanel>
+					
+					<b:row>
+						<b:column span="12">
+							<div style="display: flex;">
+								<div style="width: 60%;">
+									<p:dataTable paginator="true" rows="10" id="tabelapacientes" paginatorPosition="bottom"
+										filteredValue="#{AgendaController.listaPacientesComInformacaoDTOFiltro}"
+										var="pacie" value="#{AgendaController.listaPacientesComInformacaoDTO}"
+										emptyMessage="Nenhum Paciente" style="margin-right:1%;">
+
+										<p:column headerText="Prontuário" width="16%" filterBy="#{pacie.paciente.id_paciente}">
+											<p:outputLabel value="#{pacie.paciente.id_paciente}" />
+										</p:column>
+
+										<p:column headerText="Nome" filterBy="#{pacie.paciente.nome}" width="40%">
+											<p:outputLabel value="#{pacie.paciente.nome}" />
+										</p:column>
+
+										<p:column headerText="Matrícula" filterBy="#{pacie.paciente.matricula}">
+											<p:outputLabel value="#{pacie.paciente.matricula}" />
+										</p:column>
+										
+										<p:column headerText="Ação" width="10%">
+											<div align="center">
+												<p:commandButton
+													action="#{AgendaController.validaPacienteParaAdicionar(pacie)}"
+													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina"
+													process="@this @form :formAgendaMedica:tabelaPacientesSelecionados"
+													icon="fa fa-fw fa-plus" title="Adicionar paciente"
+													class="new-btn-acao-table acao-editar"/>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							
+								<div style="width: 40%;">
+									<p:dataTable var="paci"
+										value="#{AgendaController.listaPacientesSelecionadosComInformacaoDTO}"
+										emptyMessage="Nenhum paciente adicionado" paginator="true"
+										id="tabelaPacientesSelecionados" rows="10" paginatorPosition="bottom"
+										style="width:96%; margin-left:1%;">
+										<p:column headerText="Paciente" width="70%">
+											<h:outputText value="#{paci.paciente.nome}" />
+										</p:column>
+
+										<p:column headerText="Presença" width="20%">
+											<div align="center">
+												<h:outputText value="${paci.presenca == 'true' ? 'Sim' : 'Não'}" />
+											</div>
+										</p:column>
+
+										<p:column headerText="Ação">
+											<div align="center">
+												<p:commandButton
+													action="#{AgendaController.removerPacienteSelecionado(paci)}"
+													update="tabelaPacientesSelecionados, :msgPagina"
+													process="@this"
+													icon="fa fa-fw fa-times" title="Remover paciente"
+													immediate="true" class="new-btn-acao-table acao-excluir" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</b:column>
+					</b:row>					
+
+					<div align="center">
+						<p:commandButton value="Gravar" look="success" size="sm"
+							id="bgravar" icon="ui-icon-check"
+							action="#{AgendaController.validarAgendamentosInformandoAtendimento()}"
+							update=":formAgendaMedica"
+							class="btn-incluir" />
+
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							update=":formAgendaMedica"
+							actionListener="#{AgendaController.limparDados()}"
+							action="/pages/sishosp/principal.xhtml?faces-redirect=true">
+						</p:commandButton>
+					</div>
+
+				</h:form>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

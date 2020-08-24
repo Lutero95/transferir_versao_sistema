@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{gestaoAbonoFaltaPacienteController.listarAbonosFaltaPaciente()}"/>
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Pesquisas</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+				<h:form id="frmPrincipal">
+
+					<p:commandButton id="btninc" value="Novo" size="sm"
+						action="/pages/sishosp/cadastropesquisa.xhtml?faces-redirect=true"
+						icon="ui-icon-plus" class="btn-addNovo">
+						<p:tooltip for="btninc" value="Novo"></p:tooltip>
+					</p:commandButton>
+
+					<p:dataTable id="dataTablePrincipal" var="abono" responsive="true" rows="20" style="margin-top: 10px"
+								 value="#{gestaoAbonoFaltaPacienteController.listaAbonosFaltaPaciente}" paginator="true"
+								 emptyMessage="Nenhum abono encontrado." reflow="true">
+
+						<p:column headerText="Data Inicial" width="10%">
+							<h:outputText value="#{abono.dataAbono}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data Final" width="10%">
+							<h:outputText value="#{abono.dataAbono}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{abono.programa.descPrograma}"/>
+						</p:column>
+
+						<p:column headerText="Detalhes" width="10%">
+							<div align="center">
+								<p:commandButton icon="fa fa-fw fa-bars"
+									id="btn-detalhes" />
+							</div>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>
