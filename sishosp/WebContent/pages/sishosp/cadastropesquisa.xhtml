@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{pesquisaController.listarPacienteAtivos()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Cadastro de Pesquisa</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+
+
+				<h:form id="formPesquisa">
+
+					<p:growl id="growlMsg"></p:growl>
+					<br></br>
+
+					<p:outputPanel id="rowProgramaGrupoTipoAtendimento">
+						<b:row>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Título" severity="info" />
+								<p:outputPanel>
+									<p:inputText value="#{pesquisaController.pesquisa.titulo}" class="select-agendaEquipe4"
+									required="true" requiredMessage="Título: Campo obrigatório!"/>
+								</p:outputPanel>
+							</b:column>
+
+							<b:column span="4">
+								<b:label value="Data Inicial" severity="info" />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="7"
+									required="true" requiredMessage="Data Inicial: Campo obrigatório!"
+									value="#{pesquisaController.pesquisa.dataInicial}" id="dataInicial"
+									locale="pt" style="margin-left:1px;"/>
+							</b:column>
+							
+							<b:column span="4">
+								<b:label value="Data Final" severity="info" />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="7"
+									required="true" requiredMessage="Data Final: Campo obrigatório!"
+									value="#{pesquisaController.pesquisa.dataFinal}" id="dataFinal"
+									locale="pt" style="margin-left:1px;"/>
+							</b:column>
+						</b:row>
+					</p:outputPanel>
+					
+					<b:row>
+						<b:column span="12">
+							<div style="display: flex;">
+								<div style="width: 60%;">
+									<p:dataTable paginator="true" rows="10" id="tabelapacientes" paginatorPosition="bottom"
+										var="pacie" value="#{pesquisaController.listaPacientes}"
+										emptyMessage="Nenhum Paciente" style="margin-right:1%;">
+
+										<p:column headerText="Prontuário" width="16%">
+											<p:outputLabel value="#{pacie.id_paciente}" />
+										</p:column>
+
+										<p:column headerText="Nome" width="40%" filterBy="#{pacie.nome}"  filterMatchMode="contains">
+											<p:outputLabel value="#{pacie.nome}" />
+										</p:column>
+
+										<p:column headerText="Matrícula">
+											<p:outputLabel value="#{pacie.matricula}" />
+										</p:column>
+										
+										<p:column headerText="Ação" width="10%">
+											<div align="center">
+												<p:commandButton
+													action="#{pesquisaController.adicionarPacienteSelecionado(pacie)}"
+													update=":formPesquisa:tabelaPacientesSelecionados, :msgPagina"
+													process="@this :formPesquisa:tabelaPacientesSelecionados"
+													icon="fa fa-fw fa-plus" title="Adicionar Paciente"
+													class="new-btn-acao-table acao-editar"/>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+
+								<div>
+									<div align="right">
+										<p:commandButton
+											action="#{pesquisaController.adicionarTodosPacientes()}"
+											icon="fa fa-angle-double-right"
+											title="Adicionar Todos Pacientes" immediate="true"
+											update="tabelapacientes :formPesquisa:tabelaPacientesSelecionados"/>
+									</div>
+
+									<div align="left">
+										<p:commandButton
+											action="#{pesquisaController.removerTodosPacientes()}"
+											icon="fa fa-angle-double-left"
+											title="Remover Todos Pacientes" immediate="true"
+											update="tabelapacientes :formPesquisa:tabelaPacientesSelecionados" />
+									</div>
+								</div>
+
+								<div style="width: 40%;">
+									<p:dataTable var="paci"
+										value="#{pesquisaController.listaPacientesSelecionados}"
+										emptyMessage="Nenhum paciente adicionado" paginator="true"
+										id="tabelaPacientesSelecionados" rows="10" paginatorPosition="bottom"
+										style="width:96%; margin-left:1%;">
+										
+										<p:column headerText="Paciente" width="65%">
+											<h:outputText value="#{paci.nome}" />
+										</p:column>
+										
+										<p:column headerText="Matrícula">
+											<h:outputText value="#{paci.matricula}" />
+										</p:column>
+										
+										<p:column headerText="Ação">
+											<div align="center">
+												<p:commandButton
+													action="#{pesquisaController.removerPacienteSelecionado(paci)}"
+													update="tabelaPacientesSelecionados, :msgPagina"
+													process="@this"
+													icon="fa fa-fw fa-times" title="Remover Paciente"
+													immediate="true" class="new-btn-acao-table acao-excluir"/>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column span="12">
+							<h3 class="texto-titulo">Perguntas</h3>
+
+							<p:commandButton
+								action="#{pesquisaController.abrirDialogAdicionarPergunta()}"
+								icon="fa fa-fw fa-plus"
+								title="Adicionar Pergunta" process="@this :formPergunta"
+								update=":formPergunta" />
+
+							<p:dataTable var="pergunta"
+								value="#{pesquisaController.pesquisa.perguntas}"
+								emptyMessage="Nenhuma pergunta adicionada" id="tabelaperguntas">
+								
+								<p:column headerText="Descrição" width="90%">
+									<h:outputText value="#{pergunta.descricao}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<div align="center">
+										<p:commandButton
+											action="#{pesquisaController.removerPergunta(pergunta)}"
+											update=":formPesquisa:tabelaperguntas, :msgPagina"
+											process="@this" icon="fa fa-fw fa-times"
+											title="Remover paciente"
+											class="new-btn-acao-table acao-excluir" />
+									</div>
+								</p:column>
+							</p:dataTable>
+							<br />
+						</b:column>
+					</b:row>
+
+					<div align="center">
+						<p:commandButton value="Gravar" look="success" size="sm"
+							id="bgravar" icon="ui-icon-check"
+							action="#{pesquisaController.gravarPesquisa()}"
+							update=":formPesquisa"
+							class="btn-incluir" />
+
+						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							action="/pages/sishosp/gerenciarpesquisas.xhtml?faces-redirect=true">
+						</p:commandButton>
+					</div>
+
+				</h:form>
+			</div>
+		</div>
+
+		<p:dialog header="Adicionar Pergunta" widgetVar="dlgPergunta" modal="true" resizable="false" width="400">
+		
+			<h:form id="formPergunta">
+				<div align="center">
+					<p:row>
+						<p:column span="6">
+							<b:label value="Descrição" severity="info" />
+							<p:outputPanel>
+								<p:inputTextarea value="#{pesquisaController.pergunta.descricao}" style="width:80%;"/>
+							</p:outputPanel>
+						</p:column>
+						<br />
+					</p:row>
+
+					<p:row>
+						<p:commandButton value="Adicionar" update=":formPesquisa:tabelaperguntas"
+						action="#{pesquisaController.adicionarPergunta(pesquisaController.pergunta)}"/>
+					</p:row>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

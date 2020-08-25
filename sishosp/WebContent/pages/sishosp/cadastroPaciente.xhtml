@@ -23,9 +23,16 @@
 				<p:tabView style="height:auto; width:auto;" id="tbv">
 
 					<p:tab title="Dados Pessoais">
-
 						<b:row>
+							<b:column span="2" class="label-position new-label-nome">
+								<b:label for="prontuario" value="Protuário" severity="info" />
 
+								<b:label value="#{PacienteController.paciente.id_paciente}"
+											  style="float: right !important;
+    margin-top: 26px;
+    position: absolute;
+    margin-left: -55px;" id="prontuario"/>
+							</b:column>
 							<b:column span="6" class="label-position new-label-nome">
 								<b:label for="inputname" value="Nome" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
@@ -542,6 +549,8 @@
 								</p:inputText>
 								
 							</b:column>
+
+
 							
 							<b:column span="2" class="label-position">
 								<b:label for="matricula" value="Matrícula" severity="info" />
