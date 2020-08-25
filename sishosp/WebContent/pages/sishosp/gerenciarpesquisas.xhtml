@@ -8,7 +8,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{gestaoAbonoFaltaPacienteController.listarAbonosFaltaPaciente()}"/>
+			<f:viewAction action="#{pesquisaController.listarPesquisas()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -26,30 +26,34 @@
 						<p:tooltip for="btninc" value="Novo"></p:tooltip>
 					</p:commandButton>
 
-					<p:dataTable id="dataTablePrincipal" var="abono" responsive="true" rows="20" style="margin-top: 10px"
-								 value="#{gestaoAbonoFaltaPacienteController.listaAbonosFaltaPaciente}" paginator="true"
+					<p:dataTable id="dataTablePrincipal" var="pesquisa" responsive="true" rows="20" style="margin-top: 10px"
+								 value="#{pesquisaController.listaPesquisas}" paginator="true"
 								 emptyMessage="Nenhum abono encontrado." reflow="true">
 
 						<p:column headerText="Data Inicial" width="10%">
-							<h:outputText value="#{abono.dataAbono}">
+							<h:outputText value="#{pesquisa.dataInicial}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
 
 						<p:column headerText="Data Final" width="10%">
-							<h:outputText value="#{abono.dataAbono}">
+							<h:outputText value="#{pesquisa.dataFinal}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
 
-						<p:column headerText="Descrição">
-							<h:outputText value="#{abono.programa.descPrograma}"/>
+						<p:column headerText="Título">
+							<h:outputText value="#{pesquisa.titulo}"/>
 						</p:column>
 
 						<p:column headerText="Detalhes" width="10%">
 							<div align="center">
-								<p:commandButton icon="fa fa-fw fa-bars"
-									id="btn-detalhes" />
+								<p:commandButton icon="fa fa-fw fa-bars" 
+									action="#{pesquisaController.redirecionaPacientesPesquisa(pesquisa.id)}"
+									id="btn-detalhes" >
+									
+									<f:setPropertyActionListener value="2" target="#{pesquisaController.tipo}" />
+								</p:commandButton>
 							</div>
 						</p:column>
 					</p:dataTable>

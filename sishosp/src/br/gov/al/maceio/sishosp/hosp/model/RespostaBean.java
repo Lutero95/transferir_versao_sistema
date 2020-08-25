@@ -6,6 +6,9 @@ public class RespostaBean {
 	private String resposta;
 	private PacienteBean paciente;
 	
+	public RespostaBean() {
+		this.paciente = new PacienteBean();
+	}
 	
 	public Integer getId() {
 		return id;

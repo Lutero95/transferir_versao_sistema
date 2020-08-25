@@ -1,16 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PerguntaBean {
 
 	private Integer id;
 	private String descricao;
-	List<RespostaBean> respostas;
+	private RespostaBean resposta;
 	
 	public PerguntaBean() {
-		respostas = new ArrayList<>();
+		resposta = new RespostaBean();
 	}
 	
 	public Integer getId() {
@@ -25,11 +22,12 @@ public class PerguntaBean {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public List<RespostaBean> getRespostas() {
-		return respostas;
+
+	public RespostaBean getResposta() {
+		return resposta;
 	}
-	public void setRespostas(List<RespostaBean> respostas) {
-		this.respostas = respostas;
+
+	public void setResposta(RespostaBean resposta) {
+		this.resposta = resposta;
 	}
-	
 }

@@ -21,6 +21,7 @@ import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 public class GerenciarPacienteDAO {
@@ -144,6 +145,53 @@ public class GerenciarPacienteDAO {
 
                 lista.add(gerenciarPaciente);
 
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }	
+    
+    public List<PacienteBean> listaPacientesAtivos() throws ProjetoException {
+
+        String sql = "select distinct coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula " + 
+        		" from hosp.paciente_instituicao p " + 
+        		" left join hosp.laudo l on (l.id_laudo = p.codlaudo) " + 
+        		" left join hosp.proc pr on (pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) " + 
+        		" left join hosp.pacientes pa on (coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) " + 
+        		" left join hosp.equipe e on (p.codequipe = e.id_equipe) " + 
+        		" left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) " + 
+        		" left join hosp.grupo g on (g.id_grupo = p.codgrupo) " + 
+        		" left join hosp.programa prog on (prog.id_programa = p.codprograma) " + 
+        		" left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) " + 
+        		" where p.cod_unidade = ? " + 
+        		" and coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))), " + 
+        		" date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') >= current_date " + 
+        		" order by pa.nome";
+
+        List<PacienteBean> lista = new ArrayList<>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, user_session.getUnidade().getId());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+            	PacienteBean paciente = new PacienteBean();
+            	paciente.setId_paciente(rs.getInt("codpaciente"));
+            	paciente.setNome(rs.getString("nome"));
+            	paciente.setMatricula(rs.getString("matricula"));
+                lista.add(paciente);
             }
         } catch (SQLException sqle) {
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);

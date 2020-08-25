@@ -10,7 +10,7 @@ public class PesquisaBean {
 	private String titulo;
 	private Date dataInicial;
 	private Date dataFinal;
-	List<PerguntaBean> perguntas;
+	private List<PerguntaBean> perguntas;
 	
 	public PesquisaBean() {
 		perguntas = new ArrayList<>();
@@ -41,4 +41,11 @@ public class PesquisaBean {
 	public void setDataFinal(Date dataFinal) {
 		this.dataFinal = dataFinal;
 	}
+	public List<PerguntaBean> getPerguntas() {
+		return perguntas;
+	}
+	public void setPerguntas(List<PerguntaBean> perguntas) {
+		this.perguntas = perguntas;
+	}
+	
 }

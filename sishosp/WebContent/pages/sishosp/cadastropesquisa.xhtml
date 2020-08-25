@@ -9,9 +9,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{AgendaController.carregarHorarioOuTurno()}" />
-			<f:viewAction action="#{AgendaController.limparTurno()}" />
-			<f:viewAction action="#{AgendaController.listarPacientes()}" />
+			<f:viewAction action="#{pesquisaController.listarPacienteAtivos()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -23,18 +21,19 @@
 
 
 
-				<h:form id="formAgendaMedica">
+				<h:form id="formPesquisa">
 
 					<p:growl id="growlMsg"></p:growl>
 					<br></br>
 
 					<p:outputPanel id="rowProgramaGrupoTipoAtendimento">
-						<b:row rendered="#{AgendaController.agenda.avaliacao != true}">
+						<b:row>
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Título" severity="info" />
 								<p:outputPanel>
-									<p:inputText class="select-agendaEquipe4"/>
+									<p:inputText value="#{pesquisaController.pesquisa.titulo}" class="select-agendaEquipe4"
+									required="true" requiredMessage="Título: Campo obrigatório!"/>
 								</p:outputPanel>
 							</b:column>
 
@@ -43,7 +42,7 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="7"
 									required="true" requiredMessage="Data Inicial: Campo obrigatório!"
-									value="#{AgendaController.agenda.dataAtendimento}" id="dataInicial"
+									value="#{pesquisaController.pesquisa.dataInicial}" id="dataInicial"
 									locale="pt" style="margin-left:1px;"/>
 							</b:column>
 							
@@ -52,7 +51,7 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="7"
 									required="true" requiredMessage="Data Final: Campo obrigatório!"
-									value="#{AgendaController.agenda.dataAtendimento}" id="dataFinal"
+									value="#{pesquisaController.pesquisa.dataFinal}" id="dataFinal"
 									locale="pt" style="margin-left:1px;"/>
 							</b:column>
 						</b:row>
@@ -63,85 +62,154 @@
 							<div style="display: flex;">
 								<div style="width: 60%;">
 									<p:dataTable paginator="true" rows="10" id="tabelapacientes" paginatorPosition="bottom"
-										filteredValue="#{AgendaController.listaPacientesComInformacaoDTOFiltro}"
-										var="pacie" value="#{AgendaController.listaPacientesComInformacaoDTO}"
+										var="pacie" value="#{pesquisaController.listaPacientes}"
 										emptyMessage="Nenhum Paciente" style="margin-right:1%;">
 
-										<p:column headerText="Prontuário" width="16%" filterBy="#{pacie.paciente.id_paciente}">
-											<p:outputLabel value="#{pacie.paciente.id_paciente}" />
+										<p:column headerText="Prontuário" width="16%">
+											<p:outputLabel value="#{pacie.id_paciente}" />
 										</p:column>
 
-										<p:column headerText="Nome" filterBy="#{pacie.paciente.nome}" width="40%">
-											<p:outputLabel value="#{pacie.paciente.nome}" />
+										<p:column headerText="Nome" width="40%">
+											<p:outputLabel value="#{pacie.nome}" />
 										</p:column>
 
-										<p:column headerText="Matrícula" filterBy="#{pacie.paciente.matricula}">
-											<p:outputLabel value="#{pacie.paciente.matricula}" />
+										<p:column headerText="Matrícula">
+											<p:outputLabel value="#{pacie.matricula}" />
 										</p:column>
 										
 										<p:column headerText="Ação" width="10%">
 											<div align="center">
 												<p:commandButton
-													action="#{AgendaController.validaPacienteParaAdicionar(pacie)}"
-													update=":formAgendaMedica:tabelaPacientesSelecionados, :msgPagina"
-													process="@this @form :formAgendaMedica:tabelaPacientesSelecionados"
-													icon="fa fa-fw fa-plus" title="Adicionar paciente"
+													action="#{pesquisaController.adicionarPacienteSelecionado(pacie)}"
+													update=":formPesquisa:tabelaPacientesSelecionados, :msgPagina"
+													process="@this :formPesquisa:tabelaPacientesSelecionados"
+													icon="fa fa-fw fa-plus" title="Adicionar Paciente"
 													class="new-btn-acao-table acao-editar"/>
 											</div>
 										</p:column>
 									</p:dataTable>
 								</div>
-							
+
+								<div>
+									<div align="right">
+										<p:commandButton
+											action="#{pesquisaController.adicionarTodosPacientes()}"
+											icon="fa fa-angle-double-right"
+											title="Adicionar Todos Pacientes" immediate="true"
+											update="tabelapacientes :formPesquisa:tabelaPacientesSelecionados"/>
+									</div>
+
+									<div align="left">
+										<p:commandButton
+											action="#{pesquisaController.removerTodosPacientes()}"
+											icon="fa fa-angle-double-left"
+											title="Remover Todos Pacientes" immediate="true"
+											update="tabelapacientes :formPesquisa:tabelaPacientesSelecionados" />
+									</div>
+								</div>
+
 								<div style="width: 40%;">
 									<p:dataTable var="paci"
-										value="#{AgendaController.listaPacientesSelecionadosComInformacaoDTO}"
+										value="#{pesquisaController.listaPacientesSelecionados}"
 										emptyMessage="Nenhum paciente adicionado" paginator="true"
 										id="tabelaPacientesSelecionados" rows="10" paginatorPosition="bottom"
 										style="width:96%; margin-left:1%;">
-										<p:column headerText="Paciente" width="70%">
-											<h:outputText value="#{paci.paciente.nome}" />
+										
+										<p:column headerText="Paciente" width="65%">
+											<h:outputText value="#{paci.nome}" />
 										</p:column>
-
-										<p:column headerText="Presença" width="20%">
-											<div align="center">
-												<h:outputText value="${paci.presenca == 'true' ? 'Sim' : 'Não'}" />
-											</div>
+										
+										<p:column headerText="Matrícula">
+											<h:outputText value="#{paci.matricula}" />
 										</p:column>
-
+										
 										<p:column headerText="Ação">
 											<div align="center">
 												<p:commandButton
-													action="#{AgendaController.removerPacienteSelecionado(paci)}"
+													action="#{pesquisaController.removerPacienteSelecionado(paci)}"
 													update="tabelaPacientesSelecionados, :msgPagina"
 													process="@this"
-													icon="fa fa-fw fa-times" title="Remover paciente"
-													immediate="true" class="new-btn-acao-table acao-excluir" />
+													icon="fa fa-fw fa-times" title="Remover Paciente"
+													immediate="true" class="new-btn-acao-table acao-excluir"/>
 											</div>
 										</p:column>
 									</p:dataTable>
 								</div>
 							</div>
 						</b:column>
-					</b:row>					
+					</b:row>
+
+					<b:row>
+						<b:column span="12">
+							<h3 class="texto-titulo">Perguntas</h3>
+
+							<p:commandButton
+								action="#{pesquisaController.abrirDialogAdicionarPergunta()}"
+								icon="fa fa-fw fa-plus"
+								title="Adicionar Pergunta" process="@this :formPergunta"
+								update=":formPergunta" />
+
+							<p:dataTable var="pergunta"
+								value="#{pesquisaController.pesquisa.perguntas}"
+								emptyMessage="Nenhuma pergunta adicionada" id="tabelaperguntas">
+								
+								<p:column headerText="Descrição" width="90%">
+									<h:outputText value="#{pergunta.descricao}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<div align="center">
+										<p:commandButton
+											action="#{pesquisaController.removerPergunta(pergunta)}"
+											update=":formPesquisa:tabelaperguntas, :msgPagina"
+											process="@this" icon="fa fa-fw fa-times"
+											title="Remover paciente"
+											class="new-btn-acao-table acao-excluir" />
+									</div>
+								</p:column>
+							</p:dataTable>
+							<br />
+						</b:column>
+					</b:row>
 
 					<div align="center">
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
-							action="#{AgendaController.validarAgendamentosInformandoAtendimento()}"
-							update=":formAgendaMedica"
+							action="#{pesquisaController.gravarPesquisa()}"
+							update=":formPesquisa"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" look="info" class="btn-voltar"
-							update=":formAgendaMedica"
-							actionListener="#{AgendaController.limparDados()}"
-							action="/pages/sishosp/principal.xhtml?faces-redirect=true">
+							action="/pages/sishosp/gerenciarpesquisas.xhtml?faces-redirect=true">
 						</p:commandButton>
 					</div>
 
 				</h:form>
 			</div>
 		</div>
+
+		<p:dialog header="Adicionar Pergunta" widgetVar="dlgPergunta" modal="true" resizable="false" width="400">
+		
+			<h:form id="formPergunta">
+				<div align="center">
+					<p:row>
+						<p:column span="6">
+							<b:label value="Descrição" severity="info" />
+							<p:outputPanel>
+								<p:inputTextarea value="#{pesquisaController.pergunta.descricao}" style="width:80%;"/>
+							</p:outputPanel>
+						</p:column>
+						<br />
+					</p:row>
+
+					<p:row>
+						<p:commandButton value="Adicionar" update=":formPesquisa:tabelaperguntas"
+						action="#{pesquisaController.adicionarPergunta(pesquisaController.pergunta)}"/>
+					</p:row>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 
 </ui:composition>
