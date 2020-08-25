@@ -121,7 +121,7 @@
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
 										listener="#{AgendaController.selectPrograma}"
-										update="outProg,  outGrupo" />
+										update="outProg" />
 
 
 								</p:autoComplete>
@@ -137,37 +137,7 @@
 
 					</b:row>
 
-					<b:row rendered="#{RelatoriosController.atributoGenerico1=='P'}">
 
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo:" severity="info" />
-
-							<p:outputPanel id="outGrupo">
-								<p:autoComplete
-									value="#{RelatoriosController.grupo}"
-									size="31" converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update="outGrupo" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBusGr" immediate="true"
-									icon="ui-icon-search"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
-									update=":frm formConsuGrop"
-									oncomplete="PF('dlgConsuGrop').show();" />
-							</p:outputPanel>
-						</b:column>
-					</b:row>
-					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						target="_blank" style="font-size: 12px;  text-align: right;"
@@ -197,7 +167,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":frm:outProg, :frm:outGrupo"
+						<p:commandButton update=":frm:outProg"
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
 							title="Selecionar"
 							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
@@ -212,37 +182,6 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true" styleClass="topDialog" dynamic="true">
-			<h:form id="formConsuGrop">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
-					responsive="true" save-state="false" saveState="false"
-					value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
-					var="grupo" display="Nenhum Grupo">
-
-					<h:column>
-						<f:facet name="header">
-                            Grupo
-                        </f:facet>
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton update=":frm:outProg, :frm:outGrupo"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{RelatoriosController.grupo}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
 
 		<p:dialog header="Consultar Pacientes Em Terapia"
 			widgetVar="dlgConsuPac" dynamic="true" modal="true" width="70%"
