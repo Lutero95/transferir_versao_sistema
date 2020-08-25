@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
 import javax.faces.context.FacesContext;
 
@@ -1169,7 +1170,7 @@ public class AtendimentoDAO {
 		lista.add(atendimento);
 	}
 
-	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao) throws ProjetoException {
+	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao, EspecialidadeBean especialidade) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,  " + 
 				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, pa.nome as nome_paciente " + 
@@ -1190,6 +1191,9 @@ public class AtendimentoDAO {
 		
 		if (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))
 			sql += " AND a.dtaatende >= ? AND a.dtaatende <= ? ";
+
+		if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade.getCodEspecialidade())))
+			sql += "AND f.codespecialidade = ? ";
 		
 		sql += "ORDER BY pa.nome, a.dtaatende ";
 
@@ -1209,6 +1213,12 @@ public class AtendimentoDAO {
 				stm.setDate(i, new java.sql.Date(periodoInicialEvolucao.getTime()));
 				i++;
 				stm.setDate(i, new java.sql.Date(periodoFinalEvolucao.getTime()));
+				i++;
+			}
+
+			if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade.getCodEspecialidade()))){
+				stm.setInt(i, especialidade.getCodEspecialidade());
+				i++;
 			}
 			
 			ResultSet rs = stm.executeQuery();

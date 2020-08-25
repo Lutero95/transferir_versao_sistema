@@ -1768,7 +1768,7 @@ public class FuncionarioDAO {
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario "
-				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
+				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
 		try {
 			con = ConnectionFactory.getConnection();

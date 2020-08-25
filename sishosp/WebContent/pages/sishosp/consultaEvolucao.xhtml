@@ -40,8 +40,35 @@
 
 						</b:column>
 
+							<b:column span="3"
+									  class="label-position new-data-size new-comple1">
+								<b:label value="Especialidade" severity="info" />
 
+								<p:outputPanel id="outEspeci">
 
+									<p:autoComplete
+											value="#{AtendimentoController.especialidade}"
+											size="31" converter="conEspecialidade" id="descE"
+											completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											required="false" class="select-agendaEquipe4"
+											requiredMessage="Especialidade: Campo obrigatório!"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.descEspecialidade}">
+									</p:autoComplete>
+
+									<p:commandButton id="btBusEsp" icon="ui-icon-search"
+													 style="margin-top: 5px;" update=":frmPrincipal"
+													 onclick="PF('dlgConsulEspecialidade').show();"
+													 immediate="true"
+													 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
+
+								</p:outputPanel>
+
+							</b:column>
+
+					</b:row>
+					<b:row>
 						<b:column span="1" class="label-position" style="width: 150px;">
 							<b:label value="Período da Evolução:" severity="info" />
 
@@ -267,7 +294,39 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
+		<p:dialog header="Consultar Especialidade" modal="true" dynamic="true"
+				  widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
+			<h:form id="formConsulEspec">
+				<p:outputPanel>
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{EspecialidadeController.listaEspecialidade}"
+								 page-length="5" page-length-menu="5,10,20" var="espec"
+								 display="Nenhuma Especialidade">
 
+						<h:column>
+							<f:facet name="header">
+								Especialidade
+							</f:facet>
+							<p:outputLabel value="#{espec.descEspecialidade}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<p:commandButton update=":frmPrincipal:outEspeci" icon="fa fa-fw fa-check"
+											 title="Selecionar" class="new-btn-acao-table acao-editar"
+											 onclick="PF('dlgConsulEspecialidade').hide();">
+								<f:setPropertyActionListener value="#{espec}"
+															 target="#{AtendimentoController.especialidade}" />
+							</p:commandButton>
+						</h:column>
+
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 
 
 	</ui:define>

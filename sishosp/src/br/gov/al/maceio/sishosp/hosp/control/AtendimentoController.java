@@ -76,6 +76,7 @@ public class AtendimentoController implements Serializable {
     private List<CidBean> listaCids;
     private  Date dataAtende;
     private Boolean existeCargaSigtapParaEsteMesOuAnterior;
+    private EspecialidadeBean especialidade;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -123,6 +124,7 @@ public class AtendimentoController implements Serializable {
         this.semCids = false;
         this.cidDao = new CidDAO();
         this.listaCids = new ArrayList<>();
+        especialidade = new EspecialidadeBean();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -686,7 +688,7 @@ public class AtendimentoController implements Serializable {
     				JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
     			}
     			else
-    				listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    				listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
     		}
     		else {
     			JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ou o Período Inicial e Final da Evolução", "Atenção!");
@@ -698,7 +700,7 @@ public class AtendimentoController implements Serializable {
 				JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ", "Atenção!");
     		}
     		else
-    			listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+    			listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
     	}
     	
     	else if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente) && 
@@ -707,7 +709,7 @@ public class AtendimentoController implements Serializable {
     	}
     	
         else
-            listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao);
+            listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
     }
 
     public void carregaEvolucoesPacienteProfissional(Integer codPaciente) throws ProjetoException {
@@ -1112,5 +1114,13 @@ public class AtendimentoController implements Serializable {
 
     public void setListaCids(List<CidBean> listaCids) {
         this.listaCids = listaCids;
+    }
+
+    public EspecialidadeBean getEspecialidade() {
+        return especialidade;
+    }
+
+    public void setEspecialidade(EspecialidadeBean especialidade) {
+        this.especialidade = especialidade;
     }
 }
