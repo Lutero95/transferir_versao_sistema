@@ -69,7 +69,7 @@
 											<p:outputLabel value="#{pacie.id_paciente}" />
 										</p:column>
 
-										<p:column headerText="Nome" width="40%">
+										<p:column headerText="Nome" width="40%" filterBy="#{pacie.nome}"  filterMatchMode="contains">
 											<p:outputLabel value="#{pacie.nome}" />
 										</p:column>
 
