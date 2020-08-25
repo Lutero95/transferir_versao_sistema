@@ -74,6 +74,8 @@ public class PacienteController implements Serializable {
 	private List<PacienteBean> listaPacientesParaAgenda;
 	private List<PacienteBean> listaPacientesAgenda;
 	private List<MunicipioBean> listaMunicipiosDePacienteAtivos;
+	private List<EnderecoBean> listaBairros;
+	private EnderecoController enderecoController;
 
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
@@ -82,7 +84,7 @@ public class PacienteController implements Serializable {
 	private static final String CABECALHO_INCLUSAO = "Inclusão de Paciente";
 	private static final String CABECALHO_ALTERACAO = "Alteração de Paciente";
 
-	public PacienteController() {
+	public PacienteController() throws ProjetoException {
 		paciente = new PacienteBean();
 		endereco = new EnderecoBean();
 		escola = new EscolaBean();
@@ -95,11 +97,13 @@ public class PacienteController implements Serializable {
 
 		// LISTAS
 		listaPacientes = new ArrayList<>();
+		listaBairros = new ArrayList<>();
 		listaPacientesParaAgenda = new ArrayList<>();
 		listaPacientesAgenda = new ArrayList<PacienteBean>();
 		listaMunicipiosDePacienteAtivos = new ArrayList<MunicipioBean>();
 		bairroExiste = null;
 		paramIdPaciente = null;
+		enderecoController = new EnderecoController();
 	}
 
 	public String redirectEdit() {
@@ -114,10 +118,12 @@ public class PacienteController implements Serializable {
 	public void getEditPaciente() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+		EnderecoDAO enderecoDAO = new EnderecoDAO();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 			this.paciente = pDao.listarPacientePorID(id);
+			enderecoController.setListaBairros(enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio()));
 			paramIdPaciente = id;
 			if (paciente.getEndereco().getCep() != null) {
 				cidadeDoCep = true;
@@ -164,7 +170,7 @@ public class PacienteController implements Serializable {
 					else
 						bairroExiste = false;
 				}
-				enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
+				enderecoController.setListaBairros(enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio()));
 			}
 			if (paciente.getEndereco().getCepValido()) {
 				cidadeDoCep = true;
@@ -689,5 +695,20 @@ public class PacienteController implements Serializable {
 	public void setMunicipioPacienteAtivoSelecionado(MunicipioBean municipioPacienteAtivoSelecionado) {
 		this.municipioPacienteAtivoSelecionado = municipioPacienteAtivoSelecionado;
 	}
-	
+
+	public List<EnderecoBean> getListaBairros() {
+		return listaBairros;
+	}
+
+	public void setListaBairros(List<EnderecoBean> listaBairros) {
+		this.listaBairros = listaBairros;
+	}
+
+	public EnderecoController getEnderecoController() {
+		return enderecoController;
+	}
+
+	public void setEnderecoController(EnderecoController enderecoController) {
+		this.enderecoController = enderecoController;
+	}
 }

@@ -115,7 +115,10 @@ public class ProcedimentoDAO {
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, proc.getNomeProc().toUpperCase());
             stmt.setBoolean(2, proc.getAuditivo());
-            stmt.setString(3, proc.getTipoExameAuditivo().toUpperCase());
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getTipoExameAuditivo()))
+                stmt.setNull(3, Types.NULL);
+            else
+                stmt.setString(3, proc.getTipoExameAuditivo().toUpperCase());
             stmt.setBoolean(4, proc.getUtilizaEquipamento());
             if (proc.isGera_laudo_digita() == false) {
                 stmt.setNull(5, Types.BOOLEAN);

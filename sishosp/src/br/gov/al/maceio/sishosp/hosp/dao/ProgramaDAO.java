@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +38,11 @@ public class ProgramaDAO {
             ps.setInt(2, user_session.getUnidade().getId());
             ps.setInt(3, prog.getProcedimento().getIdProc());
             ps.setBoolean(4, prog.isPermitePacienteSemLaudo());
-            ps.setInt(5, prog.getDiasPacienteSemLaudoAtivo());
+            if (prog.getDiasPacienteSemLaudoAtivo() != null) {
+                ps.setInt(5, prog.getDiasPacienteSemLaudoAtivo());
+            } else {
+                ps.setNull(5, Types.NULL);
+            }
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {

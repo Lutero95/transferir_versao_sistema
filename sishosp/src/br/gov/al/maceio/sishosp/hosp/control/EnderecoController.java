@@ -53,9 +53,10 @@ public class EnderecoController implements Serializable {
         listaBairros = new ArrayList<>();
     }
 
-    public void limparDados() {
+    public void limparDados() throws ProjetoException {
         endereco = new EnderecoBean();
         bairro = "";
+        endereco.setUf(eDao.retornarEstadoDaEmpresa());
 
     }
 
@@ -149,13 +150,18 @@ public class EnderecoController implements Serializable {
     }
 
     public List<EnderecoBean> listarBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
-        List<EnderecoBean> listaBairrosPorMunicpio = new ArrayList<>();
         if(codMunicipio != null) {
-            listaBairrosPorMunicpio = eDao.listaBairrosPorMunicipio(codMunicipio);
+            listaBairros = eDao.listaBairrosPorMunicipio(codMunicipio);
         }
 
-        return listaBairrosPorMunicpio;
+        return listaBairros;
 
+    }
+
+    public void carregaBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
+        if(codMunicipio != null) {
+            listaBairros = eDao.listaBairrosPorMunicipio(codMunicipio);
+        }
     }
 
 
@@ -243,9 +249,9 @@ public class EnderecoController implements Serializable {
     }
 
     @Deprecated
-    public List<EnderecoBean> listarMunicipiosPorEstado()
+    public List<EnderecoBean> listarMunicipiosPorEstado(String uF)
             throws ProjetoException {
-        listaMunicipios = eDao.listaMunicipiosPorEstado(endereco.getUf());
+        listaMunicipios = eDao.listaMunicipiosPorEstado(uF);
         return listaMunicipios;
 
     }

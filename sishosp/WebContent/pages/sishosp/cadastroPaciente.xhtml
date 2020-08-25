@@ -344,9 +344,8 @@
 									value="#{PacienteController.paciente.endereco.logradouro}"
 									required="true"
 									requiredMessage="Logradouro: Campo obrigatório!"
-									class="form-control" id="inputrua"
-									validatorMessage="Logradouro deve conter entre 2 e 50 caracteres.">
-									<f:validateLength minimum="2" maximum="50" />
+									class="form-control" id="inputrua">
+
 								</b:inputText>
 							</b:column>
 
@@ -398,16 +397,16 @@
 								<b:label for="estado" value="Estado" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
 
-								<b:selectOneMenu required="true"
+								<p:selectOneMenu required="true"
 									requiredMessage="Estado: Campo obrigatório!"
 									value="#{PacienteController.paciente.endereco.uf}" id="estado">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItems
 										value="#{EnderecoController.endereco.listaEstados}" />
-									<p:ajax
-										listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
+									<p:ajax event="valueChange"
+										listener="#{PacienteController.enderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
 										update="outMunicipios"></p:ajax>
-								</b:selectOneMenu>
+								</p:selectOneMenu>
 							</b:column>
 
 						</b:row>
@@ -422,18 +421,18 @@
 
 								<p:outputPanel id="outMunicipios">
 
-									<b:selectOneMenu required="true"
-										requiredMessage="Município: Campo obrigatório!"
+									<p:selectOneMenu required="true" filter="true" filterMatchMode="contains"
+										requiredMessage="Município: Campo obrigatório!" style="margin-left:-20px;width:100%"
 										value="#{PacienteController.paciente.endereco.codmunicipio}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
 										<f:selectItems
-											value="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
+											value="#{PacienteController.enderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
 											var="sis" itemLabel="#{sis.municipio}"
 											itemValue="#{sis.codmunicipio}" />
-										<p:ajax
-											listener="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+										<p:ajax event="valueChange"
+											listener="#{PacienteController.enderecoController.carregaBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
 											update="outBairro"></p:ajax>
-									</b:selectOneMenu>
+									</p:selectOneMenu>
 								</p:outputPanel>
 
 							</b:column>
@@ -450,7 +449,7 @@
 										value="#{PacienteController.paciente.endereco.codbairro}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
 										<f:selectItems
-											value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+											value="#{PacienteController.enderecoController.listaBairros}"
 											var="sis" itemLabel="#{sis.bairro}"
 											itemValue="#{sis.codbairro}" />
 									</b:selectOneMenu>
@@ -468,7 +467,7 @@
 							<b:column span="2" style="margin-top: 5px;">
 
 								<p:commandButton icon="ui-icon-plus"
-									actionListener="#{EnderecoController.limparDados}"
+									actionListener="#{PacienteController.enderecoController.limparDados}" process="@this estado"
 									update=":frmcadbairro:outcadbairro" style="margin-top:17px;"
 									oncomplete="PF('dlgcadastrobairro').show()" />
 
@@ -1477,16 +1476,16 @@
 							<b:column span="5" class="label-position">
 								<b:label value="Estado" severity="info" style="float:left" />
 
-								<b:selectOneMenu required="true"
+								<p:selectOneMenu required="true"
 									requiredMessage="Estado: Campo obrigatório!"
 									value="#{EnderecoController.endereco.uf}" id="estado">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItems
 										value="#{EnderecoController.endereco.listaEstados}" />
-									<p:ajax
-										listener="#{EnderecoController.listarMunicipiosPorEstado()}"
+									<p:ajax event="valueChange"
+										listener="#{EnderecoController.listarMunicipiosPorEstado(PacienteController.enderecoController.endereco.uf)}"
 										update="outMunicipioscadBairro"></p:ajax>
-								</b:selectOneMenu>
+								</p:selectOneMenu>
 							</b:column>
 						</b:row>
 
@@ -1501,7 +1500,7 @@
 										value="#{EnderecoController.endereco.codmunicipio}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
 										<f:selectItems
-											value="#{EnderecoController.listarMunicipiosPorEstado()}"
+											value="#{EnderecoController.listarMunicipiosPorEstado(PacienteController.enderecoController.endereco.uf)}"
 											var="sis" itemLabel="#{sis.municipio}"
 											itemValue="#{sis.codmunicipio}" />
 									</b:selectOneMenu>
@@ -1516,7 +1515,7 @@
 					<p:commandButton
 						actionListener="#{EnderecoController.gravarBairros()}"
 						style="float:left"
-						action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
+						action="#{PacienteController.enderecoController.atualizarListaDeMunicipios(PacienteController.paciente.endereco.codmunicipio)}"
 						icon="ui-icon-check" size="sm" look="success"
 						update=":frmcadbairro:msgBairro, frmPrincipal:tbv:outBairro"
 						value="Incluir" />
