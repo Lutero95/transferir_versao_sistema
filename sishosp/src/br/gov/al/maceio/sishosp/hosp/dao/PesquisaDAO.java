@@ -11,6 +11,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.StatusRespostaPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PerguntaBean;
 import br.gov.al.maceio.sishosp.hosp.model.PesquisaBean;
@@ -140,13 +141,20 @@ public class PesquisaDAO {
         return listaPesquisas;
     }
     
-    public List<PacientePesquisaDTO> listarPacientesDaPesquisa(Integer idPesquisa) throws ProjetoException {
+    public List<PacientePesquisaDTO> listarPacientesDaPesquisa(Integer idPesquisa, String statusResposta) throws ProjetoException {
 
     	String sql = "select p.id_paciente, p.nome, pp.respondido, pes.id as id_pesquisa, pes.titulo " + 
     			"from hosp.pacientes p " + 
     			"join hosp.pacientes_pesquisa pp on p.id_paciente = pp.id_paciente " + 
     			"join hosp.pesquisa pes on pp.id_pesquisa = pes.id " + 
-    			"where pes.id = ?";
+    			"where pes.id = ? ";
+    	
+    	if(statusResposta.equals(StatusRespostaPaciente.RESPONDIDO.getSigla()))
+    		sql += " and pp.respondido = true";
+    	else if(statusResposta.equals(StatusRespostaPaciente.NAO_RESPONDIDO.getSigla()))
+    		sql += " and pp.respondido = false";
+    	
+    	
         Connection conexao = null;
         
         List<PacientePesquisaDTO> listaPacientes = new ArrayList<>();

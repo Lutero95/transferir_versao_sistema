@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PesquisaDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.StatusRespostaPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PerguntaBean;
 import br.gov.al.maceio.sishosp.hosp.model.PesquisaBean;
@@ -34,6 +35,7 @@ public class PesquisaController {
 	private List<PacientePesquisaDTO> listaPacientesDaPesquisa;
 	private String nomePacienteSelecionado;
     private Integer tipo;
+    private String statusRespostaFiltro;
 	private static final String ENDERECO_PACIENTES = "gerenciarpacientespesquisas?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
@@ -132,10 +134,7 @@ public class PesquisaController {
     public void listarPesquisas() throws ProjetoException {
     	this.listaPesquisas = pesquisaDAO.listarPesquisas();
     }
-    
-    public void listarPacientesDaPesquisa(Integer idPesquisa) throws ProjetoException {
-    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(idPesquisa);
-    }
+   
     
     public String redirecionaPacientesPesquisa(Integer idPesquisa) {
         return RedirecionarUtil.redirectEdit(ENDERECO_PACIENTES, ENDERECO_ID, idPesquisa, ENDERECO_TIPO, tipo);
@@ -152,12 +151,15 @@ public class PesquisaController {
     }
     
     private void listarDadosParaResponderPesquisa(Integer id) throws ProjetoException {
-    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(id);
+    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(id, StatusRespostaPaciente.TODOS.getSigla());
         this.pesquisa = this.listaPacientesDaPesquisa.get(0).getPesquisa();
         this.pesquisa.setPerguntas(pesquisaDAO.listarPerguntas(id));
     }
     
-    public void atribuiPacienteEmRespostas(PacienteBean paciente) {
+    public void atribuiPacienteEmRespostas(PacientePesquisaDTO pacientePesquisaDTO) {
+    	
+    	PacienteBean paciente = pacientePesquisaDTO.getPaciente();
+    	
     	for(int i = 0; i < this.pesquisa.getPerguntas().size(); i++) {
     		this.pesquisa.getPerguntas().get(i).getResposta().setResposta(new String());
     		this.pesquisa.getPerguntas().get(i).getResposta().getPaciente().setId_paciente(paciente.getId_paciente());
@@ -188,6 +190,10 @@ public class PesquisaController {
     		JSFUtil.fecharDialog("dlgPergunta");
     		JSFUtil.adicionarMensagemSucesso("Respostas salvas com sucesso", "");
     	}
+    }
+    
+    public void listarPacientesDaPesquisaFiltro(String status) throws ProjetoException {
+    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(pesquisa.getId(), status);
     }
 
 	public List<PacienteBean> getListaPacientes() {
@@ -252,6 +258,14 @@ public class PesquisaController {
 
 	public void setNomePacienteSelecionado(String nomePacienteSelecionado) {
 		this.nomePacienteSelecionado = nomePacienteSelecionado;
+	}
+
+	public String getStatusRespostaFiltro() {
+		return statusRespostaFiltro;
+	}
+
+	public void setStatusRespostaFiltro(String statusRespostaFiltro) {
+		this.statusRespostaFiltro = statusRespostaFiltro;
 	}
 	
 }
