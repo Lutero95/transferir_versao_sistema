@@ -1302,7 +1302,7 @@ public class AlteracaoPacienteDAO {
 			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
 			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
 			stm.setLong(3, insercaoPacienteBean.getFuncionario().getId());
-			stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
+			stm.setDate(4, dataAtendimento);
 
 			ResultSet rs = stm.executeQuery();
 
@@ -1400,7 +1400,7 @@ public class AlteracaoPacienteDAO {
             List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
             listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);
             for(AgendaBean agenda : listAgendamentoProfissionalAux) {
-            	if(verificarSeExisteAtendimentoSemLaudo(insercao, agenda.getDataAtendimento(), insercao.getPaciente().getId_paciente(), conexao)) {
+            	if(verificarSeAtendimentoExistePorProfissional(insercao, DataUtil.converterDateUtilParaDateSql(agenda.getDataAtendimento()), conexao)) {
             		listAgendamentoProfissional.remove(agenda);
             	}
             }
@@ -1424,35 +1424,4 @@ public class AlteracaoPacienteDAO {
 		}
 		return alterado;
 	}
-	
-	public Boolean verificarSeExisteAtendimentoSemLaudo(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data,
-			Integer codPaciente, Connection conAuxiliar) throws ProjetoException, SQLException {
-
-		Boolean retorno = false;
-
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND dtaatende = ? and codpaciente=? and coalesce(situacao,'')<>'C'";
-
-		try {
-			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-
-			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
-			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
-			stm.setDate(3, DataUtil.converterDateUtilParaDateSql(data));
-			stm.setInt(4, codPaciente);
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				retorno = true;
-			}
-
-		} catch (SQLException ex2) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
-		return retorno;
-	}
-
 }

@@ -956,7 +956,7 @@ public class InsercaoPacienteDAO {
 		String sql = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
 
 		try {
-			ps = conAuxiliar.prepareStatement(sql);
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
 			for (int i = 0; i < lista.size(); i++) {
 				ps.setLong(1, idPacienteInstituicao);
@@ -984,7 +984,7 @@ public class InsercaoPacienteDAO {
 				+ " VALUES (?, 'A', ?, ?, ?, ?, 'S', ?, ?, false, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
 
 		try {
-			ps = conAuxiliar.prepareStatement(sql);
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
@@ -1040,7 +1040,7 @@ public class InsercaoPacienteDAO {
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-					ps = con.prepareStatement(sql);
+					ps = conAuxiliar.prepareStatement(sql);
 
 					ps.setLong(1, profissional.getId());
 					ps.setInt(2, idAtendimento);
