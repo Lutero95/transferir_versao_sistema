@@ -36,6 +36,8 @@ public class PesquisaController {
 	private String nomePacienteSelecionado;
     private Integer tipo;
     private String statusRespostaFiltro;
+    private String campoBusca;
+    private String tipoBusca;
 	private static final String ENDERECO_PACIENTES = "gerenciarpacientespesquisas?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
@@ -49,6 +51,8 @@ public class PesquisaController {
 		this.pesquisaDAO = new PesquisaDAO();
 		this.listaPesquisas = new ArrayList<>();
 		this.listaPacientesDaPesquisa = new ArrayList<>();
+		this.campoBusca = new String();
+		this.tipoBusca = new String();
 	}
 	
 	public void listarPacienteAtivos() throws ProjetoException {
@@ -151,7 +155,8 @@ public class PesquisaController {
     }
     
     private void listarDadosParaResponderPesquisa(Integer id) throws ProjetoException {
-    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(id, StatusRespostaPaciente.TODOS.getSigla());
+    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa
+    			(id, StatusRespostaPaciente.TODOS.getSigla(), new String(), new String());
         this.pesquisa = this.listaPacientesDaPesquisa.get(0).getPesquisa();
         this.pesquisa.setPerguntas(pesquisaDAO.listarPerguntas(id));
     }
@@ -193,7 +198,14 @@ public class PesquisaController {
     }
     
     public void listarPacientesDaPesquisaFiltro(String status) throws ProjetoException {
-    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(pesquisa.getId(), status);
+    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(pesquisa.getId(), status, this.tipoBusca, this.campoBusca);
+    }
+    
+    public void limparBuscaPacientesDaPesquisaFiltro() throws ProjetoException {
+    	this.tipoBusca = new String();
+    	this.campoBusca = new String();
+    	this.statusRespostaFiltro = new String();
+    	this.listaPacientesDaPesquisa = pesquisaDAO.listarPacientesDaPesquisa(pesquisa.getId(), statusRespostaFiltro, this.tipoBusca, this.campoBusca);
     }
 
 	public List<PacienteBean> getListaPacientes() {
@@ -266,6 +278,22 @@ public class PesquisaController {
 
 	public void setStatusRespostaFiltro(String statusRespostaFiltro) {
 		this.statusRespostaFiltro = statusRespostaFiltro;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
 	}
 	
 }

@@ -22,19 +22,41 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmPrincipal">
-					<p:selectOneRadio  value="#{pesquisaController.statusRespostaFiltro}">
+
+					<p:selectOneRadio id="statusResposta"
+						value="#{pesquisaController.statusRespostaFiltro}">
 						<f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Respondidos" itemValue="R" />
 						<f:selectItem itemLabel="Não Respondidos" itemValue="NR" />
 						<p:ajax update="dataTablePrincipal"
-							listener="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}"/>
+							listener="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}" />
 					</p:selectOneRadio>
+
+					<p:selectOneMenu value="#{pesquisaController.tipoBusca}"
+						style="margin-bottom: 13px">
+						<f:selectItem itemLabel="Nome" itemValue="nome" />
+						<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+						<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+						<f:selectItem itemLabel="CPF" itemValue="cpf" />
+						<f:selectItem itemLabel="CNS" itemValue="cns" />
+					</p:selectOneMenu>
+
+					<p:inputText value="#{pesquisaController.campoBusca}"
+						placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+					<p:commandButton
+						action="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}"
+						update=":frmPrincipal:dataTablePrincipal" process="@this :frmPrincipal" icon="ui-icon-search"
+						style="margin-left: 10px;" />
+						
+					<p:commandButton action="#{pesquisaController.limparBuscaPacientesDaPesquisaFiltro()}"
+						update="frmPrincipal" icon="limpar" style="margin-left: 10px;" />						
 
 					<p:dataTable id="dataTablePrincipal" var="paciente" responsive="true" rows="20" style="margin-top: 10px"
 								 value="#{pesquisaController.listaPacientesDaPesquisa}" paginator="true"
 								 emptyMessage="Nenhum abono encontrado." reflow="true">
 
-						<p:column headerText="Paciente" filterBy="#{paciente.paciente.nome}"  filterMatchMode="contains">
+						<p:column headerText="Paciente">
 							<h:outputText value="#{paciente.paciente.nome}"/>
 						</p:column>
 
@@ -47,8 +69,8 @@
 						<p:column headerText="Responder" width="10%">
 							<div align="center">
 								<p:commandButton icon="fa fa-fw fa-edit"
-									action="#{pesquisaController.atribuiPacienteEmRespostas(paciente)}"
-									id="btn-detalhes" process="@this frmPrincipal" update=":formPergunta"
+									actionListener="#{pesquisaController.atribuiPacienteEmRespostas(paciente)}"
+									id="btn-detalhes" process="@this :frmPrincipal:dataTablePrincipal" update=":formPergunta :frmPrincipal"
 									disabled="#{paciente.respondido == true}"/>
 							</div>
 						</p:column>
