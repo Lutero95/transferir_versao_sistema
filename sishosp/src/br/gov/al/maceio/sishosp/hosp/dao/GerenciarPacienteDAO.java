@@ -172,9 +172,8 @@ public class GerenciarPacienteDAO {
         		" left join hosp.grupo g on (g.id_grupo = p.codgrupo) " + 
         		" left join hosp.programa prog on (prog.id_programa = p.codprograma) " + 
         		" left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) " + 
-        		" where p.cod_unidade = ? " + 
-        		" and coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))), " + 
-        		" date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') >= current_date " + 
+        		" where p.cod_unidade = ? " +
+                "  and p.status ='A' " +
         		" order by pa.nome";
 
         List<PacienteBean> lista = new ArrayList<>();

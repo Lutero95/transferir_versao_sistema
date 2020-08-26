@@ -8,23 +8,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusRespostaPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PerguntaBean;
 import br.gov.al.maceio.sishosp.hosp.model.PesquisaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientePesquisaDTO;
 
+import javax.faces.context.FacesContext;
+
 public class PesquisaDAO {
 
 	
     public Boolean gravarPesquisa(PesquisaBean pesquisa, List<PacienteBean> pacientesSelecionados) throws ProjetoException {
 
-    	String sql = "INSERT INTO hosp.pesquisa (titulo, data_inicial, data_final) " + 
-    			"VALUES(?, ?, ?) returning id;";
-    	
+    	String sql = "INSERT INTO hosp.pesquisa (titulo, data_inicial, data_final, cod_unidade) " +
+    			"VALUES(?, ?, ?,?) returning id;";
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_usuario");
+
         Boolean retorno = false;
         Connection conexao = null;
         
@@ -35,6 +42,7 @@ public class PesquisaDAO {
             stmt.setString(1, pesquisa.getTitulo());
             stmt.setDate(2, new Date(pesquisa.getDataInicial().getTime()));
             stmt.setDate(3, new Date(pesquisa.getDataFinal().getTime()));
+            stmt.setInt(4, user_session.getUnidade().getId());
             ResultSet rs = stmt.executeQuery();
             
             if(rs.next()) {
@@ -107,8 +115,10 @@ public class PesquisaDAO {
     }
     
     public List<PesquisaBean> listarPesquisas() throws ProjetoException {
-
-    	String sql = "SELECT id, titulo, data_inicial, data_final FROM hosp.pesquisa order by data_inicial, data_final desc;";
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_usuario");
+    	String sql = "SELECT id, titulo, data_inicial, data_final FROM hosp.pesquisa  where pesquisa.cod_unidade=? order by data_inicial, data_final desc;";
         Connection conexao = null;
         
         List<PesquisaBean> listaPesquisas = new ArrayList<>();
@@ -116,6 +126,7 @@ public class PesquisaDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
@@ -141,7 +152,8 @@ public class PesquisaDAO {
         return listaPesquisas;
     }
     
-    public List<PacientePesquisaDTO> listarPacientesDaPesquisa(Integer idPesquisa, String statusResposta) throws ProjetoException {
+    public List<PacientePesquisaDTO> listarPacientesDaPesquisa
+    	(Integer idPesquisa, String statusResposta, String tipoBusca, String campoBusca) throws ProjetoException {
 
     	String sql = "select p.id_paciente, p.nome, pp.respondido, pes.id as id_pesquisa, pes.titulo " + 
     			"from hosp.pacientes p " + 
@@ -150,10 +162,25 @@ public class PesquisaDAO {
     			"where pes.id = ? ";
     	
     	if(statusResposta.equals(StatusRespostaPaciente.RESPONDIDO.getSigla()))
-    		sql += " and pp.respondido = true";
+    		sql += " and pp.respondido = true ";
     	else if(statusResposta.equals(StatusRespostaPaciente.NAO_RESPONDIDO.getSigla()))
-    		sql += " and pp.respondido = false";
+    		sql += " and pp.respondido = false ";
     	
+    	if(tipoBusca.equals("nome")){
+            sql = sql + "and p.nome like ?";
+        }
+        else if(tipoBusca.equals("cpf")){
+            sql = sql + "and p.cpf like ?";
+        }
+        else if(tipoBusca.equals("cns")){
+            sql = sql + "and p.cns like ?";
+        }
+        else if(tipoBusca.equals("prontuario")){
+            sql = sql + "and p.id_paciente = ?";
+        }
+        else if(tipoBusca.equals("matricula")){
+            sql = sql + "and p.matricula like ?";
+        }
     	
         Connection conexao = null;
         
@@ -161,8 +188,16 @@ public class PesquisaDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
+            
+            
             stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, idPesquisa);
+            
+            if ((tipoBusca.equals("nome")) || (tipoBusca.equals("cpf")) || (tipoBusca.equals("cns")) || (tipoBusca.equals("matricula")))
+            	stmt.setString(2, "%" + campoBusca.toUpperCase() + "%");
+            else if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca))
+                stmt.setInt(2, Integer.valueOf(campoBusca));
+            
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {

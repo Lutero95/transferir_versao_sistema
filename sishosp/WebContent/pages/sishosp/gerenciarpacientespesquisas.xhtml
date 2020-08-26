@@ -1,10 +1,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:b="http://bootsfaces.net/ui"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="../../template/template.xhtml">
 
 	<ui:define name="content">
 
@@ -14,7 +14,7 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Pacientes da Pesquisa: 
+				<h4 class="panel-title">Gerenciamento de Pacientes da Pesquisa:
 					<h:outputLabel styleClass="panel-title" value="#{pesquisaController.pesquisa.titulo}"/>
 				</h4>
 			</div>
@@ -22,19 +22,41 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmPrincipal">
-					<p:selectOneRadio  value="#{pesquisaController.statusRespostaFiltro}">
+
+					<p:selectOneRadio id="statusResposta"
+									  value="#{pesquisaController.statusRespostaFiltro}">
 						<f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Respondidos" itemValue="R" />
 						<f:selectItem itemLabel="Não Respondidos" itemValue="NR" />
 						<p:ajax update="dataTablePrincipal"
-							listener="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}"/>
+								listener="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}" />
 					</p:selectOneRadio>
+
+					<p:selectOneMenu value="#{pesquisaController.tipoBusca}"
+									 style="margin-bottom: 13px">
+						<f:selectItem itemLabel="Nome" itemValue="nome" />
+						<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+						<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+						<f:selectItem itemLabel="CPF" itemValue="cpf" />
+						<f:selectItem itemLabel="CNS" itemValue="cns" />
+					</p:selectOneMenu>
+
+					<p:inputText value="#{pesquisaController.campoBusca}"
+								 placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+					<p:commandButton
+							action="#{pesquisaController.listarPacientesDaPesquisaFiltro(pesquisaController.statusRespostaFiltro)}"
+							update=":frmPrincipal:dataTablePrincipal" process="@this :frmPrincipal" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+					<p:commandButton action="#{pesquisaController.limparBuscaPacientesDaPesquisaFiltro()}"
+									 update="frmPrincipal" icon="limpar" style="margin-left: 10px;" />
 
 					<p:dataTable id="dataTablePrincipal" var="paciente" responsive="true" rows="20" style="margin-top: 10px"
 								 value="#{pesquisaController.listaPacientesDaPesquisa}" paginator="true"
 								 emptyMessage="Nenhum abono encontrado." reflow="true">
 
-						<p:column headerText="Paciente" filterBy="#{paciente.paciente.nome}"  filterMatchMode="contains">
+						<p:column headerText="Paciente">
 							<h:outputText value="#{paciente.paciente.nome}"/>
 						</p:column>
 
@@ -47,31 +69,31 @@
 						<p:column headerText="Responder" width="10%">
 							<div align="center">
 								<p:commandButton icon="fa fa-fw fa-edit"
-									action="#{pesquisaController.atribuiPacienteEmRespostas(paciente)}"
-									id="btn-detalhes" process="@this frmPrincipal:dataTablePrincipal" update=":formPergunta"
-									disabled="#{paciente.respondido == true}"/>
+												 actionListener="#{pesquisaController.atribuiPacienteEmRespostas(paciente)}"
+												 id="btn-detalhes" process="@this :frmPrincipal:dataTablePrincipal" update=":formPergunta :frmPrincipal"
+												 disabled="#{paciente.respondido == true}"/>
 							</div>
 						</p:column>
 					</p:dataTable>
 					<br />
-					
+
 					<div align="center">
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							size="sm" immediate="true" look="info" class="btn-voltar"
-							action="/pages/sishosp/gerenciarpesquisas.xhtml?faces-redirect=true">
+										 size="sm" immediate="true" look="info" class="btn-voltar"
+										 action="/pages/sishosp/gerenciarpesquisas.xhtml?faces-redirect=true">
 						</p:commandButton>
 					</div>
 				</h:form>
 			</div>
 		</div>
-		
+
 		<p:dialog header="Responder Pesquisa" widgetVar="dlgPergunta" modal="true" resizable="false" width="500">
 			<h:form id="formPergunta">
-				<h3 class="texto-subtitulo">Paciente:  
-					<h:outputLabel value=" #{pesquisaController.nomePacienteSelecionado}"/> 
+				<h3 class="texto-subtitulo">Paciente:
+					<h:outputLabel value=" #{pesquisaController.nomePacienteSelecionado}"/>
 				</h3>
 				<br />
-				
+
 				<p:dataTable var="pergunta" value="#{pesquisaController.pesquisa.perguntas}" reflow="true">
 					<p:column headerText="Pergunta">
 						<h:outputText value="#{pergunta.descricao}" />
@@ -86,23 +108,23 @@
 					</p:column>
 				</p:dataTable>
 				<br />
-				
+
 				<div align="center">
 					<p:commandButton value="Salvar" action="#{pesquisaController.abrirDialogConfirmacao()}"
-					 update=":msgPagina"/>
+									 update=":msgPagina"/>
 					<p:commandButton value="Cancelar" onclick="PF('dlgPergunta').hide();"/>
 				</div>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="Confirmação" widgetVar="dlgConfirmacao" modal="true" resizable="false" width="400">
 			<h:form id="formConfirmacao">
 				<h3 class="texto-subtitulo">Confirmar essas respostas para a pesquisa?</h3>
 				<br />
-				
+
 				<div align="center">
-					<p:commandButton value="Sim" update=":frmPrincipal :msgPagina" 
-						action="#{pesquisaController.gravarRespostasPaciente()}"/>
+					<p:commandButton value="Sim" update=":frmPrincipal :msgPagina"
+									 action="#{pesquisaController.gravarRespostasPaciente()}"/>
 					<p:commandButton value="Não" onclick="PF('dlgConfirmacao').hide();"/>
 				</div>
 			</h:form>
