@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1394,7 +1395,7 @@ public class AlteracaoPacienteController implements Serializable {
     	listaHorariosEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
     
-    public void carregaAlteracaoInsercaoSemLaudo() throws ProjetoException, ParseException {
+    public void carregaAlteracaoInsercaoSemLaudo() throws ProjetoException, ParseException, SQLException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -1404,16 +1405,26 @@ public class AlteracaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
+            
+            listaDadosPermitidosDoPaciente(id);
             listarDadosPermitidosDoPrograma(insercao.getPrograma().getIdPrograma());
+            
             List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
             adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
         }
     }
+
+
+	private void listaDadosPermitidosDoPaciente(Integer id) throws ProjetoException, SQLException {
+		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+		this.insercao.getPrograma().setListaCidsPermitidos(gerenciarPacienteDAO.listaCidsPacienteInstituicao(id));
+		this.insercao.getPrograma().setListaProcedimentosPermitidos(gerenciarPacienteDAO.listaProcedimentosPacienteInstituicao(id));
+	}
     
     private void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
-        this.listaProcedimentos = new ProcedimentoDAO().listarProcedimentosPermitidos(idPrograma);
+        this.listaProcedimentos = programaDAO.listarProcedimentosPermitidos(idPrograma);
         this.listaCids = programaDAO.listarCidsPermitidos(idPrograma);
 		this.listaProfissionais = programaDAO.listarProfissionaisInsercaoSemlaudo
 				(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());

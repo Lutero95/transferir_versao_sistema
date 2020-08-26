@@ -17,10 +17,11 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 public class GerenciarPacienteDAO {
@@ -1289,4 +1290,63 @@ public class GerenciarPacienteDAO {
         }
         return listaAtendimentos1;
     }
+    
+    public List<CidBean> listaCidsPacienteInstituicao (Integer idPacienteInstituicao) throws ProjetoException, SQLException {
+
+		List<CidBean> lista = new ArrayList<>();
+		try {
+			String sql = "select c.cod, c.cid, c.desccidabrev from hosp.paciente_instituicao_cid pic " + 
+					"join hosp.paciente_instituicao pi on pic.id_paciente_instituicao = pi.id " + 
+					"join hosp.cid c on pic.id_cid = c.cod " + 
+					"where pi.id = ? order by c.desccidabrev";
+			conexao = ConnectionFactory.getConnection();
+			ps = null;
+			ps = conexao.prepareStatement(sql);
+			ps.setLong(1, idPacienteInstituicao);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				CidBean cid = new CidBean();
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setCid(rs.getString("cid"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				lista.add(cid);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return lista;
+	}
+    
+    public List<ProcedimentoBean> listaProcedimentosPacienteInstituicao (Integer idPacienteInstituicao) throws ProjetoException, SQLException {
+
+		List<ProcedimentoBean> lista = new ArrayList<>();
+		try {
+			String sql = "select p.id, p.nome, p.codproc from hosp.paciente_instituicao_proncedimento pip " + 
+					"join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " + 
+					"join hosp.proc p on pip.id_procedimento = p.id " + 
+					"where pi.id = ? order by p.nome";
+			
+			conexao = ConnectionFactory.getConnection();
+			ps = null;
+			ps = conexao.prepareStatement(sql);
+			ps.setLong(1, idPacienteInstituicao);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				ProcedimentoBean procedimentoBean = new ProcedimentoBean();
+				procedimentoBean.setIdProc(rs.getInt("id"));
+				procedimentoBean.setNomeProc(rs.getString("nome"));
+				procedimentoBean.setCodProc(rs.getString("codproc"));
+				lista.add(procedimentoBean);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return lista;
+	}
 }

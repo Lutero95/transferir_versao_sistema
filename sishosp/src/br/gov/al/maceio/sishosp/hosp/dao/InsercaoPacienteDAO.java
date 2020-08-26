@@ -932,6 +932,8 @@ public class InsercaoPacienteDAO {
 			}
 			inserirDiasAtendimentoTurno(idPacienteInstituicao, lista, con);
 			inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, lista, listaAgendamento, con);
+			inserirCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaCidsPermitidos(), con);
+			inserirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaProcedimentosPermitidos(), con);
 			new GerenciarPacienteDAO().gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.INSERCAO.getSigla(), con);
 			con.commit();
 			inseriu = true;
@@ -1055,6 +1057,93 @@ public class InsercaoPacienteDAO {
 					ps.executeUpdate();
 				}
 			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
+	
+	public void inserirCidsDoPacienteInstituicao(Integer idPacienteInstituicao, List<CidBean> lista,
+			Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "INSERT INTO hosp.paciente_instituicao_cid (id_paciente_instituicao, id_cid) VALUES(?, ?);";
+
+		try {
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+
+			for (CidBean cid : lista) {
+				ps.setInt(1, idPacienteInstituicao);
+				ps.setInt(2, cid.getIdCid());
+				ps.executeUpdate();
+			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
+	public void excluirCidsDoPacienteInstituicao(Integer idPacienteInstituicao,
+			Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "DELETE FROM hosp.paciente_instituicao_cid WHERE id_paciente_instituicao = ?;";
+
+		try {
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+			ps.setInt(1, idPacienteInstituicao);
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
+	public void inserirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, List<ProcedimentoBean> lista,
+			Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "INSERT INTO hosp.paciente_instituicao_proncedimento " + 
+				"(id_paciente_instituicao, id_procedimento) VALUES(?, ?);";
+
+		try {
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+
+			for (ProcedimentoBean procedimento : lista) {
+				ps.setInt(1, idPacienteInstituicao);
+				ps.setInt(2, procedimento.getIdProc());
+				ps.executeUpdate();
+			}
+
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+	}
+	
+	public void excluirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, 
+			Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "DELETE FROM hosp.paciente_instituicao_proncedimento " + 
+				"WHERE id_paciente_instituicao = ?;";
+
+		try {
+			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+
+			ps.setInt(1, idPacienteInstituicao);
+			ps.executeUpdate();
 
 		} catch (SQLException sqle) {
 			conAuxiliar.rollback();

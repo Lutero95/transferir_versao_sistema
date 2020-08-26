@@ -163,7 +163,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
-        this.listaProcedimentos = new ProcedimentoDAO().listarProcedimentosPermitidos(idPrograma);
+        this.listaProcedimentos = programaDAO.listarProcedimentosPermitidos(idPrograma);
         this.listaCids = programaDAO.listarCidsPermitidos(idPrograma);
     }
 

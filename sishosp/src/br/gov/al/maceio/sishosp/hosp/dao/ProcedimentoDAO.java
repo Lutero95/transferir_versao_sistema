@@ -2278,43 +2278,4 @@ public class ProcedimentoDAO {
         }
         return listaProcedimento;
     }
-    
-    public List<ProcedimentoBean> listarProcedimentosPermitidos (Integer idPrograma)
-    		throws ProjetoException {
-
-    	List<ProcedimentoBean> lista = new ArrayList<>();
-        
-        String sql = "select proc.id, proc.nome, proc.codproc " + 
-        		"from hosp.programa_procedimento_permitido ppp " + 
-        		"join hosp.programa p on ppp.id_programa = p.id_programa " + 
-        		"join hosp.proc on ppp.id_procedimento = proc.id " + 
-        		"where ppp.id_programa = ? and p.cod_unidade = ? ;";
-        try {
-        	con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, idPrograma);
-            stm.setInt(2, user_session.getUnidade().getId());
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-            	ProcedimentoBean procedimento = new ProcedimentoBean();
-            	procedimento.setIdProc(rs.getInt("id"));
-            	procedimento.setNomeProc(rs.getString("nome"));
-            	procedimento.setCodProc(rs.getString("codproc"));
-                lista.add(procedimento);
-            }
-
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        }finally {
-			try {
-				con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-        return lista;
-    }
 }

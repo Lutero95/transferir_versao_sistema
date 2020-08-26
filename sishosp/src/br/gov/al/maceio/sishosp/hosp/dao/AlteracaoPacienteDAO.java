@@ -1358,7 +1358,7 @@ public class AlteracaoPacienteDAO {
 	
 	
 	public boolean gravarAlteracaoTurnoSemLaudo(InsercaoPacienteBean insercao,
-			ArrayList<AgendaBean> listAgendamentoProfissional, Integer id_paciente,
+			ArrayList<AgendaBean> listAgendamentoProfissional, Integer idPacienteInstituicao,
 			List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 		
 		boolean alterado = false;
@@ -1369,18 +1369,11 @@ public class AlteracaoPacienteDAO {
 
 			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
-			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
-			
-			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
-			
-			//ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
-
-			//ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;			
-			
-			
+			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(idPacienteInstituicao, conexao);
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(idPacienteInstituicao, conexao) ;//
 			
 			if (!gerenciarPacienteDAO.apagarAtendimentos
-					(id_paciente, conexao, true, listaSubstituicao, new ArrayList<>(), new ArrayList<>(), listaAtendimento1ComLiberacao)) {
+					(idPacienteInstituicao, conexao, true, listaSubstituicao, new ArrayList<>(), new ArrayList<>(), listaAtendimento1ComLiberacao)) {
 				conexao.close();
 				return alterado;
 			}
@@ -1395,7 +1388,7 @@ public class AlteracaoPacienteDAO {
 
             InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();
             
-            insercaoPacienteDAO.inserirDiasAtendimentoTurno(id_paciente, listaProfissionais, conexao);
+            insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao);
             
             List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
             listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);
@@ -1405,9 +1398,13 @@ public class AlteracaoPacienteDAO {
             	}
             }
             
-            insercaoPacienteDAO.inserirAtendimentoSemLaudo(id_paciente, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
+            insercaoPacienteDAO.inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
+            insercaoPacienteDAO.excluirCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
+            insercaoPacienteDAO.excluirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, conexao);
+            insercaoPacienteDAO.inserirCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaCidsPermitidos(), conexao);
+            insercaoPacienteDAO.inserirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaProcedimentosPermitidos(), conexao);
             
-			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
+			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
 				alterado = true;
 			}
