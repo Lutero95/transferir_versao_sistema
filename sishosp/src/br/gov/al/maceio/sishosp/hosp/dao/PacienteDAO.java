@@ -1442,13 +1442,13 @@ public class PacienteDAO {
         PacienteBean pacienteRetorno = null;
 
         String sql = "select nome from hosp.pacientes where cpf=?";
-        if (idPaciente!=null)
+        if ((idPaciente!=null) && (idPaciente!=0))
             sql  = sql +" and id_paciente<>?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, cpfPaciente);
-            if (idPaciente!=null)
+            if ((idPaciente!=null) && (idPaciente!=0))
                 stmt.setInt(2, idPaciente);
             ResultSet rs = stmt.executeQuery();
 
@@ -1476,13 +1476,13 @@ public class PacienteDAO {
         PacienteBean pacienteRetorno = null;
 
         String sql = "select nome from hosp.pacientes where cns=?";
-        if (idPaciente!=null)
+        if ((idPaciente!=null) && (idPaciente!=0))
             sql  = sql +" and id_paciente<>?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, cnsPaciente);
-            if (idPaciente!=null)
+            stmt.setString(1, cnsPaciente.trim());
+            if ((idPaciente!=null) && (idPaciente!=0))
                 stmt.setInt(2, idPaciente);
             ResultSet rs = stmt.executeQuery();
 

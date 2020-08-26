@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.comum.validator;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.control.PacienteController;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
@@ -31,9 +32,7 @@ public class CNSValidator implements Validator {
 			
 			PacienteDAO pDAo = new PacienteDAO();
 			PacienteBean pacienteRetorno;
-			Integer idPaciente = null;
-			if (PacienteController.getParamIdPaciente()!=null) 
-				 idPaciente =  PacienteController.getParamIdPaciente();
+			Integer idPaciente =  (Integer) SessionUtil.resgatarDaSessao( "paramIdPaciente");
 			try {
 				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(valorTelaString,idPaciente);
 				if (pacienteRetorno != null) {

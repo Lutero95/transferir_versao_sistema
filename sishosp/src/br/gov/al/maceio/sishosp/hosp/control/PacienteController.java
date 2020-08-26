@@ -12,16 +12,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 
+import br.gov.al.maceio.sishosp.comum.util.*;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
-import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
@@ -48,7 +44,6 @@ import br.gov.al.maceio.sishosp.hosp.model.Telefone;
 public class PacienteController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private static Integer paramIdPaciente;
 	private String descricaoParaBuscar;
 	private String cabecalho;
 	private Boolean cidadeDoCep;
@@ -102,7 +97,7 @@ public class PacienteController implements Serializable {
 		listaPacientesAgenda = new ArrayList<PacienteBean>();
 		listaMunicipiosDePacienteAtivos = new ArrayList<MunicipioBean>();
 		bairroExiste = null;
-		paramIdPaciente = null;
+		SessionUtil.removerDaSessao("paramIdPaciente");
 		enderecoController = new EnderecoController();
 	}
 
@@ -121,10 +116,10 @@ public class PacienteController implements Serializable {
 		EnderecoDAO enderecoDAO = new EnderecoDAO();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
+			SessionUtil.adicionarNaSessao(id, "paramIdPaciente");
 			tipo = Integer.parseInt(params.get("tipo"));
 			this.paciente = pDao.listarPacientePorID(id);
 			enderecoController.setListaBairros(enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio()));
-			paramIdPaciente = id;
 			if (paciente.getEndereco().getCep() != null) {
 				cidadeDoCep = true;
 			}
@@ -240,10 +235,8 @@ public class PacienteController implements Serializable {
 			
 			PacienteDAO pDAo = new PacienteDAO();
 			PacienteBean pacienteRetorno;
-			Integer idPaciente = null;
-			if (PacienteController.getParamIdPaciente()!=null) 
-				 idPaciente =  PacienteController.getParamIdPaciente();
-				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(cns, idPaciente); 
+			Integer idPaciente =(Integer) SessionUtil.resgatarDaSessao( "paramIdPaciente");;
+			pacienteRetorno = pDAo.verificaExisteCnsCadastrado(cns, idPaciente);
 																					
 			if (pacienteRetorno != null) {
 				FacesMessage message = new FacesMessage();
@@ -267,10 +260,8 @@ public class PacienteController implements Serializable {
 			} else {
 				PacienteDAO pDAo = new PacienteDAO();
 				PacienteBean pacienteRetorno;
-				Integer idPaciente = null;
-				if (PacienteController.getParamIdPaciente() != null) 
-					idPaciente = PacienteController.getParamIdPaciente();
-					pacienteRetorno = pDAo.verificaExisteCpfCadastrado(cpf, idPaciente); 
+				Integer idPaciente = (Integer) SessionUtil.resgatarDaSessao( "paramIdPaciente");;
+				pacienteRetorno = pDAo.verificaExisteCpfCadastrado(cpf, idPaciente);
 
 					if (pacienteRetorno != null) {
 						FacesMessage message = new FacesMessage();
@@ -654,14 +645,6 @@ public class PacienteController implements Serializable {
 
 	public void setListaPacientesAgenda(List<PacienteBean> listaPacientesAgenda) {
 		this.listaPacientesAgenda = listaPacientesAgenda;
-	}
-
-	public static Integer getParamIdPaciente() {
-		return paramIdPaciente;
-	}
-
-	public static void setParamIdPaciente(Integer paramIdPaciente) {
-		PacienteController.paramIdPaciente = paramIdPaciente;
 	}
 
 	public String getTipoBusca() {
