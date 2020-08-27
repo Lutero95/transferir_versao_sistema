@@ -23,6 +23,7 @@ public class EmpresaBean implements Serializable {
     private String email;
     private String site;
     private Boolean ativo;
+    private Boolean restringirLaudoPorUnidade;
     private String tipoString;
     private String cnes;
 
@@ -204,7 +205,11 @@ public class EmpresaBean implements Serializable {
 		this.telefone2 = telefone2;
 	}
 
-    
+    public Boolean getRestringirLaudoPorUnidade() {
+        return restringirLaudoPorUnidade;
+    }
 
-
+    public void setRestringirLaudoPorUnidade(Boolean restringirLaudoPorUnidade) {
+        this.restringirLaudoPorUnidade = restringirLaudoPorUnidade;
+    }
 }

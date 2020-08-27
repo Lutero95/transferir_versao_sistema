@@ -26,12 +26,14 @@ public class UnidadeBean extends EmpresaBean{
     private String nomeFantasia;
     private String nomeEmpresa;
     private List<ProgramaGrupoEvolucaoBean> listaProgramasGrupoEvolucao;
+    private EmpresaBean empresa;
 
 
     public UnidadeBean() {
         orteseProtese = new OrteseProtese();
         parametro = new ParametroBean();
         listaProgramasGrupoEvolucao =  new ArrayList<>();
+        empresa = new EmpresaBean();
     }
 
 	public Integer getId() {
@@ -172,9 +174,11 @@ public class UnidadeBean extends EmpresaBean{
 		this.listaProgramasGrupoEvolucao = listaProgramasGrupoEvolucao;
 	}
 
-	
+	public EmpresaBean getEmpresa() {
+		return empresa;
+	}
 
-	
-
-   
+	public void setEmpresa(EmpresaBean empresa) {
+		this.empresa = empresa;
+	}
 }

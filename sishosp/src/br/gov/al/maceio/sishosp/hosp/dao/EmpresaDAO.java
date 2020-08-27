@@ -23,8 +23,8 @@ public class EmpresaDAO {
         Integer codEmpresa = null;
 
         String sql = "INSERT INTO hosp.empresa(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo, cnes) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true, ?) returning cod_empresa";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo, cnes, restringir_laudo_unidade) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true, ?,?) returning cod_empresa";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -81,6 +81,13 @@ public class EmpresaDAO {
             }
 
             ps.setString(17, empresa.getCnes());
+
+            if(empresa.getRestringirLaudoPorUnidade() != null) {
+                ps.setBoolean(18, empresa.getRestringirLaudoPorUnidade());
+            }
+            else{
+                ps.setNull(18, Types.NULL);
+            }
 
             ResultSet rs = ps.executeQuery();
 
@@ -159,7 +166,7 @@ public class EmpresaDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?, cnes=?  " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?, cnes=?, restringir_laudo_unidade=?   " +
                 " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -182,7 +189,14 @@ public class EmpresaDAO {
             ps.setString(15, empresa.getSite());
             ps.setString(16, empresa.getComplemento());
             ps.setString(17, empresa.getCnes());
-            ps.setInt(18, empresa.getCodEmpresa());            
+            if(empresa.getRestringirLaudoPorUnidade() != null) {
+                ps.setBoolean(18, empresa.getRestringirLaudoPorUnidade());
+            }
+            else{
+                ps.setNull(18, Types.NULL);
+            }
+            ps.setInt(19, empresa.getCodEmpresa());
+
             ps.executeUpdate();
 
             con.commit();
@@ -235,7 +249,7 @@ public class EmpresaDAO {
         EmpresaBean empresa = new EmpresaBean();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, ativo  " +
+                " email, site, ativo, restringir_laudo_unidade  " +
                 " FROM hosp.empresa where cod_empresa = ?;";
 
         try {
@@ -264,6 +278,7 @@ public class EmpresaDAO {
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
+                empresa.setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 
             }
         }  catch (SQLException ex2) {
