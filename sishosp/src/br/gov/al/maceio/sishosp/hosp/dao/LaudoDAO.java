@@ -33,7 +33,7 @@ public class LaudoDAO {
     private Connection conexao = null;
 
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-            .getSessionMap().get("obj_usuario");
+            .getSessionMap().get("obj_funcionario");
 
     public boolean existeLaudoComMesmosDados(LaudoBean laudo) throws ProjetoException {
 
@@ -372,7 +372,7 @@ public class LaudoDAO {
     public ArrayList<LaudoBean> listaLaudos(BuscaLaudoDTO buscaLaudoDTO)
             throws ProjetoException {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_usuario");
+                .getSessionMap().get("obj_funcionario");
         String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
                 + "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
                 + "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "
@@ -380,8 +380,8 @@ public class LaudoDAO {
                 + "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
                 + " where l.ativo is true ";
-        if (user_session.getUnidade().getEmpresa().getRestringirLaudoPorUnidade())
-            sql = sql+ " and l.cod_unidade = ?";
+//walter        if (user_session.getUnidade().getRestringirLaudoPorUnidade()==true)
+//walter            sql = sql+ " and l.cod_unidade = ?";
 
         if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
             sql = sql + " AND l.situacao = ? ";
@@ -439,10 +439,10 @@ public class LaudoDAO {
             conexao = ConnectionFactory.getConnection();
             int i = 1;
             PreparedStatement stm = conexao.prepareStatement(sql);
-            if (user_session.getUnidade().getEmpresa().getRestringirLaudoPorUnidade()){
-                stm.setInt(i, user_session.getUnidade().getId());
-                i++;
-        }
+            //walter    if (user_session.getUnidade().getRestringirLaudoPorUnidade()){
+            //walterstm.setInt(i, user_session.getUnidade().getId());
+            //walteri++;
+            //walter}
 
             if (!buscaLaudoDTO.getSituacao().equals(SituacaoLaudo.TODOS.getSigla())) {
                 stm.setString(i, buscaLaudoDTO.getSituacao());

@@ -305,6 +305,8 @@ public class FuncionarioController implements Serializable {
 		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
 				usuarioLogado);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario",
+				usuarioLogado);
 		JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!","Sucesso!");
 		JSFUtil.fecharDialog("selecaoUnidade");
 	}
@@ -345,6 +347,8 @@ public class FuncionarioController implements Serializable {
 
 	private String carregarSistemasDoUsuarioLogadoIhJogarUsuarioNaSessao() throws ProjetoException {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
+				usuarioLogado);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario",
 				usuarioLogado);
 		String root =  getServleContext().getContextPath();
 		// ACL =============================================================

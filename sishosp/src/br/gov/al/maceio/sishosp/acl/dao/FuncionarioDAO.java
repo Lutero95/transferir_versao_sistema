@@ -200,7 +200,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setPermiteAgendamentoDuplicidade(rs.getBoolean("permite_agendamento_duplicidade"));
 				funcionario.getUnidade().getParametro().setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
 				funcionario.getUnidade().getParametro().setAtribuirCorTabelaTelaEvolucaoProfissional(rs.getBoolean("atribuir_cor_tabela_tela_evolucao_profissional"));
-				funcionario.getUnidade().getEmpresa().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
+				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
@@ -215,6 +215,7 @@ public class FuncionarioDAO {
 			}
 
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario", funcionario);
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario", funcionario);
 
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("setores_usuario",
 					setoresUsuario);
