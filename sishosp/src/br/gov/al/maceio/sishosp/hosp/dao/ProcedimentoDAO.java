@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
@@ -2245,28 +2246,40 @@ public class ProcedimentoDAO {
     }
     
     
-    public List<ProcedimentoBean> listarProcedimentosPorCbo(Integer idCbo, Integer idPrograma) throws ProjetoException {
+    public List<ProcedimentoBean> listarTodosProcedimentosDoPrograma(AtendimentoBean atendimento) throws ProjetoException {
         List<ProcedimentoBean> listaProcedimento = new ArrayList<>();
-        String sql = "select p.id, p.codproc, p.nome " + 
-        		"from hosp.proc p " + 
-        		"join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " + 
-        		"where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?; ";
+        
+        String sql = "select id, codproc, nome from ( " + 
+        		"	-- PROCEDIMENTO PADRÃO \n" + 
+        		"	select p.id, p.codproc, p.nome from hosp.proc p where p.id = ? " + 
+        		"		union " + 
+        		"	-- PROCEDIMENTO PACIENTE INSTITUICAO \n" + 
+        		"	select p.id, p.codproc, p.nome from hosp.proc p " + 
+        		"	join hosp.paciente_instituicao_proncedimento pip on p.id = pip.id_procedimento " + 
+        		"	join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " + 
+        		"	where p.cod_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " + 
+        		"		union " + 
+        		"	-- PROCEDIMENTO CBO \n" + 
+        		"	select p.id, p.codproc, p.nome " + 
+        		"	from hosp.proc p " + 
+        		"	join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " + 
+        		"	where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?) as procedimento " + 
+        		"order by nome; ";
         
         
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getUnidade().getId());
-            stm.setInt(2, idCbo);
-            stm.setInt(3, idPrograma);
+            stm.setInt(1, atendimento.getProcedimento().getIdProc());
+            stm.setInt(2, user_session.getUnidade().getId());
+            stm.setInt(3, atendimento.getId());
+            stm.setInt(4, user_session.getUnidade().getId());
+            stm.setInt(5, atendimento.getFuncionario().getCbo().getCodCbo());
+            stm.setInt(6, atendimento.getPrograma().getIdPrograma());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                ProcedimentoBean procedimento = new ProcedimentoBean();
-                procedimento.setIdProc(rs.getInt("id"));
-                procedimento.setCodProc(rs.getString("codproc"));
-                procedimento.setNomeProc(rs.getString("nome"));
-                listaProcedimento.add(procedimento);
+                mapearPreparedStatementProcedimento(listaProcedimento, rs);
             }
         } catch (SQLException sqle) {
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -2281,5 +2294,14 @@ public class ProcedimentoDAO {
         }
         return listaProcedimento;
     }
+    
+	private void mapearPreparedStatementProcedimento(List<ProcedimentoBean> listaProcedimento, ResultSet rs)
+			throws SQLException {
+		ProcedimentoBean procedimento = new ProcedimentoBean();
+		procedimento.setIdProc(rs.getInt("id"));
+		procedimento.setCodProc(rs.getString("codproc"));
+		procedimento.setNomeProc(rs.getString("nome"));
+		listaProcedimento.add(procedimento);
+	}
 
 }

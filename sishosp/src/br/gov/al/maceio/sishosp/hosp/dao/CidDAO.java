@@ -9,10 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -357,6 +355,40 @@ public class CidDAO {
 		return lista;
 	}
 	
+	public List<CidBean> listarCidsPorPacienteInstituicao(Integer idAtendimento) throws ProjetoException {
+		List<CidBean> lista = new ArrayList<>();
+		
+		String sql = "select c.cod, c.cid, c.desccidabrev from hosp.cid c " + 
+				"join hosp.paciente_instituicao_cid pic on c.cod = pic.id_cid " + 
+				"join hosp.paciente_instituicao pi on pic.id_paciente_instituicao = pi.id " + 
+				"where pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) "+
+				"order by desccidabrev;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idAtendimento);
+			
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				mapearResultSet(lista, rs);
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return lista;
+	}
+	
 	private void mapearResultSet(List<CidBean> lista, ResultSet rs) throws SQLException {
 		CidBean cid = new CidBean();
 		cid.setIdCid(rs.getInt("cod"));
@@ -365,5 +397,5 @@ public class CidDAO {
 
 		lista.add(cid);
 	}
-
+	
 }

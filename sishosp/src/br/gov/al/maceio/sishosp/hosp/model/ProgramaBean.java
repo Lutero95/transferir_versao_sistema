@@ -37,6 +37,7 @@ public class ProgramaBean implements Serializable {
     private List<CidBean> listaCidsPermitidos;
     private boolean permitePacienteSemLaudo;
     private Integer diasPacienteSemLaudoAtivo;
+    private boolean permiteAlteracaoCidNaEvolucao;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -223,6 +224,14 @@ public class ProgramaBean implements Serializable {
 
 	public void setDiasPacienteSemLaudoAtivo(Integer diasPacienteSemLaudoAtivo) {
 		this.diasPacienteSemLaudoAtivo = diasPacienteSemLaudoAtivo;
+	}
+
+	public boolean isPermiteAlteracaoCidNaEvolucao() {
+		return permiteAlteracaoCidNaEvolucao;
+	}
+
+	public void setPermiteAlteracaoCidNaEvolucao(boolean permiteAlteracaoCidNaEvolucao) {
+		this.permiteAlteracaoCidNaEvolucao = permiteAlteracaoCidNaEvolucao;
 	}
 	
 }
