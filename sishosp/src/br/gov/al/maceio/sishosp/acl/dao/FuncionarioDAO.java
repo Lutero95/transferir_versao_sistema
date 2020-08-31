@@ -1543,7 +1543,10 @@ public class FuncionarioDAO {
 			stmt.setLong(1, profissional.getId());
 			stmt.executeUpdate();
 
+			System.out.println("---------------------------------------------");
 			for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
+				System.out.println(profissional.getListaUnidades().get(i).getNomeUnidade());
+				System.out.println(profissional.getListaUnidades().get(i).getId());
 				String sql3 = "INSERT INTO hosp.funcionario_unidades (cod_unidade, cod_funcionario) VALUES (?, ?);";
 				stmt = con.prepareStatement(sql3);
 
@@ -2064,7 +2067,7 @@ public class FuncionarioDAO {
 
 		StringBuilder sql = new StringBuilder();
 
-		sql.append("SELECT fun.codunidade, e.nome nomeunidade ");
+		sql.append("SELECT f.cod_unidade, e.nome nomeunidade ");
 		sql.append(" FROM hosp.funcionario_unidades f");
 		sql.append(" join acl.funcionarios fun on fun.id_funcionario = f.cod_funcionario");
 		sql.append(" join hosp.unidade e  ON (e.id = f.cod_unidade) ");
