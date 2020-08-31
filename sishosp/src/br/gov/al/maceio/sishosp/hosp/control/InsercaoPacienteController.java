@@ -23,10 +23,13 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
@@ -34,11 +37,13 @@ import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
@@ -76,6 +81,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private List<Integer> listaDias;
 	private String tipoBusca;
 	private String campoBusca;
+	private List<ProcedimentoBean> listaProcedimentos;
+	private List<CidBean> listaCids;
+	private List<ProcedimentoBean> listaProcedimentosAux;
+	private List<CidBean> listaCidsAux;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -98,6 +107,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaHorarioAtendimentos = new ArrayList<>();
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
         listaDias = new ArrayList<>();
+        listaProfissionaisEquipe = new ArrayList<>();
+        listaProfissionaisAdicionados = new ArrayList<>();
+        listaProcedimentos = new ArrayList<>();
+        listaCids = new ArrayList<>();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -147,12 +160,16 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
     }
+    
+    public void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
+        this.listaProcedimentos = new ProcedimentoDAO().listarProcedimentosPermitidos(idPrograma);
+        this.listaCids = new CidDAO().listarCidsPermitidos(idPrograma);
+    }
 
-    public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
+    public void atualizaListaGrupos(ProgramaBean programa) throws ProjetoException {
         GrupoDAO gDao = new GrupoDAO();
-        this.programaSelecionado = p;
-        this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
-                .getIdPrograma());
+        this.programaSelecionado = programa;
+        this.listaGruposProgramas = gDao.listarGruposPorPrograma(programa.getIdPrograma());
         for (GrupoBean g : listaGruposProgramas) {
         }
 
@@ -451,13 +468,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
     public void validarAdicionarFuncionarioTurno() {
         Boolean existe = false;
-        if (listaProfissionaisAdicionados.size() == 0) {
+        if (listaProfissionaisAdicionados.isEmpty()) {
         	adicionarFuncionarioTurno();
         } else {
 
-            for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
-                if (listaProfissionaisAdicionados.get(i).getId() == funcionario
-                        .getId()) {
+            for (FuncionarioBean profissional :  listaProfissionaisAdicionados) {
+                if (profissional.getId() == funcionario.getId()) {
                     existe = true;
                 }
             }
@@ -465,10 +481,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             	adicionarFuncionarioTurno();
             } else {
                 JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
-
                 JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
-
         }
         //Retirado para análise futura, retirei na véspera da apresentação para a funcionalidade ficar ok. Data: 26/03/2019
         //limparDias();
@@ -627,10 +641,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         
         int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d2.getTime() , d1.getTime());
-
       
-
-       
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -831,7 +842,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     gerarListaAgendamentosEquipeDiaHorario();
                 }
 
-
                 ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
                 if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
@@ -846,30 +856,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                     }
                 }
                 if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
-
                     gerarListaAgendamentosProfissional();
-
                     cadastrou = iDao.gravarInsercaoProfissional(insercao,
                             listaAgendamentosProfissionalFinal);
                 }
 
                 if (cadastrou == true) {
                     limparDados();
-
                     JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
-
                 } else {
-
                     JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-
                 }
 
             } else {
-
                 JSFUtil.adicionarMensagemAdvertencia("Carregue um laudo primeiro!", "Bloqueio");
             }
-
-
     }
 
     private void gerarHorariosAtendimento() throws ParseException, ProjetoException {
@@ -907,11 +908,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             JSFUtil.adicionarMensagemErro("Carregue um laudo primeiro!", "Bloqueio");
 
         }
-
         turnoInsercaoReceberValorTurnoEquipe();
-
     }
-
+    
     public void turnoInsercaoReceberValorTurnoEquipe(){
         insercao.setTurno(insercao.getEquipe().getTurno());
     }
@@ -941,7 +940,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         } else {
             return null;
         }
-
     }
 
     public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
@@ -961,8 +959,142 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	this.listaProfissionaisEquipe.clear();
     	this.listaProfissionaisAdicionados.clear();
     }
+    
+    public void abrirDialogTurno() {
+        //funcionario.setListDiasSemana(new ArrayList<>());
+        JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
+        JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+    }
 
     // AUTOCOMPLETE FIM
+    
+    public void selectGrupoInsercaoSemLaudo(SelectEvent event) throws ProjetoException {
+        this.insercao.setGrupo((GrupoBean) event.getObject());
+    }
+    
+    public void listarProfissionaisSemLaudo() throws ProjetoException {
+    	limparTabelasProfissionais();
+		listaProfissionais = eDao.listarProfissionaisInsercaoSemlaudo
+				(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+    }
+    
+    public void validarProcedimentoParaAdicionar(ProcedimentoBean procedimentoSelecionado) {
+    	for (ProcedimentoBean procedimento : insercao.getPrograma().getListaProcedimentosPermitidos()) {
+			if(procedimento.getIdProc().equals(procedimentoSelecionado.getIdProc())) {
+				JSFUtil.adicionarMensagemSucesso("Este procedimento já foi adicionado", "");
+				return;
+			}
+		}
+    	insercao.getPrograma().getListaProcedimentosPermitidos().add(procedimentoSelecionado);
+    	listaProcedimentosAux = insercao.getPrograma().getListaProcedimentosPermitidos();
+    }
+    
+    public void removerProcedimento(ProcedimentoBean procedimentoSelecionado) {
+    	insercao.getPrograma().getListaProcedimentosPermitidos().remove(procedimentoSelecionado);
+    	listaProcedimentosAux = insercao.getPrograma().getListaProcedimentosPermitidos();
+    }
+    
+    public void validarCidParaAdicionar(CidBean cidSelecionado) {
+    	for (CidBean cid : insercao.getPrograma().getListaCidsPermitidos()) {
+			if(cid.getIdCid().equals(cidSelecionado.getIdCid())) {
+				JSFUtil.adicionarMensagemSucesso("Este CID já foi adicionado", "");
+				return;
+			}
+		}
+    	insercao.getPrograma().getListaCidsPermitidos().add(cidSelecionado);
+    	listaCidsAux = insercao.getPrograma().getListaCidsPermitidos(); 
+    }
+    
+    public void removerCid(CidBean cidSelecionado) {
+    	insercao.getPrograma().getListaCidsPermitidos().remove(cidSelecionado);
+    	listaCidsAux = insercao.getPrograma().getListaCidsPermitidos();
+    }
+    
+    public void inserirPacienteSemLaudo() throws ProjetoException {
+    	insercao.getPrograma().setListaCidsPermitidos(listaCidsAux);
+    	insercao.getPrograma().setListaProcedimentosPermitidos(listaProcedimentosAux);
+    	if(!listaProfissionaisAdicionadosEstaVazia() 
+    			&& !listaProcedimentosPermitidosEstaVazia() 
+    			&& !listaCidsPermitidosEstaVazia()) {
+    		gerarListaAgendamentosTurnoSemLaudo();
+    		if(iDao.gravarInsercaoTurnoSemLaudo(insercao, listaProfissionaisAdicionados, listAgendamentoProfissional)) {
+    			JSFUtil.adicionarMensagemSucesso("Paciente Inserido com Sucesso", "");
+    			limparDadosInsercaoSemLaudo();
+    		}
+    	}
+    }
+    
+    private boolean listaProcedimentosPermitidosEstaVazia() {
+    	if(this.insercao.getPrograma().getListaProcedimentosPermitidos().isEmpty()) {
+    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um procedimento", "Atenção");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    private boolean listaCidsPermitidosEstaVazia() {
+    	if(this.insercao.getPrograma().getListaCidsPermitidos().isEmpty()) {
+    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um CID", "Atenção");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void gerarListaAgendamentosTurnoSemLaudo() throws ProjetoException {
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setLenient(false);
+        
+        Date dataInicial = insercao.getDataSolicitacao();
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dataInicial);
+        calendar.add(Calendar.DAY_OF_MONTH, insercao.getPrograma().getDiasPacienteSemLaudoAtivo());
+        
+        Date dataFinal = calendar.getTime();
+        
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataFinal.getTime() , dataInicial.getTime());
+
+        calendar = Calendar.getInstance();
+        calendar.setTime(dataInicial);
+        
+        for (int i = 0; i <= dt; i++) {
+
+            int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
+            ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
+            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+                for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
+                    for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
+                        if (!listaDatasDeAtendimento.contains(calendar.getTime())) {
+                            if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+                                AgendaBean agenda = new AgendaBean();
+
+                                agenda.setPaciente(
+                                        insercao.getLaudo().getPaciente());
+
+                                agenda.setDataAtendimento(calendar.getTime());
+
+                                agenda.setProfissional(listaProfissionaisAdicionados.get(j));
+
+                                listAgendamentoProfissional.add(agenda);
+                                listaDatasDeAtendimento.add(calendar.getTime());
+
+                            }
+                        }
+                    }
+                }
+
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+    }
+    
+    private void limparDadosInsercaoSemLaudo() {
+    	this.insercao = new InsercaoPacienteBean();
+    	this.listaProfissionaisAdicionados.clear();
+    	this.listaProcedimentosAux.clear();
+    	this.listaCidsAux.clear();
+    }
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1112,4 +1244,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 	public void setCampoBusca(String campoBusca) {
 		this.campoBusca = campoBusca;
 	}
+
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
+	}
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
+
+	public List<CidBean> getListaCids() {
+		return listaCids;
+	}
+
+	public void setListaCids(List<CidBean> listaCids) {
+		this.listaCids = listaCids;
+	}
+	
 }

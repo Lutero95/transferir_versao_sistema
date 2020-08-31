@@ -780,10 +780,10 @@ public class AtendimentoDAO {
 			sql = sql + " and  a.codgrupo = ?";
 		}
 
-		if (buscaEvolucao.equals(BuscaEvolucao.COM_EVOLUCAO.getSigla())) {
+		if ((buscaEvolucao!=null) && (buscaEvolucao.equals(BuscaEvolucao.COM_EVOLUCAO.getSigla()))) {
 			sql = sql + " and a1.id_situacao_atendimento IS NOT NULL ";
 		}
-		if (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla())) {
+		if ((buscaEvolucao!=null) && (buscaEvolucao.equals(BuscaEvolucao.SEM_EVOLUCAO.getSigla()))) {
 			sql = sql + " and a1.id_situacao_atendimento IS NULL ";
 		}
 

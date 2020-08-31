@@ -1,0 +1,579 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewAction
+                    action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}"/>
+        </f:metadata>
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Inserção de Paciente sem Laudo</h4>
+            </div>
+
+            <div class="panel-body table-body sub-table-body">
+
+                <h:form id="formInsercao2">
+                    <p:outputPanel>
+                    	<b:row>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Paciente:" severity="info" />
+
+								<p:outputPanel id="outPac1">
+									<p:autoComplete value="#{InsercaoController.insercao.paciente}"
+										size="31" converter="conPaciente" required="true"
+										requiredMessage="Escolha um paciente!"
+										class="select-agendaEquipe4"
+										completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nome}">
+									</p:autoComplete>
+
+									<p:commandButton id="btBusPa" icon="ui-icon-search"
+										process="@this" update=":formConsuPac"
+										oncomplete="PF('dlgConsuPac').show();" />
+								</p:outputPanel>
+							</b:column>
+						</b:row>
+
+                        <br></br>
+
+                        <b:row rendered="#{InsercaoController.opcaoAtendimento == 'A'}">
+                            <b:column span="3" class="btn-radio-table">
+                                <p:selectOneRadio
+                                        value="#{InsercaoController.insercao.opcaoAtendimento}"
+                                        required="true" requiredMessage="Informe o tipo de Pessoa">
+                                    <f:selectItem itemLabel="Somente Turno" itemValue="T"/>
+                                    <f:selectItem itemLabel="Somente Horário" itemValue="H"/>
+                                    <p:ajax event="change"/>
+                                </p:selectOneRadio>
+                            </b:column>
+                            <br />
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position data-size">
+                                <b:label value="Data de Inclusão:" id="datasoli"
+                                         severity="info" class="fire-label"/>
+                                <p:calendar
+                                        value="#{InsercaoController.insercao.dataSolicitacao}"
+                                        id="dtagen" locale="pt" navigator="true" mask="true"
+                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
+                                        class="select-agendaEquipe2" showOn="button"
+                                        pattern="dd/MM/yyyy" size="15" >
+                                </p:calendar>
+                            </b:column>
+                        </b:row>
+                        <br />
+
+                        <b:row>
+                            <p:outputPanel id="outProg">
+
+                                <b:column span="3"
+                                          class="label-position new-data-size new-comple1">
+
+                                    <b:label for="prog" value="Programa:" id="prog"
+                                             class="fire-label"
+                                             severity="info"/>
+
+                                    <p:autoComplete value="#{InsercaoController.insercao.programa}"
+                                                    size="31"
+                                                    converter="conPrograma" class="select-agendaEquipe4"
+                                                    completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    required="true"
+                                                    requiredMessage="Programa: Campo obrigatório"
+                                                    itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{InsercaoController.selectPrograma}"
+                                                update=":formInsercao2:outGrupo :formConsuGrop"/>
+
+										<p:ajax event="itemSelect"
+											listener="#{InsercaoController.listarDadosPermitidosDoPrograma(InsercaoController.insercao.programa.idPrograma)}"
+											update=":formInsercao2:tbprocedimentos :formInsercao2:tbcids" />
+									</p:autoComplete>
+
+                                    <p:commandButton id="btBusPr" immediate="true" 
+                                                     icon="ui-icon-search"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasSemLaudo()}"
+                                                     action="#{InsercaoController.limparNaBuscaPrograma()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                </b:column>
+                            </p:outputPanel>
+                        </b:row>
+
+                        <b:row>
+                            <p:outputPanel id="outGrupo">
+                                <b:column span="3"
+                                          class="label-position new-data-size new-comple1">
+                                    <b:label for="prog" value="Grupo:" id="grupo"
+                                             class="fire-label"
+                                             severity="info"/>
+
+                                    <p:autoComplete value="#{InsercaoController.insercao.grupo}"
+                                                    size="31"
+                                                    converter="conGrupo" class="select-agendaEquipe4"
+                                                    disabled="#{InsercaoController.insercao.programa==null}"
+                                                    completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    required="true"
+                                                    requiredMessage="Grupo: Campo obrigatório"
+                                                    itemLabel="#{theme.descGrupo}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{InsercaoController.selectGrupoInsercaoSemLaudo}"
+                                                update=":formInsercao2:outGrupo, :formInsercao2:outTabelas"/>
+
+										<p:ajax event="itemSelect"
+											listener="#{InsercaoController.listarProfissionaisSemLaudo()}"
+											update=":formInsercao2:outGrupo, :formInsercao2:outTabelas" />
+
+									</p:autoComplete>
+
+                                    <p:commandButton id="btBusGr" immediate="true"
+                                                     icon="ui-icon-search"
+                                                     disabled="#{InsercaoController.insercao.programa.idPrograma == null}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
+                                </b:column>
+                            </p:outputPanel>
+                        </b:row>
+
+						<p:outputPanel id="outTabelas">
+							<h2 class="texto-titulo">Profissionais</h2>
+							<div style="display: flex;">
+								<div class="content-div-flex">
+									<p:dataTable id="dtEquipe" resizableColumns="true"
+										value="#{InsercaoController.listaProfissionais}" var="func"
+										emptyMessage="Sem registros." styleClass="table-right"
+										reflow="true">
+
+										<p:column width="150" headerText="Profissional">
+											<h:outputLabel value="#{func.nome}" />
+										</p:column>
+
+										<p:column headerText="Especialidade">
+											<h:outputLabel
+												value="#{func.especialidade.descEspecialidade}" />
+										</p:column>
+
+										<p:column headerText="Adicionar">
+											<div align="center">
+												<p:commandButton icon="fa fa-fw fa-check" immediate="true"
+													actionListener="#{InsercaoController.abrirDialogTurno}"
+													title="Selecionar" class="new-btn-acao-table acao-editar">
+													<f:setPropertyActionListener value="#{func}"
+														target="#{InsercaoController.funcionario}" />
+												</p:commandButton>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+
+								<div class="content-div-flex">
+									<p:dataTable id="dtAdicionados" resizableColumns="true"
+										value="#{InsercaoController.listaProfissionaisAdicionados}"
+										var="funcionario" emptyMessage="Sem registros."
+										styleClass="table-left" reflow="true">
+
+										<p:column headerText="Profissional" width="30%">
+											<h:outputLabel value="#{funcionario.nome}" />
+										</p:column>
+
+										<p:column headerText="Especialidade" width="20%">
+											<h:outputLabel
+												value="#{funcionario.especialidade.descEspecialidade}" />
+										</p:column>
+
+										<p:column headerText="Dias Atendimento" width="38%">
+											<h:outputLabel value="#{funcionario.diasSemana}" />
+										</p:column>
+
+										<p:column headerText="Excluir" width="12%">
+											<div align="center">
+												<p:commandButton icon="ui-icon-trash" immediate="true"
+													actionListener="#{InsercaoController.excluirFuncionarioIhDiasDeAtendimento}"
+													title="Excluir" class="btn-acao-table acao-excluir"
+													update=":formInsercao2:dtAdicionados">
+													<f:setPropertyActionListener value="#{funcionario}"
+														target="#{InsercaoController.funcionario}" />
+												</p:commandButton>
+											</div>
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+
+
+							<h2 class="texto-titulo">Procedimentos</h2>
+							<div style="display: flex;">
+								<div class="content-div-flex">
+									<p:dataTable var="proc"
+										value="#{InsercaoController.listaProcedimentos}"
+										id="tbprocedimentos" reflow="true"
+										emptyMessage="Nenhum procedimento encontrado" paginator="true"
+										rows="10" paginatorPosition="bottom" styleClass="table-right">
+
+										<p:column headerText="Procedimento" width="300">
+											<h:outputText value="#{proc.nomeProc}" />
+										</p:column>
+
+										<p:column headerText="Código">
+											<h:outputText value="#{proc.codProc}" />
+										</p:column>
+
+										<p:column headerText="Adicionar" width="20%">
+											<div align="center">
+												<p:commandButton
+													actionListener="#{InsercaoController.validarProcedimentoParaAdicionar(proc)}"
+													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
+													ajax="true" process="@this" immediate="true"
+													class="new-btn-acao-table acao-editar"
+													update="tbprocedimentos :formInsercao2:tbprocselecionado :msgPagina" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+
+								<div class="content-div-flex">
+									<p:dataTable var="procselecionado"
+										value="#{InsercaoController.insercao.programa.listaProcedimentosPermitidos}"
+										id="tbprocselecionado" reflow="true"
+										emptyMessage="Nenhum procedimento adicionado" paginator="true"
+										rows="10" paginatorPosition="bottom" styleClass="table-left">
+
+										<p:column headerText="Procedimento" width="300">
+											<h:outputText value="#{procselecionado.nomeProc}" />
+										</p:column>
+
+										<p:column headerText="Código">
+											<h:outputText value="#{procselecionado.codProc}" />
+										</p:column>
+
+										<p:column headerText="Excluir" width="20%">
+											<div align="center">
+												<p:commandButton
+													action="#{InsercaoController.removerProcedimento(procselecionado)}"
+													icon="ui-icon-trash" title="Remover Procedimento"
+													immediate="true" class="btn-acao-table acao-excluir"
+													update="tbprocselecionado :formInsercao2:tbprocedimentos" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+
+							<h2 class="texto-titulo">CIDs</h2>
+							<div style="display: flex;">
+								<div class="content-div-flex">
+									<p:dataTable var="cid" value="#{InsercaoController.listaCids}"
+										id="tbcids" reflow="true" emptyMessage="Nenhum CID encontrado"
+										paginator="true" rows="10" paginatorPosition="bottom"
+										styleClass="table-right">
+
+										<p:column headerText="CID" width="300">
+											<h:outputText value="#{cid.descCidAbrev}" />
+										</p:column>
+
+										<p:column headerText="Código">
+											<h:outputText value="#{cid.cid}" />
+										</p:column>
+
+										<p:column headerText="Adicionar" width="20%">
+											<div align="center">
+												<p:commandButton
+													actionListener="#{InsercaoController.validarCidParaAdicionar(cid)}"
+													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
+													ajax="true" process="@this" immediate="true"
+													class="new-btn-acao-table acao-editar"
+													update="tbcids :formInsercao2:tbcidselecionado :msgPagina" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+
+								<div class="content-div-flex">
+									<p:dataTable var="cidselecionado"
+										value="#{InsercaoController.insercao.programa.listaCidsPermitidos}"
+										id="tbcidselecionado" reflow="true"
+										emptyMessage="Nenhum CID adicionado" paginator="true"
+										rows="10" paginatorPosition="bottom" styleClass="table-left">
+
+										<p:column headerText="CID" width="300">
+											<h:outputText value="#{cidselecionado.descCidAbrev}" />
+										</p:column>
+
+										<p:column headerText="Código">
+											<h:outputText value="#{cidselecionado.cid}" />
+										</p:column>
+
+										<p:column headerText="Excluir" width="20%">
+											<div align="center">
+												<p:commandButton
+													action="#{InsercaoController.removerCid(cidselecionado)}"
+													icon="ui-icon-trash" title="Remover Procedimento"
+													immediate="true" class="btn-acao-table acao-excluir"
+													update="tbcidselecionado :formInsercao2:tbcids" />
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</p:outputPanel>
+						<br />
+                        <br />
+
+                        <b:row>
+
+                            <b:column span="11" class="label-position">
+                                <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
+
+                                <b:inputTextarea id="obs" rows="1"
+                                                 value="#{InsercaoController.insercao.observacao}"
+                                                 autoResize="false" class="select-agendaEquipe2">
+                                </b:inputTextarea>
+                            </b:column>
+
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="3" class="label-position" rendered="false">
+                                <p:outputLabel value="Encaixe:"
+                                               style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                                <p:selectBooleanCheckbox label="Encaixe"
+                                                         style="margin-left: 10px;margin-top: 5px"
+                                                         value="#{InsercaoController.insercao.encaixe}">
+                                </p:selectBooleanCheckbox>
+                            </b:column>
+
+							<b:column span="3" class="label-position btn-radio-table">
+								<b:label value="Turno" severity="info" />
+								<p:selectOneRadio id="turno" value="#{InsercaoController.insercao.turno}"
+									required="true" requiredMessage="Turno: Campo obrigatório!"
+									style="margin-left:-15px;margin-top:10px">
+									<f:selectItem itemLabel="Manhã" itemValue="M" />
+									<f:selectItem itemLabel="Tarde" itemValue="T" />
+								</p:selectOneRadio>
+							</b:column>
+						</b:row>
+
+                        <b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
+                            <p:outputPanel id="opturno">
+                                <b:column span="3" class="label-position">
+                                    <b:label value="Turno:" severity="info" class="fire-label"/>
+
+                                    <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                     requiredMessage="Informe o Turno"
+                                                     value="#{InsercaoController.insercao.turno}">
+                                        <f:selectItem itemLabel="Selecione" itemValue="" />
+                                        <f:selectItem itemLabel="Manhã" itemValue="M" />
+                                        <f:selectItem itemLabel="Tarde" itemValue="T" />
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </p:outputPanel>
+                        </b:row>
+
+                        <br></br>
+
+                        <br></br>
+
+                        <div align="center">
+
+                            <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                             icon="ui-icon-check"
+                                             update=":msgPagina :formInsercao2"
+                                             class="btn-incluir"
+                                             action="#{InsercaoController.inserirPacienteSemLaudo()}"
+                                             process="@all"/>
+
+                            <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                             size="sm" immediate="true" look="info" class="btn-voltar"
+                                             action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true"/>
+                        </div>
+                    </p:outputPanel>
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno" dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formDiasAtendimentoTurno">
+                <p:selectManyCheckbox layout="grid" columns="7" required="true"
+                                      requiredMessage="Escolha ao menos um dia da semana!"
+                                      value="#{InsercaoController.funcionario.listDiasSemana}">
+                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                    <f:selectItem itemLabel="Terça" itemValue="3"/>
+                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                </p:selectManyCheckbox>
+
+                <br></br>
+                <br></br>
+
+                <div align="center">
+                    <p:commandButton value="Adicionar" style="margin-top:5px;"
+                                     class="btn-acao-table acao-confirmar"
+                                     update=":formInsercao2:dtAdicionados, :msgPagina"
+                                     id="b2" icon="ui-icon-check"
+                                     action="#{InsercaoController.validarAdicionarFuncionarioTurno()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true" responsive="true" modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao2:outProg, :formInsercao2:outGrupo :formConsuGrop "
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                title="Selecionar"
+                                action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
+                                onclick="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{InsercaoController.insercao.programa}"/>
+                                                         
+							<p:ajax event="click" update=":formInsercao2:tbprocedimentos :formInsercao2:tbcids" 
+								listener="#{InsercaoController.listarDadosPermitidosDoPrograma(prog.idPrograma)}"/>                                                         
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  dynamic="true" responsive="true" modal="true" styleClass="topDialog">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+                             responsive="true" save-state="false" saveState="false"
+                             value="#{InsercaoController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao2:outGrupo, :formInsercao2:outTabelas"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();"
+                                action="#{InsercaoController.listarProfissionaisSemLaudo()}">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{InsercaoController.insercao.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+       
+        <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+                  dynamic="true" modal="true" width="750px" height="400px"
+                  responsive="true">
+            <h:form id="formConsuPac">
+                <p:growl id="msgC"/>
+
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                </div>
+
+                <p:row>
+                    <p:panelGrid columns="4">
+                        <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <f:selectItem itemLabel="Prontuário" itemValue="prontuario"/>
+                            <f:selectItem itemLabel="Matrícula" itemValue="matricula"/>
+                            <f:selectItem itemLabel="CPF" itemValue="cpf"/>
+                            <f:selectItem itemLabel="CNS" itemValue="cns"/>
+                        </p:selectOneMenu>
+
+                        <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca"
+                                     style="margin-left: 10px;"/>
+
+                        <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}"
+                                         update="tabelapacientes"
+                                         icon="ui-icon-search" style="margin-left: 10px;"/>
+
+                        <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                         icon="limpar" style="margin-left: 10px;"/>
+                    </p:panelGrid>
+                </p:row>
+                <p:dataTable paginator="true" rows="10" id="tabelapacientes"
+                             var="pacie" value="#{PacienteController.listaPacientes}"
+                             emptyMessage="Nenhum Paciente" reflow="true">
+
+                    <p:column headerText="Prontuário" width="100">
+                        <p:outputLabel value="#{pacie.id_paciente}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{pacie.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Matrícula">
+                        <p:outputLabel value="#{pacie.matricula}"/>
+                    </p:column>
+
+                    <p:column headerText="CNS">
+                        <p:outputLabel value="#{pacie.cns}"/>
+                    </p:column>
+
+                    <p:column headerText="Selecionar">
+                        <p:commandButton
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuPac').hide();"
+                                update=":formInsercao2:outPac1">
+                            <f:setPropertyActionListener value="#{pacie}"
+                                                         target="#{InsercaoController.insercao.paciente}"/>
+                        </p:commandButton>
+
+                    </p:column>
+
+
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+        
+
+    </ui:define>
+
+</ui:composition>

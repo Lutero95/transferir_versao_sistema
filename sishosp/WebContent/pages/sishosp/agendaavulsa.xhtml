@@ -286,13 +286,13 @@
 					</b:row>
 
 					<div style="display: flex;">
-						<div style="width:48%">
+						<div class="content-div-flex">
 							<p:dataTable var="funcionariosSoucer" value="#{AgendaController.listaFuncionariosSoucer}"
 								id="tbfuncionarios" 
 								filteredValue="#{AgendaController.listaFuncionariosSoucerFiltro}"
 								emptyMessage="Nenhum profissional encontrado"
 								paginator="true" rows="10" paginatorPosition="bottom" 
-								style="margin-right: 1%;">
+								styleClass="table-right">
 
 								<p:column filterBy="#{funcionariosSoucer.nome}" headerText="Profissional">
 									<h:outputText value="#{funcionariosSoucer.nome}" />
@@ -328,13 +328,13 @@
 							</div>
 						</div>
 						
-						<div style="width:48%;">
+						<div class="content-div-flex">
 							<p:dataTable var="funcionariosTarget" value="#{AgendaController.listaFuncionariosTarget}"
 								id="tbfuncionarioselecionado"
 								filteredValue="#{AgendaController.listaFuncionariosTargetFiltro}"
 								emptyMessage="Nenhum profissional adicionado"
 								paginator="true" rows="10" paginatorPosition="bottom"
-								style="margin-left: 1%;">
+								styleClass="table-left">
 
 								<p:column headerText="Remover" width="20%">
 									<div align="center">

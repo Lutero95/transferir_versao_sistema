@@ -150,7 +150,9 @@ public class AtendimentoController implements Serializable {
                 atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
                 atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
+                if  (buscaSessaoDTO.getCampoBusca()!=null)
                 this.campoBusca = buscaSessaoDTO.getCampoBusca();
+                if ( buscaSessaoDTO.getTipoBusca()!=null)
                 this.tipoBusca = buscaSessaoDTO.getTipoBusca();
                 this.buscaEvolucao = buscaSessaoDTO.getBuscaEvolucao();
                 this.listarEvolucoesPendentes = buscaSessaoDTO.isListarEvolucoesPendentes();
