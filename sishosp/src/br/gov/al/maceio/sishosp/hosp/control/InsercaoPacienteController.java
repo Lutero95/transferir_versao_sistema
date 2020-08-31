@@ -56,6 +56,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private InsercaoPacienteBean insercao;
     private InsercaoPacienteDAO iDao = new InsercaoPacienteDAO();
     private EquipeDAO eDao = new EquipeDAO();
+    private ProgramaDAO programaDAO = new ProgramaDAO();
     private AgendaDAO agendaDAO = new AgendaDAO();
     private ProgramaBean programaSelecionado;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
@@ -162,8 +163,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
-        this.listaProcedimentos = new ProcedimentoDAO().listarProcedimentosPermitidos(idPrograma);
-        this.listaCids = new CidDAO().listarCidsPermitidos(idPrograma);
+        this.listaProcedimentos = programaDAO.listarProcedimentosPermitidos(idPrograma);
+        this.listaCids = programaDAO.listarCidsPermitidos(idPrograma);
     }
 
     public void atualizaListaGrupos(ProgramaBean programa) throws ProjetoException {
@@ -734,8 +735,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	return dataValida; 
     }
     
-    private boolean listaProfissionaisAdicionadosEstaVazia() {
-    	if(this.listaProfissionaisAdicionados.isEmpty()) {
+    public boolean listaProfissionaisAdicionadosEstaVazia(List<FuncionarioBean> listaFuncionariosAdicionados) {
+    	if(listaFuncionariosAdicionados.isEmpty()) {
     		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um profissional", "Atenção");
     		return true;
     	}
@@ -845,7 +846,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getTurno());
 
                 if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-                	if(!listaProfissionaisAdicionadosEstaVazia()) {
+                	if(!listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados)) {
                 		// gerarListaAgendamentosEquipe();
                 		if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
                 			cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal,
@@ -974,7 +975,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     
     public void listarProfissionaisSemLaudo() throws ProjetoException {
     	limparTabelasProfissionais();
-		listaProfissionais = eDao.listarProfissionaisInsercaoSemlaudo
+		listaProfissionais = programaDAO.listarProfissionaisInsercaoSemlaudo
 				(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
     }
     
@@ -1013,10 +1014,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void inserirPacienteSemLaudo() throws ProjetoException {
     	insercao.getPrograma().setListaCidsPermitidos(listaCidsAux);
     	insercao.getPrograma().setListaProcedimentosPermitidos(listaProcedimentosAux);
-    	if(!listaProfissionaisAdicionadosEstaVazia() 
-    			&& !listaProcedimentosPermitidosEstaVazia() 
-    			&& !listaCidsPermitidosEstaVazia()) {
-    		gerarListaAgendamentosTurnoSemLaudo();
+    	if(!listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
+    			&& !listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
+    			&& !listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
+    		
+    		listAgendamentoProfissional = gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
     		if(iDao.gravarInsercaoTurnoSemLaudo(insercao, listaProfissionaisAdicionados, listAgendamentoProfissional)) {
     			JSFUtil.adicionarMensagemSucesso("Paciente Inserido com Sucesso", "");
     			limparDadosInsercaoSemLaudo();
@@ -1024,23 +1026,25 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	}
     }
     
-    private boolean listaProcedimentosPermitidosEstaVazia() {
-    	if(this.insercao.getPrograma().getListaProcedimentosPermitidos().isEmpty()) {
+    public boolean listaProcedimentosPermitidosEstaVazia(List<ProcedimentoBean> listaProcedimentosPermitidos) {
+    	if(listaProcedimentosPermitidos.isEmpty()) {
     		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um procedimento", "Atenção");
     		return true;
     	}
     	return false;
     }
     
-    private boolean listaCidsPermitidosEstaVazia() {
-    	if(this.insercao.getPrograma().getListaCidsPermitidos().isEmpty()) {
+    public boolean listaCidsPermitidosEstaVazia(List<CidBean> listaCidsPermitidos) {
+    	if(listaCidsPermitidos.isEmpty()) {
     		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um CID", "Atenção");
     		return true;
     	}
     	return false;
     }
     
-    public void gerarListaAgendamentosTurnoSemLaudo() throws ProjetoException {
+    public ArrayList<AgendaBean> gerarListaAgendamentosTurnoSemLaudo(InsercaoPacienteBean insercao, 
+    		List<FuncionarioBean> listaProfissionaisAdicionados, ArrayList<AgendaBean> listAgendamentoProfissional) 
+    		throws ProjetoException {
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateFormat.setLenient(false);
@@ -1087,6 +1091,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
+        
+        return listAgendamentoProfissional;
     }
     
     private void limparDadosInsercaoSemLaudo() {

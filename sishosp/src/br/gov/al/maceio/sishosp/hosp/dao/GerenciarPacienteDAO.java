@@ -19,10 +19,12 @@ import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class GerenciarPacienteDAO {
 
@@ -40,7 +42,7 @@ public class GerenciarPacienteDAO {
         String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo, coalesce(gp.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
                 + "coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))),\n" +
-                " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal "
+                " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal, p.inclusao_sem_laudo "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) "
@@ -120,6 +122,7 @@ public class GerenciarPacienteDAO {
                 GerenciarPacienteBean gerenciarPaciente = new GerenciarPacienteBean();
 
                 gerenciarPaciente.setId(rs.getInt("id"));
+                gerenciarPaciente.setInclusaoSemLaudo(rs.getBoolean("inclusao_sem_laudo"));
                 gerenciarPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gerenciarPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 gerenciarPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
@@ -158,23 +161,23 @@ public class GerenciarPacienteDAO {
             }
         }
         return lista;
-    }	
-    
+    }
+
     public List<PacienteBean> listaPacientesAtivos() throws ProjetoException {
 
-        String sql = "select distinct coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula " + 
-        		" from hosp.paciente_instituicao p " + 
-        		" left join hosp.laudo l on (l.id_laudo = p.codlaudo) " + 
-        		" left join hosp.proc pr on (pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) " + 
-        		" left join hosp.pacientes pa on (coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) " + 
-        		" left join hosp.equipe e on (p.codequipe = e.id_equipe) " + 
-        		" left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) " + 
-        		" left join hosp.grupo g on (g.id_grupo = p.codgrupo) " + 
-        		" left join hosp.programa prog on (prog.id_programa = p.codprograma) " + 
-        		" left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) " + 
-        		" where p.cod_unidade = ? " +
+        String sql = "select distinct coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula " +
+                " from hosp.paciente_instituicao p " +
+                " left join hosp.laudo l on (l.id_laudo = p.codlaudo) " +
+                " left join hosp.proc pr on (pr.id = coalesce(l.codprocedimento_primario, p.codprocedimento_primario_laudo_anterior)) " +
+                " left join hosp.pacientes pa on (coalesce(l.codpaciente, p.id_paciente) = pa.id_paciente) " +
+                " left join hosp.equipe e on (p.codequipe = e.id_equipe) " +
+                " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) " +
+                " left join hosp.grupo g on (g.id_grupo = p.codgrupo) " +
+                " left join hosp.programa prog on (prog.id_programa = p.codprograma) " +
+                " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) " +
+                " where p.cod_unidade = ? " +
                 "  and p.status ='A' " +
-        		" order by pa.nome";
+                " order by pa.nome";
 
         List<PacienteBean> lista = new ArrayList<>();
 
@@ -186,10 +189,10 @@ public class GerenciarPacienteDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-            	PacienteBean paciente = new PacienteBean();
-            	paciente.setId_paciente(rs.getInt("codpaciente"));
-            	paciente.setNome(rs.getString("nome"));
-            	paciente.setMatricula(rs.getString("matricula"));
+                PacienteBean paciente = new PacienteBean();
+                paciente.setId_paciente(rs.getInt("codpaciente"));
+                paciente.setNome(rs.getString("nome"));
+                paciente.setMatricula(rs.getString("matricula"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
@@ -1334,5 +1337,64 @@ public class GerenciarPacienteDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
         return listaAtendimentos1;
+    }
+
+    public List<CidBean> listaCidsPacienteInstituicao (Integer idPacienteInstituicao) throws ProjetoException, SQLException {
+
+        List<CidBean> lista = new ArrayList<>();
+        try {
+            String sql = "select c.cod, c.cid, c.desccidabrev from hosp.paciente_instituicao_cid pic " +
+                    "join hosp.paciente_instituicao pi on pic.id_paciente_instituicao = pi.id " +
+                    "join hosp.cid c on pic.id_cid = c.cod " +
+                    "where pi.id = ? order by c.desccidabrev";
+            conexao = ConnectionFactory.getConnection();
+            ps = null;
+            ps = conexao.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CidBean cid = new CidBean();
+                cid.setIdCid(rs.getInt("cod"));
+                cid.setCid(rs.getString("cid"));
+                cid.setDescCidAbrev(rs.getString("desccidabrev"));
+                lista.add(cid);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+
+    public List<ProcedimentoBean> listaProcedimentosPacienteInstituicao (Integer idPacienteInstituicao) throws ProjetoException, SQLException {
+
+        List<ProcedimentoBean> lista = new ArrayList<>();
+        try {
+            String sql = "select p.id, p.nome, p.codproc from hosp.paciente_instituicao_proncedimento pip " +
+                    "join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
+                    "join hosp.proc p on pip.id_procedimento = p.id " +
+                    "where pi.id = ? order by p.nome";
+
+            conexao = ConnectionFactory.getConnection();
+            ps = null;
+            ps = conexao.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean procedimentoBean = new ProcedimentoBean();
+                procedimentoBean.setIdProc(rs.getInt("id"));
+                procedimentoBean.setNomeProc(rs.getString("nome"));
+                procedimentoBean.setCodProc(rs.getString("codproc"));
+                lista.add(procedimentoBean);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
     }
 }

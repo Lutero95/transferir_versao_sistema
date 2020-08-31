@@ -2873,7 +2873,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + "  FROM hosp.profissional_dia_atendimento p "
                 + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
                 + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
-                + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ?";
+                + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ? order by f.descfuncionario";
 
         try {
             con = ConnectionFactory.getConnection();

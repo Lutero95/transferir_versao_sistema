@@ -576,59 +576,6 @@ public class EquipeDAO {
         return lista;
     }
     
-	public ArrayList<FuncionarioBean> listarProfissionaisInsercaoSemlaudo(Integer idPrograma, Integer idGrupo) throws ProjetoException {
-		ArrayList<FuncionarioBean> lista = new ArrayList<>();
-
-		String sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao, " + 
-				" c.codigo , c.descricao desccbo " + 
-				" from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) " + 
-				" left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) " + 
-				" join hosp.programa_especialidade pe on (es.id_especialidade = pe.id_especialidade) " + 
-				" join hosp.programa p on (pe.id_programa = p.id_programa) " + 
-				" join hosp.grupo_programa gp on (p.id_programa = gp.codprograma) " + 
-				" join hosp.grupo g on (gp.codgrupo = g.id_grupo) " + 
-				" left join hosp.cbo c on c.id  = f.codcbo " + 
-				" where codunidade = ? and pe.id_programa = ? and g.id_grupo = ?" + 
-				" order by f.descfuncionario ";
-
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-
-			stm.setInt(1, user_session.getUnidade().getId());
-			stm.setInt(2, idPrograma);
-			stm.setInt(3, idGrupo);
-			
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				FuncionarioBean func = new FuncionarioBean();
-				func.setId(rs.getLong("medico"));
-				func.setNome(rs.getString("descfuncionario"));
-				func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				func.getCbo().setCodCbo(rs.getInt("codcbo"));
-				func.getCbo().setCodigo(rs.getString("codigo"));
-				func.getCbo().setDescCbo(rs.getString("desccbo"));
-				func.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-
-				lista.add(func);
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
-					sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return lista;
-	}
-
     public Boolean removerProfissionalEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
