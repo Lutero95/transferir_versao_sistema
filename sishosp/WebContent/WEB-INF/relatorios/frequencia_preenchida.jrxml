@@ -92,7 +92,7 @@ left join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente =a.codpaciente 
 left JOIN hosp.programa on programa.id_programa = a.codprograma
 left JOIN hosp.grupo on grupo.id_grupo = pi.codgrupo
-LEFT JOIN hosp.proc prp ON prp.id =  coalesce(l.codprocedimento_primario, pi.codprocedimento_primario_laudo_anterior)
+LEFT JOIN hosp.proc prp ON prp.id =  coalesce(l.codprocedimento_primario, pi.codprocedimento_primario_laudo_anterior, (select hosp.retornaultimoidprocedimentopaciente(p.id_paciente)))
 LEFT JOIN hosp.proc prs1 ON prs1.id = coalesce(l.codprocedimento_secundario1, pi.codprocedimento_secundario1_laudo_anterior)
 LEFT JOIN hosp.proc prs2 ON prs2.id = coalesce(l.codprocedimento_secundario2, pi.codprocedimento_secundario2_laudo_anterior)
 LEFT JOIN hosp.proc prs3 ON prs3.id = coalesce(l.codprocedimento_secundario3, pi.codprocedimento_secundario3_laudo_anterior)
@@ -104,7 +104,7 @@ JOIN hosp.empresa  ON empresa.cod_empresa = u.cod_empresa
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
-LEFT JOIN hosp.cid c1 ON c1.cod = l.cid1
+LEFT JOIN hosp.cid c1 ON c1.cod = coalesce(l.cid1, (select hosp.retornaultimoidcidpaciente(p.id_paciente)))
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
@@ -830,8 +830,8 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<reportElement x="7" y="310" width="83" height="16" uuid="cab5e0c2-8e98-4959-95b1-d93edf018d59">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textElement>
-						<font size="10"/>
+					<textElement verticalAlignment="Top">
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{codprocedimento_primario}]]></textFieldExpression>
 				</textField>
@@ -842,8 +842,8 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<reportElement positionType="Float" stretchType="ElementGroupHeight" x="95" y="310" width="446" height="16" uuid="3a9509d1-8e44-48f4-93c7-a079e2195b3e">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textElement>
-						<font size="9"/>
+					<textElement verticalAlignment="Top">
+						<font size="9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
 				</textField>
@@ -887,6 +887,15 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<reportElement x="280" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="482" y="281" width="59" height="16" uuid="c4011273-f895-4c77-a566-ffcc085a378a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>
