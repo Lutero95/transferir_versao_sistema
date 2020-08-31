@@ -1543,16 +1543,11 @@ public class FuncionarioDAO {
 			stmt.setLong(1, profissional.getId());
 			stmt.executeUpdate();
 
-			System.out.println("---------------------------------------------");
 			for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-				System.out.println(profissional.getListaUnidades().get(i).getNomeUnidade());
-				System.out.println(profissional.getListaUnidades().get(i).getId());
 				String sql3 = "INSERT INTO hosp.funcionario_unidades (cod_unidade, cod_funcionario) VALUES (?, ?);";
 				stmt = con.prepareStatement(sql3);
-
 				stmt.setInt(1, profissional.getListaUnidades().get(i).getId());
 				stmt.setLong(2, profissional.getId());
-
 				stmt.executeUpdate();
 			}
 
@@ -2083,7 +2078,7 @@ public class FuncionarioDAO {
 
 			while (rs.next()) {
 				UnidadeBean UnidadeBean = new UnidadeBean();
-				UnidadeBean.setId(rs.getInt("codunidade"));
+				UnidadeBean.setId(rs.getInt("cod_unidade"));
 				UnidadeBean.setNomeUnidade(rs.getString("nomeunidade"));
 				lista.add(UnidadeBean);
 

@@ -769,6 +769,9 @@ public class FuncionarioController implements Serializable {
 
 		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
 			return;
+		
+		else if (verificaUnidadePadraoFoiAdicionadaLista(profissional.getUnidade().getId()))
+			return;
 
 		else
 
@@ -857,7 +860,10 @@ public class FuncionarioController implements Serializable {
 
 		else if(!validaSeTodosOsProgramasPossuemUnidadeAssociada())
 			return;
-
+		
+		else if (verificaUnidadePadraoFoiAdicionadaLista(profissional.getUnidade().getId()))
+			return;
+			
 		else
 		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
@@ -915,6 +921,16 @@ public class FuncionarioController implements Serializable {
 				}
 			}
 		}
+	}
+	
+	private boolean verificaUnidadePadraoFoiAdicionadaLista(Integer IdUnidadePadrao) {
+		for (UnidadeBean unidade : profissional.getListaUnidades()) {
+			if(unidade.getId().equals(IdUnidadePadrao)) {
+				JSFUtil.adicionarMensagemErro("Unidade padrão não pode ser adicionada na lista", "");
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void validaCns(String s) {
@@ -1091,11 +1107,12 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void addUnidadeExtra() throws ProjetoException {
-		if (profissional.getUnidadeExtra().getId() != null) {
-			if (profissional.getListaUnidades().size() == 0) {
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getUnidadeExtra().getId())) {
+			if (profissional.getListaUnidades().isEmpty()) {
 				UnidadeDAO unidadeDAO = new UnidadeDAO();
 				UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
-				profissional.getListaUnidades().add(unidadeBean1);
+				if(!unidadePadraoFoiadicionada())
+					profissional.getListaUnidades().add(unidadeBean1);
 			} else {
 				Boolean existe = false;
 				for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
@@ -1103,6 +1120,10 @@ public class FuncionarioController implements Serializable {
 						existe = true;
 					}
 				}
+				
+				if(unidadePadraoFoiadicionada())
+					existe = true;
+				
 				if (existe == false) {
 					UnidadeDAO unidadeDAO = new UnidadeDAO();
 					UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
@@ -1114,6 +1135,14 @@ public class FuncionarioController implements Serializable {
 		} else {
 			JSFUtil.adicionarMensagemErro("Escolha uma unidade para adicionar", "Erro!");
 		}
+	}
+	
+	private boolean unidadePadraoFoiadicionada() {
+		if(profissional.getUnidadeExtra().getId() == profissional.getUnidade().getId()) {
+			JSFUtil.adicionarMensagemErro("Unidade padrão já foi adicionada", "");
+			return true;
+		}
+		return false;
 	}
 
 	public void removerUnidadeExtra() {
