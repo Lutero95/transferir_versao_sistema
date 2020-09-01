@@ -136,7 +136,8 @@
 
 										<p:column headerText="Adicionar">
 											<div align="center">
-												<p:commandButton icon="fa fa-fw fa-check" immediate="true"
+												<p:commandButton icon="fa fa-fw fa-check"
+													process="@this :formDiasAtendimentoTurno"
 													actionListener="#{AlteracaoPacienteController.abrirDialogTurno}"
 													title="Selecionar" class="new-btn-acao-table acao-editar">
 													<f:setPropertyActionListener value="#{func}"

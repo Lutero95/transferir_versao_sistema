@@ -40,7 +40,8 @@
 a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
-pr.nome as nome_proc, grupo.id_grupo as codgrupo, grupo.descgrupo, e.descespecialidade, e2.nome_principal
+pr.nome as nome_proc, grupo.id_grupo as codgrupo, grupo.descgrupo, e.descespecialidade, e2.nome_principal,
+c1.cid
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) 
 inner join hosp.programa p on (a.codprograma = p.id_programa)
@@ -48,6 +49,7 @@ inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 left join hosp.especialidade e on e.id_especialidade = f.codespecialidade
+LEFT JOIN hosp.cid c1 ON c1.cod = (select hosp.retornaultimoidcidpaciente(pa.id_paciente))
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
 JOIN hosp.unidade u ON u.id = $P{codunidade}
 JOIN hosp.empresa e2 ON e2.cod_empresa = u.cod_empresa
@@ -117,6 +119,10 @@ order by 1, a.dtaatende]]>
 	<field name="nome_principal" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="cid" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
 	</field>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
@@ -208,7 +214,7 @@ order by 1, a.dtaatende]]>
 	<group name="paciente" minHeightToStartNewPage="100">
 		<groupExpression><![CDATA[$F{nome_paciente}]]></groupExpression>
 		<groupHeader>
-			<band height="61">
+			<band height="63">
 				<staticText>
 					<reportElement x="0" y="4" width="141" height="13" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
 					<textElement verticalAlignment="Middle">
@@ -226,7 +232,7 @@ order by 1, a.dtaatende]]>
 					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="1" y="46" width="259" height="12" uuid="4890bdb6-f792-4a84-a1ee-ae644240ac88">
+					<reportElement x="1" y="46" width="140" height="12" uuid="4890bdb6-f792-4a84-a1ee-ae644240ac88">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
@@ -240,6 +246,22 @@ order by 1, a.dtaatende]]>
 						<font size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CNS]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="150" y="50" width="130" height="12" uuid="26c2b00b-8b72-4f1e-81a2-5678692472a0">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cid}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="150" y="36" width="141" height="13" uuid="65ed13ea-446e-41a8-902a-d43b32cae668"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CID]]></text>
 				</staticText>
 			</band>
 		</groupHeader>

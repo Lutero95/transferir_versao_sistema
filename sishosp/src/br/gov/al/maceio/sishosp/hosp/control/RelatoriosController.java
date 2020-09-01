@@ -263,6 +263,8 @@ public class RelatoriosController implements Serializable {
 			else
 				relatorio = caminho + "laudovencer.jasper";
 			Map<String, Object> map = new HashMap<String, Object>();
+			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
+				this.atributoGenerico4 = null;
 			map.put("periodolaudovencer", this.atributoGenerico4);
 			map.put("codunidade", user_session.getUnidade().getId());
 			map.put("codempresa", user_session.getUnidade().getCodEmpresa());

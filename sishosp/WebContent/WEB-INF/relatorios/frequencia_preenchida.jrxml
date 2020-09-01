@@ -774,13 +774,13 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<text><![CDATA[Assinatura/Carimbo do Diretor da Unidade]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="32" y="340" width="32" height="13" uuid="5c172dda-f014-4bdd-9154-3699a702b979">
+					<reportElement x="29" y="340" width="32" height="13" uuid="5c172dda-f014-4bdd-9154-3699a702b979">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<text><![CDATA[DATA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="127" y="340" width="80" height="13" uuid="871aa1d9-c3c2-44fb-b58b-6de3bee924a7"/>
+					<reportElement x="124" y="340" width="80" height="13" uuid="871aa1d9-c3c2-44fb-b58b-6de3bee924a7"/>
 					<text><![CDATA[PROFISSIONAL]]></text>
 				</staticText>
 				<staticText>
@@ -831,7 +831,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Top">
-						<font size="10" isBold="true"/>
+						<font fontName="DejaVu Sans" size="9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{codprocedimento_primario}]]></textFieldExpression>
 				</textField>
@@ -843,7 +843,7 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Top">
-						<font size="9" isBold="true"/>
+						<font fontName="DejaVu Sans" size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nomeprocedimento}]]></textFieldExpression>
 				</textField>
@@ -884,18 +884,9 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					</graphicElement>
 				</line>
 				<staticText>
-					<reportElement x="280" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
+					<reportElement x="277" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="482" y="281" width="59" height="16" uuid="c4011273-f895-4c77-a566-ffcc085a378a">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
-				</textField>
 			</band>
 		</groupHeader>
 	</group>
