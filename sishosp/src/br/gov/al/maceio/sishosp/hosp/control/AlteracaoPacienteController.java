@@ -1431,6 +1431,8 @@ public class AlteracaoPacienteController implements Serializable {
     }
     
     public void abrirDialogTurno() {
+    	funcionario.setListDiasSemana(new ArrayList<>());
+    	funcionario.setListaDiasAtendimentoSemana(new ArrayList<>());
         JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
         JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
     }
