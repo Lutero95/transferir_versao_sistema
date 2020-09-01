@@ -169,8 +169,8 @@
 
 										<p:column headerText="Excluir" width="12%">
 											<div align="center">
-												<p:commandButton icon="ui-icon-trash" immediate="true"
-													actionListener="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento}"
+												<p:commandButton icon="ui-icon-trash" process="@this"
+													action="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento}"
 													title="Excluir" class="btn-acao-table acao-excluir"
 													update=":formInsercao2:dtAdicionados">
 													<f:setPropertyActionListener value="#{funcionario}"

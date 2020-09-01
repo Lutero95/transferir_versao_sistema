@@ -685,8 +685,11 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void excluirFuncionarioIhDiasDeAtendimento(){
-       // funcionario.getListaDiasAtendimentoSemana().remove(funcionario);
+        funcionario.setDiasSemana("");
+        funcionario.setListDiasSemana(new ArrayList<>());
+        funcionario.setListaDiasAtendimentoSemana(new ArrayList<>());
         listaProfissionaisAdicionados.remove(funcionario);
+        funcionario =  new FuncionarioBean();
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
@@ -1431,14 +1434,13 @@ public class AlteracaoPacienteController implements Serializable {
     }
     
     public void abrirDialogTurno() {
-    	funcionario.setListDiasSemana(new ArrayList<>());
-    	funcionario.setListaDiasAtendimentoSemana(new ArrayList<>());
         JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
         JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
     }
     
     public void validarAdicionarFuncionarioTurno() {
         Boolean existe = false;
+        
         if (listaProfissionaisAdicionados.isEmpty()) {
         	adicionarFuncionarioTurno();
         } else {
