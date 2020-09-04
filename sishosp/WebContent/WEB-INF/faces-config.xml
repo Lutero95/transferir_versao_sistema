@@ -34,6 +34,11 @@
         <validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFPacienteValidator</validator-class>
     </validator>
 
+    <validator>
+        <validator-id>DataNascValidator</validator-id>
+        <validator-class>br.gov.al.maceio.sishosp.comum.validator.DataNascimentoPacienteValidator</validator-class>
+    </validator>
+
     <factory>
         <exception-handler-factory>
             br.gov.al.maceio.sishosp.comum.exception.CustomExceptionHandlerFactory

@@ -349,8 +349,13 @@ public class ProcedimentoController implements Serializable {
 
     }
 
-    public void listarProcedimentos() throws ProjetoException {
+   public void listarProcedimentos() throws ProjetoException {
         this.listaProcedimentos = procedimentoDao.listarProcedimento();
+
+    }
+
+    public void listarTodosProcedimentosEmpresa() throws ProjetoException {
+        this.listaProcedimentos = procedimentoDao.listarProcedimentosDaEmpresa();
 
     }
 
@@ -703,7 +708,7 @@ public class ProcedimentoController implements Serializable {
     }
 
     public void novaCargaSigtapPorDocumentos(HashMap<String, List<String>> dadosDosArquivos) throws ProjetoException {
-        listarProcedimentos();
+        listarTodosProcedimentosEmpresa();
         if(this.listaProcedimentos.isEmpty())
             JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
         else {

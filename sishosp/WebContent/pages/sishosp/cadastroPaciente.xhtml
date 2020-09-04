@@ -62,7 +62,7 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="15"
 									requiredMessage="Nascimento: Campo obrigatório!"
-									required="true" class="select-agendaEquipe2"
+									required="true" class="select-agendaEquipe2" validator="DataNascValidator"
 									value="#{PacienteController.paciente.dtanascimento}"
 									locale="pt" />
 							</b:column>

@@ -31,11 +31,12 @@ public class BpaConsolidadoDAO {
         		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
         		" join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "+
         		" join hosp.proc on proc.id = a1.codprocedimento " + 
-        		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " + 
+        		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " +
+				" join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " +
         		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
         		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
-        		" where sa.atendimento_realizado = true " + 
+        		" where sa.atendimento_realizado = true and hc.status='A'" +
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
         		" and pm.competencia_atual = ? " +

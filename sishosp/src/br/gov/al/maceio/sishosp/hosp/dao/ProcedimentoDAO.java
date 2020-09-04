@@ -238,6 +238,49 @@ public class ProcedimentoDAO {
         return lista;
     }
 
+    public List<ProcedimentoBean> listarProcedimentosDaEmpresa() throws ProjetoException {
+        List<ProcedimentoBean> lista = new ArrayList<>();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + " from hosp.proc order by nome";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getString("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+
+                lista.add(proc);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public List<ProcedimentoBean> buscarProcedimento(String campoBusca, String tipo) throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "

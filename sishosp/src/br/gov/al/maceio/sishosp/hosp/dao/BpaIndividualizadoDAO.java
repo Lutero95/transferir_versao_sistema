@@ -57,13 +57,14 @@ public class BpaIndividualizadoDAO {
 				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
 				" left join hosp.cid on cid.cod = a1.id_cidprimario  \n" +
 				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
+				" join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap "+
 				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
 				" join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
 				" cross join hosp.empresa emp\n" +
 				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where sa.atendimento_realizado is true \n" +
+				" where sa.atendimento_realizado is true and hc.status='A' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
 				" and pm.competencia_atual = ? \n" +
