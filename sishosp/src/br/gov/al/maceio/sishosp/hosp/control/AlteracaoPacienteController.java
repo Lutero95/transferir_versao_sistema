@@ -1566,7 +1566,7 @@ public class AlteracaoPacienteController implements Serializable {
 			
 			listAgendamentoProfissional = insercaoController.gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
 			
-			if(aDao.gravarAlteracaoTurnoSemLaudo(insercao, listAgendamentoProfissional, id_paciente_insituicao, listaProfissionais)) {
+			if(aDao.gravarAlteracaoTurnoSemLaudo(insercao, listAgendamentoProfissional, id_paciente_insituicao, this.listaProfissionaisAdicionados)) {
 				JSFUtil.adicionarMensagemSucesso("Paciente Alterado com Sucesso", "");
 			}
 		}

@@ -1288,37 +1288,6 @@ public class AlteracaoPacienteDAO {
 		} 
 		return retorno;
 	}
-
-	public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean, Date dataAtendimento,
-			Connection conAuxiliar) throws ProjetoException, SQLException {
-
-		Boolean retorno = false;
-
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codmedico = ? AND dtaatende = ? and coalesce(situacao, 'A')<> 'C'";
-
-		try {
-			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-
-			stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
-			stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
-			stm.setLong(3, insercaoPacienteBean.getFuncionario().getId());
-			stm.setDate(4, dataAtendimento);
-
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				retorno = true;
-			}
-
-		} catch (SQLException ex2) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
-		return retorno;
-	}
 	
 	public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, java.util.Date dataInclusao) throws ProjetoException {
 		
@@ -1389,14 +1358,6 @@ public class AlteracaoPacienteDAO {
             InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();
             
             insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao);
-            
-            List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
-            listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);
-            for(AgendaBean agenda : listAgendamentoProfissionalAux) {
-            	if(verificarSeAtendimentoExistePorProfissional(insercao, DataUtil.converterDateUtilParaDateSql(agenda.getDataAtendimento()), conexao)) {
-            		listAgendamentoProfissional.remove(agenda);
-            	}
-            }
             
             insercaoPacienteDAO.inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
             insercaoPacienteDAO.excluirCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
