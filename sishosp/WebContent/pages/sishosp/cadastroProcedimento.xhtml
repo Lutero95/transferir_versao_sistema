@@ -9,8 +9,8 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction
-				action="#{ProcedimentoController.getEditProcedimento()}" />
+			<f:viewAction action="#{ProcedimentoController.getEditProcedimento()}" />
+			<f:viewAction action="#{UnidadeController.listarUnidade()}" />
 		</f:metadata>
 
 
@@ -23,352 +23,396 @@
 			<div class="panel-body table-body sub-table-body">
 
 				<h:form class="form-horizontal" id="frmCadProc">
-					<b:row>
-						<b:column span="11" class="label-position">
-							<b:label value="Nome:" severity="info" />
+					<p:tabView>
+						<p:tab title="Dados Principais">
+							<b:row>
+								<b:column span="11" class="label-position">
+									<b:label value="Nome:" severity="info" />
 
-							<b:inputText value="#{ProcedimentoController.proc.nomeProc}"
-								validator="CaractereEmBrancoValidator" required="true"
-								requiredMessage="Nome: Campo obrigatório!"
-								validatorMessage="Nome deve conter entre 2 e 80 caracteres."
-								id="incod">
-								<f:validateLength minimum="2" maximum="80" />
-							</b:inputText>
-						</b:column>
-					</b:row>
+									<b:inputText value="#{ProcedimentoController.proc.nomeProc}"
+										validator="CaractereEmBrancoValidator" required="true"
+										requiredMessage="Nome: Campo obrigatório!"
+										validatorMessage="Nome deve conter entre 2 e 80 caracteres."
+										id="incod">
+										<f:validateLength minimum="2" maximum="80" />
+									</b:inputText>
+								</b:column>
+							</b:row>
 
-					<b:row>
-						<b:column span="11" class="label-position">
-							<b:label value="Código do Procedimento:" severity="info" />
+							<b:row>
+								<b:column span="11" class="label-position">
+									<b:label value="Código do Procedimento:" severity="info" />
 
-							<b:inputText value="#{ProcedimentoController.proc.codProc}"
-								required="true" requiredMessage="Código: Campo obrigatório!" />
-						</b:column>
-					</b:row>
-					<br></br>
+									<b:inputText value="#{ProcedimentoController.proc.codProc}"
+										required="true" requiredMessage="Código: Campo obrigatório!" />
+								</b:column>
+							</b:row>
+							<br></br>
 
-					<b:row>
-						<b:column span="3">
-							<p:selectBooleanCheckbox label="Utiliza Equipamento"
-								itemLabel="Utiliza Equipamento" style="color:#2e84ce;"
-								value="#{ProcedimentoController.proc.utilizaEquipamento}">
-							</p:selectBooleanCheckbox>
-						</b:column>
-					</b:row>
-					<br></br>
+							<b:row>
+								<b:column span="3">
+									<p:selectBooleanCheckbox label="Utiliza Equipamento"
+										itemLabel="Utiliza Equipamento" style="color:#2e84ce;"
+										value="#{ProcedimentoController.proc.utilizaEquipamento}">
+									</p:selectBooleanCheckbox>
+								</b:column>
+							</b:row>
+							<br></br>
 
-					<b:row>
-						<b:column span="2">
-							<p:selectBooleanCheckbox label="Auditivo" itemLabel="Auditivo"
-								style="color:#2e84ce;"
-								value="#{ProcedimentoController.proc.auditivo}">
-								<p:ajax update="pnlModelo" />
-							</p:selectBooleanCheckbox>
-						</b:column>
-
-						<br></br>
-
-						<p:outputPanel id="pnlModelo">
-							<b:column span="3">
-								<b:panel style="width:265px;background-color: #F5F5F5;"
-									rendered="#{ProcedimentoController.proc.auditivo==true}">
-
-									<p:outputLabel value="Modelo Auditivo:" class="modelo-auditivo"></p:outputLabel>
-
-									<p:selectOneRadio style="color: #2e84ce;"
-										value="#{ProcedimentoController.proc.tipoExameAuditivo}"
-										layout="grid" columns="2">
-										<f:selectItem itemLabel="Acompanhamentos"
-											itemValue="ACOMPANHAMENTOS" />
-										<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
-										<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
-										<f:selectItem itemLabel="Teste" itemValue="TESTE" />
-									</p:selectOneRadio>
-								</b:panel>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-					<br></br>
-
-					<b:row>
-						<b:column span="2">
-							<p:selectBooleanCheckbox label="Laudo" itemLabel="Laudo"
-								style="color:#2e84ce;"
-								value="#{ProcedimentoController.proc.gera_laudo_digita}">
-								<p:ajax update="pnlMes" />
-							</p:selectBooleanCheckbox>
-						</b:column>
-						<br></br>
-
-						<p:outputPanel id="pnlMes">
-
-							<b:column span="3" class="label-position new-col3-2">
-								<b:label value="Validade" class="label-nomeSocial"
-									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
-									severity="info" />
-
-								<b:selectOneMenu id="mes"
-									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
-									value="#{ProcedimentoController.proc.validade_laudo}"
-									style="width:200px;" required="true"
-									requiredMessage="Validade: Campo obrigatório!">
-									<f:selectItem itemLabel="Informe a Validade" itemValue="" />
-									<f:selectItem itemLabel="30 dias" itemValue="30" />
-									<f:selectItem itemLabel="90 dias" itemValue="90" />
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<h1 class="texto-titulo">Filtre os Dados do Procedimento por Mês e Ano</h1>
-					<b:row>
-						<b:column span="2" class="label-position new-col3-2">
-							<b:label value="Mês / Ano" class="label-position" severity="info" />
-							<b:selectOneMenu id="mesfiltro"
-								value="#{ProcedimentoController.filtroMesIhAnoSelecionado}"
-								style="width:250px">
-								<f:selectItems var="mesAno"
-									value="#{ProcedimentoController.listaFiltroMesIhAno}"
-									itemLabel="#{mesAno}" itemValue="#{mesAno}" />
-							</b:selectOneMenu>
-						</b:column>
-						<b:column span="2" class="label-position new-col3-2">
-							<p:commandButton process="@this" immediate="true"
-								action="#{ProcedimentoController.listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado()}"
-								update=":frmCadProc" icon="ui-icon-search"
-								style="margin-left: 20%; margin-top: 10%;" />
-						</b:column>
-					</b:row>
-					<h1 class="texto-titulo">Dados Gerais do Procedimento</h1>
-					<div>
-						<b:row>
-							<p:panelGrid columns="1" columnClasses="label-position"
-										 style="margin-left: 1%; width: 92%;">
-								<b:column>
-									<b:label value="Grupo:" severity="info" />
-									<b:inputText disabled="true"
-												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.grupo.nome}" />
+							<b:row>
+								<b:column span="2">
+									<p:selectBooleanCheckbox label="Auditivo" itemLabel="Auditivo"
+										style="color:#2e84ce;"
+										value="#{ProcedimentoController.proc.auditivo}">
+										<p:ajax update="pnlModelo" />
+									</p:selectBooleanCheckbox>
 								</b:column>
 
-								<b:column>
-									<b:label value="Subgrupo:" severity="info" />
-									<b:inputText disabled="true"
-												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.nome}" />
+								<br></br>
+
+								<p:outputPanel id="pnlModelo">
+									<b:column span="3">
+										<b:panel style="width:265px;background-color: #F5F5F5;"
+											rendered="#{ProcedimentoController.proc.auditivo==true}">
+
+											<p:outputLabel value="Modelo Auditivo:"
+												class="modelo-auditivo"></p:outputLabel>
+
+											<p:selectOneRadio style="color: #2e84ce;"
+												value="#{ProcedimentoController.proc.tipoExameAuditivo}"
+												layout="grid" columns="2">
+												<f:selectItem itemLabel="Acompanhamentos"
+													itemValue="ACOMPANHAMENTOS" />
+												<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+												<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+												<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+											</p:selectOneRadio>
+										</b:panel>
+									</b:column>
+								</p:outputPanel>
+							</b:row>
+							<br></br>
+
+							<b:row>
+								<b:column span="2">
+									<p:selectBooleanCheckbox label="Laudo" itemLabel="Laudo"
+										style="color:#2e84ce;"
+										value="#{ProcedimentoController.proc.gera_laudo_digita}">
+										<p:ajax update="pnlMes" />
+									</p:selectBooleanCheckbox>
 								</b:column>
-								<b:column>
-									<b:label value="Forma de Organização:" severity="info" />
-									<b:inputText disabled="true"
-												 value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.nome}" />
+								<br></br>
+
+								<p:outputPanel id="pnlMes">
+
+									<b:column span="3" class="label-position new-col3-2">
+										<b:label value="Validade" class="label-nomeSocial"
+											rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
+											severity="info" />
+
+										<b:selectOneMenu id="mes"
+											rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
+											value="#{ProcedimentoController.proc.validade_laudo}"
+											style="width:200px;" required="true"
+											requiredMessage="Validade: Campo obrigatório!">
+											<f:selectItem itemLabel="Informe a Validade" itemValue="" />
+											<f:selectItem itemLabel="30 dias" itemValue="30" />
+											<f:selectItem itemLabel="90 dias" itemValue="90" />
+										</b:selectOneMenu>
+									</b:column>
+								</p:outputPanel>
+							</b:row>
+
+							<h1 class="texto-titulo">Filtre os Dados do Procedimento por
+								Mês e Ano</h1>
+							<b:row>
+								<b:column span="2" class="label-position new-col3-2">
+									<b:label value="Mês / Ano" class="label-position"
+										severity="info" />
+									<b:selectOneMenu id="mesfiltro"
+										value="#{ProcedimentoController.filtroMesIhAnoSelecionado}"
+										style="width:250px">
+										<f:selectItems var="mesAno"
+											value="#{ProcedimentoController.listaFiltroMesIhAno}"
+											itemLabel="#{mesAno}" itemValue="#{mesAno}" />
+									</b:selectOneMenu>
 								</b:column>
-
-							</p:panelGrid>
-
-						</b:row>
-						<b:row rendered="#{ProcedimentoController.tipo  == 2}">
-							<b:column span="11" class="label-position">
-								<b:label value="Descrição:" severity="info" />
-								<b:inputText disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.descricao}" />
-							</b:column>
-
-							<b:column span="11" class="label-position">
-								<b:label value="Competencia:" severity="info" />
-								<b:inputText disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(4)}/#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(0,4)}" />
-							</b:column>
-
-							<b:column span="11" class="label-position">
-								<b:label value="Complexidade:" severity="info" />
-								<b:inputText disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.complexidade}" />
-							</b:column>
-
-							<p:panelGrid columns="2" columnClasses="label-position"
-								style="margin-left: 1%; width: 92%;">
-								<b:column>
-									<b:label value="Tipo de Financiamento:" severity="info" />
-									<b:inputText disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.tipoFinanciamento.nome}" />
+								<b:column span="2" class="label-position new-col3-2">
+									<p:commandButton process="@this" immediate="true"
+										action="#{ProcedimentoController.listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado()}"
+										update=":frmCadProc" icon="ui-icon-search"
+										style="margin-left: 20%; margin-top: 10%;" />
 								</b:column>
+							</b:row>
+							<h1 class="texto-titulo">Dados Gerais do Procedimento</h1>
+							<div>
+								<b:row>
+									<p:panelGrid columns="1" columnClasses="label-position"
+										style="margin-left: 1%; width: 92%;">
+										<b:column>
+											<b:label value="Grupo:" severity="info" />
+											<b:inputText disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.grupo.nome}" />
+										</b:column>
 
-							</p:panelGrid>
+										<b:column>
+											<b:label value="Subgrupo:" severity="info" />
+											<b:inputText disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.subgrupo.nome}" />
+										</b:column>
+										<b:column>
+											<b:label value="Forma de Organização:" severity="info" />
+											<b:inputText disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.formaOrganizacao.nome}" />
+										</b:column>
 
-							<b:column span="11" class="label-position">
-								<b:label value="Sexo:" severity="info" />
-								<b:inputText disabled="true" value="MASCULINO"
-											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('M')}" />
-								<b:inputText disabled="true" value="FEMININO"
-											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('F')}" />
-								<b:inputText disabled="true" value="NÃO SE APLICA"
-											 rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('N')}" />
-								<b:inputText disabled="true" value="AMBOS"
-									rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('I')}" />
-							</b:column>
+									</p:panelGrid>
 
-							<b:column span="11" class="label-position">
-								<b:label value="Quantidade Máxima:" severity="info" />
-								<b:inputText type="number" disabled="true"
-									value="#{ProcedimentoController.procedimentoMensal.quantidadeMaxima}" />
-							</b:column>
+								</b:row>
+								<b:row rendered="#{ProcedimentoController.tipo  == 2}">
+									<b:column span="11" class="label-position">
+										<b:label value="Descrição:" severity="info" />
+										<b:inputText disabled="true"
+											value="#{ProcedimentoController.procedimentoMensal.descricao}" />
+									</b:column>
 
-							<p:panelGrid columns="2" columnClasses="label-position"
-								style="margin-left: 1%; width: 92%;">
-								<b:column>
-									<b:label value="Idade Minima:" severity="info" />
-									<b:inputText type="number" disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.idadeMinimaPermitida.quantidadeLimite}" />
-								</b:column>
+									<b:column span="11" class="label-position">
+										<b:label value="Competencia:" severity="info" />
+										<b:inputText disabled="true"
+											value="#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(4)}/#{ProcedimentoController.procedimentoMensal.competenciaInicial.substring(0,4)}" />
+									</b:column>
+
+									<b:column span="11" class="label-position">
+										<b:label value="Complexidade:" severity="info" />
+										<b:inputText disabled="true"
+											value="#{ProcedimentoController.procedimentoMensal.complexidade}" />
+									</b:column>
+
+									<p:panelGrid columns="2" columnClasses="label-position"
+										style="margin-left: 1%; width: 92%;">
+										<b:column>
+											<b:label value="Tipo de Financiamento:" severity="info" />
+											<b:inputText disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.tipoFinanciamento.nome}" />
+										</b:column>
+
+									</p:panelGrid>
+
+									<b:column span="11" class="label-position">
+										<b:label value="Sexo:" severity="info" />
+										<b:inputText disabled="true" value="MASCULINO"
+											rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('M')}" />
+										<b:inputText disabled="true" value="FEMININO"
+											rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('F')}" />
+										<b:inputText disabled="true" value="NÃO SE APLICA"
+											rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('N')}" />
+										<b:inputText disabled="true" value="AMBOS"
+											rendered="#{ProcedimentoController.procedimentoMensal.sexoPermitido.equals('I')}" />
+									</b:column>
+
+									<b:column span="11" class="label-position">
+										<b:label value="Quantidade Máxima:" severity="info" />
+										<b:inputText type="number" disabled="true"
+											value="#{ProcedimentoController.procedimentoMensal.quantidadeMaxima}" />
+									</b:column>
+
+									<p:panelGrid columns="2" columnClasses="label-position"
+										style="margin-left: 1%; width: 92%;">
+										<b:column>
+											<b:label value="Idade Minima:" severity="info" />
+											<b:inputText type="number" disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.idadeMinimaPermitida.quantidadeLimite}" />
+										</b:column>
 
 
-								<b:column>
-									<b:label value="Idade Máxima:" severity="info" />
-									<b:inputText type="number" disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.idadeMaximaPermitida.quantidadeLimite}" />
-								</b:column>
+										<b:column>
+											<b:label value="Idade Máxima:" severity="info" />
+											<b:inputText type="number" disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.idadeMaximaPermitida.quantidadeLimite}" />
+										</b:column>
 
-							</p:panelGrid>
+									</p:panelGrid>
 
-							<p:panelGrid columns="3" columnClasses="label-position"
-								style="margin-left: 1%; width: 92%;">
-								<b:column>
-									<b:label value="Serviço ambulatórial:" severity="info" />
-									<b:inputText  disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.valorSA}" />
-								</b:column>
-								<b:column>
-									<b:label value="Serviço Hospitalar:" severity="info" />
-									<b:inputText type="number" disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.valorSH}" />
-								</b:column>
-								<b:column>
-									<b:label value="Serviço Profissional:" severity="info" />
-									<b:inputText type="number" disabled="true"
-										value="#{ProcedimentoController.procedimentoMensal.valorSP}" />
-								</b:column>
-							</p:panelGrid>
+									<p:panelGrid columns="3" columnClasses="label-position"
+										style="margin-left: 1%; width: 92%;">
+										<b:column>
+											<b:label value="Serviço ambulatórial:" severity="info" />
+											<b:inputText disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.valorSA}" />
+										</b:column>
+										<b:column>
+											<b:label value="Serviço Hospitalar:" severity="info" />
+											<b:inputText type="number" disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.valorSH}" />
+										</b:column>
+										<b:column>
+											<b:label value="Serviço Profissional:" severity="info" />
+											<b:inputText type="number" disabled="true"
+												value="#{ProcedimentoController.procedimentoMensal.valorSP}" />
+										</b:column>
+									</p:panelGrid>
 
 
-						</b:row>
-					</div>
+								</b:row>
+							</div>
 
-					<br />
-					<h1 class="texto-titulo">CIDs</h1>
-					<p:dataTable var="cid"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CIDS ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.CIDsVinculados.CIDVinculado}"
-						paginator="true" rows="10">
-						<p:column headerText="Código">
-							<h:outputText value="#{cid.getCID().codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">CIDs</h1>
+							<p:dataTable var="cid"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CIDS ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.CIDsVinculados.CIDVinculado}"
+								paginator="true" rows="10">
+								<p:column headerText="Código">
+									<h:outputText value="#{cid.getCID().codigo}" />
+								</p:column>
 
-						<p:column headerText="CID">
-							<h:outputText value="#{cid.getCID().nome}" />
-						</p:column>
+								<p:column headerText="CID">
+									<h:outputText value="#{cid.getCID().nome}" />
+								</p:column>
 
-						<p:column headerText="Agravo">
-							<h:outputText value="#{cid.getCID().agravo}" />
-						</p:column>
+								<p:column headerText="Agravo">
+									<h:outputText value="#{cid.getCID().agravo}" />
+								</p:column>
 
-						<p:column headerText="Sexo Aplicável">
-							<h:outputText value="#{cid.getCID().sexoAplicavel}" />
-						</p:column>
+								<p:column headerText="Sexo Aplicável">
+									<h:outputText value="#{cid.getCID().sexoAplicavel}" />
+								</p:column>
 
-						<p:column headerText="Estadio">
-							<h:outputText
-								value="#{cid.getCID().isEstadio() == 'true' ? 'SIM' : 'NÃO'}" />
-						</p:column>
+								<p:column headerText="Estadio">
+									<h:outputText
+										value="#{cid.getCID().isEstadio() == 'true' ? 'SIM' : 'NÃO'}" />
+								</p:column>
 
-						<p:column headerText="Campos Irradiados">
-							<h:outputText value="#{cid.getCID().quantidadeCamposIrradiados}" />
-						</p:column>
-					</p:dataTable>
+								<p:column headerText="Campos Irradiados">
+									<h:outputText
+										value="#{cid.getCID().quantidadeCamposIrradiados}" />
+								</p:column>
+							</p:dataTable>
 
-					<br />
-					<h1 class="texto-titulo">CBOs</h1>
-					<p:dataTable var="cbo"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CBOS ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.CBOsVinculados.CBO}"
-						paginator="true" rows="10">
-						<p:column headerText="Código">
-							<h:outputText value="#{cbo.codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">CBOs</h1>
+							<p:dataTable var="cbo"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI CBOS ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.CBOsVinculados.CBO}"
+								paginator="true" rows="10">
+								<p:column headerText="Código">
+									<h:outputText value="#{cbo.codigo}" />
+								</p:column>
 
-						<p:column headerText="CBO">
-							<h:outputText value="#{cbo.nome}" />
-						</p:column>
-					</p:dataTable>
+								<p:column headerText="CBO">
+									<h:outputText value="#{cbo.nome}" />
+								</p:column>
+							</p:dataTable>
 
-					<br />
-					<h1 class="texto-titulo">Serviços e Classificações</h1>
-					<p:dataTable var="servicoClassificacao"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI SERVIÇOS E CLASSIFICAÇÕES ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.servicosClassificacoesVinculados.servicoClassificacao}"
-						paginator="true" rows="10">
-						<p:column headerText="Código Serviço">
-							<h:outputText value="#{servicoClassificacao.servico.codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">Serviços e Classificações</h1>
+							<p:dataTable var="servicoClassificacao"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI SERVIÇOS E CLASSIFICAÇÕES ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.servicosClassificacoesVinculados.servicoClassificacao}"
+								paginator="true" rows="10">
+								<p:column headerText="Código Serviço">
+									<h:outputText value="#{servicoClassificacao.servico.codigo}" />
+								</p:column>
 
-						<p:column headerText="Serviço">
-							<h:outputText value="#{servicoClassificacao.servico.nome}" />
-						</p:column>
+								<p:column headerText="Serviço">
+									<h:outputText value="#{servicoClassificacao.servico.nome}" />
+								</p:column>
 
-						<p:column headerText="Código Classificação">
-							<h:outputText value="#{servicoClassificacao.codigoClassificacao}" />
-						</p:column>
+								<p:column headerText="Código Classificação">
+									<h:outputText
+										value="#{servicoClassificacao.codigoClassificacao}" />
+								</p:column>
 
-						<p:column headerText="Classificação">
-							<h:outputText value="#{servicoClassificacao.nomeClassificacao}" />
-						</p:column>
-					</p:dataTable>
+								<p:column headerText="Classificação">
+									<h:outputText value="#{servicoClassificacao.nomeClassificacao}" />
+								</p:column>
+							</p:dataTable>
 
-					<br />
-					<h1 class="texto-titulo">Modalidades de Atendimento</h1>
-					<p:dataTable var="modalidadeAtendimento"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI MODALIDADES DE ATENDIMENTO ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.modalidadesAtendimento.modalidadeAtendimento}">
-						<p:column headerText="Código">
-							<h:outputText value="#{modalidadeAtendimento.codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">Modalidades de Atendimento</h1>
+							<p:dataTable var="modalidadeAtendimento"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI MODALIDADES DE ATENDIMENTO ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.modalidadesAtendimento.modalidadeAtendimento}">
+								<p:column headerText="Código">
+									<h:outputText value="#{modalidadeAtendimento.codigo}" />
+								</p:column>
 
-						<p:column headerText="Modalidade de Atendimento">
-							<h:outputText value="#{modalidadeAtendimento.nome}" />
-						</p:column>
-					</p:dataTable>
+								<p:column headerText="Modalidade de Atendimento">
+									<h:outputText value="#{modalidadeAtendimento.nome}" />
+								</p:column>
+							</p:dataTable>
 
-					<br />
-					<h1 class="texto-titulo">Instrumentos de Registro</h1>
-					<p:dataTable var="instrumentoRegistro"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI INSTRUMENTOS DE REGISTRO ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.instrumentosRegistro.instrumentoRegistro}">
-						<p:column headerText="Código">
-							<h:outputText value="#{instrumentoRegistro.codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">Instrumentos de Registro</h1>
+							<p:dataTable var="instrumentoRegistro"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI INSTRUMENTOS DE REGISTRO ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.instrumentosRegistro.instrumentoRegistro}">
+								<p:column headerText="Código">
+									<h:outputText value="#{instrumentoRegistro.codigo}" />
+								</p:column>
 
-						<p:column headerText="Instrumento de Registro">
-							<h:outputText value="#{instrumentoRegistro.nome}" />
-						</p:column>
-					</p:dataTable>
+								<p:column headerText="Instrumento de Registro">
+									<h:outputText value="#{instrumentoRegistro.nome}" />
+								</p:column>
+							</p:dataTable>
 
-					<br />
-					<h1 class="texto-titulo">RENASES</h1>
-					<p:dataTable var="renases"
-						rendered="#{ProcedimentoController.tipo  == 2}"
-						emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI RENASES ASSOCIADOS"
-						value="#{ProcedimentoController.procedimentoMensal.RENASESVinculadas.RENASES}">
-						<p:column headerText="Código">
-							<h:outputText value="#{renases.codigo}" />
-						</p:column>
+							<br />
+							<h1 class="texto-titulo">RENASES</h1>
+							<p:dataTable var="renases"
+								rendered="#{ProcedimentoController.tipo  == 2}"
+								emptyMessage="ESTE PROCEDIMENTO NÃO POSSUI RENASES ASSOCIADOS"
+								value="#{ProcedimentoController.procedimentoMensal.RENASESVinculadas.RENASES}">
+								<p:column headerText="Código">
+									<h:outputText value="#{renases.codigo}" />
+								</p:column>
 
-						<p:column headerText="RENASES">
-							<h:outputText value="#{renases.nome}" />
-						</p:column>
-					</p:dataTable>
-					<br></br>
+								<p:column headerText="RENASES">
+									<h:outputText value="#{renases.nome}" />
+								</p:column>
+							</p:dataTable>
+							<br></br>
+						</p:tab>
+						
+						<p:tab title="Unidades que Visualizam">
+							<p:selectOneMenu id="listauni" immediate="true" value="#{ProcedimentoController.unidadeSelecionada.id}">
+								<f:selectItem itemLabel="Selecione" itemValue=""/>
+								<f:selectItems value="#{UnidadeController.listaUnidades}" 
+									var="uni" itemLabel="#{uni.nomeUnidade}" itemValue="#{uni.id}"/>
+							</p:selectOneMenu>
+							
+							<p:commandButton icon="ui-icon-plus" size="sm" 
+							title="Adicionar Unidade" update=":msgPagina tabelaUnidades" 
+							class="btn-acao-table acao-editar" process="@this listauni"
+							action="#{ProcedimentoController.adicionarUnidade(ProcedimentoController.unidadeSelecionada)}"/>
+
+							<p:dataTable var="unidade" value="#{ProcedimentoController.proc.listaUnidadesVisualizam}"
+								reflow="true" rows="10" emptyMessage="Nenhuma unidade adicionada" id="tabelaUnidades">
+								<p:column headerText="Nome" width="70%">
+									<h:outputText value="#{unidade.nomeUnidade}" />
+								</p:column>
+
+								<p:column headerText="Matriz">
+									<div align="center">
+										<h:outputText value="#{unidade.matriz == true ? 'SIM' : 'NÃO'}" />
+									</div>
+								</p:column>
+
+								<p:column headerText="Ação">
+									<div align="center">
+										<p:commandButton icon="fa fa-fw fa-times" title="Remover"
+											update="tabelaUnidades" process="@this tabelaUnidades"
+											class="new-btn-acao-table acao-excluir"
+											action="#{ProcedimentoController.removerUnidade(unidade)}"/>
+									</div>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
 
 					<div align="center">
 

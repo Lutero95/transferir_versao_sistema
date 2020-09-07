@@ -33,6 +33,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DocumentosRLImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.enums.DocumentosTBImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
@@ -40,6 +41,7 @@ import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.DescricaoProcedimentoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
@@ -89,9 +91,10 @@ public class ProcedimentoController implements Serializable {
     private String campoBusca;
     private String anoCompetenciaAtual;
     private String mesCompetenciaAtual;
-    private List<String> listaFiltroMesIhAno = new ArrayList();
+    private List<String> listaFiltroMesIhAno = new ArrayList<>();
     private String filtroMesIhAnoSelecionado;
     private ProcedimentoType procedimentoMensal;
+    private UnidadeBean unidadeSelecionada;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -141,9 +144,10 @@ public class ProcedimentoController implements Serializable {
         cid = new CidBean();
         cbo = new CboBean();
         recurso = new RecursoBean();
+        unidadeSelecionada = new UnidadeBean();
 
         //SIGTAP
-        this.listaHistoricoDoSigtap = new ArrayList();
+        this.listaHistoricoDoSigtap = new ArrayList<>();
         limparListaGravarProcedimentoMensalDTO();
         limparGravarProcedimentoDTO();
     }
@@ -1065,6 +1069,35 @@ public class ProcedimentoController implements Serializable {
         return formaOrganizacao;
     }
 
+    public void adicionarUnidade(UnidadeBean unidade) throws ProjetoException {
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuZero(unidade.getId()) 
+    			&& !unidadeJaFoiAdicionada(unidade)) {
+    		unidade = new UnidadeDAO().buscarUnidadePorId(unidade.getId());
+    		proc.getListaUnidadesVisualizam().add(unidade);
+    	}
+    }
+    
+    private boolean unidadeJaFoiAdicionada(UnidadeBean unidade) {
+    	for (UnidadeBean unidadeLista : proc.getListaUnidadesVisualizam()) {
+			if(unidadeLista.getId().equals(unidade.getId())) {
+				JSFUtil.adicionarMensagemErro("Esta unidade já foi adicionada", "");
+				return true;
+			}
+		}
+    	return false;
+    }
+    
+    public void removerUnidade(UnidadeBean unidade) {
+    	ArrayList<UnidadeBean> listaUnidadesAux = new ArrayList<>();
+    	listaUnidadesAux.addAll(proc.getListaUnidadesVisualizam());
+    	
+    	for (UnidadeBean unidadeLista : listaUnidadesAux) {
+			if(unidadeLista.getId().equals(unidade.getId())) {
+				proc.getListaUnidadesVisualizam().remove(unidadeLista);
+			}
+		}
+    }
+    
     public List<ProcedimentoBean> getListaProcedimentos() {
         return listaProcedimentos;
     }
@@ -1182,4 +1215,13 @@ public class ProcedimentoController implements Serializable {
     public void setArquivoImportacaoSelecionado(UploadedFile arquivoImportacaoSelecionado) {
         this.arquivoImportacaoSelecionado = arquivoImportacaoSelecionado;
     }
+
+	public UnidadeBean getUnidadeSelecionada() {
+		return unidadeSelecionada;
+	}
+
+	public void setUnidadeSelecionada(UnidadeBean unidadeSelecionada) {
+		this.unidadeSelecionada = unidadeSelecionada;
+	}
+    
 }
