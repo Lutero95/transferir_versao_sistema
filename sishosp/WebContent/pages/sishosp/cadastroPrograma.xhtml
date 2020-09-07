@@ -125,6 +125,9 @@
 									 	<p:ajax update="diasPaciente" 
 									 	listener="#{ProgramaController.corrigeDiasAtivoPacienteSemLaudo(ProgramaController.prog.permitePacienteSemLaudo)}"/>
 									 </p:selectBooleanCheckbox>
+									 
+									 <p:selectBooleanCheckbox value="#{ProgramaController.prog.permiteAlteracaoCidNaEvolucao}"
+									 	itemLabel="Permitir alteração de Cid na evolução"/>
 								</b:column>
 								
 								<b:column span="3" class="label-position new-data-size new-comple1">

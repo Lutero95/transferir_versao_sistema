@@ -268,32 +268,32 @@ public class CidDAO {
 
 	public List<CidBean> listarCidsBuscaPorProcedimento(String descricao, String codigoProcedimento, Date dataSolicitacao) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select distinct cod, desccidabrev, cid " + 
-				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " + 
-				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
-				"join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " + 
-				"where (desccidabrev Ilike ? or cid Ilike ? ) " + 
+		String sql = "select distinct cod, desccidabrev, cid " +
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
+				"join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " +
+				"where (desccidabrev Ilike ? or cid Ilike ? ) " +
 				"and (pm.codigo_procedimento = ?) ";
 
 		String filtroDataSolicitacao = " and hc.status='A' and (hc.ano = ? and hc.mes = ?) ";
-		
+
 		if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao))
 			sql += filtroDataSolicitacao;
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao + "%");
 			stm.setString(2, "%" + descricao + "%");
 			stm.setString(3, codigoProcedimento);
-			
+
 			if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao)) {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(dataSolicitacao);
 				stm.setInt(4, calendar.get(Calendar.YEAR));
 				stm.setInt(5, calendar.get(Calendar.MONTH)+1);
 			}
-			
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -317,14 +317,14 @@ public class CidDAO {
 	public List<CidBean> listarCidsAutoCompletePorProcedimento(String descricao, String codigoProcedimento, Date dataSolicitacao)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select distinct cid.cod, cid.desccidabrev, cid.cid " + 
-				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " + 
-				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " + 
+		String sql = "select distinct cid.cod, cid.desccidabrev, cid.cid " +
+				"from hosp.cid join sigtap.cid_procedimento_mensal cpm on cid.cod = cpm.id_cid " +
+				"join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal " +
 				"join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap "+
 				"where 1=1  and desccidabrev ILIKE ? and (pm.codigo_procedimento = ?) ";
-		
+
 		String filtroDataSolicitacao = "and (hc.ano = ? and hc.mes = ?) ";
-		
+
 		if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao))
 			sql += filtroDataSolicitacao;
 
@@ -333,14 +333,14 @@ public class CidDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
 			stm.setString(2, codigoProcedimento);
-			
+
 			if(!VerificadorUtil.verificarSeObjetoNulo(dataSolicitacao)) {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(dataSolicitacao);
 				stm.setInt(3, calendar.get(Calendar.YEAR));
 				stm.setInt(4, calendar.get(Calendar.MONTH)+1);
 			}
-			
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -358,7 +358,41 @@ public class CidDAO {
 
 		return lista;
 	}
-	
+
+	public List<CidBean> listarCidsPorPacienteInstituicao(Integer idAtendimento) throws ProjetoException {
+		List<CidBean> lista = new ArrayList<>();
+
+		String sql = "select c.cod, c.cid, c.desccidabrev from hosp.cid c " +
+				"join hosp.paciente_instituicao_cid pic on c.cod = pic.id_cid " +
+				"join hosp.paciente_instituicao pi on pic.id_paciente_instituicao = pi.id " +
+				"where pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) "+
+				"order by desccidabrev;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idAtendimento);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				mapearResultSet(lista, rs);
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return lista;
+	}
+
 	private void mapearResultSet(List<CidBean> lista, ResultSet rs) throws SQLException {
 		CidBean cid = new CidBean();
 		cid.setIdCid(rs.getInt("cod"));

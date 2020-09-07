@@ -57,12 +57,6 @@ setTimeout("jQuery("#mylink").click();", 50);
 									<f:setPropertyActionListener value="2"
 										target="#{LaudoController.tipo}" />
 								</p:commandButton>
-								
-								<p:commandButton value="Alterar Procedimento" look="success"
-									action="#{AtendimentoController.listarProcedimentosPorCboDoProfissional()}"
-									style="margin-left: 10px" oncomplete="PF('dialogAlterarProc').show();"
-									size="sm" icon="ui-icon-search" immediate="true"
-									update=":dlgAlterarProc" />	
 							</p:row>
 						</div>
 					</p:row>
@@ -101,14 +95,31 @@ setTimeout("jQuery("#mylink").click();", 50);
 					</p:row>
 
 					<p:row>
-						<b:column span="12" class="label-position">
+						<b:column span="12">
 							<p:outputLabel value="Procedimento" severity="info"
-								style="font-weight:bold !important" />
-							<p:outputPanel id="outProcP1">
-								<p:outputLabel class="form-control select-agendaEquipe5"
-									value="#{AtendimentoController.atendimento.procedimento.nomeProc}"
-									size="31" id="descProc1" />
-							</p:outputPanel>
+								style="margin-left: 1.4%; font-weight:bold !important;" />
+							<p:selectOneMenu label="Procedimentos"
+								value="#{AtendimentoController.atendimento.procedimento.idProc}"
+								style="margin-bottom: 1%; width: 100%;">
+								<f:selectItems var="proc"
+									value="#{AtendimentoController.listaProcedimentos}"
+									itemLabel="#{proc.nomeProc}" itemValue="#{proc.idProc}" />
+							</p:selectOneMenu>
+						</b:column>
+					</p:row>
+					
+					<p:row>
+						<b:column span="12" rendered="#{AtendimentoController.atendimento.programa.permiteAlteracaoCidNaEvolucao == true}">
+							<p:outputLabel value="CID" severity="info"
+								style="margin-left: 1.4%; font-weight:bold !important;" />
+							<p:selectOneMenu required="true" requiredMessage="CID campo obrigatório!"
+								value="#{AtendimentoController.atendimento.cidPrimario.idCid}" 
+								style="margin-bottom: 1%; width: 100%;">
+								<f:selectItem itemLabel="Selecione um CID" itemValue=""/>
+								<f:selectItems var="cid"
+									value="#{AtendimentoController.listaCids}"
+									itemLabel="#{cid.descCidAbrev}" itemValue="#{cid.idCid}" />
+							</p:selectOneMenu>
 						</b:column>
 					</p:row>
 
@@ -159,34 +170,6 @@ setTimeout("jQuery("#mylink").click();", 50);
 				</h:form>
 			</div>
 		</div>
-		
-		<p:dialog widgetVar="dialogAlterarProc" modal="true" header="Alterar Procedimento"
-			resizable="false" showEffect="clip" hideEffect="clip">
-
-			<h:form id="dlgAlterarProc">
-
-				<p:selectOneMenu label="Procedimentos" value="#{AtendimentoController.atendimento.procedimento.idProc}" 
-					style="margin-top: -13px">
-					<f:selectItems var="proc" value="#{AtendimentoController.listaProcedimentos}"
-					 itemLabel="#{proc.nomeProc}" itemValue="#{proc.idProc}" />
-				</p:selectOneMenu>
-
-				<div align="center">
-					<p:separator />
-
-					<p:commandButton look="success" value="Alterar" style="float:left;"
-						action="#{AtendimentoController.listarProcedimentoPorId()}"
-						icon="ui-icon-check" update=":formConsAge :msgPagina" class="btn-sim"
-						oncomplete="PF('dialogAlterarProc').hide();"/>
-						
-
-					<p:commandButton value="Cancelar" class="btn-nao"
-						oncomplete="PF('dialogAlterarProc').hide();" look="info" ajax="true"
-						icon="ui-icon-close" style="margin-left:5px;float:right;" />
-				</div>
-			</h:form>
-		</p:dialog>
-		
 
 		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
 			resizable="false" showEffect="clip" hideEffect="clip">

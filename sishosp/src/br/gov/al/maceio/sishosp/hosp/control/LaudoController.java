@@ -321,10 +321,14 @@ public class LaudoController implements Serializable {
         */
 
         for (CidBean cidBean : listaCidsLaudo) {
-            if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc())) {
-                throw new ProjetoException("Este procedimento possui(em) Cid(s) associado(s), "
-                        + "por favor selecione apenas Cids permitidos no SIGTAP ");
-            }
+        	validarCidPorProcedimento(cidBean, dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc());
+        }
+    }
+    
+    public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento) throws ProjetoException {
+    	if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), data, codigoProcedimento)) {
+            throw new ProjetoException("Este procedimento possui(em) Cid(s) associado(s), "
+                    + "por favor selecione apenas Cids permitidos no SIGTAP ");
         }
     }
 

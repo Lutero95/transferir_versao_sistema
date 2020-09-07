@@ -14,6 +14,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -35,8 +36,9 @@ public class ProgramaDAO {
         Boolean retorno = false;
         PreparedStatement ps = null;
 
-        String sql = "insert into hosp.programa (descprograma, cod_unidade, cod_procedimento, permite_paciente_sem_laudo, dias_paciente_sem_laudo_ativo)"
-                + " values (?, ?, ?, ?, ?) RETURNING id_programa;";
+        String sql = "insert into hosp.programa (descprograma, cod_unidade, cod_procedimento, permite_paciente_sem_laudo, "+
+                "dias_paciente_sem_laudo_ativo, permite_alteracao_cid_evolucao) "+
+                " values (?, ?, ?, ?, ?, ?) RETURNING id_programa;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -44,11 +46,12 @@ public class ProgramaDAO {
             ps.setInt(2, user_session.getUnidade().getId());
             ps.setInt(3, prog.getProcedimento().getIdProc());
             ps.setBoolean(4, prog.isPermitePacienteSemLaudo());
-            if (prog.getDiasPacienteSemLaudoAtivo() != null) {
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(prog.getDiasPacienteSemLaudoAtivo())) {
                 ps.setInt(5, prog.getDiasPacienteSemLaudoAtivo());
             } else {
                 ps.setNull(5, Types.NULL);
             }
+            ps.setBoolean(6, prog.isPermiteAlteracaoCidNaEvolucao());
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -94,7 +97,7 @@ public class ProgramaDAO {
 
         Boolean retorno = false;
         String sql = "update hosp.programa set descprograma = ?, cod_procedimento = ?, "
-                + "permite_paciente_sem_laudo = ?, dias_paciente_sem_laudo_ativo = ? "
+                + "permite_paciente_sem_laudo = ?, dias_paciente_sem_laudo_ativo = ?, permite_alteracao_cid_evolucao = ? "
                 + " where id_programa = ?";
 
         try {
@@ -104,7 +107,8 @@ public class ProgramaDAO {
             stmt.setInt(2, prog.getProcedimento().getIdProc());
             stmt.setBoolean(3, prog.isPermitePacienteSemLaudo());
             stmt.setInt(4, prog.getDiasPacienteSemLaudoAtivo());
-            stmt.setInt(5, prog.getIdPrograma());
+            stmt.setBoolean(5, prog.isPermiteAlteracaoCidNaEvolucao());
+            stmt.setInt(6, prog.getIdPrograma());
             stmt.executeUpdate();
 
             String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
@@ -471,7 +475,8 @@ public class ProgramaDAO {
 
         ProgramaBean programa = new ProgramaBean();
         GrupoDAO gDao = new GrupoDAO();
-        String sql = "select id_programa, descprograma, cod_procedimento, permite_paciente_sem_laudo, dias_paciente_sem_laudo_ativo"
+        String sql = "select id_programa, descprograma, cod_procedimento, permite_paciente_sem_laudo, "
+                + "dias_paciente_sem_laudo_ativo, permite_alteracao_cid_evolucao "
                 + " from hosp.programa where id_programa = ? order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
@@ -485,6 +490,7 @@ public class ProgramaDAO {
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.setPermitePacienteSemLaudo(rs.getBoolean("permite_paciente_sem_laudo"));
                 programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
+                programa.setPermiteAlteracaoCidNaEvolucao(rs.getBoolean("permite_alteracao_cid_evolucao"));
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
                 programa.setListaGrupoFrequenciaDTO(gDao.buscaGruposComFrequecia(idPrograma, con));
                 programa.setListaProcedimentoCboEspecificoDTO(listarProcedimentosIhCbosEspecificos(idPrograma, con));
@@ -543,7 +549,7 @@ public class ProgramaDAO {
     public ProgramaBean listarProgramaPorIdComConexao(int id, Connection conAuxiliar) throws SQLException, ProjetoException {
 
         ProgramaBean programa = new ProgramaBean();
-        String sql = "select id_programa, descprograma, cod_procedimento from hosp.programa where id_programa = ? order by descprograma";
+        String sql = "select id_programa, descprograma, cod_procedimento, permite_alteracao_cid_evolucao from hosp.programa where id_programa = ? order by descprograma";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, id);
@@ -552,6 +558,7 @@ public class ProgramaDAO {
                 programa = new ProgramaBean();
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setPermiteAlteracaoCidNaEvolucao(rs.getBoolean("permite_alteracao_cid_evolucao"));
             }
 
         } catch (SQLException sqle) {

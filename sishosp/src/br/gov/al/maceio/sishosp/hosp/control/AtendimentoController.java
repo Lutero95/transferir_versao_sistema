@@ -292,6 +292,8 @@ public class AtendimentoController implements Serializable {
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
+            listarTodosTiposProcedimentos();
+            listarCidsPorPacienteInstituicao();
         }
     }
 
@@ -395,7 +397,10 @@ public class AtendimentoController implements Serializable {
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
         }
 
+        buscarDadosProcedimentoPorId();
         validarDadosSigtap();
+        buscarDadosCidPorId();
+        validarCidSigtap();
         boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
 
         if (alterou == true) {
@@ -431,6 +436,13 @@ public class AtendimentoController implements Serializable {
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+        }
+    }
+    
+    private void validarCidSigtap() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap && this.atendimento.getPrograma().isPermiteAlteracaoCidNaEvolucao()) {
+            LaudoController laudoController = new LaudoController();
+            laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimentoInicio(), atendimento.getProcedimento().getCodProc());
         }
     }
     
@@ -818,26 +830,22 @@ public class AtendimentoController implements Serializable {
             listaAtendimentos1Ajustes();
         }
     }
-
     
-    public void listarProcedimentosPorCboDoProfissional() throws ProjetoException {
-        this.listaProcedimentos = procedimentoDAO.listarProcedimentosPorCbo
-        			(atendimento.getFuncionario().getCbo().getCodCbo(), atendimento.getPrograma().getIdPrograma());
-        adicionaProcedimentoAtualNaLista();
+    private void listarTodosTiposProcedimentos() throws ProjetoException {
+    	this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
     }
     
-    private void adicionaProcedimentoAtualNaLista() {
-    	List<Integer> listaIdProcedimentos = new ArrayList<>();
-    	for (ProcedimentoBean procedimento : this.listaProcedimentos) {
-			listaIdProcedimentos.add(procedimento.getIdProc());
-		}
-    	
-    	if(!listaIdProcedimentos.contains(this.atendimento.getProcedimento().getIdProc()))
-    		this.listaProcedimentos.add(this.atendimento.getProcedimento());
+    private void listarCidsPorPacienteInstituicao() throws ProjetoException {
+    	this.listaCids = cidDao.listarCidsPorPacienteInstituicao(atendimento.getId());
     }
     
-    public void listarProcedimentoPorId() throws ProjetoException {
+    private void buscarDadosProcedimentoPorId() throws ProjetoException {
     	this.atendimento.setProcedimento(procedimentoDAO.listarProcedimentoPorId(this.atendimento.getProcedimento().getIdProc()));
+    }
+    
+    private void buscarDadosCidPorId() throws ProjetoException {
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
+    	this.atendimento.setCidPrimario(cidDao.buscaCidPorId(atendimento.getCidPrimario().getIdCid()));
     }
 
     public AtendimentoBean getAtendimento() {
