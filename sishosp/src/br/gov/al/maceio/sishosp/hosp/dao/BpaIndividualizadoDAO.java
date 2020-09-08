@@ -67,7 +67,7 @@ public class BpaIndividualizadoDAO {
 				" where sa.atendimento_realizado is true and hc.status='A' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
-				" and pm.competencia_atual = ? \n" +
+				" and pm.competencia_atual = ? and proc.ativo = 'S' \n" +
 				" group by \n" +
 				" proc.codproc, \n" +
 				" emp.cnes, pm.competencia_atual, \n" +

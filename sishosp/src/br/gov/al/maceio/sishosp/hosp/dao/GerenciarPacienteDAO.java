@@ -52,7 +52,7 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
                 + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
                 + " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) "
-                + " where p.cod_unidade = ? ";
+                + " where p.cod_unidade = ? and pr.ativo = 'S' ";
         if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
             sql = sql + " and  p.codprograma = ?";
         }
@@ -175,7 +175,7 @@ public class GerenciarPacienteDAO {
                 " left join hosp.grupo g on (g.id_grupo = p.codgrupo) " +
                 " left join hosp.programa prog on (prog.id_programa = p.codprograma) " +
                 " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) " +
-                " where p.cod_unidade = ? " +
+                " where p.cod_unidade = ? and pr.ativo = 'S' " +
                 "  and p.status ='A' " +
                 " order by pa.nome";
 
@@ -1375,7 +1375,7 @@ public class GerenciarPacienteDAO {
             String sql = "select p.id, p.nome, p.codproc from hosp.paciente_instituicao_proncedimento pip " +
                     "join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
                     "join hosp.proc p on pip.id_procedimento = p.id " +
-                    "where pi.id = ? order by p.nome";
+                    "where pi.id = ? and p.ativo = 'S' order by p.nome";
 
             conexao = ConnectionFactory.getConnection();
             ps = null;

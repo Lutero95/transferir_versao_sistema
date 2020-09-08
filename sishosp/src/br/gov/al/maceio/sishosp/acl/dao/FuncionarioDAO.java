@@ -156,7 +156,7 @@ public class FuncionarioDAO {
 				+ " left join hosp.proc on proc.id = us.codprocedimentopadrao"
 				+ " left join hosp.programa progortese on progortese.id_programa  = p.programa_ortese_protese"
 				+ " left join hosp.grupo grupoortese on grupoortese.id_grupo  = p.grupo_ortese_protese "
-				+ " where (us.cpf = ?) and us.ativo = 'S'";
+				+ " where (us.cpf = ?) and us.ativo = 'S' ";
 
 		FuncionarioBean funcionario = null;
 		String setoresUsuario = "";
@@ -1261,17 +1261,17 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = " select distinct a.* from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
+		String sql = " select distinct a.* from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, funcionarios.ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo \n" +
-				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE \n" +
+				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE " +
 				"union all\n" +
-				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
+				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, funcionarios.ativo, codcbo,cbo.codigo codigocbo, cbo.descricao desccbo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade left join hosp.cbo on cbo.id = funcionarios.codcbo\n" +
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao \n" +
 				"join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" +
-				"where  fu.cod_unidade=?  AND realiza_atendimento IS TRUE \n" +
+				"where  fu.cod_unidade=?  AND realiza_atendimento IS TRUE " +
 				" ) a order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();

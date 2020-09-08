@@ -28,137 +28,6 @@ public class AtendimentoDAO {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
-	public Boolean verificarSeCboEhDoProfissionalPorEquipe(List<AtendimentoBean> lista) throws ProjetoException {
-
-		Boolean retorno = false;
-		ArrayList<Integer> listaAux = new ArrayList<>();
-		int valor = 0;
-
-		try {
-
-			con = ConnectionFactory.getConnection();
-			for (int i = 0; i < lista.size(); i++) {
-				String sql = "SELECT p.id_cbo " + "FROM hosp.proc_cbo p " + "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) "
-						+ "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " + "WHERE 1=1 " + // p.id_proc =
-						// f.codprocedimentopadrao
-						" AND f.id_funcionario = ? AND p.id_proc = ?;";
-
-				PreparedStatement stm = con.prepareStatement(sql);
-
-				stm.setLong(1, lista.get(i).getFuncionario().getId());
-				stm.setInt(2, lista.get(i).getProcedimento().getIdProc());
-
-				ResultSet rs = stm.executeQuery();
-
-				valor = 0;
-
-				while (rs.next()) {
-					valor = rs.getInt("id_cbo");
-
-					if (valor > 0) {
-						listaAux.add(lista.get(i).getProcedimento().getIdProc());
-					}
-				}
-			}
-
-			if (lista.size() == listaAux.size()) {
-				retorno = true;
-			}
-
-		} catch (SQLException ex2) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return retorno;
-	}
-
-	public String gerarMensagemSeCboNaoEhPermitidoParaProcedimento(List<AtendimentoBean> lista) throws ProjetoException {
-
-		String retorno = "";
-		Boolean permiteAtendimento = false;
-
-		try {
-
-			con = ConnectionFactory.getConnection();
-			for (int i = 0; i < lista.size(); i++) {
-				permiteAtendimento = false;
-
-				String sql = "SELECT p.id_cbo " + "FROM hosp.proc_cbo p " + "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) "
-						+ "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " + "WHERE 1=1 " + // p.id_proc =
-						// f.codprocedimentopadrao
-						" AND f.id_funcionario = ? AND p.id_proc = ?;";
-
-				PreparedStatement stm = con.prepareStatement(sql);
-
-				stm.setLong(1, lista.get(i).getFuncionario().getId());
-				stm.setInt(2, lista.get(i).getProcedimento().getIdProc());
-
-				ResultSet rs = stm.executeQuery();
-
-				while (rs.next()) {
-					permiteAtendimento = true;
-				}
-
-				if (!permiteAtendimento) {
-					retorno = retorno + "O procedimento: " + lista.get(i).getProcedimento().getNomeProc()
-							+ " não pode ser atendimento pelo CBO: " + lista.get(i).getCbo().getDescCbo() + ".\n";
-				}
-
-			}
-
-		} catch (SQLException ex2) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return retorno;
-	}
-
-	public Boolean verificarSeCboEhDoProfissionalPorProfissional(Long idProfissional, Integer idProcedimento) throws ProjetoException {
-
-		Boolean retorno = false;
-
-		String sql = "select p.id_cbo from hosp.proc_cbo p left join acl.funcionarios f on (p.id_proc = ?) left join hosp.cbo c on (c.id = p.id_cbo)"
-				+ " where p.id_proc = f.codprocedimentopadrao and c.id = p.id_cbo and f.id_funcionario = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, idProcedimento);
-			stm.setLong(2, idProfissional);
-
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				retorno = true;
-			}
-
-		} catch (SQLException ex2) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return retorno;
-	}
-
 	public Boolean realizaAtendimentoProfissional(FuncionarioBean funcionario, AtendimentoBean atendimento)
 			throws ProjetoException {
 		boolean alterou = false;
@@ -912,7 +781,9 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.programa on (programa.id_programa = a.codprograma) "
-				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) " + "where a.id_atendimento = ? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'";
+				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) "
+				+ "where a.id_atendimento = ? and coalesce(a.situacao, 'A')<> 'C' and coalesce(a1.excluido, 'N' )= 'N' "
+				+ "and pr.ativo = 'S'";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -973,7 +844,8 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
-				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'";
+				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' "
+				+ "and pr.ativo = 'S'";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1032,6 +904,7 @@ public class AtendimentoDAO {
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
 				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)" + " where a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N'"
+				+ " and pr.ativo = 'S' "
 				+ " order by a1.id_atendimentos1";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -1091,7 +964,8 @@ public class AtendimentoDAO {
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ?  and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N'"
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ?  "
+				+ "and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' "
 				+ "ORDER BY a.dtaatende DESC ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -1130,7 +1004,7 @@ public class AtendimentoDAO {
 				" left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) " +
 				" left join hosp.cbo c on (f.codcbo = c.id) " +
 				" left join hosp.proc pr on (a1.codprocedimento = pr.id) " +
-				" where a1.evolucao IS NOT NULL AND a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' " +
+				" where a1.evolucao IS NOT NULL AND a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' and pr.ativo = 'S' " +
 				" order by a.dtaatende ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -1184,7 +1058,8 @@ public class AtendimentoDAO {
 				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " + 
 				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
 				" left join hosp.cbo c on c.id  = f.codcbo  " + 
-				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' ";
+				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
+				"and p.ativo = 'S' ";
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente))
 			sql += "AND a.codpaciente = ? ";
@@ -1380,7 +1255,7 @@ public class AtendimentoDAO {
 				"join hosp.proc on proc.id = pm.id_procedimento " +
 				"where pm.id_procedimento = " +
 				"	(select id from sigtap.procedimento_mensal pm2 where pm2.id_procedimento = ? order by id desc limit 1 ) " +
-				"	and f.id_funcionario = ?) ehvalido";
+				"	and f.id_funcionario = ? and proc.ativo = 'S') ehvalido";
 		boolean ehValido = false;
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1436,7 +1311,7 @@ public class AtendimentoDAO {
 				"join hosp.proc p on a1.codprocedimento = p.id " + 
 				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
 				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
-				"where a.dtaatende between ? and ? ";
+				"where a.dtaatende between ? and ? and p.ativo = 'S' ";
 		
 		if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql = sql + " and pa.nome ilike ?";

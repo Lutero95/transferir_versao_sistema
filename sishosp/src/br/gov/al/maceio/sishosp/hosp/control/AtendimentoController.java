@@ -657,21 +657,17 @@ public class AtendimentoController implements Serializable {
 
         if(!validarSeEhNecessarioInformarGrupo()) {
             if(!validarSeEhNecessarioInformarLaudo()) {
-                boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
-                if (verificou) {
-                    boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                            atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-                    if (alterou) {
-                        getCarregaGerenciarAtendimentos();
-                        JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
-                    } else {
-                        JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
-                    }
-                } else {
-                    String mensagem = atendimentoDAO.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
-                    JSFUtil.adicionarMensagemErro(mensagem, "Erro");
-                }
+				boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe,
+						atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+						atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir,
+						atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+				if (alterou) {
+					getCarregaGerenciarAtendimentos();
+					JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+				}
             }
             else{
                 JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");

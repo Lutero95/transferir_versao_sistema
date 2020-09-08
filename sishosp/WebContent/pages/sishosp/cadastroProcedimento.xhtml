@@ -80,7 +80,7 @@
 
 											<p:selectOneRadio style="color: #2e84ce;"
 												value="#{ProcedimentoController.proc.tipoExameAuditivo}"
-												layout="grid" columns="2">
+												layout="grid" columns="2" required="true" requiredMessage="Tipo Auditivo: Campo obrigatório">
 												<f:selectItem itemLabel="Acompanhamentos"
 													itemValue="ACOMPANHAMENTOS" />
 												<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
@@ -131,6 +131,7 @@
 										severity="info" />
 									<b:selectOneMenu id="mesfiltro"
 										value="#{ProcedimentoController.filtroMesIhAnoSelecionado}"
+										disabled="#{ProcedimentoController.proc.idProc == 0 || ProcedimentoController.proc.idProc == null}"
 										style="width:250px">
 										<f:selectItems var="mesAno"
 											value="#{ProcedimentoController.listaFiltroMesIhAno}"
@@ -139,6 +140,7 @@
 								</b:column>
 								<b:column span="2" class="label-position new-col3-2">
 									<p:commandButton process="@this" immediate="true"
+										disabled="#{ProcedimentoController.proc.idProc == 0 || ProcedimentoController.proc.idProc == null}"
 										action="#{ProcedimentoController.listaDadosDoProcedimentoSelecionadoPorMesIhAnoSelecionado()}"
 										update=":frmCadProc" icon="ui-icon-search"
 										style="margin-left: 20%; margin-top: 10%;" />

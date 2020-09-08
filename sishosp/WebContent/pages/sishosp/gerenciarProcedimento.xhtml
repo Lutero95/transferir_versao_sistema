@@ -58,26 +58,15 @@
                 <p:dataTable id="dt" var="tab" rows="20" paginator="true" style="margin-top: 10px"
                              responsive="true" value="#{ProcedimentoController.listaProcedimentos}">
 
-                    <p:column>
-                        <f:facet name="header">
-                            Código
-                        </f:facet>
-
+                    <p:column headerText="Código">
                         <h:outputText value="#{tab.codProc}" />
                     </p:column>
 
-                    <p:column>
-                        <f:facet name="header">
-                            Descrição
-                        </f:facet>
-
+                    <p:column headerText="Descrição">
                         <h:outputText value="#{tab.nomeProc}"/>
                     </p:column>
 
-                    <p:column>
-                        <f:facet name="header">
-                            Ação
-                        </f:facet>
+                    <p:column headerText="Ação">
 
                         <p:commandButton tooltip="Alterar" icon="ui-icon-pencil" size="sm"
                                         class="btn-acao-table acao-editar"

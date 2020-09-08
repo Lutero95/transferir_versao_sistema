@@ -3188,7 +3188,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         		"where ppie.id_programa = ? and ( " + 
         		"	(select extract (year from age(p.dtanascimento)) idade from hosp.pacientes p " + 
         		"	where p.id_paciente = ?)" + 
-        		"between ppie.idade_minima and ppie.idade_maxima);";
+        		"between ppie.idade_minima and ppie.idade_maxima) and p.ativo = 'S';";
 
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
