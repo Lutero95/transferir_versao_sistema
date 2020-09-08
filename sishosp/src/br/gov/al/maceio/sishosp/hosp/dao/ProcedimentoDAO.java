@@ -230,9 +230,11 @@ public class ProcedimentoDAO {
 
     public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
-        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? and ativo = 'S'  order by nome";
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, " + 
+        		" idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo " + 
+        		" from hosp.proc p " + 
+        		" join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) " + 
+        		" where pu.id_unidade = ? and ativo = 'S'  order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -373,7 +375,9 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? and gera_laudo_digita is true "
+                + " from hosp.proc "
+                + " join hosp.procedimentos_unidades pu on (proc.id = pu.id_procedimento)"
+                + "where pu.id_unidade = ? and gera_laudo_digita is true "
                 + " and ativo = 'S' order by nome";
 
         try {
@@ -2355,8 +2359,9 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> listaProcedimento = new ArrayList<>();
         String sql = "select p.id, p.codproc, p.nome " + 
         		"from hosp.proc p " + 
-        		"join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " + 
-        		"where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ? and p.ativo = 'S' ; ";
+        		"join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " +
+        		"join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+        		"where pu.id_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ? and p.ativo = 'S' ; ";
         
         
         try {
