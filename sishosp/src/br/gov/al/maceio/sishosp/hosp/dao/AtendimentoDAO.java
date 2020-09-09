@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
 
 import javax.faces.context.FacesContext;
 
@@ -735,6 +736,58 @@ public class AtendimentoDAO {
 			}
 		}
 		return quantidadeDePendenciasAnterioresDeEvolucao;
+	}
+	
+	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
+
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1  " + 
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " + 
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente  " + 
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento  " + 
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade  " + 
+				"	JOIN hosp.unidade u ON u.id = ?  " + 
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa  " + 
+				"	join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id  " + 
+				"	join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa  " + 
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo  " + 
+				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " + 
+				" 	where a.presenca='S' and a1.id_situacao_atendimento is null  " + 
+				"	and a.codprograma = ceu.codprograma  " + 
+				"	and a.codgrupo = ceu.codgrupo  " + 
+				"	and a.dtaatende>= ceu.inicio_evolucao " + 
+				"	and a.dtaatende<current_date  " + 
+				"	and a1.codprofissionalatendimento = ? " + 
+				"	and coalesce(a.situacao,'A')<>'C' " + 
+				"	and coalesce(a1.excluido,'N' )='N' " + 
+				"	group by p.descprograma, g.descgrupo";
+		
+		List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucao = new ArrayList<>();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setInt(1, user_session.getUnidade().getId());
+			preparedStatement.setLong(2, user_session.getId());
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupo = new PendenciaEvolucaoProgramaGrupoDTO();
+				pendenciaEvolucaoProgramaGrupo.setTotalPendencia(rs.getInt("total"));
+				pendenciaEvolucaoProgramaGrupo.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				pendenciaEvolucaoProgramaGrupo.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				listaPendenciasEvolucao.add(pendenciaEvolucaoProgramaGrupo);
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaPendenciasEvolucao;
 	}
 
 	public List<AtendimentoBean> carregaAtendimentosDoProfissionalNaEquipe(AtendimentoBean atendimento,
