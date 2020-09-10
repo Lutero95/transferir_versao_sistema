@@ -136,7 +136,7 @@ public class FuncionarioDAO {
 
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario) throws ProjetoException {
 
-			String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
+			String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, us.realiza_atendimento, "
 				+ "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
 				+ "then true else false end as usuarioativo, p.opcao_atendimento, atribuir_cor_tabela_tela_evolucao_profissional, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
@@ -172,6 +172,7 @@ public class FuncionarioDAO {
 				funcionario.setNome(rs.getString("descfuncionario"));
 				funcionario.setSenha(rs.getString("senha"));
 				funcionario.setEmail(rs.getString("email"));
+				funcionario.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
 				funcionario.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 				funcionario.getUnidade().setId(rs.getInt("codunidade"));
 				funcionario.getUnidade().setCodEmpresa(rs.getInt("cod_empresa"));

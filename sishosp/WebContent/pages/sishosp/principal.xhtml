@@ -7,114 +7,156 @@
                 template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{novidadeController.listarNovidades()}"/>
+		<f:viewAction action="#{AtendimentoController.listarTotalPendencias()}"/>
 	</f:metadata>
+	
+	
     <ui:define name="content">
+	<style>
+	.ui-dialog.ui-widget-content .ui-dialog-titlebar {
+		padding: 7px 15px;
+		border-bottom: 1px solid #eee;
+		border: none !important;
+		background-color: red !important;
+	}
+	</style>
 
-        <h:form id="form">
+		<h:form id="form">
 
-            <div class="sistemas-sel2">
-                <p:outputPanel>
+			<div class="sistemas-sel2">
+				<p:outputPanel>
 
-                    <div class="ui-grid ui-grid-responsive sis-sel1">
+					<div class="ui-grid ui-grid-responsive sis-sel1">
 
-                        <div class="ui-grid-row">
+						<div class="ui-grid-row">
 
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoCadastroPaciente}">
-                                    <h:link
-                                            outcome="/pages/sishosp/cadastroPaciente.xhtml?tipo=1faces-redirect=true">
-                                        <p:graphicImage class="img-sistema1 fade"
-                                                        value="../../imgs/cadastro_paciente.png"
-                                                        alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">CADASTRO PACIENTE</h3>
-                                     </p:outputPanel>
-                                </div>
-                           
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoCadastroPaciente}">
+									<h:link
+										outcome="/pages/sishosp/cadastroPaciente.xhtml?tipo=1faces-redirect=true">
+										<p:graphicImage class="img-sistema1 fade"
+											value="../../imgs/cadastro_paciente.png"
+											alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">CADASTRO PACIENTE</h3>
+								</p:outputPanel>
+							</div>
 
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoInsercaoPaciente}">
+									<h:link
+										outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
+										<p:graphicImage class="img-sistema1 fade"
+											value="../../imgs/insercao_paciente.png"
+											alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">INSERIR PACIENTE TERAPIA</h3>
+								</p:outputPanel>
+							</div>
 
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoInsercaoPaciente}">
-                                    <h:link
-                                            outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
-                                        <p:graphicImage class="img-sistema1 fade"
-                                                        value="../../imgs/insercao_paciente.png"
-                                                        alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">INSERIR PACIENTE TERAPIA</h3>
-                                        </p:outputPanel>
-                                </div>
-                        
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoLaudo}">
+									<h:link
+										outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?tipo=1faces-redirect=true">
+										<p:graphicImage class="img-sistema1 fade"
+											value="../../imgs/laudos.png" alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">LAUDOS</h3>
+								</p:outputPanel>
+							</div>
 
-
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoLaudo}">
-                                    <h:link
-                                            outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?tipo=1faces-redirect=true">
-                                        <p:graphicImage class="img-sistema1 fade"
-                                                        value="../../imgs/laudos.png" alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">LAUDOS</h3>
- </p:outputPanel>
-                                </div>
-                           
-                        </div>
-                    </div>
+						</div>
+					</div>
 
 
-                    <div class="ui-grid ui-grid-responsive sis-sel2">
+					<div class="ui-grid ui-grid-responsive sis-sel2">
+						<div class="ui-grid-row">
 
-                        <div class="ui-grid-row" >
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAgenda}">
-                                    <h:link
-                                            outcome="/pages/sishosp/agendaMedica.xhtml?faces-redirect=true">
-                                        <p:graphicImage class="img-sistema2 fade"
-                                                        value="../../imgs/agenda.png" alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">AGENDA</h3>
- </p:outputPanel>
-                                </div>
-                           
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAgenda}">
+									<h:link
+										outcome="/pages/sishosp/agendaMedica.xhtml?faces-redirect=true">
+										<p:graphicImage class="img-sistema2 fade"
+											value="../../imgs/agenda.png" alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">AGENDA</h3>
+								</p:outputPanel>
+							</div>
 
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel
-                                    rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoConsultarAgendamentos}">
-                                    <h:link
-                                            outcome="/pages/sishosp/consAgendamentos.xhtml?faces-redirect=true">
-                                        <p:graphicImage class="img-sistema2 fade"
-                                                        value="../../imgs/consulta_agendamento.png"
-                                                        alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">CONSULTAR AGENDAMENTOS</h3>
-                                     </p:outputPanel>
-                                </div>
-                           
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoConsultarAgendamentos}">
+									<h:link
+										outcome="/pages/sishosp/consAgendamentos.xhtml?faces-redirect=true">
+										<p:graphicImage class="img-sistema2 fade"
+											value="../../imgs/consulta_agendamento.png"
+											alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">CONSULTAR AGENDAMENTOS</h3>
+								</p:outputPanel>
+							</div>
 
-                           
-                                <div class="ui-grid-col-4">
-                                 <p:outputPanel rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAtendimentos}">
-                                    <h:link
-                                            outcome="/pages/sishosp/atendimento.xhtml?faces-redirect=true">
-                                        <p:graphicImage class="img-sistema2 fade"
-                                                        value="../../imgs/atendimentos.png" alt="Dados Cadastrais"/>
-                                    </h:link>
-                                    <h3 class="texto-h3">ATENDIMENTOS</h3>
-                                     </p:outputPanel>
-                                </div>
-                           
+							<div class="ui-grid-col-4">
+								<p:outputPanel
+									rendered="#{MBFuncionarios.atalhosAmbulatorialDTO.atalhoAtendimentos}">
+									<h:link
+										outcome="/pages/sishosp/atendimento.xhtml?faces-redirect=true">
+										<p:graphicImage class="img-sistema2 fade"
+											value="../../imgs/atendimentos.png" alt="Dados Cadastrais" />
+									</h:link>
+									<h3 class="texto-h3">ATENDIMENTOS</h3>
+								</p:outputPanel>
+							</div>
+						</div>
+					</div>
+				</p:outputPanel>
+			</div>
+		</h:form>
 
-                        </div>
-                    </div>
-                </p:outputPanel>
-            </div>
+		<p:dialog header="Pendências de Evolução" widgetVar="dlgPendencias" 
+			modal="true" minHeight="40" width="700" resizable="false" responsive="true" dynamic="true"
+			rendered="#{AtendimentoController.visualizouDialogPendencias != 'Sim'}" >
+			<h:form>
+				<div align="center">
+					<STRONG> <h:outputText style="font-size:20px; color: #1d5987;"
+							value="ATENÇÃO, Você Possui um Total de #{AtendimentoController.totalPendenciaEvolucao}
+							Pendência(s) de Evolução!" />
+					</STRONG>
+				</div>
+				<br />
+				<p:dataTable var="pendencia"
+					value="#{AtendimentoController.listaPendenciasEvolucaoProgramaGrupo}"
+					emptyMessage="Nenhuma pendência de evolução" rows="10"
+					paginator="true" paginatorPosition="bottom" reflow="true">
 
-        </h:form>
+					<p:column headerText="Total" width="20%">
+						<div align="center">
+							<STRONG> 
+								<h:outputText style="font-size:18px;" value="#{pendencia.totalPendencia}" />
+							</STRONG>
+						</div>
+					</p:column>
+
+					<p:column headerText="Programa">
+						<h:outputText value="#{pendencia.programa.descPrograma}" />
+					</p:column>
+
+					<p:column headerText="Grupo">
+						<h:outputText value="#{pendencia.grupo.descGrupo}" />
+					</p:column>
+				</p:dataTable>
+				<br />
+
+				<div align="center">
+					<p:commandButton value="Fechar" action="#{AtendimentoController.marcarDialogPendenciasComoVisualizado()}" />
+				</div>
+			</h:form>
+		</p:dialog>
+
 		<ui:include src="../comum/dialogs/dialogNovidades.xhtml"/>
 		<ui:include src="../comum/dialogs/dialogDescricaoNovidade.xhtml"/>
     </ui:define>

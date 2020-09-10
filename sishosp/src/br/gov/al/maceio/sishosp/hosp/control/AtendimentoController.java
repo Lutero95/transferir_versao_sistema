@@ -20,6 +20,8 @@ import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
+
 import org.primefaces.event.CellEditEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -77,6 +79,9 @@ public class AtendimentoController implements Serializable {
     private  Date dataAtende;
     private Boolean existeCargaSigtapParaEsteMesOuAnterior;
     private EspecialidadeBean especialidade;
+    private List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo;
+    private String visualizouDialogPendencias; 
+    private Integer totalPendenciaEvolucao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -125,6 +130,8 @@ public class AtendimentoController implements Serializable {
         this.cidDao = new CidDAO();
         this.listaCids = new ArrayList<>();
         especialidade = new EspecialidadeBean();
+        this.listaPendenciasEvolucaoProgramaGrupo = new ArrayList<>();
+        this.visualizouDialogPendencias = new String(); 
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -847,6 +854,34 @@ public class AtendimentoController implements Serializable {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
     	this.atendimento.setCidPrimario(cidDao.buscaCidPorId(atendimento.getCidPrimario().getIdCid()));
     }
+    
+    public void marcarDialogPendenciasComoVisualizado() {
+    	JSFUtil.fecharDialog("dlgPendencias");
+    	this.visualizouDialogPendencias = SIM;
+    	SessionUtil.adicionarNaSessao(this.visualizouDialogPendencias, "visualizouPendencias");
+    }
+    
+    public void listarTotalPendencias() throws ProjetoException {
+    	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    			.getSessionMap().get("obj_usuario");
+    	
+    	this.visualizouDialogPendencias = (String) FacesContext.getCurrentInstance().getExternalContext()
+    			.getSessionMap().get("visualizouPendencias");
+    	
+    	if(user_session.getRealizaAtendimento() && 
+    			(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.visualizouDialogPendencias) || !this.visualizouDialogPendencias.equals(SIM)) ) {
+    		this.listaPendenciasEvolucaoProgramaGrupo = atendimentoDAO.retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado();
+    		setaTotalPendenciasEvolucao(this.listaPendenciasEvolucaoProgramaGrupo);
+    		JSFUtil.abrirDialog("dlgPendencias");
+    	}
+    }
+    
+    private void setaTotalPendenciasEvolucao(List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciaEvolucaoProgramaGrupo) {
+    	this.totalPendenciaEvolucao = 0;
+    	for (PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupoDTO : listaPendenciaEvolucaoProgramaGrupo) {
+    		this.totalPendenciaEvolucao += pendenciaEvolucaoProgramaGrupoDTO.getTotalPendencia();			
+		}
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
@@ -1133,4 +1168,26 @@ public class AtendimentoController implements Serializable {
     public void setEspecialidade(EspecialidadeBean especialidade) {
         this.especialidade = especialidade;
     }
+
+	public List<PendenciaEvolucaoProgramaGrupoDTO> getListaPendenciasEvolucaoProgramaGrupo() {
+		return listaPendenciasEvolucaoProgramaGrupo;
+	}
+
+	public void setListaPendenciasEvolucaoProgramaGrupo(
+			List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo) {
+		this.listaPendenciasEvolucaoProgramaGrupo = listaPendenciasEvolucaoProgramaGrupo;
+	}
+
+	public String getVisualizouDialogPendencias() {
+		return visualizouDialogPendencias;
+	}
+
+	public void setVisualizouDialogPendencias(String visualizouDialogPendencias) {
+		this.visualizouDialogPendencias = visualizouDialogPendencias;
+	}
+
+	public Integer getTotalPendenciaEvolucao() {
+		return totalPendenciaEvolucao;
+	}
+	
 }
