@@ -77,6 +77,7 @@ public class AtendimentoController implements Serializable {
     private  Date dataAtende;
     private Boolean existeCargaSigtapParaEsteMesOuAnterior;
     private EspecialidadeBean especialidade;
+    private String descricaoEvolucaoPadrao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -831,6 +832,15 @@ public class AtendimentoController implements Serializable {
         }
     }
     
+    public void adicionarTextoEvolucaoPadraoNoCampoEvolucao() {
+    	String textoEvolucao = this.atendimento.getEvolucao();
+    	if(VerificadorUtil.verificarSeObjetoNulo(textoEvolucao))
+    		textoEvolucao = new String();
+    	
+    	textoEvolucao += this.descricaoEvolucaoPadrao;
+    	this.atendimento.setEvolucao(textoEvolucao);
+    }
+    
     private void listarTodosTiposProcedimentos() throws ProjetoException {
     	this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
     }
@@ -1133,4 +1143,13 @@ public class AtendimentoController implements Serializable {
     public void setEspecialidade(EspecialidadeBean especialidade) {
         this.especialidade = especialidade;
     }
+
+	public String getDescricaoEvolucaoPadrao() {
+		return descricaoEvolucaoPadrao;
+	}
+
+	public void setDescricaoEvolucaoPadrao(String descricaoEvolucaoPadrao) {
+		this.descricaoEvolucaoPadrao = descricaoEvolucaoPadrao;
+	}
+    
 }
