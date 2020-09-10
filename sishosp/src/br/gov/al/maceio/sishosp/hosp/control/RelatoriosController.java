@@ -449,7 +449,8 @@ public class RelatoriosController implements Serializable {
 			ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 			setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 			map.put("diassemanalista", diasSemanaInteger);
-
+			if ((prof != null) && (prof.getId() != null))
+				map.put("codprofissional", this.prof.getId());
 			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 

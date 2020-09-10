@@ -178,6 +178,37 @@
 
 					<b:row>
 
+						<b:column span="2"
+								  class="label-position new-data-size new-comple1">
+							<p:outputPanel id="outProfissional">
+
+								<b:label value="Profissional" severity="info" />
+								<p:outputPanel id="outProf">
+									<p:autoComplete
+											value="#{RelatoriosController.prof}"
+											id="autoCompleteProfissional" size="31"
+											converter="conFuncionario" required="false"
+											requiredMessage="Profissional: Campo obrigatório!"
+											class="select-agendaEquipe4"
+											completeMethod="#{insercaoProfissionalEquipeController.listaProfissionalAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.nome}">
+									</p:autoComplete>
+
+									<p:commandButton id="btBusProf" icon="ui-icon-search"
+													 immediate="true"
+													 action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+													 process="@this" update="formConsultProf"
+													 oncomplete="PF('dlgConsultaProf').show();" />
+								</p:outputPanel>
+
+							</p:outputPanel>
+						</b:column>
+					</b:row>
+
+					<b:row>
+
 					<b:column span="3"
 							  class="label-position new-data-size new-comple1">
 						<b:label value="Especialidade" severity="info" />
@@ -459,6 +490,38 @@
 
 					</b:dataTable>
 				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultaProf"
+				  dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsultProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							 value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+							 var="profi" display="Nenhum Profissional">
+
+					<h:column>
+						<f:facet name="header">
+							Profissional
+						</f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							Adicionar
+						</f:facet>
+						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+										 class="new-btn-acao-table acao-editar"
+										 update=":frm:outProf"
+										 onclick="PF('dlgConsultaProf').hide();">
+
+							<f:setPropertyActionListener value="#{profi}"
+														 target="#{RelatoriosController.prof}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

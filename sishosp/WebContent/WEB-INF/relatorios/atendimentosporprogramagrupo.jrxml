@@ -37,6 +37,7 @@
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
+	<parameter name="codprofissional" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -63,6 +64,7 @@ AND (($P{codunidade} IS NOT NULL AND a.cod_unidade=  $P{codunidade}) OR (( $P{co
 and ((   $P{id_situacao_atendimento}     is not null and sa.id =   $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
 and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
+and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento =  $P{codprofissional}  ) or (( $P{codprofissional}   = 0) or ( $P{codprofissional}  is null)))
 and ((  $P{codespecialidade}  is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or ( $P{codespecialidade}  is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 order by 1]]>
