@@ -66,7 +66,7 @@
 	<parameter name="ano" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct(hosp.listagrupospacienteatendimentosmesano(v.id_paciente,v.id_programa, 7, 2020))grupos,  v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
+		<![CDATA[select distinct(hosp.listagrupospacienteatendimentosmesano(v.id_paciente,v.id_programa, $P{mes} , $P{ano} ))grupos,  v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
 	, (select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
@@ -108,9 +108,8 @@ LEFT JOIN hosp.cid c1 ON c1.cod = coalesce(l.cid1, (select hosp.retornaultimoidc
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
- join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 WHERE 1=1
-and sa.atendimento_realizado is true
+and a.presenca='S'
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
 and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))

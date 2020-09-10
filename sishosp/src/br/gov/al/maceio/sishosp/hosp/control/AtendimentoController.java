@@ -872,6 +872,7 @@ public class AtendimentoController implements Serializable {
     			(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.visualizouDialogPendencias) || !this.visualizouDialogPendencias.equals(SIM)) ) {
     		this.listaPendenciasEvolucaoProgramaGrupo = atendimentoDAO.retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado();
     		setaTotalPendenciasEvolucao(this.listaPendenciasEvolucaoProgramaGrupo);
+    		if (listaPendenciasEvolucaoProgramaGrupo.size()>0)
     		JSFUtil.abrirDialog("dlgPendencias");
     	}
     }

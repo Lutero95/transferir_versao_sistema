@@ -19,13 +19,12 @@ join hosp.atendimentos1 a1 on a.id_atendimento = a1.id_atendimento
 join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario
 join hosp.especialidade e on f.codespecialidade = e.id_especialidade 
 join hosp.pacientes p on a.codpaciente = p.id_paciente 
- join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 where a.codprograma =  $P{codprograma} 
 and a.codpaciente= $P{codpaciente} 
 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, '')<>'S'
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
-and sa.atendimento_realizado is true
+and a.presenca='S'
 order by a.dtaatende]]>
 	</queryString>
 	<field name="dtaatende" class="java.sql.Timestamp">
