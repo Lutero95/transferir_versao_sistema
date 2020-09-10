@@ -2334,7 +2334,7 @@ public class ProcedimentoDAO {
                 "		union " +
                 "	-- PROCEDIMENTO PACIENTE INSTITUICAO \n" +
                 "	select p.id, p.codproc, p.nome from hosp.proc p " +
-                "	join hosp.paciente_instituicao_proncedimento pip on p.id = pip.id_procedimento " +
+                "	join hosp.paciente_instituicao_procedimento pip on p.id = pip.id_procedimento " +
                 "	join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
                 "	where p.cod_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
                 "		union " +

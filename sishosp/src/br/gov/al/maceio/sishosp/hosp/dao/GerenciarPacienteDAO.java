@@ -1372,7 +1372,7 @@ public class GerenciarPacienteDAO {
 
         List<ProcedimentoBean> lista = new ArrayList<>();
         try {
-            String sql = "select p.id, p.nome, p.codproc from hosp.paciente_instituicao_proncedimento pip " +
+            String sql = "select p.id, p.nome, p.codproc from hosp.paciente_instituicao_procedimento pip " +
                     "join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
                     "join hosp.proc p on pip.id_procedimento = p.id " +
                     "where pi.id = ? order by p.nome";

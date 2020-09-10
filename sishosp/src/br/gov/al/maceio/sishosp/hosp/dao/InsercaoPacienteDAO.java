@@ -1112,7 +1112,7 @@ public class InsercaoPacienteDAO {
 	public void inserirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, List<ProcedimentoBean> lista,
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "INSERT INTO hosp.paciente_instituicao_proncedimento " + 
+		String sql = "INSERT INTO hosp.paciente_instituicao_procedimento " +
 				"(id_paciente_instituicao, id_procedimento) VALUES(?, ?);";
 
 		try {
@@ -1136,7 +1136,7 @@ public class InsercaoPacienteDAO {
 	public void excluirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, 
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "DELETE FROM hosp.paciente_instituicao_proncedimento " + 
+		String sql = "DELETE FROM hosp.paciente_instituicao_procedimento " +
 				"WHERE id_paciente_instituicao = ?;";
 
 		try {
