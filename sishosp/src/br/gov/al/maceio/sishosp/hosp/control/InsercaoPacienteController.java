@@ -996,6 +996,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void validarCidParaAdicionar(CidBean cidSelecionado) {
+        if (insercao.getPrograma().getListaCidsPermitidos()!=null)
     	for (CidBean cid : insercao.getPrograma().getListaCidsPermitidos()) {
 			if(cid.getIdCid().equals(cidSelecionado.getIdCid())) {
 				JSFUtil.adicionarMensagemSucesso("Este CID já foi adicionado", "");
@@ -1012,7 +1013,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void inserirPacienteSemLaudo() throws ProjetoException {
+        if ((listaCidsAux!=null) && (!listaCidsAux.isEmpty()))
     	insercao.getPrograma().setListaCidsPermitidos(listaCidsAux);
+        if ((listaProcedimentosAux!=null) && (!listaProcedimentosAux.isEmpty()))
     	insercao.getPrograma().setListaProcedimentosPermitidos(listaProcedimentosAux);
     	if(!listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
     			&& !listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
@@ -1027,7 +1030,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public boolean listaProcedimentosPermitidosEstaVazia(List<ProcedimentoBean> listaProcedimentosPermitidos) {
-    	if(listaProcedimentosPermitidos.isEmpty()) {
+    	if ((listaProcedimentosPermitidos==null) ||  (listaProcedimentosPermitidos.isEmpty())) {
     		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um procedimento", "Atenção");
     		return true;
     	}
@@ -1035,7 +1038,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public boolean listaCidsPermitidosEstaVazia(List<CidBean> listaCidsPermitidos) {
-    	if(listaCidsPermitidos.isEmpty()) {
+    	if ((listaCidsPermitidos==null) || (listaCidsPermitidos.isEmpty())) {
     		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um CID", "Atenção");
     		return true;
     	}

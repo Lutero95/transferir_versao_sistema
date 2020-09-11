@@ -344,28 +344,6 @@
 
                         </b:row>
 
-                        <b:row>
-                            <b:column span="3" class="label-position" rendered="false">
-                                <p:outputLabel value="Encaixe:"
-                                               style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-                                <p:selectBooleanCheckbox label="Encaixe"
-                                                         style="margin-left: 10px;margin-top: 5px"
-                                                         value="#{InsercaoController.insercao.encaixe}">
-                                </p:selectBooleanCheckbox>
-                            </b:column>
-
-							<b:column span="3" class="label-position btn-radio-table">
-								<b:label value="Turno" severity="info" />
-								<p:selectOneRadio id="turno" value="#{InsercaoController.insercao.turno}"
-									required="true" requiredMessage="Turno: Campo obrigatório!"
-									style="margin-left:-15px;margin-top:10px">
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-								</p:selectOneRadio>
-							</b:column>
-						</b:row>
 
                         <b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
                             <p:outputPanel id="opturno">

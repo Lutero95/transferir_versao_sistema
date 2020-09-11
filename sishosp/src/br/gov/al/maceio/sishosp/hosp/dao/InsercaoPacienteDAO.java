@@ -963,6 +963,7 @@ public class InsercaoPacienteDAO {
 			for (int i = 0; i < lista.size(); i++) {
 				ps.setLong(1, idPacienteInstituicao);
 				ps.setLong(2, lista.get(i).getId());
+				
 				for (int j = 0; j < lista.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps.setInt(3, lista.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
 					ps.executeUpdate();
@@ -991,11 +992,10 @@ public class InsercaoPacienteDAO {
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps.setInt(1, insercao.getPaciente().getId_paciente());
-				ps.setDate(2,
-						DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataAtendimento()));
+				ps.setDate(2, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataAtendimento()));
 				ps.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (VerificadorUtil.verificarSeObjetoNuloOuVazio(insercao.getTurno())) {
+				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(insercao.getTurno())) {
 					ps.setString(4, insercao.getTurno());
 				} else {
 					ps.setNull(4, Types.NULL);
