@@ -7,16 +7,18 @@
 	template="../../template/template.xhtml">
 
 	<script>
-function openLink(){
-setTimeout("jQuery("#mylink").click();", 50);
-}
-</script>
+		function openLink(){
+			setTimeout("jQuery("#mylink").click();", 50);
+		}
+	</script>
 	<ui:define name="content">
 		<f:metadata>
 			<f:viewAction
 				action="#{AtendimentoController.getCarregaAtendimentoProfissional()}" />
 			<f:viewAction
 				action="#{AtendimentoController.buscarSituacoesFiltroAtendimentoRealizado()}" />
+			<f:viewAction
+				action="#{evolucaoPadraoController.listarEvolucoesPadrao()}" />	
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -135,6 +137,29 @@ setTimeout("jQuery("#mylink").click();", 50);
 						</b:column>
 					</p:row>
 					<br />
+					
+					<p:row>
+						<b:column span="12">
+							<p:outputLabel value="Texto Padrão para Evolução" severity="info"
+								style="margin-left: 1.4%; font-weight:bold !important;" />
+								
+							<p:selectOneMenu label="Evolução Padrão" id="evolucaopadrao"
+								value="#{AtendimentoController.descricaoEvolucaoPadrao}"
+								required="false" placeholder=""
+								style="margin-bottom: 1%; width: 100%;">
+								<f:selectItem itemLabel="Você pode selecionar um texto padrão para a evolução" itemValue=""/>
+								<f:selectItems var="evolucao"
+									value="#{evolucaoPadraoController.listaEvolucoesPadrao}"
+									itemLabel="#{evolucao.titulo}" itemValue="#{evolucao.descricao}" />
+									
+								<p:ajax event="itemSelect" update="campoevolucao" 
+									listener="#{AtendimentoController.adicionarTextoEvolucaoPadraoNoCampoEvolucao()}"/>	
+							</p:selectOneMenu>
+							<p:tooltip id="toolTip" for="evolucaopadrao" position="top"
+								value="Selecione um texto padrão para a Evolução para complementar o texto que será digitado no campo seguinte. Você poderá cadastrar sua evolução padrão acessando o menu Cadastro->Evolução Padrão" />
+						</b:column>
+					</p:row>
+					<br />
 
 					<p:row>
 						<b:column span="12">
@@ -142,6 +167,7 @@ setTimeout("jQuery("#mylink").click();", 50);
 								style="font-weight:bold !important; margin-left: 1.5%;" />
 
 							<p:textEditor style="height:200px;margin-bottom:30px"
+								id="campoevolucao"  allowStyles="true"
 								value="#{AtendimentoController.atendimento.evolucao}"
 								required="true" requiredMessage="Evolução: Campo obrigatório!">
 

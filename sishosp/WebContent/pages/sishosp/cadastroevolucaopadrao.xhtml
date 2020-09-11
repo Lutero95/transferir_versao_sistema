@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{evolucaoPadraoController.getEditEvolucaoPadrao()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{evolucaoPadraoController.cabecalho}" class="panel-title"/>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Título" severity="info" />
+
+							<b:inputText value="#{evolucaoPadraoController.evolucaoPadrao.titulo}" validator="CaractereEmBrancoValidator"
+								class="form-control" required="true" id="incTitulo"
+								requiredMessage="Título: Campo obrigatório!" />
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="Descrição da Evolução" severity="info" />
+
+							<p:textEditor style="height:200px;margin-bottom:30px"
+										  id="campoevolucao"  allowStyles="true"
+										  value="#{evolucaoPadraoController.evolucaoPadrao.descricao}" validator="CaractereEmBrancoValidator"
+										  required="true" requiredMessage="Evolução: Campo obrigatório!">
+
+							</p:textEditor>
+
+
+						</b:column>
+					</b:row>
+					<br />
+
+					<p:commandButton action="#{evolucaoPadraoController.cadastrarEvolucaoPadrao()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{evolucaoPadraoController.tipo == 1}" />
+
+					<p:commandButton action="#{evolucaoPadraoController.alterarEvolucaoPadrao()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{evolucaoPadraoController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciarevolucaopadrao.faces?faces-redirect=true">
+					</p:commandButton>
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>

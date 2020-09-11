@@ -80,8 +80,9 @@ public class AtendimentoController implements Serializable {
     private Boolean existeCargaSigtapParaEsteMesOuAnterior;
     private EspecialidadeBean especialidade;
     private List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo;
-    private String visualizouDialogPendencias; 
+    private String visualizouDialogPendencias;
     private Integer totalPendenciaEvolucao;
+    private String descricaoEvolucaoPadrao;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -131,7 +132,7 @@ public class AtendimentoController implements Serializable {
         this.listaCids = new ArrayList<>();
         especialidade = new EspecialidadeBean();
         this.listaPendenciasEvolucaoProgramaGrupo = new ArrayList<>();
-        this.visualizouDialogPendencias = new String(); 
+        this.visualizouDialogPendencias = new String();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -158,9 +159,9 @@ public class AtendimentoController implements Serializable {
                 atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
                 if  (buscaSessaoDTO.getCampoBusca()!=null)
-                this.campoBusca = buscaSessaoDTO.getCampoBusca();
+                    this.campoBusca = buscaSessaoDTO.getCampoBusca();
                 if ( buscaSessaoDTO.getTipoBusca()!=null)
-                this.tipoBusca = buscaSessaoDTO.getTipoBusca();
+                    this.tipoBusca = buscaSessaoDTO.getTipoBusca();
                 this.buscaEvolucao = buscaSessaoDTO.getBuscaEvolucao();
                 this.listarEvolucoesPendentes = buscaSessaoDTO.isListarEvolucoesPendentes();
             }
@@ -211,9 +212,9 @@ public class AtendimentoController implements Serializable {
         }
         SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(),
-                TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla(), this.campoBusca, this.tipoBusca, 
+                TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla(), this.campoBusca, this.tipoBusca,
                 this.buscaEvolucao, this.listarEvolucoesPendentes);
-        
+
         listarAtendimentosProfissionalNaEquipe(campoBusca, tipoBusca);
     }
 
@@ -231,25 +232,25 @@ public class AtendimentoController implements Serializable {
     public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
         if(!ehAbonoFalta(atendimento)) {
-			if (this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
-				if (quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
-					return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
-							this.atendimento.getId());
-				return null;
-			} else {
-				return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
-						this.atendimento.getId());
-			}
+            if (this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
+                if (quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
+                    return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
+                            this.atendimento.getId());
+                return null;
+            } else {
+                return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
+                        this.atendimento.getId());
+            }
         }
         return null;
     }
-    
+
     private boolean ehAbonoFalta(AtendimentoBean atendimento) {
-    	if(atendimento.getSituacaoAtendimento().isAbonoFalta()) {
-    		JSFUtil.adicionarMensagemErro("Não é possível Evoluir um Atendimento Abonado por Falta", "");
-    		return true;
-    	}
-    	return false;
+        if(atendimento.getSituacaoAtendimento().isAbonoFalta()) {
+            JSFUtil.adicionarMensagemErro("Não é possível Evoluir um Atendimento Abonado por Falta", "");
+            return true;
+        }
+        return false;
     }
 
     private boolean quantidadePendenciasEvolucaoAnteriorEhMenorQueUm() {
@@ -288,14 +289,14 @@ public class AtendimentoController implements Serializable {
 
             Integer valor = Integer.valueOf(user_session.getId().toString());
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPaciente(id);
-            
+
             this.dataAtende = this.atendimento.getDataAtendimentoInicio();
-            
+
             if(this.unidadeValidaDadosSigtap) {
-            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
-            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
+                dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+                existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
             }
-            
+
             Boolean atendimentoRealizado = (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atendimento_realizado");
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
@@ -316,26 +317,26 @@ public class AtendimentoController implements Serializable {
                 idAtendimentos = Integer.parseInt(params.get("id"));
             opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
             this.atendimento = atendimentoDAO.listarAtendimentoProfissionalPorId(idAtendimentos);
-            
+
             this.dataAtende = this.atendimento.getDataAtendimentoInicio();
-            
+
             if(this.unidadeValidaDadosSigtap) {
-            	dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
-            	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
+                dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(dataAtende);
+                existeCargaSigtapParaEsteMesOuAnterior(dataAtende, EH_EVOLUCAO);
             }
-            
+
             listAtendimentosEquipeParaExcluir = new ArrayList<AtendimentoBean>();
             verificarSeRenderizaDialogDeLaudo();
             recuperaIdEquipeDaSessao();
             listarAtendimentosEquipe();
         }
     }
-    
+
     public void executaMetodosInicializadoresAjustesAtendimentos() throws ProjetoException {
-    	verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
-    	verificaSeExisteAlgumaCargaSigtap();
-    	this.atendimentoAux.setDataAtendimentoInicio(this.atendimento.getDataAtendimentoInicio());
-    	this.atendimentoAux.setDataAtendimentoFinal(this.atendimento.getDataAtendimentoFinal());
+        verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        verificaSeExisteAlgumaCargaSigtap();
+        this.atendimentoAux.setDataAtendimentoInicio(this.atendimento.getDataAtendimentoInicio());
+        this.atendimentoAux.setDataAtendimentoFinal(this.atendimento.getDataAtendimentoFinal());
     }
 
     private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
@@ -351,16 +352,16 @@ public class AtendimentoController implements Serializable {
         else
             this.existeAlgumaCargaSigtap = true;
     }
-    
-	private void existeCargaSigtapParaEsteMesOuAnterior(Date dataAtende, String ehEvolucao) throws ProjetoException {
-		this.existeCargaSigtapParaEsteMesOuAnterior = procedimentoDAO.houveCargaDoSigtapEsteMes(DataUtil.extrairMesDeData(dataAtende), DataUtil.extrairAnoDeData(dataAtende));
-		if(!existeCargaSigtapParaEsteMesOuAnterior) {
-			if(ehEvolucao.equals(EH_EVOLUCAO))
-				JSFUtil.adicionarMensagemAdvertencia("Não é possível evoluir o atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
-			else
-				JSFUtil.adicionarMensagemAdvertencia("Não é possível alterar o cid do atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
-		}
-	}
+
+    private void existeCargaSigtapParaEsteMesOuAnterior(Date dataAtende, String ehEvolucao) throws ProjetoException {
+        this.existeCargaSigtapParaEsteMesOuAnterior = procedimentoDAO.houveCargaDoSigtapEsteMes(DataUtil.extrairMesDeData(dataAtende), DataUtil.extrairAnoDeData(dataAtende));
+        if(!existeCargaSigtapParaEsteMesOuAnterior) {
+            if(ehEvolucao.equals(EH_EVOLUCAO))
+                JSFUtil.adicionarMensagemAdvertencia("Não é possível evoluir o atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
+            else
+                JSFUtil.adicionarMensagemAdvertencia("Não é possível alterar o cid do atendimento pois não existem Dados do Sigtap para o mês/ano do atendimento", "");
+        }
+    }
 
     public void buscarSituacoes() throws ProjetoException {
         this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
@@ -445,24 +446,24 @@ public class AtendimentoController implements Serializable {
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
         }
     }
-    
+
     private void validarCidSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap && this.atendimento.getPrograma().isPermiteAlteracaoCidNaEvolucao()) {
             LaudoController laudoController = new LaudoController();
             laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimentoInicio(), atendimento.getProcedimento().getCodProc());
         }
     }
-    
-	private Date setaAtendimentoValidadoPeloSigtapAnterior(Date dataAtende) {
-		if (!existeCargaSigtapParaDataAtende(dataAtende)) {
-		    dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
-		    this.atendimento.setValidadoPeloSigtapAnterior(true);
-		}
-		else {
-		    this.atendimento.setValidadoPeloSigtapAnterior(false);
-		}
-		return dataAtende;
-	}
+
+    private Date setaAtendimentoValidadoPeloSigtapAnterior(Date dataAtende) {
+        if (!existeCargaSigtapParaDataAtende(dataAtende)) {
+            dataAtende = DataUtil.retornaDataComMesAnterior(dataAtende);
+            this.atendimento.setValidadoPeloSigtapAnterior(true);
+        }
+        else {
+            this.atendimento.setValidadoPeloSigtapAnterior(false);
+        }
+        return dataAtende;
+    }
 
     public boolean existeCargaSigtapParaDataAtende(Date dataAtende) {
         boolean existeCargaSigtapParaDataSolicitacao = true;
@@ -702,33 +703,33 @@ public class AtendimentoController implements Serializable {
     }
 
     public void carregarTodasAsEvolucoesDoPaciente(Integer codPaciente) throws ProjetoException {
-    	
-    	if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
-    		if ((!VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
-    			if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
-    				JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
-    			}
-    			else
-    				listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
-    		}
-    		else {
-    			JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ou o Período Inicial e Final da Evolução", "Atenção!");
-    		}
-    	}
-    	
-    	else if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) && (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
-    		if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
-				JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ", "Atenção!");
-    		}
-    		else
-    			listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
-    	}
-    	
-    	else if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente) && 
-    			((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) ) {
-    		JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
-    	}
-    	
+
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
+            if ((!VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+                if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+                    JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
+                }
+                else
+                    listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
+            }
+            else {
+                JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ou o Período Inicial e Final da Evolução", "Atenção!");
+            }
+        }
+
+        else if ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) && (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) {
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
+                JSFUtil.adicionarMensagemAdvertencia("Informe o Paciente ", "Atenção!");
+            }
+            else
+                listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
+        }
+
+        else if(!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente) &&
+                ((VerificadorUtil.verificarSeObjetoNulo(periodoFinalEvolucao)) || (VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))) ) {
+            JSFUtil.adicionarMensagemAdvertencia("Informe o Período Inicial e Final da Evolução", "Atenção!");
+        }
+
         else
             listaEvolucoes = atendimentoDAO.carregarTodasAsEvolucoesDoPaciente(codPaciente, periodoInicialEvolucao, periodoFinalEvolucao, especialidade);
     }
@@ -803,13 +804,13 @@ public class AtendimentoController implements Serializable {
 
     public void listarCids1() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-        	Date dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(this.atendimento.getDataAtendimento());
-        	existeCargaSigtapParaEsteMesOuAnterior(dataAtende, NAO_EH_EVOLUCAO);
-        	
-        	if(existeCargaSigtapParaEsteMesOuAnterior) {
-        		listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
-        				this.atendimento.getProcedimento().getCodProc(), dataAtende);
-        	}
+            Date dataAtende = setaAtendimentoValidadoPeloSigtapAnterior(this.atendimento.getDataAtendimento());
+            existeCargaSigtapParaEsteMesOuAnterior(dataAtende, NAO_EH_EVOLUCAO);
+
+            if(existeCargaSigtapParaEsteMesOuAnterior) {
+                listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
+                        this.atendimento.getProcedimento().getCodProc(), dataAtende);
+            }
         }
         else
             listaCids = cidDao.listarCidsBusca(campoBusca);
@@ -821,11 +822,11 @@ public class AtendimentoController implements Serializable {
     }
 
     public void atualizaCidDeAtendimento() throws ProjetoException {
-		boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento);
-		if (alterou) {
-			JSFUtil.adicionarMensagemSucesso("CID alterado no atendimento com sucesso!", "");
-			listaAtendimentos1Ajustes();
-		}
+        boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento);
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("CID alterado no atendimento com sucesso!", "");
+            listaAtendimentos1Ajustes();
+        }
     }
 
     public void atualizaProcedimentoDoAtendimento() throws ProjetoException {
@@ -837,51 +838,60 @@ public class AtendimentoController implements Serializable {
             listaAtendimentos1Ajustes();
         }
     }
-    
+
+    public void adicionarTextoEvolucaoPadraoNoCampoEvolucao() {
+      //  String textoEvolucao = this.atendimento.getEvolucao();
+       // if(VerificadorUtil.verificarSeObjetoNulo(textoEvolucao))
+        String  textoEvolucao = new String();
+
+        textoEvolucao += this.descricaoEvolucaoPadrao;
+        this.atendimento.setEvolucao(textoEvolucao);
+    }
+
     private void listarTodosTiposProcedimentos() throws ProjetoException {
-    	this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
+        this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
     }
-    
+
     private void listarCidsPorPacienteInstituicao() throws ProjetoException {
-    	this.listaCids = cidDao.listarCidsPorPacienteInstituicao(atendimento.getId());
+        this.listaCids = cidDao.listarCidsPorPacienteInstituicao(atendimento.getId());
     }
-    
+
     private void buscarDadosProcedimentoPorId() throws ProjetoException {
-    	this.atendimento.setProcedimento(procedimentoDAO.listarProcedimentoPorId(this.atendimento.getProcedimento().getIdProc()));
+        this.atendimento.setProcedimento(procedimentoDAO.listarProcedimentoPorId(this.atendimento.getProcedimento().getIdProc()));
     }
-    
+
     private void buscarDadosCidPorId() throws ProjetoException {
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
-    	this.atendimento.setCidPrimario(cidDao.buscaCidPorId(atendimento.getCidPrimario().getIdCid()));
+            this.atendimento.setCidPrimario(cidDao.buscaCidPorId(atendimento.getCidPrimario().getIdCid()));
     }
-    
+
     public void marcarDialogPendenciasComoVisualizado() {
-    	JSFUtil.fecharDialog("dlgPendencias");
-    	this.visualizouDialogPendencias = SIM;
-    	SessionUtil.adicionarNaSessao(this.visualizouDialogPendencias, "visualizouPendencias");
+        JSFUtil.fecharDialog("dlgPendencias");
+        this.visualizouDialogPendencias = SIM;
+        SessionUtil.adicionarNaSessao(this.visualizouDialogPendencias, "visualizouPendencias");
     }
-    
+
     public void listarTotalPendencias() throws ProjetoException {
-    	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-    			.getSessionMap().get("obj_usuario");
-    	
-    	this.visualizouDialogPendencias = (String) FacesContext.getCurrentInstance().getExternalContext()
-    			.getSessionMap().get("visualizouPendencias");
-    	
-    	if(user_session.getRealizaAtendimento() && 
-    			(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.visualizouDialogPendencias) || !this.visualizouDialogPendencias.equals(SIM)) ) {
-    		this.listaPendenciasEvolucaoProgramaGrupo = atendimentoDAO.retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado();
-    		setaTotalPendenciasEvolucao(this.listaPendenciasEvolucaoProgramaGrupo);
-    		if (listaPendenciasEvolucaoProgramaGrupo.size()>0)
-    		JSFUtil.abrirDialog("dlgPendencias");
-    	}
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_usuario");
+
+        this.visualizouDialogPendencias = (String) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("visualizouPendencias");
+
+        if(user_session.getRealizaAtendimento() &&
+                (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.visualizouDialogPendencias) || !this.visualizouDialogPendencias.equals(SIM)) ) {
+            this.listaPendenciasEvolucaoProgramaGrupo = atendimentoDAO.retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado();
+            setaTotalPendenciasEvolucao(this.listaPendenciasEvolucaoProgramaGrupo);
+            if (listaPendenciasEvolucaoProgramaGrupo.size()>0)
+                JSFUtil.abrirDialog("dlgPendencias");
+        }
     }
-    
+
     private void setaTotalPendenciasEvolucao(List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciaEvolucaoProgramaGrupo) {
-    	this.totalPendenciaEvolucao = 0;
-    	for (PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupoDTO : listaPendenciaEvolucaoProgramaGrupo) {
-    		this.totalPendenciaEvolucao += pendenciaEvolucaoProgramaGrupoDTO.getTotalPendencia();			
-		}
+        this.totalPendenciaEvolucao = 0;
+        for (PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupoDTO : listaPendenciaEvolucaoProgramaGrupo) {
+            this.totalPendenciaEvolucao += pendenciaEvolucaoProgramaGrupoDTO.getTotalPendencia();
+        }
     }
 
     public AtendimentoBean getAtendimento() {
@@ -1170,25 +1180,33 @@ public class AtendimentoController implements Serializable {
         this.especialidade = especialidade;
     }
 
-	public List<PendenciaEvolucaoProgramaGrupoDTO> getListaPendenciasEvolucaoProgramaGrupo() {
-		return listaPendenciasEvolucaoProgramaGrupo;
-	}
+    public List<PendenciaEvolucaoProgramaGrupoDTO> getListaPendenciasEvolucaoProgramaGrupo() {
+        return listaPendenciasEvolucaoProgramaGrupo;
+    }
 
-	public void setListaPendenciasEvolucaoProgramaGrupo(
-			List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo) {
-		this.listaPendenciasEvolucaoProgramaGrupo = listaPendenciasEvolucaoProgramaGrupo;
-	}
+    public void setListaPendenciasEvolucaoProgramaGrupo(
+            List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo) {
+        this.listaPendenciasEvolucaoProgramaGrupo = listaPendenciasEvolucaoProgramaGrupo;
+    }
 
-	public String getVisualizouDialogPendencias() {
-		return visualizouDialogPendencias;
-	}
+    public String getVisualizouDialogPendencias() {
+        return visualizouDialogPendencias;
+    }
 
-	public void setVisualizouDialogPendencias(String visualizouDialogPendencias) {
-		this.visualizouDialogPendencias = visualizouDialogPendencias;
-	}
+    public void setVisualizouDialogPendencias(String visualizouDialogPendencias) {
+        this.visualizouDialogPendencias = visualizouDialogPendencias;
+    }
 
-	public Integer getTotalPendenciaEvolucao() {
-		return totalPendenciaEvolucao;
-	}
-	
+    public Integer getTotalPendenciaEvolucao() {
+        return totalPendenciaEvolucao;
+    }
+
+    public String getDescricaoEvolucaoPadrao() {
+        return descricaoEvolucaoPadrao;
+    }
+
+    public void setDescricaoEvolucaoPadrao(String descricaoEvolucaoPadrao) {
+        this.descricaoEvolucaoPadrao = descricaoEvolucaoPadrao;
+    }
+
 }
