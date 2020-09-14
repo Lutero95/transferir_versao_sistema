@@ -17,6 +17,9 @@ import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
+import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
@@ -327,6 +330,10 @@ public class LaudoDAO {
             stmt.setBoolean(22, laudo.isValidadoPeloSigtapAnterior());
             stmt.setInt(23, laudo.getId());
             stmt.executeUpdate();
+            
+            LogBean log = LaudoLog.compararLaudos(laudo);
+            new LogDAO().gravarLog(log, conexao);
+            
             conexao.commit();
             retorno = true;
         } catch (SQLException sqle) {
@@ -345,13 +352,15 @@ public class LaudoDAO {
 
     public Boolean excluirLaudo(LaudoBean laudo) throws ProjetoException {
         boolean retorno = false;
-        String sql = "update hosp.laudo set ativo = false where id_laudo = ?";
+        String sql = "update hosp.laudo set ativo = false, data_hora_exclusao = current_timestamp, "
+        		+ "usuario_exclusao = ? where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            stmt.setInt(1, laudo.getId());
+            stmt.setLong(1, user_session.getId());
+            stmt.setInt(2, laudo.getId());
             stmt.executeUpdate();
             conexao.commit();
             retorno = true;
@@ -371,8 +380,7 @@ public class LaudoDAO {
 
     public ArrayList<LaudoBean> listaLaudos(BuscaLaudoDTO buscaLaudoDTO)
             throws ProjetoException {
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+        
         String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
                 + "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
                 + "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "

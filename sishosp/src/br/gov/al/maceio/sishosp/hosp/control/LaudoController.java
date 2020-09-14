@@ -28,6 +28,8 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
+import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -437,6 +439,7 @@ public class LaudoController implements Serializable {
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Laudo excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
+            listarLaudo(buscaLaudoDTO);
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
