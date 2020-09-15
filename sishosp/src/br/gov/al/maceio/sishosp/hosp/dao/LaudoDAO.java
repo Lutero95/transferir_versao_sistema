@@ -83,8 +83,8 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?) returning id_laudo";
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -184,10 +184,14 @@ public class LaudoDAO {
             }
 
             stmt.setInt(18, user_session.getUnidade().getId());
-            stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
+            stmt.setString(19, laudo.getSituacao());
             stmt.setLong(20, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
-
+            if (laudo.getDataAutorizacao() == null) {
+                stmt.setNull(22, Types.NULL);
+            } else {
+                stmt.setDate(22, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
+            }
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
