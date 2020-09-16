@@ -71,6 +71,8 @@ public class PacienteController implements Serializable {
 	private List<MunicipioBean> listaMunicipiosDePacienteAtivos;
 	private List<EnderecoBean> listaBairros;
 	private EnderecoController enderecoController;
+	private List<Telefone> listaTelefonesExcluidos;
+	private List<Telefone> listaTelefonesAdicionados;
 
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
@@ -99,6 +101,9 @@ public class PacienteController implements Serializable {
 		bairroExiste = null;
 		SessionUtil.removerDaSessao("paramIdPaciente");
 		enderecoController = new EnderecoController();
+		
+		listaTelefonesAdicionados = new ArrayList<>();
+		listaTelefonesExcluidos = new ArrayList<>();
 	}
 
 	public String redirectEdit() {
@@ -201,7 +206,7 @@ public class PacienteController implements Serializable {
 		if (VerificadorUtil.verificarSeObjetoNulo(bairroExiste)) {
 			bairroExiste = true;
 		}
-		boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
+		boolean alterou = pDao.alterarPaciente(paciente, bairroExiste, listaTelefonesAdicionados, listaTelefonesExcluidos);
 		if (alterou == true) {
 			JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
 		} else {
@@ -495,11 +500,24 @@ public class PacienteController implements Serializable {
 			telefone.getParentesco().setDescParentesco(parente.getDescParentesco());
 		}
 		paciente.getListaTelefones().add(telefone);
+		
+		Telefone telefoneAux = new Telefone();
+		telefoneAux.setDdd(telefone.getDdd());
+		telefoneAux.setIdTelefone(telefone.getIdTelefone());
+		telefoneAux.setOperadora(telefone.getOperadora());
+		telefoneAux.setParentesco(telefone.getParentesco());
+		telefoneAux.setResponsavel(telefone.getResponsavel());
+		telefoneAux.setTelefone(telefone.getTelefone());
+		telefoneAux.setWhatsapp(telefone.getWhatsapp());
+		
 		limparTelefone();
+		this.listaTelefonesAdicionados.add(telefoneAux);
 	}
 
 	public void removeListaTelefone() {
 		this.paciente.getListaTelefones().remove(telefone);
+		this.listaTelefonesExcluidos.add(telefone);
+		this.listaTelefonesAdicionados.remove(telefone);
 	}
 
 	public void limparTelefone() {

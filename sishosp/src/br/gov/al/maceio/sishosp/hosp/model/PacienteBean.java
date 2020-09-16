@@ -76,8 +76,6 @@ public class PacienteBean implements Serializable {
     private EnderecoBean endereco;
     private EscolaBean escola;
     private EscolaridadeBean escolaridade;
-    private EspecialidadeBean especialidade;
-    private ConvenioBean convenio;
     private EncaminhamentoBean encaminhamento;
     private ProfissaoBean profissao;
     private EncaminhadoBean encaminhado;
@@ -86,9 +84,7 @@ public class PacienteBean implements Serializable {
     private Genero genero;
     private Religiao religiao;
 
-    // LISTAS
-    private List<Integer> listaCorRaca;
-    private List<Integer> listaSangue;
+    //LISTAS
     private List<Telefone> listaTelefones;
 
     public PacienteBean() {
@@ -97,7 +93,6 @@ public class PacienteBean implements Serializable {
         endereco = new EnderecoBean();
         escola = new EscolaBean();
         escolaridade = new EscolaridadeBean();
-        especialidade = new EspecialidadeBean();
         encaminhamento = new EncaminhamentoBean();
         formatransporte = new FormaTransporteBean();
         encaminhado = new EncaminhadoBean();
@@ -252,23 +247,6 @@ public class PacienteBean implements Serializable {
         this.dataExpedicao2 = dataExpedicao2;
     }
 
-    public List<Integer> getListaCorRaca() {
-
-        return listaCorRaca;
-    }
-
-    public void setListaCorRaca(List<Integer> listaCorRaca) {
-        this.listaCorRaca = listaCorRaca;
-    }
-
-    public List<Integer> getListaSangue() {
-        return listaSangue;
-    }
-
-    public void setListaSangue(List<Integer> listaSangue) {
-        this.listaSangue = listaSangue;
-    }
-
     public EnderecoBean getEndereco() {
         return endereco;
     }
@@ -387,22 +365,6 @@ public class PacienteBean implements Serializable {
 
     public void setEscolaridade(EscolaridadeBean escolaridade) {
         this.escolaridade = escolaridade;
-    }
-
-    public EspecialidadeBean getEspecialidade() {
-        return especialidade;
-    }
-
-    public void setEspecialidade(EspecialidadeBean especialidade) {
-        this.especialidade = especialidade;
-    }
-
-    public ConvenioBean getConvenio() {
-        return convenio;
-    }
-
-    public void setConvenio(ConvenioBean convenio) {
-        this.convenio = convenio;
     }
 
     public ProfissaoBean getProfissao() {

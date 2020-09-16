@@ -15,6 +15,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.log.control.PacienteLog;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
@@ -381,7 +384,9 @@ public class PacienteDAO {
         return retorno;
     }
 
-    public Boolean alterarPaciente(PacienteBean paciente, boolean bairroExiste) throws ProjetoException {
+    public Boolean alterarPaciente(PacienteBean paciente, boolean bairroExiste, 
+    		List<Telefone> listaTelefonesAdicionados, List<Telefone> listaTelefonesExcluidos) throws ProjetoException {
+    	
         boolean retorno = false;
 
         try {
@@ -400,8 +405,8 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?" //36 ao 41
                     + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?" //42 ao 44
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?" //45 ao 49
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=? " //50 ao 58
-                    + " where id_paciente = ?"; //59
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=?, usuario_ultima_alteracao=?, data_hora_ultima_alteracao=CURRENT_TIMESTAMP " //50 ao 59
+                    + " where id_paciente = ?"; //60
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome());
@@ -574,13 +579,17 @@ public class PacienteDAO {
             }
 
 
-
-            stmt.setLong(59, paciente.getId_paciente());
+            stmt.setLong(59, user_session.getId());
+            stmt.setLong(60, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
             if (deletarTelefone(paciente.getId_paciente(), conexao)) {
                 if (inserirTelefone(paciente.getListaTelefones(), paciente.getId_paciente(), conexao)) {
+                	
+                	LogBean log = PacienteLog.compararPacientes(paciente, listaTelefonesAdicionados, listaTelefonesExcluidos);
+                	new LogDAO().gravarLog(log, conexao);
+                	
                     conexao.commit();
                     retorno = true;
                 }
