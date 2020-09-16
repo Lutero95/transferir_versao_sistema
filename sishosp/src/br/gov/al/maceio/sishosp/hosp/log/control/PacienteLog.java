@@ -76,7 +76,7 @@ public class PacienteLog {
 		
 		descricao += geraLogDaListaTelefones();
         
-        return new LogBean(user_session.getId(), descricao, Rotina.PACIENTE.getSigla());
+        return new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_PACIENTE.getSigla());
     }
     
     private static String retornaNomeIDPaciente() {

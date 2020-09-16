@@ -10,13 +10,17 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
+import org.postgresql.util.PSQLException;
+
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.log.control.PacienteLog;
 import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -620,16 +624,20 @@ public class PacienteDAO {
             stmt.executeUpdate();
 
             sql = "delete from hosp.pacientes where id_paciente = ?";
-            conexao = ConnectionFactory.getConnection();
             stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, paciente.getId_paciente());
             stmt.executeUpdate();
+            
+            String descricao = "Paciente: "+paciente.getNome()+" ID: "+paciente.getId_paciente();
+        	LogBean log = new LogBean(user_session.getId(), descricao, Rotina.EXCLUSAO_PACIENTE.getSigla());
+        	new LogDAO().gravarLog(log, conexao);
 
             conexao.commit();
 
             retorno = true;
 
         } catch (SQLException sqle) {
+        	JSFUtil.adicionarMensagemErro("Provavelmente o paciente selecionado tem relação com algum laudo ou agendamento", "");
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
         } catch (Exception ex) {
             throw new ProjetoException(ex, this.getClass().getName());

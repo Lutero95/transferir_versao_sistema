@@ -58,7 +58,7 @@ public class LaudoLog {
 			i++;
 		}
         
-        return new LogBean(user_session.getId(), descricao, Rotina.LAUDO.getSigla());
+        return new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_LAUDO.getSigla());
     }
     
     private static void compararLaudosIniciarDados() throws ProjetoException {
