@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,10 @@ import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogVisualizacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
@@ -63,6 +68,8 @@ public class PacienteController implements Serializable {
 	private String tipoBusca;
 	private String campoBusca;
 	private MunicipioBean municipioPacienteAtivoSelecionado;
+	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_usuario");
 
 	// LISTAS
 	private List<PacienteBean> listaPacientes;
@@ -73,7 +80,7 @@ public class PacienteController implements Serializable {
 	private EnderecoController enderecoController;
 	private List<Telefone> listaTelefonesExcluidos;
 	private List<Telefone> listaTelefonesAdicionados;
-
+	
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
@@ -115,11 +122,12 @@ public class PacienteController implements Serializable {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
-	public void getEditPaciente() throws ProjetoException {
+	public void getEditPaciente() throws ProjetoException, SQLException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
 		EnderecoDAO enderecoDAO = new EnderecoDAO();
 		if (params.get("id") != null) {
+			new LogDAO().gravarLogVisualizacao(new LogVisualizacaoBean(user_session.getId(), Rotina.ALTERACAO_PACIENTE.getSigla()));
 			Integer id = Integer.parseInt(params.get("id"));
 			SessionUtil.adicionarNaSessao(id, "paramIdPaciente");
 			tipo = Integer.parseInt(params.get("tipo"));
@@ -526,8 +534,6 @@ public class PacienteController implements Serializable {
 	}
 	
 	public void buscaMunicipiosDePacientesAtivos(String sexo) throws ProjetoException {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
 		listaMunicipiosDePacienteAtivos = pDao.listaMunicipiosPacienteAtivo(user_session.getUnidade().getId(), sexo);
 	}
 
