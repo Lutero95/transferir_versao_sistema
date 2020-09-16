@@ -9,14 +9,16 @@ public class LogBean {
 	private Long idFuncionario;
 	private Date dataHora;
 	private String descricao;
+	private String rotina;
 	
 	public LogBean() {
 		this.descricao = new String();
 	}
 	
-	public LogBean(Long idFuncionario, String descricao) {
+	public LogBean(Long idFuncionario, String descricao, String rotina) {
 		this.descricao = descricao;
 		this.idFuncionario = idFuncionario;
+		this.rotina = rotina;
 	}
 	
 	public Integer getId() {
@@ -43,4 +45,13 @@ public class LogBean {
 	public void adicionarDescricao(String campo, String valorAntigos, String valorNovos) {
 		this.descricao += campo+ ": Valor Antigo: "+valorAntigos+", Valor Novo: "+valorNovos+"\n";
 	}
+
+	public String getRotina() {
+		return rotina;
+	}
+
+	public void setRotina(String rotina) {
+		this.rotina = rotina;
+	}
+	
 }

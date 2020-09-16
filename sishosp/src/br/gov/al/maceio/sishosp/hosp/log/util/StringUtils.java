@@ -1,4 +1,4 @@
-package br.gov.al.maceio.sishosp.hosp.log.control;
+package br.gov.al.maceio.sishosp.hosp.log.util;
 
 import java.text.Normalizer;
 import java.text.ParseException;

@@ -78,16 +78,13 @@ public class LaudoDAO {
 
     public Integer cadastrarLaudo(LaudoBean laudo) throws ProjetoException {
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
         Integer idLaudoGerado = null;
 
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?) returning id_laudo";
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, usuario_cadastro ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -190,6 +187,7 @@ public class LaudoDAO {
             stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
             stmt.setLong(20, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
+            stmt.setLong(22, user_session.getId());
 
             ResultSet rs = stmt.executeQuery();
 
@@ -217,7 +215,8 @@ public class LaudoDAO {
         String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, "
                 + "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
                 + "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, "
-                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ? "
+                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ?, "
+                + "usuario_ultima_alteracao = ?, data_hora_ultima_alteracao = CURRENT_TIMESTAMP "
                 + " where id_laudo = ?";
 
         try {
@@ -328,7 +327,8 @@ public class LaudoDAO {
             stmt.setLong(20, user_session.getId());
             stmt.setLong(21, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(22, laudo.isValidadoPeloSigtapAnterior());
-            stmt.setInt(23, laudo.getId());
+            stmt.setLong(23, user_session.getId());
+            stmt.setInt(24, laudo.getId());
             stmt.executeUpdate();
             
             LogBean log = LaudoLog.compararLaudos(laudo);

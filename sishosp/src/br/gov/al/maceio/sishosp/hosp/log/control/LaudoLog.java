@@ -16,7 +16,9 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
+import br.gov.al.maceio.sishosp.hosp.log.util.StringUtils;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -24,7 +26,8 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class LaudoLog {
     
-    private static LaudoBean laudoAntigo;
+    private static final String NOME = " Nome: ";
+	private static LaudoBean laudoAntigo;
     private static LaudoBean laudoAtualizar;
     private static FuncionarioBean user_session  = 
     		(FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -42,10 +45,10 @@ public class LaudoLog {
     private static final String NUMERO_CINCO = "5";
     
     public static LogBean compararLaudos(LaudoBean novoLaudo) throws ProjetoException {
-    	String descricao = "";
         laudoAtualizar = novoLaudo;
         laudoAntigo = consultarDadosAntigosLaudo();
 		compararLaudosIniciarDados();
+		String descricao = retornaIDNomePacienteDataSolicitacao();
 		int i = 0;
 		while (i < valoresLaudoAntigo.size()) {
 			if (compararLaudosComparacao(i)) {
@@ -55,7 +58,12 @@ public class LaudoLog {
 			i++;
 		}
         
-        return new LogBean(user_session.getId(), descricao);
+        return new LogBean(user_session.getId(), descricao, Rotina.LAUDO.getSigla());
+    }
+    
+    private static String retornaIDNomePacienteDataSolicitacao() {
+        	return "Paciente: "+laudoAntigo.getPaciente().getNome()+" ID Laudo: "+laudoAntigo.getId()
+        		+" Data Solicitação: "+laudoAntigo.getDataSolicitacao()+" ";
     }
     
     private static void compararLaudosIniciarDados() throws ProjetoException {
@@ -135,7 +143,7 @@ public class LaudoLog {
         try {
         	
             if (VerificadorUtil.verificarSeObjetoNuloOuVazio(metodo.invoke(laudo))) {
-                valoresMetodos.add("null");
+                valoresMetodos.add(null);
             } else if (metodo.getReturnType().getName().equals(Date.class.getName())) {
                 valoresMetodos.add(new SimpleDateFormat("yyyy-MM-dd").format(metodo.invoke(laudo)));
             }
@@ -176,7 +184,7 @@ public class LaudoLog {
                 valoresMetodos.add(retornarValoresBoolean(metodo.invoke(laudo).toString()));
             } else {
                 if (VerificadorUtil.verificarSeObjetoNuloOuVazio(metodo.invoke(laudo).toString())) {
-                    valoresMetodos.add("null");
+                    valoresMetodos.add(null);
                 } else {
                     valoresMetodos.add(StringUtils.stripAccents(metodo.invoke(laudo).toString()));
                 }
@@ -189,10 +197,10 @@ public class LaudoLog {
     private static void tratamentoValoresCid(CidBean cid, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(cid) || VerificadorUtil.verificarSeObjetoNuloOuZero(cid.getIdCid()))
-    		valoresMetodos.add("null");
+    		valoresMetodos.add(null);
     	else {
     		cid = new CidDAO().buscaCidPorId(cid.getIdCid());
-    		valoresMetodos.add(cid.getIdCid().toString()+" Nome: "+cid.getDescCidAbrev());
+    		valoresMetodos.add(cid.getIdCid()+NOME+cid.getDescCidAbrev());
     	}
     }
     
@@ -200,10 +208,10 @@ public class LaudoLog {
     		throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(procedimento) || VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getIdProc()))
-    		valoresMetodos.add("null");
+    		valoresMetodos.add(null);
     	else {
     		procedimento = new ProcedimentoDAO().listarProcedimentoPorId(procedimento.getIdProc());
-    		valoresMetodos.add(procedimento.getIdProc().toString()+" Nome: "+procedimento.getNomeProc());
+    		valoresMetodos.add(procedimento.getIdProc()+NOME+procedimento.getNomeProc());
     	}
     }
     
