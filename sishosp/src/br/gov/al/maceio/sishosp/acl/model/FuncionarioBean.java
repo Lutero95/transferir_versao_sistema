@@ -26,6 +26,7 @@ public class FuncionarioBean implements Serializable {
     private Boolean realizaAtendimento;
     private Boolean realizaLiberacoes;
     private Boolean realizaEncaixes;
+    private Boolean permiteAutorizacaoLaudo;
     private String cns;
     private String diasSemana;
     private ArrayList<HorarioAtendimento> listaDiasAtendimentoSemana;
@@ -411,6 +412,14 @@ public class FuncionarioBean implements Serializable {
     public void setRealizaEncaixes(Boolean realizaEncaixes) {
         this.realizaEncaixes = realizaEncaixes;
     }
+    
+	public Boolean getPermiteAutorizacaoLaudo() {
+		return permiteAutorizacaoLaudo;
+	}
+
+	public void setPermiteAutorizacaoLaudo(Boolean permiteAutorizacaoLaudo) {
+		this.permiteAutorizacaoLaudo = permiteAutorizacaoLaudo;
+	}
 
 	public String getNomeBancoAcesso() {
 		return nomeBancoAcesso;
