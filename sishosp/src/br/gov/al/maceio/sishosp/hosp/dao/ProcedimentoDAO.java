@@ -24,6 +24,7 @@ import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
 import sigtap.br.gov.saude.servicos.schema.cbo.v1.cbo.CBOType;
@@ -63,7 +64,7 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + " cod_unidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+                + " cod_unidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -85,8 +86,13 @@ public class ProcedimentoDAO {
             }
 
             ps.setInt(8, user_session.getUnidade().getId());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                proc.setIdProc(rs.getInt("id"));
+            }
 
-            ps.executeUpdate();
+
+            gravarProcedimentoUnidade(proc, con);
 
             con.commit();
             retorno = true;
@@ -102,6 +108,45 @@ public class ProcedimentoDAO {
             }
         }
         return retorno;
+    }
+
+
+    public void excluirProcedimentoUnidade(Integer idProcedimento, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+
+        String sql = "DELETE FROM hosp.procedimentos_unidades WHERE id_procedimento = ?; ";
+        try {
+            PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+
+            ps.setInt(1, idProcedimento);
+            ps.executeUpdate();
+        } catch (SQLException sqle) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+    }
+
+    public void gravarProcedimentoUnidade(ProcedimentoBean procedimento, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+
+        String sql = "INSERT INTO hosp.procedimentos_unidades (id_procedimento, id_unidade) VALUES(?, ?); ";
+        try {
+            PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+
+            for (UnidadeBean unidade : procedimento.getListaUnidadesVisualizam()) {
+                ps.setInt(1, procedimento.getIdProc());
+                ps.setInt(2, unidade.getId());
+                ps.executeUpdate();
+            }
+
+        } catch (SQLException sqle) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
     }
 
     public boolean alterarProcedimento(ProcedimentoBean proc) throws ProjetoException {
@@ -134,6 +179,9 @@ public class ProcedimentoDAO {
             stmt.setString(7, proc.getCodProc());
             stmt.setInt(8, proc.getIdProc());
 
+            excluirProcedimentoUnidade(proc.getIdProc(), con);
+            gravarProcedimentoUnidade(proc, con);
+
             stmt.executeUpdate();
 
             con.commit();
@@ -159,22 +207,8 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
 
-            String sql = "delete from sigtap.proc_cbo where id_proc = ?";
+            String sql = "UPDATE hosp.proc set ativo = 'N' WHERE id = ?;";
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "delete from sigtap.proc_recurso where id_proc = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "delete from sigtap.proc_cid where id_proc = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setLong(1, proc.getIdProc());
-            stmt.execute();
-
-            sql = "delete from hosp.proc where id = ?";
             stmt = con.prepareStatement(sql);
             stmt.setLong(1, proc.getIdProc());
             stmt.execute();
@@ -197,9 +231,11 @@ public class ProcedimentoDAO {
 
     public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
-        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? order by nome";
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, " +
+                " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo " +
+                " from hosp.proc p " +
+                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) " +
+                " where pu.id_unidade = ? and ativo = 'S'  order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -239,11 +275,56 @@ public class ProcedimentoDAO {
         return lista;
     }
 
+    public List<ProcedimentoBean> listarTodosProcedimentos() throws ProjetoException {
+        List<ProcedimentoBean> lista = new ArrayList<>();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, " +
+                " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo " +
+                " from hosp.proc p " +
+                " where  ativo = 'S'  order by nome";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+         //   stm.setInt(1, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getString("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+
+                lista.add(proc);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public List<ProcedimentoBean> listarProcedimentosDaEmpresa() throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc order by nome";
+                + " from hosp.proc where ativo = 'S' order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -286,7 +367,7 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? ";
+                + " from hosp.proc where cod_unidade = ? and ativo = 'S' ";
 
         if(tipo.equals("descricao")){
             sql = sql + "and nome ilike ? ";
@@ -340,7 +421,10 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? and gera_laudo_digita is true order by nome";
+                + " from hosp.proc "
+                + " join hosp.procedimentos_unidades pu on (proc.id = pu.id_procedimento)"
+                + "where pu.id_unidade = ? and gera_laudo_digita is true "
+                + " and ativo = 'S' order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -380,32 +464,32 @@ public class ProcedimentoDAO {
         return lista;
     }
 
-    public ProcedimentoBean listarProcedimentoPorId(int id)
-            throws ProjetoException {
-        ProcedimentoBean proc = new ProcedimentoBean();
+    public ProcedimentoBean listarProcedimentoPorId(int id) throws ProjetoException {
+        ProcedimentoBean procedimento = new ProcedimentoBean();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + "from hosp.proc where id = ? order by nome";
+                + "from hosp.proc where id = ? and ativo = 'S' order by nome";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                proc = new ProcedimentoBean();
-                proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getString("codproc"));
-                proc.setNomeProc(rs.getString("nome"));
-                proc.setAuditivo(rs.getBoolean("auditivo"));
-                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
-                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
-                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
-                proc.setValidade_laudo(rs.getInt("validade_laudo"));
-                proc.setIdadeMinima(rs.getInt("idade_minima"));
-                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
-                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
-                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
-                proc.setSexo(rs.getString("sexo"));
+                procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id"));
+                procedimento.setCodProc(rs.getString("codproc"));
+                procedimento.setNomeProc(rs.getString("nome"));
+                procedimento.setAuditivo(rs.getBoolean("auditivo"));
+                procedimento.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                procedimento.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                procedimento.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                procedimento.setValidade_laudo(rs.getInt("validade_laudo"));
+                procedimento.setIdadeMinima(rs.getInt("idade_minima"));
+                procedimento.setIdadeMaxima(rs.getInt("idade_maxima"));
+                procedimento.setQtdMaxima(rs.getInt("qtd_maxima"));
+                procedimento.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                procedimento.setSexo(rs.getString("sexo"));
+                procedimento.setListaUnidadesVisualizam(listarProcedimentoUnidade(procedimento.getIdProc(), con));
             }
         } catch (SQLException sqle) {
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -418,9 +502,37 @@ public class ProcedimentoDAO {
                 ex.printStackTrace();
             }
         }
-        return proc;
+        return procedimento;
     }
 
+    public ArrayList<UnidadeBean> listarProcedimentoUnidade(Integer idProcedimento, Connection conexaoAuxiliar)
+            throws ProjetoException, SQLException {
+
+        ArrayList<UnidadeBean> lista = new ArrayList<>();
+        String sql = "select pu.id_unidade, u.nome, u.matriz from hosp.procedimentos_unidades pu " +
+                "join hosp.unidade u on pu.id_unidade = u.id where pu.id_procedimento = ?";
+
+        try {
+            PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idProcedimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                UnidadeBean unidade = new UnidadeBean();
+                unidade.setNomeUnidade(rs.getString("nome"));
+                unidade.setId(rs.getInt("id_unidade"));
+                unidade.setMatriz(rs.getBoolean("matriz"));
+                lista.add(unidade);
+            }
+        } catch (SQLException sqle) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
 
     public List<ProcedimentoBean> listarProcedimentoBusca(
             String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
@@ -428,9 +540,10 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
-                + "from hosp.proc ";
+                + "from hosp.proc join hosp.procedimentos_unidades pu on\n" +
+                "\t(proc.id = pu.id_procedimento) where proc.ativo = 'S' ";
         if (tipoBuscar == 1) {
-            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_unidade = ? order by nome";
+            sql += " and upper(proc.codproc ||' - '|| proc.nome) LIKE ? and pu.id_unidade = ? order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
@@ -477,9 +590,9 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
-                + "from hosp.proc ";
+                + "from hosp.proc where ativo = 'S' ";
         if (tipoBuscar == 1) {
-            sql += " where (codproc ||' - '|| nome) ILIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
+            sql += " and (codproc ||' - '|| nome) ILIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
@@ -592,7 +705,7 @@ public class ProcedimentoDAO {
         ProcedimentoBean proc = new ProcedimentoBean();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + "from hosp.proc where id = ? order by nome";
+                + "from hosp.proc where id = ? and ativo = 'S' order by nome";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, id);
@@ -2113,7 +2226,7 @@ public class ProcedimentoDAO {
                 "\tjoin hosp.proc on\n" +
                 "\t\tproc.id = pm.id_procedimento\n" +
                 "\t\tjoin acl.funcionarios f on f.codcbo  = cpm.id_cbo\n" +
-                "\twhere\n" +
+                "\t where proc.ativo = 'S' and \n" +
                 "\t\t\tpm.id_procedimento = ?\n" +
                 "\t\t\tand hc.status = 'A'\n" +
                 "\t\t\tand (hc.ano = ?\n" +
@@ -2156,7 +2269,7 @@ public class ProcedimentoDAO {
                 "	(select id_procedimento from sigtap.procedimento_mensal pm2 " +
                 "	join sigtap.historico_consumo_sigtap hc on hc.id = pm2.id_historico_consumo_sigtap " +
                 "	where pm2.id_procedimento = ? and hc.status = 'A' and (hc.ano = ? and hc.mes = ?) \t order by pm2.id desc limit 1 ) "+
-                "and c.cid = ?) ehvalido";
+                "and c.cid = ? and proc.ativo = 'S' ) ehvalido";
         boolean ehValido = false;
         try {
             con = ConnectionFactory.getConnection();
@@ -2294,7 +2407,8 @@ public class ProcedimentoDAO {
         String sql = "select p.id, p.codproc, p.nome " +
                 "from hosp.proc p " +
                 "join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " +
-                "where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?; ";
+                "join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "where pu.id_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ? and p.ativo = 'S' ; ";
 
 
         try {
@@ -2336,13 +2450,15 @@ public class ProcedimentoDAO {
                 "	select p.id, p.codproc, p.nome from hosp.proc p " +
                 "	join hosp.paciente_instituicao_procedimento pip on p.id = pip.id_procedimento " +
                 "	join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
-                "	where p.cod_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
+                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "	where pu.id_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
                 "		union " +
                 "	-- PROCEDIMENTO CBO \n" +
                 "	select p.id, p.codproc, p.nome " +
                 "	from hosp.proc p " +
                 "	join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " +
-                "	where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?) as procedimento " +
+                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "	where pu.id_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?) as procedimento " +
                 "order by nome; ";
 
 

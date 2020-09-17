@@ -1529,7 +1529,7 @@ public class PacienteDAO {
                     "left join hosp.programa prog on " +
                     "	(prog.id_programa = p.codprograma) " +
                     "	left join hosp.municipio  m on m.id_municipio  = pa.codmunicipio " +
-                    "where ";
+                    "where pr.ativo = 'S' and ";
 
             if(sexo.equals(ModeloSexo.FEMININO.getSigla()) || sexo.equals(ModeloSexo.MASCULINO.getSigla())) {
                 sql +="	p.cod_unidade = ? " +

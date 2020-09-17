@@ -399,7 +399,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma left join hosp.proc on proc.id = programa.cod_procedimento "
-                + "where codprofissional = ? and programa.cod_unidade=? order by descprograma";
+                + "where proc.ativo = 'S' and codprofissional = ? and programa.cod_unidade=? order by descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -517,7 +517,8 @@ public class ProgramaDAO {
     public ProgramaBean listarProgramaPorIdParaConverter(int id) throws ProjetoException {
 
         ProgramaBean programa = new ProgramaBean();
-        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo from hosp.programa join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? order by descprograma";
+        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo from hosp.programa "
+        		+ "join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? and proc.ativo = 'S'  order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -941,7 +942,8 @@ public class ProgramaDAO {
                 "	join hosp.programa p on ppc.id_programa = p.id_programa " +
                 "	join hosp.proc pr on ppc.id_procedimento = pr.id " +
                 "	join hosp.cbo c on ppc.id_cbo = c.id " +
-                "	where p.id_programa = ? and p.cod_unidade = ?;";
+                "	where p.id_programa = ? and p.cod_unidade = ? "+
+                "   and pr.ativo = 'S' ;";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idPrograma);
@@ -982,7 +984,7 @@ public class ProgramaDAO {
                 "	from hosp.programa_procedimento_idade_especifica ppie " +
                 "	join hosp.programa p on ppie.id_programa = p.id_programa " +
                 "	join hosp.proc pr on ppie.id_procedimento = pr.id " +
-                "	where p.id_programa = ? and p.cod_unidade = ?;";
+                "	where p.id_programa = ? and p.cod_unidade = ? and pr.ativo = 'S' ;";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idPrograma);
@@ -1055,7 +1057,7 @@ public class ProgramaDAO {
                 "from hosp.programa_procedimento_permitido ppp " +
                 "join hosp.programa p on ppp.id_programa = p.id_programa " +
                 "join hosp.proc on ppp.id_procedimento = proc.id " +
-                "where ppp.id_programa = ? and p.cod_unidade = ? ;";
+                "where ppp.id_programa = ? and p.cod_unidade = ? and proc.ativo = 'S' ;";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idPrograma);
@@ -1176,7 +1178,7 @@ public class ProgramaDAO {
                 "from hosp.programa_procedimento_permitido ppp " +
                 "join hosp.programa p on ppp.id_programa = p.id_programa " +
                 "join hosp.proc on ppp.id_procedimento = proc.id " +
-                "where ppp.id_programa = ? and p.cod_unidade = ? ;";
+                "where ppp.id_programa = ? and p.cod_unidade = ? and proc.ativo = 'S' ;";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);

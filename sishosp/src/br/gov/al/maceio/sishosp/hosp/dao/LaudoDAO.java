@@ -383,7 +383,8 @@ public class LaudoDAO {
                 + "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
-                + " where l.ativo is true ";
+                + " where l.ativo is true and pr.ativo = 'S' ";
+        
 //walter        if (user_session.getUnidade().getRestringirLaudoPorUnidade()==true)
 //walter            sql = sql+ " and l.cod_unidade = ?";
 
@@ -539,7 +540,8 @@ public class LaudoDAO {
                 + " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
                 + " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
                 + " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
+                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional "
+                + "  where id_laudo = ? and pr.ativo = 'S' ";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -632,7 +634,8 @@ public class LaudoDAO {
                 + " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
                 + " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
                 + " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
+                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional "
+                + "  where id_laudo = ? and pr.ativo = 'S' ";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -753,10 +756,13 @@ public class LaudoDAO {
                 + " (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, ci.cod id_cidprimario   "
                 + " from hosp.laudo l " + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) " + " where 1=1 "
+                + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) " 
+                + " where 1=1 and pr.ativo = 'S' "
+                
                 // current_date <= (SELECT * FROM
                 // hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
                 // 'YYYY-MM-DD'))) "
+                
                 + " AND l.codpaciente = ?  "//AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
                 + " ) a order by datainicio desc";
         try {
@@ -886,10 +892,12 @@ public class LaudoDAO {
                 " (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal " +
                 " from hosp.laudo l  left join hosp.pacientes p on (l.codpaciente = p.id_paciente) " +
                 " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) " +
-                " left join hosp.cid ci on (l.cid1 = ci.cod)  where 1=1 " +
+                " left join hosp.cid ci on (l.cid1 = ci.cod)  where 1=1 and pr.ativo = 'S' " +
+                
                 // " current_date <= (SELECT * FROM
                 // hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
                 // 'YYYY-MM-DD'))) "
+                
                 " AND l.id_laudo = ?  AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo) " +
                 " ) a left join hosp.pacientes pa on (pa.id_paciente = a.codpaciente) " +
                 "	 left join hosp.proc pr on (a.codprocedimento_primario = pr.id) " +

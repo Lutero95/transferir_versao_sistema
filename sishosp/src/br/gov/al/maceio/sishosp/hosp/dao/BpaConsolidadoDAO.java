@@ -39,7 +39,8 @@ public class BpaConsolidadoDAO {
         		" where sa.atendimento_realizado = true and hc.status='A'" +
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
-        		" and pm.competencia_atual = ? " +
+        		" and pm.competencia_atual = ? "+
+        		" and proc.ativo = 'S' " +
         		" group by " + 
         		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo " +
         		"order by cbo.codigo ";

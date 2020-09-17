@@ -28,6 +28,7 @@ public class ProcedimentoBean implements Serializable {
     private ArrayList<CidBean> listaCid;
     private ArrayList<CboBean> listaCbo;
     private ArrayList<RecursoBean> listaRecurso;
+    private ArrayList<UnidadeBean> listaUnidadesVisualizam;
 
     public ProcedimentoBean() {
         super();
@@ -47,7 +48,7 @@ public class ProcedimentoBean implements Serializable {
         listaCid = new ArrayList<CidBean>();
         listaCbo = new ArrayList<CboBean>();
         listaRecurso = new ArrayList<RecursoBean>();
-
+        listaUnidadesVisualizam = new ArrayList<>();
     }
 
     public Integer getIdProc() {
@@ -202,4 +203,13 @@ public class ProcedimentoBean implements Serializable {
 	public void setCodProc(String codProc) {
 		this.codProc = codProc;
 	}
+
+	public ArrayList<UnidadeBean> getListaUnidadesVisualizam() {
+		return listaUnidadesVisualizam;
+	}
+
+	public void setListaUnidadesVisualizam(ArrayList<UnidadeBean> listaUnidadesVisualizam) {
+		this.listaUnidadesVisualizam = listaUnidadesVisualizam;
+	}
+	
 }
