@@ -363,11 +363,11 @@ public class ProcedimentoDAO {
         return lista;
     }
 
-    public List<ProcedimentoBean> buscarProcedimento(String campoBusca, String tipo) throws ProjetoException {
+    public List<ProcedimentoBean> buscarTodosProcedimentos(String campoBusca, String tipo) throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_unidade = ? and ativo = 'S' ";
+                + " from hosp.proc where   ativo = 'S' ";
 
         if(tipo.equals("descricao")){
             sql = sql + "and nome ilike ? ";
@@ -2465,7 +2465,11 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, atendimento.getProcedimento().getIdProc());
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getProcedimento().getIdProc()))
+                stm.setNull(1, Types.NULL);
+            else
+                stm.setInt(1, atendimento.getProcedimento().getIdProc());
+
             stm.setInt(2, user_session.getUnidade().getId());
             stm.setInt(3, atendimento.getId());
             stm.setInt(4, user_session.getUnidade().getId());

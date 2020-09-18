@@ -364,7 +364,7 @@ public class ProcedimentoController implements Serializable {
     }
 
     public void buscarProcedimentosPorTipo() throws ProjetoException {
-        this.listaProcedimentos = procedimentoDao.buscarProcedimento(campoBusca, tipoBusca);
+        this.listaProcedimentos = procedimentoDao.buscarTodosProcedimentos(campoBusca, tipoBusca);
 
     }
 

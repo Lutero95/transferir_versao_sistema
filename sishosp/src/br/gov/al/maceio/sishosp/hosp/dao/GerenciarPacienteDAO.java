@@ -52,7 +52,7 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
                 + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
                 + " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) "
-                + " where p.cod_unidade = ? and pr.ativo = 'S' ";
+                + " where p.cod_unidade = ? ";
         if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
             sql = sql + " and  p.codprograma = ?";
         }
