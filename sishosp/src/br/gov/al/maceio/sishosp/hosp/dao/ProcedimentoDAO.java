@@ -69,8 +69,8 @@ public class ProcedimentoDAO {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
 
-            ps.setString(1, proc.getCodProc());
-            ps.setString(2, proc.getNomeProc().toUpperCase());
+            ps.setString(1, proc.getCodProc().trim());
+            ps.setString(2, proc.getNomeProc().toUpperCase().trim());
             ps.setBoolean(3, proc.getAuditivo());
             ps.setString(4, proc.getTipoExameAuditivo().toUpperCase());
             ps.setBoolean(5, proc.getUtilizaEquipamento());
@@ -159,7 +159,7 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, proc.getNomeProc().toUpperCase());
+            stmt.setString(1, proc.getNomeProc().toUpperCase().trim());
             stmt.setBoolean(2, proc.getAuditivo());
             if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getTipoExameAuditivo()))
                 stmt.setNull(3, Types.NULL);
@@ -176,7 +176,7 @@ public class ProcedimentoDAO {
             } else {
                 stmt.setInt(6, proc.getValidade_laudo());
             }
-            stmt.setString(7, proc.getCodProc());
+            stmt.setString(7, proc.getCodProc().trim());
             stmt.setInt(8, proc.getIdProc());
 
             excluirProcedimentoUnidade(proc.getIdProc(), con);
