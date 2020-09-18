@@ -1119,8 +1119,7 @@ public class AtendimentoDAO {
 				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
 				" left join hosp.cbo c on c.id  = f.codcbo  " + 
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
-				"and p.ativo = 'S' ";
-		
+				"and p.ativo = 'S' and a.cod_unidade=?";
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente))
 			sql += "AND a.codpaciente = ? ";
 		
@@ -1137,7 +1136,9 @@ public class AtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			int i = 1;
+			int i = 2;
+
+			stm.setInt(1, user_session.getUnidade().getId());
 			
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
 				stm.setInt(i, codPaciente);
