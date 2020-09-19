@@ -45,6 +45,7 @@ public class ParametroBean implements Serializable {
     private boolean permiteAgendamentoDuplicidade;
     private boolean agendaAvulsaValidaPacienteAtivo;
     private boolean atribuirCorTabelaTelaEvolucaoProfissional;
+    private boolean cpfPacienteObrigatorio;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -362,4 +363,12 @@ public class ParametroBean implements Serializable {
         this.atribuirCorTabelaTelaEvolucaoProfissional = atribuirCorTabelaTelaEvolucaoProfissional;
     }
 
+	public boolean isCpfPacienteObrigatorio() {
+		return cpfPacienteObrigatorio;
+	}
+
+	public void setCpfPacienteObrigatorio(boolean cpfPacienteObrigatorio) {
+		this.cpfPacienteObrigatorio = cpfPacienteObrigatorio;
+	}
+    
 }

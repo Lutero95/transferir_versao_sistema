@@ -527,12 +527,20 @@
 							</b:column>
 
 							<b:column span="3" class="label-position">
-								<b:label for="cpf" value="CPF" severity="info" />
+								<b:column rendered="#{PacienteController.cpfObrigatorio == false}" style="margin-left:-14px;">
+									<b:label for="cpf" value="CPF" severity="info" />
+								</b:column>
+								
+								<b:column rendered="#{PacienteController.cpfObrigatorio == true}" style="margin-left:-14px;">
+									<b:label for="cpf" value="CPF" severity="info" />
+									<span style="color: red; font-size: 20px; font-weight: bold">*</span>
+								</b:column>
 
 								<p:inputMask mask="999.999.999-99"
 									value="#{PacienteController.paciente.cpf}"
 									class="form-control select-agendaEquipe2" id="cpf"
-									required="false" validator="CPFPacienteValidator">
+									required="#{PacienteController.cpfObrigatorio}" 
+									requiredMessage="CPF: Campo obrigatório" validator="CPFPacienteValidator">
 									<p:ajax process="@this :frmPrincipal:tbv:cpf" update="msgPagina" event="blur" listener="#{PacienteController.verificaExisteCPFDoPacienteCadastrado(PacienteController.paciente.cpf)}"/>
 								</p:inputMask>
 							</b:column>

@@ -63,6 +63,9 @@ public class PacienteController implements Serializable {
 	private String tipoBusca;
 	private String campoBusca;
 	private MunicipioBean municipioPacienteAtivoSelecionado;
+	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_usuario");
+	private boolean cpfObrigatorio;
 
 	// LISTAS
 	private List<PacienteBean> listaPacientes;
@@ -99,6 +102,7 @@ public class PacienteController implements Serializable {
 		bairroExiste = null;
 		SessionUtil.removerDaSessao("paramIdPaciente");
 		enderecoController = new EnderecoController();
+		cpfObrigatorio = user_session.getUnidade().getParametro().isCpfPacienteObrigatorio();
 	}
 
 	public String redirectEdit() {
@@ -508,8 +512,6 @@ public class PacienteController implements Serializable {
 	}
 	
 	public void buscaMunicipiosDePacientesAtivos(String sexo) throws ProjetoException {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_usuario");
 		listaMunicipiosDePacienteAtivos = pDao.listaMunicipiosPacienteAtivo(user_session.getUnidade().getId(), sexo);
 	}
 
@@ -693,5 +695,13 @@ public class PacienteController implements Serializable {
 
 	public void setEnderecoController(EnderecoController enderecoController) {
 		this.enderecoController = enderecoController;
+	}
+
+	public boolean isCpfObrigatorio() {
+		return cpfObrigatorio;
+	}
+
+	public void setCpfObrigatorio(boolean cpfObrigatorio) {
+		this.cpfObrigatorio = cpfObrigatorio;
 	}
 }
