@@ -2336,13 +2336,15 @@ public class ProcedimentoDAO {
                 "	select p.id, p.codproc, p.nome from hosp.proc p " +
                 "	join hosp.paciente_instituicao_procedimento pip on p.id = pip.id_procedimento " +
                 "	join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
-                "	where p.cod_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
+                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "	where pu.id_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
                 "		union " +
                 "	-- PROCEDIMENTO CBO \n" +
                 "	select p.id, p.codproc, p.nome " +
                 "	from hosp.proc p " +
                 "	join hosp.programa_procedimento_cbo_especifico ppc on p.id = ppc.id_procedimento " +
-                "	where p.cod_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?) as procedimento " +
+                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "	where pu.id_unidade = ? and ppc.id_cbo = ? and ppc.id_programa = ?) as procedimento " +
                 "order by nome; ";
 
 

@@ -45,6 +45,8 @@ public class ParametroBean implements Serializable {
     private boolean permiteAgendamentoDuplicidade;
     private boolean agendaAvulsaValidaPacienteAtivo;
     private boolean atribuirCorTabelaTelaEvolucaoProfissional;
+    private boolean verificaPeriodoInicialEvolucaoPrograma;
+    private Date inicioEvolucaoUnidade;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -362,4 +364,20 @@ public class ParametroBean implements Serializable {
         this.atribuirCorTabelaTelaEvolucaoProfissional = atribuirCorTabelaTelaEvolucaoProfissional;
     }
 
+	public boolean isVerificaPeriodoInicialEvolucaoPrograma() {
+		return verificaPeriodoInicialEvolucaoPrograma;
+	}
+
+	public void setVerificaPeriodoInicialEvolucaoPrograma(boolean verificaPeriodoInicialEvolucaoPrograma) {
+		this.verificaPeriodoInicialEvolucaoPrograma = verificaPeriodoInicialEvolucaoPrograma;
+	}
+
+	public Date getInicioEvolucaoUnidade() {
+		return inicioEvolucaoUnidade;
+	}
+
+	public void setInicioEvolucaoUnidade(Date inicioEvolucaoUnidade) {
+		this.inicioEvolucaoUnidade = inicioEvolucaoUnidade;
+	}
+	
 }

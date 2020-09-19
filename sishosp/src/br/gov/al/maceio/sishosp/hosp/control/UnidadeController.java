@@ -11,23 +11,16 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.dto.ConfiguracaoAgendaEquipeEspecialidadeDTO;
-import net.sf.jasperreports.components.list.UnusedSpaceImageRenderer;
 
 @ManagedBean(name = "UnidadeController")
 @ViewScoped
@@ -166,27 +159,29 @@ public class UnidadeController implements Serializable {
     }    
     public void gravarUnidade() throws ProjetoException {
     	boolean cadastrou = false;
-    	if(validaDiasAcessoPermitidoAoSistema())
+    	if(validaDiasAcessoPermitidoAoSistema() && !existeListaProgramaGrupoEvolucaoComUnidadeNaoConfigurada()) {
     		cadastrou = eDao.gravarUnidade(unidade);
 
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Unidade cadastrada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-        }
+			if (cadastrou == true) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Unidade cadastrada com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
+    	}
     }
 
     public void alterarUnidade() throws ProjetoException {
         boolean alterou = false;
-        if(validaDiasAcessoPermitidoAoSistema())
+        if(validaDiasAcessoPermitidoAoSistema() && !existeListaProgramaGrupoEvolucaoComUnidadeNaoConfigurada()) {
         	alterou = eDao.alterarUnidade(unidade);
 
-        if (alterou == true) {
-        	limpaHorarioDeInicioIhFimDeFuncionamento();
-            JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+			if (alterou == true) {
+				limpaHorarioDeInicioIhFimDeFuncionamento();
+				JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+			}
         }
     }
     
@@ -284,6 +279,23 @@ public class UnidadeController implements Serializable {
         }
 
         return retorno;
+    }
+    
+    public void removerItemListaProgramasGrupoEvolucao(ProgramaGrupoEvolucaoBean programaGrupoEvolucao) {
+    	this.unidade.getListaProgramasGrupoEvolucao().remove(programaGrupoEvolucao);
+    }
+    
+    public boolean existeListaProgramaGrupoEvolucaoComUnidadeNaoConfigurada() {
+    	if(!this.unidade.getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
+    			&& !this.unidade.getListaProgramasGrupoEvolucao().isEmpty()) {
+    		JSFUtil.abrirDialog("dlgEvolucao");
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void limparDataInicioEvolucao() {
+    	this.unidade.getParametro().setInicioEvolucaoUnidade(null);
     }
 
     public String getCabecalho() {

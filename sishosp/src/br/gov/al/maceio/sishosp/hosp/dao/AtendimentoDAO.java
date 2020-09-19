@@ -16,8 +16,10 @@ import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoInconsistencia;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
 
 import javax.faces.context.FacesContext;
@@ -191,6 +193,9 @@ public class AtendimentoDAO {
 
 			stmt2.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
+				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+			}
 
 			con.commit();
 
@@ -246,7 +251,8 @@ public class AtendimentoDAO {
 
 			for (int i = 0; i < lista.size(); i++) {
 				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
-						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);";
+						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento) "
+						+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?) returning id_atendimentos1;";
 
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())) {
 					PreparedStatement stmt2 = con.prepareStatement(sql2);
@@ -274,7 +280,11 @@ public class AtendimentoDAO {
 						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
 					else
 						stmt2.setNull(8, Types.NULL);
-					stmt2.executeUpdate();
+					
+					ResultSet rs = stmt2.executeQuery();
+					if(rs.next()) {
+						lista.get(i).setId1(rs.getInt("id_atendimentos1"));
+					}
 				}
 				else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())
 						&& !lista.get(i).getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
@@ -414,6 +424,11 @@ public class AtendimentoDAO {
 			}
 			
 			gravarValidacaoSigtapAnterior(con, idAtendimento, validaSigtapAnterior);
+			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
+				for (AtendimentoBean atendimento : lista) {
+					verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+				}
+			}
 
 			con.commit();
 			alterou = true;
@@ -429,6 +444,25 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+
+	private void verificarInconsistenciaEvolucaoProgramaGrupo
+		(AtendimentoBean atendimento, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+		
+		List<ProgramaGrupoEvolucaoBean> listaProgramaGrupoEvolucao =
+				new UnidadeDAO().carregarProgramasEGruposEmEvolucao(user_session.getUnidade().getId(), conexaoAuxiliar);
+		
+		boolean existe = false;
+		for (ProgramaGrupoEvolucaoBean programaGrupoEvolucao : listaProgramaGrupoEvolucao) {
+			if(programaGrupoEvolucao.getPrograma().getIdPrograma() == atendimento.getPrograma().getIdPrograma() 
+					&& programaGrupoEvolucao.getGrupo().getIdGrupo() == atendimento.getGrupo().getIdGrupo()) {
+				existe = true;
+			}
+		}
+		if(!existe && !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId())) {
+			gravarTabelaInconsistenciasAtendimento
+				(atendimento.getId1(), TipoInconsistencia.EVOLUCAO_PROGRAMA_GRUPO.getSigla(), conexaoAuxiliar);
+		}
 	}
 
 
@@ -819,7 +853,12 @@ public class AtendimentoDAO {
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
 				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 
-		if(listaEvolucoesPendentes) {
+		
+		if(listaEvolucoesPendentes && !user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
+			sql += " where a.dtaatende >= parm.inicio_evolucao_unidade and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null ";
+		}
+		
+		else if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade and ceu.codprograma = a.codprograma and ceu.codgrupo = a.codgrupo  "
 					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null ";
 		}
@@ -963,7 +1002,7 @@ public class AtendimentoDAO {
 	public AtendimentoBean listarAtendimentoProfissionalPorId(int id) throws ProjetoException {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome,a1.codprofissionalatendimento , f.descfuncionario, a1.codprocedimento, pr.codproc, p.dtanascimento, p.sexo, "
+		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome,a1.codprofissionalatendimento , f.descfuncionario, a1.codprocedimento, pr.codproc, p.dtanascimento, p.sexo, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma "
 				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
@@ -978,6 +1017,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				atendimento.setId(rs.getInt("id_atendimento"));
+				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimento.getPaciente().setSexo(rs.getString("sexo"));
@@ -1020,7 +1060,7 @@ public class AtendimentoDAO {
 	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, a1.codprocedimento, "
+		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, a1.codprocedimento, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca,  pr.codproc, p.dtanascimento, p.sexo, "
 				+ " a.codgrupo, g.descgrupo, f.codcbo, pro.permite_alteracao_cid_evolucao, a1.id_cidprimario from hosp.atendimentos a "
@@ -1040,6 +1080,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				atendimento.setId(rs.getInt("id_atendimento"));
+				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimento.getPaciente().setNome(rs.getString("nome"));
@@ -1085,7 +1126,8 @@ public class AtendimentoDAO {
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
 
 		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
-				+ " f.codcbo, c.descricao, a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao, to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento "
+				+ " f.codcbo, c.descricao, a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao, "
+				+ " to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento, a.codprograma, a.codgrupo "
 				+ " from hosp.atendimentos1 a1"
 				+ " join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento "
 				+ " left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
@@ -1128,6 +1170,8 @@ public class AtendimentoDAO {
 				atendimento.setPerfil(rs.getString("perfil_avaliacao"));
 				if (!VerificadorUtil.verificarSeObjetoNulo(rs.getString("horario_atendimento")))
 					atendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
+				atendimento.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				atendimento.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				lista.add(atendimento);
 			}
 
@@ -1360,12 +1404,19 @@ public class AtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1,  idSituacaoAtendimento);
+			if(VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(idSituacaoAtendimento))
+				stm.setNull(1, Types.NULL);
+			else
+				stm.setInt(1,  idSituacaoAtendimento);
 			stm.setInt(2,  atendimento.getId());
 
 			stm.executeUpdate();
 			
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(),atendimento.isValidadoPeloSigtapAnterior());
+			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
+				atendimento.getSituacaoAtendimento().setId(idSituacaoAtendimento);
+				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+			}
 			
 			con.commit();
 			alterado = true;
@@ -1663,4 +1714,28 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 
+	public List<Integer> gravarTabelaInconsistenciasAtendimento
+		(Integer idAtendimento1, String descricao, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+		
+		String sql = "INSERT INTO hosp.inconsistencias (id_funcionario, id_atendimento1, datahora, descricao) "+
+				" VALUES(?, ?, CURRENT_TIMESTAMP, ?); ";
+		
+		List<Integer> listaAnos = new ArrayList<>(); 
+		
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setLong(1, user_session.getId());
+			ps.setInt(2, idAtendimento1);
+			ps.setString(3, descricao);
+			ps.executeUpdate();
+			
+		} catch (SQLException ex2) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaAnos;
+	}
 }
