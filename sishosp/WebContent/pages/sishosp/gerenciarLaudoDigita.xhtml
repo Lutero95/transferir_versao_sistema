@@ -27,13 +27,18 @@
 				<h:form id="frmPrincipal">
 
 
-					<p:commandButton id="btninc" value="Novo" title="Incluir"
-									 action="#{LaudoController.redirectInsert()}" icon="ui-icon-plus"
-									 class="btn-addNovo">
+					<p:splitButton id="btnInserir" value="Novo"
+								    icon="ui-icon-plus"
+								   action="#{LaudoController.redirectInsert()}"
+								   immediate="true" style="margin-top: 5px;">
+						<p:menuitem value="Laudo em Lote"
+									action="/pages/sishosp/cadastrolaudoemlote.xhtml?faces-redirect=true"
+									icon="pi pi-refresh" styleClass="split-item"/>
 						<f:setPropertyActionListener value="1"
 													 target="#{LaudoController.tipo}" />
 
-					</p:commandButton>
+					</p:splitButton>
+
 
 					<p:selectOneRadio id="console"
 									  value="#{LaudoController.buscaLaudoDTO.situacao}" required="true"
