@@ -569,12 +569,13 @@ public class FuncionarioBean implements Serializable {
                 Objects.equals(getListaIdMenus(), that.getListaIdMenus()) &&
                 Objects.equals(getListaIdPermissoes(), that.getListaIdPermissoes()) &&
                 Objects.equals(getExcecaoBloqueioHorario(), that.getExcecaoBloqueioHorario()) &&
-                Objects.equals(getListaSecreFolha(), that.getListaSecreFolha());
+                Objects.equals(getListaSecreFolha(), that.getListaSecreFolha()) &&
+                Objects.equals(getPermiteAutorizacaoLaudo(), that.getPermiteAutorizacaoLaudo());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getCbo(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha());
+        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getCbo(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo());
     }
 }
 
