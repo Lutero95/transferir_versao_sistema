@@ -128,29 +128,34 @@
 
 
                             <p:selectOneRadio id="idAutorizado" class="select-agendaEquipe2"
-                                              value="#{LaudoController.laudo.situacao}">
+                                              value="#{LaudoController.laudo.situacao}"
+                                              disabled="#{LaudoController.usuarioPodeRealizarAutorizacao == false}">
                                 <f:selectItem itemLabel="Sim" itemValue="A"/>
                                 <f:selectItem itemLabel="Não" itemValue="P"/>
                                 <p:ajax
                                         listener="#{LaudoController.renderizarDadosDeAutorizacao()}"
                                         update="outDataAutorizacao"></p:ajax>
                             </p:selectOneRadio>
-                        </b:column>
-                        <b:column span="1" class="data-size">
-                            <p:outputPanel id="outDataAutorizacao"
-                                           style="margin-left:-25px !important">
-                                <b:label value="Data da Autorização:" severity="info"
-                                         rendered="#{LaudoController.renderizarDataAutorizacao == true}"/>
 
-                                <p:calendar id="dataAutorizacao" locale="pt" required="true"
-                                            size="15" class="select-agendaEquipe2"
-                                            rendered="#{LaudoController.renderizarDataAutorizacao == true}"
-                                            requiredMessage="É necessário informar a data de autorização"
-                                            value="#{LaudoController.laudo.dataAutorizacao}" mask="true"
-                                            pattern="dd/MM/yyyy" pages="1" showOn="button"/>
-                            </p:outputPanel>
-
+							<b:label value="Seu perfil de usuário não tem permissão para alterar a autorização do laudo"
+								rendered="#{LaudoController.usuarioPodeRealizarAutorizacao == false}"/>
                         </b:column>
+                        <b:column span="
+								1" class="data-size">
+								<p:outputPanel id="outDataAutorizacao"
+									style="margin-left:-25px !important">
+									<b:label value="Data da Autorização:" severity="info"
+										rendered="#{LaudoController.renderizarDataAutorizacao == true}" />
+
+									<p:calendar id="dataAutorizacao" locale="pt" required="true"
+										size="15" class="select-agendaEquipe2"
+										rendered="#{LaudoController.renderizarDataAutorizacao == true}"
+										disabled="#{LaudoController.usuarioPodeRealizarAutorizacao == false}"
+										requiredMessage="É necessário informar a data de autorização"
+										value="#{LaudoController.laudo.dataAutorizacao}" mask="true"
+										pattern="dd/MM/yyyy" pages="1" showOn="button" />
+								</p:outputPanel>
+						</b:column>
 
 
                     </b:row>

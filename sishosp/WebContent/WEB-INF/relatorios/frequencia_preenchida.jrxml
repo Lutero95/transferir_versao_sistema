@@ -66,7 +66,7 @@
 	<parameter name="ano" class="java.lang.Integer"/>
 	<parameter name="mes" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct(hosp.listagrupospacienteatendimentosmesano(v.id_paciente,v.id_programa, $P{mes} , $P{ano} ))grupos,  v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
+		<![CDATA[select distinct(hosp.listagrupospacienteatendimentosmesano(v.id_paciente,v.id_programa, $P{mes} , $P{ano} ))grupos,menordata.mes mesdata, menordata.dia diadata,menordata.ano anodata,  v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
 	, (select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
@@ -110,6 +110,7 @@ LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
 WHERE 1=1
 and a.presenca='S'
+and coalesce(a.situacao,'')<>'C'
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
 and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))
@@ -121,10 +122,38 @@ and ((   $P{codgrupo}   is not null and a.codgrupo=  $P{codgrupo}) or (( $P{codg
 left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
 left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
 left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
+left join (select  extract (day from b.menordata) dia ,  extract (year from b.menordata) ano, 
+case 
+when extract (month from b.menordata)=1 then 'janeiro' 
+when extract (month from b.menordata)=2 then 'fevereiro' 
+when extract (month from b.menordata)=3 then 'março'
+when extract (month from b.menordata)=4 then 'abril'
+when extract (month from b.menordata)=5 then 'maio' 
+when extract (month from b.menordata)=6 then 'junho' 
+when extract (month from b.menordata)=7 then 'julho' 
+when extract (month from b.menordata)=8 then 'agosto' 
+when extract (month from b.menordata)=9 then 'setembro' 
+when extract (month from b.menordata)=10 then 'outubro' 
+when extract (month from b.menordata)=11 then 'novembro' 
+when extract (month from b.menordata)=12 then 'dezembro' end mes, b.codpaciente, b.codprograma from (
+select min(dtaatende) menordata, aa.codpaciente, aa.codprograma from hosp.atendimentos aa where 1=1
+and aa.presenca='S'
+and extract (year from aa.dtaatende) =   $P{ano} 
+and extract (month from aa.dtaatende) =  $P{mes} 
+group by aa.codpaciente, aa.codprograma) b ) menordata on menordata.codpaciente = v.id_paciente and menordata.codprograma = v.id_programa
 order by  nome]]>
 	</queryString>
 	<field name="grupos" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="grupos"/>
+	</field>
+	<field name="mesdata" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="mesdata"/>
+	</field>
+	<field name="diadata" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="diadata"/>
+	</field>
+	<field name="anodata" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="anodata"/>
 	</field>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
@@ -331,7 +360,7 @@ order by  nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
 	</field>
-	<field name="COLUMN_54" class="java.lang.Integer">
+	<field name="COLUMN_57" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="id_grupo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
 	</field>
@@ -763,7 +792,7 @@ order by  nome]]>
 						<font size="9"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Declaro que no mês de ___________________, o paciente indicado acima, foi submetido aos procedimentos abaixo relacionados, conforme assinatura(s) do paciente/responsável abaixo.\n\n"+
-$F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
+$F{cidade}+","+ new java.text.DecimalFormat("#0").format($F{diadata})    +" de "+$F{mesdata} +" de "+ new java.text.DecimalFormat("#0").format($F{anodata})]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement positionType="Float" x="327" y="258" width="214" height="13" uuid="94016d1a-f5e3-4326-ad91-a2a6d3f1db9a">
@@ -886,6 +915,13 @@ $F{cidade}+", ______ de ___________________ de 20__"]]></textFieldExpression>
 					<reportElement x="176" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="480" y="280" width="61" height="15" uuid="35a000ad-ec10-4db9-aa07-1d5750270917"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>

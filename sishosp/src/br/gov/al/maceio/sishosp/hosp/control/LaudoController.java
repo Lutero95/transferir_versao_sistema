@@ -54,11 +54,12 @@ public class LaudoController implements Serializable {
     private BuscaLaudoDTO buscaLaudoDTO;
     private UnidadeDAO unidadeDAO;
     private ProcedimentoDAO procedimentoDAO;
-    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
     private Boolean unidadeValidaDadosSigtap;
     private boolean existeAlgumaCargaSigtap;
     private boolean existeCargaSigtapParaDataSolicitacao;
+    private Boolean usuarioPodeRealizarAutorizacao;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -119,6 +120,7 @@ public class LaudoController implements Serializable {
     public void getEditLaudo() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        this.usuarioPodeRealizarAutorizacao = user_session.getPermiteAutorizacaoLaudo();
         
         verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         verificaSeExisteAlgumaCargaSigtap();
@@ -683,5 +685,12 @@ public class LaudoController implements Serializable {
 	public void setExisteAlgumaCargaSigtap(boolean existeAlgumaCargaSigtap) {
 		this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
 	}
-    
+
+	public Boolean getUsuarioPodeRealizarAutorizacao() {
+		return usuarioPodeRealizarAutorizacao;
+	}
+
+	public void setUsuarioPodeRealizarAutorizacao(Boolean usuarioPodeRealizarAutorizacao) {
+		this.usuarioPodeRealizarAutorizacao = usuarioPodeRealizarAutorizacao;
+	}
 }
