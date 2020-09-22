@@ -8,6 +8,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -19,8 +20,10 @@ import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PacienteLaudoEmLoteDTO;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.IdadeLimiteType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
@@ -35,7 +38,7 @@ public class LaudoDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean existeLaudoComMesmosDados(LaudoBean laudo) throws ProjetoException {
+    public boolean existeLaudoComMesmosDados(LaudoBean laudo, PacienteBean paciente) throws ProjetoException {
 
         boolean existeLaudoComMesmosDados = true;
         String sql = "select exists ( " +
@@ -47,7 +50,7 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, laudo.getPaciente().getId_paciente());
+            stm.setInt(1, paciente.getId_paciente());
             stm.setInt(2, laudo.getMesInicio());
             stm.setInt(3, laudo.getAnoInicio());
             stm.setInt(4, laudo.getMesFinal());
@@ -1272,5 +1275,118 @@ public class LaudoDAO {
             }
         }
         return sexoValido;
+    }
+    
+    public boolean cadastrarLaudosEmLote(LaudoBean laudo, List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO) throws ProjetoException {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        boolean cadastrou = false;
+
+        String sql = "insert into hosp.laudo "
+                + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
+                + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) ";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            
+            for (PacienteLaudoEmLoteDTO pacienteLaudoEmLoteDTO : listaPacienteLaudoEmLoteDTO) {
+            
+				stmt.setLong(1, pacienteLaudoEmLoteDTO.getPaciente().getId_paciente());
+				stmt.setDate(2, new java.sql.Date(laudo.getDataSolicitacao().getTime()));
+				stmt.setInt(3, laudo.getMesInicio());
+				stmt.setInt(4, laudo.getAnoInicio());
+				stmt.setInt(5, laudo.getMesFinal());
+				stmt.setInt(6, laudo.getAnoFinal());
+				stmt.setInt(7, laudo.getPeriodo());
+				stmt.setInt(8, laudo.getProcedimentoPrimario().getIdProc());
+				
+				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario1()) &&
+						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario1().getIdProc())) {
+					stmt.setInt(9, laudo.getProcedimentoSecundario1().getIdProc());
+				} else {
+					stmt.setNull(9, Types.NULL);
+				}
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario2()) &&
+						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario2().getIdProc())) {
+					stmt.setInt(10, laudo.getProcedimentoSecundario2().getIdProc());
+				} else {
+					stmt.setNull(10, Types.NULL);
+				}
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario3()) &&
+						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario3().getIdProc())) {
+					stmt.setInt(11, laudo.getProcedimentoSecundario3().getIdProc());
+				} else {
+					stmt.setNull(11, Types.NULL);
+				}
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario4()) &&
+						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario4().getIdProc())) {
+					stmt.setInt(12, laudo.getProcedimentoSecundario4().getIdProc());
+				} else {
+					stmt.setNull(12, Types.NULL);
+				}
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario5()) &&
+						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario5().getIdProc())) {
+					stmt.setInt(13, laudo.getProcedimentoSecundario5().getIdProc());
+				} else {
+					stmt.setNull(13, Types.NULL);
+				}
+
+				stmt.setInt(14, pacienteLaudoEmLoteDTO.getCid1().getIdCid());
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid2()) 
+						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid2().getIdCid())) {
+					stmt.setInt(15, pacienteLaudoEmLoteDTO.getCid2().getIdCid());
+				} else {
+					stmt.setNull(15, Types.NULL);
+				}
+
+				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid3()) 
+						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid3().getIdCid())) {
+					stmt.setInt(16, pacienteLaudoEmLoteDTO.getCid3().getIdCid());
+				} else {
+					stmt.setNull(16, Types.NULL);
+				}
+
+				if (VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getObs())) {
+					stmt.setNull(17, Types.NULL);
+				} else {
+					stmt.setString(17, laudo.getObs().toUpperCase().trim());
+				}
+
+				stmt.setInt(18, user_session.getUnidade().getId());
+				stmt.setString(19, laudo.getSituacao());
+				stmt.setLong(20, laudo.getProfissionalLaudo().getId());
+				stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
+				if (VerificadorUtil.verificarSeObjetoNulo(laudo.getDataAutorizacao())) {
+					stmt.setNull(22, Types.NULL);
+				} else {
+					stmt.setDate(22, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
+				}
+				stmt.executeUpdate();
+			}
+
+            conexao.commit();
+            cadastrou = true;
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return cadastrou;
     }
 }

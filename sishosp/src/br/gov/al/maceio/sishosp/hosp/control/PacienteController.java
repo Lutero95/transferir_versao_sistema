@@ -472,7 +472,7 @@ public class PacienteController implements Serializable {
 	}
 
 	public void listarTodosPaciente() throws ProjetoException {
-		listaPacientesAgenda = pDao.listaPaciente();
+		listaPacientesAgenda = pDao.listaPacientes();
 	}
 
 	public void validaPIS(String pis) {

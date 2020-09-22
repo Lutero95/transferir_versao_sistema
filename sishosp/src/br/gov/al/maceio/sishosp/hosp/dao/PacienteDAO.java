@@ -634,12 +634,12 @@ public class PacienteDAO {
         return retorno;
     }
 
-    public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
+    public List<PacienteBean> listaPacientes() throws ProjetoException {
 
-        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns, pacientes.dtanascimento "
-                + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
+        String sql = "select id_paciente, nome, cpf, cns, dtanascimento, matricula "
+                + " from hosp.pacientes order by pacientes.nome ";
 
-        ArrayList<PacienteBean> lista = new ArrayList<>();
+        List<PacienteBean> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -654,6 +654,7 @@ public class PacienteDAO {
                 paciente.setCpf(rs.getString("cpf"));
                 paciente.setCns(rs.getString("cns"));
                 paciente.setDtanascimento(rs.getDate("dtanascimento"));
+                paciente.setMatricula(rs.getString("matricula"));
                 lista.add(paciente);
             }
         } catch (SQLException sqle) {
@@ -1182,42 +1183,6 @@ public class PacienteDAO {
                 lista.add(t);
             }
 
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return lista;
-    }
-
-
-    public List<PacienteBean> listaPaciente() throws ProjetoException {
-        PreparedStatement ps = null;
-
-        List<PacienteBean> lista = new ArrayList<PacienteBean>();
-        try {
-            conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes order by nome";
-
-            ps = conexao.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-
-            while (rs.next()) {
-                PacienteBean paciente = new PacienteBean();
-                paciente.setId_paciente(rs.getInt("id_paciente"));
-                paciente.setNome(rs.getString("nome").toUpperCase());
-                paciente.setCpf(rs.getString("cpf"));
-                paciente.setCns(rs.getString("cns"));
-
-                lista.add(paciente);
-            }
         } catch (SQLException sqle) {
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
         } catch (Exception ex) {

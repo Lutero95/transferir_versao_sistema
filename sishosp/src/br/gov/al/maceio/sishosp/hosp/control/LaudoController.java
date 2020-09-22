@@ -24,6 +24,7 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
@@ -33,6 +34,8 @@ import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaIdadePacienteDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaLaudoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PacienteLaudoEmLoteDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
 import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 import sigtap.br.gov.saude.servicos.schema.sigtap.procedimento.v1.procedimento.ProcedimentoType;
 import sigtap.br.gov.saude.servicos.schema.sigtap.v1.idadelimite.UnidadeLimiteType;
@@ -44,6 +47,7 @@ public class LaudoController implements Serializable {
     private static final long serialVersionUID = 1L;
     private LaudoBean laudo;
     private String cabecalho;
+    private String cabecalhoLaudoEmLote;
     private Integer tipo;
     private List<LaudoBean> listaLaudo;
     private List<CidBean> listaCids;
@@ -54,11 +58,17 @@ public class LaudoController implements Serializable {
     private BuscaLaudoDTO buscaLaudoDTO;
     private UnidadeDAO unidadeDAO;
     private ProcedimentoDAO procedimentoDAO;
-    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_usuario");
     private Boolean unidadeValidaDadosSigtap;
     private boolean existeAlgumaCargaSigtap;
     private boolean existeCargaSigtapParaDataSolicitacao;
+    private Boolean usuarioPodeRealizarAutorizacao;
+    private List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO;
+    private List<PacienteBean> listaPacientes;
+    private List<PacienteBean> listaPacientesFiltro;
+    private PacienteLaudoEmLoteDTO pacienteLaudoEmLoteSelecionado;
+    private PacienteDAO pacienteDAO;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -68,6 +78,8 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
     private static final String CABECALHO_RENOVACAO = "Renovação de Laudo";
+    private static final String CABECALHO_INCLUSAO_LOTE = "Inclusão de Laudo em Lote";
+    private static final String CABECALHO_ALTERACAO_LOTE = "Alteração de Laudo em Lote";
     private static final String TITULO_CID_PRIMARIO = "Este campo é associado ao Procedimento Primário e Data de Solicitação, selecione-os para buscar o CID 1";
 
     public LaudoController() {
@@ -84,6 +96,10 @@ public class LaudoController implements Serializable {
         tipo = 0;
         unidadeDAO = new UnidadeDAO();
         procedimentoDAO = new ProcedimentoDAO();
+        listaPacienteLaudoEmLoteDTO = new ArrayList<>();
+        listaPacientes = new ArrayList<>();
+        listaPacientesFiltro = new ArrayList<>();
+        pacienteDAO = new PacienteDAO();
     }
 
     public String redirectEdit() {
@@ -119,6 +135,7 @@ public class LaudoController implements Serializable {
     public void getEditLaudo() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        this.usuarioPodeRealizarAutorizacao = user_session.getPermiteAutorizacaoLaudo();
         
         verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         verificaSeExisteAlgumaCargaSigtap();
@@ -139,7 +156,7 @@ public class LaudoController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
         }
     }
-
+    
     public void setaValidadeProcPrimLaudo(Integer validade) {
         laudo.setPeriodo(validade);
         calcularPeriodoLaudo();
@@ -198,9 +215,9 @@ public class LaudoController implements Serializable {
 
     public void gravarLaudo() throws ProjetoException {
         try {
-            verificaSeCid1FoiInserido();
-            if (!existeLaudoComMesmosDados()) {
-                validarDadosSigtap();
+            verificaSeCid1FoiInserido(this.laudo.getCid1());
+            if (!existeLaudoComMesmosDados(this.laudo.getPaciente())) {
+                validarDadosSigtap(this.laudo.getPaciente(), this.laudo.getCid1());
                 idLaudoGerado = null;
                 idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
@@ -217,12 +234,12 @@ public class LaudoController implements Serializable {
         }
     }
 
-    public void verificaSeCid1FoiInserido() throws ProjetoException {
-        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid1().getCid()))
+    private void verificaSeCid1FoiInserido(CidBean cid1) throws ProjetoException {
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(cid1.getCid()))
             throw new ProjetoException("Por favor informe o campo CID 1");
     }
 
-    private void validarDadosSigtap() throws ProjetoException {
+    private void validarDadosSigtap(PacienteBean paciente, CidBean cid1) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
 			Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
 
@@ -234,17 +251,17 @@ public class LaudoController implements Serializable {
 				this.laudo.setValidadoPeloSigtapAnterior(false);
 			}
 			
-            idadeValida(dataSolicitacaoPeloSigtap, this.laudo.getPaciente().getDtanascimento(), this.laudo.getProcedimentoPrimario().getCodProc());
-            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getPaciente().getSexo());
+            idadeValida(dataSolicitacaoPeloSigtap, paciente, this.laudo.getProcedimentoPrimario().getCodProc());
+            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente);
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap))
-                validaCidsDoLaudo(dataSolicitacaoPeloSigtap);
+                validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1);
             validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProfissionalLaudo().getId(), this.laudo.getProcedimentoPrimario().getCodProc());
         }
     }
 
-    public void idadeValida(Date dataValidacao, Date dataNascimento, String codigoProcedimento) throws ProjetoException {
+    public void idadeValida(Date dataValidacao, PacienteBean paciente, String codigoProcedimento) throws ProjetoException {
 
-        BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente(dataNascimento);
+        BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente(paciente.getDtanascimento());
         ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento(dataValidacao, codigoProcedimento);
         Boolean valido = false;
         
@@ -277,7 +294,7 @@ public class LaudoController implements Serializable {
         }
 
         if(!valido) {
-            throw new ProjetoException("A idade do paciente não compreende o intervalo permitido entre idade minima e máxima");
+            throw new ProjetoException("A idade do paciente "+ paciente.getNome()+" não compreende o intervalo permitido entre idade minima e máxima");
         }
     }
 
@@ -308,10 +325,10 @@ public class LaudoController implements Serializable {
         return procedimento;
     }
 
-    private void validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap) throws ProjetoException {
+    private void validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap, CidBean cid1) throws ProjetoException {
 
         List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
-        listaCidsLaudo.add(this.laudo.getCid1());
+        listaCidsLaudo.add(cid1);
     /*
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid2().getCid()))
             listaCidsLaudo.add(this.laudo.getCid2());
@@ -328,7 +345,7 @@ public class LaudoController implements Serializable {
     public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento) throws ProjetoException {
     	if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), data, codigoProcedimento)) {
             throw new ProjetoException("Este procedimento possui(em) Cid(s) associado(s), "
-                    + "por favor selecione apenas Cids permitidos no SIGTAP ");
+                    + "por favor selecione apenas Cids permitidos no SIGTAP pois cid "+cidBean.getDescCidAbrev()+ " é inválido");
         }
     }
 
@@ -345,18 +362,18 @@ public class LaudoController implements Serializable {
         return codigoCboSelecionado;
     }
 
-    public void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, String sexoPaciente) throws ProjetoException {
+    public void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, PacienteBean paciente) throws ProjetoException {
         if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
-                (dataSolicitacaoPeloSigtap, sexoPaciente, codProcedimento)) {
-            throw new ProjetoException("O sexo do paciente não compreende o permitido no SIGTAP");
+                (dataSolicitacaoPeloSigtap, paciente.getSexo(), codProcedimento)) {
+            throw new ProjetoException("O sexo do paciente "+paciente.getNome()+" não compreende o permitido no SIGTAP");
         }
     }
 
-    public boolean existeLaudoComMesmosDados() {
+    public boolean existeLaudoComMesmosDados(PacienteBean paciente) {
         try {
-            if(lDao.existeLaudoComMesmosDados(laudo)) {
+            if(lDao.existeLaudoComMesmosDados(laudo, paciente)) {
                 JSFUtil.adicionarMensagemErro
-                        ("Já existe laudo para este Paciente, com o mesmo profissional, data de vencimento e procedimento!", "Erro");
+                        ("Já existe laudo para o paciente "+paciente.getNome()+ " com o mesmo profissional, data de vencimento e procedimento!", "Erro");
                 return true;
             }
         } catch (ProjetoException e) {
@@ -370,8 +387,8 @@ public class LaudoController implements Serializable {
 
         //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
 
-        verificaSeCid1FoiInserido();
-        validarDadosSigtap();
+        verificaSeCid1FoiInserido(this.laudo.getCid1());
+        validarDadosSigtap(this.laudo.getPaciente(), this.laudo.getCid1());
         boolean alterou = lDao.alterarLaudo(laudo);
 
         if (alterou == true) {
@@ -622,6 +639,65 @@ public class LaudoController implements Serializable {
     	else
     		this.existeCargaSigtapParaDataSolicitacao = true;
     }
+    
+    public void iniciarConfiguracoesLaudoEmLote() throws ProjetoException {
+        this.usuarioPodeRealizarAutorizacao = user_session.getPermiteAutorizacaoLaudo();
+        verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        verificaSeExisteAlgumaCargaSigtap();
+        listarPacientes();
+    }
+    
+    private void listarPacientes() throws ProjetoException {
+    	this.listaPacientes = pacienteDAO.listaPacientes();
+    	this.listaPacientesFiltro.addAll(listaPacientes);
+    }
+    
+    public void adicionarPacienteSelecionado(PacienteLaudoEmLoteDTO pacienteSelecionado) throws ProjetoException {
+    	verificaSeCid1FoiInserido(pacienteSelecionado.getCid1());
+        this.listaPacienteLaudoEmLoteDTO.add(pacienteSelecionado);
+        JSFUtil.fecharDialog("dlgPaciente");
+    }
+    
+    public void removerPacienteSelecionado(PacienteLaudoEmLoteDTO pacienteSelecionado) throws ProjetoException {
+        this.listaPacienteLaudoEmLoteDTO.remove(pacienteSelecionado);
+    }
+
+    public void pacienteFoiAdicionado(PacienteBean pacienteSelecionado) {
+        for (PacienteLaudoEmLoteDTO pacienteLaudoEmLoteDTO : listaPacienteLaudoEmLoteDTO) {
+            if(pacienteLaudoEmLoteDTO.getPaciente().getId_paciente().equals(pacienteSelecionado.getId_paciente())) {
+                JSFUtil.adicionarMensagemAdvertencia("Este paciente já foi adicionado", "");
+                return;
+            }
+        }
+        
+        this.pacienteLaudoEmLoteSelecionado = new PacienteLaudoEmLoteDTO(pacienteSelecionado);
+        JSFUtil.abrirDialog("dlgPaciente");
+    }
+    
+    public void gravarLaudosEmLotes() throws ProjetoException {
+        	
+    	for (PacienteLaudoEmLoteDTO pacienteLaudoEmLoteDTO : listaPacienteLaudoEmLoteDTO) {
+    		if (!existeLaudoComMesmosDados(pacienteLaudoEmLoteDTO.getPaciente())) {
+    			validarDadosSigtap(pacienteLaudoEmLoteDTO.getPaciente(), pacienteLaudoEmLoteDTO.getCid1());
+    		}
+    		else {
+    			return;
+    		}
+		}
+
+        if (lDao.cadastrarLaudosEmLote(laudo, listaPacienteLaudoEmLoteDTO)) {
+        	limparDadosLaudoEmLotes();
+            JSFUtil.adicionarMensagemSucesso("Laudos cadastrados com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+    }
+    
+    private void limparDadosLaudoEmLotes() {
+    	this.laudo = new LaudoBean();
+    	this.listaPacienteLaudoEmLoteDTO.clear();
+    	this.pacienteLaudoEmLoteSelecionado = new PacienteLaudoEmLoteDTO();
+    }
 
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
@@ -683,5 +759,57 @@ public class LaudoController implements Serializable {
 	public void setExisteAlgumaCargaSigtap(boolean existeAlgumaCargaSigtap) {
 		this.existeAlgumaCargaSigtap = existeAlgumaCargaSigtap;
 	}
-    
+	
+	public Boolean getUsuarioPodeRealizarAutorizacao() {
+		return usuarioPodeRealizarAutorizacao;
+	}
+
+	public void setUsuarioPodeRealizarAutorizacao(Boolean usuarioPodeRealizarAutorizacao) {
+		this.usuarioPodeRealizarAutorizacao = usuarioPodeRealizarAutorizacao;
+	}
+
+	public String getCabecalhoLaudoEmLote() {
+		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
+			cabecalhoLaudoEmLote = CABECALHO_INCLUSAO_LOTE;
+		} else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
+			cabecalhoLaudoEmLote = CABECALHO_ALTERACAO_LOTE;
+		}
+		return cabecalhoLaudoEmLote;
+	}
+
+	public void setCabecalhoLaudoEmLote(String cabecalhoLaudoEmLote) {
+		this.cabecalhoLaudoEmLote = cabecalhoLaudoEmLote;
+	}
+
+	public List<PacienteLaudoEmLoteDTO> getListaPacienteLaudoEmLoteDTO() {
+		return listaPacienteLaudoEmLoteDTO;
+	}
+
+	public void setListaPacienteLaudoEmLoteDTO(List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO) {
+		this.listaPacienteLaudoEmLoteDTO = listaPacienteLaudoEmLoteDTO;
+	}
+
+	public List<PacienteBean> getListaPacientes() {
+		return listaPacientes;
+	}
+
+	public void setListaPacientes(List<PacienteBean> listaPacientes) {
+		this.listaPacientes = listaPacientes;
+	}
+
+	public List<PacienteBean> getListaPacientesFiltro() {
+		return listaPacientesFiltro;
+	}
+
+	public void setListaPacientesFiltro(List<PacienteBean> listaPacientesFiltro) {
+		this.listaPacientesFiltro = listaPacientesFiltro;
+	}
+
+	public PacienteLaudoEmLoteDTO getPacienteLaudoEmLoteSelecionado() {
+		return pacienteLaudoEmLoteSelecionado;
+	}
+
+	public void setPacienteLaudoEmLoteSelecionado(PacienteLaudoEmLoteDTO pacienteLaudoEmLoteSelecionado) {
+		this.pacienteLaudoEmLoteSelecionado = pacienteLaudoEmLoteSelecionado;
+	}
 }

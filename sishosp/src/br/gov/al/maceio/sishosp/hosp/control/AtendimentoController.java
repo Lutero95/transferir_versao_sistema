@@ -441,8 +441,8 @@ public class AtendimentoController implements Serializable {
     private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
             LaudoController laudoController = new LaudoController();
-            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
-            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
+            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente());
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
         }
     }
