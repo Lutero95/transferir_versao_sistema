@@ -18,6 +18,9 @@ import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
+import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -86,8 +89,8 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) returning id_laudo";
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao, usuario_cadastro ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?,?) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -195,6 +198,8 @@ public class LaudoDAO {
             } else {
                 stmt.setDate(22, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
             }
+
+            stmt.setLong(23, user_session.getId());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -221,7 +226,8 @@ public class LaudoDAO {
         String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, "
                 + "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
                 + "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, "
-                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ? "
+                + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ?, "
+                + "usuario_ultima_alteracao = ?, data_hora_ultima_alteracao = CURRENT_TIMESTAMP "
                 + " where id_laudo = ?";
 
         try {
@@ -332,8 +338,14 @@ public class LaudoDAO {
             stmt.setLong(20, user_session.getId());
             stmt.setLong(21, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(22, laudo.isValidadoPeloSigtapAnterior());
-            stmt.setInt(23, laudo.getId());
+            stmt.setLong(23, user_session.getId());
+            stmt.setInt(24, laudo.getId());
             stmt.executeUpdate();
+
+            LogBean log = LaudoLog.compararLaudos(laudo);
+            if (log.getAlteracaoRealizada())
+            new LogDAO().gravarLog(log, conexao);
+
             conexao.commit();
             retorno = true;
         } catch (SQLException sqle) {
@@ -352,13 +364,15 @@ public class LaudoDAO {
 
     public Boolean excluirLaudo(LaudoBean laudo) throws ProjetoException {
         boolean retorno = false;
-        String sql = "update hosp.laudo set ativo = false where id_laudo = ?";
+        String sql = "update hosp.laudo set ativo = false, data_hora_exclusao = current_timestamp, "
+                + "usuario_exclusao = ? where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            stmt.setInt(1, laudo.getId());
+            stmt.setLong(1, user_session.getId());
+            stmt.setInt(2, laudo.getId());
             stmt.executeUpdate();
             conexao.commit();
             retorno = true;
@@ -386,8 +400,7 @@ public class LaudoDAO {
                 + "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
-                + " where l.ativo is true and pr.ativo = 'S' ";
-        
+                + " where l.ativo is true ";
 //walter        if (user_session.getUnidade().getRestringirLaudoPorUnidade()==true)
 //walter            sql = sql+ " and l.cod_unidade = ?";
 
@@ -543,8 +556,7 @@ public class LaudoDAO {
                 + " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
                 + " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
                 + " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional "
-                + "  where id_laudo = ? and pr.ativo = 'S' ";
+                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -637,8 +649,7 @@ public class LaudoDAO {
                 + " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
                 + " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
                 + " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional "
-                + "  where id_laudo = ? and pr.ativo = 'S' ";
+                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -759,13 +770,11 @@ public class LaudoDAO {
                 + " (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, ci.cod id_cidprimario   "
                 + " from hosp.laudo l " + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) " 
-                + " where 1=1 and pr.ativo = 'S' "
-                
+                + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) " + " where 1=1 "
                 // current_date <= (SELECT * FROM
                 // hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
                 // 'YYYY-MM-DD'))) "
-                
+
                 + " AND l.codpaciente = ?  "//AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
                 + " ) a order by datainicio desc";
         try {
@@ -895,12 +904,11 @@ public class LaudoDAO {
                 " (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal " +
                 " from hosp.laudo l  left join hosp.pacientes p on (l.codpaciente = p.id_paciente) " +
                 " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) " +
-                " left join hosp.cid ci on (l.cid1 = ci.cod)  where 1=1 and pr.ativo = 'S' " +
-                
+                " left join hosp.cid ci on (l.cid1 = ci.cod)  where 1=1 " +
                 // " current_date <= (SELECT * FROM
                 // hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
                 // 'YYYY-MM-DD'))) "
-                
+
                 " AND l.id_laudo = ?  AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo) " +
                 " ) a left join hosp.pacientes pa on (pa.id_paciente = a.codpaciente) " +
                 "	 left join hosp.proc pr on (a.codprocedimento_primario = pr.id) " +
@@ -1276,7 +1284,7 @@ public class LaudoDAO {
         }
         return sexoValido;
     }
-    
+
     public boolean cadastrarLaudosEmLote(LaudoBean laudo, List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -1293,86 +1301,86 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            
+
             for (PacienteLaudoEmLoteDTO pacienteLaudoEmLoteDTO : listaPacienteLaudoEmLoteDTO) {
-            
-				stmt.setLong(1, pacienteLaudoEmLoteDTO.getPaciente().getId_paciente());
-				stmt.setDate(2, new java.sql.Date(laudo.getDataSolicitacao().getTime()));
-				stmt.setInt(3, laudo.getMesInicio());
-				stmt.setInt(4, laudo.getAnoInicio());
-				stmt.setInt(5, laudo.getMesFinal());
-				stmt.setInt(6, laudo.getAnoFinal());
-				stmt.setInt(7, laudo.getPeriodo());
-				stmt.setInt(8, laudo.getProcedimentoPrimario().getIdProc());
-				
-				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario1()) &&
-						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario1().getIdProc())) {
-					stmt.setInt(9, laudo.getProcedimentoSecundario1().getIdProc());
-				} else {
-					stmt.setNull(9, Types.NULL);
-				}
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario2()) &&
-						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario2().getIdProc())) {
-					stmt.setInt(10, laudo.getProcedimentoSecundario2().getIdProc());
-				} else {
-					stmt.setNull(10, Types.NULL);
-				}
+                stmt.setLong(1, pacienteLaudoEmLoteDTO.getPaciente().getId_paciente());
+                stmt.setDate(2, new java.sql.Date(laudo.getDataSolicitacao().getTime()));
+                stmt.setInt(3, laudo.getMesInicio());
+                stmt.setInt(4, laudo.getAnoInicio());
+                stmt.setInt(5, laudo.getMesFinal());
+                stmt.setInt(6, laudo.getAnoFinal());
+                stmt.setInt(7, laudo.getPeriodo());
+                stmt.setInt(8, laudo.getProcedimentoPrimario().getIdProc());
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario3()) &&
-						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario3().getIdProc())) {
-					stmt.setInt(11, laudo.getProcedimentoSecundario3().getIdProc());
-				} else {
-					stmt.setNull(11, Types.NULL);
-				}
+                if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario1()) &&
+                        !VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario1().getIdProc())) {
+                    stmt.setInt(9, laudo.getProcedimentoSecundario1().getIdProc());
+                } else {
+                    stmt.setNull(9, Types.NULL);
+                }
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario4()) &&
-						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario4().getIdProc())) {
-					stmt.setInt(12, laudo.getProcedimentoSecundario4().getIdProc());
-				} else {
-					stmt.setNull(12, Types.NULL);
-				}
+                if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario2()) &&
+                        !VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario2().getIdProc())) {
+                    stmt.setInt(10, laudo.getProcedimentoSecundario2().getIdProc());
+                } else {
+                    stmt.setNull(10, Types.NULL);
+                }
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario5()) &&
-						!VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario5().getIdProc())) {
-					stmt.setInt(13, laudo.getProcedimentoSecundario5().getIdProc());
-				} else {
-					stmt.setNull(13, Types.NULL);
-				}
+                if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario3()) &&
+                        !VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario3().getIdProc())) {
+                    stmt.setInt(11, laudo.getProcedimentoSecundario3().getIdProc());
+                } else {
+                    stmt.setNull(11, Types.NULL);
+                }
 
-				stmt.setInt(14, pacienteLaudoEmLoteDTO.getCid1().getIdCid());
+                if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario4()) &&
+                        !VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario4().getIdProc())) {
+                    stmt.setInt(12, laudo.getProcedimentoSecundario4().getIdProc());
+                } else {
+                    stmt.setNull(12, Types.NULL);
+                }
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid2()) 
-						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid2().getIdCid())) {
-					stmt.setInt(15, pacienteLaudoEmLoteDTO.getCid2().getIdCid());
-				} else {
-					stmt.setNull(15, Types.NULL);
-				}
+                if (!VerificadorUtil.verificarSeObjetoNulo(laudo.getProcedimentoSecundario5()) &&
+                        !VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getProcedimentoSecundario5().getIdProc())) {
+                    stmt.setInt(13, laudo.getProcedimentoSecundario5().getIdProc());
+                } else {
+                    stmt.setNull(13, Types.NULL);
+                }
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid3()) 
-						&& !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid3().getIdCid())) {
-					stmt.setInt(16, pacienteLaudoEmLoteDTO.getCid3().getIdCid());
-				} else {
-					stmt.setNull(16, Types.NULL);
-				}
+                stmt.setInt(14, pacienteLaudoEmLoteDTO.getCid1().getIdCid());
 
-				if (VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getObs())) {
-					stmt.setNull(17, Types.NULL);
-				} else {
-					stmt.setString(17, laudo.getObs().toUpperCase().trim());
-				}
+                if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid2())
+                        && !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid2().getIdCid())) {
+                    stmt.setInt(15, pacienteLaudoEmLoteDTO.getCid2().getIdCid());
+                } else {
+                    stmt.setNull(15, Types.NULL);
+                }
 
-				stmt.setInt(18, user_session.getUnidade().getId());
-				stmt.setString(19, laudo.getSituacao());
-				stmt.setLong(20, laudo.getProfissionalLaudo().getId());
-				stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
-				if (VerificadorUtil.verificarSeObjetoNulo(laudo.getDataAutorizacao())) {
-					stmt.setNull(22, Types.NULL);
-				} else {
-					stmt.setDate(22, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
-				}
-				stmt.executeUpdate();
-			}
+                if (!VerificadorUtil.verificarSeObjetoNulo(pacienteLaudoEmLoteDTO.getCid3())
+                        && !VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteLaudoEmLoteDTO.getCid3().getIdCid())) {
+                    stmt.setInt(16, pacienteLaudoEmLoteDTO.getCid3().getIdCid());
+                } else {
+                    stmt.setNull(16, Types.NULL);
+                }
+
+                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getObs())) {
+                    stmt.setNull(17, Types.NULL);
+                } else {
+                    stmt.setString(17, laudo.getObs().toUpperCase().trim());
+                }
+
+                stmt.setInt(18, user_session.getUnidade().getId());
+                stmt.setString(19, laudo.getSituacao());
+                stmt.setLong(20, laudo.getProfissionalLaudo().getId());
+                stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
+                if (VerificadorUtil.verificarSeObjetoNulo(laudo.getDataAutorizacao())) {
+                    stmt.setNull(22, Types.NULL);
+                } else {
+                    stmt.setDate(22, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
+                }
+                stmt.executeUpdate();
+            }
 
             conexao.commit();
             cadastrou = true;
