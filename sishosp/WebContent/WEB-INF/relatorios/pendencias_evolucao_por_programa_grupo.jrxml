@@ -63,6 +63,7 @@ join hosp.pacientes pac on pac.id_paciente = a.codpaciente
 join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento
 join hosp.especialidade e on e.id_especialidade = f.codespecialidade
 JOIN hosp.unidade u ON u.id = $P{codunidade} 
+join hosp.parametro par on par.codunidade = u.id 
 JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa
 join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id
 join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa
@@ -74,7 +75,12 @@ and a.dtaatende>= $P{data_inicio_atendimento}
 and a.dtaatende<= $P{data_fim_atendimento} 
 and a.codprograma = ceu.codprograma
 and a.codgrupo = ceu.codgrupo
-and a.dtaatende>=ceu.inicio_evolucao
+and case 
+	when par.verifica_periodo_inicial_evolucao_programa = false then
+		a.dtaatende>=par.inicio_evolucao_unidade 
+	when par.verifica_periodo_inicial_evolucao_programa = true then
+		a.dtaatende>=ceu.inicio_evolucao
+	end	
 and coalesce(a.situacao,'A')<>'C'
 and coalesce(a1.excluido,'N' )='N'
 and a1.id_situacao_atendimento is null
