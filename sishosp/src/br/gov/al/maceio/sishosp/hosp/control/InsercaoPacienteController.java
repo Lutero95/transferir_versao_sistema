@@ -35,6 +35,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -86,6 +87,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 	private List<CidBean> listaCids;
 	private List<ProcedimentoBean> listaProcedimentosAux;
 	private List<CidBean> listaCidsAux;
+	private HorarioAtendimento horarioAtendimento;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -465,6 +467,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
         
     }
+    
+    public void validarDiaTurno() {
+    	if(this.funcionario.getListaDiasAtendimentoSemana().isEmpty())
+    		JSFUtil.adicionarMensagemErro("Insira pelo menos um dia e turno", "");
+    	else
+    		validarAdicionarFuncionarioTurno();
+    }
 
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
     public void validarAdicionarFuncionarioTurno() {
@@ -526,7 +535,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
 
         for (int i = 0; i < funcionario.getListaDiasAtendimentoSemana().size(); i++) {
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())
+            		&& !dias.contains("Domingo")) {
                 dias = dias + "Domingo";
 
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
@@ -534,42 +544,48 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())
+            		&& !dias.contains("Segunda")) {
                 dias = dias + "Segunda";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())
+            		&& !dias.contains("Terça")) {
                 dias = dias + "Terça";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())
+            		&& !dias.contains("Quarta")) {
                 dias = dias + "Quarta";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())
+            		&& !dias.contains("Quinta")) {
                 dias = dias + "Quinta";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())
+            		&& !dias.contains("Sexta")) {
                 dias = dias + "Sexta";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
             }
 
-            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())
+            		&& !dias.contains("Sábado")) {
                 dias = dias + "Sábado";
                 if (funcionario.getListaDiasAtendimentoSemana().size() > 1 && funcionario.getListaDiasAtendimentoSemana().size() != i + 1) {
                     dias = dias + ", ";
@@ -583,6 +599,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionaisAdicionados.add(funcionario);
 
         JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
+        JSFUtil.fecharDialog("dlgDiaTurno");
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
@@ -1072,22 +1089,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
-                        if (!listaDatasDeAtendimento.contains(calendar.getTime())) {
-                            if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
-                                AgendaBean agenda = new AgendaBean();
+						if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h)
+								.getDiaSemana()) {
+							AgendaBean agenda = new AgendaBean();
 
-                                agenda.setPaciente(
-                                        insercao.getLaudo().getPaciente());
+							agenda.setPaciente(insercao.getLaudo().getPaciente());
 
-                                agenda.setDataAtendimento(calendar.getTime());
+							agenda.setDataAtendimento(calendar.getTime());
+							agenda.setProfissional(listaProfissionaisAdicionados.get(j));
+							agenda.setTurno(listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h)
+									.getTurno());
 
-                                agenda.setProfissional(listaProfissionaisAdicionados.get(j));
+							listAgendamentoProfissional.add(agenda);
+							listaDatasDeAtendimento.add(calendar.getTime());
 
-                                listAgendamentoProfissional.add(agenda);
-                                listaDatasDeAtendimento.add(calendar.getTime());
-
-                            }
-                        }
+						}
                     }
                 }
 
@@ -1103,7 +1119,68 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	this.listaProfissionaisAdicionados.clear();
     	this.listaProcedimentosAux.clear();
     	this.listaCidsAux.clear();
+    	this.listAgendamentoProfissional.clear();
     }
+    
+    public void limparHorario() {
+    	this.horarioAtendimento = new HorarioAtendimento();
+    }
+    
+    public void adicionarDiaSemanaTurno(HorarioAtendimento horarioAtendimento) {
+    	
+    	List<HorarioAtendimento> listaHorarioAtendimentos = new ArrayList<>();
+    	if(horarioAtendimento.getTurno().equals(Turno.AMBOS.getSigla())) {
+    		listaHorarioAtendimentos.add(new HorarioAtendimento(horarioAtendimento.getDiaSemana(), Turno.MANHA.getSigla()));
+    		listaHorarioAtendimentos.add(new HorarioAtendimento(horarioAtendimento.getDiaSemana(), Turno.TARDE.getSigla()));
+    	} else {
+    		listaHorarioAtendimentos.add(horarioAtendimento);
+    	}
+    	
+    	for (HorarioAtendimento horario : listaHorarioAtendimentos) {
+    		String diaSemanaString = horario.getDiaSemana().toString();
+    		setaDiaSemanaNome(horario, diaSemanaString);
+    		
+    		if(!diaTurnoJaExiste(horario)) {
+    			this.funcionario.getListaDiasAtendimentoSemana().add(horario);
+    			JSFUtil.adicionarMensagemSucesso("Dia e Turno de Atendimento Adicionado com Sucesso!", "");
+    			JSFUtil.fecharDialog("dlgDiaTurno");
+    		}			
+		}
+    }
+    
+    public void removerDiaSemanaTurno(HorarioAtendimento horarioAtendimento) {
+    	this.funcionario.getListaDiasAtendimentoSemana().remove(horarioAtendimento);
+    }
+    
+    private boolean diaTurnoJaExiste(HorarioAtendimento horarioAtendimento) {
+    	for (HorarioAtendimento horario : this.funcionario.getListaDiasAtendimentoSemana()) {
+    		if(horario.getDiaSemana().equals(horarioAtendimento.getDiaSemana())
+    				&& horario.getTurno().equals(horarioAtendimento.getTurno())) {
+    			JSFUtil.adicionarMensagemErro("Este dia da semana e turno já foi adicionado", "");
+    			return true;
+    		}
+		}
+    	return false;
+    }
+
+	private void setaDiaSemanaNome(HorarioAtendimento horarioAtendimento, String diaSemanaString) {
+		if(diaSemanaString.equals(DiasDaSemana.DOMINGO.getSigla()))
+    		horarioAtendimento.setDiaNome("Domingo");
+    	if(diaSemanaString.equals(DiasDaSemana.SEGUNDA.getSigla()))
+    		horarioAtendimento.setDiaNome("Segunda");
+    	if(diaSemanaString.equals(DiasDaSemana.TERCA.getSigla()))
+    		horarioAtendimento.setDiaNome("Terça");
+    	if(diaSemanaString.equals(DiasDaSemana.QUARTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Quarta");
+    	if(diaSemanaString.equals(DiasDaSemana.QUINTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Quinta");
+    	if(diaSemanaString.equals(DiasDaSemana.SEXTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Sexta");
+    	if(diaSemanaString.equals(DiasDaSemana.SABADO.getSigla()))
+    		horarioAtendimento.setDiaNome("Sábado");
+	}
+	
+	
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1268,6 +1345,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 	public void setListaCids(List<CidBean> listaCids) {
 		this.listaCids = listaCids;
+	}
+
+	public HorarioAtendimento getHorarioAtendimento() {
+		return horarioAtendimento;
+	}
+
+	public void setHorarioAtendimento(HorarioAtendimento horarioAtendimento) {
+		this.horarioAtendimento = horarioAtendimento;
 	}
 	
 }

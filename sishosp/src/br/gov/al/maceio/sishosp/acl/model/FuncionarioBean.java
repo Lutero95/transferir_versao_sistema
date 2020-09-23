@@ -33,7 +33,11 @@ public class FuncionarioBean implements Serializable {
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
     private String horarioAtendimento;
+    
+    /* TODO Remover essa propriedade depois que o ajuste de turno por dia da semana for implementado na agenda normal*/
     private ArrayList<String> listDiasSemana;
+    
+    
     private Integer codigoDaUnidadeSelecionada; 
 
     // LISTAS

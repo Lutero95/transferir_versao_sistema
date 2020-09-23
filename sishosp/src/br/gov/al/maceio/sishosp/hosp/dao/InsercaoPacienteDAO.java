@@ -957,7 +957,7 @@ public class InsercaoPacienteDAO {
 	public void inserirDiasAtendimentoTurno(Integer idPacienteInstituicao, List<FuncionarioBean> lista,
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+		String sql = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, turno) VALUES  (?, ?, ?, ?)";
 
 		try {
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
@@ -968,6 +968,7 @@ public class InsercaoPacienteDAO {
 				
 				for (int j = 0; j < lista.get(i).getListaDiasAtendimentoSemana().size(); j++) {
 					ps.setInt(3, lista.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana());
+					ps.setString(4, lista.get(i).getListaDiasAtendimentoSemana().get(j).getTurno());
 					ps.executeUpdate();
 				}
 			}
@@ -997,8 +998,8 @@ public class InsercaoPacienteDAO {
 				ps.setDate(2, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i).getDataAtendimento()));
 				ps.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
-				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(insercao.getTurno())) {
-					ps.setString(4, insercao.getTurno());
+				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(listaAgendamento.get(i).getTurno())) {
+					ps.setString(4, listaAgendamento.get(i).getTurno());
 				} else {
 					ps.setNull(4, Types.NULL);
 				}
@@ -1036,11 +1037,15 @@ public class InsercaoPacienteDAO {
 			AgendaBean agendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		try {
+			List<Integer> diasJaGravados = new ArrayList<>();
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
 
 				if (DataUtil.extrairDiaDeData(agendamento.getDataAtendimento()) == 
-						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()
+						&& !diasJaGravados.contains(profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana())) {
 
+					diasJaGravados.add(profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana());
+					
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
