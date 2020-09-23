@@ -59,7 +59,7 @@
 		</queryString>
 	</subDataset>
 	<parameter name="codunidade" class="java.lang.Integer"/>
-	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
+	<parameter name="codpaciente" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -99,7 +99,7 @@ LEFT JOIN hosp.proc prs3 ON prs3.id = coalesce(l.codprocedimento_secundario3, pi
 LEFT JOIN hosp.proc prs4 ON prs4.id = coalesce(l.codprocedimento_secundario4, pi.codprocedimento_secundario4_laudo_anterior)
 LEFT JOIN hosp.proc prs5 ON prs5.id = coalesce(l.codprocedimento_secundario5, pi.codprocedimento_secundario5_laudo_anterior)
 LEFT JOIN acl.funcionarios f ON f.id_funcionario = l.cod_profissional
-JOIN hosp.unidade u ON u.id =  $P{codunidade} 
+JOIN hosp.unidade u ON u.id =  $P{codunidade}  and u.id = a.cod_unidade 
 JOIN hosp.empresa  ON empresa.cod_empresa = u.cod_empresa
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
@@ -113,9 +113,9 @@ and a.presenca='S'
 and coalesce(a.situacao,'')<>'C'
 and extract (year from a.dtaatende) =    $P{ano} 
 and extract (month from a.dtaatende) =   $P{mes} 
-and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))
 and ((   $P{codprograma}   is not null and a.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and a.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{codpaciente}   is not null and a.codpaciente=  $P{codpaciente}) or (( $P{codpaciente} =0 ) OR ( $P{codpaciente} is null )))
 ) t
 )u
 )v

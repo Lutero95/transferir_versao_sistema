@@ -738,10 +738,9 @@
 									</p:dataTable>
 									</p:panel>
 								</p:outputPanel>
-
 							</b:row>
-
 						</p:tab>
+						
 						<p:tab title="Produção">
 							<p:outputPanel id="outProducao">
 								<b:row>
@@ -811,6 +810,14 @@
 									</b:column>
 								</b:row>
 							</p:outputPanel>
+						</p:tab>
+						
+						<p:tab title="Campos Obrigatórios">
+							<p:fieldset legend="Cadastro de Paciente">
+								<p:selectBooleanCheckbox
+									value="#{UnidadeController.unidade.parametro.cpfPacienteObrigatorio}"
+									itemLabel="CPF"/>
+							</p:fieldset>						
 						</p:tab>
 						
 						<p:tab title="Cores em Tabelas">

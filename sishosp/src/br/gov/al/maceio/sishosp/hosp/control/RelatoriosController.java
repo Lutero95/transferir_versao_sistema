@@ -320,15 +320,9 @@ public class RelatoriosController implements Serializable {
 	}
 
 
-	public void geraFrequenciaPreenchida(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+	public void geraFrequenciaPreenchida(PacienteBean paciente, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		
-		pacienteInstituicao.setPrograma(programa);
-		pacienteInstituicao.setGrupo(grupo);
-
-		if (pacienteInstituicao.getLaudo().getPaciente() == null) {
-			JSFUtil.adicionarMensagemErro("Informe o Paciente obrigatoriamente!", "Erro!");
-		} else {
 			String caminho = "/WEB-INF/relatorios/";
 			String relatorio = "";
 			relatorio = caminho + "frequencia_preenchida.jasper";
@@ -336,18 +330,18 @@ public class RelatoriosController implements Serializable {
 			map.put("ano", this.ano);
 			map.put("mes", this.mes);
 			map.put("codunidade", user_session.getUnidade().getId());
-			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
-				map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+			if (!VerificadorUtil.verificarSeObjetoNulo(programa))
+				map.put("codprograma", programa.getIdPrograma());
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
-				map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
+				map.put("codgrupo", grupo.getIdGrupo());
 
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getId()))
-				map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+				map.put("codpaciente", paciente.getId_paciente());
 
 			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 			this.executeReport(relatorio, map, "relatorio.pdf");
-		}
+
 	}
 	
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
