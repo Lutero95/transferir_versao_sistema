@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
@@ -1206,27 +1207,32 @@ public class PacienteDAO {
             String sql = "select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula, dtanascimento, sexo"
                     + " from hosp.pacientes where ";
 
-            if(tipo.equals("nome")){
+            if(tipo.equals(TipoBuscaPaciente.NOME.getSigla())){
                 sql = sql + "nome like ?";
             }
-            else if(tipo.equals("cpf")){
+            else if(tipo.equals(TipoBuscaPaciente.CPF.getSigla())){
                 sql = sql + "cpf like ?";
             }
-            else if(tipo.equals("cns")){
+            else if(tipo.equals(TipoBuscaPaciente.CNS.getSigla())){
                 sql = sql + "cns like ?";
             }
-            else if(tipo.equals("prontuario")){
+            else if(tipo.equals(TipoBuscaPaciente.PRONTUARIO.getSigla())){
                 sql = sql + "id_paciente = ?";
             }
-            else if(tipo.equals("matricula")){
+            else if(tipo.equals(TipoBuscaPaciente.PRONTUARIO_ANTIGO.getSigla())){
+                sql = sql + "codprontuario_anterior = ?";
+            }
+            else if(tipo.equals(TipoBuscaPaciente.MATRICULA.getSigla())){
                 sql = sql + "matricula like ?";
             }
 
             sql = sql + " order by nome";
 
             ps = conexao.prepareStatement(sql);
-            if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
+            if ((tipo.equals(TipoBuscaPaciente.NOME.getSigla())) || (tipo.equals(TipoBuscaPaciente.CPF.getSigla())) 
+            		|| (tipo.equals(TipoBuscaPaciente.CNS.getSigla())) || (tipo.equals(TipoBuscaPaciente.MATRICULA.getSigla()))) {
                 ps.setString(1, "%" + campoBusca.toUpperCase() + "%");
+            }
             else
                 ps.setInt(1,Integer.valueOf(campoBusca));
             ResultSet rs = ps.executeQuery();
