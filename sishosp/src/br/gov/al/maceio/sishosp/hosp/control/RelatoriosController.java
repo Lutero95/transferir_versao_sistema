@@ -1140,25 +1140,35 @@ public class RelatoriosController implements Serializable {
 		servletOutputStream.close();
 	}
 
-	public void gerarFaltasPorPrograma() throws IOException, ParseException, ProjetoException {
+	public void gerarFaltasPacientes() throws IOException, ParseException, ProjetoException {
 
-		if (this.dataFinal == null || this.dataInicial == null || this.programa == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datas e programa devem ser preenchidas.",
+		if (this.dataFinal == null || this.dataInicial == null ) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Informe o período de Atendimento",
 					"Campos inválidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
 		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = caminho + "faltasNoPrograma.jasper";
+		String relatorio = caminho + "faltaspacientes.jasper";
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
-		map.put("cod_programa", this.programa.getIdPrograma());
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		if (programa != null)
+			map.put("codprograma", programa.getIdPrograma());
 
-		this.executeReport(relatorio, map, "relatorio.pdf");
+		if (grupo != null)
+			map.put("codgrupo", grupo.getIdGrupo());
+
+		if (paciente != null)
+			map.put("id_paciente", paciente.getId_paciente());
+
+		if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
+			map.put("turno", this.turnoSelecionado);
+
+		this.executeReport(relatorio, map, "faltaspacientes.pdf");
 		limparDados();
 	}
 
