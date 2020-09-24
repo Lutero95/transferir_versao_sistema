@@ -40,7 +40,7 @@ public class BpaConsolidadoDAO {
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
         		" and pm.competencia_atual = ? "+
-        		" and proc.ativo = 'S' " +
+        		"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  " +
         		" group by " + 
         		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo " +
         		"order by cbo.codigo ";
