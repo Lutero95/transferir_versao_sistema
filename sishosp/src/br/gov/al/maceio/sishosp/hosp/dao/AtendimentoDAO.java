@@ -537,7 +537,7 @@ public class AtendimentoDAO {
     			" from acl.funcionarios f " + 
     			" join hosp.atendimentos1 a1 on (f.id_funcionario = a1.codprofissionalatendimento) " + 
     			" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
-    			" where a1.id_atendimento = ? " + 
+    			" where a1.id_atendimento = ? and coalesce(a1.excluido, 'N') = 'N' " + 
     			" order by 1"; 
         try {
             PreparedStatement stm = con.prepareStatement(sql);
