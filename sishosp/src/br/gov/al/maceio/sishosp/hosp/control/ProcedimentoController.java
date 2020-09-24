@@ -216,28 +216,36 @@ public class ProcedimentoController implements Serializable {
     }
 
     public void gravarProcedimento() throws ProjetoException, SQLException {
+    	if(!listaUnidadesEstaVazia(proc.getListaUnidadesVisualizam())) {
+			boolean cadastrou = procedimentoDao.gravarProcedimento(proc);
 
-        boolean cadastrou = procedimentoDao.gravarProcedimento(proc);
-
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Procedimento cadastrado com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			if (cadastrou == true) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Procedimento cadastrado com sucesso!", "Sucesso");
+			} else
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
     }
 
     public void alterarProcedimento() throws ProjetoException {
 
-        boolean alterou = procedimentoDao.alterarProcedimento(proc);
+    	if(!listaUnidadesEstaVazia(proc.getListaUnidadesVisualizam())) {
+			boolean alterou = procedimentoDao.alterarProcedimento(proc);
 
-        if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Procedimento alterado com sucesso!", "Sucesso");
-            listaProcedimentos = procedimentoDao.listarProcedimento();
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-        }
-
+			if (alterou == true) {
+				JSFUtil.adicionarMensagemSucesso("Procedimento alterado com sucesso!", "Sucesso");
+				listaProcedimentos = procedimentoDao.listarProcedimento();
+			} else
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+    	}
+    }
+    
+    private boolean listaUnidadesEstaVazia(List<UnidadeBean> listaUnidades) {
+    	if(listaUnidades.isEmpty()) {
+    		JSFUtil.adicionarMensagemErro("Adicione pelo menos uma unidade para visualizaar o procedimento", "Erro");
+    		return true;
+    	}
+    	return false;
     }
 
     public void excluirProcedimento() throws ProjetoException {

@@ -63,8 +63,8 @@ public class ProcedimentoDAO {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + " cod_unidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning id;";
+        String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?) returning id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -85,12 +85,10 @@ public class ProcedimentoDAO {
                 ps.setInt(7, proc.getValidade_laudo());
             }
 
-            ps.setInt(8, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
                 proc.setIdProc(rs.getInt("id"));
             }
-
 
             gravarProcedimentoUnidade(proc, con);
 
