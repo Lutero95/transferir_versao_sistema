@@ -41,17 +41,12 @@
 								<p:commandButton value="Entrar"
 									styleClass="btnLogin ui-priority-primary btn-lg"
 									action="#{MBFuncionarios.login}" update="msgPagina"></p:commandButton>
-
-
-
 							</center>
 
 							<div align="center">
 								<b:messages value="Error" id="msgPagina"></b:messages>
 							</div>
-
 						</h:form>
-
 					</div>
 					<div class="login-content">
 						<p:outputPanel id="outExpired" autoUpdate="false">
@@ -77,11 +72,9 @@
 			closable="false" draggable="false" id="selecaoUnidade"
 			responsive="true" resizable="false">
 
-			
 			<h:form>
-
 				<p:growl id="growlUnidade"></p:growl>
-			<p:autoUpdate/>
+				<p:autoUpdate />
 				<div align="center">
 					<p:selectOneMenu
 						value="#{MBFuncionarios.codigoDaUnidadeSelecionada}"
@@ -93,11 +86,9 @@
 					<br></br> <br></br>
 					<p:commandButton value="Selecionar"
 						action="#{MBFuncionarios.associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin()}"
-					update="growlUnidade"/>
+						update="growlUnidade" />
 				</div>
-				</h:form>
-			
-
+			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Escolha a empresa para acessar"

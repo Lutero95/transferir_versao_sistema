@@ -92,6 +92,7 @@ public class FuncionarioController implements Serializable {
 	private List<Funcao> listaFuncoesTargetEdit;
 
 	private Boolean renderizarPermissoes;
+	private UnidadeDAO unidadeDAO;
 
 	// Dual Sistema
 	private DualListModel<Sistema> listaSistemasDual;
@@ -110,6 +111,7 @@ public class FuncionarioController implements Serializable {
 	private static final String ENDERECO_ID = "&amp;id=";
 	private static final String CABECALHO_INCLUSAO = "Inclusão de Profissional";
 	private static final String CABECALHO_ALTERACAO = "Alteração de Profissional";
+	private static final String PAGINA_SELECAO_SISTEMA = "/ehosp/pages/comum/selecaoSistema.faces";
 
 	public FuncionarioController() {
 		
@@ -156,6 +158,8 @@ public class FuncionarioController implements Serializable {
 		listaFuncoesDualEdit = null;
 		listaFuncoesSourceEdit = new ArrayList<>();
 		listaFuncoesTargetEdit = new ArrayList<>();
+		
+		unidadeDAO = new UnidadeDAO();
 	}
 
 	public boolean verificarPermComp(String codigo, Integer idSistema) {
@@ -287,8 +291,7 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public String associarUnidadeSelecionadaAoUsuarioDaSessaoIhRealizarLogin() throws ProjetoException {
-		UnidadeDAO uDao = new UnidadeDAO();
-		UnidadeBean unidade = uDao.buscarUnidadePorId(codigoDaUnidadeSelecionada);
+		UnidadeBean unidade = unidadeDAO.buscarUnidadePorId(codigoDaUnidadeSelecionada);
 		usuarioLogado.setUnidade(unidade);
 
 		if ((!usuarioLogado.getExcecaoBloqueioHorario()) &&  (!verificarSeTemHorarioLimiteIhSeHorarioEhPermitidoPorUnidade(unidade.getId()))){
@@ -301,14 +304,13 @@ public class FuncionarioController implements Serializable {
 		}
 	}
 
-	public void associarUnidadeSelecionadaAoUsuarioDaSessao() throws ProjetoException {
-		usuarioLogado.setCodigoDaUnidadeSelecionada(codigoDaUnidadeSelecionada);
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario",
-				usuarioLogado);
+	public void associarUnidadeSelecionadaAoUsuarioDaSessao() throws ProjetoException, IOException {
+		UnidadeBean unidade = unidadeDAO.buscarUnidadePorId(codigoDaUnidadeSelecionada);
+		usuarioLogado.setUnidade(unidade);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_usuario", usuarioLogado);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("obj_funcionario",
 				usuarioLogado);
-		JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!","Sucesso!");
-		JSFUtil.fecharDialog("selecaoUnidade");
+		FacesContext.getCurrentInstance().getExternalContext().redirect(PAGINA_SELECAO_SISTEMA);
 	}
 
 	public void abrirDialogDeSelecaoDeUnidade() throws ProjetoException {
@@ -514,7 +516,7 @@ public class FuncionarioController implements Serializable {
 
 		// Gerar menu inicio.
 		DefaultMenuItem item1 = new DefaultMenuItem();
-		item1.setValue("InÍcio");
+		item1.setValue("Início");
 		// contextPath+
 		item1.setUrl(root+sistema.getUrl().replace("?faces-redirect=true", ""));
 		// item1.setStyle("overflow: auto; !important");
@@ -1109,7 +1111,6 @@ public class FuncionarioController implements Serializable {
 	public void addUnidadeExtra() throws ProjetoException {
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getUnidadeExtra().getId())) {
 			if (profissional.getListaUnidades().isEmpty()) {
-				UnidadeDAO unidadeDAO = new UnidadeDAO();
 				UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
 				if(!unidadePadraoFoiadicionada())
 					profissional.getListaUnidades().add(unidadeBean1);
@@ -1125,7 +1126,6 @@ public class FuncionarioController implements Serializable {
 					existe = true;
 				
 				if (existe == false) {
-					UnidadeDAO unidadeDAO = new UnidadeDAO();
 					UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
 					profissional.getListaUnidades().add(unidadeBean1);
 				} else {
@@ -1151,7 +1151,6 @@ public class FuncionarioController implements Serializable {
 
 	public void montarListaDeUnidadesDoUsuario() throws ProjetoException {
 		listaUnidadesDoUsuario = new ArrayList<>();
-		UnidadeDAO unidadeDAO = new UnidadeDAO();
 		listaUnidadesDoUsuario.add(unidadeDAO.buscarUnidadePorId(profissional.getUnidade().getId()));
 
 		for (int i=0; i<profissional.getListaUnidades().size(); i++){

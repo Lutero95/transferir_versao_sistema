@@ -167,7 +167,6 @@
         <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 
             <h:form id="mainFormtempSist" styleClass="user-nav">
-
                 <p:row>
                     <p:column>
                         <h:outputText
@@ -182,8 +181,14 @@
                                 value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
                                 rendered="#{MBFuncionarios.usuarioLogado.id != null}"/>
                     </p:column>
+                    
+					<p:column>
+						<h:outputText styleClass="sub-name2-user-nav"
+							value="#{MBFuncionarios.usuarioLogado.unidade.nomeUnidade}"
+							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
+					</p:column>
                 </p:row>
-
+                
                 <p:commandLink styleClass="editUSer"
                                oncomplete="PF('dlguser').show()"
                                style="position:absolute;z-index:1000" id="linkuser"
