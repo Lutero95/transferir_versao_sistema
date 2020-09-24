@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.model.dto;
 
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
@@ -11,6 +12,7 @@ public class BuscaSessaoDTO implements Serializable {
 
     private ProgramaBean programaBean;
     private GrupoBean grupoBean;
+    private EquipeBean equipeBean;
     private Date periodoInicial;
     private Date periodoFinal;
     private String tela;
@@ -29,6 +31,15 @@ public class BuscaSessaoDTO implements Serializable {
         this.grupoBean = grupoBean;
         this.periodoInicial = periodoInicial;
         this.periodoFinal = periodoFinal;
+        this.tela = tela;
+    }
+    
+    public BuscaSessaoDTO(ProgramaBean programaBean, GrupoBean grupoBean, EquipeBean equipeBean, String tipoBusca, String campoBusca, String tela) {
+        this.programaBean = programaBean;
+        this.grupoBean = grupoBean;
+        this.equipeBean = equipeBean;
+        this.tipoBusca = tipoBusca;
+        this.campoBusca = campoBusca;
         this.tela = tela;
     }
     
@@ -60,8 +71,16 @@ public class BuscaSessaoDTO implements Serializable {
     public void setGrupoBean(GrupoBean grupoBean) {
         this.grupoBean = grupoBean;
     }
+    
+    public EquipeBean getEquipeBean() {
+		return equipeBean;
+	}
 
-    public Date getPeriodoInicial() {
+	public void setEquipeBean(EquipeBean equipeBean) {
+		this.equipeBean = equipeBean;
+	}
+
+	public Date getPeriodoInicial() {
         return periodoInicial;
     }
 
@@ -130,12 +149,13 @@ public class BuscaSessaoDTO implements Serializable {
                 Objects.equals(campoBusca, that.campoBusca) &&
                 Objects.equals(tipoBusca, that.tipoBusca) &&
                 Objects.equals(buscaEvolucao, that.buscaEvolucao) &&
-                Objects.equals(listarEvolucoesPendentes, that.listarEvolucoesPendentes);
+                Objects.equals(listarEvolucoesPendentes, that.listarEvolucoesPendentes) &&
+                Objects.equals(equipeBean, that.equipeBean);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(programaBean, grupoBean, periodoInicial, periodoFinal, tela, campoBusca, tipoBusca, buscaEvolucao, listarEvolucoesPendentes);
+        return Objects.hash(programaBean, grupoBean, periodoInicial, periodoFinal, tela, campoBusca, tipoBusca, buscaEvolucao, listarEvolucoesPendentes, equipeBean);
     }
 
     @Override
@@ -150,6 +170,7 @@ public class BuscaSessaoDTO implements Serializable {
                 ", tipoBusca=" +tipoBusca +
                 ", buscaEvolucao=" +buscaEvolucao +
                 ", listarEvolucoesPendentes=" +listarEvolucoesPendentes +
+                ", equipeBean=" +equipeBean +
                 '}';
     }
 }

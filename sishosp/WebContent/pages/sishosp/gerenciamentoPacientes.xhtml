@@ -6,7 +6,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 template="../../template/template.xhtml">
 
-    <f:metadata>buscar
+    <f:metadata>
         <f:viewAction action="#{GerenciarPacienteController.carregarBuscaGerenciamentoPaciente()}"/>
     </f:metadata>
     
@@ -41,7 +41,7 @@
                                                 itemLabel="#{theme.descPrograma}">
                                     <p:ajax event="itemSelect"
                                             update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
-							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"/>
+												:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"/>
 
                                 </p:autoComplete>
 
@@ -68,7 +68,7 @@
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 itemLabel="#{theme.descGrupo}">
-                                    <p:ajax event="itemSelect" update=":formGerenPaci:outGrupo"/>
+                                    <p:ajax event="itemSelect" update=":formGerenPaci:outGrupo :formGerenPaci:outEquipe"/>
 
                                 </p:autoComplete>
 
@@ -81,7 +81,31 @@
                                                  oncomplete="PF('dlgConsuGrop').show();"/>
                             </p:outputPanel>
                         </b:column>
+                        
+                        <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Equipe" severity="info"/>
 
+                                <p:outputPanel id="outEquipe">
+                                    <p:autoComplete
+                                            value="#{GerenciarPacienteController.gerenciarpaciente.equipe}"
+                                            size="31" converter="conEquipe"
+                                            disabled="#{GerenciarPacienteController.gerenciarpaciente.grupo.idGrupo == null}"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{GerenciarPacienteController.listaEquipeAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descEquipe}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusEqui" immediate="true"
+                                                     disabled="#{GerenciarPacienteController.gerenciarpaciente.grupo.idGrupo == null}"
+                                                     action="#{GerenciarPacienteController.carregaListaEquipePorGrupo()}"
+                                                     icon="ui-icon-search"
+                                                     oncomplete="PF('dlgConsuEquipe').show();"
+                                                     update=":formConsuEquipe"/>
+                                </p:outputPanel>
+                            </b:column>
                     </b:row>
 
                     <br></br>
@@ -141,7 +165,6 @@
                                              class="btn-acao-table acao-buscar"
                                              action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
                                              update="msgPagina :formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:dtNovosAg, btnInserir"></p:commandButton>
-
                         </b:column>
 
                         <b:column span="2" class="new-span1">
@@ -416,7 +439,7 @@
                         <f:facet name="header">
                             Selecionar
                         </f:facet>
-                        <p:commandButton update=":formGerenPaci:outGrupo"
+                        <p:commandButton update=":formGerenPaci:outGrupo :formGerenPaci:outEquipe"
                                          icon="fa fa-fw fa-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuGrop').hide();">
@@ -426,6 +449,37 @@
                     </p:column>
 
                 </p:dataTable>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{GerenciarPacienteController.listaEquipe}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                 icon="fa fa-fw fa-check" update=":formGerenPaci:outEquipe"
+                                title="Selecionar" class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{GerenciarPacienteController.gerenciarpaciente.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
             </h:form>
         </p:dialog>
 

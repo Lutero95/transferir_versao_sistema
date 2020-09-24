@@ -13,9 +13,11 @@ import javax.faces.bean.ViewScoped;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -33,6 +35,7 @@ public class GerenciarPacienteController implements Serializable {
 	private GerenciarPacienteBean rowBean;
 	private List<GerenciarPacienteBean> listaPacientes;
 	private List<GrupoBean> listaGrupos;
+	private List<EquipeBean> listaEquipe;
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 	private String busca = "N";
 	private Boolean apenasLeitura;
@@ -40,6 +43,8 @@ public class GerenciarPacienteController implements Serializable {
 	private String tipo;
 	private String tipoBusca;
 	private String campoBusca;
+	private GrupoDAO grupoDAO;
+	private EquipeDAO equipeDAO;
 
 	// CONSTANTES
 	private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
@@ -59,6 +64,8 @@ public class GerenciarPacienteController implements Serializable {
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
 		tipo = "";
+		grupoDAO = new GrupoDAO();
+		equipeDAO = new EquipeDAO();
 	}
 
 	public void carregarBuscaGerenciamentoPaciente() {
@@ -67,6 +74,9 @@ public class GerenciarPacienteController implements Serializable {
 			if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla())) {
 				gerenciarpaciente.setGrupo(buscaSessaoDTO.getGrupoBean());
 				gerenciarpaciente.setPrograma(buscaSessaoDTO.getProgramaBean());
+				gerenciarpaciente.setEquipe(buscaSessaoDTO.getEquipeBean());
+				tipoBusca = buscaSessaoDTO.getTipoBusca();
+				campoBusca = buscaSessaoDTO.getCampoBusca();
 			}
 		}
 
@@ -74,8 +84,8 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
 		busca = "S";
-		SessionUtil.adicionarBuscaPtsNaSessao(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(), null, null,
-				TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
+		SessionUtil.adicionarBuscaPacienteInstituicaoNaSessao(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(), gerenciarpaciente.getEquipe(),
+				tipoBusca, campoBusca, TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
 		carregarPacientesInstituicao();
 		apenasLeitura = true;
 
@@ -89,21 +99,28 @@ public class GerenciarPacienteController implements Serializable {
 	}
 
 	public List<GrupoBean> listaGrupoAutoComplete(String query) throws ProjetoException {
-		GrupoDAO grDao = new GrupoDAO();
 
 		if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
-			return grDao.listarGruposNoAutoComplete(query, this.gerenciarpaciente.getPrograma().getIdPrograma());
+			return grupoDAO.listarGruposNoAutoComplete(query, this.gerenciarpaciente.getPrograma().getIdPrograma());
 		} else {
 			return null;
 		}
-
 	}
+	
+	public List<EquipeBean> listaEquipeAutoComplete(String query) throws ProjetoException {
+		return equipeDAO.listarEquipePorGrupoAutoComplete(query, this.gerenciarpaciente.getPrograma().getIdPrograma());
+	}
+	
+    public void carregaListaEquipePorGrupo() throws ProjetoException {
+        if (gerenciarpaciente.getGrupo().getIdGrupo() != null) {
+            listaEquipe = equipeDAO.listarEquipePorGrupo(gerenciarpaciente.getGrupo().getIdGrupo());
+        }
+    }
 
 	public void carregaGruposDoPrograma() throws ProjetoException {
-		GrupoDAO grDao = new GrupoDAO();
 		if (gerenciarpaciente.getPrograma() != null) {
 			if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
-				listaGrupos = grDao.listarGruposPorPrograma(this.gerenciarpaciente.getPrograma().getIdPrograma());
+				listaGrupos = grupoDAO.listarGruposPorPrograma(this.gerenciarpaciente.getPrograma().getIdPrograma());
 			}
 		}
 
@@ -124,15 +141,10 @@ public class GerenciarPacienteController implements Serializable {
 		cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
 
 		if (cadastrou) {
-
 			JSFUtil.fecharDialog("dlgDeslPac");
-
-			listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
-
+			carregarPacientesInstituicao();
 			rowBean = new GerenciarPacienteBean();
-
 			JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
-
 		} else {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o desligamento!", "Erro");
 		}
@@ -145,11 +157,8 @@ public class GerenciarPacienteController implements Serializable {
 		cadastrou = gDao.encaminharPaciente(rowBean, gerenciarpaciente);
 
 		if (cadastrou) {
-
-			listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
-
+			carregarPacientesInstituicao();
 			JSFUtil.adicionarMensagemSucesso("Encaminhamento gerado com sucesso!", "Sucesso");
-
 		} else {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o encaminhamento!", "Erro");
 		}
@@ -278,4 +287,12 @@ public class GerenciarPacienteController implements Serializable {
 		this.campoBusca = campoBusca;
 	}
 
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
+	
 }

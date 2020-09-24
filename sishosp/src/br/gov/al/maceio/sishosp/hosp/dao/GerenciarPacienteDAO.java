@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
@@ -53,26 +54,34 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
                 + " left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo and  prog.id_programa = gp.codprograma) "
                 + " where p.cod_unidade = ? ";
-        if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
+        
+        if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getPrograma()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getPrograma().getIdPrograma())) {
             sql = sql + " and  p.codprograma = ?";
         }
-        if ((gerenciar.getGrupo()!=null) && (gerenciar.getGrupo().getIdGrupo()!=null)) {
+        if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getGrupo()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getGrupo().getIdGrupo())) {
             sql = sql + " and  p.codgrupo = ?";
         }
+        
+        if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getEquipe()) 
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getEquipe().getCodEquipe())) {
+            sql = sql + " and  p.codequipe = ?";
+        }
 
-        if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        if ((tipoBusca.equals("paciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and pa.nome ilike ?";
         }
 
-        if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        if ((tipoBusca.equals("codproc") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and pr.codproc = ?";
         }
 
-        if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        if ((tipoBusca.equals("matpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and upper(pa.matricula) = ?";
         }
 
-        if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        if ((tipoBusca.equals("prontpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and pa.id_paciente = ?";
         }
 
@@ -93,27 +102,35 @@ public class GerenciarPacienteDAO {
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, user_session.getUnidade().getId());
             int i = 2;
-            if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getPrograma()) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getPrograma().getIdPrograma())) {
                 stmt.setInt(i, gerenciar.getPrograma().getIdPrograma());
-                i = i+1;
+                i++;
             }
-            if ((gerenciar.getGrupo()!=null) && (gerenciar.getGrupo().getIdGrupo()!=null)) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getGrupo()) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getGrupo().getIdGrupo())) {
                 stmt.setInt(i, gerenciar.getGrupo().getIdGrupo());
-                i = i+1;
+                i++;
             }
-            if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getEquipe()) 
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getEquipe().getCodEquipe())) {
+            	stmt.setInt(i, gerenciar.getEquipe().getCodEquipe());
+            	i++;
+            }
+            
+            if ((tipoBusca.equals("paciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
-                i = i+1;
+                i++;
             }
 
-            if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stmt.setString(i, campoBusca.toUpperCase());
-                i = i+1;
+                i++;
             }
 
-            if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+            if ((tipoBusca.equals("prontpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stmt.setInt(i,Integer.valueOf((campoBusca.toUpperCase())));
-                i = i+1;
+                i++;
             }
 
             ResultSet rs = stmt.executeQuery();
