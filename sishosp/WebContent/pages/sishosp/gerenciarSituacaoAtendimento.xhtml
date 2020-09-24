@@ -48,55 +48,46 @@
 					</p:row>
 
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
-						value="#{situacaoAtendimentoController.listaSituacaoAtendimento}" paginator="true">
+						value="#{situacaoAtendimentoController.listaSituacaoAtendimento}" paginator="true" reflow="true">
 
-						<p:column>
-							<f:facet name="header">
-                            	Descrição
-                        	</f:facet>
-
+						<p:column headerText="Descrição">
 							<h:outputText value="#{tab.descricao}" />
 						</p:column>
 						
-						<p:column>
-							<f:facet name="header">
-                            	Atendimento Realizado
-                        	</f:facet>
-
+						<p:column headerText="Atendimento Realizado">
 							<h:outputText value="#{tab.atendimentoRealizado == true ? 'SIM' : 'NÃO'}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-								Abono de Falta
-							</f:facet>
-
+						<p:column headerText="Abono de Falta">
 							<h:outputText value="#{tab.abonoFalta == true ? 'SIM' : 'NÃO'}" />
 						</p:column>
+						
+						<p:column headerText="Paciente Faltou">
+							<h:outputText value="#{tab.pacienteFaltou == true ? 'SIM' : 'NÃO'}" />
+						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                            	Ação
-                        	</f:facet>
+						<p:column headerText="Ação" width="10%">
+							<div align="center">
+								<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+									size="sm"
+									action="#{situacaoAtendimentoController.redirectEdit()}"
+									class="btn-acao-table acao-editar">
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{situacaoAtendimentoController.situacaoAtendimento}" />
 
-							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
-								size="sm" action="#{situacaoAtendimentoController.redirectEdit()}"
-								class="btn-acao-table acao-editar">
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{situacaoAtendimentoController.situacaoAtendimento}" />
+									<f:setPropertyActionListener value="2"
+										target="#{situacaoAtendimentoController.tipo}" />
+								</p:commandButton>
 
-								<f:setPropertyActionListener value="2"
-									target="#{situacaoAtendimentoController.tipo}" />
-							</p:commandButton>
+								<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+									size="sm" ajax="true" style="margin-left:10px"
+									class="btn-acao-table acao-excluir"
+									oncomplete="PF('dialogExclusao').show()">
 
-							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
-								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-								oncomplete="PF('dialogExclusao').show()">
-
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{situacaoAtendimentoController.situacaoAtendimento}" />
-							</p:commandButton>
-
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{situacaoAtendimentoController.situacaoAtendimento}" />
+								</p:commandButton>
+							</div>
 						</p:column>
 					</p:dataTable>
 

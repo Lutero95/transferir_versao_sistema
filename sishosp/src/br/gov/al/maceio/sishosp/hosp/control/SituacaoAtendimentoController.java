@@ -79,7 +79,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 	}
 	
 	public void gravarSituacaoAtendimento() throws ProjetoException {
-		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
+		if (!maisDeUmTipoSituacaoFoiMarcado()) {
 			if ((this.situacaoAtendimento.getAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
 					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
 
@@ -92,7 +92,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 	}
 	
 	public void alterarSituacaoAtendimento() throws ProjetoException {
-		if (!selecionouAbonoFaltaEAtendimentoRealizado()) {
+		if (!maisDeUmTipoSituacaoFoiMarcado()) {
 			if ((this.situacaoAtendimento.getAtendimentoRealizado()) || (this.situacaoAtendimento.isAbonoFalta() && !existeOutraSituacaoComAbonoFalta())
 					|| (!this.situacaoAtendimento.getAtendimentoRealizado() && !this.situacaoAtendimento.isAbonoFalta())) {
 
@@ -110,9 +110,11 @@ public class SituacaoAtendimentoController  implements Serializable {
 		return false;
 	}
 
-	private Boolean selecionouAbonoFaltaEAtendimentoRealizado() throws ProjetoException {
-		if ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isAbonoFalta())) {
-			JSFUtil.adicionarMensagemErro("Selecione apenas uma das opções: Atendimento Realizado ou Abono de Falta", "Erro");
+	private Boolean maisDeUmTipoSituacaoFoiMarcado() throws ProjetoException {
+		if ( ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isAbonoFalta()))
+				|| ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isPacienteFaltou()))
+				|| ((this.situacaoAtendimento.isAbonoFalta()) && (this.situacaoAtendimento.isPacienteFaltou())) ) {
+			JSFUtil.adicionarMensagemErro("Selecione apenas uma das opções: Atendimento Realizado, Abono de Falta ou Paciente Faltou", "Erro");
 			return true;
 		}
 		return false;

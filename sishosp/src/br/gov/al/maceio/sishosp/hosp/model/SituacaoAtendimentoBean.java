@@ -1,11 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 public class SituacaoAtendimentoBean {
+	
 	private Integer id;
 	private String descricao;
 	private boolean atendimentoRealizado;
 	private boolean abonoFalta;
-	
+	private boolean pacienteFaltou;
 	
 	public Integer getId() {
 		return id;
@@ -36,5 +37,11 @@ public class SituacaoAtendimentoBean {
 
 	public void setAbonoFalta(boolean abonoFalta) {
 		this.abonoFalta = abonoFalta;
+	}
+	public boolean isPacienteFaltou() {
+		return pacienteFaltou;
+	}
+	public void setPacienteFaltou(boolean pacienteFaltou) {
+		this.pacienteFaltou = pacienteFaltou;
 	}
 }

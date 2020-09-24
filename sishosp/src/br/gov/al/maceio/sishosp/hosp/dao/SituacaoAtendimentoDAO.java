@@ -21,8 +21,8 @@ public class SituacaoAtendimentoDAO {
 	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "INSERT INTO hosp.situacao_atendimento  " +
-				"(descricao, atendimento_realizado, abono_falta) " +
-				"VALUES(?, ?,?);";
+				"(descricao, atendimento_realizado, abono_falta, paciente_faltou) " +
+				"VALUES(?, ?,?, ?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -30,6 +30,7 @@ public class SituacaoAtendimentoDAO {
 			ps.setString(1, situacaoAtendimento.getDescricao().toUpperCase());
 			ps.setBoolean(2, situacaoAtendimento.getAtendimentoRealizado());
 			ps.setBoolean(3, situacaoAtendimento.isAbonoFalta());
+			ps.setBoolean(4, situacaoAtendimento.isPacienteFaltou());
 			ps.execute();
 			con.commit();
 			retorno = true;
@@ -50,7 +51,7 @@ public class SituacaoAtendimentoDAO {
 	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao) throws ProjetoException{
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.situacao_atendimento " +
-				"SET descricao = ?, atendimento_realizado = ?, abono_falta=? " +
+				"SET descricao = ?, atendimento_realizado = ?, abono_falta=?, paciente_faltou = ? " +
 				"WHERE id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -58,7 +59,8 @@ public class SituacaoAtendimentoDAO {
 			ps.setString(1, situacao.getDescricao().toUpperCase());
 			ps.setBoolean(2, situacao.getAtendimentoRealizado());
 			ps.setBoolean(3, situacao.isAbonoFalta());
-			ps.setInt(4, situacao.getId());
+			ps.setBoolean(4, situacao.isPacienteFaltou());
+			ps.setInt(5, situacao.getId());
 			ps.executeUpdate();
 			con.commit();
 			retorno = true;
@@ -103,7 +105,7 @@ public class SituacaoAtendimentoDAO {
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta  " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta, paciente_faltou  " +
 				"from hosp.situacao_atendimento sa  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -119,6 +121,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setDescricao(rs.getString("descricao"));
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
+				situacaoAtendimento.setPacienteFaltou(rs.getBoolean("paciente_faltou"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
 		} catch (SQLException sqle) {
@@ -137,7 +140,7 @@ public class SituacaoAtendimentoDAO {
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou  " +
 				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true)  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -167,7 +170,7 @@ public class SituacaoAtendimentoDAO {
 	
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo() throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou  " +
 				"from hosp.situacao_atendimento sa where sa.atendimento_realizado is true and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where abono_falta is true)  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -200,12 +203,14 @@ public class SituacaoAtendimentoDAO {
 		situacaoAtendimento.setId(rs.getInt("id"));
 		situacaoAtendimento.setDescricao(rs.getString("descricao"));
 		situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
+		situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
+		situacaoAtendimento.setPacienteFaltou(rs.getBoolean("paciente_faltou"));
 		listaSituacoes.add(situacaoAtendimento);
 	}
 
 	public List<SituacaoAtendimentoBean> buscarSituacaoAtendimento(String descricao) throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou " +
 				"from hosp.situacao_atendimento sa where sa.descricao ilike ? order by sa.descricao ";
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 		try {
@@ -233,7 +238,7 @@ public class SituacaoAtendimentoDAO {
 
 	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou " +
 				"from hosp.situacao_atendimento sa where sa.id = ?";
 
 		SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
@@ -248,6 +253,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setDescricao(rs.getString("descricao"));
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
+				situacaoAtendimento.setPacienteFaltou(rs.getBoolean("paciente_faltou"));
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
