@@ -39,6 +39,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DocumentosTBImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
+import br.gov.al.maceio.sishosp.hosp.model.InstrumentoRegistroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
@@ -95,6 +96,7 @@ public class ProcedimentoController implements Serializable {
     private String filtroMesIhAnoSelecionado;
     private ProcedimentoType procedimentoMensal;
     private UnidadeBean unidadeSelecionada;
+    private List<InstrumentoRegistroBean> listaInstrumentoRegistro;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -145,6 +147,7 @@ public class ProcedimentoController implements Serializable {
         cbo = new CboBean();
         recurso = new RecursoBean();
         unidadeSelecionada = new UnidadeBean();
+        listaInstrumentoRegistro = new ArrayList<>();
 
         //SIGTAP
         this.listaHistoricoDoSigtap = new ArrayList<>();
@@ -157,7 +160,7 @@ public class ProcedimentoController implements Serializable {
     }
 
     private void limparListaGravarProcedimentoMensalDTO() {
-        this.listaGravarProcedimentosMensaisDTO = new ArrayList();
+        this.listaGravarProcedimentosMensaisDTO = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -169,6 +172,7 @@ public class ProcedimentoController implements Serializable {
     }
 
     public void getEditProcedimento() throws ProjetoException, SQLException {
+    	listarInstrumentosRegistro();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -180,9 +184,12 @@ public class ProcedimentoController implements Serializable {
             listaMesesIhAnosDoHistorico();
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
-
         }
 
+    }
+    
+    private void listarInstrumentosRegistro() throws ProjetoException {
+    	listaInstrumentoRegistro = procedimentoDao.listaInstrumentosRegistro();
     }
 
     public void limparDados() throws ProjetoException {
@@ -1230,6 +1237,14 @@ public class ProcedimentoController implements Serializable {
 
 	public void setUnidadeSelecionada(UnidadeBean unidadeSelecionada) {
 		this.unidadeSelecionada = unidadeSelecionada;
+	}
+
+	public List<InstrumentoRegistroBean> getListaInstrumentoRegistro() {
+		return listaInstrumentoRegistro;
+	}
+
+	public void setListaInstrumentoRegistro(List<InstrumentoRegistroBean> listaInstrumentoRegistro) {
+		this.listaInstrumentoRegistro = listaInstrumentoRegistro;
 	}
     
 }

@@ -23,6 +23,7 @@ import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
+import br.gov.al.maceio.sishosp.hosp.model.InstrumentoRegistroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
@@ -63,8 +64,9 @@ public class ProcedimentoDAO {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?) returning id;";
+        String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, "
+        		+ "gera_laudo_digita, validade_laudo, id_instrumento_registro_padrao) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -84,6 +86,7 @@ public class ProcedimentoDAO {
             } else {
                 ps.setInt(7, proc.getValidade_laudo());
             }
+            ps.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
 
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
@@ -152,7 +155,7 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "update hosp.proc set nome = ?, auditivo = ?, tipo_exame_auditivo = ?, utiliza_equipamento = ?, "
-                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ? "
+                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, id_instrumento_registro_padrao = ? "
                 + "where id = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -175,7 +178,8 @@ public class ProcedimentoDAO {
                 stmt.setInt(6, proc.getValidade_laudo());
             }
             stmt.setString(7, proc.getCodProc().trim());
-            stmt.setInt(8, proc.getIdProc());
+            stmt.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
+            stmt.setInt(9, proc.getIdProc());
 
             excluirProcedimentoUnidade(proc.getIdProc(), con);
             gravarProcedimentoUnidade(proc, con);
@@ -465,7 +469,7 @@ public class ProcedimentoDAO {
     public ProcedimentoBean listarProcedimentoPorId(int id) throws ProjetoException {
         ProcedimentoBean procedimento = new ProcedimentoBean();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, id_instrumento_registro_padrao "
                 + "from hosp.proc where id = ? and ativo = 'S' order by nome";
         try {
             con = ConnectionFactory.getConnection();
@@ -487,6 +491,7 @@ public class ProcedimentoDAO {
                 procedimento.setQtdMaxima(rs.getInt("qtd_maxima"));
                 procedimento.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 procedimento.setSexo(rs.getString("sexo"));
+                procedimento.getInstrumentoRegistroPadrao().setId(rs.getInt("id_instrumento_registro_padrao"));
                 procedimento.setListaUnidadesVisualizam(listarProcedimentoUnidade(procedimento.getIdProc(), con));
             }
         } catch (SQLException sqle) {
@@ -735,7 +740,7 @@ public class ProcedimentoDAO {
     }
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaModalidadeAtendimentoExistente(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaModaliadesAtendimentoExistente = new ArrayList<>();
         String sql = "SELECT ma.id, ma.codigo FROM sigtap.modalidade_atendimento ma ";
         try {
             ps = con.prepareStatement(sql);
@@ -755,7 +760,7 @@ public class ProcedimentoDAO {
     }
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaInstrumentosRegistroExistente(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaInstrumentoRegistroExistente = new ArrayList<>();
         String sql = "SELECT ir.id, ir.codigo FROM sigtap.instrumento_registro ir ";
         try {
             ps = con.prepareStatement(sql);
@@ -776,7 +781,7 @@ public class ProcedimentoDAO {
 
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCidsExistentes(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCidExistente = new ArrayList<>();
         String sql = "SELECT cid.cod, cid.cid FROM hosp.cid ";
         try {
             ps = con.prepareStatement(sql);
@@ -798,7 +803,7 @@ public class ProcedimentoDAO {
 
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaRenasesExistentes(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaRenasesExistentes = new ArrayList<>();
         String sql = "SELECT re.id, re.codigo FROM sigtap.renases re ";
         try {
             ps = con.prepareStatement(sql);
@@ -818,7 +823,7 @@ public class ProcedimentoDAO {
     }
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaTiposFinanciamentoExistentes(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCodigoTipoFinanciamento = new ArrayList<>();
         String sql = "SELECT tf.id, tf.codigo FROM sigtap.tipo_financiamento tf ";
         try {
             ps = con.prepareStatement(sql);
@@ -1046,11 +1051,9 @@ public class ProcedimentoDAO {
                 Integer idGrupoExistente = retornaIdGrupoCasoExista(formaOrganizacao.getSubgrupo().getGrupo().getCodigo(),
                         idHistoricoSigtap, conexao);
                 ps.setInt(4, idGrupoExistente);
-
                 ps.setInt(5, idHistoricoSigtap);
 
-                ResultSet rs = ps.executeQuery();
-
+                ps.executeUpdate();
             }
 
         } catch (SQLException sqle) {
@@ -1411,7 +1414,7 @@ public class ProcedimentoDAO {
     }
 
     public List<PropriedadeDeProcedimentoMensalExistenteDTO> buscaCbosExistentes(Connection con) throws ProjetoException {
-        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList();
+        List<PropriedadeDeProcedimentoMensalExistenteDTO> listaCboExistente = new ArrayList<>();
         String sql = "SELECT cbo.id, cbo.codigo FROM hosp.cbo ";
         try {
             ps = con.prepareStatement(sql);
@@ -1657,7 +1660,7 @@ public class ProcedimentoDAO {
 
     public List<HistoricoSigtapBean> listaHistoricoCargasDoSigtap() throws ProjetoException {
 
-        List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList();
+        List<HistoricoSigtapBean> listaHistoricosSigtap = new ArrayList<>();
         String sql = "select hcs.data_registro, hcs.ano, " +
                 "to_char(to_timestamp (hcs.mes::text, 'MM'), 'TMMONTH') as mes " +
                 "from sigtap.historico_consumo_sigtap hcs " +
@@ -1876,7 +1879,7 @@ public class ProcedimentoDAO {
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao)
             throws SQLException, ProjetoException {
 
-        List<CIDVinculado> listaCidsVinculados = new ArrayList();
+        List<CIDVinculado> listaCidsVinculados = new ArrayList<>();
         String sql = "select cm.cid codigo, cm.desccid nome \n" +
                 "from hosp.cid cm join sigtap.cid_procedimento_mensal cpm on cm.cod = cpm.id_cid \n" +
                 "join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal \n" +
@@ -1929,7 +1932,7 @@ public class ProcedimentoDAO {
     private List<CBOType> listaCbosProcedimentoMensal
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
-        List<CBOType> listaCbos = new ArrayList();
+        List<CBOType> listaCbos = new ArrayList<>();
         String sql = "select cbo.codigo, cbo.descricao nome \n" +
                 "from hosp.cbo join sigtap.cbo_procedimento_mensal cpm on cbo.id = cpm.id_cbo \n" +
                 "join sigtap.procedimento_mensal pm on pm.id = cpm.id_procedimento_mensal \n" +
@@ -1965,7 +1968,7 @@ public class ProcedimentoDAO {
     private List<ServicoClassificacaoType> listaServicoClassificacaoProcedimentoMensal
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
-        List<ServicoClassificacaoType> listaServicoClassificacao = new ArrayList();
+        List<ServicoClassificacaoType> listaServicoClassificacao = new ArrayList<>();
         String sql = "select sm.codigo as codigo_servico, sm.nome as servico, \n" +
                 "cm.codigo as codigo_classificacao, cm.nome as classificacao \n" +
                 "from sigtap.servico sm join sigtap.servico_classificacao_mensal scm on sm.id = scm.id_servico \n" +
@@ -2008,7 +2011,7 @@ public class ProcedimentoDAO {
     private List<ModalidadeAtendimentoType> listaModalidadeAtendimentoProcedimentoMensal
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
-        List<ModalidadeAtendimentoType> listaModalidadeAtendimento = new ArrayList();
+        List<ModalidadeAtendimentoType> listaModalidadeAtendimento = new ArrayList<>();
         String sql = "select ma.codigo, ma.nome " +
                 "from sigtap.modalidade_atendimento ma " +
                 "join sigtap.modalidade_atendimento_procedimento_mensal mapm on mapm.id_modalidade_atendimento = ma.id " +
@@ -2045,7 +2048,7 @@ public class ProcedimentoDAO {
     private List<InstrumentoRegistroType> listaInstrumentoRegistroProcedimentoMensal
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
-        List<InstrumentoRegistroType> listaInstrumentoRegistro = new ArrayList();
+        List<InstrumentoRegistroType> listaInstrumentoRegistro = new ArrayList<>();
         String sql = "select ir.codigo, ir.nome " +
                 "from sigtap.instrumento_registro ir join sigtap.instrumento_registro_procedimento_mensal irm on ir.id = irm.id_instrumento_registro " +
                 "join sigtap.procedimento_mensal pm on pm.id = irm.id_procedimento_mensal " +
@@ -2081,7 +2084,7 @@ public class ProcedimentoDAO {
     private List<RENASESType> listaRenasesProcedimentoMensal
             (Integer ano, Integer mes, String codigoProcedimento, Connection conexao) throws SQLException, ProjetoException {
 
-        List<RENASESType> listaRenases = new ArrayList();
+        List<RENASESType> listaRenases = new ArrayList<>();
         String sql = "select rm.codigo, rm.nome \n" +
                 "from sigtap.renases  rm join sigtap.renases_procedimento_mensal rpm on rm.id = rpm.id_renases \n" +
                 "join sigtap.procedimento_mensal pm on pm.id = rpm.id_procedimento_mensal \n" +
@@ -2116,7 +2119,7 @@ public class ProcedimentoDAO {
 
     public List<String> listaMesesIhAnosDoHistorico() throws ProjetoException, SQLException {
 
-        List<String> listaMesIhAno = new ArrayList();
+        List<String> listaMesIhAno = new ArrayList<>();
         String sql = "select distinct concat (lpad(trim(to_char(mes,'99')), 2, '0'),'/', ano) \n" +
                 "as mes_ano,\n" +
                 "concat (ano,'/',lpad(trim(to_char(mes,'99')), 2, '0')) as ano_mes\n" +
@@ -2499,5 +2502,35 @@ public class ProcedimentoDAO {
         procedimento.setCodProc(rs.getString("codproc"));
         procedimento.setNomeProc(rs.getString("nome"));
         listaProcedimento.add(procedimento);
+    }
+    
+    public List<InstrumentoRegistroBean> listaInstrumentosRegistro() throws ProjetoException{
+        List<InstrumentoRegistroBean> listaInstrumentoRegistro = new ArrayList<>();
+        String sql = "select ir.id, ir.codigo, ir.nome from sigtap.instrumento_registro ir;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	InstrumentoRegistroBean instrumentoRegistro = new InstrumentoRegistroBean();
+                instrumentoRegistro.setId(rs.getInt("id"));
+                instrumentoRegistro.setCodigo(rs.getString("codigo"));
+                instrumentoRegistro.setNome(rs.getString("nome"));
+                listaInstrumentoRegistro.add(instrumentoRegistro);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaInstrumentoRegistro;
     }
 }

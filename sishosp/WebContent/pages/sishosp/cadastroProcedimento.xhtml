@@ -45,6 +45,21 @@
 										required="true" requiredMessage="Código: Campo obrigatório!" />
 								</b:column>
 							</b:row>
+							
+							<b:row>
+								<b:column span="11" class="label-position">
+									<b:label value="Instrumento de Registro Padrão" class="label-position"
+										severity="info" />
+									<b:selectOneMenu id="instr" required="true"
+										requiredMessage="Instrumento de Registro Padrão: Campo obrigatório"
+										value="#{ProcedimentoController.proc.instrumentoRegistroPadrao.id}">
+										<f:selectItem itemLabel="Selecione" itemValue=""/>
+										<f:selectItems var="ir"
+											value="#{ProcedimentoController.listaInstrumentoRegistro}"
+											itemLabel="#{ir.nome}" itemValue="#{ir.id}" />
+									</b:selectOneMenu>
+								</b:column>
+							</b:row>
 							<br></br>
 
 							<b:row>

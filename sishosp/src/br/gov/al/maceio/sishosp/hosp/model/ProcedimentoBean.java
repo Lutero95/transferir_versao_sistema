@@ -20,6 +20,7 @@ public class ProcedimentoBean implements Serializable {
     private Integer prazoMinimoNovaExecucao;
     private String sexo;
     private Integer codUnidade;
+    private InstrumentoRegistroBean instrumentoRegistroPadrao;
 
     // HERDADOS
     private EquipamentoBean equipamento;
@@ -49,6 +50,7 @@ public class ProcedimentoBean implements Serializable {
         listaCbo = new ArrayList<CboBean>();
         listaRecurso = new ArrayList<RecursoBean>();
         listaUnidadesVisualizam = new ArrayList<>();
+        instrumentoRegistroPadrao = new InstrumentoRegistroBean();
     }
 
     public Integer getIdProc() {
@@ -210,6 +212,14 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setListaUnidadesVisualizam(ArrayList<UnidadeBean> listaUnidadesVisualizam) {
 		this.listaUnidadesVisualizam = listaUnidadesVisualizam;
+	}
+
+	public InstrumentoRegistroBean getInstrumentoRegistroPadrao() {
+		return instrumentoRegistroPadrao;
+	}
+
+	public void setInstrumentoRegistroPadrao(InstrumentoRegistroBean instrumentoRegistroPadrao) {
+		this.instrumentoRegistroPadrao = instrumentoRegistroPadrao;
 	}
 	
 }
