@@ -38,7 +38,6 @@ public class GerenciarPacienteController implements Serializable {
 	private List<EquipeBean> listaEquipe;
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 	private String busca = "N";
-	private Boolean apenasLeitura;
 	private InsercaoPacienteBean insercao;
 	private String tipo;
 	private String tipoBusca;
@@ -60,7 +59,6 @@ public class GerenciarPacienteController implements Serializable {
 		listaGrupos = new ArrayList<>();
 		gerenciarpaciente.setStatus("A");
 		listaPacientes = new ArrayList<GerenciarPacienteBean>();
-		apenasLeitura = false;
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
 		tipo = "";
@@ -87,12 +85,9 @@ public class GerenciarPacienteController implements Serializable {
 		SessionUtil.adicionarBuscaPacienteInstituicaoNaSessao(gerenciarpaciente.getPrograma(), gerenciarpaciente.getGrupo(), gerenciarpaciente.getEquipe(),
 				tipoBusca, campoBusca, TelasBuscaSessao.GERENCIAMENTO_PACIENTES.getSigla());
 		carregarPacientesInstituicao();
-		apenasLeitura = true;
-
 	}
 
 	public void limparBusca() throws ProjetoException {
-		apenasLeitura = false;
 		gerenciarpaciente = new GerenciarPacienteBean();
 		busca = "N";
 		carregarPacientesInstituicao();
@@ -221,14 +216,6 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setListaPacientes(List<GerenciarPacienteBean> listaPacientes) {
 		this.listaPacientes = listaPacientes;
-	}
-
-	public Boolean getApenasLeitura() {
-		return apenasLeitura;
-	}
-
-	public void setApenasLeitura(Boolean apenasLeitura) {
-		this.apenasLeitura = apenasLeitura;
 	}
 
 	public String getBusca() {
