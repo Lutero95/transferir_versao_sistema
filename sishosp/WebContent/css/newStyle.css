@@ -162,20 +162,31 @@ body {
 .name-user-nav {
 	position:absolute;
 	z-index:1000;
-	margin-top:14px;
+	margin-top:10px;
 	margin-left:-110px;
 	color:white;
-	font-weight:bold
+	font-weight:bold;
 }
 
 .sub-name-user-nav {
 	position:absolute;
 	z-index:1000;
-	margin-top:30px;
+	margin-top:26px;
 	margin-left:-110px;
 	color:white;
 	position:absolute;
-	font-weight:bold
+	font-weight:bold;
+}
+
+.sub-name2-user-nav {
+	position:absolute;
+	z-index:1000;
+	margin-top:40px;
+	margin-left:-110px;
+	color:white;
+	position:absolute;
+	font-weight:bold;
+	font-size: 12px;
 }
 
 /* Media Queries */
@@ -191,12 +202,16 @@ body {
 		margin: 5px 16px 10px 16px;
 	}
 	.name-user-nav {
-		margin-top:20px;
+		margin-top:6px;
 		margin-left:70px;
 	}
 
 	.sub-name-user-nav {
-		margin-top:36px;
+		margin-top:22px;
+		margin-left:70px;
+	}
+	.sub-name2-user-nav {
+		margin-top:38px;
 		margin-left:70px;
 	}
 	.user-nav {

@@ -131,14 +131,14 @@
         </h:form>
     </p:dialog>
 
-    <p:dialog header="Escolha a sua unidade" widgetVar="selecaoUnidade" closable="false"
-              draggable="false" id="selecaoUnidade" modal="true"
+    <p:dialog header="Escolha a sua unidade" widgetVar="selecaoUnidade" closable="TRUE"
+              draggable="false" id="selecaoUnidade" modal="true" width="400"
               resizable="false" showEffect="fade" hideEffect="clip" responsive="true" dynamic="true">
         <h:form>
             <p:autoUpdate/> 
                 <div align="center">
                     <p:selectOneMenu value="#{MBFuncionarios.codigoDaUnidadeSelecionada}"
-                                     style="width: 10.0em;">
+                                     style="width: 20.0em;">
                         <f:selectItems value="#{MBFuncionarios.unidadesDoUsuarioLogado}"
                                        var="unidade" itemLabel="#{unidade.nomeUnidade}"
                                        itemValue="#{unidade.id}"/>
@@ -167,7 +167,6 @@
         <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 
             <h:form id="mainFormtempSist" styleClass="user-nav">
-
                 <p:row>
                     <p:column>
                         <h:outputText
@@ -182,8 +181,14 @@
                                 value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
                                 rendered="#{MBFuncionarios.usuarioLogado.id != null}"/>
                     </p:column>
+                    
+					<p:column>
+						<h:outputText styleClass="sub-name2-user-nav"
+							value="UNIDADE: #{MBFuncionarios.usuarioLogado.unidade.nomeUnidade}"
+							rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
+					</p:column>
                 </p:row>
-
+                
                 <p:commandLink styleClass="editUSer"
                                oncomplete="PF('dlguser').show()"
                                style="position:absolute;z-index:1000" id="linkuser"
