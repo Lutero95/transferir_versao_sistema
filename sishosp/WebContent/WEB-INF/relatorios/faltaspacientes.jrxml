@@ -31,7 +31,8 @@ join hosp.grupo g on g.id_grupo = a.codgrupo
 join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento
 	cross  join hosp.empresa 
     where a.cod_unidade=$P{codunidade} 
-    and coalesce(a.presenca,'N')='N'
+    and (((coalesce(a.presenca,'N')='N') and (a1.id_situacao_atendimento is null)) or 
+    ((coalesce(a.presenca,'N')='N') and (a1.id_situacao_atendimento in (select sa.id from hosp.situacao_atendimento sa where sa.paciente_faltou is true))))
 and  a.dtaatende between $P{dt_inicial} and $P{dt_final} 
 and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
     and ((   $P{codprograma}   is not null and a.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
@@ -75,6 +76,12 @@ order by a.codprograma, p.nome]]>
 	<field name="qtd" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="qtd"/>
 	</field>
+	<variable name="qtd1" class="java.lang.Long" resetType="Group" resetGroup="groupPrograma" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
+	</variable>
+	<variable name="qtd2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
+	</variable>
 	<group name="groupPrograma" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
 		<groupHeader>
@@ -130,7 +137,13 @@ order by a.codprograma, p.nome]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band/>
+			<band height="31">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField>
+					<reportElement x="1" y="10" width="333" height="20" uuid="c6330b44-3482-47c6-bb05-85c1553a4801"/>
+					<textFieldExpression><![CDATA["TOTAL DE FALTAS NO PROGRAMA: "+$V{qtd1}]]></textFieldExpression>
+				</textField>
+			</band>
 		</groupFooter>
 	</group>
 	<background>
@@ -236,6 +249,11 @@ order by a.codprograma, p.nome]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="53" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="483" height="30" uuid="61ddcd4b-2f6b-415a-a860-efcde3e58bda"/>
+				<textFieldExpression><![CDATA["TOTAL GERAL DE FALTAS: "+$V{qtd2}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>

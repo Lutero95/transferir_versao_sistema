@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
@@ -42,7 +43,12 @@ public class SessionUtil {
 
     public static void adicionarBuscaPtsNaSessao(ProgramaBean programa, GrupoBean grupo, Date periodoInicial, Date periodoFinal, String tela){
         BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(programa, grupo, periodoInicial, periodoFinal, tela);
-
+        SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
+    }
+    
+    public static void adicionarBuscaPacienteInstituicaoNaSessao(ProgramaBean programa, GrupoBean grupo, EquipeBean equipeBean,
+    		String tipoBusca, String campoBusca, String tela){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(programa, grupo, equipeBean, tipoBusca, campoBusca, tela);
         SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
     

@@ -141,7 +141,7 @@ public class SituacaoAtendimentoDAO {
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) throws ProjetoException {
 
 		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou  " +
-				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where ((abono_falta is true) OR (paciente_faltou is true)))  order by sa.descricao ";
+				"from hosp.situacao_atendimento sa where sa.atendimento_realizado = ? and sa.id not in (select sa2.id from hosp.situacao_atendimento sa2 where ((abono_falta is true) ))  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
 
