@@ -717,7 +717,6 @@
 								 value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
 								 var="programa">
 
-
 						<h:column>
 							<f:facet name="header">
 								Programa
@@ -737,24 +736,37 @@
 							<f:facet name="header">
 								Adicionar
 							</f:facet>
-							<p:commandButton
+							<div align="center">
+								<p:commandButton
+									rendered="#{MBFuncionarios.programaGrupoFoiClicadoNoDialog(programa) == false}"
 									update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
 									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar"
-									onclick="PF('dlgConsuGrupos').hide();"
-									action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
-								<f:setPropertyActionListener value="#{programa}"
-															 target="#{MBFuncionarios.profissional.progAdd}" />
-							</p:commandButton>
+									action="#{MBFuncionarios.adicionarProgramaGrupoParaExibirNaTela(programa)}"/>
+									
+								<p:commandButton
+									rendered="#{MBFuncionarios.programaGrupoFoiClicadoNoDialog(programa) == true}"
+									update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
+									icon="fa fa-fw fa-trash" title="Remover"
+									class="new-btn-acao-table acao-excluir"
+									action="#{MBFuncionarios.removerProgramaGrupoParaExibirNaTela(programa)}"/>	
+							</div>
 						</h:column>
 
 					</b:dataTable>
 				</p:outputPanel>
+				
+				<div align="center">
+					<p:commandButton update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
+						value="Adicionar" title="Adicionar Programa / Grupo"
+						onclick="PF('dlgConsuGrupos').hide();"
+						action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}"/>
+				</div>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Unidades permitidas para o usuário" widgetVar="dlgUnidadesParaProgramaGrupo" dynamic="true"
-				  modal="true" styleClass="topDialog">
+				  modal="true" styleClass="topDialog" width="600">
 
 			<h:form id="frmUnidadesParaProgramaGrupo">
 
