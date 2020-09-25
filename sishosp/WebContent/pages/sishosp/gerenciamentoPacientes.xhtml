@@ -32,7 +32,6 @@
                             <p:outputPanel id="outProg">
                                 <p:autoComplete required="false"
                                                 requiredMessage="Escolha um programa!"
-                                                readonly="#{GerenciarPacienteController.apenasLeitura}"
                                                 value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
                                                 size="31" converter="conPrograma" class="select-agendaEquipe4"
                                                 completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -46,7 +45,6 @@
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusPr"
-                                                 disabled="#{GerenciarPacienteController.apenasLeitura}"
                                                  icon="ui-icon-search" process="@this"
                                                  action="#{ProgramaController.carregaListaProgramas()}"
                                                  update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();"/>
@@ -62,7 +60,6 @@
                                                 requiredMessage="Escolha um grupo!"
                                                 value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
                                                 size="31" converter="conGrupo" class="select-agendaEquipe4"
-                                                readonly="#{GerenciarPacienteController.apenasLeitura}"
                                                 disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
                                                 completeMethod="#{GerenciarPacienteController.listaGrupoAutoComplete}"
                                                 effect="fade" var="theme" forceSelection="true"
@@ -73,7 +70,6 @@
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusGr"
-                                                 readonly="#{GerenciarPacienteController.apenasLeitura}"
                                                  icon="ui-icon-search" process="@this"
                                                  action="#{GerenciarPacienteController.carregaGruposDoPrograma()}"
                                                  disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
@@ -248,7 +244,9 @@
                                  paginator="true" paginatorPosition="bottom" rows="12"
                                  selectionMode="single"
                                  selection="#{GerenciarPacienteController.rowBean}"
-                                 rowKey="#{pacie.id}">
+                                 rowKey="#{pacie.id}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {Exporters}">
 
                         <p:ajax event="rowSelect"
                                 update=":formGerenPaci:btnRenovar :formGerenPaci:outAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento"/>
