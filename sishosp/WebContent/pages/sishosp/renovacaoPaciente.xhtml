@@ -43,7 +43,7 @@
 						<b:column span="2" class="label-position">
 							<p:outputLabel value="Laudo:"
 								style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+    									margin-bottom: 15px;color:#2e84ce;"/>
 
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
@@ -510,7 +510,7 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo"
+						<p:commandButton update=":formInsercao, :formInsercao2, formConsuLaudo:msgLaudo"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar"

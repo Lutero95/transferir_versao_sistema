@@ -781,12 +781,12 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gravarAlteracaoPaciente() throws ProjetoException {
+    	InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
     	
-    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
+    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() &&
+    			insercaoPacienteController.procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma().getProcedimento()) ) {
 			Boolean cadastrou = false;
 			listAgendamentoProfissional = new ArrayList<AgendaBean>();
-
-			InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
 			GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
 			Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
