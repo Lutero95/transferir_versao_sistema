@@ -147,46 +147,12 @@ public class BpaIndividualizadoDAO {
         return listaDeBpaIndividualizado;
     }
     
-    public String buscaExtencaoArquivoPeloMesAtual() throws ProjetoException{
-        String extensao = new String();
-        String sql = " SELECT CASE " + 
-        		" WHEN extract(month from current_date) = 1  then '.JAN' " + 
-        		" WHEN  extract(month from current_date) = 2 THEN '.FEV' " + 
-        		" WHEN  extract(month from current_date) = 3 THEN '.MAR' " + 
-        		" WHEN  extract(month from current_date) = 4 THEN '.ABR' " + 
-        		" WHEN  extract(month from current_date) = 5 THEN '.MAI' " + 
-        		" WHEN  extract(month from current_date) = 6 THEN '.JUN' " + 
-        		" WHEN  extract(month from current_date) = 7 THEN '.JUL' " + 
-        		" WHEN  extract(month from current_date) = 8 THEN '.AGO' " + 
-        		" WHEN  extract(month from current_date) = 9 THEN '.SET' " + 
-        		" WHEN  extract(month from current_date) = 10 THEN '.OUT' " + 
-        		" WHEN  extract(month from current_date) = 11 THEN '.NOV' " + 
-        		" WHEN  extract(month from current_date) = 12 THEN '.DEZ' " + 
-        		" END AS extensao";
-        
-        Connection con = ConnectionFactory.getConnection();
-        try {
-        	
-        	PreparedStatement ps = con.prepareStatement(sql);          
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-            	extensao = rs.getString("extensao");
-        } catch (SQLException ex2) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-            try {
-            	con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return extensao;
-    }
-
 	public List<String> listarCompetencias() throws ProjetoException {
-		String sql = "select distinct pm.competencia_atual from sigtap.procedimento_mensal pm ";
+		String sql = "select distinct concat(substring (pm.competencia_atual from 5 for 2), '/', substring (pm.competencia_atual from 0 for 5)) " + 
+				"as mes_ano, " + 
+				"concat (substring (pm.competencia_atual from 0 for 5), '/', substring (pm.competencia_atual from 5 for 2)) " + 
+				"as ano_mes " + 
+				"from sigtap.procedimento_mensal pm order by ano_mes desc;";
 		List<String> listaCompetencias = new ArrayList<String>();
 		Connection con = null;
         try {
@@ -194,7 +160,7 @@ public class BpaIndividualizadoDAO {
         	PreparedStatement ps = con.prepareStatement(sql);          
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-            	String competencia = rs.getString("competencia_atual");
+            	String competencia = rs.getString("mes_ano");
             	listaCompetencias.add(competencia);
             }
         } catch (SQLException ex2) {

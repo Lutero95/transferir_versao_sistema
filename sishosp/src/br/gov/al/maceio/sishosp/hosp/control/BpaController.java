@@ -32,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
+import br.gov.al.maceio.sishosp.hosp.enums.MesExtensaoArquivoBPA;
 import br.gov.al.maceio.sishosp.hosp.model.BpaCabecalhoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
@@ -78,21 +79,8 @@ public class BpaController {
 	
 	public void listarCompetencias() throws ProjetoException {
 		this.listaCompetencias = bpaIndividualizadoDAO.listarCompetencias();
-		formataCompetenciasParaExibicaoNaTela();
 	}
 	
-	private void formataCompetenciasParaExibicaoNaTela() {
-		List<String> listaCompetenciasAux = new ArrayList<String>();
-		listaCompetenciasAux.addAll(this.listaCompetencias);
-		this.listaCompetencias.clear();
-		for (String competencia : listaCompetenciasAux) {
-			String diaCompetencia = competencia.substring(4, 6);
-			String anoCompetencia = competencia.substring(0, 4);
-			String competenciaFormatada = diaCompetencia+"/"+anoCompetencia;
-			this.listaCompetencias.add(competenciaFormatada);
-		}
-	}
-
 	private ServletContext getServleContext() {
 		ServletContext scontext = (ServletContext) this.getFacesContext().getExternalContext().getContext();
 		return scontext;
@@ -114,7 +102,7 @@ public class BpaController {
 			adicionarCabecalho();
 			adicionarLinhasBpaConsolidado();
 			adicionarLinhasBpaIndividualizado();
-			this.extensao = bpaIndividualizadoDAO.buscaExtencaoArquivoPeloMesAtual();
+			this.extensao = gerarExtensaoArquivo(this.competencia);
 			this.descricaoArquivo = NOME_ARQUIVO+extensao;
 			String caminhoIhArquivo = PASTA_RAIZ+NOME_ARQUIVO+extensao; 
 
@@ -455,6 +443,38 @@ public class BpaController {
 			this.linhasLayoutImportacao.add(bpaIndividualizado.toString());
 		}
 	} 
+	
+	private String gerarExtensaoArquivo(String competencia) {
+		
+		String numeroMesString = competencia.substring(4, 6);
+		String extensao = "";
+		
+		if(numeroMesString.equals(MesExtensaoArquivoBPA.JANEIRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.JANEIRO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.FEVEREIRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.FEVEREIRO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.MARCO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.MARCO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.ABRIL.getSigla()))
+			extensao = MesExtensaoArquivoBPA.ABRIL.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.MAIO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.MAIO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.JUNHO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.JUNHO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.JULHO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.JULHO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.AGOSTO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.AGOSTO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.SETEMBRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.SETEMBRO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.OUTUBRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.OUTUBRO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.NOVEMBRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.NOVEMBRO.getExtensao();
+		else if(numeroMesString.equals(MesExtensaoArquivoBPA.DEZEMBRO.getSigla()))
+			extensao = MesExtensaoArquivoBPA.DEZEMBRO.getExtensao();
+		return extensao;
+	}
 	
 	public String getCompetencia() {
 		return competencia;
