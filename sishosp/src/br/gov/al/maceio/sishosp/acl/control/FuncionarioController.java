@@ -55,6 +55,7 @@ public class FuncionarioController implements Serializable {
 	private String cabecalho;
 	private int tipo;
 	private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
+	private ArrayList<ProgramaBean> listaProgramaGrupoParaAdicionar;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
 	private UnidadeBean unidadeBean;
 	private AtalhosAmbulatorialDTO atalhosAmbulatorialDTO;
@@ -159,6 +160,8 @@ public class FuncionarioController implements Serializable {
 		listaFuncoesTargetEdit = new ArrayList<>();
 		
 		unidadeDAO = new UnidadeDAO();
+		
+		listaProgramaGrupoParaAdicionar = new ArrayList<>();
 	}
 
 	public boolean verificarPermComp(String codigo, Integer idSistema) {
@@ -951,27 +954,28 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void addListaGruposEProgramasProfissional() {
-		Boolean existe = false;
-		if (!listaGruposEProgramasProfissional.isEmpty()) {
 
-			for (int i = 0; i < listaGruposEProgramasProfissional.size(); i++) {
-
-				if (listaGruposEProgramasProfissional.get(i).getIdPrograma() == profissional.getProgAdd()
-						.getIdPrograma()
-						&& (listaGruposEProgramasProfissional.get(i).getGrupoBean().getIdGrupo() == profissional
-						.getProgAdd().getGrupoBean().getIdGrupo())) {
-					existe = true;
-
+		List<ProgramaBean> listaGruposEProgramasProfissionalAux = new ArrayList<>();
+		listaGruposEProgramasProfissionalAux.addAll(listaGruposEProgramasProfissional);
+		
+		if (!listaGruposEProgramasProfissionalAux.isEmpty()) {
+			for (ProgramaBean programaParaAdicionar : listaProgramaGrupoParaAdicionar) {
+				boolean existe = false;
+				for (ProgramaBean programa : listaGruposEProgramasProfissionalAux) {
+					if(programa.getIdPrograma().equals(programaParaAdicionar.getIdPrograma())
+							&& programa.getGrupoBean().getIdGrupo().equals(programaParaAdicionar.getGrupoBean().getIdGrupo())) {
+						JSFUtil.adicionarMensagemErro ("O Programa: "+ programaParaAdicionar.getDescPrograma()
+							+" já foi adicionado com o Grupo: " +programaParaAdicionar.getGrupoBean().getDescGrupo(), "");
+						existe = true;
+					}
 				}
+				if(!existe)
+					listaGruposEProgramasProfissional.add(programaParaAdicionar);
 			}
-			if (existe == true) {
-				JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "ADvertência");
-			} else {
-				listaGruposEProgramasProfissional.add(profissional.getProgAdd());
-			}
-		} else {
-			listaGruposEProgramasProfissional.add(profissional.getProgAdd());
-		}
+		} 
+		else
+			listaGruposEProgramasProfissional.addAll(listaProgramaGrupoParaAdicionar);
+		this.listaProgramaGrupoParaAdicionar.clear();
 	}
 
 	public void removeListaGruposEProgramasProfissional() {
@@ -1454,6 +1458,18 @@ public class FuncionarioController implements Serializable {
 			this.corNaoEvoluido = TRANSPARENTE;		
 		}
 	}
+	
+	public void adicionarProgramaGrupoParaExibirNaTela(ProgramaBean programa) {
+		this.listaProgramaGrupoParaAdicionar.add(programa);
+	}
+	
+	public void removerProgramaGrupoParaExibirNaTela(ProgramaBean programa) {
+		this.listaProgramaGrupoParaAdicionar.remove(programa);
+	}
+	
+	public boolean programaGrupoFoiClicadoNoDialog(ProgramaBean programa) {
+		return this.listaProgramaGrupoParaAdicionar.contains(programa);
+	}
 
 	public void setListaFuncoesSource(List<Funcao> listaFuncoesSource) {
 		this.listaFuncoesSource = listaFuncoesSource;
@@ -1657,4 +1673,13 @@ public class FuncionarioController implements Serializable {
 	public void setCorNaoEvoluido(String corNaoEvoluido) {
 		this.corNaoEvoluido = corNaoEvoluido;
 	}
+
+	public ArrayList<ProgramaBean> getListaProgramaGrupoParaAdicionar() {
+		return listaProgramaGrupoParaAdicionar;
+	}
+
+	public void setListaProgramaGrupoParaAdicionar(ArrayList<ProgramaBean> listaProgramaGrupoParaAdicionar) {
+		this.listaProgramaGrupoParaAdicionar = listaProgramaGrupoParaAdicionar;
+	}
+	
 }
