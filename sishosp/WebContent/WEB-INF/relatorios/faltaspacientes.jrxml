@@ -31,6 +31,7 @@ join hosp.grupo g on g.id_grupo = a.codgrupo
 join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento
 	cross  join hosp.empresa 
     where a.cod_unidade=$P{codunidade} 
+     and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
     and (((coalesce(a.presenca,'N')='N') and (a1.id_situacao_atendimento is null)) or 
     ((coalesce(a.presenca,'N')='N') and (a1.id_situacao_atendimento in (select sa.id from hosp.situacao_atendimento sa where sa.paciente_faltou is true))))
 and  a.dtaatende between $P{dt_inicial} and $P{dt_final} 
