@@ -36,6 +36,7 @@ import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
@@ -109,6 +110,7 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void setaRenovacaoPacienteComOuSemLaudo() {
     	if (insercaoParaLaudo.isInsercaoPacienteSemLaudo()==true) {
+    		insercaoParaLaudo.getLaudo().setId(null);
     		insercaoParaLaudo.setPaciente(laudoAtual.getPaciente());
     		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(laudoAtual.getProcedimentoPrimario());
     		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(laudoAtual.getProcedimentoSecundario1());
@@ -117,9 +119,14 @@ public class RenovacaoPacienteController implements Serializable {
     		insercaoParaLaudo.setProcedimentoSecundario4SemLaudo(laudoAtual.getProcedimentoSecundario4());
     		insercaoParaLaudo.setProcedimentoSecundario5SemLaudo(laudoAtual.getProcedimentoSecundario5());
     	}
-    	else
-    	{
+    	else{
     		insercaoParaLaudo.setPaciente(null);
+    		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario2SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario3SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario4SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario5SemLaudo(new ProcedimentoBean());
     	}
     }
     
@@ -735,7 +742,7 @@ public class RenovacaoPacienteController implements Serializable {
 	private ProcedimentoBean retornaProcedimentoLaudo() {
 		ProcedimentoBean procedimentoLaudo = null;
 		if(insercaoParaLaudo.isInsercaoPacienteSemLaudo())
-			procedimentoLaudo = laudoAtual.getProcedimentoPrimario();
+			procedimentoLaudo = insercaoParaLaudo.getProcedimentoPrimarioSemLaudo();
 		else
 			procedimentoLaudo = insercaoParaLaudo.getLaudo().getProcedimentoPrimario();
 		return procedimentoLaudo;
