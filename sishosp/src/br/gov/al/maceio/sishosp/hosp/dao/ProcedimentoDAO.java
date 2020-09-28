@@ -1045,7 +1045,7 @@ public class ProcedimentoDAO {
     public void  inserirFormaOrganizacao(List<FormaOrganizacaoType> listaFormaOrganizacao,Integer idHistoricoSigtap, Connection conexao) throws ProjetoException, SQLException {
         String sql = "INSERT INTO sigtap.forma_de_organizacao_mensal " +
                 "(codigo, nome, id_subgrupo, id_grupo, id_historico_consumo_sigtap) " +
-                "VALUES(?, ?, ? , ?, ?) returning id ";
+                "VALUES(?, ?, ? , ?, ?)  ";
         try {
             PreparedStatement ps = conexao.prepareStatement(sql);
             for(FormaOrganizacaoType formaOrganizacao : listaFormaOrganizacao) {

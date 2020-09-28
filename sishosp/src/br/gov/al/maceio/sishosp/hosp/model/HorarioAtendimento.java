@@ -11,9 +11,17 @@ public class HorarioAtendimento implements Serializable {
     private Integer diaSemana;
     private String horario;
     private FuncionarioBean funcionario;
+    private String turno;
+    private String diaNome;
 
     public HorarioAtendimento() {
         funcionario = new FuncionarioBean();
+    }
+    
+    public HorarioAtendimento(Integer diaSemana, String turno) {
+        funcionario = new FuncionarioBean();
+        this.diaSemana = diaSemana;
+        this.turno = turno;
     }
 
     public Integer getDiaSemana() {
@@ -40,5 +48,20 @@ public class HorarioAtendimento implements Serializable {
         this.funcionario = funcionario;
     }
 
+	public String getTurno() {
+		return turno;
+	}
+
+	public void setTurno(String turno) {
+		this.turno = turno;
+	}
+
+	public String getDiaNome() {
+		return diaNome;
+	}
+
+	public void setDiaNome(String diaNome) {
+		this.diaNome = diaNome;
+	}
 
 }

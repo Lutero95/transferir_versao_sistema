@@ -964,7 +964,6 @@ public class AtendimentoDAO {
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
 				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)" + " where a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N'"
-				+ " and pr.ativo = 'S' "
 				+ " order by a1.id_atendimentos1";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();

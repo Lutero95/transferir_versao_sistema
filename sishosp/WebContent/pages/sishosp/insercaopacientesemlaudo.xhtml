@@ -332,7 +332,6 @@
                         <br />
 
                         <b:row>
-
                             <b:column span="11" class="label-position">
                                 <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
 
@@ -341,32 +340,11 @@
                                                  autoResize="false" class="select-agendaEquipe2">
                                 </b:inputTextarea>
                             </b:column>
-
                         </b:row>
-
-
-                        <b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
-                            <p:outputPanel id="opturno">
-                                <b:column span="3" class="label-position">
-                                    <b:label value="Turno:" severity="info" class="fire-label"/>
-
-                                    <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                     requiredMessage="Informe o Turno"
-                                                     value="#{InsercaoController.insercao.turno}">
-                                        <f:selectItem itemLabel="Selecione" itemValue="" />
-                                        <f:selectItem itemLabel="Manhã" itemValue="M" />
-                                        <f:selectItem itemLabel="Tarde" itemValue="T" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
-                        <br></br>
-
-                        <br></br>
+                        <br />
+                        <br />
 
                         <div align="center">
-
                             <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                              icon="ui-icon-check"
                                              update=":msgPagina :formInsercao2"
@@ -384,11 +362,51 @@
         </div>
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno" dynamic="true"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" width="500">
             <h:form id="formDiasAtendimentoTurno">
-                <p:selectManyCheckbox layout="grid" columns="7" required="true"
-                                      requiredMessage="Escolha ao menos um dia da semana!"
-                                      value="#{InsercaoController.funcionario.listDiasSemana}">
+
+				<p:commandButton update=":formDiaTurno" icon="ui-icon-plus" action="#{InsercaoController.limparHorario()}"
+					oncomplete="PF('dlgDiaTurno').show();" class="btn-acao-table acao-editar"
+					title="Adicionar dia e turno"/>
+
+				<p:dataTable var="dia" value="#{InsercaoController.funcionario.listaDiasAtendimentoSemana}"
+					emptyMessage="Nenhum dia de atendimento adicionado" paginator="true" rows="10">
+					<p:column headerText="Dia">
+						<h:outputText value="#{dia.diaNome}" />
+					</p:column>
+
+					<p:column headerText="Turno">
+						<h:outputText value="#{dia.turno == 'M' ? 'Manhã' : 'Tarde'}" />
+					</p:column>
+
+					<p:column headerText="Remover" width="20%;">
+						<p:commandButton process="@this" 
+							class="new-btn-acao-table acao-excluir"
+							action="#{InsercaoController.removerDiaSemanaTurno(dia)}"
+							icon="ui-icon-trash" update="formDiasAtendimentoTurno" />
+					</p:column>
+				</p:dataTable>
+
+                <br />
+                <br />
+
+				<div align="center">
+                    <p:commandButton value="Confirmar" style="margin-top:5px;"
+                                     class="btn-acao-table acao-confirmar"
+                                     update=":formInsercao2:dtAdicionados, formDiasAtendimentoTurno, :msgPagina"
+                                     id="b2" icon="ui-icon-check"
+                                     action="#{InsercaoController.validarDiaTurno()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog header="Dias e Turno" widgetVar="dlgDiaTurno" dynamic="true" closable="false"
+                  modal="true" styleClass="topDialog" width="500" >
+            <h:form id="formDiaTurno">
+
+				<p:selectOneRadio layout="grid" columns="7" required="true"
+                                      requiredMessage="Escolha o dia da semana!"
+                                      value="#{InsercaoController.horarioAtendimento.diaSemana}">
                     <f:selectItem itemLabel="Domingo" itemValue="1"/>
                     <f:selectItem itemLabel="Segunda" itemValue="2"/>
                     <f:selectItem itemLabel="Terça" itemValue="3"/>
@@ -396,20 +414,42 @@
                     <f:selectItem itemLabel="Quinta" itemValue="5"/>
                     <f:selectItem itemLabel="Sexta" itemValue="6"/>
                     <f:selectItem itemLabel="Sábado" itemValue="7"/>
-                </p:selectManyCheckbox>
+                </p:selectOneRadio>
 
-                <br></br>
-                <br></br>
+                <br />
+                <br />
 
-                <div align="center">
-                    <p:commandButton value="Adicionar" style="margin-top:5px;"
+				<b:row >
+					<p:outputPanel id="opturno">
+						<b:column span="4" class="label-position">
+							<b:label value="Turno:" severity="info" class="fire-label" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" required="true"
+								requiredMessage="Informe o Turno"
+								value="#{InsercaoController.horarioAtendimento.turno}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</b:selectOneMenu>
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+
+				<div align="center">
+                    <p:commandButton value="Adicionar" style="margin-right:2%;"
                                      class="btn-acao-table acao-confirmar"
-                                     update=":formInsercao2:dtAdicionados, :msgPagina"
+                                     update=":formDiasAtendimentoTurno, :msgPagina"
                                      id="b2" icon="ui-icon-check"
-                                     action="#{InsercaoController.validarAdicionarFuncionarioTurno()}"/>
-                </div>
+                                     action="#{InsercaoController.adicionarDiaSemanaTurno(InsercaoController.horarioAtendimento)}"/>
+                                     
+					<p:commandButton value="Fechar" style="margin-left:2%;"
+						class="btn-acao-table acao-cancelar" oncomplete="PF('dlgDiaTurno').hide();"
+						icon="ui-icon-close" action="#{InsercaoController.limparHorario()}" />
+				</div>
             </h:form>
         </p:dialog>
+        
 
         <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
                   dynamic="true" responsive="true" modal="true" styleClass="topDialog">
