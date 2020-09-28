@@ -1037,14 +1037,12 @@ public class InsercaoPacienteDAO {
 			AgendaBean agendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		try {
-			List<Integer> diasJaGravados = new ArrayList<>();
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
 
 				if (DataUtil.extrairDiaDeData(agendamento.getDataAtendimento()) == 
-						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()
-						&& !diasJaGravados.contains(profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana())) {
+						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana() &&
+						agendamento.getTurno().equals(profissional.getListaDiasAtendimentoSemana().get(h).getTurno()) ) {
 
-					diasJaGravados.add(profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana());
 					
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 

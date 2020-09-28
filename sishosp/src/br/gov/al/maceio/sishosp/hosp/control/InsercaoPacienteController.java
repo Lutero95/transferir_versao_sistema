@@ -1039,6 +1039,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     			&& !listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
     		
     		listAgendamentoProfissional = gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
+    		
     		if(iDao.gravarInsercaoTurnoSemLaudo(insercao, listaProfissionaisAdicionados, listAgendamentoProfissional)) {
     			JSFUtil.adicionarMensagemSucesso("Paciente Inserido com Sucesso", "");
     			limparDadosInsercaoSemLaudo();
@@ -1085,24 +1086,28 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         for (int i = 0; i <= dt; i++) {
 
             int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
+            String turnoAnterior = "";
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 						if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h)
 								.getDiaSemana()) {
-							AgendaBean agenda = new AgendaBean();
+							
+							if(!listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getTurno().equals(turnoAnterior)) {
+								AgendaBean agenda = new AgendaBean();
 
-							agenda.setPaciente(insercao.getLaudo().getPaciente());
+								agenda.setPaciente(insercao.getLaudo().getPaciente());
 
-							agenda.setDataAtendimento(calendar.getTime());
-							agenda.setProfissional(listaProfissionaisAdicionados.get(j));
-							agenda.setTurno(listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h)
-									.getTurno());
+								agenda.setDataAtendimento(calendar.getTime());
+								agenda.setProfissional(listaProfissionaisAdicionados.get(j));
+								agenda.setTurno(listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana()
+										.get(h).getTurno());
 
-							listAgendamentoProfissional.add(agenda);
-							listaDatasDeAtendimento.add(calendar.getTime());
-
+								listAgendamentoProfissional.add(agenda);
+								listaDatasDeAtendimento.add(calendar.getTime());
+								turnoAnterior = listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getTurno();
+							}
 						}
                     }
                 }
