@@ -41,22 +41,22 @@ import br.gov.al.maceio.sishosp.hosp.model.Telefone;
 
 public class PacienteLog {
     
-    private static final String CAMPO_LISTA_DE_TELEFONES = "Lista de Telefones";
-	private static final String NOME = " Nome: ";
-	private static PacienteBean pacienteAntigo;
-    private static PacienteBean pacienteAtualizar;
-    private static FuncionarioBean user_session  = 
+    private  final String CAMPO_LISTA_DE_TELEFONES = "Lista de Telefones";
+	private  final String NOME = " Nome: ";
+	private  PacienteBean pacienteAntigo;
+    private  PacienteBean pacienteAtualizar;
+    private  FuncionarioBean user_session  = 
     		(FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
     
-    private static List<String> valoresPacienteAntigo;
-    private static List<String> valoresPacienteNovo;
-    private static List<String> camposMetodos;
-    private static List<String> camposAlterados;
-    private static List<Telefone> telefonesAdicionados;
-    private static List<Telefone> telefonesExcluidos;
+    private  List<String> valoresPacienteAntigo;
+    private  List<String> valoresPacienteNovo;
+    private  List<String> camposMetodos;
+    private  List<String> camposAlterados;
+    private  List<Telefone> telefonesAdicionados;
+    private  List<Telefone> telefonesExcluidos;
     
-    public static LogBean compararPacientes(PacienteBean novoPaciente, List<Telefone> listaTelefonesAdicionados,
+    public  LogBean compararPacientes(PacienteBean novoPaciente, List<Telefone> listaTelefonesAdicionados,
     		List<Telefone> listaTelefonesExcluidos) throws ProjetoException {
         pacienteAtualizar = novoPaciente;
         pacienteAntigo = consultarDadosAntigosPaciente();
@@ -79,17 +79,17 @@ public class PacienteLog {
         return new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_PACIENTE.getSigla());
     }
     
-    private static String retornaNomeIDPaciente() {
+    private  String retornaNomeIDPaciente() {
     	return "Paciente: "+pacienteAntigo.getNome()+" ID: "+pacienteAntigo.getId_paciente()+" ";
     }
     
-    private static String geraLogDaListaTelefones() throws ProjetoException {
+    private  String geraLogDaListaTelefones() throws ProjetoException {
         camposAlterados.add(CAMPO_LISTA_DE_TELEFONES);
         return montarDescricaoListaTelefones(tratamentoValoresListaTelefones(telefonesExcluidos), 
         		tratamentoValoresListaTelefones(telefonesAdicionados));
 	}
 
-	private static void compararPacientesIniciarDados() throws ProjetoException {
+	private  void compararPacientesIniciarDados() throws ProjetoException {
         valoresPacienteAntigo = new ArrayList<>();
         valoresPacienteNovo = new ArrayList<>();
         camposMetodos = new ArrayList<>();
@@ -100,24 +100,24 @@ public class PacienteLog {
         camposMetodos = listarCampos(pacienteAntigo);
     }
     
-    private static boolean compararPacientesComparacao(int i) {
+    private  boolean compararPacientesComparacao(int i) {
         return (VerificadorUtil.verificarSeObjetoNulo(valoresPacienteAntigo.get(i)) && !VerificadorUtil.verificarSeObjetoNulo(valoresPacienteNovo.get(i)))
                 || (!VerificadorUtil.verificarSeObjetoNulo(valoresPacienteAntigo.get(i)) && VerificadorUtil.verificarSeObjetoNulo(valoresPacienteNovo.get(i)))
                 || (!(Objects.equals(retornaValorRetirarZeroEsquerda(valoresPacienteAntigo.get(i)), retornaValorRetirarZeroEsquerda(valoresPacienteNovo.get(i)))));
     }
     
-    private static String compararPacientesPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
+    private  String compararPacientesPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
         LogBean log = new LogBean();
         log.adicionarDescricao(campo, valorAntigo, valorNovo);
         camposAlterados.add(campo);
         return log.getDescricao();
     }
     
-    private static String retornaValorRetirarZeroEsquerda(String valor) {
+    private  String retornaValorRetirarZeroEsquerda(String valor) {
         return !VerificadorUtil.verificarSeObjetoNuloOuVazio(valor) ? StringUtils.retirarZeroEsq(valor.trim()) : null;
     }
     
-    private static List<String> listarCampos(PacienteBean paciente) {
+    private  List<String> listarCampos(PacienteBean paciente) {
         List<String> nomesCampos = new ArrayList<>();
         @SuppressWarnings("rawtypes")
 		Class cls = paciente.getClass();
@@ -137,12 +137,12 @@ public class PacienteLog {
         return nomesCampos;
     }
     
-    private static PacienteBean consultarDadosAntigosPaciente() throws ProjetoException {
+    private  PacienteBean consultarDadosAntigosPaciente() throws ProjetoException {
         PacienteBean paciente = new PacienteDAO().listarPacientePorID(pacienteAtualizar.getId_paciente());
         return paciente;
     }
     
-    private static List<String> invocarAtributos(PacienteBean paciente) throws ProjetoException {
+    private  List<String> invocarAtributos(PacienteBean paciente) throws ProjetoException {
         List<String> valoresMetodos = new ArrayList<>();
         @SuppressWarnings("rawtypes")
 		Class cls = paciente.getClass();
@@ -157,11 +157,11 @@ public class PacienteLog {
         return valoresMetodos;
     }
     
-    private static boolean condicaoApenasGet(Method metodo) {
+    private  boolean condicaoApenasGet(Method metodo) {
         return StringUtils.retornarPrimeiroCaracter(metodo.getName()) == 'G';
     }
     
-    private static void retornandoValores(PacienteBean paciente, List<String> valoresMetodos, Method metodo) 
+    private  void retornandoValores(PacienteBean paciente, List<String> valoresMetodos, Method metodo) 
     		throws ProjetoException {
         try {
         	
@@ -231,7 +231,7 @@ public class PacienteLog {
         }
     }
     
-    private static void tratamentoValoresEscola(EscolaBean escola, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresEscola(EscolaBean escola, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(escola) || VerificadorUtil.verificarSeObjetoNuloOuZero(escola.getCodEscola()))
     		valoresMetodos.add(null);
@@ -241,7 +241,7 @@ public class PacienteLog {
     	}
     }
     
-    private static void tratamentoValoresEscolaridade(EscolaridadeBean escolaridade, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresEscolaridade(EscolaridadeBean escolaridade, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(escolaridade) || VerificadorUtil.verificarSeObjetoNuloOuZero(escolaridade.getCodescolaridade()))
     		valoresMetodos.add(null);
@@ -251,7 +251,7 @@ public class PacienteLog {
     	}
     }
     
-    private static void tratamentoValoresEncaminhado(EncaminhadoBean encaminhado, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresEncaminhado(EncaminhadoBean encaminhado, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(encaminhado) || VerificadorUtil.verificarSeObjetoNuloOuZero(encaminhado.getCodencaminhado()))
     		valoresMetodos.add(null);
@@ -261,7 +261,7 @@ public class PacienteLog {
     	}
     }
     
-    private static void tratamentoValoresProfissao(ProfissaoBean profissao, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresProfissao(ProfissaoBean profissao, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(profissao) || VerificadorUtil.verificarSeObjetoNuloOuZero(profissao.getCodprofissao()))
     		valoresMetodos.add(null);
@@ -271,7 +271,7 @@ public class PacienteLog {
     	}
     }
     
-    private static void tratamentoValoresGenero(Genero genero, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresGenero(Genero genero, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(genero) || VerificadorUtil.verificarSeObjetoNuloOuZero(genero.getId()))
     		valoresMetodos.add(null);
@@ -281,7 +281,7 @@ public class PacienteLog {
     	}
     }
     
-    private static void tratamentoValoresReligiao(Religiao religiao, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresReligiao(Religiao religiao, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(religiao) || VerificadorUtil.verificarSeObjetoNuloOuZero(religiao.getId()))
     		valoresMetodos.add(null);
@@ -291,7 +291,7 @@ public class PacienteLog {
     	}
     } 
     
-    private static void tratamentoValoresFormaTransporte(FormaTransporteBean formaTransporte, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresFormaTransporte(FormaTransporteBean formaTransporte, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(formaTransporte) || VerificadorUtil.verificarSeObjetoNuloOuZero(formaTransporte.getCodformatransporte()))
     		valoresMetodos.add(null);
@@ -301,7 +301,7 @@ public class PacienteLog {
     	}
     } 	
 
-    private static void tratamentoValoresEndereco(EnderecoBean endereco, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresEndereco(EnderecoBean endereco, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(endereco))
     		valoresMetodos.add(null);
@@ -321,7 +321,7 @@ public class PacienteLog {
     	}
     } 
     
-    private static String tratamentoValoresListaTelefones(List<Telefone> listaTelefones) throws ProjetoException {
+    private  String tratamentoValoresListaTelefones(List<Telefone> listaTelefones) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(listaTelefones) || listaTelefones.isEmpty())
     		return null;
@@ -356,11 +356,11 @@ public class PacienteLog {
     	}
     }
     
-	public static String montarDescricaoListaTelefones(String valorAntigos, String valorNovos) {
+	public  String montarDescricaoListaTelefones(String valorAntigos, String valorNovos) {
 		return CAMPO_LISTA_DE_TELEFONES+ ": Itens Excluídos: "+valorAntigos+"\n, Itens Adicionados: "+valorNovos+"\n";
 	}
     
-    private static String retornarValoresBoolean(String valor) {
+    private  String retornarValoresBoolean(String valor) {
         return valor.toUpperCase().trim().equals("FALSE") ? null : valor;
     }
 }

@@ -331,7 +331,8 @@ public class LaudoDAO {
             stmt.setInt(23, laudo.getId());
             stmt.executeUpdate();
             
-            LogBean log = LaudoLog.compararLaudos(laudo);
+            LaudoLog laudoLog = new LaudoLog();
+            LogBean log = laudoLog.compararLaudos(laudo);
             new LogDAO().gravarLog(log, conexao);
             
             conexao.commit();
