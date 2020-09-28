@@ -26,25 +26,25 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class LaudoLog {
     
-    private static final String NOME = " Nome: ";
-	private static LaudoBean laudoAntigo;
-    private static LaudoBean laudoAtualizar;
-    private static FuncionarioBean user_session  = 
+    private  final String NOME = " Nome: ";
+	private  LaudoBean laudoAntigo;
+    private  LaudoBean laudoAtualizar;
+    private  FuncionarioBean user_session  = 
     		(FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
     
-    private static List<String> valoresLaudoAntigo;
-    private static List<String> valoresLaudoNovo;
-    private static List<String> camposMetodos;
-    private static List<String> camposAlterados;
+    private  List<String> valoresLaudoAntigo;
+    private  List<String> valoresLaudoNovo;
+    private  List<String> camposMetodos;
+    private  List<String> camposAlterados;
     
-    private static final String NUMERO_UM = "1";
-    private static final String NUMERO_DOIS = "2";
-    private static final String NUMERO_TRES = "3";
-    private static final String NUMERO_QUATRO = "4";
-    private static final String NUMERO_CINCO = "5";
+    private  final String NUMERO_UM = "1";
+    private  final String NUMERO_DOIS = "2";
+    private  final String NUMERO_TRES = "3";
+    private  final String NUMERO_QUATRO = "4";
+    private  final String NUMERO_CINCO = "5";
     
-    public static LogBean compararLaudos(LaudoBean novoLaudo) throws ProjetoException {
+    public  LogBean compararLaudos(LaudoBean novoLaudo) throws ProjetoException {
         Boolean alterouDado = false;
         laudoAtualizar = novoLaudo;
         laudoAntigo = consultarDadosAntigosLaudo();
@@ -63,12 +63,12 @@ public class LaudoLog {
         return new LogBean(user_session.getId(), descricao, Rotina.LAUDO.getSigla(), alterouDado);
     }
     
-    private static String retornaIDNomePacienteDataSolicitacao() {
+    private  String retornaIDNomePacienteDataSolicitacao() {
         	return "Paciente: "+laudoAntigo.getPaciente().getNome()+" ID Laudo: "+laudoAntigo.getId()
         		+" Data Solicitação: "+laudoAntigo.getDataSolicitacao()+" ";
     }
     
-    private static void compararLaudosIniciarDados() throws ProjetoException {
+    private  void compararLaudosIniciarDados() throws ProjetoException {
         valoresLaudoAntigo = new ArrayList<>();
         valoresLaudoNovo = new ArrayList<>();
         camposMetodos = new ArrayList<>();
@@ -80,24 +80,24 @@ public class LaudoLog {
         camposMetodos = listarCampos(laudoAntigo);
     }
     
-    private static boolean compararLaudosComparacao(int i) {
+    private  boolean compararLaudosComparacao(int i) {
         return (VerificadorUtil.verificarSeObjetoNulo(valoresLaudoAntigo.get(i)) && !VerificadorUtil.verificarSeObjetoNulo(valoresLaudoNovo.get(i)))
                 || (!VerificadorUtil.verificarSeObjetoNulo(valoresLaudoAntigo.get(i)) && VerificadorUtil.verificarSeObjetoNulo(valoresLaudoNovo.get(i)))
                 || (!(Objects.equals(retornaValorRetirarZeroEsquerda(valoresLaudoAntigo.get(i)), retornaValorRetirarZeroEsquerda(valoresLaudoNovo.get(i)))));
     }
     
-    private static String compararLaudosPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
+    private  String compararLaudosPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
         LogBean log = new LogBean();
         log.adicionarDescricao(campo, valorAntigo, valorNovo);
         camposAlterados.add(campo);
         return log.getDescricao();
     }
     
-    private static String retornaValorRetirarZeroEsquerda(String valor) {
+    private  String retornaValorRetirarZeroEsquerda(String valor) {
         return !VerificadorUtil.verificarSeObjetoNuloOuVazio(valor) ? StringUtils.retirarZeroEsq(valor.trim()) : null;
     }
     
-    private static List<String> listarCampos(LaudoBean laudo) {
+    private  List<String> listarCampos(LaudoBean laudo) {
         List<String> nomesCampos = new ArrayList<>();
         @SuppressWarnings("rawtypes")
 		Class cls = laudo.getClass();
@@ -117,12 +117,12 @@ public class LaudoLog {
         return nomesCampos;
     }
     
-    private static LaudoBean consultarDadosAntigosLaudo() throws ProjetoException {
+    private  LaudoBean consultarDadosAntigosLaudo() throws ProjetoException {
         LaudoBean laudo = new LaudoDAO().buscarLaudosPorId(laudoAtualizar.getId());
         return laudo;
     }
     
-    private static List<String> invocarAtributos(LaudoBean laudo) throws ProjetoException {
+    private  List<String> invocarAtributos(LaudoBean laudo) throws ProjetoException {
         List<String> valoresMetodos = new ArrayList<>();
         @SuppressWarnings("rawtypes")
 		Class cls = laudo.getClass();
@@ -137,11 +137,11 @@ public class LaudoLog {
         return valoresMetodos;
     }
     
-    private static boolean condicaoApenasGet(Method metodo) {
+    private  boolean condicaoApenasGet(Method metodo) {
         return StringUtils.retornarPrimeiroCaracter(metodo.getName()) == 'G';
     }
     
-    private static void retornandoValores(LaudoBean laudo, List<String> valoresMetodos, Method metodo) throws ProjetoException {
+    private  void retornandoValores(LaudoBean laudo, List<String> valoresMetodos, Method metodo) throws ProjetoException {
         try {
         	
             if (VerificadorUtil.verificarSeObjetoNuloOuVazio(metodo.invoke(laudo))) {
@@ -196,7 +196,7 @@ public class LaudoLog {
         }
     }
     
-    private static void tratamentoValoresCid(CidBean cid, List<String> valoresMetodos) throws ProjetoException {
+    private  void tratamentoValoresCid(CidBean cid, List<String> valoresMetodos) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(cid) || VerificadorUtil.verificarSeObjetoNuloOuZero(cid.getIdCid()))
     		valoresMetodos.add(null);
@@ -206,7 +206,7 @@ public class LaudoLog {
     	}
     }
     
-    private static void tratamentoValoresProcedimento(ProcedimentoBean procedimento, List<String> valoresMetodos) 
+    private  void tratamentoValoresProcedimento(ProcedimentoBean procedimento, List<String> valoresMetodos) 
     		throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(procedimento) || VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getIdProc()))
@@ -217,7 +217,7 @@ public class LaudoLog {
     	}
     }
     
-    private static String retornarValoresBoolean(String valor) {
+    private  String retornarValoresBoolean(String valor) {
         return valor.toUpperCase().trim().equals("FALSE") ? null : valor;
     }
 }

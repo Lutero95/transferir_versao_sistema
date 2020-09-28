@@ -341,8 +341,8 @@ public class LaudoDAO {
             stmt.setLong(23, user_session.getId());
             stmt.setInt(24, laudo.getId());
             stmt.executeUpdate();
-
-            LogBean log = LaudoLog.compararLaudos(laudo);
+            LaudoLog laudoLog = new LaudoLog();
+            LogBean log = laudoLog.compararLaudos(laudo);
             if (log.getAlteracaoRealizada())
             new LogDAO().gravarLog(log, conexao);
 
