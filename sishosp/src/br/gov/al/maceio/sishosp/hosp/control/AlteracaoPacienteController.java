@@ -38,6 +38,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -91,6 +92,8 @@ public class AlteracaoPacienteController implements Serializable {
 	private List<ProcedimentoBean> listaProcedimentos;
 	private List<CidBean> listaCids;
 	private List<FuncionarioBean> listaProfissionais;
+	private HorarioAtendimento horarioAtendimento;
+    private InsercaoPacienteController insercaoPacienteController;
 
     public AlteracaoPacienteController() throws ProjetoException, ParseException {
         insercao = new InsercaoPacienteBean();
@@ -108,7 +111,7 @@ public class AlteracaoPacienteController implements Serializable {
         listaHorariosEquipe = new ArrayList<AgendaBean>();
         todosOsProfissionais = false;
         listaHorarioAtendimentos = new ArrayList<>();
-        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+        insercaoPacienteController = new InsercaoPacienteController();
         opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
         listaHorarios = new ArrayList<>();
         laudo = new LaudoBean();
@@ -785,8 +788,6 @@ public class AlteracaoPacienteController implements Serializable {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
 			Boolean cadastrou = false;
 			listAgendamentoProfissional = new ArrayList<AgendaBean>();
-
-			InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
 			GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
 			Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
@@ -1613,18 +1614,71 @@ public class AlteracaoPacienteController implements Serializable {
     }
     
 	public void alterarPacienteInseridoSemLaudo() throws ProjetoException {
-		InsercaoPacienteController insercaoController = new InsercaoPacienteController();
-		if(!insercaoController.listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
-    			&& !insercaoController.listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
-    			&& !insercaoController.listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
+		if(!insercaoPacienteController.listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
+    			&& !insercaoPacienteController.listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
+    			&& !insercaoPacienteController.listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
 			
-			listAgendamentoProfissional = insercaoController.gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
+			listAgendamentoProfissional = insercaoPacienteController.gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
 			
 			if(aDao.gravarAlteracaoTurnoSemLaudo(insercao, listAgendamentoProfissional, id_paciente_insituicao, this.listaProfissionaisAdicionados)) {
 				JSFUtil.adicionarMensagemSucesso("Paciente Alterado com Sucesso", "");
 			}
 		}
 	}
+	
+    public void limparHorario() {
+    	this.horarioAtendimento = new HorarioAtendimento();
+    }
+    
+    public void adicionarDiaSemanaTurno(HorarioAtendimento horarioAtendimento) {
+    	
+    	List<HorarioAtendimento> listaHorarioAtendimentos = new ArrayList<>();
+    	if(horarioAtendimento.getTurno().equals(Turno.AMBOS.getSigla())) {
+    		listaHorarioAtendimentos.add(new HorarioAtendimento(horarioAtendimento.getDiaSemana(), Turno.MANHA.getSigla()));
+    		listaHorarioAtendimentos.add(new HorarioAtendimento(horarioAtendimento.getDiaSemana(), Turno.TARDE.getSigla()));
+    	} else {
+    		listaHorarioAtendimentos.add(horarioAtendimento);
+    	}
+    	
+    	for (HorarioAtendimento horario : listaHorarioAtendimentos) {
+    		String diaSemanaString = horario.getDiaSemana().toString();
+    		setaDiaSemanaNome(horario, diaSemanaString);
+    		
+    		if(!insercaoPacienteController.diaTurnoJaExiste(horario, this.funcionario.getListaDiasAtendimentoSemana())) {
+    			this.funcionario.getListaDiasAtendimentoSemana().add(horario);
+    			JSFUtil.adicionarMensagemSucesso("Dia e Turno de Atendimento Adicionado com Sucesso!", "");
+    			JSFUtil.fecharDialog("dlgDiaTurno");
+    		}			
+		}
+    }
+    
+	private void setaDiaSemanaNome(HorarioAtendimento horarioAtendimento, String diaSemanaString) {
+		if(diaSemanaString.equals(DiasDaSemana.DOMINGO.getSigla()))
+    		horarioAtendimento.setDiaNome("Domingo");
+    	if(diaSemanaString.equals(DiasDaSemana.SEGUNDA.getSigla()))
+    		horarioAtendimento.setDiaNome("Segunda");
+    	if(diaSemanaString.equals(DiasDaSemana.TERCA.getSigla()))
+    		horarioAtendimento.setDiaNome("Terça");
+    	if(diaSemanaString.equals(DiasDaSemana.QUARTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Quarta");
+    	if(diaSemanaString.equals(DiasDaSemana.QUINTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Quinta");
+    	if(diaSemanaString.equals(DiasDaSemana.SEXTA.getSigla()))
+    		horarioAtendimento.setDiaNome("Sexta");
+    	if(diaSemanaString.equals(DiasDaSemana.SABADO.getSigla()))
+    		horarioAtendimento.setDiaNome("Sábado");
+	}
+    
+    public void removerDiaSemanaTurno(HorarioAtendimento horarioAtendimento) {
+    	this.funcionario.getListaDiasAtendimentoSemana().remove(horarioAtendimento);
+    }
+    
+    public void validarDiaTurno() {
+    	if(this.funcionario.getListaDiasAtendimentoSemana().isEmpty())
+    		JSFUtil.adicionarMensagemErro("Insira pelo menos um dia e turno", "");
+    	else
+    		validarAdicionarFuncionarioTurno();
+    }
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1769,13 +1823,21 @@ public class AlteracaoPacienteController implements Serializable {
 		this.listaCids = listaCids;
 	}
 
-
 	public List<FuncionarioBean> getListaProfissionais() {
 		return listaProfissionais;
 	}
 
-
 	public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
 		this.listaProfissionais = listaProfissionais;
 	}
+
+
+	public HorarioAtendimento getHorarioAtendimento() {
+		return horarioAtendimento;
+	}
+
+	public void setHorarioAtendimento(HorarioAtendimento horarioAtendimento) {
+		this.horarioAtendimento = horarioAtendimento;
+	}
+	
 }

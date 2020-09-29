@@ -1091,12 +1091,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
-						if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h)
-								.getDiaSemana()) {
-							
+						if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+
 							if(!listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getTurno().equals(turnoAnterior)) {
 								AgendaBean agenda = new AgendaBean();
-
+								
 								agenda.setPaciente(insercao.getLaudo().getPaciente());
 
 								agenda.setDataAtendimento(calendar.getTime());
@@ -1145,7 +1144,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     		String diaSemanaString = horario.getDiaSemana().toString();
     		setaDiaSemanaNome(horario, diaSemanaString);
     		
-    		if(!diaTurnoJaExiste(horario)) {
+    		if(!diaTurnoJaExiste(horario, this.funcionario.getListaDiasAtendimentoSemana())) {
     			this.funcionario.getListaDiasAtendimentoSemana().add(horario);
     			JSFUtil.adicionarMensagemSucesso("Dia e Turno de Atendimento Adicionado com Sucesso!", "");
     			JSFUtil.fecharDialog("dlgDiaTurno");
@@ -1157,8 +1156,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	this.funcionario.getListaDiasAtendimentoSemana().remove(horarioAtendimento);
     }
     
-    private boolean diaTurnoJaExiste(HorarioAtendimento horarioAtendimento) {
-    	for (HorarioAtendimento horario : this.funcionario.getListaDiasAtendimentoSemana()) {
+    public boolean diaTurnoJaExiste(HorarioAtendimento horarioAtendimento, List<HorarioAtendimento> listaDiasAtendimentoSemana) {
+    	for (HorarioAtendimento horario : listaDiasAtendimentoSemana) {
     		if(horario.getDiaSemana().equals(horarioAtendimento.getDiaSemana())
     				&& horario.getTurno().equals(horarioAtendimento.getTurno())) {
     			JSFUtil.adicionarMensagemErro("Este dia da semana e turno já foi adicionado", "");

@@ -205,7 +205,7 @@
 											<div align="center">
 												<p:commandButton
 													actionListener="#{AlteracaoPacienteController.validarProcedimentoParaAdicionar(proc)}"
-													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
+													icon="fa fa-fw fa-check" title="Adicionar Procedimento"
 													ajax="true" process="@this" immediate="true"
 													class="new-btn-acao-table acao-editar"
 													update="tbprocedimentos :formInsercao2:tbprocselecionado :msgPagina" />
@@ -262,7 +262,7 @@
 											<div align="center">
 												<p:commandButton
 													actionListener="#{AlteracaoPacienteController.validarCidParaAdicionar(cid)}"
-													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
+													icon="fa fa-fw fa-check" title="Adicionar CID"
 													ajax="true" process="@this" immediate="true"
 													class="new-btn-acao-table acao-editar"
 													update="tbcids :formInsercao2:tbcidselecionado :msgPagina" />
@@ -312,51 +312,10 @@
                                                  autoResize="false" class="select-agendaEquipe2">
                                 </b:inputTextarea>
                             </b:column>
-
                         </b:row>
 
-                        <b:row>
-                            <b:column span="3" class="label-position" rendered="false">
-                                <p:outputLabel value="Encaixe:"
-                                               style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-                                <p:selectBooleanCheckbox label="Encaixe"
-                                                         style="margin-left: 10px;margin-top: 5px"
-                                                         value="#{AlteracaoPacienteController.insercao.encaixe}">
-                                </p:selectBooleanCheckbox>
-                            </b:column>
-
-							<b:column span="3" class="label-position btn-radio-table">
-								<b:label value="Turno" severity="info" />
-								<p:selectOneRadio id="turno" value="#{AlteracaoPacienteController.insercao.turno}"
-									required="true" requiredMessage="Turno: Campo obrigatório!"
-									style="margin-left:-15px;margin-top:10px">
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-								</p:selectOneRadio>
-							</b:column>
-						</b:row>
-
-                        <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'T'}">
-                            <p:outputPanel id="opturno">
-                                <b:column span="3" class="label-position">
-                                    <b:label value="Turno:" severity="info" class="fire-label"/>
-
-                                    <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                     requiredMessage="Informe o Turno"
-                                                     value="#{AlteracaoPacienteController.insercao.turno}">
-                                        <f:selectItem itemLabel="Selecione" itemValue="" />
-                                        <f:selectItem itemLabel="Manhã" itemValue="M" />
-                                        <f:selectItem itemLabel="Tarde" itemValue="T" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
-                        <br></br>
-
-                        <br></br>
+                        <br />
+                        <br />
 
                         <div align="center">
 
@@ -378,35 +337,97 @@
 
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno" dynamic="true"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" width="500">
             <h:form id="formDiasAtendimentoTurno">
-                <p:selectManyCheckbox layout="grid" columns="7" required="true"
-                                      requiredMessage="Escolha ao menos um dia da semana!"
-                                      value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
-                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
-                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
-                    <f:selectItem itemLabel="Terça" itemValue="3"/>
-                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
-                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
-                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
-                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
-                </p:selectManyCheckbox>
 
-                <br></br>
-                <br></br>
+				<p:commandButton update=":formDiaTurno" icon="ui-icon-plus" action="#{AlteracaoPacienteController.limparHorario()}"
+					oncomplete="PF('dlgDiaTurno').show();" class="btn-acao-table acao-editar"
+					title="Adicionar dia e turno"/>
 
-                <div align="center">
-                    <p:commandButton value="Adicionar" style="margin-top:5px;"
+				<p:dataTable var="dia" value="#{AlteracaoPacienteController.funcionario.listaDiasAtendimentoSemana}"
+					emptyMessage="Nenhum dia de atendimento adicionado" paginator="true" rows="10">
+					<p:column headerText="Dia">
+						<h:outputText value="#{dia.diaNome}" />
+					</p:column>
+
+					<p:column headerText="Turno">
+						<h:outputText value="#{dia.turno == 'M' ? 'Manhã' : 'Tarde'}" />
+					</p:column>
+
+					<p:column headerText="Remover" width="20%;">
+						<p:commandButton process="@this" 
+							class="new-btn-acao-table acao-excluir"
+							action="#{AlteracaoPacienteController.removerDiaSemanaTurno(dia)}"
+							icon="ui-icon-trash" update="formDiasAtendimentoTurno" />
+					</p:column>
+				</p:dataTable>
+                <br /> 
+                <br /> 
+
+				<div align="center">
+                    <p:commandButton value="Confirmar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
-                                     update=":formInsercao2:dtAdicionados, :msgPagina"
-                                     id="b2" icon="ui-icon-check"
-                                     action="#{AlteracaoPacienteController.validarAdicionarFuncionarioTurno()}"/>
+                                     update=":formInsercao2:dtAdicionados, formDiasAtendimentoTurno, :msgPagina"
+                                     id="b2" icon="ui-icon-check" 
+                                     action="#{AlteracaoPacienteController.validarDiaTurno()}"/>
                 </div>
             </h:form>
         </p:dialog>
 
-       
-        <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+
+		<p:dialog header="Dias e Turno" widgetVar="dlgDiaTurno" dynamic="true"
+			closable="false" modal="true" styleClass="topDialog" width="500">
+			<h:form id="formDiaTurno">
+
+				<p:selectOneRadio layout="grid" columns="7" required="true"
+					requiredMessage="Escolha o dia da semana!"
+					value="#{AlteracaoPacienteController.horarioAtendimento.diaSemana}">
+					<f:selectItem itemLabel="Domingo" itemValue="1" />
+					<f:selectItem itemLabel="Segunda" itemValue="2" />
+					<f:selectItem itemLabel="Terça" itemValue="3" />
+					<f:selectItem itemLabel="Quarta" itemValue="4" />
+					<f:selectItem itemLabel="Quinta" itemValue="5" /> 
+					<f:selectItem itemLabel="Sexta" itemValue="6" />
+					<f:selectItem itemLabel="Sábado" itemValue="7" />
+				</p:selectOneRadio>
+
+				<br />
+				<br />
+
+				<b:row>
+					<p:outputPanel id="opturno">
+						<b:column span="4" class="label-position">
+							<b:label value="Turno:" severity="info" class="fire-label" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" required="true"
+								requiredMessage="Informe o Turno"
+								value="#{AlteracaoPacienteController.horarioAtendimento.turno}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</b:selectOneMenu>
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+
+				<div align="center">
+					<p:commandButton value="Adicionar" style="margin-right:2%;"
+						class="btn-acao-table acao-confirmar"
+						update=":formDiasAtendimentoTurno, :msgPagina" id="b2"
+						icon="ui-icon-check"
+						action="#{AlteracaoPacienteController.adicionarDiaSemanaTurno(AlteracaoPacienteController.horarioAtendimento)}" />
+
+					<p:commandButton value="Fechar" style="margin-left:2%;"
+						class="btn-acao-table acao-cancelar"
+						oncomplete="PF('dlgDiaTurno').hide();" icon="ui-icon-close"
+						action="#{AlteracaoPacienteController.limparHorario()}" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
                   dynamic="true" modal="true" width="750px" height="400px"
                   responsive="true">
             <h:form id="formConsuPac">
