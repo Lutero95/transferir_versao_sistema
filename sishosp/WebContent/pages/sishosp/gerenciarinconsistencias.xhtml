@@ -9,7 +9,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{inconsistenciaController.listarIncosistencias()}"/>
+			<f:viewAction action="#{inconsistenciaController.listarInconsistencias()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -20,41 +20,38 @@
 			<div class="panel-body table-body">
 
 				<h:form id="frmPrincipal">
-
 					<p:commandButton id="btninc" value="Novo" size="sm"
-						action="#{CidController.redirectInsert()}" icon="glyphicon-plus"
+						action="#{inconsistenciaController.redirecionaInsercao()}" icon="glyphicon-plus"
 						class="btn-addNovo">
 						<f:setPropertyActionListener value="1"
-							target="#{CidController.tipo}" />
+							target="#{inconsistenciaController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
 
 
 					<p:row>
-
 						<p:panelGrid columns="4" id="panelBusca">
 
-							<p:selectOneMenu value="#{CidController.tipoBusca}">
-								<f:selectItem itemLabel="CID" itemValue="cid" />
+							<p:selectOneMenu value="#{inconsistenciaController.tipoBusca}">
+								<f:selectItem itemLabel="Título" itemValue="titulo" />
 								<f:selectItem itemLabel="Descrição" itemValue="descricao" />
 							</p:selectOneMenu>
 
-							<p:inputText value="#{CidController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+							<p:inputText value="#{inconsistenciaController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
 
-							<p:commandButton action="#{CidController.buscarCids()}" update="dataTablePrincipal"
+							<p:commandButton action="#{inconsistenciaController.buscarInconsistencias()}" update="dataTablePrincipal"
 											 icon="ui-icon-search" style="margin-left: 10px"/>
 
-							<p:commandButton action="#{CidController.listarCids()}"
+							<p:commandButton action="#{inconsistenciaController.listarInconsistencias()}"
 											 actionListener="#{CidController.limparCampoBusca()}"
 											 update="dataTablePrincipal, panelBusca"
 											 icon="limpar" style="margin-left: 10px"/>
-
 						</p:panelGrid>
-
 					</p:row>
 
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
-						value="#{inconsistenciaController.listaInconsistencias}" paginator="true">
+						value="#{inconsistenciaController.listaInconsistencias}" paginator="true"
+						emptyMessage="Nenhuma Inconsistência Encontrada" reflow="true">
 
 						<p:column headerText="Título">
 							<h:outputText value="#{tab.titulo}" />
@@ -64,25 +61,29 @@
 							<h:outputText value="#{tab.descricao}" />
 						</p:column>
 
-						<p:column headerText="Ação">
-							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
-								size="sm" action="#{CidController.redirectEdit()}"
-								class="btn-acao-table acao-editar">
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{CidController.cid}" />
+						<p:column headerText="Ação" width="15%">
+						
+							<div align="center">
+								<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+									size="sm"
+									action="#{inconsistenciaController.redirecionaEdicao()}"
+									class="btn-acao-table acao-editar">
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{inconsistenciaController.inconsistencia}" />
 
-								<f:setPropertyActionListener value="2"
-									target="#{CidController.tipo}" />
-							</p:commandButton>
+									<f:setPropertyActionListener value="2"
+										target="#{inconsistenciaController.tipo}" />
+								</p:commandButton>
 
-							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
-								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-								oncomplete="PF('dialogExclusao').show()">
+								<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+									size="sm" ajax="true" style="margin-left:10px"
+									class="btn-acao-table acao-excluir"
+									oncomplete="PF('dialogExclusao').show()">
 
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{CidController.cid}" />
-							</p:commandButton>
-
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{inconsistenciaController.inconsistencia}" />
+								</p:commandButton>
+							</div>
 						</p:column>
 					</p:dataTable>
 
@@ -96,11 +97,11 @@
 
 			<h:form id="frmExcluir">
 				<div class="alert alert-warning" role="alert">Deseja excluir
-					este CID?</div>
+					esta Inconsistência?</div>
 				<div align="center">
 					<p:separator />
 					<p:commandButton look="success" value="Sim" style="float:left;"
-						action="#{CidController.excluirCid()}" ajax="true"
+						action="#{inconsistenciaController.excluirInconsistencia()}" ajax="true"
 						icon="ui-icon-check" update=":frmPrincipal msgPagina" class="btn-sim" />
 
 					<p:commandButton value="Não"
