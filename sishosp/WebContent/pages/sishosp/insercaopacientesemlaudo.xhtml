@@ -69,7 +69,12 @@
                                         required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
                                         class="select-agendaEquipe2" showOn="button"
                                         pattern="dd/MM/yyyy" size="15" >
-                                </p:calendar>
+
+									<p:ajax event="dateSelect"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+									<p:ajax event="blur"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+								</p:calendar>
                             </b:column>
                         </b:row>
                         <br />
@@ -95,10 +100,6 @@
                                         <p:ajax event="itemSelect"
                                                 listener="#{InsercaoController.selectPrograma}"
                                                 update=":formInsercao2:outGrupo :formConsuGrop"/>
-
-										<p:ajax event="itemSelect"
-											listener="#{InsercaoController.listarDadosPermitidosDoPrograma(InsercaoController.insercao.programa.idPrograma)}"
-											update=":formInsercao2:tbprocedimentos :formInsercao2:tbcids" />
 									</p:autoComplete>
 
                                     <p:commandButton id="btBusPr" immediate="true" 
@@ -212,120 +213,49 @@
 								</div>
 							</div>
 
+							<div>
+								<h2 class="texto-titulo">Procedimentos / CIDS</h2>
 
-							<h2 class="texto-titulo">Procedimentos</h2>
-							<div style="display: flex;">
-								<div class="content-div-flex">
-									<p:dataTable var="proc"
-										value="#{InsercaoController.listaProcedimentos}"
-										id="tbprocedimentos" reflow="true"
-										emptyMessage="Nenhum procedimento encontrado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-right">
+								<p:commandButton process="@this" size="sm"
+									title="Incluir Procedimento / CID" icon="ui-icon-plus"
+									class="btn-acao-table acao-editar"
+									actionListener="#{ProcedimentoController.listarProcedimentos()}"
+									oncomplete="PF('dlgConsulProcPrimario').show();"
+									update=":formConsulProcPrimario" />
+									
+								<p:dataTable var="proccid"
+									value="#{InsercaoController.insercao.listaProcedimentoCid}"
+									id="tbprocedimentocid" reflow="true"
+									emptyMessage="Nenhum procedimento com cid adicionado" paginator="true"
+									rows="10" paginatorPosition="bottom" styleClass="table-right">
 
-										<p:column headerText="Procedimento" width="300">
-											<h:outputText value="#{proc.nomeProc}" />
-										</p:column>
+									<p:column headerText="Procedimento" width="300">
+										<h:outputText value="#{proccid.procedimento.nomeProc}" />
+									</p:column>
 
-										<p:column headerText="Código">
-											<h:outputText value="#{proc.codProc}" />
-										</p:column>
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proccid.procedimento.codProc}" />
+									</p:column>
 
-										<p:column headerText="Adicionar" width="20%">
-											<div align="center">
-												<p:commandButton
-													actionListener="#{InsercaoController.validarProcedimentoParaAdicionar(proc)}"
-													icon="fa fa-fw fa-check" title="Adicionar Procedimento"
-													ajax="true" process="@this" immediate="true"
-													class="new-btn-acao-table acao-editar"
-													update="tbprocedimentos :formInsercao2:tbprocselecionado :msgPagina" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
+									<p:column headerText="CID" width="300">
+										<h:outputText value="#{proccid.cid.descCidAbrev}" />
+									</p:column>
 
-								<div class="content-div-flex">
-									<p:dataTable var="procselecionado"
-										value="#{InsercaoController.insercao.programa.listaProcedimentosPermitidos}"
-										id="tbprocselecionado" reflow="true"
-										emptyMessage="Nenhum procedimento adicionado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-left">
+									<p:column headerText="Código CID">
+										<h:outputText value="#{proccid.cid.cid}" />
+									</p:column>
 
-										<p:column headerText="Procedimento" width="300">
-											<h:outputText value="#{procselecionado.nomeProc}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{procselecionado.codProc}" />
-										</p:column>
-
-										<p:column headerText="Excluir" width="20%">
-											<div align="center">
-												<p:commandButton
-													action="#{InsercaoController.removerProcedimento(procselecionado)}"
-													icon="ui-icon-trash" title="Remover Procedimento"
-													immediate="true" class="btn-acao-table acao-excluir"
-													update="tbprocselecionado :formInsercao2:tbprocedimentos" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
-
-							<h2 class="texto-titulo">CIDs</h2>
-							<div style="display: flex;">
-								<div class="content-div-flex">
-									<p:dataTable var="cid" value="#{InsercaoController.listaCids}"
-										id="tbcids" reflow="true" emptyMessage="Nenhum CID encontrado"
-										paginator="true" rows="10" paginatorPosition="bottom"
-										styleClass="table-right">
-
-										<p:column headerText="CID" width="300">
-											<h:outputText value="#{cid.descCidAbrev}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{cid.cid}" />
-										</p:column>
-
-										<p:column headerText="Adicionar" width="20%">
-											<div align="center">
-												<p:commandButton
-													actionListener="#{InsercaoController.validarCidParaAdicionar(cid)}"
-													icon="fa fa-fw fa-check" title="Adicionar CID"
-													ajax="true" process="@this" immediate="true"
-													class="new-btn-acao-table acao-editar"
-													update="tbcids :formInsercao2:tbcidselecionado :msgPagina" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-
-								<div class="content-div-flex">
-									<p:dataTable var="cidselecionado"
-										value="#{InsercaoController.insercao.programa.listaCidsPermitidos}"
-										id="tbcidselecionado" reflow="true"
-										emptyMessage="Nenhum CID adicionado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-left">
-
-										<p:column headerText="CID" width="300">
-											<h:outputText value="#{cidselecionado.descCidAbrev}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{cidselecionado.cid}" />
-										</p:column>
-
-										<p:column headerText="Excluir" width="20%">
-											<div align="center">
-												<p:commandButton
-													action="#{InsercaoController.removerCid(cidselecionado)}"
-													icon="ui-icon-trash" title="Remover Procedimento"
-													immediate="true" class="btn-acao-table acao-excluir"
-													update="tbcidselecionado :formInsercao2:tbcids" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
+									<p:column headerText="Remover" width="10%">
+										<div align="center">
+											<p:commandButton
+												actionListener="#{InsercaoController.removerProcedimentoCid(proccid)}"
+												icon="fa fa-fw fa-trash" title="Remover Procedimento / Cid"
+												ajax="true" process="@this" immediate="true"
+												class="new-btn-acao-table acao-excluir"
+												update="tbprocedimentocid"/>
+										</div>
+									</p:column>
+								</p:dataTable>
 							</div>
 						</p:outputPanel>
 						<br />
@@ -476,10 +406,7 @@
                                 action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
                                 onclick="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
-                                                         target="#{InsercaoController.insercao.programa}"/>
-                                                         
-							<p:ajax event="click" update=":formInsercao2:tbprocedimentos :formInsercao2:tbcids" 
-								listener="#{InsercaoController.listarDadosPermitidosDoPrograma(prog.idPrograma)}"/>                                                         
+                                                         target="#{InsercaoController.insercao.programa}"/>                                                       
                         </p:commandButton>
                     </h:column>
 
@@ -590,6 +517,81 @@
             </h:form>
         </p:dialog>
         
+        <p:dialog header="Consultar Procedimentos" dynamic="true"
+                  widgetVar="dlgConsulProcPrimario" modal="true">
+            <h:form id="formConsulProcPrimario">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+                            <p:outputLabel value="#{proc.nomeProc}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <p:commandButton action="#{InsercaoController.selecionarProcedimentoParaProcedimentoCid(proc)}"	
+                                             class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                             title="Selecionar"/>
+                        </h:column>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        
+        
+        <p:dialog header="Consultar CID" widgetVar="dlgConsulCid"
+                  responsive="true" height="350" modal="true" dynamic="true">
+            <h:form id="formConsulCid">
+                <p:outputPanel id="outcid">
+                    <p:row>
+                        <p:panelGrid columns="4">
+                            <p:selectOneMenu value="#{InsercaoController.tipoBusca}"
+                                             style="margin-top: -13px">
+                                <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
+                            </p:selectOneMenu>
+
+                            <p:inputText value="#{InsercaoController.campoBusca}"
+                                         required="true"
+                                         requiredMessage="Informe a descrição da doença ou o Código do CID"
+                                         placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
+
+                            <p:commandButton
+                                    action="#{InsercaoController.listarCids(InsercaoController.campoBusca, InsercaoController.insercao.dataSolicitacao, InsercaoController.procedimentoCidDTO.procedimento)}"
+                                    update="tabelacid1 msgPagina" icon="ui-icon-search"
+                                    style="margin-left: 10px;">
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                    </p:row>
+                    <p:dataTable emptyMessage="Nenhum CID listado" rows="10"
+                                 paginator="true" id="tabelacid1" style="width:500px"
+                                 value="#{InsercaoController.listaCids}" var="tab">
+
+                        <p:column headerText="Descrição">
+                            <h:outputText value="#{tab.descCidAbrev}"/>
+                        </p:column>
+
+                        <p:column headerText="CID">
+                            <h:outputText value="#{tab.cid}"/>
+                        </p:column>
+
+                        <p:column headerText="Ação">
+                            <p:commandButton action="#{InsercaoController.selecionarCidParaProcedimentoCid(tab)}"
+                            				 tooltip="Selecionar" icon="fa fa-fw fa-check" size="sm"
+                                             class="new-btn-acao-table acao-editar"
+                                             update=":formInsercao2:tbprocedimentocid :msgPagina"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 

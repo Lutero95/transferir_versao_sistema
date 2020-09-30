@@ -31,6 +31,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
@@ -48,6 +49,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -85,9 +87,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 	private String campoBusca;
 	private List<ProcedimentoBean> listaProcedimentos;
 	private List<CidBean> listaCids;
-	private List<ProcedimentoBean> listaProcedimentosAux;
-	private List<CidBean> listaCidsAux;
 	private HorarioAtendimento horarioAtendimento;
+	private ProcedimentoCidDTO procedimentoCidDTO;
+	private boolean existeCargaSigtapParaDataSolicitacao;
+	private Boolean unidadeValidaDadosSigtap;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -114,6 +117,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionaisAdicionados = new ArrayList<>();
         listaProcedimentos = new ArrayList<>();
         listaCids = new ArrayList<>();
+        procedimentoCidDTO = new ProcedimentoCidDTO();
+        verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -130,9 +135,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();
         }
-
         return opcaoAtendimento;
-
+    }
+    
+    public void verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+        this.unidadeValidaDadosSigtap = new UnidadeDAO().verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
     }
 
     public void limparDados() {
@@ -162,11 +169,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
-    }
-    
-    public void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
-        this.listaProcedimentos = programaDAO.listarProcedimentosPermitidos(idPrograma);
-        this.listaCids = programaDAO.listarCidsPermitidos(idPrograma);
     }
 
     public void atualizaListaGrupos(ProgramaBean programa) throws ProjetoException {
@@ -996,47 +998,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 				(insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
     }
     
-    public void validarProcedimentoParaAdicionar(ProcedimentoBean procedimentoSelecionado) {
-    	for (ProcedimentoBean procedimento : insercao.getPrograma().getListaProcedimentosPermitidos()) {
-			if(procedimento.getIdProc().equals(procedimentoSelecionado.getIdProc())) {
-				JSFUtil.adicionarMensagemSucesso("Este procedimento já foi adicionado", "");
-				return;
-			}
-		}
-    	insercao.getPrograma().getListaProcedimentosPermitidos().add(procedimentoSelecionado);
-    	listaProcedimentosAux = insercao.getPrograma().getListaProcedimentosPermitidos();
-    }
-    
-    public void removerProcedimento(ProcedimentoBean procedimentoSelecionado) {
-    	insercao.getPrograma().getListaProcedimentosPermitidos().remove(procedimentoSelecionado);
-    	listaProcedimentosAux = insercao.getPrograma().getListaProcedimentosPermitidos();
-    }
-    
-    public void validarCidParaAdicionar(CidBean cidSelecionado) {
-        if (insercao.getPrograma().getListaCidsPermitidos()!=null)
-    	for (CidBean cid : insercao.getPrograma().getListaCidsPermitidos()) {
-			if(cid.getIdCid().equals(cidSelecionado.getIdCid())) {
-				JSFUtil.adicionarMensagemSucesso("Este CID já foi adicionado", "");
-				return;
-			}
-		}
-    	insercao.getPrograma().getListaCidsPermitidos().add(cidSelecionado);
-    	listaCidsAux = insercao.getPrograma().getListaCidsPermitidos(); 
-    }
-    
-    public void removerCid(CidBean cidSelecionado) {
-    	insercao.getPrograma().getListaCidsPermitidos().remove(cidSelecionado);
-    	listaCidsAux = insercao.getPrograma().getListaCidsPermitidos();
-    }
     
     public void inserirPacienteSemLaudo() throws ProjetoException {
-        if ((listaCidsAux!=null) && (!listaCidsAux.isEmpty()))
-    	insercao.getPrograma().setListaCidsPermitidos(listaCidsAux);
-        if ((listaProcedimentosAux!=null) && (!listaProcedimentosAux.isEmpty()))
-    	insercao.getPrograma().setListaProcedimentosPermitidos(listaProcedimentosAux);
+
     	if(!listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
-    			&& !listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
-    			&& !listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
+    			&& !listaProcedimentosCIDsEstaVazia(this.insercao.getListaProcedimentoCid()) ) {
     		
     		listAgendamentoProfissional = gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
     		
@@ -1047,17 +1013,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	}
     }
     
-    public boolean listaProcedimentosPermitidosEstaVazia(List<ProcedimentoBean> listaProcedimentosPermitidos) {
-    	if ((listaProcedimentosPermitidos==null) ||  (listaProcedimentosPermitidos.isEmpty())) {
-    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um procedimento", "Atenção");
-    		return true;
-    	}
-    	return false;
-    }
-    
-    public boolean listaCidsPermitidosEstaVazia(List<CidBean> listaCidsPermitidos) {
-    	if ((listaCidsPermitidos==null) || (listaCidsPermitidos.isEmpty())) {
-    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um CID", "Atenção");
+    public boolean listaProcedimentosCIDsEstaVazia(List<ProcedimentoCidDTO> listaProcedimentosCids) {
+    	if ((listaProcedimentosCids==null) ||  (listaProcedimentosCids.isEmpty())) {
+    		JSFUtil.adicionarMensagemAdvertencia("Por favor adicione pelo menos um procedimento com cid", "Atenção");
     		return true;
     	}
     	return false;
@@ -1110,19 +1068,15 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 						}
                     }
                 }
-
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        
         return listAgendamentoProfissional;
     }
     
     private void limparDadosInsercaoSemLaudo() {
     	this.insercao = new InsercaoPacienteBean();
     	this.listaProfissionaisAdicionados.clear();
-    	this.listaProcedimentosAux.clear();
-    	this.listaCidsAux.clear();
     	this.listAgendamentoProfissional.clear();
     }
     
@@ -1184,7 +1138,78 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     		horarioAtendimento.setDiaNome("Sábado");
 	}
 	
+	public void selecionarProcedimentoParaProcedimentoCid(ProcedimentoBean procedimento) {
+		procedimentoCidDTO = new ProcedimentoCidDTO();
+		procedimentoCidDTO.setProcedimento(procedimento);
+		JSFUtil.fecharDialog("dlgConsulProcPrimario");
+		JSFUtil.abrirDialog("dlgConsulCid");
+	}
 	
+	public void selecionarCidParaProcedimentoCid(CidBean cid) {
+		procedimentoCidDTO.setCid(cid);
+		if(!procedimentoCidFoiAdicionado()) {
+			insercao.getListaProcedimentoCid().add(procedimentoCidDTO);
+			JSFUtil.fecharDialog("dlgConsulCid");
+		}
+	}
+	
+	public void removerProcedimentoCid(ProcedimentoCidDTO procedimentoCid) {
+		insercao.getListaProcedimentoCid().remove(procedimentoCid);
+	}
+	
+	private boolean procedimentoCidFoiAdicionado() {
+		
+		for (ProcedimentoCidDTO procedimentoCidAdicionado : insercao.getListaProcedimentoCid()) {
+			if(procedimentoCidAdicionado.getProcedimento().getIdProc().equals(procedimentoCidDTO.getProcedimento().getIdProc())
+					&& procedimentoCidAdicionado.getCid().getIdCid().equals(procedimentoCidDTO.getCid().getIdCid())) {
+				JSFUtil.adicionarMensagemErro("Este procedimento já foi inserido com este CID", "Erro");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+    public void listarCids(String campoBusca, Date dataInclusao, ProcedimentoBean procedimento) throws ProjetoException {
+    	CidDAO cidDAO = new CidDAO();
+    	
+        if(this.unidadeValidaDadosSigtap) {
+        	if(dataSolicitacaoNaoEhNula(dataInclusao)) {
+				Date dataSolicitacaoPeloSigtap = dataInclusao;
+
+				if (!existeCargaSigtapParaDataSolicitacao)
+					dataSolicitacaoPeloSigtap = DataUtil.retornaDataComMesAnterior(dataSolicitacaoPeloSigtap);
+
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getIdProc()))
+					JSFUtil.adicionarMensagemAdvertencia("Selecione o procedimento primário", "");
+				else
+					listaCids = cidDAO.listarCidsBuscaPorProcedimento(campoBusca, procedimento.getCodProc(), dataSolicitacaoPeloSigtap);
+            }
+        }
+        else
+            listaCids = cidDAO.listarCidsBusca(campoBusca);
+    }
+    
+    private boolean dataSolicitacaoNaoEhNula(Date dataInclusao) {
+        if (VerificadorUtil.verificarSeObjetoNulo(dataInclusao)) {
+            JSFUtil.adicionarMensagemErro("Informe antes a data de Inclusão", "Erro");
+            return false;
+        }
+        return true;
+    }
+    
+    public void existeCargaSigtapParaDataSolicitacao(Date dataInclusao) {
+    	if(this.unidadeValidaDadosSigtap) {
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTime(dataInclusao);
+    		int mesSolicitacao = calendar.get(Calendar.MONTH);
+    		mesSolicitacao++;
+    		int anoSolicitacao = calendar.get(Calendar.YEAR);
+    		this.existeCargaSigtapParaDataSolicitacao =
+    				new ProcedimentoDAO().verificaExisteCargaSigtapParaData(mesSolicitacao, anoSolicitacao);
+    	}
+    	else
+    		this.existeCargaSigtapParaDataSolicitacao = true;
+    }
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1357,6 +1382,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 	public void setHorarioAtendimento(HorarioAtendimento horarioAtendimento) {
 		this.horarioAtendimento = horarioAtendimento;
+	}
+
+	public ProcedimentoCidDTO getProcedimentoCidDTO() {
+		return procedimentoCidDTO;
 	}
 	
 }

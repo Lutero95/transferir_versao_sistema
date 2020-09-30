@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 public class InsercaoPacienteBean implements Serializable {
 
@@ -36,6 +37,7 @@ public class InsercaoPacienteBean implements Serializable {
     private ProcedimentoBean procedimentoSecundario3SemLaudo;
     private ProcedimentoBean procedimentoSecundario4SemLaudo;
     private ProcedimentoBean procedimentoSecundario5SemLaudo;
+    private List<ProcedimentoCidDTO> listaProcedimentoCid;
 
 
     public InsercaoPacienteBean() {
@@ -56,6 +58,7 @@ public class InsercaoPacienteBean implements Serializable {
         procedimentoSecundario3SemLaudo = new ProcedimentoBean();
         procedimentoSecundario4SemLaudo = new ProcedimentoBean();
         procedimentoSecundario5SemLaudo = new ProcedimentoBean();
+        listaProcedimentoCid = new ArrayList<>();
     }
 
     public LaudoBean getLaudo() {
@@ -258,4 +261,13 @@ public class InsercaoPacienteBean implements Serializable {
 	public void setProcedimentoSecundario5SemLaudo(ProcedimentoBean procedimentoSecundario5SemLaudo) {
 		this.procedimentoSecundario5SemLaudo = procedimentoSecundario5SemLaudo;
 	}
+
+	public List<ProcedimentoCidDTO> getListaProcedimentoCid() {
+		return listaProcedimentoCid;
+	}
+
+	public void setListaProcedimentoCid(List<ProcedimentoCidDTO> listaProcedimentoCid) {
+		this.listaProcedimentoCid = listaProcedimentoCid;
+	}
+	
 }

@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 import javax.faces.context.FacesContext;
 
@@ -934,8 +935,7 @@ public class InsercaoPacienteDAO {
 			}
 			inserirDiasAtendimentoTurno(idPacienteInstituicao, lista, con);
 			inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, lista, listaAgendamento, con);
-			inserirCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaCidsPermitidos(), con);
-			inserirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaProcedimentosPermitidos(), con);
+			inserirProcedimentosCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getListaProcedimentoCid(), con);
 			new GerenciarPacienteDAO().gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.INSERCAO.getSigla(), con);
 			con.commit();
 			inseriu = true;
@@ -1073,17 +1073,19 @@ public class InsercaoPacienteDAO {
 	}
 	
 	
-	public void inserirCidsDoPacienteInstituicao(Integer idPacienteInstituicao, List<CidBean> lista,
+	public void inserirProcedimentosCidsDoPacienteInstituicao(Integer idPacienteInstituicao, List<ProcedimentoCidDTO> lista,
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "INSERT INTO hosp.paciente_instituicao_cid (id_paciente_instituicao, id_cid) VALUES(?, ?);";
+		String sql = "INSERT INTO hosp.paciente_instituicao_procedimento_cid " +
+				"(id_paciente_instituicao, id_procedimento, id_cid) VALUES(?, ?, ?);";
 
 		try {
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
-			for (CidBean cid : lista) {
+			for (ProcedimentoCidDTO procedimentoCid : lista) {
 				ps.setInt(1, idPacienteInstituicao);
-				ps.setInt(2, cid.getIdCid());
+				ps.setInt(2, procedimentoCid.getProcedimento().getIdProc());
+				ps.setInt(3, procedimentoCid.getCid().getIdCid());
 				ps.executeUpdate();
 			}
 
@@ -1096,52 +1098,10 @@ public class InsercaoPacienteDAO {
 		} 
 	}
 	
-	public void excluirCidsDoPacienteInstituicao(Integer idPacienteInstituicao,
+	public void excluirProcedimentosCidsDoPacienteInstituicao(Integer idPacienteInstituicao, 
 			Connection conAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "DELETE FROM hosp.paciente_instituicao_cid WHERE id_paciente_instituicao = ?;";
-
-		try {
-			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-			ps.setInt(1, idPacienteInstituicao);
-			ps.executeUpdate();
-		} catch (SQLException sqle) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
-	}
-	
-	public void inserirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, List<ProcedimentoBean> lista,
-			Connection conAuxiliar) throws ProjetoException, SQLException {
-
-		String sql = "INSERT INTO hosp.paciente_instituicao_procedimento " +
-				"(id_paciente_instituicao, id_procedimento) VALUES(?, ?);";
-
-		try {
-			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-
-			for (ProcedimentoBean procedimento : lista) {
-				ps.setInt(1, idPacienteInstituicao);
-				ps.setInt(2, procedimento.getIdProc());
-				ps.executeUpdate();
-			}
-
-		} catch (SQLException sqle) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
-	}
-	
-	public void excluirProcedimentosDoPacienteInstituicao(Integer idPacienteInstituicao, 
-			Connection conAuxiliar) throws ProjetoException, SQLException {
-
-		String sql = "DELETE FROM hosp.paciente_instituicao_procedimento " +
+		String sql = "DELETE FROM hosp.paciente_instituicao_procedimento_cid " +
 				"WHERE id_paciente_instituicao = ?;";
 
 		try {

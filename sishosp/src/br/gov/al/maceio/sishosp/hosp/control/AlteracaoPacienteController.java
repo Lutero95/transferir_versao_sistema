@@ -47,6 +47,7 @@ import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 @ManagedBean(name = "AlteracaoPacienteController")
 @ViewScoped
@@ -94,6 +95,8 @@ public class AlteracaoPacienteController implements Serializable {
 	private List<FuncionarioBean> listaProfissionais;
 	private HorarioAtendimento horarioAtendimento;
     private InsercaoPacienteController insercaoPacienteController;
+    private ProcedimentoCidDTO procedimentoCidDTO;
+    private CidBean cidSelecionado;
 
     public AlteracaoPacienteController() throws ProjetoException, ParseException {
         insercao = new InsercaoPacienteBean();
@@ -119,6 +122,8 @@ public class AlteracaoPacienteController implements Serializable {
     	listaProcedimentos = new ArrayList<>();
     	listaCids = new ArrayList<>();
     	listaProfissionais = new ArrayList<>();
+    	procedimentoCidDTO = new ProcedimentoCidDTO();
+    	cidSelecionado = new CidBean();
     }
     
     
@@ -1477,8 +1482,7 @@ public class AlteracaoPacienteController implements Serializable {
 
 	private void listaDadosPermitidosDoPaciente(Integer id) throws ProjetoException, SQLException {
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-		this.insercao.getPrograma().setListaCidsPermitidos(gerenciarPacienteDAO.listaCidsPacienteInstituicao(id));
-		this.insercao.getPrograma().setListaProcedimentosPermitidos(gerenciarPacienteDAO.listaProcedimentosPacienteInstituicao(id));
+		this.insercao.setListaProcedimentoCid(gerenciarPacienteDAO.listaProcedimentosCIDsPacienteInstituicao(id));
 	}
     
     private void listarDadosPermitidosDoPrograma(Integer idPrograma) throws ProjetoException {
@@ -1615,8 +1619,7 @@ public class AlteracaoPacienteController implements Serializable {
     
 	public void alterarPacienteInseridoSemLaudo() throws ProjetoException {
 		if(!insercaoPacienteController.listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados) 
-    			&& !insercaoPacienteController.listaProcedimentosPermitidosEstaVazia(this.insercao.getPrograma().getListaProcedimentosPermitidos()) 
-    			&& !insercaoPacienteController.listaCidsPermitidosEstaVazia(this.insercao.getPrograma().getListaCidsPermitidos())) {
+    			&& !insercaoPacienteController.listaProcedimentosCIDsEstaVazia(this.insercao.getListaProcedimentoCid()) ) {
 			
 			listAgendamentoProfissional = insercaoPacienteController.gerarListaAgendamentosTurnoSemLaudo(this.insercao, this.listaProfissionaisAdicionados, listAgendamentoProfissional);
 			
@@ -1679,6 +1682,37 @@ public class AlteracaoPacienteController implements Serializable {
     	else
     		validarAdicionarFuncionarioTurno();
     }
+    
+	public void selecionarProcedimentoParaProcedimentoCid(ProcedimentoBean procedimento) {
+		procedimentoCidDTO = new ProcedimentoCidDTO();
+		procedimentoCidDTO.setProcedimento(procedimento);
+		JSFUtil.fecharDialog("dlgConsulProcPrimario");
+		JSFUtil.abrirDialog("dlgConsulCid");
+	}
+	
+	public void selecionarCidParaProcedimentoCid() {
+		procedimentoCidDTO.setCid(cidSelecionado);
+		if(!procedimentoCidFoiAdicionado()) {
+			insercao.getListaProcedimentoCid().add(procedimentoCidDTO);
+			JSFUtil.fecharDialog("dlgConsulCid");
+		}
+	}
+	
+	public void removerProcedimentoCid(ProcedimentoCidDTO procedimentoCid) {
+		insercao.getListaProcedimentoCid().remove(procedimentoCid);
+	}
+	
+	private boolean procedimentoCidFoiAdicionado() {
+		
+		for (ProcedimentoCidDTO procedimentoCidAdicionado : insercao.getListaProcedimentoCid()) {
+			if(procedimentoCidAdicionado.getProcedimento().getIdProc().equals(procedimentoCidDTO.getProcedimento().getIdProc())
+					&& procedimentoCidAdicionado.getCid().getIdCid().equals(procedimentoCidDTO.getCid().getIdCid())) {
+				JSFUtil.adicionarMensagemErro("Este procedimento já foi inserido com este CID", "Erro");
+				return true;
+			}
+		}
+		return false;
+	}
 
     public InsercaoPacienteBean getInsercao() {
         return insercao;
@@ -1838,6 +1872,21 @@ public class AlteracaoPacienteController implements Serializable {
 
 	public void setHorarioAtendimento(HorarioAtendimento horarioAtendimento) {
 		this.horarioAtendimento = horarioAtendimento;
+	}
+
+
+	public CidBean getCidSelecionado() {
+		return cidSelecionado;
+	}
+
+
+	public void setCidSelecionado(CidBean cidSelecionado) {
+		this.cidSelecionado = cidSelecionado;
+	}
+
+
+	public ProcedimentoCidDTO getProcedimentoCidDTO() {
+		return procedimentoCidDTO;
 	}
 	
 }

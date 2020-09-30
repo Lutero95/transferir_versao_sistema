@@ -1399,10 +1399,8 @@ public class AlteracaoPacienteDAO {
 			}
 
 			insercaoPacienteDAO.inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
-			insercaoPacienteDAO.excluirCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
-			insercaoPacienteDAO.excluirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, conexao);
-			insercaoPacienteDAO.inserirCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaCidsPermitidos(), conexao);
-			insercaoPacienteDAO.inserirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaProcedimentosPermitidos(), conexao);
+			insercaoPacienteDAO.excluirProcedimentosCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
+			insercaoPacienteDAO.inserirProcedimentosCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getListaProcedimentoCid(), conexao);
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();
