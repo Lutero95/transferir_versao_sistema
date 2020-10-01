@@ -320,7 +320,7 @@
 					<b:row>
 						<b:column span="12">
 							<div style="display: flex;">
-								<div style="width: 40%;">
+								<div style="width: 35%;">
 									<p:dataTable paginator="true" rows="10" id="tabelapacientes"
 										paginatorPosition="bottom"
 										filteredValue="#{LaudoController.listaPacientes}" var="pacie"
@@ -342,7 +342,7 @@
 											<p:outputLabel value="#{pacie.matricula}" />
 										</p:column>
 
-										<p:column headerText="Ação" width="10%">
+										<p:column headerText="Ação" width="12%">
 											<div align="center">
 												<p:commandButton
 													action="#{LaudoController.pacienteFoiAdicionado(pacie)}"
@@ -355,7 +355,7 @@
 									</p:dataTable>
 								</div>
 
-								<div style="width: 60%;">
+								<div style="width: 65%;">
 									<p:dataTable var="paci"
 										value="#{LaudoController.listaPacienteLaudoEmLoteDTO}"
 										emptyMessage="Nenhum paciente adicionado" paginator="true"
@@ -379,8 +379,14 @@
 											<h:outputText value="#{paci.cid3.descCidAbrev}" />
 										</p:column>
 
-										<p:column headerText="Ação" width="8%">
+										<p:column headerText="Ação" width="12%">
 											<div align="center">
+												<p:button id="btnobs"
+													icon="fa fa-fw fa-search"
+													class="new-btn-acao-table"/>
+													
+												<p:tooltip for="btnobs" value="Observação: #{paci.observacao}" position="top"/>	
+											
 												<p:commandButton
 													action="#{LaudoController.removerPacienteSelecionado(paci)}"
 													update="tabelaPacientesSelecionados, :msgPagina"
@@ -392,18 +398,6 @@
 									</p:dataTable>
 								</div>
 							</div>
-						</b:column>
-					</b:row>
-					<br />
-
-					<b:row>
-						<b:column span="11" class="label-position">
-							<b:label value="Observação:" severity="info" />
-
-							<b:inputTextarea value="#{LaudoController.laudo.obs}"
-								scrollHeight="40" required="true"
-								requiredMessage="Informe a observação do Laudo" rows="6"
-								cols="89" class="select-agendaEquipe2" style="height:80px;"></b:inputTextarea>
 						</b:column>
 					</b:row>
 					<br />
@@ -435,12 +429,12 @@
 				<h:outputLabel value="#{LaudoController.pacienteLaudoEmLoteSelecionado.paciente.nome}" />
 
 				<b:row>
-					<b:column span="8" class="label-position new-data-size new-comple1">
+					<b:column span="11" class="label-position new-data-size new-comple1">
 						<br />
 						<b:label value="CID 1:" severity="info" />
 
 						<p:outputPanel id="outCid1">
-							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid1}" size="25"
+							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid1}" size="30"
 								required="true" requiredMessage="Informe o CID Primário"
 								converter="conCid" id="descCid1" class="select-agendaEquipe4"
 								completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimentoCid1}"
@@ -456,11 +450,11 @@
 						</p:outputPanel>
 					</b:column>
 
-					<b:column span="8" class="label-position new-data-size new-comple1">
+					<b:column span="11" class="label-position new-data-size new-comple1">
 						<b:label value="CID 2:" severity="info" />
 
 						<p:outputPanel id="outCid2">
-							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid2}" size="25"
+							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid2}" size="30"
 								converter="conCid" id="descCid2" class="select-agendaEquipe4"
 								completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 								effect="fade" var="theme" forceSelection="true"
@@ -474,11 +468,11 @@
 						</p:outputPanel>
 					</b:column>
 
-					<b:column span="8" class="label-position new-data-size new-comple1">
+					<b:column span="11" class="label-position new-data-size new-comple1">
 						<b:label value="CID 3:" severity="info" />
 
 						<p:outputPanel id="outCid3">
-							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid3}" size="25"
+							<p:autoComplete value="#{LaudoController.pacienteLaudoEmLoteSelecionado.cid3}" size="30"
 								converter="conCid" id="descCid3" class="select-agendaEquipe4"
 								completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 								effect="fade" var="theme" forceSelection="true"
@@ -490,6 +484,15 @@
 								update="formConsulCid3" process="@this"
 								oncomplete="PF('dlgConsulCid3').show();" />
 						</p:outputPanel>
+					</b:column>
+
+					<b:column span="11" class="label-position">
+						<b:label value="Observação:" severity="info" />
+
+						<b:inputTextarea value="#{LaudoController.pacienteLaudoEmLoteSelecionado.observacao}"
+							scrollHeight="40" required="true"
+							requiredMessage="Informe a observação do Laudo" rows="6"
+							cols="89" class="select-agendaEquipe2"></b:inputTextarea>
 					</b:column>
 				</b:row>
 

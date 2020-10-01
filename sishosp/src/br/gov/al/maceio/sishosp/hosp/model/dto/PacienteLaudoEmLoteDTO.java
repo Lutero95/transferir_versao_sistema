@@ -9,6 +9,7 @@ public class PacienteLaudoEmLoteDTO {
 	private CidBean cid1;
 	private CidBean cid2;
 	private CidBean cid3;
+	private String observacao;
 	
 	
 	public PacienteLaudoEmLoteDTO() {
@@ -54,5 +55,13 @@ public class PacienteLaudoEmLoteDTO {
 
 	public void setCid3(CidBean cid3) {
 		this.cid3 = cid3;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 }

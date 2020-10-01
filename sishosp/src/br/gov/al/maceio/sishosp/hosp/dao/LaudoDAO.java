@@ -1364,10 +1364,10 @@ public class LaudoDAO {
                     stmt.setNull(16, Types.NULL);
                 }
 
-                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(laudo.getObs())) {
+                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(pacienteLaudoEmLoteDTO.getObservacao())) {
                     stmt.setNull(17, Types.NULL);
                 } else {
-                    stmt.setString(17, laudo.getObs().toUpperCase().trim());
+                    stmt.setString(17, pacienteLaudoEmLoteDTO.getObservacao().toUpperCase().trim());
                 }
 
                 stmt.setInt(18, user_session.getUnidade().getId());
