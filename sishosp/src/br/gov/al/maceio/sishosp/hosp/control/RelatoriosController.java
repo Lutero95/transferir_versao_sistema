@@ -593,7 +593,7 @@ public class RelatoriosController implements Serializable {
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
 	}
-
+	
 	private void setaDiasSemanaComoListaDeInteiro(ArrayList<Integer> diasSemanaInteger) {
 		for (String dia : diasSemana) {
 			diasSemanaInteger.add(Integer.valueOf(dia));
@@ -613,6 +613,45 @@ public class RelatoriosController implements Serializable {
 
 	private void limparTurno() {
 		this.turnos = new ArrayList<String>();
+	}
+	
+	public void gerarPacientesAtivosSemEvolucao() throws IOException, ParseException, ProjetoException {
+
+		if (atributoGenerico1.equals("A")) {
+			idadeMaxima = 200;
+		}
+		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		relatorio = caminho + "pacientes_ativos_sem_evolucao.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("filtromunicipio", idMunicipiosSelecionados);
+		map.put("sexo", this.atributoGenerico2);
+		if (programa != null)
+			map.put("codprograma", programa.getIdPrograma());
+
+		if (grupo != null)
+			map.put("codgrupo", grupo.getIdGrupo());
+
+		if (idadeMinima == null)
+			map.put("idademinima", 0);
+		else
+			map.put("idademinima", idadeMinima);
+
+		if (idadeMaxima == null)
+			map.put("idademaxima", 200);
+		else
+			map.put("idademaxima", idadeMaxima);
+		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+		map.put("diassemanalista", diasSemanaInteger);
+
+		limparTurno();
+		atribuiTurnos();
+
+		map.put("turnoslista", turnos);
+		this.executeReport(relatorio, map, "relatoriopacientessemevolucao.pdf");
 	}
 
 	public void gerarPendenciasEvolucaoPorProgramaEGrupo(ArrayList<ProgramaBean> listaProgramasGrupos)
