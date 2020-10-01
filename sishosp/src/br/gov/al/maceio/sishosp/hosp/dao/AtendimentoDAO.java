@@ -1717,7 +1717,7 @@ public class AtendimentoDAO {
 	public List<Integer> gravarTabelaInconsistenciasAtendimento
 		(Integer idAtendimento1, String descricao, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
 		
-		String sql = "INSERT INTO hosp.inconsistencias (id_funcionario, id_atendimento1, datahora, descricao) "+
+		String sql = "INSERT INTO hosp.inconsistencias_log (id_funcionario, id_atendimento1, datahora, descricao) "+
 				" VALUES(?, ?, CURRENT_TIMESTAMP, ?); ";
 		
 		List<Integer> listaAnos = new ArrayList<>(); 
