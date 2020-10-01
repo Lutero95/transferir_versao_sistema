@@ -42,22 +42,45 @@
 										oncomplete="PF('dlgConsuPac').show();" />
 								</p:outputPanel>
 							</b:column>
+							
+							<p:outputPanel id="outProg">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+
+								<b:label for="prog" value="Programa:" id="prog"
+									class="fire-label" severity="info" />
+
+								<p:autoComplete
+									value="#{AlteracaoPacienteController.insercao.programa}"
+									readonly="true" size="31" converter="conPrograma"
+									class="select-agendaEquipe4"
+									completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}" required="true"
+									requiredMessage="Programa: Campo obrigatório"
+									itemLabel="#{theme.descPrograma}" />
+								</b:column>
+							</p:outputPanel>
+						
+							<p:outputPanel id="outGrupo">
+                                <b:column span="3"
+                                          class="label-position new-data-size new-comple1">
+                                    <b:label for="prog" value="Grupo:" id="grupo"
+                                             class="fire-label" severity="info"/>
+
+                                    <p:autoComplete value="#{AlteracaoPacienteController.insercao.grupo}"
+                                                    size="31" converter="conGrupo" class="select-agendaEquipe4"
+                                                    disabled="#{AlteracaoPacienteController.insercao.programa==null}"
+                                                    completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    required="true"
+                                                    requiredMessage="Grupo: Campo obrigatório"
+                                                    itemLabel="#{theme.descGrupo}"/>
+                                </b:column>
+                            </p:outputPanel>
 						</b:row>
-
-                        <br></br>
-
-                        <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'A'}">
-                            <b:column span="3" class="btn-radio-table">
-                                <p:selectOneRadio
-                                        value="#{AlteracaoPacienteController.insercao.opcaoAtendimento}"
-                                        required="true" requiredMessage="Informe o tipo de Pessoa">
-                                    <f:selectItem itemLabel="Somente Turno" itemValue="T"/>
-                                    <f:selectItem itemLabel="Somente Horário" itemValue="H"/>
-                                    <p:ajax event="change"/>
-                                </p:selectOneRadio>
-                            </b:column>
-                            <br />
-                        </b:row>
+						<br />
 
                         <b:row>
                             <b:column span="2" class="label-position data-size">
@@ -76,50 +99,17 @@
 										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
                                 </p:calendar>
                             </b:column>
+                            
+                            <b:column span="2" class="label-position data-size">
+								 <b:label value="Sessões:" id="sessoes"
+                                         severity="info" class="fire-label"/>
+                                  
+                                  <p:spinner min="1" value="#{AlteracaoPacienteController.insercao.sessoes}"
+                                  	 class="select-agendaEquipe2" style="margin-top: -2px;"
+                                  	 required="true" requiredMessage="Sessões: Campo obrigatório"/>                                   
+                            </b:column>
                         </b:row>
                         <br />
-
-                        <b:row>
-                            <p:outputPanel id="outProg">
-
-                                <b:column span="3"
-                                          class="label-position new-data-size new-comple1">
-
-                                    <b:label for="prog" value="Programa:" id="prog"
-                                             class="fire-label" severity="info"/>
-
-                                    <p:autoComplete value="#{AlteracaoPacienteController.insercao.programa}"
-                                                    readonly="true" size="31"
-                                                    converter="conPrograma" class="select-agendaEquipe4"
-                                                    completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    required="true"
-                                                    requiredMessage="Programa: Campo obrigatório"
-                                                    itemLabel="#{theme.descPrograma}"/>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
-                        <b:row>
-                            <p:outputPanel id="outGrupo">
-                                <b:column span="3"
-                                          class="label-position new-data-size new-comple1">
-                                    <b:label for="prog" value="Grupo:" id="grupo"
-                                             class="fire-label" severity="info"/>
-
-                                    <p:autoComplete value="#{AlteracaoPacienteController.insercao.grupo}"
-                                                    size="31" converter="conGrupo" class="select-agendaEquipe4"
-                                                    disabled="#{AlteracaoPacienteController.insercao.programa==null}"
-                                                    completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    required="true"
-                                                    requiredMessage="Grupo: Campo obrigatório"
-                                                    itemLabel="#{theme.descGrupo}"/>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
 
 						<p:outputPanel id="outTabelas">
 							<h2 class="texto-titulo">Profissionais</h2>

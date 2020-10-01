@@ -42,44 +42,7 @@
 										oncomplete="PF('dlgConsuPac').show();" />
 								</p:outputPanel>
 							</b:column>
-						</b:row>
-
-                        <br></br>
-
-                        <b:row rendered="#{InsercaoController.opcaoAtendimento == 'A'}">
-                            <b:column span="3" class="btn-radio-table">
-                                <p:selectOneRadio
-                                        value="#{InsercaoController.insercao.opcaoAtendimento}"
-                                        required="true" requiredMessage="Informe o tipo de Pessoa">
-                                    <f:selectItem itemLabel="Somente Turno" itemValue="T"/>
-                                    <f:selectItem itemLabel="Somente Horário" itemValue="H"/>
-                                    <p:ajax event="change"/>
-                                </p:selectOneRadio>
-                            </b:column>
-                            <br />
-                        </b:row>
-
-                        <b:row>
-                            <b:column span="2" class="label-position data-size">
-                                <b:label value="Data de Inclusão:" id="datasoli"
-                                         severity="info" class="fire-label"/>
-                                <p:calendar
-                                        value="#{InsercaoController.insercao.dataSolicitacao}"
-                                        id="dtagen" locale="pt" navigator="true" mask="true"
-                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
-                                        class="select-agendaEquipe2" showOn="button"
-                                        pattern="dd/MM/yyyy" size="15" >
-
-									<p:ajax event="dateSelect"
-										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
-									<p:ajax event="blur"
-										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
-								</p:calendar>
-                            </b:column>
-                        </b:row>
-                        <br />
-
-                        <b:row>
+							
                             <p:outputPanel id="outProg">
                                 <b:column span="3"
                                           class="label-position new-data-size new-comple1">
@@ -109,10 +72,8 @@
                                                      update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
                                 </b:column>
                             </p:outputPanel>
-                        </b:row>
 
-                        <b:row>
-                            <p:outputPanel id="outGrupo">
+  							<p:outputPanel id="outGrupo">
                                 <b:column span="3"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="prog" value="Grupo:" id="grupo"
@@ -144,7 +105,36 @@
                                                      disabled="#{InsercaoController.insercao.programa.idPrograma == null}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
                                 </b:column>
-                            </p:outputPanel>
+                            </p:outputPanel>                            
+						</b:row>
+                        <br />
+
+                        <b:row>
+                          	<b:column span="2" class="label-position data-size">
+                                <b:label value="Data de Inclusão:" id="datasoli"
+                                         severity="info" class="fire-label"/>
+                                <p:calendar
+                                        value="#{InsercaoController.insercao.dataSolicitacao}"
+                                        id="dtagen" locale="pt" navigator="true" mask="true"
+                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
+                                        class="select-agendaEquipe2" showOn="button"
+                                        pattern="dd/MM/yyyy" size="15" >
+
+									<p:ajax event="dateSelect"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+									<p:ajax event="blur"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+								</p:calendar>
+                            </b:column>
+                            
+                            <b:column span="2" class="label-position data-size">
+								 <b:label value="Sessões:" id="sessoes"
+                                         severity="info" class="fire-label"/>
+                                  
+                                  <p:spinner min="1" value="#{InsercaoController.insercao.sessoes}"
+                                  	 class="select-agendaEquipe2" style="margin-top: -2px;"
+                                  	 required="true" requiredMessage="Sessões: Campo obrigatório"/>                                   
+                            </b:column>
                         </b:row>
 
 						<p:outputPanel id="outTabelas">

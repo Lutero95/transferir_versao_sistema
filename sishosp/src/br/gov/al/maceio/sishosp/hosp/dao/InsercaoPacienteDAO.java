@@ -915,8 +915,8 @@ public class InsercaoPacienteDAO {
 		boolean inseriu = false;
 		
 		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, status, observacao, "
-						+ "cod_unidade, data_solicitacao, data_cadastro, turno, id_paciente, inclusao_sem_laudo) "
-						+ " values (?, ?, 'A', ?, ?, ?, current_timestamp, ?, ?, true) RETURNING id;";
+						+ "cod_unidade, data_solicitacao, data_cadastro, turno, id_paciente, inclusao_sem_laudo, sessoes) "
+						+ " values (?, ?, 'A', ?, ?, ?, current_timestamp, ?, ?, true, ?) RETURNING id;";
 		
 		try {
 			con = ConnectionFactory.getConnection();
@@ -928,6 +928,7 @@ public class InsercaoPacienteDAO {
 			ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			ps.setString(6, insercao.getTurno());
 			ps.setInt(7, insercao.getPaciente().getId_paciente());
+			ps.setInt(8, insercao.getSessoes());
 			ResultSet rs = ps.executeQuery();
 			Integer idPacienteInstituicao = null;
 			if (rs.next()) {
@@ -991,7 +992,7 @@ public class InsercaoPacienteDAO {
 
 		try {
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-
+			Integer limiteSessoes = 0;
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
 				ps.setInt(1, insercao.getPaciente().getId_paciente());
@@ -1020,8 +1021,12 @@ public class InsercaoPacienteDAO {
 				}
 				
 				for (FuncionarioBean profissional : lista) {
-					inserirAtendimentos1SemLaudo(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar);
+				limiteSessoes = inserirAtendimentos1SemLaudo(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar, limiteSessoes);
+				 if(limiteSessoes.equals(insercao.getSessoes()))
+					 break;
 				}
+				 if(limiteSessoes.equals(insercao.getSessoes()))
+					 break;
 			}
 
 		} catch (SQLException sqle) {
@@ -1033,8 +1038,8 @@ public class InsercaoPacienteDAO {
 		} 
 	}
 	
-	private void inserirAtendimentos1SemLaudo(InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
-			AgendaBean agendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
+	private Integer inserirAtendimentos1SemLaudo(InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
+			AgendaBean agendamento, Connection conAuxiliar, Integer limiteSessao) throws ProjetoException, SQLException {
 
 		try {
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
@@ -1060,6 +1065,8 @@ public class InsercaoPacienteDAO {
 					ps.setNull(4, Types.NULL);
 					ps.setNull(5, Types.NULL);
 					ps.executeUpdate();
+					
+					limiteSessao++;
 				}
 			}
 
@@ -1069,7 +1076,8 @@ public class InsercaoPacienteDAO {
 		} catch (Exception ex) {
 			conAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+		}
+		return limiteSessao;
 	}
 	
 	
