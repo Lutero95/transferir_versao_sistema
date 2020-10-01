@@ -781,17 +781,24 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gravarAlteracaoPaciente() throws ProjetoException {
+    	InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
     	
+    	Date dataSolicitacaoCorreta = insercao.getDataSolicitacao();
+		GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+		
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
+    		if(!ehAlteracaoSemLaudo()) {
+    			
+    			dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
+    					insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
+    					insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+    			
+    			if(!insercaoPacienteController.procedimentoValido(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma().getProcedimento()))
+    				return;
+    		}				
+    		
 			Boolean cadastrou = false;
 			listAgendamentoProfissional = new ArrayList<AgendaBean>();
-
-			InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
-
-			GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-			Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
-					insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
-					insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
 			insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
 			ArrayList<AgendaBean> listaAgendamentosProfissionalFinal = new ArrayList<AgendaBean>();
@@ -837,6 +844,10 @@ public class AlteracaoPacienteController implements Serializable {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
 			}
     	}
+    }
+    
+    private boolean ehAlteracaoSemLaudo() {
+    	return VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId());
     }
     
     private boolean listaProfissionaisAdicionadosEstaVazia() {

@@ -761,7 +761,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     public void validarInsercaoPaciente() throws ProjetoException {
-    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
+    	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
+    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma().getProcedimento())) {
 			
 //			  GerenciarPacienteController gerenciarPacienteController = new
 //			  GerenciarPacienteController(); 
@@ -807,6 +808,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 				}
 			}
     	}
+    }
+    
+    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProcedimentoBean procedimentoPrograma) {
+    	if(!procedimentoLaudo.getIdProc().equals(procedimentoPrograma.getIdProc())) {
+    		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incopatível com o Procedimento do Programa", "");
+    		return false;
+    	}
+    	return true;
     }
 
     public ArrayList<AgendaBean> validarDatas(ArrayList<AgendaBean> listaAgendamentos, String turno) throws ProjetoException {

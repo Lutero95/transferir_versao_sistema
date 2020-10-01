@@ -36,6 +36,9 @@ import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name = "RenovarPacienteController")
 @ViewScoped
@@ -62,7 +65,7 @@ public class RenovacaoPacienteController implements Serializable {
     private AgendaDAO agendaDAO = new AgendaDAO();
     private AlteracaoPacienteDAO aDao = new AlteracaoPacienteDAO();
     private FuncionarioBean funcionario;
-    private LaudoBean laudo;
+    private LaudoBean laudoAtual;
     private List<AgendaBean> listaHorariosAgenda;
     private EquipeDAO eDao = new EquipeDAO();
     private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
@@ -77,7 +80,7 @@ public class RenovacaoPacienteController implements Serializable {
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
         funcionario = new FuncionarioBean();
-        laudo = new LaudoBean();
+        laudoAtual = new LaudoBean();
         listaHorariosAgenda =  new ArrayList<AgendaBean>();
         listaHorarios = new ArrayList<>();
         listaHorarioAtendimentos = new ArrayList<>();
@@ -107,17 +110,23 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void setaRenovacaoPacienteComOuSemLaudo() {
     	if (insercaoParaLaudo.isInsercaoPacienteSemLaudo()==true) {
-    		insercaoParaLaudo.setPaciente(insercao.getLaudo().getPaciente());
-    		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(insercao.getLaudo().getProcedimentoPrimario());
-    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
-    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
-    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
-    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
-    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(insercao.getLaudo().getProcedimentoSecundario1());
+    		insercaoParaLaudo.getLaudo().setId(null);
+    		insercaoParaLaudo.setPaciente(laudoAtual.getPaciente());
+    		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(laudoAtual.getProcedimentoPrimario());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(laudoAtual.getProcedimentoSecundario1());
+    		insercaoParaLaudo.setProcedimentoSecundario2SemLaudo(laudoAtual.getProcedimentoSecundario2());
+    		insercaoParaLaudo.setProcedimentoSecundario3SemLaudo(laudoAtual.getProcedimentoSecundario3());
+    		insercaoParaLaudo.setProcedimentoSecundario4SemLaudo(laudoAtual.getProcedimentoSecundario4());
+    		insercaoParaLaudo.setProcedimentoSecundario5SemLaudo(laudoAtual.getProcedimentoSecundario5());
     	}
-    	else
-    	{
+    	else{
     		insercaoParaLaudo.setPaciente(null);
+    		insercaoParaLaudo.setProcedimentoPrimarioSemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario1SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario2SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario3SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario4SemLaudo(new ProcedimentoBean());
+    		insercaoParaLaudo.setProcedimentoSecundario5SemLaudo(new ProcedimentoBean());
     	}
     }
     
@@ -294,7 +303,7 @@ public class RenovacaoPacienteController implements Serializable {
             insercao.setDataSolicitacao(null);
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
             opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
-            laudo = new LaudoDAO().buscarLaudosPorId(insercao.getLaudo().getId());
+            laudoAtual = new LaudoDAO().buscarLaudosPorId(insercao.getLaudo().getId());
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {
             	listarProfissionaisEquipe() ;
@@ -665,8 +674,11 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void gravarRenovacaoPaciente() throws ProjetoException {
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
+		InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+		
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
-			if (verificaPeriodoValidoRenovacaoLaudo()) { 
+			if (verificaPeriodoValidoRenovacaoLaudo() && 
+					insercaoPacienteController.procedimentoValido(retornaProcedimentoLaudo(), insercao.getPrograma().getProcedimento())) { 
 																					// Verifica se a data de renovacao
 																					// está dentro do periodo do laudo
 																					// ou da nova solicitacao sem laudo
@@ -680,8 +692,6 @@ public class RenovacaoPacienteController implements Serializable {
 						&& (insercaoParaLaudo.getPaciente().getId_paciente() != null)) {
 					codPaciente = insercaoParaLaudo.getPaciente().getId_paciente();
 				}
-
-				InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
 				Boolean cadastrou = null;
 
@@ -729,6 +739,15 @@ public class RenovacaoPacienteController implements Serializable {
         }
     }
 
+	private ProcedimentoBean retornaProcedimentoLaudo() {
+		ProcedimentoBean procedimentoLaudo = null;
+		if(insercaoParaLaudo.isInsercaoPacienteSemLaudo())
+			procedimentoLaudo = insercaoParaLaudo.getProcedimentoPrimarioSemLaudo();
+		else
+			procedimentoLaudo = insercaoParaLaudo.getLaudo().getProcedimentoPrimario();
+		return procedimentoLaudo;
+	}
+
     public void listarLaudosVigentes()
             throws ProjetoException {
         LaudoDAO laudoDAO = new LaudoDAO();
@@ -742,7 +761,7 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void carregarLaudoPaciente() throws ProjetoException {
 
-        String condicao_datas_laudo = compararDatasLaudo(laudo.getMesFinal(), laudo.getAnoFinal(),
+        String condicao_datas_laudo = compararDatasLaudo(laudoAtual.getMesFinal(), laudoAtual.getAnoFinal(),
                 insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
 
         if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
