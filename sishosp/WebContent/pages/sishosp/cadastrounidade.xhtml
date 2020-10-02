@@ -362,6 +362,16 @@
 										value="#{UnidadeController.unidade.parametro.agendaAvulsaValidaPacienteAtivo}"/>
 								</b:column>
 							</b:row>
+							
+							<b:row>
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Quantidade em Dias para Paciente ser Inativo" severity="info" />
+									<br />
+									<p:spinner id="basic" value="#{UnidadeController.unidade.parametro.diasPacienteAtivoSemEvolucao}" 
+										min="0" required="true" requiredMessage="Dias para Paciente ser Inativo: Campo obrigatório"
+										style="margin-left: -3%;"/>
+								</b:column>
+							</b:row>
 
 							<p:outputPanel id="configagenda">
 

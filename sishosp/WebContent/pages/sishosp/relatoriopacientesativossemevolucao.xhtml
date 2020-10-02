@@ -22,7 +22,7 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Pacientes Ativos por Programa e Grupo</h4>
+				<h4 class="panel-title">Relatório: Pacientes Ativos sem Atendimento</h4>
 			</div>
 			<p:growl id="grw" />
 			<div class="panel-body table-body">
@@ -55,11 +55,9 @@
 												 update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
 							</p:outputPanel>
 						</b:column>
-
 					</b:row>
 
-					<b:row >
-
+					<b:row>
 						<b:column span="3"
 								  class="label-position new-data-size new-comple1">
 							<b:label value="Grupo" severity="info" />
@@ -75,7 +73,7 @@
 										converter="conGrupo"
 										itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
-											listener="#{RelatoriosController.selectGrupo}" update=" outGrupo" />
+											listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
 
 								</p:autoComplete>
 
@@ -228,16 +226,13 @@
 							</p:selectOneRadio>
 						</b:column>
 					</b:row>
-
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 									 target="_blank" style="font-size: 12px;  text-align: right;"
 									 update="grw"
-									 actionListener="#{RelatoriosController.gerarPacientesAtivosPorProgramaEGrupo()}"
+									 actionListener="#{RelatoriosController.gerarPacientesAtivosSemEvolucao()}"
 									 ajax="false" />
-
-
 				</h:form>
 			</div>
 		</div>

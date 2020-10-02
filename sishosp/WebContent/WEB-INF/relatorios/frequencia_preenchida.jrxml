@@ -915,13 +915,6 @@ $F{cidade}+","+ new java.text.DecimalFormat("#0").format($F{diadata})    +" de "
 					<reportElement x="176" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="480" y="280" width="61" height="15" uuid="35a000ad-ec10-4db9-aa07-1d5750270917"/>
-					<textElement>
-						<font fontName="DejaVu Sans" size="12"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
-				</textField>
 			</band>
 		</groupHeader>
 	</group>
