@@ -2448,9 +2448,9 @@ public class ProcedimentoDAO {
                 "		union " +
                 "	-- PROCEDIMENTO PACIENTE INSTITUICAO \n" +
                 "	select p.id, p.codproc, p.nome from hosp.proc p " +
-                "	join hosp.paciente_instituicao_procedimento pip on p.id = pip.id_procedimento " +
-                "	join hosp.paciente_instituicao pi on pip.id_paciente_instituicao = pi.id " +
-                " join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
+                "	join hosp.paciente_instituicao_procedimento_cid pipc on p.id = pipc.id_procedimento " +
+                "	join hosp.paciente_instituicao pi on pipc.id_paciente_instituicao = pi.id " +
+                " 	join hosp.procedimentos_unidades pu on (p.id = pu.id_procedimento) "+
                 "	where pu.id_unidade = ? and pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) " +
                 "		union " +
                 "	-- PROCEDIMENTO CBO \n" +

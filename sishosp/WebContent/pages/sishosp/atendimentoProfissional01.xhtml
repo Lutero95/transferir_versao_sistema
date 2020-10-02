@@ -106,22 +106,22 @@
 								<f:selectItems var="proc"
 									value="#{AtendimentoController.listaProcedimentos}"
 									itemLabel="#{proc.nomeProc}" itemValue="#{proc.idProc}" />
+									
+								<p:ajax event="itemSelect" update="inputcid" 
+									listener="#{AtendimentoController.buscarCidAtendimento(AtendimentoController.atendimento.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
 							</p:selectOneMenu>
 						</b:column>
 					</p:row>
 					
 					<p:row>
-						<b:column span="12" rendered="#{AtendimentoController.atendimento.programa.permiteAlteracaoCidNaEvolucao == true}">
+						<b:column span="12" class="label-position">
 							<p:outputLabel value="CID" severity="info"
-								style="margin-left: 1.4%; font-weight:bold !important;" />
-							<p:selectOneMenu required="true" requiredMessage="CID campo obrigatório!"
-								value="#{AtendimentoController.atendimento.cidPrimario.idCid}" 
-								style="margin-bottom: 1%; width: 100%;">
-								<f:selectItem itemLabel="Selecione um CID" itemValue=""/>
-								<f:selectItems var="cid"
-									value="#{AtendimentoController.listaCids}"
-									itemLabel="#{cid.descCidAbrev}" itemValue="#{cid.idCid}" />
-							</p:selectOneMenu>
+								style="font-weight:bold !important;" />
+							
+							<p:outputLabel
+								value="#{AtendimentoController.atendimento.cidPrimario.descCidAbrev}" 
+								readonly="true" class="form-control select-agendaEquipe5"
+								id="inputcid" />	
 						</b:column>
 					</p:row>
 

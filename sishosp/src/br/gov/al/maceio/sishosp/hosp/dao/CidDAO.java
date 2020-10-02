@@ -355,33 +355,53 @@ public class CidDAO {
 				ex.printStackTrace();
 			}
 		}
-
 		return lista;
 	}
-
-	public List<CidBean> listarCidsPorPacienteInstituicao(Integer idAtendimento) throws ProjetoException {
-		List<CidBean> lista = new ArrayList<>();
-
-		String sql = "select c.cod, c.cid, c.desccidabrev from hosp.cid c " +
-				"join hosp.paciente_instituicao_cid pic on c.cod = pic.id_cid " +
-				"join hosp.paciente_instituicao pi on pic.id_paciente_instituicao = pi.id " +
-				"where pi.id = (select a.id_paciente_instituicao from hosp.atendimentos a where a.id_atendimento = ?) "+
-				"order by desccidabrev;";
+	
+	public CidBean buscarCidAtendimento(Integer idProcedimento, Integer idAtendimento)
+			throws ProjetoException {
+        
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+		CidBean cid = new CidBean();
+		
+		String sqlCidLaudo = "select c.cod, c.desccidabrev from hosp.cid c " + 
+				"	join hosp.atendimentos1 a1 on c.cod = a1.id_cidprimario " + 
+				"	join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"	join hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id " + 
+				"	where a1.codprocedimento = ? and a.id_atendimento = ? and a1.codprofissionalatendimento = ?;";
+		
+		String sqlCidSemLaudo = "select c.cod, c.desccidabrev from hosp.paciente_instituicao_procedimento_cid pipc " + 
+				"	join hosp.cid c on pipc.id_cid = c.cod " + 
+				"	join hosp.atendimentos a on pipc.id_paciente_instituicao = a.id_paciente_instituicao  " + 
+				"	where pipc.id_procedimento = ? and a.id_atendimento = ?;";
 
 		try {
 			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, idAtendimento);
-
+			PreparedStatement stm = con.prepareStatement(sqlCidLaudo);
+			stm.setInt(1, idProcedimento);
+			stm.setInt(2, idAtendimento);
+			stm.setLong(3, user_session.getId());
 			ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				mapearResultSet(lista, rs);
+			if (rs.next()) {
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
 			}
-		} catch (SQLException ex2) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(cid.getIdCid())) {
+				stm = con.prepareStatement(sqlCidSemLaudo);
+				stm.setInt(1, idProcedimento);
+				stm.setInt(2, idAtendimento);
+				rs = stm.executeQuery();
+				if (rs.next()) {
+					cid.setIdCid(rs.getInt("cod"));
+					cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				}					
+			}
+			
 		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
+			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
@@ -389,8 +409,7 @@ public class CidDAO {
 				ex.printStackTrace();
 			}
 		}
-
-		return lista;
+		return cid;
 	}
 
 	private void mapearResultSet(List<CidBean> lista, ResultSet rs) throws SQLException {

@@ -301,7 +301,6 @@ public class AtendimentoController implements Serializable {
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
             listarTodosTiposProcedimentos();
-            listarCidsPorPacienteInstituicao();
         }
     }
 
@@ -846,10 +845,8 @@ public class AtendimentoController implements Serializable {
 
     private void listarTodosTiposProcedimentos() throws ProjetoException {
         this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
-    }
-
-    private void listarCidsPorPacienteInstituicao() throws ProjetoException {
-        this.listaCids = cidDao.listarCidsPorPacienteInstituicao(atendimento.getId());
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.atendimento.getCidPrimario().getIdCid()))
+        	buscarCidAtendimento(this.listaProcedimentos.get(0).getIdProc(), this.atendimento.getId());
     }
 
     private void buscarDadosProcedimentoPorId() throws ProjetoException {
@@ -888,6 +885,10 @@ public class AtendimentoController implements Serializable {
         for (PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupoDTO : listaPendenciaEvolucaoProgramaGrupo) {
             this.totalPendenciaEvolucao += pendenciaEvolucaoProgramaGrupoDTO.getTotalPendencia();
         }
+    }
+    
+    public void buscarCidAtendimento(Integer idProcedimento, Integer idAtendimento) throws ProjetoException {
+    	this.atendimento.setCidPrimario (cidDao.buscarCidAtendimento(idProcedimento, idAtendimento));
     }
 
     public AtendimentoBean getAtendimento() {
