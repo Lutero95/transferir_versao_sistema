@@ -1283,11 +1283,11 @@ public class RelatoriosController implements Serializable {
 
 	public void adicionaDiasDaSemanaPadrao() {
 		this.diasSemana = new ArrayList<String>();
+		this.diasSemana.add("1");
 		this.diasSemana.add("2");
 		this.diasSemana.add("3");
 		this.diasSemana.add("4");
 		this.diasSemana.add("5");
-		this.diasSemana.add("6");
 
 	}
 
