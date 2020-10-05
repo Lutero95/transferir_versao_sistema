@@ -10,11 +10,18 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
+import org.postgresql.util.PSQLException;
+
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.log.control.PacienteLog;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -382,7 +389,9 @@ public class PacienteDAO {
         return retorno;
     }
 
-    public Boolean alterarPaciente(PacienteBean paciente, boolean bairroExiste) throws ProjetoException {
+    public Boolean alterarPaciente(PacienteBean paciente, boolean bairroExiste,
+                                   List<Telefone> listaTelefonesAdicionados, List<Telefone> listaTelefonesExcluidos) throws ProjetoException {
+
         boolean retorno = false;
 
         try {
@@ -401,8 +410,8 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?" //36 ao 41
                     + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?" //42 ao 44
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?" //45 ao 49
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=? " //50 ao 58
-                    + " where id_paciente = ?"; //59
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=?, usuario_ultima_alteracao=?, data_hora_ultima_alteracao=CURRENT_TIMESTAMP " //50 ao 59
+                    + " where id_paciente = ?"; //60
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome());
@@ -575,13 +584,18 @@ public class PacienteDAO {
             }
 
 
-
-            stmt.setLong(59, paciente.getId_paciente());
+            stmt.setLong(59, user_session.getId());
+            stmt.setLong(60, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
             if (deletarTelefone(paciente.getId_paciente(), conexao)) {
                 if (inserirTelefone(paciente.getListaTelefones(), paciente.getId_paciente(), conexao)) {
+
+                    PacienteLog pacienteLog = new PacienteLog();
+                    LogBean log = pacienteLog.compararPacientes(paciente, listaTelefonesAdicionados, listaTelefonesExcluidos);
+                    new LogDAO().gravarLog(log, conexao);
+
                     conexao.commit();
                     retorno = true;
                 }
@@ -612,16 +626,20 @@ public class PacienteDAO {
             stmt.executeUpdate();
 
             sql = "delete from hosp.pacientes where id_paciente = ?";
-            conexao = ConnectionFactory.getConnection();
             stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, paciente.getId_paciente());
             stmt.executeUpdate();
+
+            String descricao = "Paciente: "+paciente.getNome()+" ID: "+paciente.getId_paciente();
+            LogBean log = new LogBean(user_session.getId(), descricao, Rotina.EXCLUSAO_PACIENTE.getSigla());
+            new LogDAO().gravarLog(log, conexao);
 
             conexao.commit();
 
             retorno = true;
 
         } catch (SQLException sqle) {
+            JSFUtil.adicionarMensagemErro("Provavelmente o paciente selecionado tem relação com algum laudo ou agendamento", "");
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
         } catch (Exception ex) {
             throw new ProjetoException(ex, this.getClass().getName());
@@ -635,12 +653,12 @@ public class PacienteDAO {
         return retorno;
     }
 
-    public List<PacienteBean> listaPacientes() throws ProjetoException {
+    public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
-        String sql = "select id_paciente, nome, cpf, cns, dtanascimento, matricula "
-                + " from hosp.pacientes order by pacientes.nome ";
+        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns, pacientes.dtanascimento, pacientes.matricula  "
+                + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
 
-        List<PacienteBean> lista = new ArrayList<>();
+        ArrayList<PacienteBean> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -671,7 +689,7 @@ public class PacienteDAO {
         }
         return lista;
     }
-    
+
     public ArrayList<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoDTO() throws ProjetoException {
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.matricula "
@@ -685,7 +703,7 @@ public class PacienteDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-            	PacientesComInformacaoAtendimentoDTO paciente = new PacientesComInformacaoAtendimentoDTO();
+                PacientesComInformacaoAtendimentoDTO paciente = new PacientesComInformacaoAtendimentoDTO();
 
                 paciente.getPaciente().setId_paciente(rs.getInt("id_paciente"));
                 paciente.getPaciente().setNome(rs.getString("nome").toUpperCase());
@@ -1198,6 +1216,42 @@ public class PacienteDAO {
         return lista;
     }
 
+
+    public List<PacienteBean> listaPaciente() throws ProjetoException {
+        PreparedStatement ps = null;
+
+        List<PacienteBean> lista = new ArrayList<PacienteBean>();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes order by nome";
+
+            ps = conexao.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+
+            while (rs.next()) {
+                PacienteBean paciente = new PacienteBean();
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                paciente.setNome(rs.getString("nome").toUpperCase());
+                paciente.setCpf(rs.getString("cpf"));
+                paciente.setCns(rs.getString("cns"));
+
+                lista.add(paciente);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public List<PacienteBean> buscarPacientes(String campoBusca, String tipo) throws ProjetoException {
         PreparedStatement ps = null;
         List<PacienteBean> lista = new ArrayList<PacienteBean>();
@@ -1229,8 +1283,8 @@ public class PacienteDAO {
             sql = sql + " order by nome";
 
             ps = conexao.prepareStatement(sql);
-            if ((tipo.equals(TipoBuscaPaciente.NOME.getSigla())) || (tipo.equals(TipoBuscaPaciente.CPF.getSigla())) 
-            		|| (tipo.equals(TipoBuscaPaciente.CNS.getSigla())) || (tipo.equals(TipoBuscaPaciente.MATRICULA.getSigla()))) {
+            if ((tipo.equals(TipoBuscaPaciente.NOME.getSigla())) || (tipo.equals(TipoBuscaPaciente.CPF.getSigla()))
+                    || (tipo.equals(TipoBuscaPaciente.CNS.getSigla())) || (tipo.equals(TipoBuscaPaciente.MATRICULA.getSigla()))) {
                 ps.setString(1, "%" + campoBusca.toUpperCase() + "%");
             }
             else
@@ -1500,7 +1554,7 @@ public class PacienteDAO {
                     "left join hosp.programa prog on " +
                     "	(prog.id_programa = p.codprograma) " +
                     "	left join hosp.municipio  m on m.id_municipio  = pa.codmunicipio " +
-                    "where pr.ativo = 'S' and ";
+                    "where ";
 
             if(sexo.equals(ModeloSexo.FEMININO.getSigla()) || sexo.equals(ModeloSexo.MASCULINO.getSigla())) {
                 sql +="	p.cod_unidade = ? " +

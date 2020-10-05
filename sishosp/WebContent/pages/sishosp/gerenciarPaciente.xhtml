@@ -100,8 +100,8 @@
                                              size="sm" ajax="true" style="margin-left:10px"
                                              class="btn-acao-table acao-excluir"
                                              oncomplete="PF('dialogExclusao').show()">
-                                <f:setPropertyActionListener value="#{tab.id_paciente}"
-                                                             target="#{PacienteController.paciente.id_paciente}"/>
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{PacienteController.paciente}"/>
                             </p:commandButton>
 
                         </p:column>

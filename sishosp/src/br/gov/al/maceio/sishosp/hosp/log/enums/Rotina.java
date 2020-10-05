@@ -1,8 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.log.enums;
 
 public enum Rotina {
-    PACIENTE("PACIENTE"),
-    LAUDO("LAUDO");
+    ALTERACAO_PACIENTE("ALTERACAO PACIENTE"),
+    EXCLUSAO_PACIENTE("EXCLUSAO PACIENTE"),
+    ALTERACAO_LAUDO("ALTERACAO LAUDO");
 
     private String sigla;
 

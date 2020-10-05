@@ -117,15 +117,7 @@
 								<p:commandButton icon="ui-icon-plus" title="Incluir Gênero"
 									update=":frmcadgenero:outgenero"
 									oncomplete="PF('dlgcadastrogenero').show()" />
-
-
-
-
 							</b:column>
-
-
-
-
 						</b:row>
 
 						<b:row>
@@ -840,14 +832,11 @@
 							</b:column>
 
 							<b:column span="1" class="label-position">
-
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{ParentescoController.limparDados}"
 									update=":frmcadparentesco:outparentesco"
-									style="margin-top: 20px;
-    margin-left: -45px;;"
+									style="margin-top: 20px; margin-left: -45px;"
 									oncomplete="PF('dlgcadastroparentesco').show()" />
-
 							</b:column>
 
 							<b:column span="3" class="label-position">
@@ -858,7 +847,6 @@
 										value="#{PacienteController.paciente.nomeresp}" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
 
 						<b:row>
@@ -921,8 +909,7 @@
 									icon="ui-icon-search" update=":buscaencaminhado" />
 							</b:column>
 
-							<b:column span="1"
->
+							<b:column span="1">
 
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EncaminhadoController.limparDados}"
@@ -954,17 +941,13 @@
 									icon="ui-icon-search" update=":buscatransporte" />
 							</b:column>
 
-							<b:column span="1"
-								>
-
+							<b:column span="1">
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{FormaTransporteController.limparDados}"
 									update=":frmcadformatransporte:outformatransporte"
 									style="margin-top:17px;" title="Incluir Forma de Transporte"
 									oncomplete="PF('dlgcadastroformatransporte').show()" />
-
 							</b:column>
-
 						</b:row>
 
 						<p:outputPanel id="outDeficiencia">
@@ -1457,6 +1440,7 @@
 						<b:column span="2">
 							<p:commandButton style="margin-top: 20px" value="Adicionar"
 								action="#{PacienteController.addListaTelefone()}"
+								process="@all"
 								icon="ui-icon-plus" class="btn-acao-table acao-confirmar"
 								update=":frmPrincipal:tbv:outTabelaTelefones, outTelefonePaciente">
 							</p:commandButton>

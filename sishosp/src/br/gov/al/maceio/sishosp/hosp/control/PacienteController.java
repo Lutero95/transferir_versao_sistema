@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,10 @@ import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogVisualizacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
@@ -74,6 +79,8 @@ public class PacienteController implements Serializable {
 	private List<MunicipioBean> listaMunicipiosDePacienteAtivos;
 	private List<EnderecoBean> listaBairros;
 	private EnderecoController enderecoController;
+	private List<Telefone> listaTelefonesExcluidos;
+	private List<Telefone> listaTelefonesAdicionados;
 
 	// CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPaciente?faces-redirect=true";
@@ -103,6 +110,8 @@ public class PacienteController implements Serializable {
 		SessionUtil.removerDaSessao("paramIdPaciente");
 		enderecoController = new EnderecoController();
 		cpfObrigatorio = user_session.getUnidade().getParametro().isCpfPacienteObrigatorio();
+		listaTelefonesAdicionados = new ArrayList<>();
+		listaTelefonesExcluidos = new ArrayList<>();
 	}
 
 	public String redirectEdit() {
@@ -114,11 +123,12 @@ public class PacienteController implements Serializable {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
-	public void getEditPaciente() throws ProjetoException {
+	public void getEditPaciente() throws ProjetoException, SQLException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
 		EnderecoDAO enderecoDAO = new EnderecoDAO();
 		if (params.get("id") != null) {
+			new LogDAO().gravarLogVisualizacao(new LogVisualizacaoBean(user_session.getId(), Rotina.ALTERACAO_PACIENTE.getSigla()));
 			Integer id = Integer.parseInt(params.get("id"));
 			SessionUtil.adicionarNaSessao(id, "paramIdPaciente");
 			tipo = Integer.parseInt(params.get("tipo"));
@@ -155,8 +165,8 @@ public class PacienteController implements Serializable {
 			EnderecoDAO enderecoDAO = new EnderecoDAO();
 			if (paciente.getEndereco().getCepValido() == true) {
 				if ((!paciente.getEndereco().getBairro().equals(null)) && (!paciente.getEndereco().getBairro().equals("")))
-				paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
-						paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
+					paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
+							paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
 				if (paciente.getEndereco().getCodbairro() != null) {
 					if (paciente.getEndereco().getCodbairro() > 0) {
 						bairroExiste = true;
@@ -165,7 +175,7 @@ public class PacienteController implements Serializable {
 					}
 				} else {
 					if ((paciente.getEndereco().getBairro().equals(null)) || (paciente.getEndereco().getBairro().equals("")))
-					bairroExiste = true;
+						bairroExiste = true;
 					else
 						bairroExiste = false;
 				}
@@ -205,7 +215,7 @@ public class PacienteController implements Serializable {
 		if (VerificadorUtil.verificarSeObjetoNulo(bairroExiste)) {
 			bairroExiste = true;
 		}
-		boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
+		boolean alterou = pDao.alterarPaciente(paciente, bairroExiste, listaTelefonesAdicionados, listaTelefonesExcluidos);
 		if (alterou == true) {
 			JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
 		} else {
@@ -226,9 +236,9 @@ public class PacienteController implements Serializable {
 		}
 		listaPacientes = pDao.listaPacientes();
 	}
-	
+
 	public void verificaExisteCNSDoPacienteCadastrado(String cns) throws ProjetoException {
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cns)) {
 			if (!DocumentosUtil.validaCNS(cns)) {
 				FacesMessage message = new FacesMessage();
@@ -236,12 +246,12 @@ public class PacienteController implements Serializable {
 				message.setSummary("CNS não válida!");
 				throw new ValidatorException(message);
 			}
-			
+
 			PacienteDAO pDAo = new PacienteDAO();
 			PacienteBean pacienteRetorno;
 			Integer idPaciente =(Integer) SessionUtil.resgatarDaSessao( "paramIdPaciente");;
 			pacienteRetorno = pDAo.verificaExisteCnsCadastrado(cns, idPaciente);
-																					
+
 			if (pacienteRetorno != null) {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
@@ -250,9 +260,9 @@ public class PacienteController implements Serializable {
 			}
 		}
 	}
-	
+
 	public void verificaExisteCPFDoPacienteCadastrado(String cpf) throws ProjetoException {
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(cpf)) {
 			cpf = cpf.replaceAll(" ", "").replaceAll("[^0-9]", "");
 
@@ -267,13 +277,13 @@ public class PacienteController implements Serializable {
 				Integer idPaciente = (Integer) SessionUtil.resgatarDaSessao( "paramIdPaciente");;
 				pacienteRetorno = pDAo.verificaExisteCpfCadastrado(cpf, idPaciente);
 
-					if (pacienteRetorno != null) {
-						FacesMessage message = new FacesMessage();
-						message.setSeverity(FacesMessage.SEVERITY_ERROR);
-						message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
-						throw new ValidatorException(message);
-					}
-				
+				if (pacienteRetorno != null) {
+					FacesMessage message = new FacesMessage();
+					message.setSeverity(FacesMessage.SEVERITY_ERROR);
+					message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
+					throw new ValidatorException(message);
+				}
+
 			}
 		}
 	}
@@ -499,18 +509,31 @@ public class PacienteController implements Serializable {
 			telefone.getParentesco().setDescParentesco(parente.getDescParentesco());
 		}
 		paciente.getListaTelefones().add(telefone);
+
+		Telefone telefoneAux = new Telefone();
+		telefoneAux.setDdd(telefone.getDdd());
+		telefoneAux.setIdTelefone(telefone.getIdTelefone());
+		telefoneAux.setOperadora(telefone.getOperadora());
+		telefoneAux.setParentesco(telefone.getParentesco());
+		telefoneAux.setResponsavel(telefone.getResponsavel());
+		telefoneAux.setTelefone(telefone.getTelefone());
+		telefoneAux.setWhatsapp(telefone.getWhatsapp());
+
 		limparTelefone();
+		this.listaTelefonesAdicionados.add(telefoneAux);
 	}
 
 	public void removeListaTelefone() {
 		this.paciente.getListaTelefones().remove(telefone);
+		this.listaTelefonesExcluidos.add(telefone);
+		this.listaTelefonesAdicionados.remove(telefone);
 	}
 
 	public void limparTelefone() {
 
 		telefone = new Telefone();
 	}
-	
+
 	public void buscaMunicipiosDePacientesAtivos(String sexo) throws ProjetoException {
 		listaMunicipiosDePacienteAtivos = pDao.listaMunicipiosPacienteAtivo(user_session.getUnidade().getId(), sexo);
 	}

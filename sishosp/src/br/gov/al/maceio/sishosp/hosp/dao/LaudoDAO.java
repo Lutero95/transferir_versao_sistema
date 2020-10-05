@@ -344,7 +344,7 @@ public class LaudoDAO {
             LaudoLog laudoLog = new LaudoLog();
             LogBean log = laudoLog.compararLaudos(laudo);
             if (log.getAlteracaoRealizada())
-            new LogDAO().gravarLog(log, conexao);
+                new LogDAO().gravarLog(log, conexao);
 
             conexao.commit();
             retorno = true;
