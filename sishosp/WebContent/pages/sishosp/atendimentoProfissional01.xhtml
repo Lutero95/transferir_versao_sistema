@@ -59,6 +59,11 @@
 									<f:setPropertyActionListener value="2"
 										target="#{LaudoController.tipo}" />
 								</p:commandButton>
+								
+								<p:commandButton value="Adicionar Procedimentos" look="success" size="sm"
+									style="margin-left: 10px" icon="ui-icon-plus"
+									action="#{AtendimentoController.abrirDialogProcedimentos()}"
+									update=":frmPrincipalProc"/>
 							</p:row>
 						</div>
 					</p:row>
@@ -124,6 +129,53 @@
 								id="inputcid" />	
 						</b:column>
 					</p:row>
+					
+					<b:row>
+						<b:column span="12" class="label-position">	
+							<p:outputPanel id="outproccid">
+								<p:outputLabel value="Procedimentos e CIDs secundários"
+									severity="info"
+									rendered="#{AtendimentoController.atendimento.listaProcedimentoCid.size() > 0}"
+									id="labelprocedimentocid"
+									style="font-weight:bold !important; margin: 1%;" />
+
+								<p:dataTable var="proccid"
+									value="#{AtendimentoController.atendimento.listaProcedimentoCid}"
+									rendered="#{AtendimentoController.atendimento.listaProcedimentoCid.size() > 0}"
+									id="tbprocedimentocid" reflow="true"
+									emptyMessage="Nenhum procedimento com cid adicionado"
+									styleClass="table-right">
+
+									<p:column headerText="Procedimento" width="300">
+										<h:outputText value="#{proccid.procedimento.nomeProc}" />
+									</p:column>
+
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proccid.procedimento.codProc}" />
+									</p:column>
+
+									<p:column headerText="CID" width="300">
+										<h:outputText value="#{proccid.cid.descCidAbrev}" />
+									</p:column>
+
+									<p:column headerText="Código CID">
+										<h:outputText value="#{proccid.cid.cid}" />
+									</p:column>
+
+									<p:column headerText="Remover" width="10%">
+										<div align="center">
+											<p:commandButton
+												actionListener="#{AtendimentoController.removerProcedimentoCidSecundario(proccid)}"
+												icon="fa fa-fw fa-trash" title="Remover Procedimento / Cid"
+												ajax="true" process="@this" immediate="true"
+												class="new-btn-acao-table acao-excluir"
+												update=":formConsAge:outproccid" />
+										</div>
+									</p:column>
+								</p:dataTable>
+							</p:outputPanel>
+						</b:column>		
+					</b:row>
 
 					<br />
 					<p:row>
@@ -196,6 +248,54 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="Procedimento CID"
+			widgetVar="dlgConsultaProcedimentos" width="850px" height="200px"
+			styleClass="topDialog" dynamic="true" resizable="false" responsive="true" modal="true">
+
+			<h:form id="frmPrincipalProc">
+				<p:outputPanel id="outDtProc2">
+					<p:autoUpdate/>
+					<p:row>
+						<b:column span="12">
+							<p:outputLabel value="Procedimento" severity="info"
+								style="margin-left: 1.4%; font-weight:bold !important;" />
+							<b:selectOneMenu update="frmPrincipalProc"
+								value="#{AtendimentoController.procedimentoCidSelecionado.procedimento.idProc}"
+								required="true" requiredMessage="Procedimento: Campo obrigatório"
+								style="margin-bottom: 1%; width: 100%;">
+								<f:selectItem itemLabel="Selecione um procedimento" itemValue=""/>
+								<f:selectItems var="proc2"
+									value="#{AtendimentoController.listaProcedimentos}"
+									itemLabel="#{proc2.nomeProc}" itemValue="#{proc2.idProc}" />
+									
+								<f:ajax listener="#{AtendimentoController.buscarCidParaProcedimentoSecundario(AtendimentoController.procedimentoCidSelecionado.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
+							</b:selectOneMenu>
+						</b:column>
+					</p:row>
+					
+					<p:row>
+						<b:column span="12" class="label-position">
+							<p:outputLabel value="CID" severity="info"
+								style="font-weight:bold !important;" />
+							
+							<p:outputLabel
+								value="#{AtendimentoController.procedimentoCidSelecionado.cid.descCidAbrev}" 
+								readonly="true" class="form-control select-agendaEquipe5"
+								required="true" requiredMessage="CID: Campo obrigatório"
+								id="inputcid2"/>
+							<br />		
+						</b:column>
+					</p:row>
+				</p:outputPanel>
+				
+				<div align="center">
+					<p:commandButton value="Adicionar" update=":formConsAge:outproccid :msgPagina"
+					 	actionListener="#{AtendimentoController.adicionarProcedimentoSecundario()}"/>
+					<p:commandButton value="Fechar" oncomplete="PF('dlgConsultaProcedimentos').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
 			resizable="false" showEffect="clip" hideEffect="clip">
@@ -518,9 +618,8 @@
 										class="campo-laudoDig" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
-
+						
 						<b:row>
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
