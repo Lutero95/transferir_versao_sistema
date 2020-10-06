@@ -7,6 +7,7 @@ public class SituacaoAtendimentoBean {
 	private boolean atendimentoRealizado;
 	private boolean abonoFalta;
 	private boolean pacienteFaltou;
+	private boolean faltaProfissional;
 	
 	public Integer getId() {
 		return id;
@@ -43,5 +44,13 @@ public class SituacaoAtendimentoBean {
 	}
 	public void setPacienteFaltou(boolean pacienteFaltou) {
 		this.pacienteFaltou = pacienteFaltou;
+	}
+
+	public boolean isFaltaProfissional() {
+		return faltaProfissional;
+	}
+
+	public void setFaltaProfissional(boolean faltaProfissional) {
+		this.faltaProfissional = faltaProfissional;
 	}
 }

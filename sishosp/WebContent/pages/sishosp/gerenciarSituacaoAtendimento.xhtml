@@ -66,6 +66,10 @@
 							<h:outputText value="#{tab.pacienteFaltou == true ? 'SIM' : 'NÃO'}" />
 						</p:column>
 
+						<p:column headerText="Profissional Faltou">
+							<h:outputText value="#{tab.faltaProfissional == true ? 'SIM' : 'NÃO'}" />
+						</p:column>
+
 						<p:column headerText="Ação" width="10%">
 							<div align="center">
 								<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"

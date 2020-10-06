@@ -111,10 +111,13 @@ public class SituacaoAtendimentoController  implements Serializable {
 	}
 
 	private Boolean maisDeUmTipoSituacaoFoiMarcado() throws ProjetoException {
-		if ( ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isAbonoFalta()))
-				|| ((this.situacaoAtendimento.getAtendimentoRealizado()) && (this.situacaoAtendimento.isPacienteFaltou()))
-				|| ((this.situacaoAtendimento.isAbonoFalta()) && (this.situacaoAtendimento.isPacienteFaltou())) ) {
-			JSFUtil.adicionarMensagemErro("Selecione apenas uma das opções: Atendimento Realizado, Abono de Falta ou Paciente Faltou", "Erro");
+		int contador1 = this.situacaoAtendimento.getAtendimentoRealizado()==true ? 1 : 0;
+		int contador2 = this.situacaoAtendimento.isAbonoFalta()==true ? 1 : 0;
+		int contador3 = this.situacaoAtendimento.isFaltaProfissional()==true ? 1 : 0;
+		int contador4 = this.situacaoAtendimento.isPacienteFaltou()==true ? 1 : 0;
+
+		if ((contador1+contador2+contador3+contador4)>1 ) {
+			JSFUtil.adicionarMensagemErro("Selecione apenas uma das opções: Atendimento Realizado, Abono de Falta, Falta de Profissional ou Paciente Faltou", "Erro");
 			return true;
 		}
 		return false;

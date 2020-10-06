@@ -21,8 +21,8 @@ public class SituacaoAtendimentoDAO {
 	public Boolean gravarSituacaoAtendimento(SituacaoAtendimentoBean situacaoAtendimento) throws ProjetoException {
 		Boolean retorno = false;
 		String sql = "INSERT INTO hosp.situacao_atendimento  " +
-				"(descricao, atendimento_realizado, abono_falta, paciente_faltou) " +
-				"VALUES(?, ?,?, ?);";
+				"(descricao, atendimento_realizado, abono_falta, paciente_faltou, falta_profissional) " +
+				"VALUES(?, ?,?, ?,?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -31,6 +31,7 @@ public class SituacaoAtendimentoDAO {
 			ps.setBoolean(2, situacaoAtendimento.getAtendimentoRealizado());
 			ps.setBoolean(3, situacaoAtendimento.isAbonoFalta());
 			ps.setBoolean(4, situacaoAtendimento.isPacienteFaltou());
+			ps.setBoolean(5, situacaoAtendimento.isFaltaProfissional());
 			ps.execute();
 			con.commit();
 			retorno = true;
@@ -51,7 +52,7 @@ public class SituacaoAtendimentoDAO {
 	public Boolean alterarSituacaoAtendimento(SituacaoAtendimentoBean situacao) throws ProjetoException{
 		Boolean retorno = false;
 		String sql = "UPDATE hosp.situacao_atendimento " +
-				"SET descricao = ?, atendimento_realizado = ?, abono_falta=?, paciente_faltou = ? " +
+				"SET descricao = ?, atendimento_realizado = ?, abono_falta=?, paciente_faltou = ?, falta_profissional=? " +
 				"WHERE id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -60,7 +61,8 @@ public class SituacaoAtendimentoDAO {
 			ps.setBoolean(2, situacao.getAtendimentoRealizado());
 			ps.setBoolean(3, situacao.isAbonoFalta());
 			ps.setBoolean(4, situacao.isPacienteFaltou());
-			ps.setInt(5, situacao.getId());
+			ps.setBoolean(5, situacao.isFaltaProfissional());
+			ps.setInt(6, situacao.getId());
 			ps.executeUpdate();
 			con.commit();
 			retorno = true;
@@ -105,7 +107,7 @@ public class SituacaoAtendimentoDAO {
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimento() throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta, paciente_faltou  " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, abono_falta, paciente_faltou, falta_profissional  " +
 				"from hosp.situacao_atendimento sa  order by sa.descricao ";
 
 		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
@@ -122,6 +124,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
 				situacaoAtendimento.setPacienteFaltou(rs.getBoolean("paciente_faltou"));
+				situacaoAtendimento.setFaltaProfissional(rs.getBoolean("falta_profissional"));
 				listaSituacoes.add(situacaoAtendimento);
 			}
 		} catch (SQLException sqle) {
@@ -238,7 +241,7 @@ public class SituacaoAtendimentoDAO {
 
 	public SituacaoAtendimentoBean buscaSituacaoAtendimentoPorId(Integer idSituacao) throws ProjetoException {
 
-		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou " +
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou, sa.falta_profissional " +
 				"from hosp.situacao_atendimento sa where sa.id = ?";
 
 		SituacaoAtendimentoBean situacaoAtendimento = new SituacaoAtendimentoBean();
@@ -254,6 +257,7 @@ public class SituacaoAtendimentoDAO {
 				situacaoAtendimento.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 				situacaoAtendimento.setAbonoFalta(rs.getBoolean("abono_falta"));
 				situacaoAtendimento.setPacienteFaltou(rs.getBoolean("paciente_faltou"));
+				situacaoAtendimento.setFaltaProfissional(rs.getBoolean("falta_profissional"));
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);

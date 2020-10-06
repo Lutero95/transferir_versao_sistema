@@ -593,8 +593,8 @@ public class PacienteDAO {
                 if (inserirTelefone(paciente.getListaTelefones(), paciente.getId_paciente(), conexao)) {
 
                     PacienteLog pacienteLog = new PacienteLog();
-                    LogBean log = pacienteLog.compararPacientes(paciente, listaTelefonesAdicionados, listaTelefonesExcluidos);
-                    new LogDAO().gravarLog(log, conexao);
+                  //  LogBean log = pacienteLog.compararPacientes(paciente, listaTelefonesAdicionados, listaTelefonesExcluidos);
+                //    new LogDAO().gravarLog(log, conexao);
 
                     conexao.commit();
                     retorno = true;
