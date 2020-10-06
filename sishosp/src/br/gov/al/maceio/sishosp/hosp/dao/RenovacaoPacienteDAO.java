@@ -327,7 +327,8 @@ public class RenovacaoPacienteDAO {
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
-									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, conexao);
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
+											codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 							
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -560,7 +561,8 @@ public class RenovacaoPacienteDAO {
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
-									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(h).getCbo().getCodCbo(), codPaciente, conexao);
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
+											listaProfissionais.get(h).getCbo().getCodCbo(), codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 							
 							PreparedStatement ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
@@ -710,7 +712,7 @@ public class RenovacaoPacienteDAO {
 				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), 
-								insercao.getLaudo().getPaciente().getId_paciente(), conexao);
+								insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 				PreparedStatement ps5 = null;
 				ps5 = conexao.prepareStatement(sql5);
 

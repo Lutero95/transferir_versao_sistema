@@ -3153,25 +3153,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     	return idProcedimentoEspecifico;
     }
     
-    /* TODO 
-     * APAGAR ESSA CÓPIA QUE NÃO POSSUI O ID DO GRUPO COMO PARAMETRO APÓS FINALIZAR AS REFATORAÇÕES DA AGENDA */
-    public Integer retornaIdProcedimentoEspecifico(Integer idPrograma, Integer idCbo, Integer idPaciente, Connection conAuxiliar) throws ProjetoException, SQLException {
-    	Integer idProcedimentoEspecifico = null;
-    	try {
-			idProcedimentoEspecifico = retornaIdProcedimentoCboEspecifico(idPrograma, idCbo, conAuxiliar);
-			if (VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
-				idProcedimentoEspecifico = retornaIdProcedimentoIdadeEspecifica(idPrograma, idPaciente, conAuxiliar);
-			}
-    	} catch (SQLException ex2) {
-            conAuxiliar.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
-        } catch (Exception ex) {
-            conAuxiliar.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-    	
-    	return idProcedimentoEspecifico;
-    }
 
     private Integer retornaIdProcedimentoCboEspecifico(Integer idPrograma, Integer idCbo, Connection conAuxiliar)
             throws ProjetoException, SQLException {
