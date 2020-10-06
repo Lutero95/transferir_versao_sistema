@@ -265,7 +265,7 @@ public class InsercaoPacienteDAO {
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), lista.get(j).getCbo().getCodCbo(),
-											insercao.getLaudo().getPaciente().getId_paciente(), con);
+											insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
 							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -417,7 +417,7 @@ public class InsercaoPacienteDAO {
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
-											insercao.getLaudo().getPaciente().getId_paciente(), con);
+											insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
 							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
@@ -552,7 +552,7 @@ public class InsercaoPacienteDAO {
 
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
-								insercao.getLaudo().getPaciente().getId_paciente(), con);
+								insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
 				PreparedStatement ps4 = null;
 				ps4 = con.prepareStatement(sql4);
 
