@@ -58,14 +58,14 @@ public class PacienteDAO {
                     + "dtaregistro, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, nomeresp, rgresp, "  //30 ao 38
                     + "cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, " //39 a 43
                     + "codmunicipio, deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, " //44 ao 48
-                    + "deficienciamultipla, codbairro, email, facebook, instagram, nome_social, necessita_nome_social, id_religiao, id_genero, codigo_usuario_cadastro, matricula)" //49 ao 58
+                    + "deficienciamultipla, codbairro, email, facebook, instagram, nome_social, necessita_nome_social, id_religiao, id_genero, codigo_usuario_cadastro, matricula, codtipologradouro)" //49 ao 59
                     + " values (CURRENT_TIMESTAMP, "
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //1 ao 10
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //11 ao 20
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //21 ao 30
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //31 ao 40
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //41 ao 50
-                    + "?, ?, ?, ?, ?, ?,?,?, ?) returning id_paciente"; //51 ao 58
+                    + "?, ?, ?, ?, ?, ?,?,?, ?, ?) returning id_paciente"; //51 ao 59
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -364,6 +364,8 @@ public class PacienteDAO {
                 stmt.setString(59, paciente.getMatricula().toUpperCase());
             }
 
+            stmt.setInt(60, paciente.getTipoLogradouro().getId());
+
 
             ResultSet set = stmt.executeQuery();
             while (set.next()) {
@@ -410,7 +412,7 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?" //36 ao 41
                     + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?" //42 ao 44
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?" //45 ao 49
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=?, usuario_ultima_alteracao=?, data_hora_ultima_alteracao=CURRENT_TIMESTAMP " //50 ao 59
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?, id_genero = ?, matricula=?, usuario_ultima_alteracao=?, data_hora_ultima_alteracao=CURRENT_TIMESTAMP, codtipologradouro=?  " //50 ao 60
                     + " where id_paciente = ?"; //60
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -585,7 +587,8 @@ public class PacienteDAO {
 
 
             stmt.setLong(59, user_session.getId());
-            stmt.setLong(60, paciente.getId_paciente());
+            stmt.setInt(60, paciente.getTipoLogradouro().getId());
+            stmt.setLong(61, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
@@ -888,7 +891,7 @@ public class PacienteDAO {
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
                 + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, "
                 + " pacientes.nome_social, pacientes.necessita_nome_social, "
-                + " pacientes.codmunicipio, b.descbairro, pacientes.id_genero, id_religiao, pacientes.matricula "
+                + " pacientes.codmunicipio, b.descbairro, pacientes.id_genero, id_religiao, pacientes.matricula, pacientes.codtipologradouro "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
@@ -1001,6 +1004,7 @@ public class PacienteDAO {
                 paciente.setListaTelefones(listarTelefonesDoPaciente(id));
                 paciente.getEndereco().setCodmunicipio(rs.getInt("codmunicipio"));
                 paciente.getEndereco().setCodbairro(rs.getInt("codbairro"));
+                paciente.getTipoLogradouro().setId(rs.getInt("codtipologradouro"));
 
                 if (rs.getString("id_religiao") != null) {
                     paciente.getReligiao().setId(rs.getInt("id_religiao"));

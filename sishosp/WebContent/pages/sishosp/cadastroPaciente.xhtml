@@ -346,14 +346,16 @@
 								<b:label for="tipolog" value="Tipo de Logradouro" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
 
-								<b:selectOneMenu disable="true" required="true"
+								<p:selectOneMenu disable="true" required="true"
+												 style="margin-left: -18px;"
+												 filter="true" filterMatchMode="contains"
 												 requiredMessage="Tipo de Logadouro: Campo obrigatório!"
-												 value="#{PacienteController.paciente.codRaca}" id="tipolog">
+												 value="#{PacienteController.paciente.tipoLogradouro.id}" id="tipolog">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
-									<f:selectItems value="#{RacaController.listarRacas()}"
-												   var="sis" itemLabel="#{sis.descRaca}"
-												   itemValue="#{sis.codRaca}" />
-								</b:selectOneMenu>
+									<f:selectItems value="#{TipoLogradouroController.listarTiposLogradouro()}"
+												   var="sis" itemLabel="#{sis.logradouro}"
+												   itemValue="#{sis.id}" />
+								</p:selectOneMenu>
 							</b:column>
 
 							<b:column span="7" class="label-position">

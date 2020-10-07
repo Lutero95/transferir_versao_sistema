@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoLogradouroDAO;
+import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoLogradouroBean;
 
 import javax.faces.bean.ManagedBean;
@@ -117,6 +118,10 @@ public class TipoLogradouroController implements Serializable {
 	public void listarTipoLogradouro() throws ProjetoException {
 		listaTipoLogradouro = cDao.listarTipoLogradouro();
     }
+
+	public List<TipoLogradouroBean> listarTiposLogradouro() throws ProjetoException {
+		return listaTipoLogradouro = cDao.listarTipoLogradouro();
+	}
 
 	public String getCabecalho() {
 		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
