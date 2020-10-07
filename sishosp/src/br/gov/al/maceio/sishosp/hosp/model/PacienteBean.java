@@ -83,6 +83,7 @@ public class PacienteBean implements Serializable {
     private Telefone telefone;
     private Genero genero;
     private Religiao religiao;
+    private TipoLogradouroBean logradouro;
 
     //LISTAS
     private List<Telefone> listaTelefones;
@@ -101,6 +102,7 @@ public class PacienteBean implements Serializable {
         telefone = new Telefone();
         genero = new Genero();
         religiao = new Religiao();
+        logradouro = new TipoLogradouroBean();
     }
 
     public Integer getId_paciente() {
@@ -610,4 +612,12 @@ public class PacienteBean implements Serializable {
 	public void setMatricula(String matricula) {
 		this.matricula = matricula;
 	}
+
+    public TipoLogradouroBean getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(TipoLogradouroBean logradouro) {
+        this.logradouro = logradouro;
+    }
 }

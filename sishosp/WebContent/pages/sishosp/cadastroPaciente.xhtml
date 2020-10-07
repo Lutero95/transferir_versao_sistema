@@ -327,7 +327,7 @@
 
 						<b:row>
 
-							<b:column span="3" class="label-position">
+							<b:column span="2" class="label-position">
 								<b:label for="inputcep" value="CEP" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
 
@@ -342,7 +342,21 @@
 								</p:inputMask>
 							</b:column>
 
-							<b:column span="8" class="label-position">
+							<b:column span="2" class="label-position">
+								<b:label for="tipolog" value="Tipo de Logradouro" severity="info" />
+								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
+
+								<b:selectOneMenu disable="true" required="true"
+												 requiredMessage="Tipo de Logadouro: Campo obrigatório!"
+												 value="#{PacienteController.paciente.codRaca}" id="tipolog">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems value="#{RacaController.listarRacas()}"
+												   var="sis" itemLabel="#{sis.descRaca}"
+												   itemValue="#{sis.codRaca}" />
+								</b:selectOneMenu>
+							</b:column>
+
+							<b:column span="7" class="label-position">
 								<b:label for="inputrua" value="Logradouro" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
 

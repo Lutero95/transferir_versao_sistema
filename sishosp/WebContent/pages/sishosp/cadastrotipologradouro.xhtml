@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{TipoLogradouroController.getEditTipoLogradouro()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{TipoLogradouroController.cabecalho}" class="panel-title"></h:outputText>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Código" severity="info" />
+
+							<b:inputText value="#{TipoLogradouroController.tipoLogradouro.codigo}"
+								class="form-control" required="true" id="incCid"
+								requiredMessage="Código: Campo obrigatório!"
+							validatorMessage="Abreviatura deve conter entre 1 e 3 caracteres.">
+							<f:validateLength minimum="1" maximum="3" />
+							</b:inputText>
+						</b:column>
+
+					</b:row>
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="Abreviatura" severity="info" />
+
+							<b:inputText value="#{TipoLogradouroController.tipoLogradouro.abreviatura}"
+								class="form-control" required="true"
+								requiredMessage="Abreviatura: Campo obrigatório!"
+								validatorMessage="Abreviatura deve conter entre 1 e 3 caracteres.">
+								<f:validateLength minimum="1" maximum="3" />
+							</b:inputText>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="Logradouro" severity="info" />
+
+							<b:inputText value="#{TipoLogradouroController.tipoLogradouro.logradouro}"
+										 class="form-control" required="true"
+										 requiredMessage="Logradouro: Campo obrigatório!"
+										 validatorMessage="Logradouro deve conter entre 1 e 30 caracteres.">
+								<f:validateLength minimum="1" maximum="30" />
+							</b:inputText>
+						</b:column>
+					</b:row>
+
+
+					
+					<br></br>
+
+					<p:commandButton action="#{TipoLogradouroController.gravarTipoLogradouro()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{TipoLogradouroController.tipo == 1}" />
+
+					<p:commandButton action="#{TipoLogradouroController.alterarTipoLogradouro()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{TipoLogradouroController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciartipologradouro.faces?faces-redirect=true">
+					</p:commandButton>
+
+				</h:form>
+			</div>
+
+		</div>
+
+	</ui:define>
+</ui:composition>

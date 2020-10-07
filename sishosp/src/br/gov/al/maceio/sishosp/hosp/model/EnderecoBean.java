@@ -28,7 +28,7 @@ public class EnderecoBean implements Serializable {
 	private Boolean cepValido;
 	private Boolean bairroUnico;
 	private ArrayList<String> listaEstados;
-	private LogradouroBean tipoLogradouro;
+	private TipoLogradouroBean tipoLogradouro;
 
 	public EnderecoBean() {
 		listaEstados = new ArrayList<>();
