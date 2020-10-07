@@ -44,6 +44,7 @@ pr.nome as nome_proc, grupo.id_grupo as codgrupo, grupo.descgrupo, e.descespecia
 c1.cid
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) 
+left join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento 
 inner join hosp.programa p on (a.codprograma = p.id_programa)
 inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
@@ -60,6 +61,7 @@ AND (($P{codunidade} IS NOT NULL AND a.cod_unidade=  $P{codunidade}) OR (( $P{co
 and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
 and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))
 and a.presenca = 'S'
 and coalesce(a1.excluido,'N') <>'S'
 and a.situacao <>'C'
