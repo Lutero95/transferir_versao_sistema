@@ -108,6 +108,11 @@ public class PacienteLog {
     
     private  String compararPacientesPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
         LogBean log = new LogBean();
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorAntigo))
+        	valorAntigo = " ";
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorNovo))
+        	valorNovo = " ";
+        
         log.adicionarDescricao(campo, valorAntigo, valorNovo);
         camposAlterados.add(campo);
         return log.getDescricao();
@@ -324,7 +329,7 @@ public class PacienteLog {
     private  String tratamentoValoresListaTelefones(List<Telefone> listaTelefones) throws ProjetoException {
     	
     	if(VerificadorUtil.verificarSeObjetoNulo(listaTelefones) || listaTelefones.isEmpty())
-    		return null;
+    		return " ";
     	else {
     		String valoresTelefone = "";
     		for (Telefone telefone : listaTelefones) {
