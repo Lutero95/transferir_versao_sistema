@@ -410,6 +410,7 @@ public class AtendimentoController implements Serializable {
         validarDadosSigtap();
         buscarDadosCidPorId();
         validarCidSigtap();
+        validarProcedimentoCidsSecundariosSigtap();
         boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
 
         if (alterou == true) {
@@ -445,6 +446,19 @@ public class AtendimentoController implements Serializable {
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), this.atendimento.getProcedimento().getCodProc());
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+        }
+    }
+    
+    private void validarProcedimentoCidsSecundariosSigtap() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+            LaudoController laudoController = new LaudoController();
+            
+            for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
+            	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente().getDtanascimento(), procedimentoCid.getProcedimento().getCodProc());
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente().getSexo());
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc());
+            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), atendimento.getDataAtendimentoInicio(), procedimentoCid.getProcedimento().getCodProc());	
+			}
         }
     }
 
@@ -906,12 +920,12 @@ public class AtendimentoController implements Serializable {
     	Integer idProcedimento = procedimentoCidSelecionado.getProcedimento().getIdProc();
     	Integer idCid = procedimentoCidSelecionado.getCid().getIdCid();
     	
-    	//if(!procedimentoCidJaFoiAdicionado(idProcedimento)) {
+    	if(!procedimentoCidJaFoiAdicionado(idProcedimento)) {
     		procedimentoCidSelecionado.setProcedimento(procedimentoDAO.listarProcedimentoPorId(idProcedimento));
     		procedimentoCidSelecionado.setCid(cidDao.buscaCidPorId(idCid));
     		this.atendimento.getListaProcedimentoCid().add(procedimentoCidSelecionado);
     		JSFUtil.fecharDialog("dlgConsultaProcedimentos");
-    	//}
+    	}
     }
     
     private boolean procedimentoCidJaFoiAdicionado(Integer idProcedimento) {

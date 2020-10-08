@@ -227,7 +227,6 @@
 						</b:column>
 					</p:row>
 
-
 					<br></br>
 					<br></br>
 
@@ -251,26 +250,26 @@
 		
 		<p:dialog header="Procedimento CID"
 			widgetVar="dlgConsultaProcedimentos" width="850px" height="200px"
-			styleClass="topDialog" dynamic="true" resizable="false" responsive="true" modal="true">
+			dynamic="true" resizable="false" responsive="true" modal="true">
 
 			<h:form id="frmPrincipalProc">
 				<p:outputPanel id="outDtProc2">
-					<p:autoUpdate/>
 					<p:row>
 						<b:column span="12">
 							<p:outputLabel value="Procedimento" severity="info"
 								style="margin-left: 1.4%; font-weight:bold !important;" />
-							<b:selectOneMenu update="frmPrincipalProc"
+							<p:selectOneMenu 
 								value="#{AtendimentoController.procedimentoCidSelecionado.procedimento.idProc}"
 								required="true" requiredMessage="Procedimento: Campo obrigatório"
 								style="margin-bottom: 1%; width: 100%;">
 								<f:selectItem itemLabel="Selecione um procedimento" itemValue=""/>
-								<f:selectItems var="proc2"
+								<f:selectItems var="proc2" 
 									value="#{AtendimentoController.listaProcedimentos}"
 									itemLabel="#{proc2.nomeProc}" itemValue="#{proc2.idProc}" />
 									
-								<f:ajax listener="#{AtendimentoController.buscarCidParaProcedimentoSecundario(AtendimentoController.procedimentoCidSelecionado.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
-							</b:selectOneMenu>
+								<p:ajax event="itemSelect" update="inputcid2" 
+									listener="#{AtendimentoController.buscarCidParaProcedimentoSecundario(AtendimentoController.procedimentoCidSelecionado.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
+							</p:selectOneMenu>
 						</b:column>
 					</p:row>
 					
@@ -281,9 +280,8 @@
 							
 							<p:outputLabel
 								value="#{AtendimentoController.procedimentoCidSelecionado.cid.descCidAbrev}" 
-								readonly="true" class="form-control select-agendaEquipe5"
-								required="true" requiredMessage="CID: Campo obrigatório"
-								id="inputcid2"/>
+								class="form-control select-agendaEquipe5" id="inputcid2">
+							</p:outputLabel>
 							<br />		
 						</b:column>
 					</p:row>
