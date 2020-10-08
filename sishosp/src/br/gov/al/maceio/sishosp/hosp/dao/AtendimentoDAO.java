@@ -1332,6 +1332,7 @@ public class AtendimentoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1,  atendimento.getId1());
 			stm.executeUpdate();
+			removerProcedimentosSecundariosEvolucao(con, atendimento.getId1());
 			gravarLiberacaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
 			con.commit();
 			alterado = true;
@@ -1347,6 +1348,23 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterado;
+	}
+	
+	private void removerProcedimentosSecundariosEvolucao(Connection conexao, Integer idAtendimento1) 
+			throws SQLException, ProjetoException {
+		
+		String sql = "DELETE FROM hosp.atendimentos1_procedimento_secundario WHERE id_atendimentos1 = ?; ";
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, idAtendimento1);
+			stm.executeUpdate();				
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 
 	private void gravarLiberacaoCancelamentoEvolucao
