@@ -307,6 +307,39 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+    
+    public Integer retonarQuantidadeAtendimentoComPresenca(Integer idPacienteInstituicao) throws ProjetoException {
+
+        Integer quantidade = 0;
+
+        String sql = "select count(*) quantidade from hosp.atendimentos1 a1 " + 
+        		"	join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+        		"	join hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id " + 
+        		"	where coalesce(a.presenca,'N') = 'S' and pi.id = ?;";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, idPacienteInstituicao);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                quantidade = rs.getInt("quantidade");
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return quantidade;
+    }
+
 
     public Boolean encaminharPaciente(GerenciarPacienteBean row, GerenciarPacienteBean gerenciar)
             throws ProjetoException {

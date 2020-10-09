@@ -44,6 +44,8 @@ public class GerenciarPacienteController implements Serializable {
 	private String campoBusca;
 	private GrupoDAO grupoDAO;
 	private EquipeDAO equipeDAO;
+	private boolean confirmouDesligamento;
+	private Integer quantidadeAtendimentosComPresenca;
 
 	// CONSTANTES
 	private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
@@ -131,19 +133,34 @@ public class GerenciarPacienteController implements Serializable {
 	}
 
 	public void desligarPaciente() throws ProjetoException {
-		Boolean cadastrou = false;
+		Boolean desligou = false;
 
-		cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
-
-		if (cadastrou) {
-			JSFUtil.fecharDialog("dlgDeslPac");
-			carregarPacientesInstituicao();
-			rowBean = new GerenciarPacienteBean();
-			JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
-		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o desligamento!", "Erro");
+		if(!existeAtendimentosComPresenca()) {
+			desligou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
+			confirmouDesligamento = false;
+			if (desligou) {
+				JSFUtil.fecharDialog("dlgConfirmaDeslPac");
+				JSFUtil.fecharDialog("dlgDeslPac");
+				carregarPacientesInstituicao();
+				rowBean = new GerenciarPacienteBean();
+				JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o desligamento!", "Erro");
+			}
 		}
-
+	}
+	
+	private boolean existeAtendimentosComPresenca() throws ProjetoException {
+		if(confirmouDesligamento)
+			return false;	
+		
+		this.quantidadeAtendimentosComPresenca = gDao.retonarQuantidadeAtendimentoComPresenca(rowBean.getId()); 
+		if(quantidadeAtendimentosComPresenca > 0) {
+			JSFUtil.abrirDialog("dlgConfirmaDeslPac");
+			return true;
+		}
+		
+		return false;
 	}
 
 	public void gerarEncaminhamento() throws ProjetoException {
@@ -280,6 +297,18 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setListaEquipe(List<EquipeBean> listaEquipe) {
 		this.listaEquipe = listaEquipe;
+	}
+
+	public Integer getQuantidadeAtendimentosComPresenca() {
+		return quantidadeAtendimentosComPresenca;
+	}
+
+	public boolean isConfirmouDesligamento() {
+		return confirmouDesligamento;
+	}
+
+	public void setConfirmouDesligamento(boolean confirmouDesligamento) {
+		this.confirmouDesligamento = confirmouDesligamento;
 	}
 	
 }
