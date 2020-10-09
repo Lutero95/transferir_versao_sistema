@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:body>
+<p:dialog widgetVar="dlgInconsistencias" resizable="false" draggable="false" closable="false"  height="300"
+          header="Inconsistências do Sistema" closeOnEscape="false"
+          responsive="true" modal="true"
+          visible="#{novidadeController.verificarCondicaoVisibleDialog()}">
+    <h:form id="formInconsistencias">
+        <div align="center">
+
+            <p:dataTable value="#{novidadeController.novidades}" var="novidade" rows="5"
+                         paginator="true" paginatorPosition="bottom" scrollable="true">
+
+                <p:column headerText="Marcar Como visualizado" width="50">
+                    <div align="center">
+                        <p:selectBooleanCheckbox value="#{novidade.visualizado}" />
+                    </div>
+                </p:column>
+
+                <p:column headerText="Novidade" width="200">
+                    <div align="center">
+                        <p:outputLabel value="#{novidade.novidade}" style="font-size:15px"/>
+                    </div>
+                </p:column>
+
+
+                <p:column headerText="Saiba Mais" width="100" >
+                    <div align="center">
+                        <p:commandButton icon="ui-icon-search" rendered="#{novidade.documento == null}" update="formDescricaoNovidade"
+                                         onclick="PF('dlgDescricaoNovidade').show();">
+                            <f:setPropertyActionListener value="#{novidade}" target="#{novidadeController.novidade}"/>
+                        </p:commandButton>
+
+                        <p:commandButton rendered="#{novidade.documento != null}" icon="ui-icon-search" ajax="false"
+                                title="Clique aqui para saber mais sobre essa novidade"         actionListener="#{novidadeController.visualizarAnexo(novidade)}" onclick="this.form.target='_blank'">
+                        </p:commandButton>
+                    </div>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:separator/>
+            <div>
+                <p:commandButton value="Fechar" ajax="true"
+                                 action="#{novidadeController.marcarVisualizado()}"
+                                 oncomplete="PF('dlgInconsistencias').hide();"/>
+            </div>
+        </div>
+    </h:form>
+</p:dialog>
+</h:body>
+</html>

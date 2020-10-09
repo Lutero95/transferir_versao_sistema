@@ -27,23 +27,25 @@
 										<p:graphicImage value="#{sis.imagem}" class="img-selsist"/>
 									</h:commandLink>
 									<div class="panel-body">
-										<center>
+										<div align="center">
 											<h:commandLink
 												actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
 												action="#{MBFuncionarios.redirecionar(sis.url)}">
 												<p:outputLabel class="texto-descr" value="#{sis.descricao}"
 													escape="true" />
 											</h:commandLink>
-										</center>
+										</div>
 									</div>
 								</div>
 
 							</b:column>
 					</ui:repeat>
+					<p:commandButton value="AAA" onclick="PF('dlgInconsistencias').show();"/>
 				</p:outputPanel>
 			</div>
 		</h:form>
 		<ui:include src="dialogs/dialogNovidades.xhtml"/>
 		<ui:include src="dialogs/dialogDescricaoNovidade.xhtml"/>
+		<ui:include src="dialogs/dialogInconsistencias.xhtml"/>
 	</ui:define>
 </ui:composition>
