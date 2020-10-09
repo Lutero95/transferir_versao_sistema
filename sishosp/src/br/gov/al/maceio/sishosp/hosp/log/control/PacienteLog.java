@@ -43,6 +43,9 @@ public class PacienteLog {
     
     private  final String CAMPO_LISTA_DE_TELEFONES = "Lista de Telefones";
 	private  final String NOME = " Nome: ";
+	private  final String GENERO = " Gênero: ";
+	private  final String GETCPF = "getCpf";
+	
 	private  PacienteBean pacienteAntigo;
     private  PacienteBean pacienteAtualizar;
     private  FuncionarioBean user_session  = 
@@ -74,7 +77,9 @@ public class PacienteLog {
 			i++;
 		}
 		
-		descricao += geraLogDaListaTelefones();
+		String logTelefones = geraLogDaListaTelefones(); 
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(logTelefones))
+			descricao += logTelefones;
         
         return new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_PACIENTE.getSigla());
     }
@@ -84,9 +89,14 @@ public class PacienteLog {
     }
     
     private  String geraLogDaListaTelefones() throws ProjetoException {
-        camposAlterados.add(CAMPO_LISTA_DE_TELEFONES);
-        return montarDescricaoListaTelefones(tratamentoValoresListaTelefones(telefonesExcluidos), 
+    	String descricaoListaTelefones = montarDescricaoListaTelefones(tratamentoValoresListaTelefones(telefonesExcluidos), 
         		tratamentoValoresListaTelefones(telefonesAdicionados));
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(descricaoListaTelefones)) {
+    		camposAlterados.add(CAMPO_LISTA_DE_TELEFONES);
+    		return descricaoListaTelefones;
+    	}
+    	return null;
+
 	}
 
 	private  void compararPacientesIniciarDados() throws ProjetoException {
@@ -108,8 +118,8 @@ public class PacienteLog {
     
     private  String compararPacientesPreencherGravarLog(String campo, String valorAntigo, String valorNovo) {
         LogBean log = new LogBean();
+
         log.adicionarDescricao(campo, valorAntigo, valorNovo);
-        camposAlterados.add(campo);
         return log.getDescricao();
     }
     
@@ -125,7 +135,7 @@ public class PacienteLog {
         Method[] metodosPublicos = cls.getDeclaredMethods();
         for (Method metodo : metodosPublicos) {
             if (StringUtils.retornarPrimeiroCaracter(metodo.getName()) == 'G') {
-                if (metodo.getReturnType().getName().equals(List.class.getName())) {
+                if (metodo.getReturnType().getName().equals(ArrayList.class.getName())) {
                     nomesCampos.add("ARRAY");
                 } else {
                     String[] campo = metodo.getName().split("get");
@@ -169,8 +179,14 @@ public class PacienteLog {
                 valoresMetodos.add(null);
             }
             
+            else if (metodo.getReturnType().getName().equals(Integer.class.getName()) 
+            		&& VerificadorUtil.verificarSeObjetoNuloOuZero(metodo.invoke(paciente)) ) {
+                valoresMetodos.add(null);
+            }
+            
             else if (metodo.getReturnType().getName().equals(Telefone.class.getName())
-            		|| metodo.getReturnType().getName().equals(EncaminhamentoBean.class.getName())) {
+            		|| metodo.getReturnType().getName().equals(EncaminhamentoBean.class.getName())
+            		|| metodo.getReturnType().getName().equals(List.class.getName()) ) {
             	valoresMetodos.add(null);
             }
             
@@ -210,11 +226,8 @@ public class PacienteLog {
             	tratamentoValoresEndereco(paciente.getEndereco(), valoresMetodos);
             }
             
-            else if (metodo.getReturnType().getName().equals(List.class.getName())) {
-            	valoresMetodos.add(null);
-//            	if(metodo.getName().equals("getListaTelefones")) {
-//            		tratamentoValoresListaTelefones(paciente.getListaTelefones(), valoresMetodos);
-//            	}
+            else if (metodo.getName().contains(GETCPF)) {
+            	valoresMetodos.add(StringUtils.stripAccents(metodo.invoke(paciente).toString().replaceAll("\\D", "")));
             }
             
             else if (metodo.getReturnType().getName().equals(Boolean.class.getName())) {
@@ -277,7 +290,7 @@ public class PacienteLog {
     		valoresMetodos.add(null);
     	else {
     		genero = new GeneroDAO().buscaGeneroPorId(genero.getId());
-    		valoresMetodos.add(genero.getId()+NOME+genero.getDescricao());
+    		valoresMetodos.add(genero.getId()+GENERO+genero.getDescricao());
     	}
     }
     
@@ -307,7 +320,7 @@ public class PacienteLog {
     		valoresMetodos.add(null);
     	else {
     		
-    		valoresMetodos.add(endereco.getCep());
+    		valoresMetodos.add(endereco.getCep().replaceAll("\\D", ""));
     		valoresMetodos.add(endereco.getLogradouro());
     		valoresMetodos.add(endereco.getComplemento());
     		valoresMetodos.add(endereco.getReferencia());
@@ -356,8 +369,16 @@ public class PacienteLog {
     	}
     }
     
-	public  String montarDescricaoListaTelefones(String valorAntigos, String valorNovos) {
-		return CAMPO_LISTA_DE_TELEFONES+ ": Itens Excluídos: "+valorAntigos+"\n, Itens Adicionados: "+valorNovos+"\n";
+	public  String montarDescricaoListaTelefones(String valorAntigos, String valorNovo) {
+		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorNovo) && 
+				VerificadorUtil.verificarSeObjetoNuloOuVazio(valorAntigos))
+			return null;
+		else if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorNovo))
+			return CAMPO_LISTA_DE_TELEFONES+ ": Itens Excluídos: "+valorAntigos+"\n";
+		else if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorAntigos))
+			return CAMPO_LISTA_DE_TELEFONES+ ": Itens Adicionados: "+valorNovo+"\n";
+		else
+			return CAMPO_LISTA_DE_TELEFONES+ ": Itens Excluídos: "+valorAntigos+"\n, Itens Adicionados: "+valorNovo+"\n";
 	}
     
     private  String retornarValoresBoolean(String valor) {

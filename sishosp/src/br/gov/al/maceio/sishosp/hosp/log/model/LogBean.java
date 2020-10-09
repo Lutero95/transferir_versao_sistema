@@ -1,7 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.log.model;
 
 import java.util.Date;
-
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 public class LogBean extends LogAbstract{
 
 	private String descricao;
@@ -27,11 +27,17 @@ public class LogBean extends LogAbstract{
 	public String getDescricao() {
 		return descricao;
 	}
-	public void adicionarDescricao(String campo, String valorAntigos, String valorNovos) {
-		this.descricao += campo+ ": Valor Antigo: "+valorAntigos+", Valor Novo: "+valorNovos+"\n";
+	public void adicionarDescricao(String campo, String valorAntigos, String valorNovo) {
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(valorNovo)
+				&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(valorAntigos)) {
+			this.descricao += campo+ ": Valor Antigo: "+valorAntigos+", Valor Novo: "+valorNovo+"\n";
+		}
+		else if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorNovo))
+			this.descricao += campo+ ": Valor Antigo: "+valorAntigos+"\n";
+
+		else if(VerificadorUtil.verificarSeObjetoNuloOuVazio(valorAntigos))
+			this.descricao += campo+ ": Valor Novo: "+valorNovo+"\n";
 	}
-
-
 
 
 }
