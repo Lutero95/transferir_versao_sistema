@@ -50,10 +50,11 @@ public class ProgramaController implements Serializable {
 	private CboBean cboSelecionado;
 	private GrupoBean grupo;
 	private BuscaGrupoFrequenciaDTO grupoFrequenciaDTOSelecionado;
-	private Integer frequencia;
 	private String tipoProcedimento;
 	private boolean adicionarProcedimentoPadrao;
 	private ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado;
+	private BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO;
+	private boolean editandoGrupo;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -76,6 +77,7 @@ public class ProgramaController implements Serializable {
 		this.cboDAO = new CboDAO();
 		this.procedimentoSelecionado = new ProcedimentoBean();
 		this.cboSelecionado = new CboBean();
+		this.buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO();
 	}
 
 	public String redirectEdit() {
@@ -257,18 +259,21 @@ public class ProgramaController implements Serializable {
 	}
 
 	public void validaFrequencia() {
-		if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.frequencia))
+		if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.buscaGrupoFrequenciaDTO.getFrequencia()))
 			JSFUtil.adicionarMensagemErro("Frequência: Campo Obrigatório", "");
-		else if (VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(this.frequencia))
+		else if (VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(this.buscaGrupoFrequenciaDTO.getFrequencia()))
 			JSFUtil.adicionarMensagemErro("Frequência não pode ser menor ou igual a zero", "");
 		else {
-			JSFUtil.fecharDialog("dlgFreq");
+			adicionarProcedimentoPadraoGrupo();
+		}
+	}
+	
+	private void adicionarProcedimentoPadraoGrupo() {
+		if(!grupoFoiAdicionado(this.buscaGrupoFrequenciaDTO.getGrupo())) {
+			this.prog.getListaGrupoFrequenciaDTO().add(buscaGrupoFrequenciaDTO);
 			JSFUtil.fecharDialog("dlgConsuGrupos");
-
-			if(!grupoFoiAdicionado(this.grupo)) {
-				BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO(this.grupo, this.frequencia);
-				this.prog.getListaGrupoFrequenciaDTO().add(buscaGrupoFrequenciaDTO);
-			}
+			JSFUtil.fecharDialog("dlgFreq");
+			JSFUtil.fecharDialog("dlgConsulProc");
 		}
 	}
 
@@ -300,6 +305,11 @@ public class ProgramaController implements Serializable {
 
 	public void configuraDialogProcedimentosParaProcedimentoPermitido() {
 		this.tipoProcedimento = TipoProcedimentoPrograma.PROCEDIMENTO_PERMITIDO.getSigla();
+	}
+	
+	public void configuraDialogProcedimentosParaProcedimentoGrupo() {
+		this.tipoProcedimento = TipoProcedimentoPrograma.PROCEDIMENTO_PADRAO_PARA_GRUPO.getSigla();
+		JSFUtil.abrirDialog("dlgConsulProc");
 	}
 
 	public void selecionaProcedimentoIdadeEspecifica() {
@@ -462,7 +472,7 @@ public class ProgramaController implements Serializable {
 	}
 
 	public void limparFrequencia() {
-		this.frequencia = 0;
+		this.buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO();
 	}
 
 	public void corrigeDiasAtivoPacienteSemLaudo(boolean permitePacienteSemLaudo) {
@@ -478,6 +488,33 @@ public class ProgramaController implements Serializable {
 		}
 
 		return true;
+	}
+	
+	public void setaEditandoGrupoFalse() {
+		this.editandoGrupo = false;
+	}
+	
+	public void setaEditandoGrupoTrue() {
+		this.editandoGrupo = true;
+		JSFUtil.abrirDialog("dlgFreq");
+	}
+	
+	public void selecionaGrupo(BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO) {
+		this.buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO();
+		this.buscaGrupoFrequenciaDTO.setFrequencia(buscaGrupoFrequenciaDTO.getFrequencia());
+		this.buscaGrupoFrequenciaDTO.setGrupo(buscaGrupoFrequenciaDTO.getGrupo());
+		this.buscaGrupoFrequenciaDTO.setProcedimentoPadao(buscaGrupoFrequenciaDTO.getProcedimentoPadao());
+	}
+	
+	public void editarGrupoLista() {
+		for(int i = 0; i < this.prog.getListaGrupoFrequenciaDTO().size(); i++) {
+			if(this.prog.getListaGrupoFrequenciaDTO().get(i).getGrupo().getIdGrupo().equals
+					(buscaGrupoFrequenciaDTO.getGrupo().getIdGrupo())) {
+				this.prog.getListaGrupoFrequenciaDTO().set(i, buscaGrupoFrequenciaDTO);
+				JSFUtil.fecharDialog("dlgFreq");
+				break;
+			}
+		}
 	}
 
 	public void selecionarCbo(CboBean cbo) {
@@ -564,14 +601,6 @@ public class ProgramaController implements Serializable {
 		this.grupo = grupo;
 	}
 
-	public Integer getFrequencia() {
-		return frequencia;
-	}
-
-	public void setFrequencia(Integer frequencia) {
-		this.frequencia = frequencia;
-	}
-
 	public BuscaGrupoFrequenciaDTO getGrupoFrequenciaDTOSelecionado() {
 		return grupoFrequenciaDTOSelecionado;
 	}
@@ -603,6 +632,22 @@ public class ProgramaController implements Serializable {
 	public void setProcedimentoIdadeEspecificaSelecionado(
 			ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado) {
 		this.procedimentoIdadeEspecificaSelecionado = procedimentoIdadeEspecificaSelecionado;
+	}
+
+	public BuscaGrupoFrequenciaDTO getBuscaGrupoFrequenciaDTO() {
+		return buscaGrupoFrequenciaDTO;
+	}
+
+	public void setBuscaGrupoFrequenciaDTO(BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO) {
+		this.buscaGrupoFrequenciaDTO = buscaGrupoFrequenciaDTO;
+	}
+
+	public boolean isEditandoGrupo() {
+		return editandoGrupo;
+	}
+
+	public void setEditandoGrupo(boolean editandoGrupo) {
+		this.editandoGrupo = editandoGrupo;
 	}
 
 }

@@ -256,31 +256,6 @@ public class GrupoDAO {
         return lista;
     }
 
-    public Integer buscaFrequenciaDeGrupoPrograma(Integer idPrograma, Integer idGrupo, Connection conAuxiliar)
-            throws ProjetoException, SQLException {
-
-        Integer frequencia = 0;
-        String sql = "SELECT qtdfrequencia FROM hosp.grupo_programa where codprograma = ? and codgrupo = ?; ";
-        try {
-            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-            stm.setInt(1, idPrograma);
-            stm.setInt(2, idGrupo);
-            ResultSet rs = stm.executeQuery();
-
-            if (rs.next()) {
-                frequencia = rs.getInt("qtdfrequencia");
-            }
-
-        } catch (SQLException sqle) {
-            conAuxiliar.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            conAuxiliar.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return frequencia;
-    }
-
     public List<GrupoBean> listarGruposPorTipoAtend(int idTipo, Connection conAuxiliar)
             throws ProjetoException, SQLException {
         List<GrupoBean> lista = new ArrayList<>();
@@ -650,9 +625,13 @@ public class GrupoDAO {
     public List<BuscaGrupoFrequenciaDTO> buscaGruposComFrequecia(int codPrograma, Connection conAuxiliar)
             throws ProjetoException, SQLException {
         List<BuscaGrupoFrequenciaDTO> lista = new ArrayList<>();
-        String sql = "select distinct g.id_grupo, g.descgrupo, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
-                + "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
-                + "where p.id_programa = ?";
+        String sql = "select distinct g.id_grupo, g.descgrupo, g.auditivo, g.equipe, g.insercao_pac_institut, " + 
+        		"gp.id_procedimento_padrao, gp.qtdfrequencia, pr.id id_procedimento, pr.nome procedimento " + 
+        		"from hosp.grupo g  " + 
+        		"left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) " + 
+        		"left join hosp.programa p on (gp.codprograma = p.id_programa)  " + 
+        		"left join hosp.proc pr on (gp.id_procedimento_padrao = pr.id ) " + 
+        		"where p.id_programa = ?";
 
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
@@ -661,12 +640,15 @@ public class GrupoDAO {
 
             while (rs.next()) {
                 BuscaGrupoFrequenciaDTO grupoDTO = new BuscaGrupoFrequenciaDTO();
+                
                 grupoDTO.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
                 grupoDTO.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 grupoDTO.getGrupo().setAuditivo(rs.getBoolean("auditivo"));
                 grupoDTO.getGrupo().setEquipeSim(rs.getBoolean("equipe"));
                 grupoDTO.getGrupo().setinsercao_pac_institut(rs.getBoolean("insercao_pac_institut"));
-                grupoDTO.setFrequencia(buscaFrequenciaDeGrupoPrograma(codPrograma, rs.getInt("id_grupo"), conAuxiliar));
+                grupoDTO.getProcedimentoPadao().setIdProc(rs.getInt("id_procedimento"));
+                grupoDTO.getProcedimentoPadao().setNomeProc(rs.getString("procedimento"));
+                grupoDTO.setFrequencia(rs.getInt("qtdfrequencia"));
                 lista.add(grupoDTO);
             }
 

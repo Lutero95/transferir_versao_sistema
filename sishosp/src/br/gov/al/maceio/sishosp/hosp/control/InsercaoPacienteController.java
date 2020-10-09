@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -760,9 +761,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	return false;
     }
     
-    public void validarInsercaoPaciente() throws ProjetoException {
+    public void validarInsercaoPaciente() throws ProjetoException, SQLException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
-    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma().getProcedimento())) {
+    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo())) {
 			
 //			  GerenciarPacienteController gerenciarPacienteController = new
 //			  GerenciarPacienteController(); 
@@ -810,9 +811,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	}
     }
     
-    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProcedimentoBean procedimentoPrograma) {
-    	if(!procedimentoLaudo.getIdProc().equals(procedimentoPrograma.getIdProc())) {
-    		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incopatível com o Procedimento do Programa", "");
+    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, GrupoBean grupo) throws ProjetoException, SQLException {
+    	ProgramaDAO pDAo = new ProgramaDAO();
+    	ProcedimentoBean procedimentoPadraoGrupo = pDAo.retornaProcedimentoPadraoDoGrupoNoPrograma(programa, grupo);
+        if((!procedimentoLaudo.getIdProc().equals(programa.getProcedimento().getIdProc())) && ((procedimentoPadraoGrupo!=null) && (!procedimentoLaudo.getIdProc().equals(procedimentoPadraoGrupo.getIdProc())))) {
+    		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incompatível com o Procedimento do Programa/Grupo Selecionado", "");
     		return false;
     	}
     	return true;

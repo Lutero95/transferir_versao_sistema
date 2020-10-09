@@ -343,7 +343,8 @@ public class AlteracaoPacienteDAO {
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
-										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, conexao);
+										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
+												listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -709,7 +710,7 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
-												insercao.getPaciente().getId_paciente(), conexao);
+												insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -990,7 +991,7 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
-												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -1124,7 +1125,7 @@ public class AlteracaoPacienteDAO {
 
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
-								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), conexao);
+								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 
 				PreparedStatement ps7 = null;
 				ps7 = conexao.prepareStatement(sql7);

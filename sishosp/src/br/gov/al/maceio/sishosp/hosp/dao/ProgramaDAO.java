@@ -15,11 +15,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
@@ -58,18 +54,7 @@ public class ProgramaDAO {
                 prog.setIdPrograma(rs.getInt("id_programa"));
             }
 
-            String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?, ?, ?);";
-            PreparedStatement ps2 = con.prepareStatement(sql2);
-
-            if (!prog.getListaGrupoFrequenciaDTO().isEmpty()) {
-                for (int i = 0; i < prog.getListaGrupoFrequenciaDTO().size(); i++) {
-                    ps2.setInt(1, prog.getIdPrograma());
-                    ps2.setInt(2, prog.getListaGrupoFrequenciaDTO().get(i).getGrupo().getIdGrupo());
-                    ps2.setInt(3, prog.getListaGrupoFrequenciaDTO().get(i).getFrequencia());
-                    ps2.execute();
-                }
-            }
-
+            inserirGruposPrograma(prog, con);
             inserirProcedimentosIhCbosEspecificos(prog, con);
             inserirProcedimentosParaIdadesEspecificas(prog, con);
             inserirEspecialidadesPrograma(prog, con);
@@ -111,22 +96,8 @@ public class ProgramaDAO {
             stmt.setInt(6, prog.getIdPrograma());
             stmt.executeUpdate();
 
-            String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
-            PreparedStatement stmt2 = con.prepareStatement(sql2);
-            stmt2.setLong(1, prog.getIdPrograma());
-            stmt2.execute();
-
-            String sql3 = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia) values(?,?,?);";
-            PreparedStatement stmt3 = con.prepareStatement(sql3);
-
-            if (!prog.getListaGrupoFrequenciaDTO().isEmpty()) {
-                for (int i = 0; i < prog.getListaGrupoFrequenciaDTO().size(); i++) {
-                    stmt3.setInt(1, prog.getIdPrograma());
-                    stmt3.setInt(2, prog.getListaGrupoFrequenciaDTO().get(i).getGrupo().getIdGrupo());
-                    stmt3.setInt(3, prog.getListaGrupoFrequenciaDTO().get(i).getFrequencia());
-                    stmt3.execute();
-                }
-            }
+            excluirGruposPrograma(prog.getIdPrograma(), con);
+            inserirGruposPrograma(prog, con);
 
             excluirProcedimentosIhCbosEspecificos(prog.getIdPrograma(), con);
             inserirProcedimentosIhCbosEspecificos(prog, con);
@@ -723,6 +694,53 @@ public class ProgramaDAO {
         }
         return lista;
     }
+    
+    private void excluirGruposPrograma(Integer idPrograma, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+        try {
+            String sql = "delete from hosp.grupo_programa where codprograma = ?";
+
+            PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+            stmt.setInt(1, idPrograma);
+            stmt.executeUpdate();
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+    }
+    
+    private void inserirGruposPrograma (ProgramaBean programa, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+        try {
+            String sql = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia, id_procedimento_padrao) values(?,?,?,?);";;
+
+            PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+			for (BuscaGrupoFrequenciaDTO grupoFrequencia : programa.getListaGrupoFrequenciaDTO()) {
+				stmt.setInt(1, programa.getIdPrograma());
+				stmt.setInt(2, grupoFrequencia.getGrupo().getIdGrupo());
+				stmt.setInt(3, grupoFrequencia.getFrequencia());
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(grupoFrequencia.getProcedimentoPadao().getIdProc()))
+					stmt.setNull(4, Types.NULL);
+				else
+					stmt.setInt(4, grupoFrequencia.getProcedimentoPadao().getIdProc());
+				stmt.executeUpdate();
+			}
+            
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+    }
+
 
     private void excluirProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar)
             throws ProjetoException, SQLException {
@@ -741,7 +759,8 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
-
+    
+    
     private void inserirProcedimentosIhCbosEspecificos (ProgramaBean programa, Connection conAuxiliar)
             throws ProjetoException, SQLException {
 
@@ -928,7 +947,7 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
-
+    
     private List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar)
             throws SQLException, ProjetoException {
 
@@ -1247,5 +1266,32 @@ public class ProgramaDAO {
         }
 
         return lista;
+    }
+
+    public ProcedimentoBean retornaProcedimentoPadraoDoGrupoNoPrograma (ProgramaBean programa, GrupoBean grupo)
+            throws ProjetoException, SQLException {
+        ProcedimentoBean procedimento = null;
+        try {
+            con = ConnectionFactory.getConnection();
+            String sql = "select id_procedimento_padrao from  hosp.grupo_programa gp where gp.codprograma =? and gp.codgrupo=?";;
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+                stmt.setInt(1, programa.getIdPrograma());
+                stmt.setInt(2, grupo.getIdGrupo());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id_procedimento_padrao"));
+            }
+
+        } catch (SQLException sqle) {
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return procedimento;
     }
 }

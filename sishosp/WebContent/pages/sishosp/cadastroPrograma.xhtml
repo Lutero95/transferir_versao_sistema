@@ -52,28 +52,33 @@
 
 									<p:commandButton process="@this" size="sm"
 										action="#{GrupoController.listaTodosGrupos()}"
+										actionListener="#{ProgramaController.setaEditandoGrupoFalse()}"
 										title="Incluir Grupo" icon="ui-icon-plus"
 										class="btn-acao-table acao-editar" style="margin-left: 20px;"
 										oncomplete="PF('dlgConsuGrupos').show();"
 										update=":formConsuGrop" />
 								</b:column>
 
-								<b:column span="9" class="label-position">
+								<b:column span="12">
 
 									<p:dataTable emptyMessage="Nenhum Grupo"
-										styleClass="table table-hover" id="tabela"
+										id="tabela"
 										value="#{ProgramaController.prog.listaGrupoFrequenciaDTO}" var="tab"
 										paginator="true" paginatorPosition="bottom" rows="12"
 										reflow="true"
-										resizableColumns="true" style="width:100%" scrollable="false">
+										resizableColumns="true">
 
 										<p:column width="20%" headerText="Código"
 											style="font-weight:bold;">
 											<h:outputText value="#{tab.grupo.idGrupo}" />
 										</p:column>
 
-										<p:column headerText="Nome" style="font-weight:bold;">
+										<p:column headerText="Grupo" style="font-weight:bold;">
 											<h:outputText value="#{tab.grupo.descGrupo}" />
+										</p:column>
+										
+										<p:column headerText="Procedimento Padrão" style="font-weight:bold;">
+											<h:outputText value="#{tab.procedimentoPadao.nomeProc}" />
 										</p:column>
 										
 										<p:column headerText="Frequência para o Programa" style="font-weight:bold;">
@@ -83,14 +88,19 @@
 										<p:column width="10%" headerText="Ação">
 											<div align="center">
 												<p:commandButton process="@this"
+													class="new-btn-acao-table acao-editar"
+													icon="ui-icon-pencil" update=":formFreq"
+													actionListener="#{ProgramaController.selecionaGrupo(tab)}"
+													action="#{ProgramaController.setaEditandoGrupoTrue()}"/>
+													 
+												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
 													action="#{ProgramaController.removerGrupoFrequenciaDTO(tab)}"
 													icon="ui-icon-trash" update="frmPrincipal:tab:tabela"/>
 											</div>
 										</p:column>
-
 									</p:dataTable>
-
+									<br />
 								</b:column>
 							</b:row>
 
@@ -419,9 +429,9 @@
 									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar"
 									oncomplete="PF('dlgFreq').show();"
-									action="#{ProgramaController.limparFrequencia()}">
+									actionListener="#{ProgramaController.limparFrequencia()}">
 									<f:setPropertyActionListener value="#{grupo}"
-										target="#{ProgramaController.grupo}" />
+										target="#{ProgramaController.buscaGrupoFrequenciaDTO.grupo}" />
 								</p:commandButton>
 							</div>
                         </h:column>
@@ -432,22 +442,50 @@
         </p:dialog>
         
         
-        <p:dialog header="Selecione a Frequência"
+        <p:dialog header="Grupo: #{ProgramaController.grupo.descGrupo}" width="350"
         		  widgetVar="dlgFreq" draggable="true" responsive="true"
                   modal="true" styleClass="topDialog" resizable="false">
             <h:form id="formFreq">
-            	<h:outputLabel value="Frequência do Grupo #{ProgramaController.grupo.descGrupo} para o Programa"/>
-				
-				<div align="center">
-					<div>
-						<p:spinner value="#{ProgramaController.frequencia}"/>
-					</div>
+				<b:row class="label-position new-data-size new-comple1">
+					<br />
+					<b:label value="Frequência" severity="info" />
+					<br />
+					<p:spinner value="#{ProgramaController.buscaGrupoFrequenciaDTO.frequencia}" required="true"
+						requiredMessage="Frequência: Campo obrigatório" min="0" style="margin-left: -4%;"/>
+				</b:row>
 
+				<b:row class="label-position new-data-size new-comple1">
+					<b:label value="Procedimento" severity="info" />
+
+					<p:outputPanel id="outProc">
+						<p:autoComplete value="#{ProgramaController.buscaGrupoFrequenciaDTO.procedimentoPadao}"
+							size="31" converter="conProcedimento"
+							class="select-agendaEquipe4" 
+							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							readonly="true"
+							itemLabel="#{theme.nomeProc}"/>
+
+						<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+							update=":formConsulProc" oncomplete="PF('dlgConsulProc').show();"
+							immediate="true"
+							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoGrupo}" />
+					</p:outputPanel>
+				</b:row>
+
+				<div align="center">
 					<div>
 						<br /><br />
 						<p:commandButton update=":frmPrincipal:tab:tabela, :msgPagina"
-							value="Confirmar" title="Confirmar"
-							action="#{ProgramaController.validaFrequencia()}"/>
+							value="Confirmar" title="Confirmar" process="@form"
+							action="#{ProgramaController.validaFrequencia()}"
+							rendered="#{ProgramaController.editandoGrupo == false}"/>
+							
+						<p:commandButton update=":frmPrincipal:tab:tabela, :msgPagina"
+							value="Confirmar" title="Confirmar" process="@form"
+							action="#{ProgramaController.editarGrupoLista()}"
+							rendered="#{ProgramaController.editandoGrupo == true}"/>	
 					</div>
 				</div>
 			</h:form>
@@ -493,10 +531,21 @@
 								
 								<p:commandButton
 									rendered="#{ProgramaController.tipoProcedimento == 'PP'}"
-									icon="fa fa-fw fa-plus" title="Selecionar"
+									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar" 
 									update=":frmPrincipal:tab:tabProcedimento :msgPagina"
 									action="#{ProgramaController.adicionarProcedimentoPermitido(proc)}"/>
+									
+								<p:commandButton
+									rendered="#{ProgramaController.tipoProcedimento == 'PG'}"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar" 
+									update=":formFreq:outProc :msgPagina"
+									oncomplete="PF('dlgConsulProc').hide();"
+									process="@this">
+									<f:setPropertyActionListener value="#{proc}"
+										target="#{ProgramaController.buscaGrupoFrequenciaDTO.procedimentoPadao}" />
+								</p:commandButton>
 							</div>
                         </h:column>
                     </b:dataTable>

@@ -780,7 +780,7 @@ public class AlteracaoPacienteController implements Serializable {
     	return VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getId());
     }
 
-    public void gravarAlteracaoPaciente() throws ProjetoException {
+    public void gravarAlteracaoPaciente() throws ProjetoException, SQLException {
     	InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
     	
     	Date dataSolicitacaoCorreta = insercao.getDataSolicitacao();
@@ -793,7 +793,7 @@ public class AlteracaoPacienteController implements Serializable {
     					insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
     					insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
     			
-    			if(!insercaoPacienteController.procedimentoValido(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma().getProcedimento()))
+    			if(!insercaoPacienteController.procedimentoValido(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo()))
     				return;
     		}				
     		

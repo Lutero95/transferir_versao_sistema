@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -672,13 +673,13 @@ public class RenovacaoPacienteController implements Serializable {
         listaProfissionaisAdicionados.remove(funcionario);
     }
 
-    public void gravarRenovacaoPaciente() throws ProjetoException {
+    public void gravarRenovacaoPaciente() throws ProjetoException, SQLException {
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
 		InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 		
         if (((insercaoParaLaudo.getLaudo() != null) && (insercaoParaLaudo.getLaudo().getId() != null)) || ((insercaoParaLaudo.getPaciente() != null) && (insercaoParaLaudo.getPaciente().getId_paciente() != null))) {
 			if (verificaPeriodoValidoRenovacaoLaudo() && 
-					insercaoPacienteController.procedimentoValido(retornaProcedimentoLaudo(), insercao.getPrograma().getProcedimento())) { 
+					insercaoPacienteController.procedimentoValido(retornaProcedimentoLaudo(), insercao.getPrograma(), insercao.getGrupo())) {
 																					// Verifica se a data de renovacao
 																					// está dentro do periodo do laudo
 																					// ou da nova solicitacao sem laudo
