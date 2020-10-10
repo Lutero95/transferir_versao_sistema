@@ -1537,5 +1537,47 @@ public class AtendimentoDAO {
 		}
 		return listaAnos;
 	}
+	
+	public Integer retornaTotalAtendimentosDeUmPeriodo(Date dataInicio, Date dataFim) throws ProjetoException {
+
+		Integer totalAtendimentos = null;
+		
+		String sql = "select count(*) total " + 
+				"from hosp.atendimentos a " + 
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " + 
+				"join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " + 
+				"inner join hosp.programa p on (a.codprograma = p.id_programa) " + 
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) " + 
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " + 
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " + 
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" + 
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " + 
+				"where sa.atendimento_realizado is true " + 
+				"and a.dtaatende between ? and ?;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				totalAtendimentos = rs.getInt("total");
+			}
+			
+		}catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return totalAtendimentos;
+	}
 
 }

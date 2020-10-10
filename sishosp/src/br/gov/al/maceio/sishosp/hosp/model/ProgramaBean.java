@@ -38,6 +38,8 @@ public class ProgramaBean implements Serializable {
     private boolean permitePacienteSemLaudo;
     private Integer diasPacienteSemLaudoAtivo;
     private boolean permiteAlteracaoCidNaEvolucao;
+    private Integer idClassificacao;
+    private Integer idServico;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -232,6 +234,22 @@ public class ProgramaBean implements Serializable {
 
 	public void setPermiteAlteracaoCidNaEvolucao(boolean permiteAlteracaoCidNaEvolucao) {
 		this.permiteAlteracaoCidNaEvolucao = permiteAlteracaoCidNaEvolucao;
+	}
+
+	public Integer getIdClassificacao() {
+		return idClassificacao;
+	}
+
+	public void setIdClassificacao(Integer idClassificacao) {
+		this.idClassificacao = idClassificacao;
+	}
+
+	public Integer getIdServico() {
+		return idServico;
+	}
+
+	public void setIdServico(Integer idServico) {
+		this.idServico = idServico;
 	}
 	
 }

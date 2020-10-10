@@ -16,6 +16,11 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
@@ -489,7 +494,7 @@ public class ProgramaDAO {
 
         ProgramaBean programa = new ProgramaBean();
         String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo from hosp.programa "
-        		+ "join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? and proc.ativo = 'S'  order by descprograma";
+                + "join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? and proc.ativo = 'S'  order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -694,7 +699,7 @@ public class ProgramaDAO {
         }
         return lista;
     }
-    
+
     private void excluirGruposPrograma(Integer idPrograma, Connection conAuxiliar)
             throws ProjetoException, SQLException {
 
@@ -712,7 +717,7 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
-    
+
     private void inserirGruposPrograma (ProgramaBean programa, Connection conAuxiliar)
             throws ProjetoException, SQLException {
 
@@ -720,18 +725,18 @@ public class ProgramaDAO {
             String sql = "insert into hosp.grupo_programa (codprograma, codgrupo, qtdfrequencia, id_procedimento_padrao) values(?,?,?,?);";;
 
             PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
-			for (BuscaGrupoFrequenciaDTO grupoFrequencia : programa.getListaGrupoFrequenciaDTO()) {
-				stmt.setInt(1, programa.getIdPrograma());
-				stmt.setInt(2, grupoFrequencia.getGrupo().getIdGrupo());
-				stmt.setInt(3, grupoFrequencia.getFrequencia());
-				
-				if(VerificadorUtil.verificarSeObjetoNuloOuZero(grupoFrequencia.getProcedimentoPadao().getIdProc()))
-					stmt.setNull(4, Types.NULL);
-				else
-					stmt.setInt(4, grupoFrequencia.getProcedimentoPadao().getIdProc());
-				stmt.executeUpdate();
-			}
-            
+            for (BuscaGrupoFrequenciaDTO grupoFrequencia : programa.getListaGrupoFrequenciaDTO()) {
+                stmt.setInt(1, programa.getIdPrograma());
+                stmt.setInt(2, grupoFrequencia.getGrupo().getIdGrupo());
+                stmt.setInt(3, grupoFrequencia.getFrequencia());
+
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(grupoFrequencia.getProcedimentoPadao().getIdProc()))
+                    stmt.setNull(4, Types.NULL);
+                else
+                    stmt.setInt(4, grupoFrequencia.getProcedimentoPadao().getIdProc());
+                stmt.executeUpdate();
+            }
+
         } catch (SQLException sqle) {
             conAuxiliar.rollback();
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -759,8 +764,8 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
-    
-    
+
+
     private void inserirProcedimentosIhCbosEspecificos (ProgramaBean programa, Connection conAuxiliar)
             throws ProjetoException, SQLException {
 
@@ -947,7 +952,7 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
-    
+
     private List<ProcedimentoCboEspecificoDTO> listarProcedimentosIhCbosEspecificos(Integer idPrograma, Connection conAuxiliar)
             throws SQLException, ProjetoException {
 
@@ -1276,8 +1281,8 @@ public class ProgramaDAO {
             String sql = "select id_procedimento_padrao from  hosp.grupo_programa gp where gp.codprograma =? and gp.codgrupo=?";;
 
             PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setInt(1, programa.getIdPrograma());
-                stmt.setInt(2, grupo.getIdGrupo());
+            stmt.setInt(1, programa.getIdPrograma());
+            stmt.setInt(2, grupo.getIdGrupo());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -1293,5 +1298,39 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
         return procedimento;
+    }
+
+    public ProgramaBean retornarProgramaInconsistente() throws SQLException, ProjetoException {
+
+        ProgramaBean programa = null;
+
+        String sql = "select p.id_programa, p.descprograma, p.id_classificacao,  p.id_servico " +
+                "	from hosp.programa p where " +
+                "	(p.id_classificacao is null or p.id_servico is null);";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setIdClassificacao(rs.getInt("id_classificacao"));
+                programa.setIdServico(rs.getInt("id_servico"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return programa;
     }
 }

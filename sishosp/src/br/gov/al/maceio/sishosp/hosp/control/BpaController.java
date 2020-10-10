@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -27,8 +28,11 @@ import org.primefaces.model.StreamedContent;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
@@ -36,6 +40,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.MesExtensaoArquivoBPA;
 import br.gov.al.maceio.sishosp.hosp.model.BpaCabecalhoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean
 @ViewScoped
@@ -91,30 +96,83 @@ public class BpaController {
 		return context;
 	}
 	
-	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException {
+	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException, SQLException {
 		try {
+			limparDadosLayoutGerado();
 			this.competencia = formataCompetenciaParaBanco();
 			setaDataInicioIhFimAtendimento(this.competencia);
 			executaMetodosParaGerarBpaConsolidado();
 			executaMetodosParaGerarBpaIndividualizado();
 			executaMetodosParaGerarBpaCabecalho();
 			
-			adicionarCabecalho();
-			adicionarLinhasBpaConsolidado();
-			adicionarLinhasBpaIndividualizado();
-			this.extensao = gerarExtensaoArquivo(this.competencia);
-			this.descricaoArquivo = NOME_ARQUIVO+extensao;
-			String caminhoIhArquivo = PASTA_RAIZ+NOME_ARQUIVO+extensao; 
+			if (!existeInconsistencias()) {
+				adicionarCabecalho();
+				adicionarLinhasBpaConsolidado();
+				adicionarLinhasBpaIndividualizado();
+				this.extensao = gerarExtensaoArquivo(this.competencia);
+				this.descricaoArquivo = NOME_ARQUIVO + extensao;
+				String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + extensao;
 
-			Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
-			Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
-			limparDadosLayoutGerado();
+				Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
+				Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
+			}
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
 		} catch (ProjetoException pe) {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
+	}
+	
+	private boolean existeInconsistencias() throws SQLException, ProjetoException {
+		if (verificarInconsistenciaPrograma() || verificarInconsistenciaQuantidadeAtendimentos())
+			return true;
+		return false;
+	}
+	
+	private boolean verificarInconsistenciaPrograma() throws SQLException, ProjetoException {
+		ProgramaBean programa = new ProgramaDAO().retornarProgramaInconsistente();
+		if(!VerificadorUtil.verificarSeObjetoNulo(programa)) {
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdServico())
+					&& VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdClassificacao()) ) {
+				JSFUtil.adicionarMensagemErro
+					( "O programa " +programa.getDescPrograma()+" não possui serviço e classificação corrija essa inconsistência", "Erro");
+			}
+			else if (VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdServico())) {
+				JSFUtil.adicionarMensagemErro ( "O programa " +programa.getDescPrograma()+" não possui serviço corrija essa inconsistência", "Erro");
+			}
+			else {
+				JSFUtil.adicionarMensagemErro ( "O programa " +programa.getDescPrograma()+" não possui classificação corrija essa inconsistência", "Erro");
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean verificarInconsistenciaQuantidadeAtendimentos() throws ProjetoException {
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento);
+		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
+		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
+			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
+			return true;
+		}
+		else if (totalAtendimentoGeradoBPA > totalAtendimentos) {
+			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
+			return true;
+		}
+		return false;
+	}
+	
+	private Integer calculaTotalAtendimentoBPA() {
+		Integer totalAtendimentos = 0;
+		for (BpaConsolidadoBean bpaConsolidado : listaDeBpaConsolidado) {
+			totalAtendimentos += Integer.valueOf(bpaConsolidado.getPrdQt());
+		}
+		
+		for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
+			totalAtendimentos += Integer.valueOf(bpaIndividualizado.getPrdQt());
+		}
+		return totalAtendimentos;
 	}
 
 	private void limparDadosLayoutGerado() {
@@ -125,7 +183,11 @@ public class BpaController {
 	}
 	
 	public StreamedContent download() throws IOException, ProjetoException {
-        StreamedContent file;
+        StreamedContent file = null;
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(this.descricaoArquivo)) {
+        	return file;
+        }
+        
         InputStream stream = new FileInputStream(
                 this.getServleContext().getRealPath(PASTA_RAIZ) + File.separator + this.descricaoArquivo);
 
