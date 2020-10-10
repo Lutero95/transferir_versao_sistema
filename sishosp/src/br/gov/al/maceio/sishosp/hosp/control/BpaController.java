@@ -179,6 +179,8 @@ public class BpaController {
 		this.linhasLayoutImportacao = new ArrayList<String>();
 		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
+		this.extensao = null;
+		this.descricaoArquivo = null;
 		this.bpaCabecalho = new BpaCabecalhoBean();
 	}
 	
