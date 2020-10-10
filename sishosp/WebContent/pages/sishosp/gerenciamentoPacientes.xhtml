@@ -504,7 +504,6 @@
                     </b:column>
                 </b:row>
                 <b:row>
-
                     <b:column span="12" class="label-position">
                         <b:label for="obs" value="Observação:" severity="info"/>
 
@@ -512,13 +511,10 @@
                                          value="#{GerenciarPacienteController.gerenciarpaciente.observacao}"
                                          autoResize="false"/>
                     </b:column>
-
                 </b:row>
-
-                <br></br>
+                <br />
 
                 <b:row>
-
                     <b:column span="12" class="label-position">
                         <b:label for="obs" value="Motivo:" severity="info"/>
 
@@ -534,7 +530,6 @@
                             </b:selectOneMenu>
                         </p:outputPanel>
                     </b:column>
-
                 </b:row>
 
                 <div align="center">
@@ -542,16 +537,39 @@
                     <p:commandButton value="Desligar" id="b1"
                                      icon="ui-icon-check"
                                      actionListener="#{GerenciarPacienteController.desligarPaciente}"
-                                     update=":formDeslPac:grwdesligamento, :frmEquipamentos:dtNovosAg, :formGerenPaci:botoes"
+                                     update=":formDeslPac:grwdesligamento, :frmEquipamentos:dtNovosAg, :formGerenPaci:botoes, formConfirmaDeslPac"
                                      class="btn-incluir" />
-                                     
-                                     
-
                 </div>
-
             </h:form>
         </p:dialog>
 
-    </ui:define>
+		<p:dialog header="Confirmar Desligamento de Paciente" widgetVar="dlgConfirmaDeslPac"
+			dynamic="true" styleClass="topDialog" width="400" height="auto"
+			modal="true" responsive="true" resizable="false">
+
+			<h:form id="formConfirmaDeslPac">
+				<STRONG>
+					<h:outputLabel value="Existe(m) #{GerenciarPacienteController.quantidadeAtendimentosComPresenca} 
+					atendimento(s) com presença para este paciente. Esse(s) atendimento(s) será(ão) excluído(s). Deseja mesmo continuar?"/>
+				</STRONG>
+				<br />
+
+				<div align="center">
+					<p:separator />
+					<p:commandButton value="Confirmar" icon="ui-icon-check"
+						action="#{GerenciarPacienteController.desligarPaciente}"
+						update=":formDeslPac:grwdesligamento, :frmEquipamentos:dtNovosAg, :formGerenPaci:botoes"
+						style="margin-right:1%;">
+						<f:setPropertyActionListener value="true" target="#{GerenciarPacienteController.confirmouDesligamento}"/>
+					</p:commandButton>
+					
+					<p:commandButton value="Fechar" icon="ui-icon-close"
+						oncomplete="PF('dlgConfirmaDeslPac').hide();" 
+						style="margin-left:1%;"/>						
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
 
 </ui:composition>

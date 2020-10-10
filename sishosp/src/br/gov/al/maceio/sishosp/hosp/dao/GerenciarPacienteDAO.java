@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -307,6 +308,45 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+    
+    public Integer retonarQuantidadeAtendimentoComPresenca(Integer idPacienteInstituicao, Date dataDesligamento) throws ProjetoException {
+
+        Integer quantidade = 0;
+
+        String sql = "select count(*) quantidade from hosp.atendimentos a \n" +
+                "join hosp.atendimentos1 a1 on a1.id_atendimento  = a.id_atendimento \n" +
+                "\tjoin hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id \n" +
+                "\twhere coalesce(a.presenca,'N') = 'S' and a.dtaatende >= ? \n" +
+                "\tAND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N'\n" +
+                "\tand pi.id = ? \n" +
+                "\tand not exists \n" +
+                "\t\t(select a2.id_atendimentos1 from hosp.atendimentos1 a2 \n" +
+                "\t\twhere a2.id_atendimento = a.id_atendimento and a2.id_situacao_atendimento is not null);";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setDate(1, new java.sql.Date(dataDesligamento.getTime()));
+            stmt.setInt(2, idPacienteInstituicao);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                quantidade = rs.getInt("quantidade");
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return quantidade;
+    }
+
 
     public Boolean encaminharPaciente(GerenciarPacienteBean row, GerenciarPacienteBean gerenciar)
             throws ProjetoException {

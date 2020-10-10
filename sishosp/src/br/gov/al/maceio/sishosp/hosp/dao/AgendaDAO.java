@@ -1936,7 +1936,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso,  "
-                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, "
+                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, prog.id_programa, prog.descprograma, "
+                + " gr.id_grupo, gr.descgrupo, "
 
                 + " case when "
                 + " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =  "
@@ -1948,6 +1949,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 + " FROM  hosp.atendimentos a "
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
+                + " LEFT JOIN hosp.programa prog ON (prog.id_programa = a.codprograma) "
+                + " LEFT JOIN hosp.grupo gr ON (gr.id_grupo = a.codgrupo) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
                 + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + " WHERE a.cod_unidade = ? and coalesce(a.situacao,'')<>'C' ";
@@ -2019,7 +2022,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setSituacao(rs.getString("situacao"));
                 agenda.setAvulso(rs.getBoolean("avulso"));
                 agenda.setSituacaoAtendimentoInformado(rs.getString("situacao_atendimento_informado"));
-
+                agenda.getPrograma().setIdPrograma(rs.getInt("id_programa"));
+                agenda.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                agenda.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
+                agenda.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 if(agenda.getAvulso() || !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()))
                     agenda.setListaNomeProfissionais(new AtendimentoDAO().retornaNomeProfissionaisAtendimento(agenda.getIdAgenda(), con));
 

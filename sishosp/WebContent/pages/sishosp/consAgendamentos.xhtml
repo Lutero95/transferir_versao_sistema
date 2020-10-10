@@ -226,6 +226,20 @@
 							<h:outputText value="#{agenda.paciente.nome}"></h:outputText>
 						</p:column>
 
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Programa" />
+							</f:facet>
+							<p:outputLabel value="#{agenda.programa.descPrograma}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Grupo" />
+							</f:facet>
+							<p:outputLabel value="#{agenda.grupo.descGrupo}" />
+						</p:column>
+
 
 						<p:column width="130">
 							<f:facet name="header">
