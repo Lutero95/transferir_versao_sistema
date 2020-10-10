@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -308,18 +309,22 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
     
-    public Integer retonarQuantidadeAtendimentoComPresenca(Integer idPacienteInstituicao) throws ProjetoException {
+    public Integer retonarQuantidadeAtendimentoComPresenca(Integer idPacienteInstituicao, Date dataDesligamento) throws ProjetoException {
 
         Integer quantidade = 0;
 
-        String sql = "select count(*) quantidade from hosp.atendimentos1 a1 " + 
-        		"	join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+        String sql = "select count(*) quantidade from hosp.atendimentos a " + 
         		"	join hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id " + 
-        		"	where coalesce(a.presenca,'N') = 'S' and pi.id = ?;";
+        		"	where coalesce(a.presenca,'N') = 'S' and a.dtaatende >= ? " + 
+        		"	and pi.id = ? " + 
+        		"	and not exists " + 
+        		"		(select a2.id_atendimentos1 from hosp.atendimentos1 a2 " + 
+        		"		where a2.id_atendimento = a.id_atendimento and a2.id_situacao_atendimento is not null);";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, idPacienteInstituicao);
+            stmt.setDate(1, new java.sql.Date(dataDesligamento.getTime()));
+            stmt.setInt(2, idPacienteInstituicao);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

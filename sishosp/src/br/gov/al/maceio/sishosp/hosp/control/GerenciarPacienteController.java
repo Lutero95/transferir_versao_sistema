@@ -154,7 +154,8 @@ public class GerenciarPacienteController implements Serializable {
 		if(confirmouDesligamento)
 			return false;	
 		
-		this.quantidadeAtendimentosComPresenca = gDao.retonarQuantidadeAtendimentoComPresenca(rowBean.getId()); 
+		this.quantidadeAtendimentosComPresenca = 
+				gDao.retonarQuantidadeAtendimentoComPresenca(rowBean.getId(), gerenciarpaciente.getDataDesligamento()); 
 		if(quantidadeAtendimentosComPresenca > 0) {
 			JSFUtil.abrirDialog("dlgConfirmaDeslPac");
 			return true;
