@@ -32,14 +32,14 @@
 						<b:column class="label-position new-data-size new-comple1">
 							<b:label value="Agrupar relatório por:" severity="info" />
 							<p:selectOneRadio required="true"
-											  requiredMessage="Informe o sexo" id="agrupamento"
+											  requiredMessage="Informe o Tipo de Agrupamento" id="agrupamento"
 											  value="#{RelatoriosController.atributoGenerico3}"
 											  unselectable="true">
 								<f:selectItem itemLabel="Programa" itemValue="P" />
 								<f:selectItem itemLabel="Grupo" itemValue="G" />
 								<f:selectItem itemLabel="Equipe" itemValue="E" />
 								
-								<p:ajax update="frm:labelequipe frm:outEquipe" listener="#{RelatoriosController.limparEquipe()}"/>
+								<p:ajax update="frm:outGrupo frm:outEquipe" listener="#{RelatoriosController.limparGrupoEquipe()}"/>
 							</p:selectOneRadio> 
 						</b:column>
 					</b:row>
@@ -74,13 +74,16 @@
 						
 						<b:column span="3"
 								  class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
 
 							<p:outputPanel id="outGrupo">
+								<b:label value="Grupo" severity="info" 
+									rendered="#{RelatoriosController.atributoGenerico3 != 'P'}"/>
+								<br />
 								<p:autoComplete
 										value="#{RelatoriosController.grupo}"
 										size="31" class="select-agendaEquipe4"
 										disabled="#{RelatoriosController.programa.idPrograma == null}"
+										rendered="#{RelatoriosController.atributoGenerico3 != 'P'}"
 										completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
@@ -94,6 +97,7 @@
 								<p:commandButton id="btBusGr" immediate="true"
 												 icon="ui-icon-search"
 												 disabled="#{RelatoriosController.programa.idPrograma == null}"
+												 rendered="#{RelatoriosController.atributoGenerico3 != 'P'}"
 												 actionListener="#{AgendaController.limparNaBuscaGrupo()}"
 												 action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
 												 update=":frm formConsuGrop"
@@ -106,7 +110,7 @@
 								
 							<p:outputPanel id="outEquipe">
 							
-							<b:label value="Equipe:" severity="info" id="labelequipe" 
+							<b:label value="Equipe:" severity="info" 
 								rendered="#{RelatoriosController.atributoGenerico3 == 'E'}"/>
 								<br />
 								<p:autoComplete
@@ -273,9 +277,7 @@
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 									 target="_blank" style="font-size: 12px;  text-align: right;"
 									 update="grw" ajax="false" 
-									 actionListener="#{RelatoriosController.gerarPacientesAtivosPorProgramaEGrupo()}"/>
-
-
+									 actionListener="#{RelatoriosController.gerarPacientesAtivos()}"/>
 				</h:form>
 			</div>
 		</div>

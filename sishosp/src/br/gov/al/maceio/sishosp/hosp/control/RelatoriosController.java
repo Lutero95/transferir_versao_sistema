@@ -188,6 +188,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelPacientesPorPrograma() {
 		atributoGenerico1 = "I";
 		atributoGenerico2 = "A";
+		atributoGenerico3 = "G";
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
@@ -520,47 +521,7 @@ public class RelatoriosController implements Serializable {
 		listaMunicipiosDePacienteAtivosSelecionados.remove(municipio);
 	}
 
-	public void gerarPacientesAtivosPorPrograma() throws IOException, ParseException, ProjetoException {
-
-		if (atributoGenerico1.equals("A")) {
-			idadeMaxima = 200;
-		}
-		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
-		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = "";
-		relatorio = caminho + "pacientes_ativos_por_programa.jasper";
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("codunidade", user_session.getUnidade().getId());
-		map.put("filtromunicipio", idMunicipiosSelecionados);
-		map.put("sexo", this.atributoGenerico2);
-		if (pacienteInstituicao.getPrograma() != null) {
-			map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
-		} else {
-			map.put("codprograma", 0);
-		}
-
-		if (idadeMinima == null)
-			map.put("idademinima", 0);
-		else
-			map.put("idademinima", idadeMinima);
-
-		if (idadeMaxima == null)
-			map.put("idademaxima", 200);
-		else
-			map.put("idademaxima", idadeMaxima);
-		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
-		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
-		map.put("diassemanalista", diasSemanaInteger);
-
-		limparTurno();
-		atribuiTurnos();
-
-		map.put("turnoslista", turnos);
-		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
-
-	}
-
-	public void gerarPacientesAtivosPorProgramaEGrupo() throws IOException, ParseException, ProjetoException {
+	public void gerarPacientesAtivos() throws IOException, ParseException, ProjetoException {
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -572,21 +533,25 @@ public class RelatoriosController implements Serializable {
 		
 		if(atributoGenerico3.equals("E")) {
 			relatorio = caminho + "pacientes_ativos_por_programa_grupo_equipe.jasper";
+			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
+				map.put("codgrupo", grupo.getIdGrupo());
 			if (!VerificadorUtil.verificarSeObjetoNulo(equipe))
 				map.put("codequipe", equipe.getCodEquipe());			
 		}
 		else if (atributoGenerico3.equals("G")) {
-			relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";			
+			relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
+			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
+				map.put("codgrupo", grupo.getIdGrupo());
+		}
+		else if (atributoGenerico3.equals("P")) {
+			relatorio = caminho + "pacientes_ativos_por_programa.jasper";
 		}
 		
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("filtromunicipio", idMunicipiosSelecionados);
 		map.put("sexo", this.atributoGenerico2);
-		if (programa != null)
+		if (!VerificadorUtil.verificarSeObjetoNulo(programa))
 			map.put("codprograma", programa.getIdPrograma());
-
-		if (grupo != null)
-			map.put("codgrupo", grupo.getIdGrupo());
 
 		if (idadeMinima == null)
 			map.put("idademinima", 0);
@@ -605,7 +570,7 @@ public class RelatoriosController implements Serializable {
 		atribuiTurnos();
 
 		map.put("turnoslista", turnos);
-		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
+		this.executeReport(relatorio, map, "relatoriopacientesativos.pdf");
 
 	}
 	
