@@ -62,6 +62,7 @@ public class RelatoriosController implements Serializable {
 	private ProcedimentoBean procedimento;
 	private FuncionarioBean prof;
 	private List<GrupoBean> listaGrupos;
+	private List<EquipeBean> listaEquipe;
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
 	private String atributoGenerico2;
@@ -242,6 +243,11 @@ public class RelatoriosController implements Serializable {
 				listaEquipePorTipoAtendimento = eDao.listarEquipePorGrupo(grupo.getIdGrupo());
 			}
 		}
+	}
+	
+	public void listaEquipePorGrupo() throws ProjetoException {
+		EquipeDAO eDao = new EquipeDAO();
+		listaEquipe = eDao.listarEquipePorGrupo(grupo.getIdGrupo());
 	}
 
 	public List<EquipeBean> listaEquipeAutoComplete(String query) throws ProjetoException {
@@ -555,15 +561,24 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarPacientesAtivosPorProgramaEGrupo() throws IOException, ParseException, ProjetoException {
-
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		Map<String, Object> map = new HashMap<String, Object>();
+		
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
 		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
-		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = "";
-		relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
-		Map<String, Object> map = new HashMap<String, Object>();
+		
+		if(atributoGenerico3.equals("E")) {
+			relatorio = caminho + "pacientes_ativos_por_programa_grupo_equipe.jasper";
+			if (!VerificadorUtil.verificarSeObjetoNulo(equipe))
+				map.put("codequipe", equipe.getCodEquipe());			
+		}
+		else if (atributoGenerico3.equals("G")) {
+			relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";			
+		}
+		
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("filtromunicipio", idMunicipiosSelecionados);
 		map.put("sexo", this.atributoGenerico2);
@@ -592,6 +607,17 @@ public class RelatoriosController implements Serializable {
 		map.put("turnoslista", turnos);
 		this.executeReport(relatorio, map, "relatorioporprograma.pdf");
 
+	}
+	
+	public void limparGrupoEquipe() {
+		if(atributoGenerico3.equals("P")) {
+			this.grupo = new GrupoBean();
+			this.equipe = new EquipeBean();
+		}
+		else if(atributoGenerico3.equals("P") ||
+				atributoGenerico3.equals("G")) {
+			this.equipe = new EquipeBean();
+		}
 	}
 	
 	private void setaDiasSemanaComoListaDeInteiro(ArrayList<Integer> diasSemanaInteger) {
@@ -1608,4 +1634,13 @@ public class RelatoriosController implements Serializable {
 	public void setEspecialidade(EspecialidadeBean especialidade) {
 		this.especialidade = especialidade;
 	}
+
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
+	
 }
