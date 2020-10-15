@@ -2927,7 +2927,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             (Integer idPacienteInstituicao, Long idProfissional, Connection conAuxiliar) throws ProjetoException, SQLException {
         ArrayList<HorarioAtendimento> lista = new ArrayList<HorarioAtendimento>();
 
-        String sql = "SELECT dia_semana, horario_atendimento, id_profissional FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
+        String sql = "SELECT dia_semana, horario_atendimento, id_profissional, turno FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
 
         try {
             PreparedStatement stm = null;
@@ -2942,6 +2942,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 diaAtendimento.setDiaSemana(rs.getInt("dia_semana"));
                 diaAtendimento.setHorario(rs.getString("horario_atendimento"));
                 diaAtendimento.getFuncionario().setId(rs.getLong("id_profissional"));
+                diaAtendimento.setTurno(rs.getString("turno"));
                 lista.add(diaAtendimento);
             }
         } catch (SQLException ex2) {

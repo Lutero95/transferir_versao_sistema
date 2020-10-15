@@ -35,7 +35,7 @@ public class AlteracaoPacienteDAO {
 				"codprofissional,descfuncionario, observacao , codlaudo, data_solicitacao ,\n" +
 				"codprocedimento_primario, codprocedimento_secundario1, \n" +
 				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5,\n" +
-				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario " +
+				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario, sessoes " +
 				" from (\n" +
 				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
 				"l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, \n" +
@@ -43,7 +43,7 @@ public class AlteracaoPacienteDAO {
 				"  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n" +
 				" coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n" +
 				" pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao, codprocedimento_primario, codprocedimento_secundario1, \n" +
-				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, l.cid1 id_cidprimario from hosp.paciente_instituicao pi \n" +
+				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, l.cid1 id_cidprimario, pi.sessoes from hosp.paciente_instituicao pi \n" +
 				" left join hosp.programa p on (p.id_programa = pi.codprograma) \n" +
 				" left join hosp.grupo g on (pi.codgrupo = g.id_grupo) \n" +
 				" left join hosp.equipe e on (pi.codequipe = e.id_equipe) \n" +
@@ -104,7 +104,7 @@ public class AlteracaoPacienteDAO {
 				insercaoPaciente.getLaudo().setVigenciaFinal(rs.getDate("vigencia_final"));
 				insercaoPaciente.setDataSolicitacao(rs.getDate("data_solicitacao"));
 				insercaoPaciente.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
-
+				insercaoPaciente.setSessoes(rs.getInt("sessoes"));
 			}
 
 		} catch (SQLException ex2) {
@@ -1400,10 +1400,8 @@ public class AlteracaoPacienteDAO {
 			}
 
 			insercaoPacienteDAO.inserirAtendimentoSemLaudo(idPacienteInstituicao, insercao, listaProfissionais, listAgendamentoProfissional, conexao);
-			insercaoPacienteDAO.excluirCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
-			insercaoPacienteDAO.excluirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, conexao);
-			insercaoPacienteDAO.inserirCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaCidsPermitidos(), conexao);
-			insercaoPacienteDAO.inserirProcedimentosDoPacienteInstituicao(idPacienteInstituicao, insercao.getPrograma().getListaProcedimentosPermitidos(), conexao);
+			insercaoPacienteDAO.excluirProcedimentosCidsDoPacienteInstituicao(idPacienteInstituicao, conexao);
+			insercaoPacienteDAO.inserirProcedimentosCidsDoPacienteInstituicao(idPacienteInstituicao, insercao.getListaProcedimentoCid(), conexao);
 
 			if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), TipoGravacaoHistoricoPaciente.ALTERACAO.getSigla(), conexao)) {
 				conexao.commit();

@@ -394,6 +394,61 @@ public class CidDAO {
 		return lista;
 	}
 
+	public CidBean buscarCidAtendimento(Integer idProcedimento, Integer idAtendimento)
+			throws ProjetoException {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+		CidBean cid = new CidBean();
+
+		String sqlCidLaudo = "select c.cod, c.desccidabrev from hosp.cid c " +
+				"	join hosp.atendimentos1 a1 on c.cod = a1.id_cidprimario " +
+				"	join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " +
+				"	join hosp.paciente_instituicao pi on a.id_paciente_instituicao = pi.id " +
+				"	where a1.codprocedimento = ? and a.id_atendimento = ? and a1.codprofissionalatendimento = ?;";
+
+		String sqlCidSemLaudo = "select c.cod, c.desccidabrev from hosp.paciente_instituicao_procedimento_cid pipc " +
+				"	join hosp.cid c on pipc.id_cid = c.cod " +
+				"	join hosp.atendimentos a on pipc.id_paciente_instituicao = a.id_paciente_instituicao  " +
+				"	where pipc.id_procedimento = ? and a.id_atendimento = ?;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sqlCidLaudo);
+			stm.setInt(1, idProcedimento);
+			stm.setInt(2, idAtendimento);
+			stm.setLong(3, user_session.getId());
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+			}
+
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(cid.getIdCid())) {
+				stm = con.prepareStatement(sqlCidSemLaudo);
+				stm.setInt(1, idProcedimento);
+				stm.setInt(2, idAtendimento);
+				rs = stm.executeQuery();
+				if (rs.next()) {
+					cid.setIdCid(rs.getInt("cod"));
+					cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				}
+			}
+
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return cid;
+	}
+
+
 	private void mapearResultSet(List<CidBean> lista, ResultSet rs) throws SQLException {
 		CidBean cid = new CidBean();
 		cid.setIdCid(rs.getInt("cod"));

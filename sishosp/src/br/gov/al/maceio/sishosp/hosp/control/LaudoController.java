@@ -296,7 +296,7 @@ public class LaudoController implements Serializable {
         }
 
         if(!valido) {
-            throw new ProjetoException("A idade do paciente "+ paciente.getNome()+" não compreende o intervalo permitido entre idade minima e máxima");
+            throw new ProjetoException("A idade do paciente "+ paciente.getNome()+" não compreende o intervalo permitido entre idade minima e máxima para o procedimento "+codigoProcedimento);
         }
     }
 
@@ -346,8 +346,8 @@ public class LaudoController implements Serializable {
 
     public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento) throws ProjetoException {
         if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), data, codigoProcedimento)) {
-            throw new ProjetoException("Este procedimento possui(em) Cid(s) associado(s), "
-                    + "por favor selecione apenas Cids permitidos no SIGTAP pois cid "+cidBean.getDescCidAbrev()+ " é inválido");
+            throw new ProjetoException("O procedimento " +codigoProcedimento+" possui(em) Cid(s) associado(s), "
+                    + "por favor selecione apenas Cids permitidos no SIGTAP ");
         }
     }
 
@@ -355,7 +355,8 @@ public class LaudoController implements Serializable {
         String codigoCboSelecionado = obtemCodigoCboSelecionado(idProfissional);
         if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, dataSolicitacaoPeloSigtap,
                 codProcedimento)) {
-            throw new ProjetoException("Cbo do profissional selecionado incompatível com o permitido no SIGTAP");
+            throw new ProjetoException
+                    ("Cbo do profissional selecionado é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
         }
     }
 
@@ -367,7 +368,7 @@ public class LaudoController implements Serializable {
     public void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, PacienteBean paciente) throws ProjetoException {
         if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
                 (dataSolicitacaoPeloSigtap, paciente.getSexo(), codProcedimento)) {
-            throw new ProjetoException("O sexo do paciente "+paciente.getNome()+" não compreende o permitido no SIGTAP");
+            throw new ProjetoException("O sexo do paciente "+paciente.getNome()+" não compreende o permitido no SIGTAP para o procedimento "+codProcedimento);
         }
     }
 

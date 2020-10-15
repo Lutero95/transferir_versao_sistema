@@ -1,10 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 public class AtendimentoBean implements Serializable {
 
@@ -41,7 +43,7 @@ public class AtendimentoBean implements Serializable {
     private SituacaoAtendimentoBean situacaoAtendimento;
     private SituacaoAtendimentoBean situacaoAtendimentoAnterior;
     private CidBean cidPrimario;
-    
+    private List<ProcedimentoCidDTO> listaProcedimentoCid;
 
     public AtendimentoBean() {
         this.paciente = new PacienteBean();
@@ -58,6 +60,7 @@ public class AtendimentoBean implements Serializable {
         this.situacaoAtendimento = new SituacaoAtendimentoBean();
         this.situacaoAtendimentoAnterior = new SituacaoAtendimentoBean();
         this.cidPrimario = new CidBean();
+        this.listaProcedimentoCid = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -299,4 +302,13 @@ public class AtendimentoBean implements Serializable {
 	public void setCidPrimario(CidBean cidPrimario) {
 		this.cidPrimario = cidPrimario;
 	}
+
+	public List<ProcedimentoCidDTO> getListaProcedimentoCid() {
+		return listaProcedimentoCid;
+	}
+
+	public void setListaProcedimentoCid(List<ProcedimentoCidDTO> listaProcedimentoCid) {
+		this.listaProcedimentoCid = listaProcedimentoCid;
+	}
+	
 }

@@ -59,6 +59,11 @@
 									<f:setPropertyActionListener value="2"
 										target="#{LaudoController.tipo}" />
 								</p:commandButton>
+								
+								<p:commandButton value="Adicionar Procedimentos" look="success" size="sm"
+									style="margin-left: 10px" icon="ui-icon-plus"
+									action="#{AtendimentoController.abrirDialogProcedimentos()}"
+									update=":frmPrincipalProc"/>
 							</p:row>
 						</div>
 					</p:row>
@@ -106,24 +111,71 @@
 								<f:selectItems var="proc"
 									value="#{AtendimentoController.listaProcedimentos}"
 									itemLabel="#{proc.nomeProc}" itemValue="#{proc.idProc}" />
+									
+								<p:ajax event="itemSelect" update="inputcid" 
+									listener="#{AtendimentoController.buscarCidAtendimento(AtendimentoController.atendimento.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
 							</p:selectOneMenu>
 						</b:column>
 					</p:row>
 					
 					<p:row>
-						<b:column span="12" rendered="#{AtendimentoController.atendimento.programa.permiteAlteracaoCidNaEvolucao == true}">
+						<b:column span="12" class="label-position">
 							<p:outputLabel value="CID" severity="info"
-								style="margin-left: 1.4%; font-weight:bold !important;" />
-							<p:selectOneMenu required="true" requiredMessage="CID campo obrigatório!"
-								value="#{AtendimentoController.atendimento.cidPrimario.idCid}" 
-								style="margin-bottom: 1%; width: 100%;">
-								<f:selectItem itemLabel="Selecione um CID" itemValue=""/>
-								<f:selectItems var="cid"
-									value="#{AtendimentoController.listaCids}"
-									itemLabel="#{cid.descCidAbrev}" itemValue="#{cid.idCid}" />
-							</p:selectOneMenu>
+								style="font-weight:bold !important;" />
+							
+							<p:outputLabel
+								value="#{AtendimentoController.atendimento.cidPrimario.descCidAbrev}" 
+								readonly="true" class="form-control select-agendaEquipe5"
+								id="inputcid" />	
 						</b:column>
 					</p:row>
+					
+					<b:row>
+						<b:column span="12" class="label-position">	
+							<p:outputPanel id="outproccid">
+								<p:outputLabel value="Procedimentos e CIDs secundários"
+									severity="info"
+									rendered="#{AtendimentoController.atendimento.listaProcedimentoCid.size() > 0}"
+									id="labelprocedimentocid"
+									style="font-weight:bold !important; margin: 1%;" />
+
+								<p:dataTable var="proccid"
+									value="#{AtendimentoController.atendimento.listaProcedimentoCid}"
+									rendered="#{AtendimentoController.atendimento.listaProcedimentoCid.size() > 0}"
+									id="tbprocedimentocid" reflow="true"
+									emptyMessage="Nenhum procedimento com cid adicionado"
+									styleClass="table-right">
+
+									<p:column headerText="Procedimento" width="300">
+										<h:outputText value="#{proccid.procedimento.nomeProc}" />
+									</p:column>
+
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proccid.procedimento.codProc}" />
+									</p:column>
+
+									<p:column headerText="CID" width="300">
+										<h:outputText value="#{proccid.cid.descCidAbrev}" />
+									</p:column>
+
+									<p:column headerText="Código CID">
+										<h:outputText value="#{proccid.cid.cid}" />
+									</p:column>
+
+									<p:column headerText="Remover" width="10%">
+										<div align="center">
+											<p:commandButton
+												actionListener="#{AtendimentoController.removerProcedimentoCidSecundario(proccid)}"
+												icon="fa fa-fw fa-trash" title="Remover Procedimento / Cid"
+												ajax="true" process="@this" immediate="true"
+												class="new-btn-acao-table acao-excluir"
+												update=":formConsAge:outproccid" />
+										</div>
+									</p:column>
+								</p:dataTable>
+							</p:outputPanel>
+						</b:column>		
+					</b:row>
 
 					<br />
 					<p:row>
@@ -175,7 +227,6 @@
 						</b:column>
 					</p:row>
 
-
 					<br></br>
 					<br></br>
 
@@ -196,6 +247,53 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="Procedimento CID"
+			widgetVar="dlgConsultaProcedimentos" width="850px" height="200px"
+			dynamic="true" resizable="false" responsive="true" modal="true">
+
+			<h:form id="frmPrincipalProc">
+				<p:outputPanel id="outDtProc2">
+					<p:row>
+						<b:column span="12">
+							<p:outputLabel value="Procedimento" severity="info"
+								style="margin-left: 1.4%; font-weight:bold !important;" />
+							<p:selectOneMenu 
+								value="#{AtendimentoController.procedimentoCidSelecionado.procedimento.idProc}"
+								required="true" requiredMessage="Procedimento: Campo obrigatório"
+								style="margin-bottom: 1%; width: 100%;">
+								<f:selectItem itemLabel="Selecione um procedimento" itemValue=""/>
+								<f:selectItems var="proc2" 
+									value="#{AtendimentoController.listaProcedimentos}"
+									itemLabel="#{proc2.nomeProc}" itemValue="#{proc2.idProc}" />
+									
+								<p:ajax event="itemSelect" update="inputcid2" 
+									listener="#{AtendimentoController.buscarCidParaProcedimentoSecundario(AtendimentoController.procedimentoCidSelecionado.procedimento.idProc, AtendimentoController.atendimento.id)}"/>	
+							</p:selectOneMenu>
+						</b:column>
+					</p:row>
+					
+					<p:row>
+						<b:column span="12" class="label-position">
+							<p:outputLabel value="CID" severity="info"
+								style="font-weight:bold !important;" />
+							
+							<p:outputLabel
+								value="#{AtendimentoController.procedimentoCidSelecionado.cid.descCidAbrev}" 
+								class="form-control select-agendaEquipe5" id="inputcid2">
+							</p:outputLabel>
+							<br />		
+						</b:column>
+					</p:row>
+				</p:outputPanel>
+				
+				<div align="center">
+					<p:commandButton value="Adicionar" update=":formConsAge:outproccid :msgPagina"
+					 	actionListener="#{AtendimentoController.adicionarProcedimentoSecundario()}"/>
+					<p:commandButton value="Fechar" oncomplete="PF('dlgConsultaProcedimentos').hide();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
 			resizable="false" showEffect="clip" hideEffect="clip">
@@ -518,9 +616,8 @@
 										class="campo-laudoDig" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
-
+						
 						<b:row>
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">

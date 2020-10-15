@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
@@ -21,6 +20,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 import org.primefaces.event.CellEditEvent;
 
@@ -83,6 +83,7 @@ public class AtendimentoController implements Serializable {
     private String visualizouDialogPendencias;
     private Integer totalPendenciaEvolucao;
     private String descricaoEvolucaoPadrao;
+    private ProcedimentoCidDTO procedimentoCidSelecionado;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -133,6 +134,7 @@ public class AtendimentoController implements Serializable {
         especialidade = new EspecialidadeBean();
         this.listaPendenciasEvolucaoProgramaGrupo = new ArrayList<>();
         this.visualizouDialogPendencias = new String();
+        this.procedimentoCidSelecionado = new ProcedimentoCidDTO();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -301,7 +303,6 @@ public class AtendimentoController implements Serializable {
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
             listarTodosTiposProcedimentos();
-            listarCidsPorPacienteInstituicao();
         }
     }
 
@@ -409,6 +410,7 @@ public class AtendimentoController implements Serializable {
         validarDadosSigtap();
         buscarDadosCidPorId();
         validarCidSigtap();
+        validarProcedimentoCidsSecundariosSigtap();
         boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
 
         if (alterou == true) {
@@ -444,6 +446,19 @@ public class AtendimentoController implements Serializable {
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc());
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente());
             laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+        }
+    }
+    
+    private void validarProcedimentoCidsSecundariosSigtap() throws ProjetoException {
+        if(this.unidadeValidaDadosSigtap) {
+            LaudoController laudoController = new LaudoController();
+            
+            for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
+            	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc());
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente());
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc());
+            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), atendimento.getDataAtendimentoInicio(), procedimentoCid.getProcedimento().getCodProc());	
+			}
         }
     }
 
@@ -846,10 +861,8 @@ public class AtendimentoController implements Serializable {
 
     private void listarTodosTiposProcedimentos() throws ProjetoException {
         this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
-    }
-
-    private void listarCidsPorPacienteInstituicao() throws ProjetoException {
-        this.listaCids = cidDao.listarCidsPorPacienteInstituicao(atendimento.getId());
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.atendimento.getCidPrimario().getIdCid()))
+        	buscarCidAtendimento(this.listaProcedimentos.get(0).getIdProc(), this.atendimento.getId());
     }
 
     private void buscarDadosProcedimentoPorId() throws ProjetoException {
@@ -888,6 +901,51 @@ public class AtendimentoController implements Serializable {
         for (PendenciaEvolucaoProgramaGrupoDTO pendenciaEvolucaoProgramaGrupoDTO : listaPendenciaEvolucaoProgramaGrupo) {
             this.totalPendenciaEvolucao += pendenciaEvolucaoProgramaGrupoDTO.getTotalPendencia();
         }
+    }
+    
+    public void abrirDialogProcedimentos() throws ProjetoException {
+    	this.procedimentoCidSelecionado = new ProcedimentoCidDTO();
+    	JSFUtil.abrirDialog("dlgConsultaProcedimentos");
+    }
+    
+    public void buscarCidAtendimento(Integer idProcedimento, Integer idAtendimento) throws ProjetoException {
+    	this.atendimento.setCidPrimario (cidDao.buscarCidAtendimento(idProcedimento, idAtendimento));
+    }
+    
+    public void buscarCidParaProcedimentoSecundario(Integer idProcedimento, Integer idAtendimento) throws ProjetoException {
+    	this.procedimentoCidSelecionado.setCid(cidDao.buscarCidAtendimento(idProcedimento, idAtendimento));
+    }
+    
+    public void adicionarProcedimentoSecundario() throws ProjetoException {
+    	Integer idProcedimento = procedimentoCidSelecionado.getProcedimento().getIdProc();
+    	Integer idCid = procedimentoCidSelecionado.getCid().getIdCid();
+    	
+    	if(!procedimentoCidJaFoiAdicionado(idProcedimento)) {
+    		procedimentoCidSelecionado.setProcedimento(procedimentoDAO.listarProcedimentoPorId(idProcedimento));
+    		procedimentoCidSelecionado.setCid(cidDao.buscaCidPorId(idCid));
+    		this.atendimento.getListaProcedimentoCid().add(procedimentoCidSelecionado);
+    		JSFUtil.fecharDialog("dlgConsultaProcedimentos");
+    	}
+    }
+    
+    private boolean procedimentoCidJaFoiAdicionado(Integer idProcedimento) {
+    	
+    	if(atendimento.getProcedimento().getIdProc().equals(idProcedimento)) {
+			JSFUtil.adicionarMensagemErro("Não é possível adicionar o procedimento principal novamente", "");
+			return true;    		
+    	}
+    	
+    	for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
+			if(procedimentoCid.getProcedimento().getIdProc().equals(idProcedimento)) {
+				JSFUtil.adicionarMensagemErro("Este Procedimento já foi adicionado", "");
+				return true;
+			}
+		}
+    	return false;
+    }
+    
+    public void removerProcedimentoCidSecundario(ProcedimentoCidDTO procedimentoCidDTO) {
+    	this.atendimento.getListaProcedimentoCid().remove(procedimentoCidDTO);
     }
 
     public AtendimentoBean getAtendimento() {
@@ -1205,4 +1263,11 @@ public class AtendimentoController implements Serializable {
         this.descricaoEvolucaoPadrao = descricaoEvolucaoPadrao;
     }
 
+	public ProcedimentoCidDTO getProcedimentoCidSelecionado() {
+		return procedimentoCidSelecionado;
+	}
+
+	public void setProcedimentoCidSelecionado(ProcedimentoCidDTO procedimentoCidSelecionado) {
+		this.procedimentoCidSelecionado = procedimentoCidSelecionado;
+	}
 }

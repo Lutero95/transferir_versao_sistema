@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 import javax.faces.context.FacesContext;
 
@@ -59,6 +60,7 @@ public class AtendimentoDAO {
 			stmt2.setInt(1, atendimento.getId());
 
 			stmt2.executeUpdate();
+			gravarProcedimentosSecundariosEvolucao(con, atendimento);
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 
 			con.commit();
@@ -77,6 +79,29 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+	
+	private void gravarProcedimentosSecundariosEvolucao(Connection conexao, AtendimentoBean atendimento) 
+			throws SQLException, ProjetoException {
+		
+		String sql = "INSERT INTO hosp.atendimentos1_procedimento_secundario " + 
+				"(id_atendimentos1, id_procedimento, id_cid) " + 
+				"VALUES(?, ?, ?);";
+		try {
+			for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
+				PreparedStatement stm = conexao.prepareStatement(sql);
+				stm.setInt(1, atendimento.getId1());
+				stm.setInt(2, procedimentoCid.getProcedimento().getIdProc());
+				stm.setInt(3, procedimentoCid.getCid().getIdCid());
+				stm.executeUpdate();				
+			}
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 
 	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao,  List<AtendimentoBean> listaExcluir, Integer idAtendimento, boolean validaSigtapAnterior)
@@ -891,10 +916,10 @@ public class AtendimentoDAO {
 	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, a1.codprocedimento, "
+		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, a1.codprocedimento, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca,  pr.codproc, p.dtanascimento, p.sexo, "
-				+ " a.codgrupo, g.descgrupo, f.codcbo, pro.permite_alteracao_cid_evolucao, a1.id_cidprimario from hosp.atendimentos a "
+				+ " a.codgrupo, g.descgrupo, f.codcbo, pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev from hosp.atendimentos a "
 				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.programa pro on (pro.id_programa = a.codprograma)"
@@ -902,6 +927,7 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
+				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "
 				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' "
 				+ "";
 		try {
@@ -912,6 +938,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				atendimento.setId(rs.getInt("id_atendimento"));
+				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimento.getPaciente().setNome(rs.getString("nome"));
@@ -938,7 +965,10 @@ public class AtendimentoDAO {
 				atendimento.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
 				atendimento.setPresenca(rs.getString("presenca"));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
+				atendimento.getCidPrimario().setDescCidAbrev(rs.getString("desccidabrev"));
 			}
+			
+			atendimento.setListaProcedimentoCid(listarProcedimentosCids(con, atendimento.getId1()));
 
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -952,6 +982,40 @@ public class AtendimentoDAO {
 			}
 		}
 		return atendimento;
+	}
+	
+	private List<ProcedimentoCidDTO> listarProcedimentosCids (Connection conexao, Integer idAtendimentos1) throws SQLException, ProjetoException {
+		
+		List<ProcedimentoCidDTO> listaProcedimentoCid = new ArrayList<>();
+		
+		String sql = "select p.id id_procedimento, p.codproc, p.nome, c.cod, c.cid, c.desccidabrev " + 
+				"	from hosp.atendimentos1_procedimento_secundario aps " + 
+				"	join hosp.proc p on aps.id_procedimento = p.id " + 
+				"	join hosp.cid c on aps.id_cid = c.cod " + 
+				"	where aps.id_atendimentos1 = ? order by nome;";
+		try {
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setInt(1, idAtendimentos1);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ProcedimentoCidDTO procedimentoCid = new ProcedimentoCidDTO();
+				procedimentoCid.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+				procedimentoCid.getProcedimento().setCodProc(rs.getString("codproc"));
+				procedimentoCid.getProcedimento().setNomeProc(rs.getString("nome"));
+				procedimentoCid.getCid().setIdCid(rs.getInt("cod"));
+				procedimentoCid.getCid().setCid(rs.getString("cid"));
+				procedimentoCid.getCid().setDescCidAbrev(rs.getString("desccidabrev"));
+				
+				listaProcedimentoCid.add(procedimentoCid);
+			}
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaProcedimentoCid;
 	}
 
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
@@ -1267,6 +1331,7 @@ public class AtendimentoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1,  atendimento.getId1());
 			stm.executeUpdate();
+			removerProcedimentosSecundariosEvolucao(con, atendimento.getId1());
 			gravarLiberacaoCancelamentoEvolucao(con, atendimento.getId(), atendimento.getId1(), usuarioLiberacao);
 			con.commit();
 			alterado = true;
@@ -1282,6 +1347,23 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterado;
+	}
+	
+	private void removerProcedimentosSecundariosEvolucao(Connection conexao, Integer idAtendimento1) 
+			throws SQLException, ProjetoException {
+		
+		String sql = "DELETE FROM hosp.atendimentos1_procedimento_secundario WHERE id_atendimentos1 = ?; ";
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, idAtendimento1);
+			stm.executeUpdate();				
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 
 	private void gravarLiberacaoCancelamentoEvolucao

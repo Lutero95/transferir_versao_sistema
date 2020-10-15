@@ -42,62 +42,27 @@
 										oncomplete="PF('dlgConsuPac').show();" />
 								</p:outputPanel>
 							</b:column>
-						</b:row>
+							
+							<p:outputPanel id="outProg">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
 
-                        <br></br>
+								<b:label for="prog" value="Programa:" id="prog"
+									class="fire-label" severity="info" />
 
-                        <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'A'}">
-                            <b:column span="3" class="btn-radio-table">
-                                <p:selectOneRadio
-                                        value="#{AlteracaoPacienteController.insercao.opcaoAtendimento}"
-                                        required="true" requiredMessage="Informe o tipo de Pessoa">
-                                    <f:selectItem itemLabel="Somente Turno" itemValue="T"/>
-                                    <f:selectItem itemLabel="Somente Horário" itemValue="H"/>
-                                    <p:ajax event="change"/>
-                                </p:selectOneRadio>
-                            </b:column>
-                            <br />
-                        </b:row>
-
-                        <b:row>
-                            <b:column span="2" class="label-position data-size">
-                                <b:label value="Data de Inclusão:" id="datasoli"
-                                         severity="info" class="fire-label"/>
-                                <p:calendar
-                                        value="#{AlteracaoPacienteController.insercao.dataSolicitacao}"
-                                        id="dtagen" locale="pt" navigator="true" mask="true"
-                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
-                                        class="select-agendaEquipe2" showOn="button"
-                                        pattern="dd/MM/yyyy" size="15" >
-                                </p:calendar>
-                            </b:column>
-                        </b:row>
-                        <br />
-
-                        <b:row>
-                            <p:outputPanel id="outProg">
-
-                                <b:column span="3"
-                                          class="label-position new-data-size new-comple1">
-
-                                    <b:label for="prog" value="Programa:" id="prog"
-                                             class="fire-label" severity="info"/>
-
-                                    <p:autoComplete value="#{AlteracaoPacienteController.insercao.programa}"
-                                                    readonly="true" size="31"
-                                                    converter="conPrograma" class="select-agendaEquipe4"
-                                                    completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    required="true"
-                                                    requiredMessage="Programa: Campo obrigatório"
-                                                    itemLabel="#{theme.descPrograma}"/>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
-                        <b:row>
-                            <p:outputPanel id="outGrupo">
+								<p:autoComplete
+									value="#{AlteracaoPacienteController.insercao.programa}"
+									readonly="true" size="31" converter="conPrograma"
+									class="select-agendaEquipe4"
+									completeMethod="#{ProgramaController.listaProgramaSemLaudoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}" required="true"
+									requiredMessage="Programa: Campo obrigatório"
+									itemLabel="#{theme.descPrograma}" />
+								</b:column>
+							</p:outputPanel>
+						
+							<p:outputPanel id="outGrupo">
                                 <b:column span="3"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="prog" value="Grupo:" id="grupo"
@@ -114,7 +79,37 @@
                                                     itemLabel="#{theme.descGrupo}"/>
                                 </b:column>
                             </p:outputPanel>
+						</b:row>
+						<br />
+
+                        <b:row>
+                            <b:column span="2" class="label-position data-size">
+                                <b:label value="Data de Inclusão:" id="datasoli"
+                                         severity="info" class="fire-label"/>
+                                <p:calendar
+                                        value="#{AlteracaoPacienteController.insercao.dataSolicitacao}"
+                                        id="dtagen" locale="pt" navigator="true" mask="true"
+                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
+                                        class="select-agendaEquipe2" showOn="button"
+                                        pattern="dd/MM/yyyy" size="15" >
+                                        
+                                    <p:ajax event="dateSelect"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+									<p:ajax event="blur"
+										listener="#{InsercaoController.existeCargaSigtapParaDataSolicitacao(InsercaoController.insercao.dataSolicitacao)}" />
+                                </p:calendar>
+                            </b:column>
+                            
+                            <b:column span="2" class="label-position data-size">
+								 <b:label value="Sessões:" id="sessoes"
+                                         severity="info" class="fire-label"/>
+                                  
+                                  <p:spinner min="1" value="#{AlteracaoPacienteController.insercao.sessoes}"
+                                  	 class="select-agendaEquipe2" style="margin-top: -2px;"
+                                  	 required="true" requiredMessage="Sessões: Campo obrigatório"/>                                   
+                            </b:column>
                         </b:row>
+                        <br />
 
 						<p:outputPanel id="outTabelas">
 							<h2 class="texto-titulo">Profissionais</h2>
@@ -182,128 +177,57 @@
 									</p:dataTable>
 								</div>
 							</div>
+							
+							<div>
+								<h2 class="texto-titulo">Procedimentos / CIDS</h2>
 
+								<p:commandButton process="@this" size="sm"
+									title="Incluir Procedimento / CID" icon="ui-icon-plus"
+									class="btn-acao-table acao-editar"
+									actionListener="#{ProcedimentoController.listarProcedimentos()}"
+									oncomplete="PF('dlgConsulProcPrimario').show();"
+									update=":formConsulProcPrimario" />
+									
+								<p:dataTable var="proccid"
+									value="#{AlteracaoPacienteController.insercao.listaProcedimentoCid}"
+									id="tbprocedimentocid" reflow="true"
+									emptyMessage="Nenhum procedimento com cid adicionado" paginator="true"
+									rows="10" paginatorPosition="bottom" styleClass="table-right">
 
-							<h2 class="texto-titulo">Procedimentos</h2>
-							<div style="display: flex;">
-								<div class="content-div-flex">
-									<p:dataTable var="proc"
-										value="#{AlteracaoPacienteController.listaProcedimentos}"
-										id="tbprocedimentos" reflow="true"
-										emptyMessage="Nenhum procedimento encontrado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-right">
+									<p:column headerText="Procedimento" width="300">
+										<h:outputText value="#{proccid.procedimento.nomeProc}" />
+									</p:column>
 
-										<p:column headerText="Procedimento" width="300">
-											<h:outputText value="#{proc.nomeProc}" />
-										</p:column>
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proccid.procedimento.codProc}" />
+									</p:column>
 
-										<p:column headerText="Código">
-											<h:outputText value="#{proc.codProc}" />
-										</p:column>
+									<p:column headerText="CID" width="300">
+										<h:outputText value="#{proccid.cid.descCidAbrev}" />
+									</p:column>
 
-										<p:column headerText="Adicionar" width="20%">
-											<div align="center">
-												<p:commandButton
-													actionListener="#{AlteracaoPacienteController.validarProcedimentoParaAdicionar(proc)}"
-													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
-													ajax="true" process="@this" immediate="true"
-													class="new-btn-acao-table acao-editar"
-													update="tbprocedimentos :formInsercao2:tbprocselecionado :msgPagina" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
+									<p:column headerText="Código CID">
+										<h:outputText value="#{proccid.cid.cid}" />
+									</p:column>
 
-								<div class="content-div-flex">
-									<p:dataTable var="procselecionado"
-										value="#{AlteracaoPacienteController.insercao.programa.listaProcedimentosPermitidos}"
-										id="tbprocselecionado" reflow="true"
-										emptyMessage="Nenhum procedimento adicionado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-left">
-
-										<p:column headerText="Procedimento" width="300">
-											<h:outputText value="#{procselecionado.nomeProc}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{procselecionado.codProc}" />
-										</p:column>
-
-										<p:column headerText="Excluir" width="20%">
-											<div align="center">
-												<p:commandButton
-													action="#{AlteracaoPacienteController.removerProcedimento(procselecionado)}"
-													icon="ui-icon-trash" title="Remover Procedimento"
-													immediate="true" class="btn-acao-table acao-excluir"
-													update="tbprocselecionado :formInsercao2:tbprocedimentos" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
+									<p:column headerText="Remover" width="10%">
+										<div align="center">
+											<p:commandButton
+												actionListener="#{AlteracaoPacienteController.removerProcedimentoCid(proccid)}"
+												icon="fa fa-fw fa-trash" title="Remover Procedimento / Cid"
+												ajax="true" process="@this" immediate="true"
+												class="new-btn-acao-table acao-excluir"
+												update="tbprocedimentocid"/>
+										</div>
+									</p:column>
+								</p:dataTable>
 							</div>
-
-							<h2 class="texto-titulo">CIDs</h2>
-							<div style="display: flex;">
-								<div class="content-div-flex">
-									<p:dataTable var="cid" value="#{AlteracaoPacienteController.listaCids}"
-										id="tbcids" reflow="true" emptyMessage="Nenhum CID encontrado"
-										paginator="true" rows="10" paginatorPosition="bottom"
-										styleClass="table-right">
-
-										<p:column headerText="CID" width="300">
-											<h:outputText value="#{cid.descCidAbrev}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{cid.cid}" />
-										</p:column>
-
-										<p:column headerText="Adicionar" width="20%">
-											<div align="center">
-												<p:commandButton
-													actionListener="#{AlteracaoPacienteController.validarCidParaAdicionar(cid)}"
-													icon="fa fa-fw fa-check" title="Adicionar Funcionário"
-													ajax="true" process="@this" immediate="true"
-													class="new-btn-acao-table acao-editar"
-													update="tbcids :formInsercao2:tbcidselecionado :msgPagina" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-
-								<div class="content-div-flex">
-									<p:dataTable var="cidselecionado"
-										value="#{AlteracaoPacienteController.insercao.programa.listaCidsPermitidos}"
-										id="tbcidselecionado" reflow="true"
-										emptyMessage="Nenhum CID adicionado" paginator="true"
-										rows="10" paginatorPosition="bottom" styleClass="table-left">
-
-										<p:column headerText="CID" width="300">
-											<h:outputText value="#{cidselecionado.descCidAbrev}" />
-										</p:column>
-
-										<p:column headerText="Código">
-											<h:outputText value="#{cidselecionado.cid}" />
-										</p:column>
-
-										<p:column headerText="Excluir" width="20%">
-											<div align="center">
-												<p:commandButton
-													action="#{AlteracaoPacienteController.removerCid(cidselecionado)}"
-													icon="ui-icon-trash" title="Remover Procedimento"
-													immediate="true" class="btn-acao-table acao-excluir"
-													update="tbcidselecionado :formInsercao2:tbcids" />
-											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
+							
 						</p:outputPanel>
 						<br />
                         <br />
 
                         <b:row>
-
                             <b:column span="11" class="label-position">
                                 <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
 
@@ -312,51 +236,10 @@
                                                  autoResize="false" class="select-agendaEquipe2">
                                 </b:inputTextarea>
                             </b:column>
-
                         </b:row>
 
-                        <b:row>
-                            <b:column span="3" class="label-position" rendered="false">
-                                <p:outputLabel value="Encaixe:"
-                                               style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-                                <p:selectBooleanCheckbox label="Encaixe"
-                                                         style="margin-left: 10px;margin-top: 5px"
-                                                         value="#{AlteracaoPacienteController.insercao.encaixe}">
-                                </p:selectBooleanCheckbox>
-                            </b:column>
-
-							<b:column span="3" class="label-position btn-radio-table">
-								<b:label value="Turno" severity="info" />
-								<p:selectOneRadio id="turno" value="#{AlteracaoPacienteController.insercao.turno}"
-									required="true" requiredMessage="Turno: Campo obrigatório!"
-									style="margin-left:-15px;margin-top:10px">
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-								</p:selectOneRadio>
-							</b:column>
-						</b:row>
-
-                        <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'T'}">
-                            <p:outputPanel id="opturno">
-                                <b:column span="3" class="label-position">
-                                    <b:label value="Turno:" severity="info" class="fire-label"/>
-
-                                    <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                     requiredMessage="Informe o Turno"
-                                                     value="#{AlteracaoPacienteController.insercao.turno}">
-                                        <f:selectItem itemLabel="Selecione" itemValue="" />
-                                        <f:selectItem itemLabel="Manhã" itemValue="M" />
-                                        <f:selectItem itemLabel="Tarde" itemValue="T" />
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
-                        <br></br>
-
-                        <br></br>
+                        <br />
+                        <br />
 
                         <div align="center">
 
@@ -378,35 +261,97 @@
 
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno" dynamic="true"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" width="500">
             <h:form id="formDiasAtendimentoTurno">
-                <p:selectManyCheckbox layout="grid" columns="7" required="true"
-                                      requiredMessage="Escolha ao menos um dia da semana!"
-                                      value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
-                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
-                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
-                    <f:selectItem itemLabel="Terça" itemValue="3"/>
-                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
-                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
-                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
-                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
-                </p:selectManyCheckbox>
 
-                <br></br>
-                <br></br>
+				<p:commandButton update=":formDiaTurno" icon="ui-icon-plus" action="#{AlteracaoPacienteController.limparHorario()}"
+					oncomplete="PF('dlgDiaTurno').show();" class="btn-acao-table acao-editar"
+					title="Adicionar dia e turno"/>
 
-                <div align="center">
-                    <p:commandButton value="Adicionar" style="margin-top:5px;"
+				<p:dataTable var="dia" value="#{AlteracaoPacienteController.funcionario.listaDiasAtendimentoSemana}"
+					emptyMessage="Nenhum dia de atendimento adicionado" paginator="true" rows="10">
+					<p:column headerText="Dia">
+						<h:outputText value="#{dia.diaNome}" />
+					</p:column>
+
+					<p:column headerText="Turno">
+						<h:outputText value="#{dia.turno == 'M' ? 'Manhã' : 'Tarde'}" />
+					</p:column>
+
+					<p:column headerText="Remover" width="20%;">
+						<p:commandButton process="@this" 
+							class="new-btn-acao-table acao-excluir"
+							action="#{AlteracaoPacienteController.removerDiaSemanaTurno(dia)}"
+							icon="ui-icon-trash" update="formDiasAtendimentoTurno" />
+					</p:column>
+				</p:dataTable>
+                <br /> 
+                <br /> 
+
+				<div align="center">
+                    <p:commandButton value="Confirmar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
-                                     update=":formInsercao2:dtAdicionados, :msgPagina"
-                                     id="b2" icon="ui-icon-check"
-                                     action="#{AlteracaoPacienteController.validarAdicionarFuncionarioTurno()}"/>
+                                     update=":formInsercao2:dtAdicionados, formDiasAtendimentoTurno, :msgPagina"
+                                     id="b2" icon="ui-icon-check" 
+                                     action="#{AlteracaoPacienteController.validarDiaTurno()}"/>
                 </div>
             </h:form>
         </p:dialog>
 
-       
-        <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+
+		<p:dialog header="Dias e Turno" widgetVar="dlgDiaTurno" dynamic="true"
+			closable="false" modal="true" styleClass="topDialog" width="500">
+			<h:form id="formDiaTurno">
+
+				<p:selectOneRadio layout="grid" columns="7" required="true"
+					requiredMessage="Escolha o dia da semana!"
+					value="#{AlteracaoPacienteController.horarioAtendimento.diaSemana}">
+					<f:selectItem itemLabel="Domingo" itemValue="1" />
+					<f:selectItem itemLabel="Segunda" itemValue="2" />
+					<f:selectItem itemLabel="Terça" itemValue="3" />
+					<f:selectItem itemLabel="Quarta" itemValue="4" />
+					<f:selectItem itemLabel="Quinta" itemValue="5" /> 
+					<f:selectItem itemLabel="Sexta" itemValue="6" />
+					<f:selectItem itemLabel="Sábado" itemValue="7" />
+				</p:selectOneRadio>
+
+				<br />
+				<br />
+
+				<b:row>
+					<p:outputPanel id="opturno">
+						<b:column span="4" class="label-position">
+							<b:label value="Turno:" severity="info" class="fire-label" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" required="true"
+								requiredMessage="Informe o Turno"
+								value="#{AlteracaoPacienteController.horarioAtendimento.turno}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</b:selectOneMenu>
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+
+				<div align="center">
+					<p:commandButton value="Adicionar" style="margin-right:2%;"
+						class="btn-acao-table acao-confirmar"
+						update=":formDiasAtendimentoTurno, :msgPagina" id="b2"
+						icon="ui-icon-check"
+						action="#{AlteracaoPacienteController.adicionarDiaSemanaTurno(AlteracaoPacienteController.horarioAtendimento)}" />
+
+					<p:commandButton value="Fechar" style="margin-left:2%;"
+						class="btn-acao-table acao-cancelar"
+						oncomplete="PF('dlgDiaTurno').hide();" icon="ui-icon-close"
+						action="#{AlteracaoPacienteController.limparHorario()}" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
                   dynamic="true" modal="true" width="750px" height="400px"
                   responsive="true">
             <h:form id="formConsuPac">
@@ -474,7 +419,85 @@
             </h:form>
         </p:dialog>
         
+		<p:dialog header="Consultar Procedimentos" dynamic="true"
+                  widgetVar="dlgConsulProcPrimario" modal="true">
+            <h:form id="formConsulProcPrimario">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
 
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+                            <p:outputLabel value="#{proc.nomeProc}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <p:commandButton action="#{AlteracaoPacienteController.selecionarProcedimentoParaProcedimentoCid(proc)}"	
+                                             class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                             title="Selecionar"/>
+                        </h:column>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        
+        
+        <p:dialog header="Consultar CID" widgetVar="dlgConsulCid"
+                  responsive="true" height="350" modal="true" dynamic="true">
+            <h:form id="formConsulCid">
+                <p:outputPanel id="outcid">
+                    <p:row>
+                        <p:panelGrid columns="4">
+                            <p:selectOneMenu value="#{InsercaoController.tipoBusca}"
+                                             style="margin-top: -13px">
+                                <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
+                            </p:selectOneMenu>
+
+                            <p:inputText value="#{InsercaoController.campoBusca}"
+                                         required="true"
+                                         requiredMessage="Informe a descrição da doença ou o Código do CID"
+                                         placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
+
+                            <p:commandButton
+                                    action="#{InsercaoController.listarCids(InsercaoController.campoBusca, AlteracaoPacienteController.insercao.dataSolicitacao, AlteracaoPacienteController.procedimentoCidDTO.procedimento)}"
+                                    update="tabelacid1 msgPagina" icon="ui-icon-search"
+                                    style="margin-left: 10px;">
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                    </p:row>
+                    <p:dataTable emptyMessage="Nenhum CID listado" rows="10"
+                                 paginator="true" id="tabelacid1" style="width:500px"
+                                 value="#{InsercaoController.listaCids}" var="tab">
+
+                        <p:column headerText="Descrição">
+                            <h:outputText value="#{tab.descCidAbrev}"/>
+                        </p:column>
+
+                        <p:column headerText="CID">
+                            <h:outputText value="#{tab.cid}"/>
+                        </p:column>
+
+                        <p:column headerText="Ação">
+                            <p:commandButton action="#{AlteracaoPacienteController.selecionarCidParaProcedimentoCid()}"
+                            				 tooltip="Selecionar" icon="fa fa-fw fa-check" size="sm"
+                                             class="new-btn-acao-table acao-editar"
+                                             update=":formInsercao2:tbprocedimentocid :msgPagina">
+                                             
+                                             <f:setPropertyActionListener value="#{tab}"
+                                             	target="#{AlteracaoPacienteController.cidSelecionado}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+		
     </ui:define>
-
 </ui:composition>
