@@ -2,57 +2,204 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 <h:body>
-<p:dialog widgetVar="dlgInconsistencias" resizable="false" draggable="false" closable="false"  height="300"
-          header="Inconsistências do Sistema" closeOnEscape="false"
-          responsive="true" modal="true"
-          visible="#{novidadeController.verificarCondicaoVisibleDialog()}">
-    <h:form id="formInconsistencias">
-        <div align="center">
+	<p:dialog widgetVar="dlgInconsistencias" resizable="false"
+		draggable="false" closable="false" width="620"
+		header="Inconsistências do Sistema" closeOnEscape="false"
+		responsive="true" modal="true">
+		<h:form id="formInconsistencias">
+			<div align="center">
 
-            <p:dataTable value="#{novidadeController.novidades}" var="novidade" rows="5"
-                         paginator="true" paginatorPosition="bottom" scrollable="true">
+				<p:dataTable value="#{inconsistenciaController.listaInconsistenciasDTO}" var="inc"
+					rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
 
-                <p:column headerText="Marcar Como visualizado" width="50">
-                    <div align="center">
-                        <p:selectBooleanCheckbox value="#{novidade.visualizado}" />
-                    </div>
-                </p:column>
+					<p:column headerText="Título">
+						<div align="center">
+							<p:outputLabel value="#{inc.inconsistencia.titulo}"
+								style="font-size:15px" />
+						</div>
+					</p:column>
 
-                <p:column headerText="Novidade" width="200">
-                    <div align="center">
-                        <p:outputLabel value="#{novidade.novidade}" style="font-size:15px"/>
-                    </div>
-                </p:column>
+					<p:column headerText="Detalhes" width="20%">
+						<div align="center">
+							<p:commandButton icon="ui-icon-search"
+								action="#{inconsistenciaController.selecionarInconsistenciaDTO(inc)}"
+								update=":formProcedimentos" 
+								oncomplete="PF('dlgProcedimento').show();"
+								rendered="#{inc.inconsistencia.tipoInconsistencia == 'PROCEDIMENTO'}"/>
+								
+							<p:commandButton icon="ui-icon-search"
+								action="#{inconsistenciaController.selecionarInconsistenciaDTO(inc)}"
+								update=":formLaudos" 
+								oncomplete="PF('dlgLaudo').show();"
+								rendered="#{inc.inconsistencia.tipoInconsistencia == 'LAUDO'}"/>
+								
+							<p:commandButton icon="ui-icon-search"
+								action="#{inconsistenciaController.selecionarInconsistenciaDTO(inc)}"
+								update=":formPacientes" 
+								oncomplete="PF('dlgPaciente').show();"
+								rendered="#{inc.inconsistencia.tipoInconsistencia == 'PACIENTE'}"/>		
+						</div>
+					</p:column>
 
+				</p:dataTable>
 
-                <p:column headerText="Saiba Mais" width="100" >
-                    <div align="center">
-                        <p:commandButton icon="ui-icon-search" rendered="#{novidade.documento == null}" update="formDescricaoNovidade"
-                                         onclick="PF('dlgDescricaoNovidade').show();">
-                            <f:setPropertyActionListener value="#{novidade}" target="#{novidadeController.novidade}"/>
-                        </p:commandButton>
+				<p:separator />
+				<div>
+					<p:commandButton value="Fechar" ajax="true"
+						action="#{novidadeController.marcarVisualizado()}"
+						oncomplete="PF('dlgInconsistencias').hide();" />
+				</div>
+			</div>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog widgetVar="dlgProcedimento" resizable="false"
+		draggable="false" closable="false" width="620"
+		header="#{inconsistenciaController.inconsistenciaDTOSelecionada.inconsistencia.descricao}" 
+		closeOnEscape="false"
+		responsive="true" modal="true">
+		
+		<p:autoUpdate/>
+		
+		<h:form id="formProcedimentos">
+			<div align="center">
 
-                        <p:commandButton rendered="#{novidade.documento != null}" icon="ui-icon-search" ajax="false"
-                                title="Clique aqui para saber mais sobre essa novidade"         actionListener="#{novidadeController.visualizarAnexo(novidade)}" onclick="this.form.target='_blank'">
-                        </p:commandButton>
-                    </div>
-                </p:column>
+				<p:dataTable value="#{inconsistenciaController.inconsistenciaDTOSelecionada.listaProcedimentos}"
+					var="proc"
+					rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
 
-            </p:dataTable>
+					<p:column headerText="Procedimento">
+						<div align="center">
+							<p:outputLabel value="#{proc.nomeProc}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Código" width="20%">
+						<div align="center">
+							<p:outputLabel value="#{proc.codProc}"/>
+						</div>
+					</p:column>
+				</p:dataTable>
 
-            <p:separator/>
-            <div>
-                <p:commandButton value="Fechar" ajax="true"
-                                 action="#{novidadeController.marcarVisualizado()}"
-                                 oncomplete="PF('dlgInconsistencias').hide();"/>
-            </div>
-        </div>
-    </h:form>
-</p:dialog>
+				<p:separator />
+				<div>
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dlgProcedimento').hide();" />
+				</div>
+			</div>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog widgetVar="dlgLaudo" resizable="false"
+		draggable="false" closable="false" width="620"
+		header="#{inconsistenciaController.inconsistenciaDTOSelecionada.inconsistencia.descricao}" 
+		closeOnEscape="false"
+		responsive="true" modal="true">
+		
+		<p:autoUpdate/>
+		
+		<h:form id="formLaudos">
+			<div align="center">
+
+				<p:dataTable value="#{inconsistenciaController.inconsistenciaDTOSelecionada.listaLaudos}"
+					var="laudo" rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
+
+					<p:column headerText="Prontuário Paciente">
+						<div align="center">
+							<p:outputLabel value="#{laudo.paciente.id_paciente}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Data de Solicitação">
+						<div align="center">
+							<p:outputLabel value="#{laudo.dataSolicitacao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Mês Início">
+						<div align="center">
+							<p:outputLabel value="#{laudo.mesInicio}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Ano Início">
+						<div align="center">
+							<p:outputLabel value="#{laudo.anoInicio}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Mês Final">
+						<div align="center">
+							<p:outputLabel value="#{laudo.mesFinal}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Ano início">
+						<div align="center">
+							<p:outputLabel value="#{laudo.anoFinal}"/>
+						</div>
+					</p:column>					
+				</p:dataTable>
+
+				<p:separator />
+				<div>
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dlgLaudo').hide();" />
+				</div>
+			</div>
+		</h:form>
+	</p:dialog>
+	
+		<p:dialog widgetVar="dlgPaciente" resizable="false"
+		draggable="false" closable="false" width="620"
+		header="#{inconsistenciaController.inconsistenciaDTOSelecionada.inconsistencia.descricao}" 
+		closeOnEscape="false"
+		responsive="true" modal="true">
+		
+		<p:autoUpdate/>
+		
+		<h:form id="formPacientes">
+			<div align="center">
+
+				<p:dataTable value="#{inconsistenciaController.inconsistenciaDTOSelecionada.listaPacientes}"
+					var="pac"
+					rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
+
+					<p:column headerText="Prontuário">
+						<div align="center">
+							<p:outputLabel value="#{pac.id_paciente}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Nome" width="70%">
+						<div align="center">
+							<p:outputLabel value="#{pac.nome}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Data de Nascimento">
+						<div align="center">
+							<p:outputLabel value="#{pac.dtanascimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</div>
+					</p:column>
+				</p:dataTable>
+
+				<p:separator />
+				<div>
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dlgPaciente').hide();" />
+				</div>
+			</div>
+		</h:form>
+	</p:dialog>
 </h:body>
 </html>

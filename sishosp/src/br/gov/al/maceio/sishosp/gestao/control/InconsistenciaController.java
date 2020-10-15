@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.gestao.dao.InconsistenciaDAO;
 import br.gov.al.maceio.sishosp.gestao.model.InconsistenciaBean;
+import br.gov.al.maceio.sishosp.gestao.model.dto.InconsistenciaDTO;
 
 @ManagedBean
 @ViewScoped
@@ -33,6 +34,8 @@ public class InconsistenciaController {
 	private List<Perfil> listaPerfisFiltro;
 	private List<Perfil> listaPerfisSelecionado;
 	private List<Perfil> listaPerfisSelecionadoFiltro;
+	private List<InconsistenciaDTO> listaInconsistenciasDTO;
+	private InconsistenciaDTO inconsistenciaDTOSelecionada;
 	
 	private static final String ENDERECO_CADASTRO = "cadastroinconsistencia?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
@@ -90,6 +93,64 @@ public class InconsistenciaController {
 		this.listaPerfisSelecionadoFiltro.clear();
 	}
 	
+	public void adicionarFuncionario(Perfil perfilSelecionado) throws ProjetoException, SQLException {
+        if (!perfilExisteLista(perfilSelecionado)) {
+            this.listaPerfisSelecionado.add(perfilSelecionado);
+            this.listaPerfisSelecionadoFiltro.add(perfilSelecionado);
+            this.listaPerfis.remove(perfilSelecionado);
+            this.listaPerfisFiltro.remove(perfilSelecionado);
+        }
+    }
+    
+    private boolean perfilExisteLista(Perfil perfilSelecionado) {
+        if(!listaPerfisSelecionado.isEmpty()) {
+            for (int i = 0; i < listaPerfisSelecionado.size(); i++) {
+                if (listaPerfisSelecionado.get(i).getId().equals(perfilSelecionado.getId())) {
+                	JSFUtil.adicionarMensagemErro("Este perfil já foi adicionado", "");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public void removerFuncionario(Perfil perfilSelecionado) throws ProjetoException, SQLException {
+        this.listaPerfisSelecionado.remove(perfilSelecionado);
+        this.listaPerfisSelecionadoFiltro.remove(perfilSelecionado);
+        this.listaPerfis.add(perfilSelecionado);
+        this.listaPerfisFiltro.add(perfilSelecionado);
+    }
+    
+    public void gravarInconsistencia() throws ProjetoException {
+    	inconsistencia.setListaPerfis(listaPerfisSelecionado);
+    	if(inconsistenciaDAO.gravarInconsistencia(inconsistencia)) {
+    		JSFUtil.adicionarMensagemSucesso("Inconsistência cadastrada com sucesso", "");
+    		inconsistencia = new InconsistenciaBean();
+    		listarPerfis();
+    		limparPerfisSelecionados();
+    	}
+    }
+    
+    public void alterarInconsistencia() throws ProjetoException {
+    	inconsistencia.setListaPerfis(listaPerfisSelecionado);
+    	if(inconsistenciaDAO.alterarInconsistencia(inconsistencia))
+    		JSFUtil.adicionarMensagemSucesso("Inconsistência alterada com sucesso", "");
+    }
+    
+    public void excluirInconsistencia() throws ProjetoException {
+    	if(inconsistenciaDAO.excluirInconsistencia(inconsistencia.getId())) {
+    		JSFUtil.adicionarMensagemSucesso("Inconsistência excluída com sucesso", "");
+    		listarInconsistencias();
+    		JSFUtil.fecharDialog("dialogExclusao");
+    	}
+    }
+    
+    public void listarInconsistenciasPerfil() throws ProjetoException {
+		this.listaInconsistenciasDTO = inconsistenciaDAO.listarInconsistenciasPeloPerfil();
+		if(!this.listaInconsistenciasDTO.isEmpty())
+			JSFUtil.abrirDialog("dlgInconsistencias");
+    }
+	
 	public void buscarInconsistencias() throws ProjetoException {
 		this.listaInconsistencias = inconsistenciaDAO.buscarInconsistencias(campoBusca, tipoBusca);
 	}
@@ -100,6 +161,10 @@ public class InconsistenciaController {
 	
 	public String redirecionaEdicao() {
 		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.inconsistencia.getId(), ENDERECO_TIPO, tipo);
+	}
+	
+	public void selecionarInconsistenciaDTO(InconsistenciaDTO inconsistenciaDTOSelecionada) {
+		this.inconsistenciaDTOSelecionada = inconsistenciaDTOSelecionada;
 	}
 	
 	public List<InconsistenciaBean> getListaInconsistencias() {
@@ -152,58 +217,7 @@ public class InconsistenciaController {
 		this.campoBusca = campoBusca;
 	}
 
-	public void adicionarFuncionario(Perfil perfilSelecionado) throws ProjetoException, SQLException {
-        if (!perfilExisteLista(perfilSelecionado)) {
-            this.listaPerfisSelecionado.add(perfilSelecionado);
-            this.listaPerfisSelecionadoFiltro.add(perfilSelecionado);
-            this.listaPerfis.remove(perfilSelecionado);
-            this.listaPerfisFiltro.remove(perfilSelecionado);
-        }
-    }
     
-    private boolean perfilExisteLista(Perfil perfilSelecionado) {
-        if(!listaPerfisSelecionado.isEmpty()) {
-            for (int i = 0; i < listaPerfisSelecionado.size(); i++) {
-                if (listaPerfisSelecionado.get(i).getId().equals(perfilSelecionado.getId())) {
-                	JSFUtil.adicionarMensagemErro("Este perfil já foi adicionado", "");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    public void removerFuncionario(Perfil perfilSelecionado) throws ProjetoException, SQLException {
-        this.listaPerfisSelecionado.remove(perfilSelecionado);
-        this.listaPerfisSelecionadoFiltro.remove(perfilSelecionado);
-        this.listaPerfis.add(perfilSelecionado);
-        this.listaPerfisFiltro.add(perfilSelecionado);
-    }
-    
-    public void gravarInconsistencia() throws ProjetoException {
-    	inconsistencia.setListaPerfis(listaPerfisSelecionado);
-    	if(inconsistenciaDAO.gravarInconsistencia(inconsistencia)) {
-    		JSFUtil.adicionarMensagemSucesso("Inconsistência cadastrada com sucesso", "");
-    		inconsistencia = new InconsistenciaBean();
-    		listarPerfis();
-    		limparPerfisSelecionados();
-    	}
-    }
-    
-    public void alterarInconsistencia() throws ProjetoException {
-    	inconsistencia.setListaPerfis(listaPerfisSelecionado);
-    	if(inconsistenciaDAO.alterarInconsistencia(inconsistencia))
-    		JSFUtil.adicionarMensagemSucesso("Inconsistência alterada com sucesso", "");
-    }
-    
-    public void excluirInconsistencia() throws ProjetoException {
-    	if(inconsistenciaDAO.excluirInconsistencia(inconsistencia.getId())) {
-    		JSFUtil.adicionarMensagemSucesso("Inconsistência excluída com sucesso", "");
-    		listarInconsistencias();
-    		JSFUtil.fecharDialog("dialogExclusao");
-    	}
-    }
-
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
@@ -238,6 +252,22 @@ public class InconsistenciaController {
 
 	public void setListaPerfisSelecionadoFiltro(List<Perfil> listaPerfisSelecionadoFiltro) {
 		this.listaPerfisSelecionadoFiltro = listaPerfisSelecionadoFiltro;
+	}
+
+	public List<InconsistenciaDTO> getListaInconsistenciasDTO() {
+		return listaInconsistenciasDTO;
+	}
+
+	public void setListaInconsistenciasDTO(List<InconsistenciaDTO> listaInconsistenciasDTO) {
+		this.listaInconsistenciasDTO = listaInconsistenciasDTO;
+	}
+
+	public InconsistenciaDTO getInconsistenciaDTOSelecionada() {
+		return inconsistenciaDTOSelecionada;
+	}
+
+	public void setInconsistenciaDTOSelecionada(InconsistenciaDTO inconsistenciaDTOSelecionada) {
+		this.inconsistenciaDTOSelecionada = inconsistenciaDTOSelecionada;
 	}
 
 }

@@ -7,8 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -16,11 +19,16 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.gestao.enums.TipoInconsistencia;
 import br.gov.al.maceio.sishosp.gestao.model.InconsistenciaBean;
+import br.gov.al.maceio.sishosp.gestao.model.dto.InconsistenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class InconsistenciaDAO {
 
-
+	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+			.getSessionMap().get("obj_usuario");
 
 	public boolean gravarInconsistencia(InconsistenciaBean inconsistencia) throws ProjetoException {
 		Boolean retorno = false;
@@ -384,4 +392,196 @@ public class InconsistenciaDAO {
 		return listaInconsistencia;
 	}
 
+	public List<InconsistenciaDTO> listarInconsistenciasPeloPerfil() throws ProjetoException {
+		
+		List<InconsistenciaDTO> listaInconsistenciasDTO = new ArrayList<>();
+		Connection conexaoPublico = null;
+		Connection conexaoEhosp = null;
+		
+		try {
+			conexaoPublico = ConnectionFactoryPublico.getConnection();
+			conexaoEhosp = ConnectionFactory.getConnection();
+			List<Integer> listaIdInconsistencias = retornaIdsInconsistenciasDoPerfil(user_session.getPerfil().getId(), conexaoEhosp);
+			listaInconsistenciasDTO = retornaInconsistenciasDoPerfil(listaIdInconsistencias, conexaoPublico);
+			listaInconsistenciasDTO = filtraInconsistenciasComRegistro(listaInconsistenciasDTO);
+		}
+
+		catch ( SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		}
+		catch (Exception e) {
+			throw new ProjetoException(e, this.getClass().getName());
+		} finally {
+			try {
+				conexaoPublico.close();
+				conexaoEhosp.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaInconsistenciasDTO;
+	}
+
+	private List<InconsistenciaDTO> filtraInconsistenciasComRegistro(List<InconsistenciaDTO> listaInconsistenciasDTO)
+			throws ProjetoException {
+		
+		List<InconsistenciaDTO> listaInconsistenciaDTOAux = new ArrayList<>();
+		
+		for(InconsistenciaDTO inconsistenciaDTO : listaInconsistenciasDTO) {
+			
+			InconsistenciaBean inconsistencia = inconsistenciaDTO.getInconsistencia();
+			List<Object> lista = listarConsultasDeInconsistencia(inconsistencia);
+			
+			if(!lista.isEmpty()) {
+				if (inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.LAUDO)) {
+					for (Object object : lista) {
+						inconsistenciaDTO.getListaLaudos().add((LaudoBean) object);
+					}
+				}
+
+				else if (inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.PACIENTE)) {
+					for (Object object : lista) {
+						inconsistenciaDTO.getListaPacientes().add((PacienteBean) object);
+					}
+				}
+
+				else if (inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.PROCEDIMENTO)) {
+					for (Object object : lista) {
+						inconsistenciaDTO.getListaProcedimentos().add((ProcedimentoBean) object);
+					}
+				}
+				listaInconsistenciaDTOAux.add(inconsistenciaDTO);
+			}
+		}
+		return listaInconsistenciaDTOAux;
+	}
+	
+	private List<Integer> retornaIdsInconsistenciasDoPerfil(Long idPerfil, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+		List<Integer> listaIdInconsistencia = new ArrayList<>();
+
+		String sql = "select ip.id_inconsistencia from hosp.inconsistencia_perfil ip where ip.id_perfil = ? ;";
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setLong(1, idPerfil);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				listaIdInconsistencia.add(rs.getInt("id_inconsistencia"));
+			}
+		} catch (SQLException ex2) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaIdInconsistencia;
+	}
+	
+	private List<InconsistenciaDTO> retornaInconsistenciasDoPerfil(List<Integer> listaIdInconsistencia, Connection conexaoPublicaAuxiliar) throws ProjetoException, SQLException {
+		List<InconsistenciaDTO> listaInconsistencia = new ArrayList<>();
+
+		String sql = "SELECT id, titulo, descricao, sql, tipo " + 
+				"FROM publico.gestao.inconsistencias where id = ? order by descricao; ";
+		try {
+			PreparedStatement ps = conexaoPublicaAuxiliar.prepareStatement(sql);
+			
+			for (Integer id : listaIdInconsistencia) {
+				ps.setInt(1, id);
+				ResultSet rs = ps.executeQuery();	
+				if (rs.next()) {
+					InconsistenciaBean inconsistencia = new InconsistenciaBean();
+					mapearResultSetInconsistencias(inconsistencia, rs);
+					InconsistenciaDTO inconsistenciaDTO = new InconsistenciaDTO(inconsistencia);
+					listaInconsistencia.add(inconsistenciaDTO);
+				}
+			}
+			
+		} catch (SQLException ex2) {
+			conexaoPublicaAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoPublicaAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaInconsistencia;
+	}
+	
+	private List<Object> listarConsultasDeInconsistencia(InconsistenciaBean inconsistencia)
+			throws ProjetoException {
+
+		List<Object> lista = new ArrayList<>();
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(inconsistencia.getSql());
+			
+			char sqlArray [] = inconsistencia.getSql().toCharArray();
+			int quantidadeParametro = 0;
+			
+    		for(int i = 0; i < sqlArray.length; i++) {
+				if(sqlArray[i] == '?') {
+					quantidadeParametro++;
+				}
+			}
+			
+			for(int j = 1; j <= quantidadeParametro; j++) {
+				ps.setObject(j, user_session.getUnidade().getId());				
+			}			
+			
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				if(inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.LAUDO)) {
+					LaudoBean laudo = new LaudoBean();
+					mapearResultSetLaudo(laudo, rs);
+					lista.add(laudo);
+				}
+				else if(inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.PACIENTE)) {
+					PacienteBean paciente = new PacienteBean();
+					mapearResultSetPaciente(paciente, rs);
+					lista.add(paciente);
+				}
+				else if(inconsistencia.getTipoInconsistencia().equals(TipoInconsistencia.PROCEDIMENTO)) {
+					ProcedimentoBean procedimento = new ProcedimentoBean();
+					mapearResultSetProcedimento(procedimento, rs);
+					lista.add(procedimento);
+				}
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+	
+	private void mapearResultSetLaudo(LaudoBean laudo, ResultSet rs) throws SQLException {
+		laudo.setId(rs.getInt("id_laudo"));
+		laudo.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+		laudo.setDataSolicitacao(rs.getDate("data_solicitacao"));
+		laudo.setMesInicio(rs.getInt("mes_inicio"));
+		laudo.setAnoInicio(rs.getInt("ano_inicio"));
+		laudo.setMesFinal(rs.getInt("mes_final"));
+		laudo.setAnoFinal(rs.getInt("ano_final"));
+	}
+	
+	private void mapearResultSetPaciente(PacienteBean paciente, ResultSet rs) throws SQLException {
+		paciente.setId_paciente(rs.getInt("id_paciente"));
+		paciente.setNome(rs.getString("nome"));
+		paciente.setDtanascimento(rs.getDate("dtanascimento"));
+	}
+	
+	private void mapearResultSetProcedimento(ProcedimentoBean procedimento, ResultSet rs) throws SQLException {
+		procedimento.setIdProc(rs.getInt("id"));
+		procedimento.setCodProc(rs.getString("codproc"));
+		procedimento.setNomeProc(rs.getString("nome"));
+	}
 }
