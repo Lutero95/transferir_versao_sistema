@@ -46,7 +46,7 @@
 
                                 <p:commandButton id="btBusPr"
                                                  icon="ui-icon-search" process="@this"
-                                                 action="#{ProgramaController.carregaListaProgramas()}"
+                                                 action="#{ProgramaController.carregaListaProgramasUsuario()}"
                                                  update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();"/>
                             </p:outputPanel>
                         </b:column>
@@ -388,7 +388,7 @@
             <h:form id="formConsuProg">
                 <p:dataTable paginator="true" rows="5"
                              style="width:450px !important"
-                             value="#{ProgramaController.listaProgramas}" var="prog"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
                              emptyMessage="Nenhum Programa">
 
                     <p:column width="300">

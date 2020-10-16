@@ -294,7 +294,8 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-                + "where codprofissional = ? and programa.cod_unidade=?";
+        		+ "left join hosp.proc on proc.id = programa.cod_procedimento "
+                + "where proc.ativo = 'S' and codprofissional = ? and programa.cod_unidade=?";
 
         if (tipo == 1) {
             sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
@@ -335,7 +336,9 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa, id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
                 + "dias_paciente_sem_laudo_ativo from hosp.programa "
+        		+ "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "where programa.permite_paciente_sem_laudo = true and programa.cod_unidade = ? "
+        		+ "and codprofissional = ? "
                 + "and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma ";
 
         try {
@@ -343,7 +346,8 @@ public class ProgramaDAO {
             PreparedStatement stm = con.prepareStatement(sql);
 
             stm.setLong(1, user_session.getUnidade().getId());
-            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            stm.setLong(2, user_session.getId());
+            stm.setString(3, "%" + descricao.toUpperCase() + "%");
 
             ResultSet rs = stm.executeQuery();
 
@@ -415,14 +419,16 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
                 + " dias_paciente_sem_laudo_ativo from hosp.programa "
-                + "where programa.cod_unidade = ? and permite_paciente_sem_laudo = true order by descprograma";
+                + " left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma " + 
+                "where programa.cod_unidade = ? and codprofissional = ? and permite_paciente_sem_laudo = true order by descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
 
             stm.setLong(1, user_session.getUnidade().getId());
-
+            stm.setLong(2, user_session.getId());
+            
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
