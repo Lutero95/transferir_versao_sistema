@@ -17,6 +17,8 @@
 				action="#{RelatoriosController.setaTurnoPadrao}" />
 		<f:viewAction
 			action="#{situacaoAtendimentoController.listarSituacaoAtendimentoFiltroRelatorioAtendimentoProgramaGrupo()}" />
+		<f:viewAction
+			action="#{RelatoriosController.preparaRelatorioAtendimentos()}"/>	
 	</f:metadata>
 	<ui:define name="content">
 		<br />
@@ -32,7 +34,7 @@
 			<div class="panel-body table-body">
 				<h:form id="frm">
 					<b:row>
-						<b:column>
+						<b:column class="label-position new-data-size new-comple1">
 							<p:selectOneRadio required="true"
 								requiredMessage="Informe o Tipo da Geração" id="console"
 								value="#{RelatoriosController.atributoGenerico1}"
@@ -41,11 +43,22 @@
 								<f:selectItem itemLabel="Sintético" itemValue="S" />
 								<p:ajax update="frm" event="valueChange" />
 							</p:selectOneRadio>
-							<hr />
 						</b:column>
 
-
+						<b:column class="label-position new-data-size new-comple1">
+							<b:label value="Agrupar relatório por:" severity="info" />
+							<p:selectOneRadio required="true"
+											  requiredMessage="Informe o Tipo de Agrupamento" id="agrupamento"
+											  value="#{RelatoriosController.atributoGenerico3}"
+											  unselectable="true">
+								<f:selectItem itemLabel="Programa" itemValue="P" />
+								<f:selectItem itemLabel="Grupo" itemValue="G" />
+								
+								<p:ajax update="frm:outGrupo" listener="#{RelatoriosController.limparGrupo()}"/>
+							</p:selectOneRadio> 
+						</b:column>
 					</b:row>
+					<hr />
 
 					<b:row>
 						<b:column span="1" class="label-position data-size1">
@@ -123,25 +136,27 @@
 					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo:" severity="info" />
 
 							<p:outputPanel id="outGrupo">
+								<b:label value="Grupo:" severity="info" rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"/>
+								<br />
 								<p:autoComplete
 									value="#{RelatoriosController.pacienteInstituicao.grupo}"
 									size="31" converter="conGrupo" class="select-agendaEquipe4"
 									disabled="#{RelatoriosController.programa.idPrograma == null}"
+									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
 									completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
 										listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
-
 								</p:autoComplete>
 
 								<p:commandButton id="btBusGr" immediate="true"
 									icon="ui-icon-search"
 									disabled="#{RelatoriosController.programa.idPrograma == null}"
+									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
 									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
 									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
 									update=":frm formConsuGrop"

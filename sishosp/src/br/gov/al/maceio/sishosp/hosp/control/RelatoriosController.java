@@ -172,6 +172,10 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelatorioAgendamentos() {
 		atributoGenerico1 = "A";
 	}
+	
+	public void preparaRelatorioAtendimentos() {
+		atributoGenerico3 = "P";
+	}
 
 	public void setaOpcaoRelLaudoVencer() {
 		atributoGenerico2 = "P";
@@ -403,6 +407,12 @@ public class RelatoriosController implements Serializable {
 		}
 		return valido;	
 	}
+	
+	public void limparGrupo() {
+		if(atributoGenerico3.equals("P")) {
+			this.grupo = new GrupoBean();
+		}
+	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
@@ -411,41 +421,47 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setGrupo(grupo);
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
+		
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
 
-		if (atributoGenerico1.equalsIgnoreCase("A")) {
-			String caminho = "/WEB-INF/relatorios/";
-			String relatorio = "";
-			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("dt_inicial", dataInicial);
-			map.put("dt_final", dataFinal);
-			if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
-				map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dt_inicial", dataInicial);
+		map.put("dt_final", dataFinal);
+		
+		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+		
+		if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
+			map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
+		
+		if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
+			map.put("turno", this.turnoSelecionado);
 
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+			map.put("id_paciente", paciente.getId_paciente());
+
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade))
+			map.put("codespecialidade", especialidade.getCodEspecialidade());
+
+		map.put("codunidade", user_session.getUnidade().getId());
+		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+		map.put("diassemanalista", diasSemanaInteger);
+		if ((prof != null) && (prof.getId() != null))
+			map.put("codprofissional", this.prof.getId());
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		
+		if (atributoGenerico1.equalsIgnoreCase("A") && atributoGenerico3.equalsIgnoreCase("G")) {
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
 				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
-			
-			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
-				map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
-			
-			if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
-				map.put("turno", this.turnoSelecionado);
+			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
-
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
-				map.put("id_paciente", paciente.getId_paciente());
-
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade))
-				map.put("codespecialidade", especialidade.getCodEspecialidade());
-
-			map.put("codunidade", user_session.getUnidade().getId());
-			
-			ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
-			setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
-			map.put("diassemanalista", diasSemanaInteger);
-			if ((prof != null) && (prof.getId() != null))
-				map.put("codprofissional", this.prof.getId());
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			rDao.limparTabelaTemporariaFrequencia(randomico);
+		}
+		if (atributoGenerico1.equalsIgnoreCase("A") && atributoGenerico3.equalsIgnoreCase("P")) {
+			relatorio = caminho + "atendimentosporprograma.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
