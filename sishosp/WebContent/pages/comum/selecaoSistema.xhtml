@@ -7,6 +7,7 @@
 	template="../../template/newTemplate.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{novidadeController.listarNovidades()}"/>
+		<f:viewAction action="#{inconsistenciaController.listarInconsistenciasPerfil()}"/>
 	</f:metadata>
 	<ui:define name="content">
 
@@ -27,14 +28,14 @@
 										<p:graphicImage value="#{sis.imagem}" class="img-selsist"/>
 									</h:commandLink>
 									<div class="panel-body">
-										<center>
+										<div align="center">
 											<h:commandLink
 												actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
 												action="#{MBFuncionarios.redirecionar(sis.url)}">
 												<p:outputLabel class="texto-descr" value="#{sis.descricao}"
 													escape="true" />
 											</h:commandLink>
-										</center>
+										</div>
 									</div>
 								</div>
 
@@ -45,5 +46,6 @@
 		</h:form>
 		<ui:include src="dialogs/dialogNovidades.xhtml"/>
 		<ui:include src="dialogs/dialogDescricaoNovidade.xhtml"/>
+		<ui:include src="dialogs/dialogInconsistencias.xhtml"/>
 	</ui:define>
 </ui:composition>

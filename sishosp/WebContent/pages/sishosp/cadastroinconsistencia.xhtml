@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{inconsistenciaController.getEditaInconsistencia()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{inconsistenciaController.cabecalho}" class="panel-title"/>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<div style="display: flex;">
+							<div style="width: 50%">
+								<b:column span="12" class="label-position">
+									<b:label value="Título" severity="info" />
+
+									<b:inputText
+										value="#{inconsistenciaController.inconsistencia.titulo}"
+										class="form-control" required="true"
+										requiredMessage="Título: Campo obrigatório!" />
+								</b:column>
+							</div>
+
+							<div style="width: 50%">
+								<b:column span="12" class="label-position">
+									<b:label value="Tipo" severity="info" />
+
+									<b:selectOneMenu required="true" requiredMessage="Tipo: Campo obrigatório"
+										value="#{inconsistenciaController.inconsistencia.tipoInconsistencia}">
+										<f:selectItem itemLabel="Selecione o tipo" itemValue="" />
+										<f:selectItem itemLabel="Paciente" itemValue="PACIENTE" />
+										<f:selectItem itemLabel="Procedimento" itemValue="PROCEDIMENTO" />
+										<f:selectItem itemLabel="Laudo" itemValue="LAUDO" />
+									</b:selectOneMenu>
+								</b:column>
+							</div>
+						</div>
+					</b:row>
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="Descrição" severity="info" />
+
+							<b:inputText value="#{inconsistenciaController.inconsistencia.descricao}"
+								class="form-control" required="true"
+								requiredMessage="Descrição: Campo obrigatório!"/>
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="SQL" severity="info" />
+
+							<b:inputTextarea value="#{inconsistenciaController.inconsistencia.sql}"
+								class="form-control" required="true"
+								requiredMessage="SQL: Campo obrigatório!"/>
+						</b:column>
+					</b:row>
+					
+					<div style="display: flex;">
+						<div style="width: 50%">
+							<p:dataTable var="perfilSoucer" value="#{inconsistenciaController.listaPerfis}"
+								id="tbperfil" 
+								filteredValue="#{inconsistenciaController.listaPerfisFiltro}"
+								emptyMessage="Nenhum perfil encontrado"
+								paginator="true" rows="10" paginatorPosition="bottom" 
+								styleClass="table-right">
+
+								<p:column filterBy="#{perfilSoucer.descricao}" headerText="Perfil">
+									<h:outputText value="#{perfilSoucer.descricao}" />
+								</p:column>
+
+								<p:column headerText="Adicionar" width="20%">
+									<div align="center">
+										<p:commandButton actionListener="#{inconsistenciaController.adicionarFuncionario(perfilSoucer)}"
+											icon="fa fa-angle-right" title="Adicionar Perfil"  ajax="true" 
+											process="@this" immediate="true"
+											update="tbperfil :frmPrincipal:tbperfilselecionado :msgPagina "/>
+									</div>
+								</p:column>
+							</p:dataTable>
+						</div>
+						
+						<div style="width: 50%">
+							<p:dataTable var="perfilTarget" value="#{inconsistenciaController.listaPerfisSelecionado}"
+								id="tbperfilselecionado"
+								filteredValue="#{inconsistenciaController.listaPerfisSelecionadoFiltro}"
+								emptyMessage="Nenhum perfil adicionado"
+								paginator="true" rows="10" paginatorPosition="bottom"
+								styleClass="table-left">
+
+								<p:column headerText="Remover" width="20%">
+									<div align="center">
+										<p:commandButton action="#{inconsistenciaController.removerFuncionario(perfilTarget)}"
+											icon="fa fa-angle-left" title="Remover Perfil" immediate="true"
+											update="tbperfilselecionado :frmPrincipal:tbperfil"/>
+									</div>
+								</p:column>
+								
+								<p:column filterBy="#{perfilTarget.descricao}" headerText="Perfil">
+									<h:outputText value="#{perfilTarget.descricao}" />
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>	
+					<br />
+
+					<p:commandButton action="#{inconsistenciaController.gravarInconsistencia()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{inconsistenciaController.tipo == 1}" />
+
+					<p:commandButton action="#{inconsistenciaController.alterarInconsistencia()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{inconsistenciaController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciarinconsistencias.faces?faces-redirect=true">
+					</p:commandButton>
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>
