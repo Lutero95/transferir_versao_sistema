@@ -14,8 +14,8 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="660"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="326"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
@@ -36,11 +36,8 @@
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
 	<queryString>
-		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome,  pa.id_paciente),
-a.codprograma as cod_programa, p.descprograma as nome_programa,
-a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
-a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
-pr.nome as nome_proc, sa.descricao status, nome_principal,  pa.id_paciente
+		<![CDATA[select count(*),  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
+ p.descprograma as nome_programa, nome_principal 
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -48,7 +45,7 @@ inner join hosp.programa p on (a.codprograma = p.id_programa)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-JOIN hosp.unidade u ON u.id =  $P{codunidade} 
+JOIN hosp.unidade u ON u.id =  1
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 where sa.atendimento_realizado is true
@@ -61,60 +58,23 @@ and ((   $P{id_paciente}   is not null and a.codpaciente =   $P{id_paciente}   )
 and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento =  $P{codprofissional}    ) or ((   $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
 and ((    $P{codespecialidade}  is not null and f.codespecialidade =   $P{codespecialidade}   ) or ((  $P{codespecialidade}    = 0) or (  $P{codespecialidade}   is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
-order by 1]]>
+group by p.descprograma, a.codprograma, pa.nome,  pa.id_paciente, nome_principal
+order by pa.nome;]]>
 	</queryString>
-	<field name="row" class="java.lang.Object">
-		<property name="com.jaspersoft.studio.field.label" value="row"/>
-	</field>
-	<field name="cod_programa" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
-	</field>
-	<field name="nome_programa" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nome_programa"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
-	</field>
-	<field name="cod_atendimento" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="cod_atendimento"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
-	</field>
-	<field name="cns" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="cns"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
-	</field>
 	<field name="nome_paciente" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="data_agend" class="java.sql.Timestamp">
-		<property name="com.jaspersoft.studio.field.label" value="data_agend"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
-	</field>
-	<field name="nome_profissional" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nome_profissional"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
-	</field>
-	<field name="nome_proc" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nome_proc"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
-	</field>
-	<field name="status" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="status"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="situacao_atendimento"/>
-	</field>
-	<field name="nome_principal" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
-	</field>
 	<field name="id_paciente" class="java.lang.Integer"/>
-	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
+	<field name="nome_programa" class="java.lang.String"/>
+	<field name="cod_programa" class="java.lang.Integer"/>
+	<field name="nome_principal" class="java.lang.String"/>
+	<field name="count" class="java.lang.Integer"/>
+	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{count}]]></variableExpression>
 	</variable>
-	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
-	</variable>
-	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
-		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Sum">
+		<variableExpression><![CDATA[$F{count}]]></variableExpression>
 	</variable>
 	<variable name="total_atendimento_paciente" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{COLUMN_COUNT}]]></variableExpression>
@@ -128,48 +88,13 @@ order by 1]]>
 	<group name="grupoPrograma" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
 		<groupHeader>
-			<band height="69">
+			<band height="62">
 				<line>
 					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
 				</line>
 				<line>
 					<reportElement x="0" y="40" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
 				</line>
-				<staticText>
-					<reportElement x="68" y="44" width="141" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Paciente]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="391" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Procedimento]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="209" y="44" width="45" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Data]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="255" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Profissional]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="0" y="44" width="33" height="20" uuid="84f3443a-3caf-4cad-9533-d48260fbfd74"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Cns]]></text>
-				</staticText>
 				<staticText>
 					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="feef2009-e4fc-4a25-8a2f-7f2b4edb9f14"/>
 					<textElement verticalAlignment="Middle">
@@ -178,16 +103,30 @@ order by 1]]>
 					<text><![CDATA[Programa]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="90" y="1" width="230" height="20" printWhenGroupChanges="grupoPrograma" uuid="2f94ad7e-7679-495f-9847-938c47b0998c"/>
+					<reportElement x="89" y="1" width="230" height="20" printWhenGroupChanges="grupoPrograma" uuid="2f94ad7e-7679-495f-9847-938c47b0998c"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="1" y="42" width="141" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="434" y="42" width="138" height="20" uuid="fb48213a-2dd7-49fe-818a-62e78d44611c"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total de Atendimentos]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="51">
+			<band height="28">
 				<textField>
 					<reportElement x="0" y="10" width="229" height="13" uuid="1afc9e3f-6744-4c9c-975c-14e4a3d2e90c"/>
 					<textFieldExpression><![CDATA["Total de Atendimentos: "+$V{nome_paciente1}]]></textFieldExpression>
@@ -201,6 +140,12 @@ order by 1]]>
 				</textField>
 			</band>
 		</groupFooter>
+	</group>
+	<group name="groupPaciente">
+		<groupExpression><![CDATA[$F{id_paciente}]]></groupExpression>
+		<groupHeader>
+			<band height="1"/>
+		</groupHeader>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
@@ -230,43 +175,18 @@ order by 1]]>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="22" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="68" height="20" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="69" y="0" width="140" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
+				<reportElement isPrintRepeatedValues="false" x="1" y="2" width="248" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement x="209" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="255" y="0" width="135" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nome_profissional}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="391" y="0" width="181" height="19" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nome_proc}]]></textFieldExpression>
+			<textField>
+				<reportElement x="434" y="2" width="138" height="20" uuid="da467dad-f686-4bda-ac6a-4839e3df78f1"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
