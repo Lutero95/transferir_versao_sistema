@@ -36,6 +36,8 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import net.sf.jasperreports.engine.JRException;
@@ -448,11 +450,14 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
-		if ((prof != null) && (prof.getId() != null))
+		
+		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
+		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 		
-		if (atributoGenerico1.equalsIgnoreCase("A") && atributoGenerico3.equalsIgnoreCase("G")) {
+		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
+				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
 				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
 			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
@@ -460,16 +465,21 @@ public class RelatoriosController implements Serializable {
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
-		if (atributoGenerico1.equalsIgnoreCase("A") && atributoGenerico3.equalsIgnoreCase("P")) {
+		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
+				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
 			relatorio = caminho + "atendimentosporprograma.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla()) 
+				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())){
+			relatorio = caminho + "atendimentosporprogramasintetico.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
+		}
 		else {
-			//TODO
-			//CHAMADA DO RELATÓRIO DE ANTENDIMENTO SINTÉTICO
-			//this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
+			/* TODO
+			 * FAZER CHAMADA DO RELATÓRIO SINTÉTICO PROGRAMA GRUPO*/
 		}
 	}
 	

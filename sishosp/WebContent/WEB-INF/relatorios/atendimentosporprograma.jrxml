@@ -36,11 +36,11 @@
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
 	<queryString>
-		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome,  pa.id_paciente),
+		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
-pr.nome as nome_proc, sa.descricao status, nome_principal,  pa.id_paciente
+pr.nome as nome_proc, sa.descricao status, nome_principal
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -106,7 +106,6 @@ order by 1]]>
 		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
-	<field name="id_paciente" class="java.lang.Integer"/>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
 	</variable>
@@ -116,19 +115,11 @@ order by 1]]>
 	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
-	<variable name="total_atendimento_paciente" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$V{COLUMN_COUNT}]]></variableExpression>
-	</variable>
-	<variable name="paciente_geral" class="java.lang.Integer" calculation="DistinctCount">
-		<variableExpression><![CDATA[$F{id_paciente}]]></variableExpression>
-	</variable>
-	<variable name="paciente_programa" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="DistinctCount">
-		<variableExpression><![CDATA[$F{id_paciente}]]></variableExpression>
-	</variable>
 	<group name="grupoPrograma" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
 		<groupHeader>
-			<band height="69">
+			<band height="64">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<line>
 					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
 				</line>
@@ -143,21 +134,21 @@ order by 1]]>
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="391" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
+					<reportElement x="393" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Procedimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="209" y="44" width="45" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<reportElement x="211" y="44" width="45" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="255" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<reportElement x="257" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -171,33 +162,23 @@ order by 1]]>
 					<text><![CDATA[Cns]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="feef2009-e4fc-4a25-8a2f-7f2b4edb9f14"/>
+					<reportElement x="1" y="2" width="141" height="20" uuid="34807fb0-480a-4407-a50a-fe600f5f29c2"/>
 					<textElement verticalAlignment="Middle">
-						<font size="10" isBold="true"/>
+						<font size="11" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Programa]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="90" y="1" width="230" height="20" printWhenGroupChanges="grupoPrograma" uuid="2f94ad7e-7679-495f-9847-938c47b0998c"/>
-					<textElement verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
+					<reportElement x="142" y="2" width="138" height="20" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="51">
+			<band height="38">
 				<textField>
-					<reportElement x="0" y="10" width="229" height="13" uuid="1afc9e3f-6744-4c9c-975c-14e4a3d2e90c"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos: "+$V{nome_paciente1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="376" y="10" width="160" height="13" uuid="1b3fbf80-82be-43eb-b9b6-68ee691089ad">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					</reportElement>
-					<textFieldExpression><![CDATA["Total de Pacientes: "+$V{paciente_programa}]]></textFieldExpression>
+					<reportElement x="1" y="10" width="229" height="13" uuid="9fa4b3b6-e9ad-463a-878f-9ad54f0f0e1f"/>
+					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{nome_paciente1}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -230,7 +211,7 @@ order by 1]]>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="22" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="68" height="20" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055"/>
 				<textElement verticalAlignment="Middle">
@@ -246,7 +227,7 @@ order by 1]]>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="209" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+				<reportElement x="211" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -255,15 +236,19 @@ order by 1]]>
 				<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="255" y="0" width="135" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5"/>
+				<reportElement x="257" y="0" width="135" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_profissional}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="391" y="0" width="181" height="19" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918"/>
-				<textElement verticalAlignment="Middle" markup="none">
+				<reportElement x="393" y="0" width="181" height="20" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_proc}]]></textFieldExpression>
@@ -293,10 +278,6 @@ order by 1]]>
 				<reportElement x="0" y="0" width="320" height="20" uuid="4da50d34-f10d-4194-93d7-d911eb5365bf"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Total Geral de Atendimentos: "+$V{nome_paciente_1}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="376" y="0" width="191" height="20" printWhenGroupChanges="grupoPrograma" uuid="9d4d7a6a-4677-4970-bafc-4004a370d4a3"/>
-				<textFieldExpression><![CDATA["Total Geral de Pacientes: " + $V{paciente_geral}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
