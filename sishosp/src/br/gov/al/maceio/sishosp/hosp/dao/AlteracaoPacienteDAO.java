@@ -1324,12 +1324,13 @@ public class AlteracaoPacienteDAO {
 	public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, java.util.Date dataInclusao) throws ProjetoException {
 
 		boolean dataValida = false;
-		String sql = "select exists ( " +
-				"	select l.data_solicitacao " +
-				"		from hosp.paciente_instituicao pi2 join hosp.laudo l on pi2.codlaudo = l.id_laudo " +
-				"		where l.id_laudo = ?" +
-				"		and (? between l.data_solicitacao and " +
-				"			(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(l.ano_final ||'-'||'0'||''||l.mes_final ||'-'||'01', 'YYYY-MM-DD')) as data_final))) as valida";
+		String sql = "select exists ( " + 
+				"	select l.data_solicitacao " + 
+				"		from hosp.paciente_instituicao pi2 join hosp.laudo l on pi2.codlaudo = l.id_laudo " + 
+				"		where l.id_laudo = ? " + 
+				"		and ? between l.data_solicitacao " + 
+				"		and " + 
+				"			(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(l.ano_final ||'-'||'0'||''||l.mes_final ||'-'||'01', 'YYYY-MM-DD')) as data_final)) as valida";
 
 		try {
 			conexao = ConnectionFactory.getConnection();

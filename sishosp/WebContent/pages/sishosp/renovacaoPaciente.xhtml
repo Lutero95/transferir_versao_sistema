@@ -23,7 +23,6 @@
 				<h:form id="formInsercao">
 
 					<b:row>
-
 						<b:column span="3">
 							<p:selectBooleanCheckbox label="Paciente Sem Laudo"
 								itemLabel="Paciente Sem Laudo" id="statuspacientelaudo"
@@ -38,28 +37,11 @@
 					</b:row>
 
 					<b:row
-						rendered="#{RenovarPacienteController.insercaoParaLaudo.insercaoPacienteSemLaudo==false}">
-
-						<b:column span="2" class="label-position">
-							<p:outputLabel value="Laudo:"
-								style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"/>
-
-							<p:commandButton size="sm" style="margin-left: 20px;"
-								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-								update=":formConsuLaudo"
-								actionListener="#{RenovarPacienteController.listarLaudosVigentes()}"
-								oncomplete="PF('dlgConsuLaudo').show();" />
-						</b:column>
-
-					</b:row>
-
-					<b:row
 						rendered="#{RenovarPacienteController.insercaoParaLaudo.insercaoPacienteSemLaudo==true}">
-						<b:column span="1"
+						<b:column span="3"
 							class="label-position new-data-size new-comple1"
 							style="margin-top: 15px;">
-							<b:label value="Paciente" severity="info" />
+							<b:label value="Paciente" severity="info" class="fire-label" />
 
 							<h:outputText
 								value="#{RenovarPacienteController.insercaoParaLaudo.paciente.nome}"
@@ -67,64 +49,76 @@
 						</b:column>
 
 					</b:row>
-
-					<b:row
+					
+					<p:fieldset legend="Dados do Laudo"
 						rendered="#{RenovarPacienteController.insercaoParaLaudo.insercaoPacienteSemLaudo==false}">
+						<b:row>
+							<b:column span="2" class="label-position">
+								<p:outputLabel value="Laudo:"
+									style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;" />
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Paciente:" severity="info" class="fire-label" />
+								<p:commandButton size="sm" style="margin-left: 20px;"
+									class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+									update=":formConsuLaudo"
+									actionListener="#{RenovarPacienteController.listarLaudosVigentes()}"
+									oncomplete="PF('dlgConsuLaudo').show();" />
+							</b:column>
+						</b:row>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercao.laudo.paciente.nome}"
-								class="campo-laudoDig3" />
-						</b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Procedimento:" severity="info" class="fire-label" />
+						<b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Paciente:" severity="info" class="fire-label" />
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
-								class="select-agendaEquipe2" />
-						</b:column>
+								<h:outputLabel
+									value="#{RenovarPacienteController.insercao.laudo.paciente.nome}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-					</b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Procedimento:" severity="info"
+									class="fire-label" />
 
-					<b:row
-						rendered="#{RenovarPacienteController.insercaoParaLaudo.insercaoPacienteSemLaudo==false}">
+								<h:outputLabel
+									value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
+									class="select-agendaEquipe2" />
+							</b:column>
+						</b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="CID:" severity="info" class="fire-label" />
+						<b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="CID Primário:" severity="info" class="fire-label" />
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
-								class="campo-laudoDig3" />
-						</b:column>
+								<h:outputLabel
+									value="#{RenovarPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Inicial:" severity="info"
-								class="fire-label" />
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Inicial:" severity="info"
+									class="fire-label" />
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+								<h:outputLabel
+									value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Final" severity="info"
-								class="fire-label" />
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Final" severity="info"
+									class="fire-label" />
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
-
-					</b:row>
-
-					<br></br>
+								<h:outputLabel
+									value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
+						</b:row>
+					</p:fieldset>
+					<br />
 
 				</h:form>
 

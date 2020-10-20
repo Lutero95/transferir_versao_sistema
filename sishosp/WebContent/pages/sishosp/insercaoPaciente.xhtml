@@ -21,83 +21,77 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
-
-                    <b:row>
-
-                        <b:column span="2" class="label-position">
-                            <p:outputLabel value="Laudo:"
-                                           style="margin-left:-15px; margin-top: 8px;
+					<p:fieldset legend="Dados do Laudo">
+						<b:row>
+							<b:column span="2" class="label-position">
+								<p:outputLabel value="Laudo:"
+									style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                            <p:commandButton size="sm" style="margin-left: 20px;"
-                                             class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-                                             update=":formConsuLaudo"
-                                             action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
-                                             oncomplete="PF('dlgConsuLaudo').show();"/>
-                        </b:column>
+								<p:commandButton size="sm" style="margin-left: 20px;"
+									class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+									update=":formConsuLaudo"
+									action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
+									oncomplete="PF('dlgConsuLaudo').show();" />
+							</b:column>
+						</b:row>
 
-                    </b:row>
+						<b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Paciente:" class="fire-label" severity="info" />
 
-                    <b:row>
+								<h:outputLabel
+									value="#{InsercaoController.insercao.laudo.paciente.nome}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Paciente:" class="fire-label" severity="info"/>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Procedimento:" class="fire-label"
+									severity="info" />
 
-                            <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.paciente.nome}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+								<h:outputLabel
+									value="#{InsercaoController.insercao.laudo.procedimentoPrimario.nomeProc}"
+									class="campo-laudoDig3" />
+							</b:column>
+						</b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Procedimento:" class="fire-label" severity="info"/>
+						<b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="CID Primário:" class="fire-label"
+									severity="info" />
 
-                            <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.procedimentoPrimario.nomeProc}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+								<h:outputLabel
+									value="#{InsercaoController.insercao.laudo.cid1.descCid}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-                    </b:row>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Inicial:" class="fire-label"
+									severity="info" />
 
-                    <b:row>
+								<h:outputLabel
+									value="#{InsercaoController.insercao.laudo.vigenciaInicial}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="CID:" class="fire-label" severity="info"/>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Final" class="fire-label"
+									severity="info" />
 
-                            <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.cid1.descCid}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+								<h:outputLabel
+									value="#{InsercaoController.insercao.laudo.vigenciaFinal}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
+						</b:row>
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Inicial:" class="fire-label"
-                                     severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigenciaInicial}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Final" class="fire-label"
-                                     severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigenciaFinal}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-
-                    <br></br>
-
-                </h:form>
+						<br />
+						<br />
+					</p:fieldset>
+				</h:form>
 
                 <h:form id="formInsercao2">
                     <p:outputPanel
