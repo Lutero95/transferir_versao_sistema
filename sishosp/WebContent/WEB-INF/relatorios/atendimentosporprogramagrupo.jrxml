@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -150,21 +150,21 @@ order by 1]]>
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="427" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
+					<reportElement x="394" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Procedimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="215" y="44" width="45" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<reportElement x="211" y="44" width="45" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="265" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<reportElement x="257" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -191,7 +191,7 @@ order by 1]]>
 	<group name="grpgrupo">
 		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
 		<groupHeader>
-			<band height="50">
+			<band height="25">
 				<textField>
 					<reportElement x="0" y="0" width="572" height="20" uuid="280a9067-fafb-4f39-96d4-4a6d84cc51b2"/>
 					<textElement verticalAlignment="Middle">
@@ -254,7 +254,7 @@ order by 1]]>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="215" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+				<reportElement x="211" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -262,17 +262,19 @@ order by 1]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="265" y="0" width="157" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="257" y="0" width="135" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_profissional}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="427" y="0" width="145" height="20" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="394" y="0" width="181" height="20" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_proc}]]></textFieldExpression>
 			</textField>
