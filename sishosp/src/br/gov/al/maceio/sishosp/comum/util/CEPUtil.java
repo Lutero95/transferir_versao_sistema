@@ -10,28 +10,32 @@ public final class CEPUtil {
         EnderecoBean endereco = new EnderecoBean();
         EnderecoDAO enderecoDAO = new EnderecoDAO();
 
-        CepWebService cepWebService = new CepWebService(cep);
-        if (cepWebService.getResultado() != 0) {
-            endereco.setLogradouro(cepWebService.getTipoLogradouro() + " " + cepWebService.getLogradouro());
-            endereco.setUf(cepWebService.getEstado());
-            endereco.setMunicipio(cepWebService.getCidade());
-            endereco.setBairro(cepWebService.getBairro());
-            endereco.setCodIbge(cepWebService.getResultado());
-            endereco.setCodmunicipio(enderecoDAO.retornarCodigoCidade(endereco.getCodIbge()));
-            endereco.setCepValido(true);
-
-            if(endereco.getBairro().equals("")){
-                endereco.setBairroUnico(true);
-            }
-            else{
-                endereco.setBairroUnico(false);
-            }
-
-
-        } else {
-            endereco.setCepValido(false);
-            
-        }
+//        CepWebService cepWebService = new CepWebService(cep);
+//        if (cepWebService.getResultado() != 0) {
+//            endereco.setLogradouro(cepWebService.getTipoLogradouro() + " " + cepWebService.getLogradouro());
+//            endereco.setUf(cepWebService.getEstado());
+//            endereco.setMunicipio(cepWebService.getCidade());
+//            endereco.setBairro(cepWebService.getBairro());
+//            endereco.setCodIbge(cepWebService.getResultado());
+//            endereco.setCodmunicipio(enderecoDAO.retornarCodigoCidade(endereco.getCodIbge()));
+//            endereco.setCepValido(true);
+//
+//            if(endereco.getBairro().equals("")){
+//                endereco.setBairroUnico(true);
+//            }
+//            else{
+//                endereco.setBairroUnico(false);
+//            }
+//
+//
+//        } else {
+//           endereco.setCepValido(false);
+//            
+//        }
+        
+        /*TODO APAGAR ESTA LINHA APÓS RESOLVER O ERRO DO SERVIÇO*/
+        endereco.setCepValido(false);
+        
         return endereco;
     }
 

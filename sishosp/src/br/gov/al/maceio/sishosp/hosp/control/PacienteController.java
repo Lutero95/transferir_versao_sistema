@@ -185,7 +185,9 @@ public class PacienteController implements Serializable {
 				cidadeDoCep = true;
 			} else {
 				cidadeDoCep = false;
-				JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
+				//JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
+				/* TODO APAGAR ESTA LINHA APÓS RESOLVER O ERRO DO SERVIÇO*/
+				bairroExiste = true;
 			}
 		}
 	}
