@@ -432,9 +432,9 @@ public class PtsController implements Serializable {
     }
 
     public void verificarSeExistePtsComEspecialidadeSelecionada() throws ProjetoException {
-        Boolean existeEspecialidadeSelecionadaNoBanco = ptsDao.verificarSeExistePtsComEspecialidadeSelecionada(ptsAreaAtual.getArea().getCodEspecialidade());
+
         Boolean existeEspecialidadeSelecionadaNaTela = verificaSeExistePtsComEspecialidadeSelecionadaNaTela();
-        if((existeEspecialidadeSelecionadaNaTela || existeEspecialidadeSelecionadaNoBanco) && !confirmaCadastroPtsComAreaExistente)
+        if((existeEspecialidadeSelecionadaNaTela) && !confirmaCadastroPtsComAreaExistente)
             JSFUtil.abrirDialog("dlgExisteArea");
         else
             validarSenhaAdicionarAreaPts();

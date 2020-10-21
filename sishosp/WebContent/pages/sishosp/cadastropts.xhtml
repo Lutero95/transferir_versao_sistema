@@ -22,7 +22,6 @@
 				<h:form id="formPts">
 
 					<b:row>
-
 						<b:column span="2" class="label-position inserPacient">
 							<b:label value="Paciente:" class="fire-label" severity="info" />
 
@@ -43,11 +42,9 @@
 							<h:outputLabel value="#{PtsController.pts.paciente.cns}"
 								class="campo-laudoDig3" />
 						</b:column>
-
 					</b:row>
 
 					<b:row>
-
 						<b:column span="2" class="label-position inserPacient">
 							<b:label value="Programa:" class="fire-label" severity="info" />
 
@@ -61,13 +58,10 @@
 							<h:outputLabel value="#{PtsController.pts.grupo.descGrupo}"
 								class="campo-laudoDig3" />
 						</b:column>
-
 					</b:row>
 
 					<b:row>
-
 						<b:column span="8">
-
 							<b:label value="Data do PTS:" id="datapts" severity="info"
 								class="fire-label" />
 
@@ -86,22 +80,19 @@
 											 class="btn-acao-table acao-confirmar"
 											 update=":frmSenhaLiberacaoPts"
 											 actionListener="#{PtsController.abrirDialogLiberacaoPts()}" />
-
 						</b:column>
-
 					</b:row>
+					
 					<br />
 					<br />
+					
 					<b:row>
-
 						<h1>VISÃO GERAL DO PACIENTE</h1>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<b:column span="5">
 
 							<b:label value="Incapacidades Funcionais:"
@@ -112,12 +103,10 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
 								value="#{PtsController.pts.incapacidadesFuncionais}"></h:inputTextarea>
-
 						</b:column>
 
 
 						<b:column span="5">
-
 							<b:label value="Capacidades Funcionais:"
 								id="capacidadesFuncionais" severity="info" class="fire-label" />
 
@@ -126,17 +115,13 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Capacidades Funcionais: Campo obrigatório!"
 								value="#{PtsController.pts.capacidadesFuncionais}"></h:inputTextarea>
-
 						</b:column>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<b:column span="5">
-
 							<b:label value="Objetivos Familia/Paciente:"
 								id="objetivosFamiliarPaciente" severity="info"
 								class="fire-label" />
@@ -146,11 +131,11 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
-
 						</b:column>
+						
 						<br />
+						
 						<b:column span="5">
-
 							<b:label value="Objetivos Gerais/Multidisciplinar:"
 								id="objetivosGeraisMultidisciplinar" severity="info"
 								class="fire-label" />
@@ -160,18 +145,13 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
-
 						</b:column>
-
 					</b:row>
+					<br />
 
-					<br></br>
 
-
-<b:row>
-
+					<b:row>
 						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisCurtoPrazo==true}">
-
 							<b:label value="Objetivos Gerias (Curto Prazo):"
 								id="objetivosGeraisCurtoPrazo" severity="info"
 								class="fire-label" />
@@ -180,11 +160,9 @@
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
-
 						</b:column>
 
 						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisMedioPrazo==true}">
-
 							<b:label value="Objetivos Gerais (Médio Prazo):"
 								id="objetivosGeraisMedioPrazo2" severity="info"
 								class="fire-label" />
@@ -193,11 +171,9 @@
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
-
 						</b:column>
 
 						<b:column span="4" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.ptsMostrarObjGeraisLongoPrazo==true}">
-
 							<b:label value="Objetivos Gerais (Longo Prazo):"
 								id="objetivosGeraisLongoPrazo2" severity="info"
 								class="fire-label" />
@@ -206,36 +182,27 @@
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
-
 						</b:column>
-
 					</b:row>
 
-					<br></br>
-					
-					
-					<br></br>
+					<br />
+					<br />
 
 					<b:row>
-
 						<h1>VISÃO MULTIDISCIPLINAR</h1>
-
 					</b:row>
 
 					<b:row>
-
 						<p:commandButton icon="ui-icon-plus" style="margin-top: 10px"
 							value="Incluir Área" immediate="true"
 							class="btn-acao-table acao-confirmar"
 							update=":frmInclusaoAreaPts"
 							actionListener="#{PtsController.abrirDialogInclusaoPts()}" />
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<p:dataTable id="dtPtsAdicionados"
 							value="#{PtsController.pts.listaPtsArea}" var="pts"
 							emptyMessage="Sem registros.">
@@ -295,12 +262,10 @@
 									</p:commandButton>
 								</div>
 							</p:column>
-
 						</p:dataTable>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<div align="center">
 
@@ -318,11 +283,8 @@
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							action="/pages/sishosp/gerenciamentopts.xhtml?faces-redirect=true">
 						</p:commandButton>
-
 					</div>
-
 				</h:form>
-
 			</div>
 		</div>
 

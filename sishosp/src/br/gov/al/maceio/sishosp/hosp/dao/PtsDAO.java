@@ -953,34 +953,4 @@ public class PtsDAO {
         }
         return retorno;
     }
-    public Boolean verificarSeExistePtsComEspecialidadeSelecionada(Integer idEspecialidade)
-            throws ProjetoException {
-
-        Boolean existe = false;
-        String sql = "select exists (select pa.id from hosp.pts_area pa where pa.id_area = ?) existe_area";
-
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
-
-            stmt.setInt(1, idEspecialidade);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                existe = rs.getBoolean("existe_area");
-            }
-        }  catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        }finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return existe;
-    }
-
 }
