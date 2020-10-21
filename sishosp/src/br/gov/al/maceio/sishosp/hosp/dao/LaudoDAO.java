@@ -395,11 +395,12 @@ public class LaudoDAO {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
         String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
-                + "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
+                + "pr.codproc , pr.nome as procedimento, c.desccidabrev,  l.mes_final, l.ano_final, "
                 + "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "
                 + "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
+                + " left join hosp.cid c on c.cod  = l.cid1 "
                 + " where l.ativo is true ";
 //walter        if (user_session.getUnidade().getRestringirLaudoPorUnidade()==true)
 //walter            sql = sql+ " and l.cod_unidade = ?";
@@ -511,6 +512,7 @@ public class LaudoDAO {
                 laudo.setAnoFinal(rs.getInt("ano_final"));
                 laudo.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
                 laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev"));
                 laudo.setSituacao(rs.getString("situacao"));
                 laudo.setMesFinal(rs.getInt("mes_final"));
                 laudo.setAnoFinal(rs.getInt("ano_final"));

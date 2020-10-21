@@ -145,23 +145,29 @@
 							<h:outputText value="#{tab.paciente.id_paciente}" />
 						</p:column>
 
-						<p:column headerText="Matrícula" exportable="false"  width="80">
+						<p:column headerText="Matrícula" exportable="false"  width="70">
 							<h:outputText value="#{tab.paciente.matricula}" />
 						</p:column>
 
 
-						<p:column headerText="Paciente" width="200">
+						<p:column headerText="Paciente" width="150">
 							<h:outputText value="#{tab.paciente.nome}" />
 						</p:column>
 
 
-						<p:column headerText="Profissional" width="200">
+						<p:column headerText="Profissional" width="150">
 							<h:outputText value="#{tab.profissionalLaudo.nome}" />
 						</p:column>
 
 
 						<p:column headerText="Procedimento Primário" width="244">
 							<h:outputText value="#{tab.procedimentoPrimario.codProc}" />-<h:outputText
+								value="#{tab.procedimentoPrimario.nomeProc}" />
+						</p:column>
+
+
+						<p:column headerText="CID" width="244">
+							<h:outputText value="#{tab.cid1.descCid}" />-<h:outputText
 								value="#{tab.procedimentoPrimario.nomeProc}" />
 						</p:column>
 
