@@ -450,7 +450,7 @@ public class PtsController implements Serializable {
         return false;
     }
 
-    public void validarSenhaAdicionarAreaPts() throws ProjetoException {
+    private void validarSenhaAdicionarAreaPts() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(ptsAreaAtual.getFuncionario().getCpf(),

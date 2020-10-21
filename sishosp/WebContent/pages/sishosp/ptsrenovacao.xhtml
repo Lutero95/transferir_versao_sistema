@@ -22,7 +22,6 @@
 				<h:form id="formPts">
 
 					<b:row>
-
 						<b:column span="2" class="label-position inserPacient">
 							<b:label value="Paciente:" class="fire-label" severity="info" />
 
@@ -43,11 +42,9 @@
 							<h:outputLabel value="#{PtsController.pts.paciente.cns}"
 								class="campo-laudoDig3" />
 						</b:column>
-
 					</b:row>
 
 					<b:row>
-
 						<b:column span="2" class="label-position inserPacient">
 							<b:label value="Programa:" class="fire-label" severity="info" />
 
@@ -61,13 +58,10 @@
 							<h:outputLabel value="#{PtsController.pts.grupo.descGrupo}"
 								class="campo-laudoDig3" />
 						</b:column>
-
 					</b:row>
 
 					<b:row>
-
 						<b:column span="2" class="label-position data-size">
-
 							<b:label value="Data do PTS:" id="datapts" severity="info"
 								class="fire-label" />
 
@@ -77,21 +71,16 @@
 								class="select-agendaEquipe2" showOn="button"
 								pattern="dd/MM/yyyy" size="15">
 							</p:calendar>
-
 						</b:column>
-
 					</b:row>
 
 					<b:row>
-
 						<h1>VISÃO GERAL DO PACIENTE</h1>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<b:column span="12">
 
 							<b:label value="Análise Dos Resultados dos Objetivos Gerais:"
@@ -102,17 +91,13 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Análise Dos Resultados dos Objetivos Gerais: Campo obrigatório!"
 								value="#{PtsController.pts.analiseDosResultadosDosObjetivosGerias}"></h:inputTextarea>
-
 						</b:column>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<b:column span="6">
-
 							<b:label value="Objetivos Familia/Paciente:"
 								id="objetivosFamiliarPaciente" severity="info"
 								class="fire-label" />
@@ -121,12 +106,10 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
-
 						</b:column>
 
 
 						<b:column span="6">
-
 							<b:label value="Objetivos Gerais/Multidisciplinar:"
 								id="objetivosGeraisMultidisciplinar" severity="info"
 								class="fire-label" />
@@ -135,36 +118,26 @@
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
-
 						</b:column>
-
 					</b:row>
 
-					<br></br>
-
-
-
+					<br />
 
 					<b:row>
-
 						<h1>VISÃO MULTIDISCIPLINAR</h1>
-
 					</b:row>
 
 					<b:row>
-
 						<p:commandButton icon="ui-icon-plus" style="margin-top: 10px"
 							value="Incluir Área" immediate="true"
 							class="btn-acao-table acao-confirmar"
 							update=":frmInclusaoAreaPts"
 							actionListener="#{PtsController.abrirDialogInclusaoPts()}" />
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<b:row>
-
 						<p:dataTable id="dtPtsAdicionados"
 							value="#{PtsController.pts.listaPtsArea}" var="pts"
 							emptyMessage="Sem registros.">
@@ -226,13 +199,11 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</b:row>
 
-					<br></br>
+					<br />
 
 					<div align="center">
-
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
 							icon="ui-icon-check" update=":msgPagina, formPts"
 							class="btn-incluir"
@@ -242,11 +213,8 @@
 							size="sm" immediate="true" look="info" class="btn-voltar"
 							action="/pages/sishosp/gerenciamentopts.xhtml?faces-redirect=true">
 						</p:commandButton>
-
 					</div>
-
 				</h:form>
-
 			</div>
 		</div>
 
@@ -272,22 +240,18 @@
 								var="especialidade"
 								itemLabel="#{especialidade.descEspecialidade}"
 								itemValue="#{especialidade.codEspecialidade}" />
-
 						</b:selectOneMenu>
-
 					</b:column>
-
 				</b:row>
 
-				<br></br>
+				<br />
 
 				<b:row>
-
 					<b:column span="5" class="label-position data-size">
 
 						<h1>OBJETIVO</h1>
 
-						<br></br>
+						<br />
 
 						<b:label value="Curto" severity="info" class="fire-label" />
 
@@ -296,8 +260,8 @@
 							requiredMessage="Prazo Curto(Objetivos): Campo obrigatório!"
 							value="#{PtsController.ptsAreaAtual.objetivoCurto}"></h:inputTextarea>
 
-						<br></br>
-						<br></br>
+						<br />
+						<br />
 
 						<b:label value="Médio" severity="info" class="fire-label" />
 
@@ -306,8 +270,8 @@
 							requiredMessage="Prazo Médio(Objetivos): Campo obrigatório!"
 							value="#{PtsController.ptsAreaAtual.objetivoMedio}"></h:inputTextarea>
 
-						<br></br>
-						<br></br>
+						<br />
+						<br />
 
 						<b:label value="Longo" severity="info" class="fire-label" />
 
@@ -315,7 +279,6 @@
 							scrollHeight="100" required="false" rows="20" cols="89"
 							requiredMessage="Prazo Longo(Objetivos): Campo obrigatório!"
 							value="#{PtsController.ptsAreaAtual.objetivoLongo}"></h:inputTextarea>
-
 					</b:column>
 
 					<b:column span="2"></b:column>
@@ -333,8 +296,8 @@
 							requiredMessage="Prazo Curto(Plano de Intervenções): Campo obrigatório!"
 							value="#{PtsController.ptsAreaAtual.planoDeIntervencoesCurto}"></h:inputTextarea>
 
-						<br></br>
-						<br></br>
+						<br />
+						<br />
 
 						<b:label value="Médio" severity="info" class="fire-label" />
 
@@ -343,8 +306,8 @@
 							requiredMessage="Prazo Médio(Plano de Intervenções): Campo obrigatório!"
 							value="#{PtsController.ptsAreaAtual.planoDeIntervencoesMedio}"></h:inputTextarea>
 
-						<br></br>
-						<br></br>
+						<br />
+						<br />
 
 						<b:label value="Longo" severity="info" class="fire-label" />
 
@@ -362,7 +325,6 @@
 				</div>
 
 				<b:row>
-
 					<p:commandButton icon="ui-icon-plus"
 						style="margin-top: 10px;margin-left: 10px" value="Confirmar"
 						update="grwInclusaoPts, :frmSenhaAreaPts"
@@ -372,7 +334,6 @@
 					<p:commandButton value="Fechar" icon="ui-icon-close"
 						styleClass="btn-nao" style="width:100px;margin-left: 10px"
 						onclick="PF('dlgInclusaoAreaPts').hide();" process="@this" />
-
 				</b:row>
 
 			</h:form>
@@ -405,13 +366,32 @@
 					<p:commandButton value="Adicionar" look="success" size="sm"
 						style="margin-top:10px" icon="fa fa-fw fa-check"
 						update=":formPts:dtPtsAdicionados, grwSenha"
-						action="#{PtsController.validarSenhaAdicionarAreaPts()}" />
+						action="#{PtsController.verificarSeExistePtsComEspecialidadeSelecionada()}" />
 				</div>
 
 			</h:form>
 		</p:dialog>
-
-
+		
+		<p:dialog header="Confirmar" widgetVar="dlgExisteArea"
+			modal="true" styleClass="topDialog" draggable="true"
+			resizable="false"
+			position="center">
+			<h:form id="frmConfirmar">
+				<p:outputLabel value="Já existe informação no PTS para a área selecionada! Deseja continuar mesmo assim?"/>
+				
+				<div align="center">
+					<p:commandButton value="Confirmar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						update=":frmConfirmar"
+						action="#{PtsController.confirmarCadastroPtsComAreaExistente()}"/>
+						
+					<p:commandButton value="Cancelar" look="success" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="ui-icon-close"
+						update=":frmConfirmar, :frmSenhaAreaPts"
+						action="#{PtsController.cancelarCadastroPtsComAreaExistente()}" />	
+				</div>
+			</h:form>
+		</p:dialog>
 
 
 		<p:dialog header="PTS Renovado com Sucesso" styleClass="topDialog"
