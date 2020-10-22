@@ -432,9 +432,9 @@ public class PtsController implements Serializable {
     }
 
     public void verificarSeExistePtsComEspecialidadeSelecionada() throws ProjetoException {
-        Boolean existeEspecialidadeSelecionadaNoBanco = ptsDao.verificarSeExistePtsComEspecialidadeSelecionada(ptsAreaAtual.getArea().getCodEspecialidade());
+
         Boolean existeEspecialidadeSelecionadaNaTela = verificaSeExistePtsComEspecialidadeSelecionadaNaTela();
-        if((existeEspecialidadeSelecionadaNaTela || existeEspecialidadeSelecionadaNoBanco) && !confirmaCadastroPtsComAreaExistente)
+        if((existeEspecialidadeSelecionadaNaTela) && !confirmaCadastroPtsComAreaExistente)
             JSFUtil.abrirDialog("dlgExisteArea");
         else
             validarSenhaAdicionarAreaPts();
@@ -450,7 +450,7 @@ public class PtsController implements Serializable {
         return false;
     }
 
-    public void validarSenhaAdicionarAreaPts() throws ProjetoException {
+    private void validarSenhaAdicionarAreaPts() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(ptsAreaAtual.getFuncionario().getCpf(),
