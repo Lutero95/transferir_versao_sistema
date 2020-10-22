@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
+import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
 import javax.faces.context.FacesContext;
@@ -590,22 +591,25 @@ public class EnderecoDAO {
         return uf;
     }
 
-    public Integer retornarCodigoCidade(Integer codIbge)
-            throws ProjetoException {
+    public MunicipioBean retornaCidadeComIbge(String nomeMunicipio) throws ProjetoException {
 
-        Integer codCidade = null;
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
+        MunicipioBean municipio = null;
 
         try {
-            String sql = "select id_municipio from hosp.municipio where codigo = ? ";
+            String sql = "select id_municipio, unaccent(nome) nome, "
+            		+ " codigo from hosp.municipio where unaccent(nome) = ? ;";
 
             ps = conexao.prepareStatement(sql);
-            ps.setInt(1, codIbge);
+            ps.setString(1, StringUtil.removeAcentos(nomeMunicipio));
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                codCidade = rs.getInt("id_municipio");
+            	municipio = new MunicipioBean();
+            	municipio.setId(rs.getInt("id_municipio"));
+            	municipio.setNome(rs.getString("nome"));
+            	municipio.setCodigo(rs.getInt("codigo"));
             }
 
         } catch (SQLException sqle) {
@@ -619,7 +623,7 @@ public class EnderecoDAO {
                 ex.printStackTrace();
             }
         }
-        return codCidade;
+        return municipio;
     }
 
     public Integer verificarSeBairroExiste(String nomeBairro, Integer codMunicipio)

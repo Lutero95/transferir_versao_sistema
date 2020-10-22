@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
+import br.gov.al.maceio.sishosp.hosp.model.MunicipioBean;
 
 public final class CEPUtil {
 
@@ -31,21 +32,29 @@ public final class CEPUtil {
            Object result = future.get(10, TimeUnit.SECONDS); 
            CepWebService cepWebService = (CepWebService) result;
            
-		if (cepWebService .getResultado() != 0) {
-               endereco.setLogradouro(cepWebService.getTipoLogradouro() + " " + cepWebService.getLogradouro());
-               endereco.setUf(cepWebService.getEstado());
-               endereco.setMunicipio(cepWebService.getCidade());
-               endereco.setBairro(cepWebService.getBairro());
-               endereco.setCodIbge(cepWebService.getResultado());
-               endereco.setCodmunicipio(enderecoDAO.retornarCodigoCidade(endereco.getCodIbge()));
-               endereco.setCepValido(true);
+		if (cepWebService.getResultado() != 0) {
+			MunicipioBean municipio = enderecoDAO.retornaCidadeComIbge(cepWebService.getCidade());	
+			
+			if(!VerificadorUtil.verificarSeObjetoNulo(municipio)) {			
+				endereco.setLogradouro(cepWebService.getTipoLogradouro() + " " + cepWebService.getLogradouro());
+				endereco.setUf(cepWebService.getEstado());
+				endereco.setMunicipio(municipio.getNome());
+				endereco.setBairro(cepWebService.getBairro());
+				endereco.setCodIbge(municipio.getCodigo());
+				endereco.setCodmunicipio(municipio.getId());
+				endereco.setCepValido(true);
 
-               if(endereco.getBairro().equals("")){
-                   endereco.setBairroUnico(true);
-               }
-               else{
-                   endereco.setBairroUnico(false);
-               }
+				if (endereco.getBairro().equals("")) {
+					endereco.setBairroUnico(true);
+				} else {
+					endereco.setBairroUnico(false);
+				}
+			} else {
+				endereco = new EnderecoBean();
+	            endereco.setCepValido(false);
+				JSFUtil.adicionarMensagemAdvertencia("Município do CEP inválido!", "Advertência");				
+			}
+			
            } else {
               endereco.setCepValido(false);
 			  JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
