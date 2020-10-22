@@ -46,6 +46,7 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -765,7 +766,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     
     public void validarInsercaoPaciente() throws ProjetoException, SQLException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
-    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo())) {
+    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getPaciente())) {
 			
 //			  GerenciarPacienteController gerenciarPacienteController = new
 //			  GerenciarPacienteController(); 
@@ -813,11 +814,15 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	}
     }
     
-    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, GrupoBean grupo) throws ProjetoException, SQLException {
-    	ProgramaDAO pDAo = new ProgramaDAO();
-    	ProcedimentoBean procedimentoPadraoGrupo = pDAo.retornaProcedimentoPadraoDoGrupoNoPrograma(programa, grupo);
-        if((!procedimentoLaudo.getIdProc().equals(programa.getProcedimento().getIdProc())) && ((procedimentoPadraoGrupo!=null) && (!procedimentoLaudo.getIdProc().equals(procedimentoPadraoGrupo.getIdProc())))) {
-    		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incompatível com o Procedimento do Programa/Grupo Selecionado", "");
+    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente) throws ProjetoException, SQLException {
+    	ProgramaDAO programaDAO = new ProgramaDAO();
+    	ProcedimentoBean procedimentoPadraoGrupo = programaDAO.retornaProcedimentoPadraoDoGrupoNoPrograma(programa, grupo);
+    	ProcedimentoBean procedimentoIdade = programaDAO.retornaProcedimentoPadraoDoProgramaPorIdade(programa.getIdPrograma(), paciente.getId_paciente());
+    	
+        if((!procedimentoLaudo.getIdProc().equals(programa.getProcedimento().getIdProc())) 
+        		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoPadraoGrupo)) && (!procedimentoLaudo.getIdProc().equals(procedimentoPadraoGrupo.getIdProc())))
+        		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoIdade)) && (!procedimentoLaudo.getIdProc().equals(procedimentoIdade.getIdProc()))) ) {
+    		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incompatível com o Procedimento do Programa Selecionado", "");
     		return false;
     	}
     	return true;
