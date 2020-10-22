@@ -208,8 +208,7 @@ public class ProgramaDAO {
         return lista;
     }
 
-    public ArrayList<ProgramaBean> BuscalistarProgramas()
-            throws ProjetoException {
+    public ArrayList<ProgramaBean> BuscalistarProgramas() throws ProjetoException {
         PreparedStatement ps = null;
         con = ConnectionFactory.getConnection();
 
@@ -1291,11 +1290,15 @@ public class ProgramaDAO {
             }
 
         } catch (SQLException sqle) {
-            con.rollback();
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
         } catch (Exception ex) {
-            con.rollback();
             throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         return procedimento;
     }
@@ -1332,5 +1335,38 @@ public class ProgramaDAO {
             }
         }
         return programa;
+    }
+    
+    public ProcedimentoBean retornaProcedimentoPadraoDoProgramaPorIdade (Integer idPrograma, Integer idPaciente) throws ProjetoException, SQLException {
+        ProcedimentoBean procedimento = null;
+        try {
+            con = ConnectionFactory.getConnection();
+            String sql = "SELECT id_procedimento FROM hosp.programa_procedimento_idade_especifica where id_programa = ? " + 
+            		"	and   (select extract (year from age(p.dtanascimento)) idade from hosp.pacientes p " + 
+            		"        			where p.id_paciente = ?) " + 
+            		"        		between idade_minima and idade_maxima;";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, idPrograma);
+            stmt.setInt(2, idPaciente);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id_procedimento"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return procedimento;
     }
 }

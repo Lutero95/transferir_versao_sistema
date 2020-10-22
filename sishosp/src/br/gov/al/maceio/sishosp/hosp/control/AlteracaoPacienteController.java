@@ -801,7 +801,8 @@ public class AlteracaoPacienteController implements Serializable {
                         insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
                         insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
 
-                if(!insercaoPacienteController.procedimentoValido(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo()))
+                if(!insercaoPacienteController.procedimentoValido
+                		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getPaciente()))
                     return;
             }
 
