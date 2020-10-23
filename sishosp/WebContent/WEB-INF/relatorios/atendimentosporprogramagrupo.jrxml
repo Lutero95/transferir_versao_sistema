@@ -38,6 +38,8 @@
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
+	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
+	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -53,20 +55,50 @@ inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-JOIN hosp.unidade u ON u.id = $P{codunidade}
+JOIN hosp.unidade u ON u.id =  $P{codunidade} 
 JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
+left join (
+	select pa2.id_paciente, p2.id_programa, g2.id_grupo, count(*) atendimentos
+	from hosp.atendimentos a2
+	inner join hosp.atendimentos1 a11 on (a2.id_atendimento = a11.id_atendimento)
+	join hosp.situacao_atendimento sa2 on sa2.id = a11.id_situacao_atendimento 
+	inner join hosp.programa p2 on (a2.codprograma = p2.id_programa)
+	inner join hosp.grupo g2 on (a2.codgrupo = g2.id_grupo)
+	inner join hosp.pacientes pa2 on (a2.codpaciente = pa2.id_paciente)
+	inner join acl.funcionarios f2  on (a11.codprofissionalatendimento = f2.id_funcionario)
+	inner join hosp.proc pr2 on (a11.codprocedimento = pr2.id)	
+	JOIN hosp.unidade u2 ON u2.id =  $P{codunidade} 
+	JOIN hosp.empresa e2 ON e2.cod_empresa = u2.cod_empresa
+	left join hosp.especialidade es2 on es2.id_especialidade = f2.codespecialidade
+	where sa2.atendimento_realizado is true
+	and a2.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
+	and ((  $P{cod_programa}   is not null and a2.codprograma=  $P{cod_programa}  ) or (( $P{cod_programa}   =0 ) OR ( $P{cod_programa}   is null )))
+	and(( $P{cod_grupo}  is not null and g2.id_grupo = $P{cod_grupo} ) or ( $P{cod_grupo}  is null and g2.id_grupo > 0))
+	AND (( $P{codunidade}  IS NOT NULL AND a2.cod_unidade=  $P{codunidade}  ) OR ((  $P{codunidade}  =0 ) OR (  $P{codunidade}  is null )))
+	and ((  $P{id_situacao_atendimento}    is not null and sa2.id =   $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
+	and ((   $P{turno}  is not null and a2.turno =   $P{turno}  ) or  (   $P{turno}  is null ))
+	and ((   $P{codprofissional}   is not null and a11.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
+	and ((   $P{codespecialidade}  is not null and f2.codespecialidade =   $P{codespecialidade}  ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}   is null)))
+	and $X{IN, extract (dow from a2.dtaatende), diassemanalista}
+	group by pa2.id_paciente, p2.id_programa, g2.id_grupo ) as qtd on 
+	(qtd.id_paciente = pa.id_paciente and qtd.id_programa = p.id_programa and grupo.id_grupo = qtd.id_grupo)
 where sa.atendimento_realizado is true
-and a.dtaatende between $P{dt_inicial} and $P{dt_final}
-and ((   $P{cod_programa}   is not null and a.codprograma=  $P{cod_programa}) or (( $P{cod_programa} =0 ) OR ( $P{cod_programa} is null )))
-and(($P{cod_grupo} is not null and grupo.id_grupo = $P{cod_grupo}) or ($P{cod_grupo} is null and grupo.id_grupo > 0))
-AND (($P{codunidade} IS NOT NULL AND a.cod_unidade=  $P{codunidade}) OR (( $P{codunidade} =0 ) OR ( $P{codunidade} is null )))
-and ((   $P{id_situacao_atendimento}     is not null and sa.id =   $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
-and ((   $P{turno}   is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
-and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente}  ) or (( $P{id_paciente}   = 0) or ( $P{id_paciente}  is null)))
-and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento =  $P{codprofissional}  ) or (( $P{codprofissional}   = 0) or ( $P{codprofissional}  is null)))
-and ((  $P{codespecialidade}  is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or ( $P{codespecialidade}  is null)))
+and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
+and ((  $P{cod_programa}  is not null and a.codprograma=  $P{cod_programa} ) or (( $P{cod_programa}  =0 ) OR ( $P{cod_programa}  is null )))
+and(( $P{cod_grupo}  is not null and grupo.id_grupo =  $P{cod_grupo} ) or ( $P{cod_grupo}  is null and grupo.id_grupo > 0))
+AND (( $P{codunidade}  IS NOT NULL AND a.cod_unidade=   $P{codunidade} ) OR ((  $P{codunidade}  =0 ) OR (  $P{codunidade}  is null )))
+and ((   $P{id_situacao_atendimento}  is not null and sa.id =  $P{id_situacao_atendimento}   ) or ((  $P{id_situacao_atendimento}   =0 ) OR (  $P{id_situacao_atendimento}   is null )))
+and ((   $P{turno}  is not null and a.turno =  $P{turno}  ) or  (   $P{turno}   is null ))
+and ((    $P{id_paciente}  is not null and a.codpaciente =   $P{id_paciente}   ) or ((   $P{id_paciente}   = 0) or (  $P{id_paciente}   is null)))
+and ((    $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}  = 0) or ( $P{codprofissional}  is null)))
+and ((    $P{codespecialidade}  is not null and f.codespecialidade = $P{codespecialidade}   ) or (( $P{codespecialidade}   = 0) or (  $P{codespecialidade}   is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+and ( ( ((   $P{qtdatendimentosmenorigual}   is not null and qtd.atendimentos <=  $P{qtdatendimentosmenorigual}   ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR (  $P{qtdatendimentosmenorigual}   is null )))
+and (( $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos >=  $P{qtdatendimentosmaiorigual}   ) or ((  $P{qtdatendimentosmaiorigual}   = 0 ) OR (  $P{qtdatendimentosmaiorigual}   is null ))) )
+or (( $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos between  $P{qtdatendimentosmenorigual}  and  $P{qtdatendimentosmaiorigual}  )
+	or (( $P{qtdatendimentosmenorigual}   = 0 and $P{qtdatendimentosmaiorigual}   = 0 ) OR (  $P{qtdatendimentosmenorigual}  is null and  $P{qtdatendimentosmaiorigual}  is null))
+) )
 order by 1]]>
 	</queryString>
 	<field name="row" class="java.lang.Object">
