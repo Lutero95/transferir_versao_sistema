@@ -468,14 +468,14 @@ public class RelatoriosController implements Serializable {
 			map.put("codprofissional", this.prof.getId());
 		
 		if(atributoGenerico2.equals("EN")) {
-			map.put("valor1", valorGenerico1);
-			map.put("valor2", valorGenerico2);
+			map.put("qtdatendimentosmenorigual", valorGenerico1);
+			map.put("qtdatendimentosmaiorigual", valorGenerico2);
 		}
 		else if (atributoGenerico2.equals("MA")) {
-			map.put("valor2", valorGenerico1);
+			map.put("qtdatendimentosmaiorigual", valorGenerico1);
 		}
 		else if (atributoGenerico2.equals("ME")) {
-			map.put("valor1", valorGenerico1);
+			map.put("qtdatendimentosmenorigual", valorGenerico1);
 		}
 		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
