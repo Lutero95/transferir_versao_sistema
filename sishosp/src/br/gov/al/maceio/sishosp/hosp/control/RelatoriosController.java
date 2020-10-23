@@ -70,6 +70,8 @@ public class RelatoriosController implements Serializable {
 	private String atributoGenerico2;
 	private String atributoGenerico3;
 	private String atributoGenerico4;
+	private Integer valorGenerico1;
+	private Integer valorGenerico2;
 	private UnidadeBean unidade;
 	private List<GrupoBean> listaGruposProgramas;
 	private List<EquipeBean> listaEquipePorTipoAtendimento;
@@ -433,8 +435,12 @@ public class RelatoriosController implements Serializable {
 		
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
+		
+		if(!validaValorQuantidade())
+			return;
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		
 		map.put("dt_inicial", dataInicial);
 		map.put("dt_final", dataFinal);
 		
@@ -460,6 +466,17 @@ public class RelatoriosController implements Serializable {
 		
 		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
+		
+		if(atributoGenerico2.equals("EN")) {
+			map.put("valor1", valorGenerico1);
+			map.put("valor2", valorGenerico2);
+		}
+		else if (atributoGenerico2.equals("MA")) {
+			map.put("valor2", valorGenerico1);
+		}
+		else if (atributoGenerico2.equals("ME")) {
+			map.put("valor1", valorGenerico1);
+		}
 		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 		
@@ -488,6 +505,35 @@ public class RelatoriosController implements Serializable {
 			/* TODO
 			 * FAZER CHAMADA DO RELATÓRIO SINTÉTICO PROGRAMA GRUPO*/
 		}
+	}
+	
+	private boolean validaValorQuantidade() {
+		if (atributoGenerico2.equals("EN")) {
+			
+			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) 
+				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
+				|| (VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) 
+				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) )) {
+				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
+				return false;				
+			}
+
+			else if ( (valorGenerico1 > 0 && valorGenerico2 <= 0) 
+					|| (valorGenerico2 > 0 && valorGenerico1 <= 0) ) {
+				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
+				return false;				
+			}
+			
+			else if(valorGenerico1 >= valorGenerico2) {
+				JSFUtil.adicionarMensagemErro("Segundo valor da quantidade deve ser maior que o primeiro!", "");
+				return false;
+			}
+		}	
+		else if(!VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) && valorGenerico1 < 0) {
+			JSFUtil.adicionarMensagemErro("Insira um valor válido para filtrar a quantidade!", "");
+			return false;								
+		}
+		return true;
 	}
 	
 	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
@@ -1632,6 +1678,22 @@ public class RelatoriosController implements Serializable {
 
 	public void setListaEquipe(List<EquipeBean> listaEquipe) {
 		this.listaEquipe = listaEquipe;
+	}
+
+	public Integer getValorGenerico1() {
+		return valorGenerico1;
+	}
+
+	public void setValorGenerico1(Integer valorGenerico1) {
+		this.valorGenerico1 = valorGenerico1;
+	}
+
+	public Integer getValorGenerico2() {
+		return valorGenerico2;
+	}
+
+	public void setValorGenerico2(Integer valorGenerico2) {
+		this.valorGenerico2 = valorGenerico2;
 	}
 	
 }

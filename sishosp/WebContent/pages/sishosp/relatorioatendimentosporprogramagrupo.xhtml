@@ -130,10 +130,7 @@
 									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
 							</p:outputPanel>
 						</b:column>
-
-					</b:row>
-
-					<b:row>
+						
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 
@@ -187,12 +184,8 @@
 												 icon="ui-icon-search" update=":formConsuPac"
 												 oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
-
 						</b:column>
-					</b:row>
-
-					<b:row>
-
+						
 						<b:column span="2"
 								  class="label-position new-data-size new-comple1">
 							<p:outputPanel id="outProfissional">
@@ -222,16 +215,15 @@
 						</b:column>
 					</b:row>
 
+
 					<b:row>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Especialidade" severity="info" />
 
-					<b:column span="3"
-							  class="label-position new-data-size new-comple1">
-						<b:label value="Especialidade" severity="info" />
+							<p:outputPanel id="outEspeci">
 
-						<p:outputPanel id="outEspeci">
-
-							<p:autoComplete
-									value="#{RelatoriosController.especialidade}"
+								<p:autoComplete value="#{RelatoriosController.especialidade}"
 									size="31" converter="conEspecialidade" id="descE"
 									completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -239,35 +231,64 @@
 									requiredMessage="Especialidade: Campo obrigatório!"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descEspecialidade}">
-							</p:autoComplete>
+								</p:autoComplete>
 
-							<p:commandButton id="btBusEsp" icon="ui-icon-search"
-											 style="margin-top: 5px;" update=":formConsulEspec"
-											 onclick="PF('dlgConsulEspecialidade').show();"
-											 immediate="true"
-											 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
+								<p:commandButton id="btBusEsp" icon="ui-icon-search"
+									style="margin-top: 5px;" update=":formConsulEspec"
+									onclick="PF('dlgConsulEspecialidade').show();" immediate="true"
+									actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
 
-						</p:outputPanel>
+							</p:outputPanel>
+						</b:column>
+						
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
 
-					</b:column>
-					</b:row>
-					<b:row>
-						<b:column span="1" class="label-position data-size1">
-							<b:label value="Situação Atendimento:" severity="info" />
+									<b:label value="Situação Atendimento:" severity="info" />
+
+
+							<b:row>
+								<p:selectOneMenu style="margin-top:0.7%; width:92%;"
+									required="false" autoWidth="false"
+									requiredMessage="Situação Atendimento: Campo obrigatório!"
+									value="#{RelatoriosController.idSituacaoAtendimento}">
+									<f:selectItem itemLabel="TODOS OS REALIZADOS" itemValue="" />
+									<f:selectItems
+										value="#{situacaoAtendimentoController.listaSituacaoAtendimento}"
+										var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+								</p:selectOneMenu>
+							</b:row>
 						</b:column>
 					</b:row>
+					
 					<b:row>
-						<p:selectOneMenu style="width:26.1%; margin-left:1.1%;"
-							required="false"
-							requiredMessage="Situação Atendimento: Campo obrigatório!"
-							value="#{RelatoriosController.idSituacaoAtendimento}">
-							<f:selectItem itemLabel="TODOS OS REALIZADOS" itemValue="" />
-							<f:selectItems
-								value="#{situacaoAtendimentoController.listaSituacaoAtendimento}"
-								var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
-						</p:selectOneMenu>
+						<br />
+						<b:column class="label-position new-data-size new-comple1">
+							<b:label value="Filtrar por Quantidade de atendimentos:" severity="info" />
+							<p:selectOneRadio id="qtdatendimentos" layout="responsive" columns="3"
+								value="#{RelatoriosController.atributoGenerico2}">
+								<f:selectItem itemLabel="Menor ou igual" itemValue="ME" />
+								<f:selectItem itemLabel="Maior ou igual" itemValue="MA" />
+								<f:selectItem itemLabel="Entre" itemValue="EN" />
+								
+								<p:ajax update="outQuantidade"/>
+							</p:selectOneRadio>
+						</b:column>
 					</b:row>
-
+					
+					<b:row>
+						<p:outputPanel id="outQuantidade">
+							<b:column class="label-position new-data-size new-comple1">
+								<p:spinner value="#{RelatoriosController.valorGenerico1}" />
+							</b:column>
+							<b:column class="label-position new-data-size new-comple1"
+								rendered="#{RelatoriosController.atributoGenerico2 == 'EN'}">
+								<h:outputLabel value="A" style="margin-right:20%"/>
+								<p:spinner value="#{RelatoriosController.valorGenerico2}" />
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+					
 					<b:row>
 						<br />
 						<b:column class="label-position new-data-size new-comple1">
@@ -279,8 +300,8 @@
 								<f:selectItem itemLabel="Tarde" itemValue="T" />
 							</p:selectOneRadio>
 						</b:column>
-	
 					</b:row>
+
 					<br />
 					<br />
 

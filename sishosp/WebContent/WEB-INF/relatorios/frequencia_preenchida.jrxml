@@ -791,7 +791,7 @@ order by  nome]]>
 					<textElement>
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Declaro que no mês de ___________________, o paciente indicado acima, foi submetido aos procedimentos abaixo relacionados, conforme assinatura(s) do paciente/responsável abaixo.\n\n"+
+					<textFieldExpression><![CDATA["Declaro que no mês de "+$F{mesdata}+", o paciente indicado acima, foi submetido aos procedimentos abaixo relacionados, conforme assinatura(s) do paciente/responsável abaixo.\n\n"+
 $F{cidade}+","+ new java.text.DecimalFormat("#0").format($F{diadata})    +" de "+$F{mesdata} +" de "+ new java.text.DecimalFormat("#0").format($F{anodata})]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -915,6 +915,33 @@ $F{cidade}+","+ new java.text.DecimalFormat("#0").format($F{diadata})    +" de "
 					<reportElement x="176" y="340" width="80" height="13" uuid="92915000-3fb7-48cd-b733-2ad9010c8edf"/>
 					<text><![CDATA[ESPECIALIDADE]]></text>
 				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="95" y="280" width="339" height="16" uuid="89f86621-3cca-45db-9bb3-60cc6531816c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="7" y="284" width="83" height="16" uuid="058f37c8-6b8d-49f8-9fde-f38f71557c5e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vencimentolaudo}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="480" y="280" width="61" height="16" uuid="df0900fd-27f0-48cc-885a-64ebfb94e59b">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>
