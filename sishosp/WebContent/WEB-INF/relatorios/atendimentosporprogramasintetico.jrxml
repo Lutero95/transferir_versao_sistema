@@ -16,9 +16,9 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="660"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="326"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="338"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -35,31 +35,39 @@
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
+	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
+	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select count(*),  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
- p.descprograma as nome_programa, nome_principal 
-from hosp.atendimentos a
-inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
-inner join hosp.programa p on (a.codprograma = p.id_programa)
-inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
-inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
-inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-JOIN hosp.unidade u ON u.id =  1
-JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
-left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
-where sa.atendimento_realizado is true
-and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
-and ((   $P{cod_programa}     is not null and a.codprograma=  $P{cod_programa}  ) or ((  $P{cod_programa}  =0 ) OR (  $P{cod_programa}  is null )))
-AND (( $P{codunidade}  IS NOT NULL AND a.cod_unidade=  $P{codunidade}  ) OR (( $P{codunidade}   =0 ) OR ( $P{codunidade}   is null )))
-and ((   $P{id_situacao_atendimento}     is not null and sa.id =  $P{id_situacao_atendimento}  ) or ((   $P{id_situacao_atendimento}   =0 ) OR (  $P{id_situacao_atendimento}    is null )))
-and ((   $P{turno}   is not null and a.turno =   $P{turno}   ) or  (   $P{turno}  is null ))
-and ((   $P{id_paciente}   is not null and a.codpaciente =   $P{id_paciente}   ) or ((  $P{id_paciente}    = 0) or (  $P{id_paciente}   is null)))
-and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento =  $P{codprofissional}    ) or ((   $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
-and ((    $P{codespecialidade}  is not null and f.codespecialidade =   $P{codespecialidade}   ) or ((  $P{codespecialidade}    = 0) or (  $P{codespecialidade}   is null)))
-and $X{IN, extract (dow from a.dtaatende), diassemanalista}
-group by p.descprograma, a.codprograma, pa.nome,  pa.id_paciente, nome_principal
-order by p.descprograma,pa.nome;]]>
+		<![CDATA[select qtd, nome_paciente, id_paciente , cod_programa, nome_programa, nome_principal from ( 
+	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
+	 p.descprograma as nome_programa, nome_principal 
+	from hosp.atendimentos a
+	inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
+	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
+	inner join hosp.programa p on (a.codprograma = p.id_programa)
+	inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
+	inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
+	inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
+	JOIN hosp.unidade u ON u.id =   $P{codunidade} 
+	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
+	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
+	where sa.atendimento_realizado is true
+	and a.dtaatende between   $P{dt_inicial}   and  $P{dt_final} 
+	and (( $P{cod_programa}    is not null and a.codprograma=   $P{cod_programa}   ) or ((  $P{cod_programa}  =0 ) OR (  $P{cod_programa}   is null )))
+	AND ((  $P{codunidade}   IS NOT NULL AND a.cod_unidade=  $P{codunidade}    ) OR ((  $P{codunidade}  =0 ) OR (   $P{codunidade}   is null )))
+	and ((   $P{id_situacao_atendimento}   is not null and sa.id =  $P{id_situacao_atendimento}   ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
+	and ((   $P{turno}    is not null and a.turno =   $P{turno}  ) or  (   $P{turno}   is null ))
+	and ((   $P{id_paciente}     is not null and a.codpaciente =  $P{id_paciente}  ) or ((   $P{id_paciente}   = 0) or (  $P{id_paciente}   is null)))
+	and ((    $P{codprofissional}    is not null and a1.codprofissionalatendimento =  $P{codprofissional}    ) or ((   $P{codprofissional}  = 0) or (  $P{codprofissional} is null)))
+	and ((    $P{codespecialidade}    is not null and f.codespecialidade =  $P{codespecialidade}  ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}  is null)))
+	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+	group by p.descprograma, a.codprograma, pa.nome,  pa.id_paciente, nome_principal
+	order by p.descprograma,pa.nome) a
+where(  ((   $P{qtdatendimentosmenorigual}   is not null and a.qtd <=  $P{qtdatendimentosmenorigual}  ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR (  $P{qtdatendimentosmenorigual}   is null )))
+and (( $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=  $P{qtdatendimentosmaiorigual}   ) or ((  $P{qtdatendimentosmaiorigual}   = 0 ) OR (  $P{qtdatendimentosmaiorigual}   is null ))) )
+or (( $P{qtdatendimentosmenorigual}   is not null and  $P{qtdatendimentosmaiorigual}  is not null and a.qtd between  $P{qtdatendimentosmenorigual}  and  $P{qtdatendimentosmaiorigual}  )
+		or ((  $P{qtdatendimentosmenorigual}  = 0 and  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and  $P{qtdatendimentosmaiorigual}  is null))
+);]]>
 	</queryString>
 	<field name="nome_paciente" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
@@ -69,12 +77,12 @@ order by p.descprograma,pa.nome;]]>
 	<field name="nome_programa" class="java.lang.String"/>
 	<field name="cod_programa" class="java.lang.Integer"/>
 	<field name="nome_principal" class="java.lang.String"/>
-	<field name="count" class="java.lang.Integer"/>
+	<field name="qtd" class="java.lang.Integer"/>
 	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{count}]]></variableExpression>
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Sum">
-		<variableExpression><![CDATA[$F{count}]]></variableExpression>
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<variable name="total_atendimento_paciente" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{COLUMN_COUNT}]]></variableExpression>
@@ -188,7 +196,7 @@ order by p.descprograma,pa.nome;]]>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{qtd}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
