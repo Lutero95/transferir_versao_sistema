@@ -21,96 +21,93 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
-                
-                 <b:row  rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
-
-                        <b:column span="2" class="label-position">
-                            <p:outputLabel value="Laudo:"
-                                           style="margin-left:-15px; margin-top: 8px;
+					<p:fieldset legend="Dados do Laudo">
+						<b:row
+							rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
+							<b:column span="2" class="label-position">
+								<p:outputLabel value="Laudo:"
+									style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                           <p:commandButton size="sm" style="margin-left: 20px;"
-								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-								update=":formConsuLaudo"
-								actionListener="#{AlteracaoPacienteController.listarLaudosVigentes()}"
-								oncomplete="PF('dlgConsuLaudo').show();" />
-                        </b:column>
+								<p:commandButton size="sm" style="margin-left: 20px;"
+									class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+									update=":formConsuLaudo"
+									actionListener="#{AlteracaoPacienteController.listarLaudosVigentes()}"
+									oncomplete="PF('dlgConsuLaudo').show();" />
+							</b:column>
+						</b:row>
 
-                    </b:row>
-               
-                    <b:row rendered="#{AlteracaoPacienteController.insercao.paciente.id_paciente!=null and AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
+						<b:row
+							rendered="#{AlteracaoPacienteController.insercao.paciente.id_paciente!=null and AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null}">
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Paciente:" class="fire-label" severity="info" />
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Paciente:" severity="info"/>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercao.paciente.nome}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-                            <h:outputLabel 
-                                    value="#{AlteracaoPacienteController.insercao.paciente.nome}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<b:column span="3" class="label-position inserPacient"
+								rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+								<b:label value="Procedimento:"  severity="info" />
 
-                        <b:column span="2" class="label-position inserPacient" rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
-                            <b:label value="Procedimento:" severity="info"/>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
+									class="campo-laudoDig3" />
+							</b:column>
+						</b:row>
 
-                            <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+						<b:row
+							rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Paciente:" class="fire-label" severity="info" />
 
-                    </b:row>                
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-                    <b:row rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Procedimento:" severity="info" />
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Paciente:" severity="info"/>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
+									class="campo-laudoDig3" />
+							</b:column>
+						</b:row>
 
-                            <h:outputLabel 
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+						<b:row
+							rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="CID Primário:" severity="info" />
 
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Procedimento:" severity="info"/>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
+									class="campo-laudoDig3" />
+							</b:column>
 
-                            <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Inicial:" severity="info" />
 
-                    </b:row>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
 
-                    <b:row rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id!=null}">
+							<b:column span="3" class="label-position inserPacient">
+								<b:label value="Vigência Final" severity="info" />
 
-                        <b:column span="2" class="label-position inserPacient" >
-                            <b:label value="CID:" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Inicial:" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Final" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                    </b:row>
-
-                </h:form>
+								<h:outputLabel
+									value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
+									class="campo-laudoDig3">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputLabel>
+							</b:column>
+						</b:row>
+					</p:fieldset>
+				</h:form>
 
                 <h:form id="formInsercao2">
 

@@ -766,7 +766,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     
     public void validarInsercaoPaciente() throws ProjetoException, SQLException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
-    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getPaciente())) {
+    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getLaudo().getPaciente())) {
 			
 //			  GerenciarPacienteController gerenciarPacienteController = new
 //			  GerenciarPacienteController(); 
