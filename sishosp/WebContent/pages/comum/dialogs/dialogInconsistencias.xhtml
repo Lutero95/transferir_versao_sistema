@@ -64,8 +64,7 @@
 		closeOnEscape="false"
 		responsive="true" modal="true">
 		
-		<p:autoUpdate/>
-		
+
 		<h:form id="formProcedimentos">
 			<div align="center">
 
@@ -101,8 +100,7 @@
 		closeOnEscape="false"
 		responsive="true" modal="true">
 		
-		<p:autoUpdate/>
-		
+
 		<h:form id="formLaudos">
 			<div align="center">
 
@@ -159,20 +157,22 @@
 	
 		<p:dialog widgetVar="dlgPaciente" resizable="false"
 		draggable="false" closable="false" width="620"
-		header="#{inconsistenciaController.inconsistenciaDTOSelecionada.inconsistencia.descricao}" 
-		closeOnEscape="false"
+		closeOnEscape="false" showHeader="false"
 		responsive="true" modal="true">
 		
-		<p:autoUpdate/>
-		
+
 		<h:form id="formPacientes">
+			<h:outputLabel value="#{inconsistenciaController.inconsistenciaDTOSelecionada.inconsistencia.descricao}"/>
+			<hr/>
 			<div align="center">
 
 				<p:dataTable value="#{inconsistenciaController.inconsistenciaDTOSelecionada.listaPacientes}"
 					var="pac"
+							 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registro(s)"
 					rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
 
-					<p:column headerText="Prontuário">
+					<p:column headerText="Prontuário" width="90">
 						<div align="center">
 							<p:outputLabel value="#{pac.id_paciente}"/>
 						</div>
@@ -184,7 +184,7 @@
 						</div>
 					</p:column>
 					
-					<p:column headerText="Data de Nascimento">
+					<p:column headerText="Data de Nascimento" width="95">
 						<div align="center">
 							<p:outputLabel value="#{pac.dtanascimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
