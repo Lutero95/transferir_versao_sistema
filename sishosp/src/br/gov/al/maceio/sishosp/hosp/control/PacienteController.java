@@ -160,13 +160,16 @@ public class PacienteController implements Serializable {
 
 	public void encontraCEP() throws ProjetoException {
 		bairroExiste = false;
-		if (!paciente.getEndereco().getCep() .equals("")) {
+		
+		
+		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getEndereco().getCep())) {
 			paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
 			EnderecoDAO enderecoDAO = new EnderecoDAO();
-			if (paciente.getEndereco().getCepValido() == true) {
-				if ((!paciente.getEndereco().getBairro().equals(null)) && (!paciente.getEndereco().getBairro().equals("")))
+			if (paciente.getEndereco().getCepValido()) {
+				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getEndereco().getBairro())) {
 					paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
 							paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
+				}
 				if (paciente.getEndereco().getCodbairro() != null) {
 					if (paciente.getEndereco().getCodbairro() > 0) {
 						bairroExiste = true;
@@ -174,20 +177,16 @@ public class PacienteController implements Serializable {
 						bairroExiste = false;
 					}
 				} else {
-					if ((paciente.getEndereco().getBairro().equals(null)) || (paciente.getEndereco().getBairro().equals("")))
+					if (VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getEndereco().getBairro()))
 						bairroExiste = true;
 					else
 						bairroExiste = false;
 				}
 				enderecoController.setListaBairros(enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio()));
-			}
-			if (paciente.getEndereco().getCepValido()) {
 				cidadeDoCep = true;
-			} else {
+			}
+			else {
 				cidadeDoCep = false;
-				//JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
-				/* TODO APAGAR ESTA LINHA APÓS RESOLVER O ERRO DO SERVIÇO*/
-				bairroExiste = true;
 			}
 		}
 	}
