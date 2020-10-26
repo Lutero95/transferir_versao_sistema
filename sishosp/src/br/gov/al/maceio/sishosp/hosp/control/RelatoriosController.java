@@ -465,18 +465,28 @@ public class RelatoriosController implements Serializable {
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
 		
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(idadeMinima))
+			map.put("idademinima", 0);
+		else
+			map.put("idademinima", idadeMinima);
+
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(idadeMaxima))
+			map.put("idademaxima", 200);
+		else
+			map.put("idademaxima", idadeMaxima);
+		
 		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
 		
-		if(atributoGenerico2.equals("EN")) {
-			map.put("qtdatendimentosmenorigual", valorGenerico1);
-			map.put("qtdatendimentosmaiorigual", valorGenerico2);
-		}
-		else if (atributoGenerico2.equals("MA")) {
-			map.put("qtdatendimentosmaiorigual", valorGenerico1);
-		}
-		else if (atributoGenerico2.equals("ME")) {
-			map.put("qtdatendimentosmenorigual", valorGenerico1);
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(atributoGenerico2)) {
+			if (atributoGenerico2.equals("EN")) {
+				map.put("qtdatendimentosmenorigual", valorGenerico1);
+				map.put("qtdatendimentosmaiorigual", valorGenerico2);
+			} else if (atributoGenerico2.equals("MA")) {
+				map.put("qtdatendimentosmaiorigual", valorGenerico1);
+			} else if (atributoGenerico2.equals("ME")) {
+				map.put("qtdatendimentosmenorigual", valorGenerico1);
+			}
 		}
 		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
@@ -511,7 +521,9 @@ public class RelatoriosController implements Serializable {
 	}
 	
 	private boolean validaValorQuantidade() {
-		if (atributoGenerico2.equals("EN")) {
+		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(atributoGenerico2))
+			return true;
+		else if (atributoGenerico2.equals("EN")) {
 			
 			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) 
 				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )

@@ -38,6 +38,8 @@
 	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<parameter name="cod_grupo" class="java.lang.Integer"/>
+	<parameter name="idademinima" class="java.lang.Integer"/>
+	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (cod_programa, codgrupo), qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal from ( 
 	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
@@ -64,6 +66,8 @@
 	and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
 	and ((  $P{codespecialidade}   is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or (   $P{codespecialidade}   is null)))
 	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+	AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
+	AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
 	group by p.descprograma, a.codprograma, g.descgrupo, a.codgrupo, pa.nome,  pa.id_paciente, nome_principal
 	order by p.descprograma,pa.nome) a
 where(  ((   $P{qtdatendimentosmenorigual}   is not null and a.qtd <=  $P{qtdatendimentosmenorigual}  ) or ((  $P{qtdatendimentosmenorigual}  =0 ) OR (  $P{qtdatendimentosmenorigual}  is null )))
