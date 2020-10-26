@@ -468,14 +468,14 @@ public class RelatoriosController implements Serializable {
 		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
 		
-		if(atributoGenerico2.equals("EN")) {
+		if ((atributoGenerico2!=null) && (atributoGenerico2.equals("EN"))) {
 			map.put("qtdatendimentosmenorigual", valorGenerico1);
 			map.put("qtdatendimentosmaiorigual", valorGenerico2);
 		}
-		else if (atributoGenerico2.equals("MA")) {
+		else if ((atributoGenerico2!=null) &&(atributoGenerico2.equals("MA"))) {
 			map.put("qtdatendimentosmaiorigual", valorGenerico1);
 		}
-		else if (atributoGenerico2.equals("ME")) {
+		else if ((atributoGenerico2!=null) &&(atributoGenerico2.equals("ME"))) {
 			map.put("qtdatendimentosmenorigual", valorGenerico1);
 		}
 		
@@ -511,7 +511,7 @@ public class RelatoriosController implements Serializable {
 	}
 	
 	private boolean validaValorQuantidade() {
-		if (atributoGenerico2.equals("EN")) {
+		if ((atributoGenerico2!=null) && (atributoGenerico2.equals("EN"))) {
 			
 			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) 
 				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
