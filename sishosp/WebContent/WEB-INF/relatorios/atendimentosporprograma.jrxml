@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -35,14 +35,14 @@
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
-	<parameter name="qtdatendimentosmenorigual " class="java.lang.Integer"/>
+	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
-pr.nome as nome_proc, sa.descricao status, nome_principal, qtd.atendimentos
+pr.nome as nome_proc, sa.descricao status, nome_principal
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -84,8 +84,11 @@ and ((   $P{turno}    is not null and a.turno =  $P{turno}  ) or  (  $P{turno}  
 and ((   $P{id_paciente}    is not null and a.codpaciente =   $P{id_paciente}  ) or ((   $P{id_paciente}  = 0) or (  $P{id_paciente}   is null)))
 and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}  = 0) or (  $P{codprofissional}   is null)))
 and ((   $P{codespecialidade}  is not null and f.codespecialidade = $P{codespecialidade}  ) or ((  $P{codespecialidade}   = 0) or (   $P{codespecialidade}   is null)))
-and ((   $P{qtdatendimentosmenorigual }  is not null and qtd.atendimentos <=  $P{qtdatendimentosmenorigual }   ) or ((   $P{qtdatendimentosmenorigual }    =0 ) OR (  $P{qtdatendimentosmenorigual }   is null )))
-and ((   $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos >=  $P{qtdatendimentosmaiorigual}   ) or ((  $P{qtdatendimentosmaiorigual}   = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null )))
+	and ( ( ((  $P{qtdatendimentosmenorigual}  is not null and qtd.atendimentos <=   $P{qtdatendimentosmenorigual}   ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR (  $P{qtdatendimentosmenorigual}   is null )))
+	and (( $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos >=  $P{qtdatendimentosmaiorigual}   ) or ((  $P{qtdatendimentosmaiorigual}   = 0 ) OR (  $P{qtdatendimentosmaiorigual}   is null ))) )
+	or (( $P{qtdatendimentosmenorigual}   is not null and  $P{qtdatendimentosmaiorigual}  is not null and qtd.atendimentos between  $P{qtdatendimentosmenorigual}  and  $P{qtdatendimentosmaiorigual}  ) 
+		or (( $P{qtdatendimentosmenorigual}   = 0 and  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}  is null and  $P{qtdatendimentosmaiorigual}  is null))
+	) )
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 order by 1;]]>
 	</queryString>
@@ -132,7 +135,6 @@ order by 1;]]>
 		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
-	<field name="atendimentos" class="java.lang.Integer"/>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
 	</variable>
@@ -154,35 +156,35 @@ order by 1;]]>
 					<reportElement x="0" y="40" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
 				</line>
 				<staticText>
-					<reportElement x="64" y="44" width="137" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
+					<reportElement x="71" y="44" width="137" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="375" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
+					<reportElement x="393" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Procedimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="201" y="44" width="41" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<reportElement x="212" y="44" width="41" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="243" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<reportElement x="257" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Profissional]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="44" width="33" height="20" uuid="84f3443a-3caf-4cad-9533-d48260fbfd74"/>
+					<reportElement x="2" y="44" width="33" height="20" uuid="84f3443a-3caf-4cad-9533-d48260fbfd74"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -199,13 +201,6 @@ order by 1;]]>
 					<reportElement x="142" y="2" width="138" height="20" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement x="550" y="44" width="30" height="20" uuid="b1595157-124c-4320-ba80-21c2744d1f36"/>
-					<textElement verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Total]]></text>
-				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -247,52 +242,45 @@ order by 1;]]>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="64" height="20" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
+				<reportElement x="2" y="0" width="68" height="20" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055"/>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="65" y="0" width="136" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
+				<reportElement x="72" y="0" width="140" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="201" y="0" width="41" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf"/>
+				<reportElement x="212" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="243" y="0" width="131" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5"/>
+				<reportElement x="257" y="0" width="135" height="20" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_profissional}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="375" y="0" width="181" height="20" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918">
+				<reportElement x="393" y="0" width="181" height="20" uuid="80881de5-c79e-49db-8cd9-1eeaaf0c0918">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_proc}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="550" y="0" width="30" height="20" uuid="1d7b144d-2d93-4c31-aeb7-1857d065df4a"/>
-				<textElement textAlignment="Center">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{atendimentos}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

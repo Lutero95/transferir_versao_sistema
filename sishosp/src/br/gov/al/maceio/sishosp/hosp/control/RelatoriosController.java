@@ -102,6 +102,7 @@ public class RelatoriosController implements Serializable {
 			.getSessionMap().get("obj_usuario");
 	private GrupoDAO grupoDao;
 	private List<Integer> listaAnos;
+	private boolean filtrarPorQuantidade;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -419,10 +420,10 @@ public class RelatoriosController implements Serializable {
 		return valido;	
 	}
 	
-	public void limparGrupo() {
-		if(atributoGenerico3.equals("P")) {
-			this.grupo = new GrupoBean();
-		}
+	public void limparFiltroPorQuantidade() {
+		atributoGenerico2 = "ME";
+		valorGenerico1 = null;
+		valorGenerico2 = null;
 	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
@@ -502,8 +503,10 @@ public class RelatoriosController implements Serializable {
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 		else {
-			/* TODO
-			 * FAZER CHAMADA DO RELATÓRIO SINTÉTICO PROGRAMA GRUPO*/
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
+				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			relatorio = caminho + "atendimentosporprogramagruposintetico.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 	}
 	
@@ -1694,6 +1697,14 @@ public class RelatoriosController implements Serializable {
 
 	public void setValorGenerico2(Integer valorGenerico2) {
 		this.valorGenerico2 = valorGenerico2;
+	}
+
+	public boolean isFiltrarPorQuantidade() {
+		return filtrarPorQuantidade;
+	}
+
+	public void setFiltrarPorQuantidade(boolean filtrarPorQuantidade) {
+		this.filtrarPorQuantidade = filtrarPorQuantidade;
 	}
 	
 }
