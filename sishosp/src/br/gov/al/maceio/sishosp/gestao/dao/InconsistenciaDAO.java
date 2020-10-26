@@ -488,7 +488,10 @@ public class InconsistenciaDAO {
 			
 			for (Integer id : listaIdInconsistencia) {
 				ps.setInt(1, id);
-				ResultSet rs = ps.executeQuery();	
+				ResultSet rs = ps.executeQuery();
+				rs.last();
+				int numRegistros = rs.getRow();
+				rs.first();
 				if (rs.next()) {
 					InconsistenciaBean inconsistencia = new InconsistenciaBean();
 					mapearResultSetInconsistencias(inconsistencia, rs);
