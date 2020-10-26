@@ -54,7 +54,7 @@
 								<f:selectItem itemLabel="Programa" itemValue="P" />
 								<f:selectItem itemLabel="Grupo" itemValue="G" />
 								
-								<p:ajax update="frm:outGrupo" listener="#{RelatoriosController.limparGrupo()}"/>
+								<p:ajax update="frm:outGrupo"/>
 							</p:selectOneRadio> 
 						</b:column>
 					</b:row>
@@ -263,22 +263,32 @@
 					
 					<b:row>
 						<br />
-						<b:column class="label-position new-data-size new-comple1">
-							<b:label value="Filtrar por Quantidade de atendimentos:" severity="info" />
-							<p:selectOneRadio id="qtdatendimentos" layout="responsive" columns="3"
-								value="#{RelatoriosController.atributoGenerico2}">
-								<f:selectItem itemLabel="Menor ou igual" itemValue="ME" />
-								<f:selectItem itemLabel="Maior ou igual" itemValue="MA" />
-								<f:selectItem itemLabel="Entre" itemValue="EN" />
-								
-								<p:ajax update="outQuantidade"/>
-							</p:selectOneRadio>
-						</b:column>
+						<p:outputPanel id="outFiltra">
+							<b:column class="label-position new-data-size new-comple1">
+								<b:label value="Filtrar por Quantidade de atendimentos:" severity="info" />
+								<p:selectBooleanCheckbox value="#{RelatoriosController.filtrarPorQuantidade}" 
+									immediate="true" itemLabel="Sim" style="margin-left:5px;">
+									<p:ajax update=":frm:outFiltra :frm:outQuantidade" process="@this"
+										listener="#{RelatoriosController.limparFiltroPorQuantidade()}" />
+								</p:selectBooleanCheckbox>
+
+								<p:selectOneRadio id="qtdatendimentos" layout="responsive"
+									columns="3" value="#{RelatoriosController.atributoGenerico2}"
+									rendered="#{RelatoriosController.filtrarPorQuantidade == true}">
+									<f:selectItem itemLabel="Menor ou igual" itemValue="ME" />
+									<f:selectItem itemLabel="Maior ou igual" itemValue="MA" />
+									<f:selectItem itemLabel="Entre" itemValue="EN" />
+
+									<p:ajax update="outQuantidade" />
+								</p:selectOneRadio>
+							</b:column>
+						</p:outputPanel>
 					</b:row>
 					
 					<b:row>
 						<p:outputPanel id="outQuantidade">
-							<b:column class="label-position new-data-size new-comple1">
+							<b:column class="label-position new-data-size new-comple1"
+								rendered="#{RelatoriosController.filtrarPorQuantidade == true}">
 								<p:spinner value="#{RelatoriosController.valorGenerico1}" />
 							</b:column>
 							<b:column class="label-position new-data-size new-comple1"
@@ -417,26 +427,19 @@
 				<b:row>
 
 					<b:column span="1">
-
 						<p:outputLabel value="Situação:"
 							style="margin-top: 8px;color:#2e84ce;">
 						</p:outputLabel>
-
 					</b:column>
-
-
 
 					<b:column span="1"
 						style="width:140px;color: #4682B4;margin-top: -8px;">
 						<p:selectOneRadio required="true" style="margin-top: 10px"
 							requiredMessage="Escolha a situação!" layout="pageDirection"
 							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
-
 							<f:selectItem itemLabel="Ativos" itemValue="A" />
-
 						</p:selectOneRadio>
 					</b:column>
-
 				</b:row>
 				<br />
 				<p:dataTable rows="8" paginator="true" paginatorPosition="bottom"
@@ -444,53 +447,34 @@
 					value="#{GerenciarPacienteController.listaPacientes}"
 					emptyMessage="Nenhum Paciente">
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Prontuário
-                        </f:facet>
+					<p:column width="80" headerText="Prontuário">
 						<p:outputLabel value="#{pacie.laudo.paciente.id_paciente}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            Nome
-                        </f:facet>
-
+					<p:column headerText="Nome">
 						<p:outputLabel value="#{pacie.laudo.paciente.nome}" />
 					</p:column>
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Matrícula
-                        </f:facet>
+					<p:column width="80" headerText="Matrícula">
 						<p:outputLabel value="#{pacie.laudo.paciente.matricula}" />
 					</p:column>
 
 
-					<p:column>
-						<f:facet name="header">
-                            Procedimento
-                        </f:facet>
+					<p:column headerText="Procedimento">
 						<p:outputLabel value="#{pacie.laudo.procedimentoPrimario.codProc}" />
 						<p:outputLabel
 							value="#{pacie.laudo.procedimentoPrimario.nomeProc}" />
 					</p:column>
 
-					<p:column width="80">
-						<f:facet name="header">
-                            Selecionar
-                        </f:facet>
-						<p:commandButton update=":frm" icon="fa fa-fw fa-check"
+					<p:column width="80" headerText="Selecionar">
+						<p:commandButton update=":frm:outPa" icon="fa fa-fw fa-check"
 							title="Selecionar" class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie.laudo.paciente}"
 								target="#{RelatoriosController.paciente}" />
 
 						</p:commandButton>
-
 					</p:column>
-
-
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
