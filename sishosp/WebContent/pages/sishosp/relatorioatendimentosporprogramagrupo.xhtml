@@ -54,11 +54,110 @@
 								<f:selectItem itemLabel="Programa" itemValue="P" />
 								<f:selectItem itemLabel="Grupo" itemValue="G" />
 								
-								<p:ajax update="frm:outGrupo"/>
+								<p:ajax update="frm:tabGrupo frm:buttonAddGrupo"/>
 							</p:selectOneRadio> 
 						</b:column>
 					</b:row>
 					<hr />
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<p:commandButton process="@this" size="sm"
+								title="Incluir Unidade" icon="ui-icon-plus"
+								class="btn-acao-table acao-editar"
+								update=":formConsulUni"
+								action="#{RelatoriosController.listarUnidadesUsuario()}" />
+							<div style="width:98%">
+								<p:dataTable var="uni" value="#{RelatoriosController.listaUnidadesSelecionadas}"
+									id="tabUnidade" emptyMessage="Nenhuma unidade adicionada" 
+									reflow="true" style="margin-left: -1.5%;">
+									<p:column headerText="Unidade" width="80%">
+										<h:outputText value="#{uni.nomeUnidade}" />
+									</p:column>
+
+									<p:column headerText="Ação">
+										<div align="center">
+											<p:commandButton tooltip="Excluir"
+												icon="fa fa-fw fa-remove" size="sm"
+												class="new-btn-acao-table acao-excluir"
+												update=":frm:tabUnidade :msgPagina"
+												process="@this"
+												action="#{RelatoriosController.removerUnidadadicionada(uni)}"/>
+										</div>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<div style="display: flex;">
+							<div class="content-div-flex" style="margin-left:1.2%;">
+								<p:commandButton process="@this" size="sm" id="buttonAddPrograma"
+									disabled="#{RelatoriosController.listaUnidadesSelecionadas.size() == 0}"
+									title="Incluir Programa" icon="ui-icon-plus"
+									class="btn-acao-table acao-editar" update=":formConsulUni"
+									oncomplete="PF('dlgConsuProg').show();" />
+								<p:dataTable var="prog"
+									value="#{RelatoriosController.listaProgramaSelecionados}"
+									id="tabPrograma" emptyMessage="Nenhum programa adicionado"
+									reflow="true">
+
+									<p:column headerText="Programa">
+										<h:outputText value="#{prog.descPrograma}" />
+									</p:column>
+
+									<p:column headerText="Unidade">
+										<h:outputText value="#{prog.descricaoUnidade}" />
+									</p:column>
+
+									<p:column headerText="Ação" width="15%">
+										<div align="center">
+											<p:commandButton tooltip="Excluir" icon="fa fa-fw fa-remove"
+												size="sm" class="new-btn-acao-table acao-excluir"
+												update=":frm:tabPrograma :frm:buttonAddPrograma :msgPagina" 
+												process="@this buttonAddPrograma" immediate="true"
+												actionListener="#{RelatoriosController.removerUnidadadicionada(uni)}" />
+										</div>
+									</p:column>
+								</p:dataTable>
+							</div>
+
+							<div class="content-div-flex" style="margin-left:1.2%">
+								<p:commandButton process="@this" size="sm"
+									title="Incluir Grupo" icon="ui-icon-plus" id="buttonAddGrupo"
+									class="btn-acao-table acao-editar" update=":formConsulUni"
+									disabled="#{RelatoriosController.atributoGenerico3 == 'P'}"/>
+								<p:dataTable var="grupo" disabledSelection="#{RelatoriosController.atributoGenerico3 == 'P'}"
+									value="#{RelatoriosController.listaGruposSelecionados}"
+									id="tabGrupo" emptyMessage="Nenhum grupo adicionado"
+									reflow="true">
+
+									<p:column headerText="Grupo">
+										<h:outputText value="#{grupo.descPrograma}" />
+									</p:column>
+
+									<p:column headerText="Programa">
+										<h:outputText value="#{grupo.descPrograma}" />
+									</p:column>
+
+									<p:column headerText="Unidade">
+										<h:outputText value="#{grupo.descricaoUnidade}" />
+									</p:column>
+
+									<p:column headerText="Ação" width="10%">
+										<div align="center">
+											<p:commandButton tooltip="Excluir" icon="fa fa-fw fa-remove"
+												size="sm" class="new-btn-acao-table acao-excluir"
+												update=":frm:tabGrupo :msgPagina" process="@this"
+												action="#{RelatoriosController.removerUnidadadicionada(uni)}" />
+										</div>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</b:row>
+					<br />
 
 					<b:row>
 						<b:column span="1" class="label-position data-size1">
@@ -97,68 +196,6 @@
 								<f:selectItem itemLabel="Sexta" itemValue="5" />
 								<f:selectItem itemLabel="Sábado" itemValue="6" />
 							</p:selectManyCheckbox>
-						</b:column>
-					</b:row>
-
-
-					<b:row>
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Programa:" severity="info" />
-
-							<p:outputPanel id="outProg">
-								<p:autoComplete
-									value="#{RelatoriosController.programa}"
-									size="31" converter="conPrograma" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}"
-										update="outProg,  outGrupo" />
-
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBusPr" immediate="true"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									icon="ui-icon-search"
-									action="#{AgendaController.limparNaBuscaPrograma()}"
-									actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
-							</p:outputPanel>
-						</b:column>
-						
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-
-							<p:outputPanel id="outGrupo">
-								<b:label value="Grupo:" severity="info" rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"/>
-								<br />
-								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.grupo}"
-									size="31" converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
-									completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
-								</p:autoComplete>
-
-								<p:commandButton id="btBusGr" immediate="true"
-									icon="ui-icon-search"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
-									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
-									update=":frm formConsuGrop"
-									oncomplete="PF('dlgConsuGrop').show();" />
-							</p:outputPanel>
 						</b:column>
 					</b:row>
 
@@ -362,69 +399,73 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="Consultar Unidades" widgetVar="dlgConsulUni"
+			responsive="true" height="350" modal="true" dynamic="true">
+			<h:form id="formConsulUni">
+				<p:outputPanel id="outuni">
+					<p:commandButton process="@this" size="sm" title="Incluir Unidade"
+						value="Adicionar Todas as Unidades" class="btn-acao-table acao-editar"
+						update=":frm:tabUnidade :frm:buttonAddPrograma" 
+						action="#{RelatoriosController.adicionarTodasUnidadesSelecionadas()}" />
+					<p:dataTable emptyMessage="Nenhum Unidade Associada Encontrada" rows="10"
+						paginator="true" id="tabelaUnidade" style="width:500px"
+						value="#{RelatoriosController.listaUnidades}" var="uni" reflow="true">
+
+						<p:column headerText="Unidade" width="80%">
+							<h:outputText value="#{uni.nomeUnidade}" />
+						</p:column>
+
+						<p:column headerText="Ação">
+							<div align="center">
+								<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+									size="sm" class="new-btn-acao-table acao-editar"
+									update=":frm:tabUnidade :frm:buttonAddPrograma :msgPagina"
+									action="#{RelatoriosController.adicionarUnidadeSelecionada(uni)}"/>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			dynamic="true" modal="true" styleClass="topDialog">
 			<h:form id="formConsuProg">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
-					display="Nenhum Programa">
+				<p:outputPanel id="outuni">
+					<p:commandButton process="@this" size="sm" title="Incluir Unidade"
+						value="Adicionar Todos os Programas" class="btn-acao-table acao-editar"
+						update=":frm:tabUnidade" 
+						action="#{RelatoriosController.adicionarTodasUnidadesSelecionadas()}" />
+					<p:dataTable emptyMessage="Nenhum Programa Associado Encontrado" rows="10"
+						paginator="true" id="tabelaProg" style="width:500px"
+						value="#{RelatoriosController.listaPrograma}" var="prog" reflow="true">
+						
+						<p:column headerText="Programa">
+							<h:outputText value="#{prog.descPrograma}" />
+						</p:column>
 
-					<h:column>
-						<f:facet name="header">
-                            Programa
-                        </f:facet>
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</h:column>
+						<p:column headerText="Unidade">
+							<h:outputText value="#{prog.descricaoUnidade}" />
+						</p:column>
 
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton update=":frm:outProg, :frm:outGrupo"
-							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-							title="Selecionar"
-							action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
-							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
-							oncomplete="PF('dlgConsuProg').hide();">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{RelatoriosController.programa}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
+						<p:column headerText="Ação" width="15%">
+							<div align="center">
+								<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+									size="sm" class="new-btn-acao-table acao-editar"
+									update=":frm:tabPrograma :msgPagina"
+									action="#{RelatoriosController.adicionarUnidadeSelecionada(uni)}"/>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true" styleClass="topDialog" dynamic="true">
 			<h:form id="formConsuGrop">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
-					responsive="true" save-state="false" saveState="false"
-					value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
-					var="grupo" display="Nenhum Grupo">
-
-					<h:column>
-						<f:facet name="header">
-                            Grupo
-                        </f:facet>
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
-					
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton update=":frm:outProg, :frm:outGrupo"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{RelatoriosController.pacienteInstituicao.grupo}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
+				
 			</h:form>
 		</p:dialog>
 

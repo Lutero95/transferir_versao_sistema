@@ -35,6 +35,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
@@ -63,7 +64,12 @@ public class RelatoriosController implements Serializable {
 	private EquipeBean equipe;
 	private ProcedimentoBean procedimento;
 	private FuncionarioBean prof;
+	private List<UnidadeBean> listaUnidades;
+	private List<ProgramaBean> listaPrograma;
 	private List<GrupoBean> listaGrupos;
+	private List<UnidadeBean> listaUnidadesSelecionadas;
+	private List<ProgramaBean> listaProgramaSelecionados;
+	private List<GrupoBean> listaGruposSelecionados;
 	private List<EquipeBean> listaEquipe;
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
@@ -129,6 +135,10 @@ public class RelatoriosController implements Serializable {
 		listaMunicipiosDePacienteAtivosSelecionados = new ArrayList<MunicipioBean>();
 		this.grupoDao = new GrupoDAO();
 		this.listaAnos = new ArrayList<>();
+		this.listaUnidades = new ArrayList<>();
+		this.listaPrograma  = new ArrayList<>();
+		this.listaUnidadesSelecionadas = new ArrayList<>();
+		this.listaProgramaSelecionados = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -424,6 +434,36 @@ public class RelatoriosController implements Serializable {
 		atributoGenerico2 = "ME";
 		valorGenerico1 = null;
 		valorGenerico2 = null;
+	}
+	
+	public void listarUnidadesUsuario() throws ProjetoException {
+		listaUnidades = new UnidadeDAO().carregarUnidadesDoFuncionario();
+		JSFUtil.abrirDialog("dlgConsulUni");
+	}
+	
+	public void adicionarUnidadeSelecionada(UnidadeBean unidadeSelecionada) {
+		if(!unidadeJaFoiAdicionada(unidadeSelecionada)) {
+			listaUnidadesSelecionadas.add(unidadeSelecionada);
+			JSFUtil.fecharDialog("dlgConsulUni");
+		}
+	}
+	
+	private boolean unidadeJaFoiAdicionada(UnidadeBean unidadeSelecionada) {
+			if(listaUnidadesSelecionadas.contains(unidadeSelecionada)) {
+				JSFUtil.adicionarMensagemErro("Está Unidade Já foi Adicionada", "");
+				return true;
+		}
+		return false;
+	}
+	
+	public void adicionarTodasUnidadesSelecionadas() {
+		listaUnidadesSelecionadas.clear();
+		listaUnidadesSelecionadas.addAll(listaUnidades);
+		JSFUtil.fecharDialog("dlgConsulUni");
+	}
+	
+	public void removerUnidadadicionada(UnidadeBean unidadeSelecionada) {
+		listaUnidadesSelecionadas.remove(unidadeSelecionada);
 	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
@@ -1717,6 +1757,46 @@ public class RelatoriosController implements Serializable {
 
 	public void setFiltrarPorQuantidade(boolean filtrarPorQuantidade) {
 		this.filtrarPorQuantidade = filtrarPorQuantidade;
+	}
+
+	public List<UnidadeBean> getListaUnidades() {
+		return listaUnidades;
+	}
+
+	public void setListaUnidades(List<UnidadeBean> listaUnidades) {
+		this.listaUnidades = listaUnidades;
+	}
+
+	public List<ProgramaBean> getListaPrograma() {
+		return listaPrograma;
+	}
+
+	public void setListaPrograma(List<ProgramaBean> listaPrograma) {
+		this.listaPrograma = listaPrograma;
+	}
+
+	public List<UnidadeBean> getListaUnidadesSelecionadas() {
+		return listaUnidadesSelecionadas;
+	}
+
+	public void setListaUnidadesSelecionadas(List<UnidadeBean> listaUnidadesSelecionadas) {
+		this.listaUnidadesSelecionadas = listaUnidadesSelecionadas;
+	}
+
+	public List<ProgramaBean> getListaProgramaSelecionados() {
+		return listaProgramaSelecionados;
+	}
+
+	public void setListaProgramaSelecionados(List<ProgramaBean> listaProgramaSelecionados) {
+		this.listaProgramaSelecionados = listaProgramaSelecionados;
+	}
+
+	public List<GrupoBean> getListaGruposSelecionados() {
+		return listaGruposSelecionados;
+	}
+
+	public void setListaGruposSelecionados(List<GrupoBean> listaGruposSelecionados) {
+		this.listaGruposSelecionados = listaGruposSelecionados;
 	}
 	
 }
