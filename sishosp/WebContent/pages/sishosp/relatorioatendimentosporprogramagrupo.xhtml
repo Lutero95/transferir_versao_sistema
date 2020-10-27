@@ -300,6 +300,43 @@
 					</b:row>
 					
 					<b:row>
+						<b:column class="label-position new-data-size new-comple1">>
+							<b:label value="Idade:" severity="info" />
+							<p:selectOneRadio required="true"
+											  requiredMessage="Informe a idade" 
+											  value="#{RelatoriosController.atributoGenerico4}"
+											  unselectable="true">
+								<f:selectItem itemLabel="Intervalo de Idades" itemValue="I" />
+								<f:selectItem itemLabel="Acima de" itemValue="A" />
+								<p:ajax update="intervaloIdades" event="valueChange" />
+							</p:selectOneRadio>
+						</b:column>
+
+						<p:outputPanel id="intervaloIdades">
+							<b:column span="6"
+								rendered="#{RelatoriosController.atributoGenerico4=='I'}"
+								class="label-position new-comple1">
+								<b:label value="Idade Mínima" severity="info" />
+								<p:inputText size="1"
+									value="#{RelatoriosController.idadeMinima}" />
+
+								<b:label value=" Idade Máxima " severity="info"
+									style="margin-left:20px" />
+								<p:inputText value="#{RelatoriosController.idadeMaxima}" size="1" />
+							</b:column>
+
+							<b:column span="3"
+								rendered="#{RelatoriosController.atributoGenerico4=='A'}"
+								class="label-position new-data-size new-comple1">
+
+								<b:label value="Acima de" severity="info" />
+								<p:inputText value="#{RelatoriosController.idadeMinima}"
+									size="1" />
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+					
+					<b:row>
 						<br />
 						<b:column class="label-position new-data-size new-comple1">
 							<b:label value="Turno:" severity="info" />

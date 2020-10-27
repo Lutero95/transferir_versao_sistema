@@ -40,6 +40,8 @@
 	<parameter name="codprofissional" class="java.lang.Long"/>
 	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
+	<parameter name="idademinima" class="java.lang.Integer"/>
+	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -81,6 +83,8 @@ left join (
 	and ((   $P{codprofissional}   is not null and a11.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
 	and ((   $P{codespecialidade}  is not null and f2.codespecialidade =   $P{codespecialidade}  ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}   is null)))
 	and $X{IN, extract (dow from a2.dtaatende), diassemanalista}
+	AND (SELECT extract(year from age(pa2.dtanascimento))) >=  $P{idademinima} 
+	AND (SELECT extract(year from age(pa2.dtanascimento))) <=  $P{idademaxima} 
 	group by pa2.id_paciente, p2.id_programa, g2.id_grupo ) as qtd on 
 	(qtd.id_paciente = pa.id_paciente and qtd.id_programa = p.id_programa and grupo.id_grupo = qtd.id_grupo)
 where sa.atendimento_realizado is true
@@ -94,6 +98,8 @@ and ((    $P{id_paciente}  is not null and a.codpaciente =   $P{id_paciente}   )
 and ((    $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}  = 0) or ( $P{codprofissional}  is null)))
 and ((    $P{codespecialidade}  is not null and f.codespecialidade = $P{codespecialidade}   ) or (( $P{codespecialidade}   = 0) or (  $P{codespecialidade}   is null)))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
+AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
 and ( ( ((   $P{qtdatendimentosmenorigual}   is not null and qtd.atendimentos <=  $P{qtdatendimentosmenorigual}   ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR (  $P{qtdatendimentosmenorigual}   is null )))
 and (( $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos >=  $P{qtdatendimentosmaiorigual}   ) or ((  $P{qtdatendimentosmaiorigual}   = 0 ) OR (  $P{qtdatendimentosmaiorigual}   is null ))) )
 or (( $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}   is not null and qtd.atendimentos between  $P{qtdatendimentosmenorigual}  and  $P{qtdatendimentosmaiorigual}  )

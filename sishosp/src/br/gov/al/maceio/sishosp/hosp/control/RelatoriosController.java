@@ -169,7 +169,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelFrequencia() throws ProjetoException {
 		atributoGenerico1 = "P";
 	}
-	
+
 	public void preparaRelFrequenciaPreenchida() throws ProjetoException {
 		atributoGenerico1 = "P";
 		listarAnosAtendimentos();
@@ -178,7 +178,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelatorioAgendamentos() {
 		atributoGenerico1 = "A";
 	}
-	
+
 	public void preparaRelatorioAtendimentos() {
 		atributoGenerico3 = "P";
 	}
@@ -254,7 +254,7 @@ public class RelatoriosController implements Serializable {
 			}
 		}
 	}
-	
+
 	public void listaEquipePorGrupo() throws ProjetoException {
 		EquipeDAO eDao = new EquipeDAO();
 		listaEquipe = eDao.listarEquipePorGrupo(grupo.getIdGrupo());
@@ -297,7 +297,7 @@ public class RelatoriosController implements Serializable {
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
 				map.put("mostrarlaudosvencidos", atributoGenerico3);
 			else
-			map.put("mostrarlaudosvencidos", null);
+				map.put("mostrarlaudosvencidos", null);
 			this.executeReport(relatorio, map, "relatorio.pdf");
 			// this.executeReportNewTab(relatorio, "laudovencer.pdf",
 			// map);
@@ -338,33 +338,33 @@ public class RelatoriosController implements Serializable {
 
 	public void geraFrequenciaPreenchida(PacienteBean paciente, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		
-			String caminho = "/WEB-INF/relatorios/";
-			String relatorio = "";
-			relatorio = caminho + "frequencia_preenchida.jasper";
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ano", this.ano);
-			map.put("mes", this.mes);
-			map.put("codunidade", user_session.getUnidade().getId());
-			if (!VerificadorUtil.verificarSeObjetoNulo(programa))
-				map.put("codprograma", programa.getIdPrograma());
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
-				map.put("codgrupo", grupo.getIdGrupo());
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		relatorio = caminho + "frequencia_preenchida.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ano", this.ano);
+		map.put("mes", this.mes);
+		map.put("codunidade", user_session.getUnidade().getId());
+		if (!VerificadorUtil.verificarSeObjetoNulo(programa))
+			map.put("codprograma", programa.getIdPrograma());
 
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
-				map.put("codpaciente", paciente.getId_paciente());
+		if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
+			map.put("codgrupo", grupo.getIdGrupo());
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-			this.executeReport(relatorio, map, "relatorio.pdf");
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+			map.put("codpaciente", paciente.getId_paciente());
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		this.executeReport(relatorio, map, "relatorio.pdf");
 
 	}
-	
+
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		
+
 		if(camposvalidos(programa, grupo)) {
-			
+
 			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
 			pacienteInstituicao.setPrograma(programa);
 			pacienteInstituicao.setGrupo(grupo);
@@ -399,27 +399,27 @@ public class RelatoriosController implements Serializable {
 			}
 		}
 	}
-	
+
 	private void listarAnosAtendimentos() throws ProjetoException {
 		this.listaAnos = new AtendimentoDAO().listaAnosDeAtendimentos();
 	}
-	
+
 	private boolean camposvalidos(ProgramaBean programa, GrupoBean grupo) {
-		
+
 		boolean valido = true;
-		
+
 		if (VerificadorUtil.verificarSeObjetoNulo(programa) || VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdPrograma())){
 			JSFUtil.adicionarMensagemErro("Programa: Campo obrigatório!", "");
-			valido = false;			
+			valido = false;
 		}
-		
+
 		if(VerificadorUtil.verificarSeObjetoNulo(grupo) || VerificadorUtil.verificarSeObjetoNuloOuZero(grupo.getIdGrupo())) {
 			JSFUtil.adicionarMensagemErro("Grupo: Campo obrigatório!", "");
 			valido = false;
 		}
-		return valido;	
+		return valido;
 	}
-	
+
 	public void limparFiltroPorQuantidade() {
 		atributoGenerico2 = "ME";
 		valorGenerico1 = null;
@@ -433,24 +433,24 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setGrupo(grupo);
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
-		
+
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
-		
+
 		if(!validaValorQuantidade())
 			return;
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		map.put("dt_inicial", dataInicial);
 		map.put("dt_final", dataFinal);
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
 			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
-		
+
 		if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
 			map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
-		
+
 		if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			map.put("turno", this.turnoSelecionado);
 
@@ -464,10 +464,20 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
-		
+
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(idadeMinima))
+			map.put("idademinima", 0);
+		else
+			map.put("idademinima", idadeMinima);
+
+		if (VerificadorUtil.verificarSeObjetoNuloOuZero(idadeMaxima))
+			map.put("idademaxima", 200);
+		else
+			map.put("idademaxima", idadeMaxima);
+
 		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
-		
+
 		if ((atributoGenerico2!=null) && (atributoGenerico2.equals("EN"))) {
 			map.put("qtdatendimentosmenorigual", valorGenerico1);
 			map.put("qtdatendimentosmaiorigual", valorGenerico2);
@@ -478,9 +488,9 @@ public class RelatoriosController implements Serializable {
 		else if ((atributoGenerico2!=null) &&(atributoGenerico2.equals("ME"))) {
 			map.put("qtdatendimentosmenorigual", valorGenerico1);
 		}
-		
+
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-		
+
 		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
@@ -497,7 +507,7 @@ public class RelatoriosController implements Serializable {
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
-		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla()) 
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
 				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())){
 			relatorio = caminho + "atendimentosporprogramasintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
@@ -509,36 +519,38 @@ public class RelatoriosController implements Serializable {
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 	}
-	
+
 	private boolean validaValorQuantidade() {
-		if ((atributoGenerico2!=null) && (atributoGenerico2.equals("EN"))) {
-			
-			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) 
-				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
-				|| (VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) 
-				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) )) {
+		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(atributoGenerico2))
+			return true;
+		else if (atributoGenerico2.equals("EN")) {
+
+			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1)
+					&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
+					|| (VerificadorUtil.verificarSeObjetoNulo(valorGenerico2)
+					&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) )) {
 				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
-				return false;				
+				return false;
 			}
 
-			else if ( (valorGenerico1 > 0 && valorGenerico2 <= 0) 
+			else if ( (valorGenerico1 > 0 && valorGenerico2 <= 0)
 					|| (valorGenerico2 > 0 && valorGenerico1 <= 0) ) {
 				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
-				return false;				
+				return false;
 			}
-			
+
 			else if(valorGenerico1 >= valorGenerico2) {
 				JSFUtil.adicionarMensagemErro("Segundo valor da quantidade deve ser maior que o primeiro!", "");
 				return false;
 			}
-		}	
+		}
 		else if(!VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) && valorGenerico1 < 0) {
 			JSFUtil.adicionarMensagemErro("Insira um valor válido para filtrar a quantidade!", "");
-			return false;								
+			return false;
 		}
 		return true;
 	}
-	
+
 	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
@@ -560,7 +572,7 @@ public class RelatoriosController implements Serializable {
 		if (this.turnoSelecionado.equals(Turno.MANHA.getSigla())
 				|| this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			map.put("turno", this.turnoSelecionado);
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNulo(paciente) && !VerificadorUtil.verificarSeObjetoNuloOuZero(paciente.getId_paciente()))
 			map.put("id_paciente", paciente.getId_paciente());
 
@@ -600,18 +612,18 @@ public class RelatoriosController implements Serializable {
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
 		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
-		
+
 		if(atributoGenerico3.equals("E")) {
 			relatorio = caminho + "pacientes_ativos_por_programa_grupo_equipe.jasper";
 			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
 				map.put("codgrupo", grupo.getIdGrupo());
 			if (!VerificadorUtil.verificarSeObjetoNulo(equipe))
-				map.put("codequipe", equipe.getCodEquipe());			
+				map.put("codequipe", equipe.getCodEquipe());
 		}
 		else if (atributoGenerico3.equals("G")) {
 			relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
@@ -621,7 +633,7 @@ public class RelatoriosController implements Serializable {
 		else if (atributoGenerico3.equals("P")) {
 			relatorio = caminho + "pacientes_ativos_por_programa.jasper";
 		}
-		
+
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("filtromunicipio", idMunicipiosSelecionados);
 		map.put("sexo", this.atributoGenerico2);
@@ -648,7 +660,7 @@ public class RelatoriosController implements Serializable {
 		this.executeReport(relatorio, map, "relatoriopacientesativos.pdf");
 
 	}
-	
+
 	public void limparGrupoEquipe() {
 		if(atributoGenerico3.equals("P")) {
 			this.grupo = new GrupoBean();
@@ -659,7 +671,7 @@ public class RelatoriosController implements Serializable {
 			this.equipe = new EquipeBean();
 		}
 	}
-	
+
 	private void setaDiasSemanaComoListaDeInteiro(ArrayList<Integer> diasSemanaInteger) {
 		for (String dia : diasSemana) {
 			diasSemanaInteger.add(Integer.valueOf(dia));
@@ -680,7 +692,7 @@ public class RelatoriosController implements Serializable {
 	private void limparTurno() {
 		this.turnos = new ArrayList<String>();
 	}
-	
+
 	public void gerarPacientesAtivosSemEvolucao() throws IOException, ParseException, ProjetoException {
 
 		if (atributoGenerico1.equals("A")) {
@@ -1625,7 +1637,7 @@ public class RelatoriosController implements Serializable {
 	public void setFiltrarPorMunicipio(Boolean filtrarPorMunicipio) {
 		this.filtrarPorMunicipio = filtrarPorMunicipio;
 	}
-	
+
 	public Integer getIdSituacaoAtendimento() {
 		return idSituacaoAtendimento;
 	}
@@ -1706,5 +1718,5 @@ public class RelatoriosController implements Serializable {
 	public void setFiltrarPorQuantidade(boolean filtrarPorQuantidade) {
 		this.filtrarPorQuantidade = filtrarPorQuantidade;
 	}
-	
+
 }

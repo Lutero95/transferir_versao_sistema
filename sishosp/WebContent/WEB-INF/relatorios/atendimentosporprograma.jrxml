@@ -37,6 +37,8 @@
 	<parameter name="codprofissional" class="java.lang.Long"/>
 	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
+	<parameter name="idademinima" class="java.lang.Integer"/>
+	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -73,6 +75,8 @@ left join (	select pa2.id_paciente, p2.id_programa, count(*) atendimentos
 	and ((    $P{codprofissional}   is not null and a11.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or (  $P{codprofissional}  is null)))
 	and ((    $P{codespecialidade}   is not null and f2.codespecialidade = $P{codespecialidade}  ) or ((  $P{codespecialidade} = 0) or (  $P{codespecialidade} is null)))
 	and $X{IN, extract (dow from a2.dtaatende), diassemanalista}
+	AND (SELECT extract(year from age(pa2.dtanascimento))) >=  $P{idademinima} 
+	AND (SELECT extract(year from age(pa2.dtanascimento))) <=  $P{idademaxima} 
 	group by pa2.id_paciente, p2.id_programa) as qtd on (qtd.id_paciente = pa.id_paciente and qtd.id_programa = p.id_programa)
 
 where sa.atendimento_realizado is true
@@ -90,6 +94,8 @@ and ((   $P{codespecialidade}  is not null and f.codespecialidade = $P{codespeci
 		or (( $P{qtdatendimentosmenorigual}   = 0 and  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}  is null and  $P{qtdatendimentosmaiorigual}  is null))
 	) )
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
+AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
 order by 1;]]>
 	</queryString>
 	<field name="row" class="java.lang.Object">

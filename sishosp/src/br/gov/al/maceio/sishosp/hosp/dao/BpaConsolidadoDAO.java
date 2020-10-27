@@ -36,7 +36,8 @@ public class BpaConsolidadoDAO {
         		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
         		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
-        		" where sa.atendimento_realizado = true and hc.status='A'" +
+        		" where sa.atendimento_realizado = true and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+				"\tand coalesce(a1.excluido, 'N')= 'N'" +
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
         		" and pm.competencia_atual = ? "+
