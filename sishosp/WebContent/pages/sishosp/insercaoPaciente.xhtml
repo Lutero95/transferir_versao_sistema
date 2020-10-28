@@ -549,7 +549,7 @@
                         <p:outputLabel value="#{insercao.laudo.paciente.id_paciente}" />
                     </p:column>
 
-                    <p:column width="200">
+                    <p:column width="200" sortBy="#{insercao[laudo.paciente.nome]}" >
                         <f:facet name="header">
                             Paciente
                         </f:facet>

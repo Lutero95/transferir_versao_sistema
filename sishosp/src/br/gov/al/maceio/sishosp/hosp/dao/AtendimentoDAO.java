@@ -1453,7 +1453,7 @@ public class AtendimentoDAO {
 				"join hosp.proc p on a1.codprocedimento = p.id " + 
 				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
 				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
-				"where a.dtaatende between ? and ? and p.ativo = 'S' ";
+				"where a.dtaatende between ? and ? and p.ativo = 'S' and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  ";
 		
 		if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql = sql + " and pa.nome ilike ?";
