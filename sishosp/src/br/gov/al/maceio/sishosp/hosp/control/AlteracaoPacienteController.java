@@ -33,6 +33,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RenovacaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
@@ -504,32 +505,28 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
-        Integer codPaciente = null;
-        if ((insercao.getLaudo() != null) && (insercao.getLaudo().getId() != null))
-            codPaciente = insercao.getLaudo().getPaciente().getId_paciente();
-
-        if  ((insercao.getPaciente() != null) && (insercao.getPaciente().getId_paciente() != null))
-            codPaciente = insercao.getPaciente().getId_paciente();
-        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente()))
-            codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+        Integer codPaciente = retornaIdPacienteCorreto();
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+        Date periodoInicial = executaMetodoCorretoParaAjustarDataDeSolicitacao(insercaoPacienteController,
+				gerenciarPacienteController);
         Date d1 = periodoInicial;
         Date d2 =null;
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId()))
             d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         else {
             Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(dataFinalSemLaudo);
-            cal.add(Calendar.MONTH, 2);
-            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-            d2 = cal.getTime();
+            Calendar calendar = Calendar.getInstance();
+            if(VerificadorUtil.verificarSeObjetoNulo(dataFinalSemLaudo)) {
+                d2 = retornaDataFinalInseridoSemLaudo(periodoInicial, calendar);
+            }
+            else {
+				d2 = retornaDataFinalRenovadoSemLaudo(dataFinalSemLaudo, calendar);
+            }
         }
-
 
         Long dt = (d2.getTime() - d1.getTime());
 
@@ -575,6 +572,26 @@ public class AlteracaoPacienteController implements Serializable {
 
     }
 
+
+	private Date retornaDataFinalRenovadoSemLaudo(Date dataFinalSemLaudo, Calendar calendar) {
+		Date d2;
+		calendar.setTime(dataFinalSemLaudo);
+		calendar.add(Calendar.MONTH, 2);
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		d2 = calendar.getTime();
+		return d2;
+	}
+
+
+	private Date retornaDataFinalInseridoSemLaudo(Date periodoInicial, Calendar calendar) throws ProjetoException {
+		Date d2;
+		calendar.setTime(periodoInicial);
+		calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		d2 = calendar.getTime();
+		return d2;
+	}
+
     public static void main(String[] args) throws ProjetoException, ParseException {
         // TODO Auto-generated method stub
         GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
@@ -588,10 +605,14 @@ public class AlteracaoPacienteController implements Serializable {
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
 
+        Integer codPaciente = retornaIdPacienteCorreto();
+    	
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+        Date periodoInicial = executaMetodoCorretoParaAjustarDataDeSolicitacao(insercaoPacienteController,
+				gerenciarPacienteController);
         Date d1 = periodoInicial;
 
         Date d2 = null;
@@ -599,12 +620,14 @@ public class AlteracaoPacienteController implements Serializable {
         if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId()))
             d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         else {
-            Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, insercao.getPaciente().getId_paciente());
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(dataFinalSemLaudo);
-            cal.add(Calendar.MONTH, 2);
-            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-            d2 = cal.getTime();
+            Date dataFinalSemLaudo = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
+            Calendar calendar = Calendar.getInstance();
+            if(VerificadorUtil.verificarSeObjetoNulo(dataFinalSemLaudo)) {
+                d2 = retornaDataFinalInseridoSemLaudo(periodoInicial, calendar);
+            }
+            else {
+				d2 = retornaDataFinalRenovadoSemLaudo(dataFinalSemLaudo, calendar);
+            }
         }
 
         Long dt = (d2.getTime() - d1.getTime());
@@ -644,6 +667,19 @@ public class AlteracaoPacienteController implements Serializable {
         }
 
     }
+
+
+	private Integer retornaIdPacienteCorreto() {
+		Integer codPaciente = null;
+        if ((insercao.getLaudo() != null) && (insercao.getLaudo().getId() != null))
+            codPaciente = insercao.getLaudo().getPaciente().getId_paciente();
+
+        if  ((insercao.getPaciente() != null) && (insercao.getPaciente().getId_paciente() != null))
+            codPaciente = insercao.getPaciente().getId_paciente();
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getPaciente().getId_paciente()))
+            codPaciente = insercaoParaLaudo.getLaudo().getPaciente().getId_paciente();
+		return codPaciente;
+	}
 
     public static void gerarListaAgendamentosEquipeDiaHorarioDuplicado() throws ProjetoException {
 
@@ -796,11 +832,8 @@ public class AlteracaoPacienteController implements Serializable {
 
         if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
             if(!ehAlteracaoSemLaudo()) {
-
-                dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
-                        insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(), insercao.getPaciente().getId_paciente(),
-                        insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-
+            	dataSolicitacaoCorreta = executaMetodoCorretoParaAjustarDataDeSolicitacao(insercaoPacienteController,
+						gerenciarPacienteController);
                 if(!insercaoPacienteController.procedimentoValido
                 		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getPaciente()))
                     return;
@@ -854,6 +887,24 @@ public class AlteracaoPacienteController implements Serializable {
             }
         }
     }
+
+
+	private Date executaMetodoCorretoParaAjustarDataDeSolicitacao(InsercaoPacienteController insercaoPacienteController,
+			GerenciarPacienteController gerenciarPacienteController) throws ProjetoException {
+		Date dataSolicitacaoCorreta;
+		if(!insercao.getPrograma().isPermitePacienteSemLaudo() 
+				&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
+			dataSolicitacaoCorreta = insercaoPacienteController.ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(
+		            insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(),
+		            insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+		} else {
+			dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(
+					insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId(),
+					insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(),
+					insercao.getGrupo().getIdGrupo());
+		}
+		return dataSolicitacaoCorreta;
+	}
 
     private boolean ehAlteracaoSemLaudo() {
         return VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId());

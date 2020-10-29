@@ -190,7 +190,7 @@
 										update=":formGerenPaci" icon="ui-icon-plus"
 										action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"
 										immediate="true" style="margin-top: 5px;">
-										<p:menuitem value="Inserir sem Laudo" 
+										<p:menuitem value="Inserir Paciente na Fisioterapia" 
 											action="/pages/sishosp/insercaopacientesemlaudo.xhtml?faces-redirect=true"
 											icon="pi pi-refresh" styleClass="split-item"/>
 									</p:splitButton>
@@ -201,7 +201,7 @@
 									<p:outputPanel id="outAlterar">
 										<p:commandButton value="Alterar" style="margin-top:5px;"
 											disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
-											rendered="#{GerenciarPacienteController.rowBean.inclusaoSemLaudo != true}"
+											rendered="#{GerenciarPacienteController.rowBean.programa.permitePacienteSemLaudo == false}"
 											id="btnAlterar" immediate="true"
 											class="btn-acao-table acao-altera2 btn-new-padding2"
 											update=":formGerenPaci" icon="ui-icon-pencil"
@@ -209,7 +209,8 @@
 
 										<p:commandButton value="Alterar"
 											style="margin-top:5px;"
-											rendered="#{GerenciarPacienteController.rowBean.inclusaoSemLaudo == true}"
+											rendered="#{GerenciarPacienteController.rowBean.programa.permitePacienteSemLaudo == true 
+											and GerenciarPacienteController.rowBean.inclusaoSemLaudo == true}"
 											action="#{GerenciarPacienteController.redirectAlteracaoSemLaudo()}"
 											id="btnAlterarSemLaudo" immediate="true"
 											class="btn-acao-table acao-altera2 btn-new-padding2"

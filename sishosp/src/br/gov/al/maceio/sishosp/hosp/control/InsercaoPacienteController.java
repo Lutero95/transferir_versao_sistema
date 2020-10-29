@@ -620,7 +620,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();
@@ -681,7 +681,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();
@@ -728,8 +728,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
     
-	private Date ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(Date dataSolicitacao, Integer codLaudo, Integer codPaciente, Integer codPrograma, Integer codGrupo) throws ProjetoException {
-		//Caso nao venha o codigo do laudo é porque a renovacao será sem laudo, logo devera buscar o periodo da agenda pelo ultimo laudo do paciente
+	public Date ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(Date dataSolicitacao, Integer codPaciente, Integer codPrograma, Integer codGrupo) throws ProjetoException {
 		LaudoDAO laudoDAO = new LaudoDAO();
 		Date dataInicioLaudo = null;
 		 
@@ -762,7 +761,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();

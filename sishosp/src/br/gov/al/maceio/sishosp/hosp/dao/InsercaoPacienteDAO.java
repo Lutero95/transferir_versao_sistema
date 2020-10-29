@@ -995,9 +995,7 @@ public class InsercaoPacienteDAO {
 				for (FuncionarioBean profissional : lista) {
 					if(insercao.isInsercaoPacienteSemLaudo() &&
 							VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId())) {
-						inserirAtendimentos1SemCidIhProcedimento(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar);
-					} else {
-						/* TODO criar e colocar a chamada do método que irá inserir os atendimentos1 conforme o padrão da agenda */
+						inserirAtendimentos1(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar);
 					}
 				}
 			}
@@ -1011,7 +1009,7 @@ public class InsercaoPacienteDAO {
 		} 
 	}
 	
-	private void inserirAtendimentos1SemCidIhProcedimento (InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
+	private void inserirAtendimentos1 (InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
 			AgendaBean agendamento, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		try {
@@ -1032,9 +1030,24 @@ public class InsercaoPacienteDAO {
 					} else {
 						ps.setInt(3, profissional.getCbo().getCodCbo());
 					}
-
-					ps.setNull(4, Types.NULL);
-					ps.setNull(5, Types.NULL);
+					
+					Integer idProcedimentoEspecifico = new AgendaDAO().
+							retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), profissional.getCbo().getCodCbo(),
+									insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conAuxiliar);
+					
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+						ps.setInt(4, idProcedimentoEspecifico);
+					else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
+						ps.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+					} else {
+						ps.setNull(4, Types.NULL);
+					}
+					
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())) {
+						ps.setNull(5, Types.NULL);
+					} else {
+						ps.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+					}
 					ps.executeUpdate();
 				}
 			}

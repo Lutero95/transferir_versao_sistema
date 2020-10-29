@@ -30,14 +30,14 @@ public class AlteracaoPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id) throws ProjetoException {
 
-		String sql = "select id, dias_paciente_sem_laudo_ativo, codprograma, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
+		String sql = "select id, dias_paciente_sem_laudo_ativo, codprograma, permite_paciente_sem_laudo, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
 				"codpaciente_instituicao, nome, codequipe, descequipe, turno, horario, mes_final, ano_final,\n" +
 				"codprofissional,descfuncionario, observacao , codlaudo, data_solicitacao ,\n" +
 				"codprocedimento_primario, codprocedimento_secundario1, \n" +
 				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5,\n" +
 				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario, sessoes " +
 				" from (\n" +
-				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
+				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.permite_paciente_sem_laudo, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
 				"l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, \n" +
 				" pi.codequipe, e.descequipe, pi.turno, pi.horario, \n" +
 				"  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n" +
@@ -67,6 +67,7 @@ public class AlteracaoPacienteDAO {
 
 				insercaoPaciente.setId(rs.getInt("id"));
 				insercaoPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				insercaoPaciente.getPrograma().setPermitePacienteSemLaudo(rs.getBoolean("permite_paciente_sem_laudo"));
 				insercaoPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				insercaoPaciente.getPrograma().setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
 				insercaoPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
