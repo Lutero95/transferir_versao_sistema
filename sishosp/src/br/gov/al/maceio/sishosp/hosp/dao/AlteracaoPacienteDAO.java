@@ -1390,7 +1390,7 @@ public class AlteracaoPacienteDAO {
 
 			InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();
 
-			insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao);
+			insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao, null);
 
 			List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
 			listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);
