@@ -64,7 +64,7 @@ public class BpaController {
 	private static final String NOME_ARQUIVO = "BPA_layout_Importacao";
 	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
 	private String descricaoArquivo;
-	
+	private String atributoGenerico1;
 	private Date dataInicioAtendimento;
 	private Date dataFimAtendimento;
 	private String competencia;
@@ -101,11 +101,11 @@ public class BpaController {
 			limparDadosLayoutGerado();
 			this.competencia = formataCompetenciaParaBanco();
 			setaDataInicioIhFimAtendimento(this.competencia);
-			executaMetodosParaGerarBpaConsolidado();
-			executaMetodosParaGerarBpaIndividualizado();
+			executaMetodosParaGerarBpaConsolidado(atributoGenerico1);
+			executaMetodosParaGerarBpaIndividualizado(atributoGenerico1);
 			executaMetodosParaGerarBpaCabecalho();
 			
-			if (!existeInconsistencias()) {
+			if (!existeInconsistencias(atributoGenerico1)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -124,8 +124,8 @@ public class BpaController {
 		}
 	}
 	
-	private boolean existeInconsistencias() throws SQLException, ProjetoException {
-		if (verificarInconsistenciaPrograma() || verificarInconsistenciaQuantidadeAtendimentos())
+	private boolean existeInconsistencias(String tipoGeracao) throws SQLException, ProjetoException {
+		if (verificarInconsistenciaPrograma() || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
 			return true;
 		return false;
 	}
@@ -149,8 +149,8 @@ public class BpaController {
 		return false;
 	}
 	
-	private boolean verificarInconsistenciaQuantidadeAtendimentos() throws ProjetoException {
-		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento);
+	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao);
 		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
 		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
 			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
@@ -287,15 +287,15 @@ public class BpaController {
 		return competenciaFormatada; 
 	}
 
-	private void executaMetodosParaGerarBpaConsolidado() throws ProjetoException {
-		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
+	private void executaMetodosParaGerarBpaConsolidado(String tipoGeracao) throws ProjetoException {
+		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao);
 		geraNumeroDaFolhaConsolidado();
 		geraNumeroDaLinhaDaFolhaConsolidado();
 		adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido();
 	}
 
-	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
-		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia);
+	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
+		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia, tipoGeracao);
 	}
 	
 	public void geraNumeroDaFolhaConsolidado() {
@@ -374,15 +374,15 @@ public class BpaController {
 		}
 	}
 
-	private void executaMetodosParaGerarBpaIndividualizado() throws ProjetoException {
-		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia);
+	private void executaMetodosParaGerarBpaIndividualizado(String tipoGeracao) throws ProjetoException {
+		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao);
 		geraNumeroDaFolhaIndividualizado();
 		geraNumeroDaLinhaDaFolhaIndividualizado();
 		adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido();
 	}
 	
-	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia);
+	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
+		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao);
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
@@ -414,6 +414,10 @@ public class BpaController {
 				listaCnsDosMedicos.add(individualizado.getPrdCnsmed());
 		}
 		return listaCnsDosMedicos;
+	}
+
+	public void setaOpcaoGeracaoProducao(){
+		atributoGenerico1 = "A";
 	}
 	
 	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
@@ -554,6 +558,13 @@ public class BpaController {
 
 	public void setListaCompetencias(List<String> listaCompetencias) {
 		this.listaCompetencias = listaCompetencias;
-	}	
-	
+	}
+
+	public String getAtributoGenerico1() {
+		return atributoGenerico1;
+	}
+
+	public void setAtributoGenerico1(String atributoGenerico1) {
+		this.atributoGenerico1 = atributoGenerico1;
+	}
 }

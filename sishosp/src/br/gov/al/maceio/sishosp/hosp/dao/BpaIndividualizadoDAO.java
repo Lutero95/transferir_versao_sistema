@@ -28,7 +28,7 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_DDTEL_PCNT = "           ";
 	private static final String PRD_INE = "          ";
 	
-    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
+    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
         String sql = "select count(*) qtdproc ,\n" +
@@ -60,17 +60,25 @@ public class BpaIndividualizadoDAO {
 				" join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap "+
 				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
-				" join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
+				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
 				" cross join hosp.empresa emp\n" +
 				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where sa.atendimento_realizado is true and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+				" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
 				" and pm.competencia_atual = ?  \n" +
-				"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  "+
-				" group by \n" +
+				"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  ";
+
+
+		if (tipoGeracao.equals("A")){
+			sql+=" and sa.atendimento_realizado = true";
+		}
+        else
+		sql+=" and a.presenca='S'";
+
+		sql+=" group by \n" +
 				" proc.codproc, \n" +
 				" emp.cnes, pm.competencia_atual, \n" +
 				" func.cns ,\n" +
@@ -81,8 +89,8 @@ public class BpaIndividualizadoDAO {
 				" p.logradouro, p.complemento , p.numero, \n" +
 				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
 				" cm.codigo, sm.codigo, \n" +
-				" emp.cnpj \n" +
-				" order by func.cns, p.cns \t";
+				" emp.cnpj \n" ;
+		sql+=" order by func.cns, p.cns \t";
         
         Connection con = ConnectionFactory.getConnection();
        

@@ -10,6 +10,7 @@
 	
 	    <f:metadata>
             <f:viewAction action="#{bpaController.listarCompetencias()}"/>
+			<f:viewAction action="#{bpaController.setaOpcaoGeracaoProducao()}"/>
         </f:metadata>
         
         <div class="panel panel-primary top-primary">
@@ -21,6 +22,44 @@
 		<div class="panel panel-primary top-primary">
 
 			<h:form id="frmPrincipal">
+                <b:row>
+                    <b:column class="label-position new-data-size new-comple1">>
+                        <b:label value="Opção de Geração:" severity="info" />
+                        <p:selectOneRadio required="false"
+                                          requiredMessage="Informe o tipo da Geração da Produção"
+                                          value="#{bpaController.atributoGenerico1}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="A partir dos atendimentos realizados" itemValue="A" />
+                            <f:selectItem itemLabel="A partir dos agendamentos confirmados Presença" itemValue="P" />
+                            <p:ajax update="intervaloIdades" event="valueChange" />
+                        </p:selectOneRadio>
+                    </b:column>
+					</b:row>
+			<b:row>
+                    <p:outputPanel id="intervaloIdades">
+                        <b:column span="12"
+                                  rendered="#{bpaController.atributoGenerico1=='A'}"
+                                  >
+                            <div class="alert alert-success part-verd" role="alert" align="center">
+								<p>  A produção será gerada a partir dos atendimentos que foram realizados e confirmados via sistema.</p>
+								<p><strong>ESTA É A OPÇÃO RECOMENDADA PARA A GERAÇÃO DA PRODUÇÃO</strong></p>
+                            </div>
+
+</b:column>
+
+                        <b:column span="12"
+                                  rendered="#{bpaController.atributoGenerico1=='P'}"
+                                  >
+                            <div class="alert alert-danger" role="alert" align="center">
+
+								<p> A produção será gerada a partir dos agendamentos que foram confirmados presença via sistema.</p>
+								<p><strong>Esta opção para a geração da produção NÃO É RECOMENDADA pois alguns dados necessários para a produção podem apresentar divergências, de acordo com o SIGTAP,além do que alguns dados podem ainda não constarem no sistema em virtude do atendimento ainda não ter sido confirmado via sistema, podendo ocasionar ausência de informação no código do procedimento realizado e no Cid do paciente.</strong></p>
+
+                            </div>
+
+                        </b:column>
+                    </p:outputPanel>
+                </b:row>
 				<div class="panel-body table-body sub-table-body">
 					<b:row>
 						<b:column span="2" class="data-size">

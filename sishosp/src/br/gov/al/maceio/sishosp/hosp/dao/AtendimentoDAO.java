@@ -1620,23 +1620,30 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 	
-	public Integer retornaTotalAtendimentosDeUmPeriodo(Date dataInicio, Date dataFim) throws ProjetoException {
+	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao) throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 		
 		String sql = "select count(*) total " + 
 				"from hosp.atendimentos a " + 
 				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " + 
-				"join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " + 
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " +
 				"inner join hosp.programa p on (a.codprograma = p.id_programa) " + 
 				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) " + 
 				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " + 
 				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " + 
 				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" + 
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " + 
-				"where sa.atendimento_realizado is true and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
-				"and a.dtaatende between ? and ?;";
-		
+				"where   coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"and a.dtaatende between ? and ? ";
+
+		if (tipoGeracao.equals("A")){
+			sql+=" and sa.atendimento_realizado = true";
+		}
+        else
+		sql+=" and a.presenca='S'";
+
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);

@@ -20,7 +20,7 @@ public class BpaConsolidadoDAO {
 	/* ESTA CONSTANTE SERÁ SUBSTITUÍDA DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_IDADE = "000";
 
-	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia) throws ProjetoException {
+	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
@@ -29,22 +29,29 @@ public class BpaConsolidadoDAO {
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento " + 
         		" left join hosp.cbo on cbo.id = func.codcbo " + 
         		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
-        		" join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "+
+        		" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "+
         		" join hosp.proc on proc.id = a1.codprocedimento " + 
         		" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento " +
 				" join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap " +
         		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
         		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
-        		" where sa.atendimento_realizado = true and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+        		" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N'" +
         		" and a.dtaatende  between ? and ? " +  
         		" and ir.codigo = ? " + 
         		" and pm.competencia_atual = ? "+
-        		"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  " +
-        		" group by " + 
-        		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo " +
-        		"order by cbo.codigo ";
+        		"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  " ;
+
+
+
+        if (tipoGeracao.equals("A")){
+        	sql+=" and sa.atendimento_realizado = true";
+		}
+        else
+		sql+=" and a.presenca='S'";
+
+		sql+=" group by  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo order by cbo.codigo ";
         
         Connection con = ConnectionFactory.getConnection();
        
