@@ -620,7 +620,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = insercao.getDataSolicitacao();
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();
@@ -681,7 +681,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = insercao.getDataSolicitacao();
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();
@@ -728,27 +728,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
     
-	public Date ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(Date dataSolicitacao, Integer codPaciente, Integer codPrograma, Integer codGrupo) throws ProjetoException {
-		LaudoDAO laudoDAO = new LaudoDAO();
-		Date dataInicioLaudo = null;
-		 
-		LaudoBean laudoBean = laudoDAO.recuperarUltimoLaudoPaciente(codPaciente, codPrograma, codGrupo);
-		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(laudoBean.getId())) {
-			dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesFinal(), laudoBean.getAnoFinal());
-			LocalDate dataAtual = LocalDate.now();
-			dataAtual = LocalDate.now().withDayOfMonth(1).withMonth(laudoBean.getMesFinal())
-					.withYear(laudoBean.getAnoFinal()).plusMonths(1);
-			dataInicioLaudo = Date.from(dataAtual.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		} else
-			return dataSolicitacao;
-		
-		if ((dataSolicitacao.after(dataInicioLaudo))) {// || (dataSolicitacao.equals(dataInicioLaudo))){
-			return dataSolicitacao;
-		} else {
-			return dataInicioLaudo;
-		}
-
-	}
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
 
@@ -761,7 +740,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Calendar calendar = Calendar.getInstance();
         
         if(insercao.isInsercaoPacienteSemLaudo()) {
-        	dataInicial = ajustarDataDeSolicitacaoInsercaoNormalSemLaudo(insercao.getDataSolicitacao(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataInicial = insercao.getDataSolicitacao();
             calendar.setTime(dataInicial);
             calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
             dataFinal = calendar.getTime();
