@@ -167,10 +167,21 @@
 			<div align="center">
 
 				<p:dataTable value="#{inconsistenciaController.inconsistenciaDTOSelecionada.listaPacientes}"
-					var="pac"
-							 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="pac" id="tabela"
+							 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 							 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registro(s)"
 					rows="5" paginator="true" paginatorPosition="bottom" reflow="true">
+
+					<f:facet name="{Exporters}">
+						<div style="float:right !important;margin-right: 10px">
+							<h:commandLink title="Exportar para PDF">
+								<h:graphicImage url="../../imgs/file-pdf.jpg"  width="24px"/>
+								<p:dataExporter encoding="iso-8859-1" type="pdf" target="tabela" fileName="listagempendencias"
+												/>
+							</h:commandLink>
+
+						</div>
+					</f:facet>
 
 					<p:column headerText="Prontuário" width="90">
 						<div align="center">
