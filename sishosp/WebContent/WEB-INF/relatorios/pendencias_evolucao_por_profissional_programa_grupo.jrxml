@@ -9,8 +9,8 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="647"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="353"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -63,18 +63,23 @@ join hosp.pacientes pac on pac.id_paciente = a.codpaciente
 join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento
 join hosp.especialidade e on e.id_especialidade = f.codespecialidade
 JOIN hosp.unidade u ON u.id = $P{codunidade} 
+join hosp.parametro par on par.codunidade = u.id 
 JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa
-join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id
-join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa
-join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo
+left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id
+left join hosp.programa p on p.id_programa = a.codprograma
+left join hosp.grupo g on g.id_grupo = a.codgrupo 
 where a.presenca='S' 
 and $X{IN, a.codprograma, codprogramalista}
 and $X{IN, a.codgrupo, codgrupolista}
 and a.dtaatende>= $P{data_inicio_atendimento} 
 and a.dtaatende<= $P{data_fim_atendimento} 
-and a.codprograma = ceu.codprograma
+and case 
+	when par.verifica_periodo_inicial_evolucao_programa = false then
+		a.dtaatende>=par.inicio_evolucao_unidade 
+	when par.verifica_periodo_inicial_evolucao_programa = true then
+		a.dtaatende>=ceu.inicio_evolucao and a.codprograma = ceu.codprograma
 and a.codgrupo = ceu.codgrupo
-and a.dtaatende>=ceu.inicio_evolucao
+	end	
 and coalesce(a.situacao,'A')<>'C'
 and coalesce(a1.excluido,'N' )='N'
 and a1.id_situacao_atendimento is null

@@ -427,11 +427,11 @@ public class AtendimentoController implements Serializable {
             verificaSeCboProfissionalEhValidoParaProcedimento();
             validarDadosSigtap();
 
-            if (!this.ehEquipe.equalsIgnoreCase(SIM)) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.ehEquipe) || !this.ehEquipe.equalsIgnoreCase(SIM)) {
                 if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional
                         (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento)) {
                     JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
-                    this.listAtendimentosEquipe.get(0).getSituacaoAtendimentoAnterior().setId(this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId());
+                    listarAtendimentosEquipe();
                 }
             }
         } catch (ProjetoException e) {

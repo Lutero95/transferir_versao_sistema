@@ -136,7 +136,7 @@ public class FuncionarioDAO {
 
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario) throws ProjetoException {
 
-			String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, us.realiza_atendimento, us.permite_autorizacao_laudo,"
+		String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, us.realiza_atendimento, us.permite_autorizacao_laudo,"
 				+ "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
 				+ "then true else false end as usuarioativo, p.opcao_atendimento, atribuir_cor_tabela_tela_evolucao_profissional, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia, e.cod_empresa, "
@@ -147,7 +147,8 @@ public class FuncionarioDAO {
 				+ " p.grupo_ortese_protese, grupoortese.descgrupo descgrupoortese, p.orgao_origem_responsavel_pela_informacao, p.sigla_orgao_origem_responsavel_pela_digitacao, "
 				+ " p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
-				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio "
+				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
+				+ " p.verifica_periodo_inicial_evolucao_programa  "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -203,6 +204,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
 				funcionario.getUnidade().getParametro().setAtribuirCorTabelaTelaEvolucaoProfissional(rs.getBoolean("atribuir_cor_tabela_tela_evolucao_profissional"));
 				funcionario.getUnidade().getParametro().setCpfPacienteObrigatorio(rs.getBoolean("cpf_paciente_obrigatorio"));
+				funcionario.getUnidade().getParametro().setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 
 				// ACL

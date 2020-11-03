@@ -47,6 +47,8 @@ public class ParametroBean implements Serializable {
     private boolean atribuirCorTabelaTelaEvolucaoProfissional;
     private boolean cpfPacienteObrigatorio;
     private Integer diasPacienteAtivoSemEvolucao;
+    private boolean verificaPeriodoInicialEvolucaoPrograma;
+    private Date inicioEvolucaoUnidade;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -364,19 +366,35 @@ public class ParametroBean implements Serializable {
         this.atribuirCorTabelaTelaEvolucaoProfissional = atribuirCorTabelaTelaEvolucaoProfissional;
     }
 
-	public boolean isCpfPacienteObrigatorio() {
-		return cpfPacienteObrigatorio;
-	}
+    public boolean isCpfPacienteObrigatorio() {
+        return cpfPacienteObrigatorio;
+    }
 
-	public void setCpfPacienteObrigatorio(boolean cpfPacienteObrigatorio) {
-		this.cpfPacienteObrigatorio = cpfPacienteObrigatorio;
-	}
+    public void setCpfPacienteObrigatorio(boolean cpfPacienteObrigatorio) {
+        this.cpfPacienteObrigatorio = cpfPacienteObrigatorio;
+    }
 
-	public Integer getDiasPacienteAtivoSemEvolucao() {
-		return diasPacienteAtivoSemEvolucao;
-	}
+    public Integer getDiasPacienteAtivoSemEvolucao() {
+        return diasPacienteAtivoSemEvolucao;
+    }
 
-	public void setDiasPacienteAtivoSemEvolucao(Integer diasPacienteAtivoSemEvolucao) {
-		this.diasPacienteAtivoSemEvolucao = diasPacienteAtivoSemEvolucao;
-	}
+    public void setDiasPacienteAtivoSemEvolucao(Integer diasPacienteAtivoSemEvolucao) {
+        this.diasPacienteAtivoSemEvolucao = diasPacienteAtivoSemEvolucao;
+    }
+
+    public boolean isVerificaPeriodoInicialEvolucaoPrograma() {
+        return verificaPeriodoInicialEvolucaoPrograma;
+    }
+
+    public void setVerificaPeriodoInicialEvolucaoPrograma(boolean verificaPeriodoInicialEvolucaoPrograma) {
+        this.verificaPeriodoInicialEvolucaoPrograma = verificaPeriodoInicialEvolucaoPrograma;
+    }
+
+    public Date getInicioEvolucaoUnidade() {
+        return inicioEvolucaoUnidade;
+    }
+
+    public void setInicioEvolucaoUnidade(Date inicioEvolucaoUnidade) {
+        this.inicioEvolucaoUnidade = inicioEvolucaoUnidade;
+    }
 }

@@ -200,6 +200,10 @@ public class RelatoriosController implements Serializable {
 		atributoGenerico3 = "G";
 	}
 
+	public void preparaRelPendenciasEvolucao() {
+		atributoGenerico1 = "PG";
+	}
+
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
 		this.programa = (ProgramaBean) event.getObject();
 		atualizaListaGrupos(programa);

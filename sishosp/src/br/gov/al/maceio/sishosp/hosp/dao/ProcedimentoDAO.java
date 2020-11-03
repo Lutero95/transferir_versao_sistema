@@ -65,7 +65,7 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, "
-        		+ "gera_laudo_digita, validade_laudo, id_instrumento_registro_padrao) "
+                + "gera_laudo_digita, validade_laudo, id_instrumento_registro_padrao) "
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning id;";
         try {
             con = ConnectionFactory.getConnection();
@@ -184,7 +184,7 @@ public class ProcedimentoDAO {
             if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getInstrumentoRegistroPadrao().getId()))
                 stmt.setNull(8, Types.NULL);
             else
-            stmt.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
+                stmt.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
             stmt.setInt(9, proc.getIdProc());
 
             excluirProcedimentoUnidade(proc.getIdProc(), con);
@@ -293,7 +293,7 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-         //   stm.setInt(1, user_session.getUnidade().getId());
+            //   stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -2509,7 +2509,7 @@ public class ProcedimentoDAO {
         procedimento.setNomeProc(rs.getString("nome"));
         listaProcedimento.add(procedimento);
     }
-    
+
     public List<InstrumentoRegistroBean> listaInstrumentosRegistro() throws ProjetoException{
         List<InstrumentoRegistroBean> listaInstrumentoRegistro = new ArrayList<>();
         String sql = "select ir.id, ir.codigo, ir.nome from sigtap.instrumento_registro ir;";
@@ -2520,7 +2520,7 @@ public class ProcedimentoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-            	InstrumentoRegistroBean instrumentoRegistro = new InstrumentoRegistroBean();
+                InstrumentoRegistroBean instrumentoRegistro = new InstrumentoRegistroBean();
                 instrumentoRegistro.setId(rs.getInt("id"));
                 instrumentoRegistro.setCodigo(rs.getString("codigo"));
                 instrumentoRegistro.setNome(rs.getString("nome"));

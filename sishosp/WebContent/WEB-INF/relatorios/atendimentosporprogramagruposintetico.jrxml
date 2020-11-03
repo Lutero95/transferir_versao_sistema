@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="326"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="338"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -41,7 +41,7 @@
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct (cod_programa, codgrupo), qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal from ( 
+		<![CDATA[vselect distinct (cod_programa, codgrupo), qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal from ( 
 	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
 	 p.descprograma as nome_programa, nome_principal, a.codgrupo, g.descgrupo as nome_grupo 
 	from hosp.atendimentos a

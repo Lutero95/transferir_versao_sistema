@@ -11,7 +11,7 @@
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction
-			action="#{RelatoriosController.preparaRelPacientesPorPrograma()}" />
+			action="#{RelatoriosController.preparaRelPendenciasEvolucao()}" />
 		<f:viewAction action="#{MBFuncionarios.limparDados()}" />
 	</f:metadata>
 	<ui:define name="content">
@@ -43,7 +43,7 @@
 							<b:label value="Período de Atendimento:" severity="info" />
 
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="6" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período inicial de atendimento"
+								showOn="button" size="8" class="select-agendaEquipe2" required="true" requiredMessage="Informe o período inicial de atendimento"
 								value="#{RelatoriosController.dataInicial}" />
 							<p:outputLabel id="outdataa">
 								<h:outputLabel value="à" style="margin-left: 20px" />
@@ -51,7 +51,7 @@
 						</b:column>
 						<b:column span="2" class="label-position data-size1">
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" required="true" requiredMessage="Informe o período final de atendimento"
-								showOn="button" size="6" id="dtagen3" locale="pt"
+								showOn="button" size="8" id="dtagen3" locale="pt"
 								value="#{RelatoriosController.dataFinal}" />
 						</b:column>
 

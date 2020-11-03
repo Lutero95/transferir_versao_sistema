@@ -621,8 +621,29 @@
 
 							<p:outputPanel id="rowEvolucao">
 								<b:row>
+									<p:selectBooleanCheckbox itemLabel="Verifica Período Inicial da Evolução por Programa"
+									 value="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma}">
+									 	<p:ajax update="rowEvolucao rowdataEvolucao btnAdicionarProgramaGrupo"
+									 	 listener="#{UnidadeController.limparDataInicioEvolucao()}"/>
+									 </p:selectBooleanCheckbox>
+								</b:row>
+
+								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}">
+									<b:column span="2" class="label-position data-size">
+										<br />
+										<b:label value="Data de Início da Evolução:" severity="info" />
+										<p:calendar id="dataEvolucaoUnidade" locale="pt" required="true" size="15"
+											class="select-agendaEquipe2"
+											requiredMessage="Data de Início da Evolução: Campo obrigatório"
+											value="#{UnidadeController.unidade.parametro.inicioEvolucaoUnidade}" mask="true"
+											pattern="dd/MM/yyyy" pages="1" showOn="button"/>
+									</b:column>
+								</b:row>
+
+								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == true}">
 									<b:column span="3"
 										class="label-position new-data-size new-comple1">
+									 <br />
 										<b:label value="Programa:" severity="info" />
 
 										<p:outputPanel id="outProg">
@@ -641,13 +662,15 @@
 												style="margin-left: 5px" icon="ui-icon-search"
 												actionListener="#{ProgramaController.carregaListaProgramas()}"
 												update=":formConsuProg2"
-												oncomplete="PF('dlgConsultProg').show();" />
+												oncomplete="PF('dlgConsultProg').show();"
+												disabled="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}" />
 
 										</p:outputPanel>
 									</b:column>
 
 									<b:column span="3"
 										class="label-position new-data-size new-comple1">
+										<br />
 										<b:label value="Grupo:" severity="info" />
 
 										<p:outputPanel id="outGrupo">
@@ -674,38 +697,32 @@
 
 										</p:outputPanel>
 									</b:column>
-
-
-
 								</b:row>
 
 							</p:outputPanel>
 
 							<p:outputPanel id="rowdataEvolucao">
-								<b:row>
-
+								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == true}">
 									<b:column span="2" class="label-position">
 										<b:label value="Data de Início da Evolução" severity="info" />
 
 										<p:calendar class="select-agendaEquipe2" mask="99/99/9999" showOn="button"
-										size="5"
-											value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
+											size="5" value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
 											id="inicioevolucao" required="false" pattern="dd/MM/yyyy"
-											requiredMessage="Informe o início da eovlução" />
+											requiredMessage="Informe o início da evolução"/>
 									</b:column>
 
 								</b:row>
 							</p:outputPanel>
 
 							<b:row>
-
-								<p:commandButton icon="ui-icon-plus"
+								<p:commandButton icon="ui-icon-plus" id="btnAdicionarProgramaGrupo"
 									style="margin-top: 10px;margin-left: 10px" value="Adicionar"
 									update=":frmPrincipal:tbview:dtprogramagrupoevolucao :frmPrincipal:tbview:rowEvolucao, :frmPrincipal:tbview:rowdataEvolucao, :frmPrincipal:tbview:msgEvolucao"
 									class="btn-acao-table acao-confirmar"
 									process="@this inicioevolucao grupoEvolucao programaEvolucao"
-									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucaoo()}" />
-
+									action="#{UnidadeController.validarAdicionarProgramaGrupoEvolucaoo()}"
+									disabled="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}"/>
 							</b:row>
 
 							<br></br>
@@ -736,12 +753,8 @@
 											<div align="center">
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
-													action="#{ConfigAgendaController.removerEspecialidadeComQuantidade(var)}"
-													icon="ui-icon-trash" update=":frmPrincipal:tbview:dtprogramagrupoevolucao :frmPrincipal:tbview:rowEvolucao, :frmPrincipal:tbview:rowdataEvolucao, :frmPrincipal:tbview:msgEvolucao">
-													<f:setPropertyActionListener value="#{var}"
-														target="#{ConfigAgendaController.configuracaoAgendaEquipeEspecialidadeDTO}" />
-
-												</p:commandButton>
+													action="#{UnidadeController.removerItemListaProgramasGrupoEvolucao(evolucao)}"
+													icon="ui-icon-trash" update="frmPrincipal:tbview:dtprogramagrupoevolucao"/>
 											</div>
 										</p:column>
 
@@ -996,6 +1009,19 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="Atenção!" widgetVar="dlgEvolucao" minHeight="40" modal="true" width="600">
+			<h:outputText
+				value="A Unidade não está configurada para verificar o Período de Evolução por Programa, 
+					   marque a opção: "/>  <STRONG>'Verifica Período Inicial da Evolução por Programa'</STRONG> 
+			<h:outputText value=" na Aba "/> <STRONG>'Evolução'</STRONG> 
+			<h:outputText value=" para liberar esta ação ou remova os itens presentes na lista da Aba "/> 
+										   <STRONG>'Evolução'.</STRONG>
+				
+			<div align="center">
+				<br />
+				<b:button value="Fechar" onclick="PF('dlgEvolucao').hide();"/>
+			</div>	
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

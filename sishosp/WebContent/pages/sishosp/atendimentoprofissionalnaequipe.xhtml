@@ -156,8 +156,8 @@
 							
 						<b:column span="3">
 							<p:selectBooleanCheckbox immediate="true" value="#{AtendimentoController.listarEvolucoesPendentes}" itemLabel="Listar Evoluções Pendentes" id="evpend">
-								<p:ajax update=":formConsAge:dataInicio :formConsAge:dtagen3 :formConsAge:outProg :formConsAge:outGrupo" process="evpend" listener="#{AtendimentoController.zeraDadosQuandoCondicaoListarEvolucoesPendentesEhAlterada()}"
-								/>
+								<p:ajax update=":formConsAge:dataInicio :formConsAge:dtagen3 :formConsAge:outProg :formConsAge:outGrupo" process="evpend" 
+								listener="#{AtendimentoController.zeraDadosQuandoCondicaoListarEvolucoesPendentesEhAlterada()}"/>
 							</p:selectBooleanCheckbox>
 						</b:column>
 
