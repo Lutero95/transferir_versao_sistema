@@ -332,7 +332,7 @@ public class AtendimentoController implements Serializable {
             listarAtendimentosEquipe();
         }
     }
-
+    
     public void executaMetodosInicializadoresAjustesAtendimentos() throws ProjetoException {
         verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         verificaSeExisteAlgumaCargaSigtap();
@@ -494,8 +494,14 @@ public class AtendimentoController implements Serializable {
     }
 
     public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
+    	
         if(this.unidadeValidaDadosSigtap) {
             for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
+            	
+            	if(!existeCargaSigtapParaDataSolicitacao(atendimento.getDataAtendimento())) {
+            		atendimento.setDataAtendimento(DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento()));
+            	}
+            	
                 if (!procedimentoDAO.validaCboProfissionalParaProcedimento(atendimento.getProcedimento().getIdProc(),
                         atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())) {
                     throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
@@ -503,6 +509,18 @@ public class AtendimentoController implements Serializable {
                 }
             }
         }
+    }
+    
+    private boolean existeCargaSigtapParaDataSolicitacao(Date dataAtendimento) {
+        if(this.unidadeValidaDadosSigtap) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataAtendimento);
+            int mesSolicitacao = calendar.get(Calendar.MONTH);
+            mesSolicitacao++;
+            int anoSolicitacao = calendar.get(Calendar.YEAR);
+            return procedimentoDAO.verificaExisteCargaSigtapParaData(mesSolicitacao, anoSolicitacao);
+        }
+        return true;
     }
 
     public void abrirDialogAtendimentoPorEquipe(){
