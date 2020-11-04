@@ -33,6 +33,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
@@ -41,6 +42,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.GrupoProgramaUnidadeDTO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -69,7 +71,8 @@ public class RelatoriosController implements Serializable {
 	private List<GrupoBean> listaGrupos;
 	private List<UnidadeBean> listaUnidadesSelecionadas;
 	private List<ProgramaBean> listaProgramaSelecionados;
-	private List<GrupoBean> listaGruposSelecionados;
+	private List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTO;
+	private List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTOSelecionados;
 	private List<EquipeBean> listaEquipe;
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
@@ -139,6 +142,8 @@ public class RelatoriosController implements Serializable {
 		this.listaPrograma  = new ArrayList<>();
 		this.listaUnidadesSelecionadas = new ArrayList<>();
 		this.listaProgramaSelecionados = new ArrayList<>();
+		this.listaGruposProgramaUnidadeDTO = new ArrayList<>();
+		this.listaGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -462,8 +467,100 @@ public class RelatoriosController implements Serializable {
 		JSFUtil.fecharDialog("dlgConsulUni");
 	}
 	
-	public void removerUnidadadicionada(UnidadeBean unidadeSelecionada) {
-		listaUnidadesSelecionadas.remove(unidadeSelecionada);
+	public void removerUnidadeAdicionada(UnidadeBean unidadeSelecionada) {
+		if(!existemProgramasAssociadosComEssaUnidade(unidadeSelecionada.getId()))
+			listaUnidadesSelecionadas.remove(unidadeSelecionada);
+	}
+	
+	private boolean existemProgramasAssociadosComEssaUnidade(Integer idUnidade) {
+		
+		for (ProgramaBean programa : listaProgramaSelecionados) {
+			if(programa.getCodUnidade().equals(idUnidade)) {
+				JSFUtil.adicionarMensagemErro
+					("Existe(m) programas associados a esta unidade por favor remova-o(s) primeiro", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void listarProgramasPorUnidades() throws ProjetoException {
+		listaPrograma = new ProgramaDAO().buscaProgramasPorUnidade(listaUnidadesSelecionadas);
+		JSFUtil.abrirDialog("dlgConsuProg");
+	}
+	
+	public void adicionarProgramaSelecionada(ProgramaBean programaSelecionado) {
+		if(!programaJaFoiAdicionada(programaSelecionado)) {
+			listaProgramaSelecionados.add(programaSelecionado);
+			JSFUtil.fecharDialog("dlgConsuProg");
+		}
+	}
+	
+	private boolean programaJaFoiAdicionada(ProgramaBean programaSelecionado) {
+		
+		for (ProgramaBean programa : listaProgramaSelecionados) {
+			if(programa.getIdPrograma().equals(programaSelecionado.getIdPrograma())) {
+				JSFUtil.adicionarMensagemErro("Este Programa Já foi Adicionado", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void adicionarTodosProgramaSelecionados() {
+		listaProgramaSelecionados.clear();
+		listaProgramaSelecionados.addAll(listaPrograma);
+		JSFUtil.fecharDialog("dlgConsuProg");
+	}
+	
+	public void removerProgramaAdicionado(ProgramaBean programaSelecionado) {
+		if(!existemGruposAssociadosComEssePrograma(programaSelecionado.getIdPrograma()))
+			listaProgramaSelecionados.remove(programaSelecionado);
+	}
+	
+	private boolean existemGruposAssociadosComEssePrograma(Integer idPrograma) {
+		
+		for (GrupoProgramaUnidadeDTO grupoProgramaUnidadeDTO : listaGruposProgramaUnidadeDTOSelecionados) {
+			if(grupoProgramaUnidadeDTO.getPrograma().getIdPrograma().equals(idPrograma)) {
+				JSFUtil.adicionarMensagemErro
+					("Existe(m) grupos associados a este programa por favor remova-o(s) primeiro", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void listarGruposPorProgramasUnidades() throws ProjetoException {
+		listaGruposProgramaUnidadeDTO = grupoDao.buscaProgramasPorUnidade(listaProgramaSelecionados);
+		JSFUtil.abrirDialog("dlgConsuGrop");
+	}
+	
+	public void adicionarGrupoPorProgramaUnidadeSelecionada(GrupoProgramaUnidadeDTO grupoSelecionado) {
+		if(!grupoPorProgramaUnidadeJaFoiAdicionada(grupoSelecionado)) {
+			listaGruposProgramaUnidadeDTOSelecionados.add(grupoSelecionado);
+			JSFUtil.fecharDialog("dlgConsuGrop");
+		}
+	}
+	
+	private boolean grupoPorProgramaUnidadeJaFoiAdicionada(GrupoProgramaUnidadeDTO grupoSelecionado) {
+		for (GrupoProgramaUnidadeDTO grupoDTO : listaGruposProgramaUnidadeDTOSelecionados) {
+			if(grupoDTO.getGrupo().getIdGrupo().equals(grupoSelecionado.getGrupo().getIdGrupo())
+					&& grupoDTO.getPrograma().getIdPrograma().equals(grupoSelecionado.getPrograma().getIdPrograma())) {
+				JSFUtil.adicionarMensagemErro("Este Grupo Já foi Adicionado", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void adicionarTodosGrupoPorProgramaUnidadeSelecionados() {
+		listaGruposProgramaUnidadeDTOSelecionados.clear();
+		listaGruposProgramaUnidadeDTOSelecionados.addAll(listaGruposProgramaUnidadeDTO);
+		JSFUtil.fecharDialog("dlgConsuGrop");
+	}
+	
+	public void removerGrupoPorProgramaUnidadeAdicionado(GrupoProgramaUnidadeDTO grupoSelecionado) {
+		listaGruposProgramaUnidadeDTOSelecionados.remove(grupoSelecionado);
 	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
@@ -1791,12 +1888,21 @@ public class RelatoriosController implements Serializable {
 		this.listaProgramaSelecionados = listaProgramaSelecionados;
 	}
 
-	public List<GrupoBean> getListaGruposSelecionados() {
-		return listaGruposSelecionados;
+	public List<GrupoProgramaUnidadeDTO> getListaGruposProgramaUnidadeDTO() {
+		return listaGruposProgramaUnidadeDTO;
 	}
 
-	public void setListaGruposSelecionados(List<GrupoBean> listaGruposSelecionados) {
-		this.listaGruposSelecionados = listaGruposSelecionados;
+	public void setListaGruposProgramaUnidadeDTO(List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTO) {
+		this.listaGruposProgramaUnidadeDTO = listaGruposProgramaUnidadeDTO;
+	}
+
+	public List<GrupoProgramaUnidadeDTO> getListaGruposProgramaUnidadeDTOSelecionados() {
+		return listaGruposProgramaUnidadeDTOSelecionados;
+	}
+
+	public void setListaGruposProgramaUnidadeDTOSelecionados(
+			List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTOSelecionados) {
+		this.listaGruposProgramaUnidadeDTOSelecionados = listaGruposProgramaUnidadeDTOSelecionados;
 	}
 	
 }
