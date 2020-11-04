@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="210"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="779"/>
@@ -43,20 +43,22 @@ t.id as cod_tipo_atend,
 t.desctipoatendimento as nome_tipo_atend,
 at.dtaatende as dt_atend
 from hosp.atendimentos at
-join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.atendimentos1 a1 on a1.id_atendimento  = at.id_atendimento 
+join hosp.unidade u on u.id =  at.cod_unidade
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 left join hosp.programa  on programa.id_programa = at.codprograma
 left join hosp.grupo g on g.id_grupo = at.codgrupo
 join hosp.pacientes p on (at.codpaciente = p.id_paciente)
 inner join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
-join acl.funcionarios fun on fun.id_funcionario = at.codmedico 
+join acl.funcionarios fun on fun.id_funcionario = a1.codprofissionalatendimento  
 where at.dtaatende between $P{dt_inicial} and $P{dt_final}
-and(  ($P{cod_profissional} is not null and at.codmedico=$P{cod_profissional})
+and(  ($P{cod_profissional} is not null and a1.codprofissionalatendimento =$P{cod_profissional})
 or   ($P{cod_profissional} is null ))
 and ((   $P{codprograma}   is not null and at.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and at.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and ((   $P{cod_tipo_atend}   is not null and  t.id = $P{cod_tipo_atend}) or (( $P{cod_tipo_atend} =0 ) OR ( $P{cod_tipo_atend} is null )))
-order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
+	AND ((  $P{codunidade}   IS NOT NULL AND at.cod_unidade =   $P{codunidade}   ) OR ((  $P{codunidade}  = 0 ) OR (  $P{codunidade}  is null )))
+order by fun.descfuncionario, programa.descprograma, g.descgrupo,dt_atend, p.nome]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
@@ -80,14 +82,21 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 	<field name="grupo" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="grupo"/>
 	</field>
-	<field name="id_funcionario" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codequipe"/>
+	<field name="cod_unidade" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_unidade"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
 	</field>
-	<field name="cod_unidade" class="java.lang.String"/>
 	<field name="descfuncionario" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="descequipe"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="equipe"/>
+		<property name="com.jaspersoft.studio.field.label" value="descfuncionario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<field name="id_funcionario" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_funcionario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="funcionarios"/>
+	</field>
+	<field name="codequipe" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codequipe"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
 	</field>
 	<field name="pront" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="pront"/>
@@ -116,20 +125,19 @@ order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="dt_atend"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
 	</field>
-	<field name="codequipe" class="java.lang.Integer"/>
 	<variable name="pront_1" class="java.lang.Integer" resetType="Group" resetGroup="grupoEquipe" calculation="Sum">
 		<variableExpression><![CDATA[$F{pront}]]></variableExpression>
 	</variable>
 	<variable name="dt_atend_1" class="java.lang.Integer" resetType="Group" resetGroup="grupoEquipe" calculation="Count">
 		<variableExpression><![CDATA[$F{dt_atend}]]></variableExpression>
 	</variable>
-	<group name="grupoEquipe" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+	<group name="grupoEquipe">
 		<groupExpression><![CDATA[$F{codequipe}]]></groupExpression>
 		<groupFooter>
 			<band/>
 		</groupFooter>
 	</group>
-	<group name="grupoDataAtend" isStartNewPage="true">
+	<group name="grupoDataAtend">
 		<groupExpression><![CDATA[$F{dt_atend}]]></groupExpression>
 	</group>
 	<group name="grpprofissional">
