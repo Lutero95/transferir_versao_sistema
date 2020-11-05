@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ParametroEmpresaBean;
 
@@ -339,11 +340,23 @@ public class EmpresaDAO {
         try {
             PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
             stm.setInt(1, empresa.getCodEmpresa());
-            stm.setInt(2, empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId());
-            stm.setInt(3, empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId());
-            stm.setInt(4, empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId()))
+            	stm.setNull(2, Types.NULL);
+            else
+            	stm.setInt(2, empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId()))
+            	stm.setNull(3, Types.NULL);
+            else
+            	stm.setInt(3, empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId()))
+            	stm.setNull(4, Types.NULL);
+            else
+            	stm.setInt(4, empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId());
+            
             stm.executeUpdate();
-
         } catch (SQLException ex2) {
         	conexaoAuxiliar.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);

@@ -7,6 +7,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 
 import javax.faces.context.FacesContext;
 import java.sql.Connection;
@@ -81,8 +82,13 @@ public class AfastamentoProfissionalDAO {
 		String sql = "select a1.id_atendimentos1 from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
 				"where a.dtaatende between ? and ? " + 
-				"and a1.codprofissionalatendimento = ?;";
-
+				"and a1.codprofissionalatendimento = ? ";
+		String filtroTurno = " and a.turno = ? ";
+		
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
+				&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
+			sql += filtroTurno;
+		}
 		List<Integer> listaIdsAtendimentos1 = new ArrayList<>();
 		
 		try {
@@ -90,6 +96,10 @@ public class AfastamentoProfissionalDAO {
 			stm.setDate(1, new Date(afastamentoProfissional.getPeriodoInicio().getTime()));
 			stm.setDate(2, new Date(afastamentoProfissional.getPeriodoFinal().getTime()));
 			stm.setLong(3, afastamentoProfissional.getFuncionario().getId());
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
+					&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
+				stm.setString(4, afastamentoProfissional.getTurno());
+			}
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
