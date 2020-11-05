@@ -334,16 +334,18 @@ public class BpaController {
             String numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(0).getPrdFlh();
             Integer numeroLinha = 0;
             for (int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
-                if (this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cboAuxiliador)
+             /*   if (this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cboAuxiliador)
                         && this.listaDeBpaConsolidado.get(i).getPrdFlh().equals(numeroFolhaAuxiliador)) {
-                    numeroLinha++;
+                  */
+					numeroLinha++;
                     this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
-                } else {
+               /* } else {
                     cboAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdCbo();
                     numeroFolhaAuxiliador = this.listaDeBpaConsolidado.get(i).getPrdFlh();
                     numeroLinha = 1;
                     this.listaDeBpaConsolidado.get(i).setPrdSeq(numeroLinha.toString());
                 }
+                */
             }
         }
 	}
