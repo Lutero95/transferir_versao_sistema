@@ -7,9 +7,11 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 
 import javax.faces.context.FacesContext;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +53,11 @@ public class AfastamentoProfissionalDAO {
 			} else {
 				ps.setString(7, "A"); // quando nao informar o turno subentende que sera os dois turnos (Ambos)
 			}
-
+			
+			List<Integer> listaIdsAtendimentos1 = listaAtendimentos1DoProfissionalNoPeriodo(con, afastamentoProfissional);
+			Integer idSituacao = buscaIdSituacaoPadraoDoAfastamento(con, afastamentoProfissional.getMotivoAfastamento());
+			atualizaSituacaoAtendimentosDoProfissionalAfastado(con, listaIdsAtendimentos1, idSituacao);
+			
 			ps.execute();
 			con.commit();
 			retorno = true;
@@ -67,6 +73,105 @@ public class AfastamentoProfissionalDAO {
 			}
 		}
 		return retorno;
+	}
+	
+	private List<Integer> listaAtendimentos1DoProfissionalNoPeriodo
+		(Connection conexaoAuxiliar, AfastamentoProfissional afastamentoProfissional)
+			throws ProjetoException, SQLException {
+
+		String sql = "select a1.id_atendimentos1 from hosp.atendimentos1 a1 " + 
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"where a.dtaatende between ? and ? " + 
+				"and a1.codprofissionalatendimento = ? ";
+		String filtroTurno = " and a.turno = ? ";
+		
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
+				&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
+			sql += filtroTurno;
+		}
+		List<Integer> listaIdsAtendimentos1 = new ArrayList<>();
+		
+		try {
+			PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+			stm.setDate(1, new Date(afastamentoProfissional.getPeriodoInicio().getTime()));
+			stm.setDate(2, new Date(afastamentoProfissional.getPeriodoFinal().getTime()));
+			stm.setLong(3, afastamentoProfissional.getFuncionario().getId());
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
+					&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
+				stm.setString(4, afastamentoProfissional.getTurno());
+			}
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				listaIdsAtendimentos1.add(rs.getInt("id_atendimentos1"));
+			}
+
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaIdsAtendimentos1;
+	}
+	
+	private Integer buscaIdSituacaoPadraoDoAfastamento(Connection conexaoAuxiliar,
+			String motivoAfastamento) throws ProjetoException, SQLException {
+
+		String sql = "select pe.situacao_padrao_falta_profissional, pe.situacao_padrao_licenca_medica, pe.situacao_padrao_ferias "
+				+ " from hosp.parametro_empresa pe where pe.id_empresa = ?;";
+		
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+
+		Integer idSituacao = null;
+
+		try {
+			PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+			stm.setInt(1, user_session.getUnidade().getCodEmpresa());
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				if (motivoAfastamento.equals("FE"))
+					idSituacao = rs.getInt("situacao_padrao_ferias");
+				else if (motivoAfastamento.equals("LM"))
+					idSituacao = rs.getInt("situacao_padrao_licenca_medica");
+				else if (motivoAfastamento.equals("FA"))
+					idSituacao = rs.getInt("situacao_padrao_falta_profissional");
+			}
+
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return idSituacao;
+	}
+	
+	private void atualizaSituacaoAtendimentosDoProfissionalAfastado(Connection conexaoAuxiliar,
+			List<Integer> listaIdsAtendimentos1, Integer idSituacaoAtendimento) throws ProjetoException, SQLException {
+
+		String sql = "UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? WHERE id_atendimentos1 = ? ";
+
+		try {
+			for (Integer idAtendimento1 : listaIdsAtendimentos1) {
+				PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+				stm.setInt(1, idSituacaoAtendimento);
+				stm.setInt(2, idAtendimento1);
+				stm.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 
 	public List<AfastamentoProfissional> listarAfastamentoProfissionais() throws ProjetoException {
@@ -257,5 +362,41 @@ public class AfastamentoProfissionalDAO {
 			}
 		}
 		return afastamento;
+	}
+	
+	public boolean tiposDeAfastamentoPossuemSituacaoAtendimento() throws ProjetoException {
+
+		String sql = "select exists (select pe.id from hosp.parametro_empresa pe " + 
+				"	where id_empresa = ? and " + 
+				"	(pe.situacao_padrao_falta_profissional is not null " + 
+				"	and pe.situacao_padrao_licenca_medica is not null " + 
+				"	and pe.situacao_padrao_ferias is not null)) as possui;";
+
+		boolean possui = false;
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, user_session.getUnidade().getCodEmpresa());
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				possui = rs.getBoolean("possui");
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return possui;
 	}
 }

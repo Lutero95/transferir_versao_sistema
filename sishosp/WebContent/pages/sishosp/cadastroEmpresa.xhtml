@@ -10,6 +10,7 @@
 
 		<f:metadata>
 			<f:viewAction action="#{EmpresaController.getEditEmpresa()}" />
+			<f:viewAction action="#{EmpresaController.buscarSituacoes()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -21,200 +22,230 @@
 			<div class="panel-body table-body sub-table-body">
 
 				<h:form class="form-horizontal" id="frmPrincipal">
+					<p:tabView id="tb">
+						<p:tab title="Dados da Empresa" id="tbdados">
+							<b:row>
+								<b:column span="4" class="label-position new-col4">
+									<b:label value="Razão Social" severity="info" />
 
-					<b:row>
-						<b:column span="4" class="label-position new-col4">
-							<b:label value="Razão Social" severity="info" />
+									<b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
+										validator="CaractereEmBrancoValidator" class="form-control"
+										required="true"
+										requiredMessage="Nome Principal: Campo obrigatório!"
+										validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
+										<f:validateLength minimum="2" maximum="100" />
+									</b:inputText>
+								</b:column>
 
-							<b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
-								validator="CaractereEmBrancoValidator" class="form-control"
-								required="true"
-								requiredMessage="Nome Principal: Campo obrigatório!"
-								validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
-								<f:validateLength minimum="2" maximum="100" />
-							</b:inputText>
-						</b:column>
+								<b:column span="3" class="label-position new-col3">
+									<b:label value="Nome Fantasia" severity="info" />
 
-						<b:column span="3" class="label-position new-col3">
-							<b:label value="Nome Fantasia" severity="info" />
+									<b:inputText value="#{EmpresaController.empresa.nomeFantasia}"
+										class="form-control" required="true"
+										validator="CaractereEmBrancoValidator"
+										requiredMessage="Nome Fantasia: Campo obrigatório!"
+										validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
+										<f:validateLength minimum="2" maximum="100" />
+									</b:inputText>
+								</b:column>
 
-							<b:inputText value="#{EmpresaController.empresa.nomeFantasia}"
-								class="form-control" required="true"
-								validator="CaractereEmBrancoValidator"
-								requiredMessage="Nome Fantasia: Campo obrigatório!"
-								validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
-								<f:validateLength minimum="2" maximum="100" />
-							</b:inputText>
-						</b:column>
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="CNPJ" severity="info" />
 
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="CNPJ" severity="info" />
+									<p:inputMask mask="99.999.999/9999-99"
+										value="#{EmpresaController.empresa.cnpj}" id="cnpj"
+										style="margin-left:-15px; width:150px"
+										validator="CNPJValidator" validatorMessage="CNPJ inválido!"
+										class="form-control" required="true"
+										requiredMessage="CNPJ: Campo obrigatório!">
+									</p:inputMask>
 
-							<p:inputMask mask="99.999.999/9999-99"
-								value="#{EmpresaController.empresa.cnpj}" id="cnpj"
-								style="margin-left:-15px; width:150px" validator="CNPJValidator"
-								validatorMessage="CNPJ inválido!" class="form-control"
-								required="true" requiredMessage="CNPJ: Campo obrigatório!">
-							</p:inputMask>
+								</b:column>
 
-						</b:column>
+								<b:column span="1" class="label-position new-col1"
+									style="margin-left:80px">
+									<b:label value="CNES" severity="info" />
+
+									<p:inputText value="#{EmpresaController.empresa.cnes}"
+										id="cnes" style="margin-left:-15px; width:150px"
+										class="form-control" />
+								</b:column>
+							</b:row>
+
+							<b:row>
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Rua" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.rua}"
+										class="form-control" required="false"
+										requiredMessage="Rua: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="Número" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.numero}"
+										class="form-control" required="false"
+										requiredMessage="Número: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="4" class="label-position new-col4">
+									<b:label value="Complemento" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.complemento}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+							</b:row>
+							<b:row>
+								<b:column span="3" class="label-position new-col3">
+									<b:label value="Bairro" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.bairro}"
+										class="form-control" required="false" id="bairro"
+										requiredMessage="Bairro: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+								<b:column span="3" class="label-position new-col3">
+									<b:label value="Cidade" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.cidade}"
+										class="form-control" required="false" id="cidade"
+										requiredMessage="Cidade: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="Estado" severity="info" />
+
+									<b:selectOneMenu size="10" required="false" id="uf"
+										requiredMessage="Estado: Campo obrigatório!"
+										value="#{EmpresaController.empresa.estado}">
+										<f:selectItems value="#{EmpresaController.listaEstados}"/>
+									</b:selectOneMenu>
+
+								</b:column>
+								<b:column span="1" class="label-position new-col1">
+									<b:label value="CEP" severity="info" />
+
+									<p:inputMask mask="99999-999"
+										style="margin-left:-15px; width:150px"
+										value="#{EmpresaController.empresa.cep}" class="form-control">
+										<p:ajax event="blur" update=":frmPrincipal:tb:bairro :frmPrincipal:tb:cidade 
+											:frmPrincipal:tb:uf" 
+											listener="#{EmpresaController.carregarDadosPeloCep(EmpresaController.empresa.cep)}"/>
+									</p:inputMask>
+								</b:column>
+							</b:row>
+
+							<b:row>
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="DDD 1" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.ddd1}"
+										class="form-control" required="false"
+										requiredMessage="DDD1: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="Telefone 1" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.telefone1}"
+										required="false"
+										requiredMessage="Telefone 1: Campo obrigatório!">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="DDD 2" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.ddd2}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="2" class="label-position new-col2">
+									<b:label value="Telefone 2" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.telefone2}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+							</b:row>
+
+							<b:row>
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Email" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.email}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+								<b:column span="5" class="label-position new-col5">
+									<b:label value="Site" severity="info" />
+
+									<b:inputText value="#{EmpresaController.empresa.site}"
+										class="form-control">
+									</b:inputText>
+								</b:column>
+
+							</b:row>
+							<b:row>
+								<b:column span="5" class="label-position new-col5">
+									<p:selectBooleanCheckbox
+										itemLabel="Restringir os laudos por Unidade"
+										value="#{EmpresaController.empresa.restringirLaudoPorUnidade}" />
+
+								</b:column>
+							</b:row>
+						</p:tab>
 						
-						<b:column span="1" class="label-position new-col1" style="margin-left:80px">
-							<b:label value="CNES" severity="info" />
+						<p:tab title="Parâmetros">
+							<p:fieldset legend="Situação de Atendimento Padrão por Afastamento">
+								<b:row>
+									<b:column span="3" class="label-position new-col4">
+										<b:label value="Falta de profissional" severity="info" />
 
-							<p:inputText
-								value="#{EmpresaController.empresa.cnes}" id="cnes"
-								style="margin-left:-15px; width:150px" 
-								class="form-control"
-								/>
-							
+										<b:selectOneMenu style="color: #1d5987 !important;"
+											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFaltaProfissional.id}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{EmpresaController.listaSituacoes}" var="sit"
+												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+										</b:selectOneMenu>
+									</b:column>
+									
+									<b:column span="3" class="label-position new-col4">
+										<b:label value="Licença Médica" severity="info" />
 
-						</b:column>						
+										<b:selectOneMenu style="color: #1d5987 !important;"
+											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoLicencaMedica.id}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{EmpresaController.listaSituacoes}" var="sit"
+												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+										</b:selectOneMenu>
+									</b:column>
 
+									<b:column span="3" class="label-position new-col4">
+										<b:label value="Férias" severity="info" />
 
-
-					</b:row>
-
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Rua" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.rua}"
-								class="form-control" required="false"
-								requiredMessage="Rua: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="Número" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.numero}"
-								class="form-control" required="false"
-								requiredMessage="Número: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-						
-						<b:column span="4" class="label-position new-col4">
-							<b:label value="Complemento" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.complemento}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-						</b:row>
-						<b:row>
-						<b:column span="3" class="label-position new-col3">
-							<b:label value="Bairro" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.bairro}"
-								class="form-control" required="false"
-								requiredMessage="Bairro: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-						<b:column span="3" class="label-position new-col3">
-							<b:label value="Cidade" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.cidade}"
-								class="form-control" required="false"
-								requiredMessage="Cidade: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="Estado" severity="info" />
-
-							<b:selectOneMenu size="10" required="false"
-								requiredMessage="Estado: Campo obrigatório!"
-								value="#{EmpresaController.empresa.estado}">
-								<f:selectItems value="#{EmpresaController.listaEstados}"></f:selectItems>
-							</b:selectOneMenu>
-
-						</b:column>
-						<b:column span="1" class="label-position new-col1">
-							<b:label value="CEP" severity="info" />
-
-							<p:inputMask mask="99999-999"
-								style="margin-left:-15px; width:150px"
-								value="#{EmpresaController.empresa.cep}" class="form-control">
-							</p:inputMask>
-
-							
-						</b:column>
-					</b:row>
-
-					
-
-
-					
-
-					<b:row>
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="DDD 1" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.ddd1}"
-								class="form-control" required="false"
-								requiredMessage="DDD1: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="Telefone 1" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.telefone1}"
-								required="false"
-								requiredMessage="Telefone 1: Campo obrigatório!">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="DDD 2" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.ddd2}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="2" class="label-position new-col2">
-							<b:label value="Telefone 2" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.telefone2}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Email" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.email}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-						<b:column span="5" class="label-position new-col5">
-							<b:label value="Site" severity="info" />
-
-							<b:inputText value="#{EmpresaController.empresa.site}"
-								class="form-control">
-							</b:inputText>
-						</b:column>
-
-					</b:row>
-				<b:row>
-					<b:column span="5" class="label-position new-col5">
-						<p:selectBooleanCheckbox itemLabel="Restringir os laudos por Unidade"
-												 value="#{EmpresaController.empresa.restringirLaudoPorUnidade}"/>
-
-					</b:column>
-				</b:row>
-
-
-					<br></br>
-
-
+										<b:selectOneMenu style="color: #1d5987 !important;" 
+											value="#{EmpresaController.empresa.parametroEmpresa.situacaoPadraoFerias.id}">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{EmpresaController.listaSituacoes}" var="sit"
+												itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+										</b:selectOneMenu>
+									</b:column>
+								</b:row>
+							</p:fieldset>
+						</p:tab>
+					</p:tabView>
+					<br />
 
 					<p:commandButton action="#{EmpresaController.gravarEmpresa()}"
 						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
@@ -230,10 +261,8 @@
 						size="sm" immediate="true" look="info" class="btn-voltar"
 						action="/pages/sishosp/gerenciarEmpresa.faces?faces-redirect=true">
 					</p:commandButton>
-
 				</h:form>
 			</div>
-
 		</div>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"

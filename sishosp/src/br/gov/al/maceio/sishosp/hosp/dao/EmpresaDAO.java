@@ -4,7 +4,9 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ParametroEmpresaBean;
 
 import javax.faces.context.FacesContext;
 import java.sql.*;
@@ -94,6 +96,8 @@ public class EmpresaDAO {
             if (rs.next()) {
                 codEmpresa = rs.getInt("cod_empresa");
             }
+            empresa.setCodEmpresa(codEmpresa);
+            inserirParametroEmpresa(con, empresa);
 
             con.commit();
             retorno = true;
@@ -198,6 +202,8 @@ public class EmpresaDAO {
             ps.setInt(19, empresa.getCodEmpresa());
 
             ps.executeUpdate();
+            excluirParametroEmpresa(con, empresa.getCodEmpresa());
+            inserirParametroEmpresa(con, empresa);
 
             con.commit();
             retorno = true;
@@ -249,7 +255,7 @@ public class EmpresaDAO {
         EmpresaBean empresa = new EmpresaBean();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, ativo, restringir_laudo_unidade  " +
+                " email, site, ativo, restringir_laudo_unidade, cnes  " +
                 " FROM hosp.empresa where cod_empresa = ?;";
 
         try {
@@ -279,7 +285,8 @@ public class EmpresaDAO {
                 empresa.setSite(rs.getString("site"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
                 empresa.setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
-
+                empresa.setCnes(rs.getString("cnes"));
+                empresa.setParametroEmpresa(buscaParametroEmpresa(con, id));
             }
         }  catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -293,5 +300,88 @@ public class EmpresaDAO {
             }
         }
         return empresa;
+    }
+    
+    private ParametroEmpresaBean buscaParametroEmpresa(Connection conexaoAuxiliar, Integer idEmpresa) 
+    		throws ProjetoException, SQLException {
+
+    	ParametroEmpresaBean parametroEmpresa = new ParametroEmpresaBean();
+        String sql = "SELECT id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias " + 
+        		"FROM hosp.parametro_empresa where id_empresa = ?;";
+
+        try {
+            PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idEmpresa);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	parametroEmpresa.setIdEmpresa(rs.getInt("id_empresa"));
+            	parametroEmpresa.getSituacaoPadraoFaltaProfissional().setId(rs.getInt("situacao_padrao_falta_profissional"));
+            	parametroEmpresa.getSituacaoPadraoLicencaMedica().setId(rs.getInt("situacao_padrao_licenca_medica"));
+            	parametroEmpresa.getSituacaoPadraoFerias().setId(rs.getInt("situacao_padrao_ferias"));
+            }
+        } catch (SQLException ex2) {
+        	conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+        return parametroEmpresa;
+    }
+    
+    private void inserirParametroEmpresa(Connection conexaoAuxiliar, EmpresaBean empresa) 
+    		throws ProjetoException, SQLException {
+
+        String sql = "INSERT INTO hosp.parametro_empresa " + 
+        		"(id_empresa, situacao_padrao_falta_profissional, situacao_padrao_licenca_medica, situacao_padrao_ferias) " + 
+        		"VALUES(?, ?, ?, ?); ";
+
+        try {
+            PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+            stm.setInt(1, empresa.getCodEmpresa());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId()))
+            	stm.setNull(2, Types.NULL);
+            else
+            	stm.setInt(2, empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId()))
+            	stm.setNull(3, Types.NULL);
+            else
+            	stm.setInt(3, empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId()))
+            	stm.setNull(4, Types.NULL);
+            else
+            	stm.setInt(4, empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId());
+            
+            stm.executeUpdate();
+        } catch (SQLException ex2) {
+        	conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+    }
+    
+    private void excluirParametroEmpresa(Connection conexaoAuxiliar, Integer idEmpresa) 
+    		throws ProjetoException, SQLException {
+
+        String sql = "DELETE FROM hosp.parametro_empresa WHERE id_empresa = ?;";
+
+        try {
+            PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idEmpresa);
+            stm.executeUpdate();
+
+        } catch (SQLException ex2) {
+        	conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
     }
 }
