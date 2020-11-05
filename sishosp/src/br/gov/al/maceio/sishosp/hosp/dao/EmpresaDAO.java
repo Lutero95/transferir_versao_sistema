@@ -201,7 +201,8 @@ public class EmpresaDAO {
             ps.setInt(19, empresa.getCodEmpresa());
 
             ps.executeUpdate();
-            atualizarParametroEmpresa(con, empresa);
+            excluirParametroEmpresa(con, empresa.getCodEmpresa());
+            inserirParametroEmpresa(con, empresa);
 
             con.commit();
             retorno = true;
@@ -352,19 +353,14 @@ public class EmpresaDAO {
 		}
     }
     
-    private void atualizarParametroEmpresa(Connection conexaoAuxiliar, EmpresaBean empresa) 
+    private void excluirParametroEmpresa(Connection conexaoAuxiliar, Integer idEmpresa) 
     		throws ProjetoException, SQLException {
 
-        String sql = "UPDATE hosp.parametro_empresa " + 
-        		"SET situacao_padrao_falta_profissional = ?, situacao_padrao_licenca_medica = ?, situacao_padrao_ferias = ?" + 
-        		"WHERE id_empresa = ?;";
+        String sql = "DELETE FROM hosp.parametro_empresa WHERE id_empresa = ?;";
 
         try {
             PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
-            stm.setInt(1, empresa.getParametroEmpresa().getSituacaoPadraoFaltaProfissional().getId());
-            stm.setInt(2, empresa.getParametroEmpresa().getSituacaoPadraoLicencaMedica().getId());
-            stm.setInt(3, empresa.getParametroEmpresa().getSituacaoPadraoFerias().getId());
-            stm.setInt(4, empresa.getCodEmpresa());
+            stm.setInt(1, idEmpresa);
             stm.executeUpdate();
 
         } catch (SQLException ex2) {

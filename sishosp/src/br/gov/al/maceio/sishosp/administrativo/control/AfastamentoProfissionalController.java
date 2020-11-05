@@ -21,6 +21,7 @@ public class AfastamentoProfissionalController implements Serializable {
     private AfastamentoProfissional afastamentoProfissional;
     private AfastamentoProfissionalDAO aDao = new AfastamentoProfissionalDAO();
     private List<AfastamentoProfissional> listaAfastamentosProfissionais;
+    private boolean tiposDeAfastamentoPossuemSituacaoAtendimento;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroafastamentoprofissional?faces-redirect=true";
@@ -93,7 +94,13 @@ public class AfastamentoProfissionalController implements Serializable {
         listaAfastamentosProfissionais = aDao.listarAfastamentoProfissionais();
     }
 
-
+    public void afastamentoPossuemSituacaoAtendimento() throws ProjetoException {
+    	this.tiposDeAfastamentoPossuemSituacaoAtendimento = aDao.tiposDeAfastamentoPossuemSituacaoAtendimento();
+    	if(!this.tiposDeAfastamentoPossuemSituacaoAtendimento) {
+    		JSFUtil.adicionarMensagemAdvertencia
+    			("Não há Situação de Atendimento Atribuída aos Tipos de Afastamento do Profissional no Cadastro de Empresa", "");
+    	}
+    }
 
 	public AfastamentoProfissional getAfastamentoProfissional() {
 		return afastamentoProfissional;
@@ -110,4 +117,9 @@ public class AfastamentoProfissionalController implements Serializable {
 	public void setListaAfastamentosProfissionais(List<AfastamentoProfissional> listaAfastamentosProfissionais) {
 		this.listaAfastamentosProfissionais = listaAfastamentosProfissionais;
 	}
+
+	public boolean isTiposDeAfastamentoPossuemSituacaoAtendimento() {
+		return tiposDeAfastamentoPossuemSituacaoAtendimento;
+	}
+	
 }

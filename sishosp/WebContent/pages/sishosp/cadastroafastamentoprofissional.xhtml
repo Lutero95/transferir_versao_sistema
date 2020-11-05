@@ -7,13 +7,22 @@
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
+    	<f:metadata>
+			<f:viewAction action="#{afastamentoProfissionalController.afastamentoPossuemSituacaoAtendimento()}" />
+		</f:metadata>
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
                 <h4 class="panel-title">Afastamento Temporário</h4>
             </div>
 
-            <div class="panel-body table-body">
+			<p:row
+				rendered="#{afastamentoProfissionalController.tiposDeAfastamentoPossuemSituacaoAtendimento == false}">
+				<p:messages />
+				<br />
+			</p:row>
+
+			<div class="panel-body table-body">
 
                 <h:form id="formAfastamentoTemporario">
 
@@ -154,8 +163,8 @@
                         <p:commandButton value="Gravar" look="success" size="sm"
                                          id="bgravar" icon="ui-icon-check"
                                          action="#{afastamentoProfissionalController.gravarAfastamentoProfissional()}"
-                                         update=":formAfastamentoTemporario :msgPagina"
-                                         class="btn-incluir"/>
+                                         update=":formAfastamentoTemporario :msgPagina" class="btn-incluir"
+                                         disabled="#{afastamentoProfissionalController.tiposDeAfastamentoPossuemSituacaoAtendimento == false}"/>
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
