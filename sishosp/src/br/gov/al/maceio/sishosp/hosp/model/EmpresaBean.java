@@ -26,9 +26,11 @@ public class EmpresaBean implements Serializable {
     private Boolean restringirLaudoPorUnidade;
     private String tipoString;
     private String cnes;
+    private ParametroEmpresaBean parametroEmpresa;
 
 
     public EmpresaBean() {
+    	this.parametroEmpresa = new ParametroEmpresaBean();
     }
 
     public Integer getCodEmpresa() {
@@ -212,4 +214,13 @@ public class EmpresaBean implements Serializable {
     public void setRestringirLaudoPorUnidade(Boolean restringirLaudoPorUnidade) {
         this.restringirLaudoPorUnidade = restringirLaudoPorUnidade;
     }
+
+	public ParametroEmpresaBean getParametroEmpresa() {
+		return parametroEmpresa;
+	}
+
+	public void setParametroEmpresa(ParametroEmpresaBean parametroEmpresa) {
+		this.parametroEmpresa = parametroEmpresa;
+	}
+    
 }

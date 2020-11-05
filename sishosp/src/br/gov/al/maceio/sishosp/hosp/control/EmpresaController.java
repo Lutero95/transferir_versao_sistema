@@ -11,13 +11,17 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.SituacaoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.SituacaoAtendimentoBean;
 
 @ManagedBean(name = "EmpresaController")
 @ViewScoped
@@ -32,6 +36,9 @@ public class EmpresaController implements Serializable {
     private List<GrupoBean> listaGruposProgramas;
     private GrupoDAO gDao = new GrupoDAO();
     private List<EmpresaBean> listaEmpresas;
+    private SituacaoAtendimentoDAO situacaoAtendimentoDAO;
+	private List<SituacaoAtendimentoBean> listaSituacoes;
+	private String cepAntigo;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroEmpresa?faces-redirect=true";
@@ -45,6 +52,8 @@ public class EmpresaController implements Serializable {
         this.cabecalho = "";
         listaEmpresas = new ArrayList<>();
         listaGruposProgramas = new ArrayList<>();
+        listaSituacoes  = new ArrayList<>();
+        situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
         listaEstados = new ArrayList<>();
         listaEstados.add("AC");
         listaEstados.add("AL");
@@ -96,6 +105,7 @@ public class EmpresaController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.empresa = eDao.buscarEmpresaPorId(id);
+            cepAntigo = this.empresa.getCep(); 
         } else {
 
             tipo = Integer.parseInt(params.get("tipo"));
@@ -141,12 +151,24 @@ public class EmpresaController implements Serializable {
     public void listarEmpresa() throws ProjetoException {
         listaEmpresas = eDao.listarEmpresa();
     }
+    
+    public void carregarDadosPeloCep(String cep) throws ProjetoException {
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(cepAntigo)
+    			&& cep.replaceAll("\\D", "").equals(cepAntigo.replaceAll("\\D", ""))) {
+    		return;
+    	}
+    	
+    	EnderecoBean endereco = CEPUtil.encontraCEP(cep);
+    	this.empresa.setBairro(endereco.getBairro());
+    	this.empresa.setRua(endereco.getLogradouro());
+    	this.empresa.setCidade(endereco.getMunicipio());
+    	this.empresa.setEstado(endereco.getUf());
+    	cepAntigo = this.empresa.getCep();
+    }
 
     public List<EmpresaBean> listarTodasAsEmpresa() throws ProjetoException {
         return eDao.listarEmpresa();
     }
-
-    
 
     private Boolean verificarProgramaPreenchido(Integer idPrograma){
         Boolean retorno = false;
@@ -156,6 +178,10 @@ public class EmpresaController implements Serializable {
         }
 
         return retorno;
+    }
+    
+    public void buscarSituacoes() throws ProjetoException {
+        this.listaSituacoes = situacaoAtendimentoDAO.listarSituacaoAtendimento();
     }
 
     public String getCabecalho() {
@@ -210,4 +236,13 @@ public class EmpresaController implements Serializable {
     public void setListaEmpresas(List<EmpresaBean> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
     }
+
+	public List<SituacaoAtendimentoBean> getListaSituacoes() {
+		return listaSituacoes;
+	}
+
+	public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
+		this.listaSituacoes = listaSituacoes;
+	}
+    
 }
