@@ -1684,14 +1684,14 @@ public class AtendimentoDAO {
 				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " + 
 				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" + 
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " + 
-				"where   coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
 		if (tipoGeracao.equals("A")){
 			sql+=" and sa.atendimento_realizado = true";
 		}
         else
-		sql+=" and a.presenca='S'";
+		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
 
 		try {

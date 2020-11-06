@@ -49,7 +49,7 @@ public class BpaConsolidadoDAO {
         	sql+=" and sa.atendimento_realizado = true";
 		}
         else
-		sql+=" and a.presenca='S'";
+		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
 		sql+=" group by  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo order by cbo.codigo ";
         

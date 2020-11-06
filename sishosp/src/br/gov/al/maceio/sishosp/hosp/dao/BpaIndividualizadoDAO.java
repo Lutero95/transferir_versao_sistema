@@ -64,7 +64,7 @@ public class BpaIndividualizadoDAO {
 				" cross join hosp.empresa emp\n" +
 				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
@@ -76,7 +76,7 @@ public class BpaIndividualizadoDAO {
 			sql+=" and sa.atendimento_realizado = true";
 		}
         else
-		sql+=" and a.presenca='S'";
+		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
 		sql+=" group by \n" +
 				" proc.codproc, \n" +

@@ -100,7 +100,7 @@ AND    (( exists ((select diasultimoatendimento from ( select extract(days from 
 	  or ( ((select count(*) qtd
 	from hosp.atendimentos1 at1 join hosp.atendimentos a2 on at1.id_atendimento = a2.id_atendimento 
 	where  a2.codpaciente  = coalesce(l.codpaciente, pi.id_paciente) and at1.id_situacao_atendimento is not null)=0)))
- AND $X{IN, pf.dia_semana, diassemanalista}
+and $X{IN, pf.dia_semana, diassemanalista}
 AND $X{IN, pi.turno, turnoslista}
  order by codprograma, codgrupo, p.nome
 ) tabela where  ((sexo =  $P{sexo}  ) or ( $P{sexo}  = 'A'))

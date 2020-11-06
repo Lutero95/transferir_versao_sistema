@@ -36,7 +36,7 @@
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct (codprograma, codgrupo, pa.nome), pa.id_paciente,
+		<![CDATA[select   pa.id_paciente,
 a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
@@ -67,9 +67,6 @@ and coalesce(a1.excluido,'N') <>'S'
 and a.situacao <>'C'
 order by 1, a.dtaatende]]>
 	</queryString>
-	<field name="row" class="java.lang.Object">
-		<property name="com.jaspersoft.studio.field.label" value="row"/>
-	</field>
 	<field name="id_paciente" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="id_paciente"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
