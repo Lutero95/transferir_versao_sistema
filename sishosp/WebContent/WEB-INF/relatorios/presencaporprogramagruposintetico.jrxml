@@ -55,7 +55,7 @@
 	JOIN hosp.unidade u ON u.id =   $P{codunidade} 
 	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
-	where sa.atendimento_realizado is true
+	where a.presenca = 'S'
 	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 	and ((  $P{cod_programa}     is not null and a.codprograma =  $P{cod_programa}    ) or ((  $P{cod_programa}  = 0 ) OR (   $P{cod_programa}  is null )))
 	and ((  $P{cod_grupo}   is not null and a.codgrupo =   $P{cod_grupo}  ) or (( $P{cod_grupo}   =0 ) OR (   $P{cod_grupo}  is null )))
@@ -138,7 +138,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 			<band height="20">
 				<textField>
 					<reportElement x="0" y="6" width="229" height="13" uuid="1afc9e3f-6744-4c9c-975c-14e4a3d2e90c"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{nome_paciente1}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Total de Presença no Programa: "+$V{nome_paciente1}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="376" y="6" width="160" height="13" uuid="1b3fbf80-82be-43eb-b9b6-68ee691089ad">
@@ -166,7 +166,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Total de Atendimentos]]></text>
+					<text><![CDATA[Total de Presença]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="1" y="2" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="6ba5e5f9-2741-4816-8e6e-387ff3d31af6"/>
@@ -189,7 +189,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<textField>
 					<reportElement x="0" y="10" width="229" height="13" uuid="0c8199ed-e4e7-4d61-b74b-0aea561b2572"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos no Grupo: "+$V{nome_paciente_grupo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Total de Presença no Grupo: "+$V{nome_paciente_grupo}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="376" y="10" width="160" height="13" uuid="0b5b8bc0-9510-473d-b271-64c3fd6a58f8">
@@ -214,7 +214,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ATENDIMENTOS REALIZADOS POR PROGRAMA / GRUPO]]></text>
+				<text><![CDATA[PRESENÇA POR PROGRAMA / GRUPO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="1" y="14" width="571" height="16" uuid="d9d9191b-085d-488c-84b9-3adb8497b51f"/>
@@ -274,7 +274,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 			<textField>
 				<reportElement x="0" y="0" width="320" height="20" uuid="4da50d34-f10d-4194-93d7-d911eb5365bf"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["Total Geral de Atendimentos: "+$V{nome_paciente_1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Total Geral de Presença: "+$V{nome_paciente_1}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="376" y="0" width="191" height="20" printWhenGroupChanges="grupoPrograma" uuid="9d4d7a6a-4677-4970-bafc-4004a370d4a3"/>
