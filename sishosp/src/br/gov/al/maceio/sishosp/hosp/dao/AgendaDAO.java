@@ -2994,12 +2994,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         Boolean existe = false;
 
-        String sql = "SELECT EXISTS (SELECT id_atendimentos1 FROM hosp.atendimentos1 a1 " + 
-        		"WHERE a1.id_situacao_atendimento is not null AND a1.id_atendimento = ? and coalesce(a1.excluido,'N' )='N') existe;";
+        String sql = "SELECT EXISTS ( " + 
+        		"SELECT id_atendimentos1 FROM hosp.atendimentos1 a1 " + 
+        		"left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " + 
+        		"WHERE a1.id_situacao_atendimento is not null AND a1.id_atendimento = ? " + 
+        		"and sa.falta_profissional = false and coalesce(a1.excluido,'N' )='N') existe;";
 
         try {
             con = ConnectionFactory.getConnection();
-
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, idAtendimento);
 
