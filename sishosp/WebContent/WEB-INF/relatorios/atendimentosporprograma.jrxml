@@ -25,13 +25,11 @@
 	<parameter name="dt_final" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="cod_programa" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<parameter name="id_situacao_atendimento" class="java.lang.Integer"/>
 	<parameter name="turno" class="java.lang.String"/>
 	<parameter name="diassemanalista" class="java.util.ArrayList"/>
-	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="listaunidades" class="java.util.ArrayList"/>
+	<parameter name="listaprogramas" class="java.util.ArrayList"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
@@ -40,8 +38,8 @@
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct (a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
-a.codprograma as cod_programa, p.descprograma as nome_programa,
+		<![CDATA[select distinct (u.id, u.nome, a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
+u.id as cod_unidade, u.nome as nome_unidade, a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
 pr.nome as nome_proc, sa.descricao status, nome_principal
@@ -52,8 +50,8 @@ inner join hosp.programa p on (a.codprograma = p.id_programa)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-JOIN hosp.unidade u ON u.id =  $P{codunidade}   
-JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
+JOIN hosp.unidade u ON u.id = a.cod_unidade   
+CROSS JOIN hosp.empresa e 
 left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 left join (	select pa2.id_paciente, p2.id_programa, count(*) atendimentos
 	from hosp.atendimentos a2
@@ -63,26 +61,24 @@ left join (	select pa2.id_paciente, p2.id_programa, count(*) atendimentos
 	inner join hosp.pacientes pa2 on (a2.codpaciente = pa2.id_paciente)
 	inner join acl.funcionarios f2  on (a11.codprofissionalatendimento = f2.id_funcionario)
 	inner join hosp.proc pr2 on (a11.codprocedimento = pr2.id)	
-	JOIN hosp.unidade u2 ON u2.id =  $P{codunidade}   
-	JOIN hosp.empresa e2 ON e2.cod_empresa = u2.cod_empresa
+	JOIN hosp.unidade u2 ON u2.id = a2.cod_unidade   
+	CROSS JOIN hosp.empresa e2
 	left join hosp.especialidade es2 on es2.id_especialidade = f2.codespecialidade
 	where sa2.atendimento_realizado is true
 	and a2.dtaatende between  $P{dt_inicial}  and  $P{dt_final}   
-	and ((   $P{cod_programa}       is not null and a2.codprograma =  $P{cod_programa}    ) or ((  $P{cod_programa}  = 0 ) OR (  $P{cod_programa}  is null )))
-	AND ((  $P{codunidade}   IS NOT NULL AND a2.cod_unidade =   $P{codunidade}   ) OR ((  $P{codunidade}  = 0 ) OR (  $P{codunidade}  is null )))
 	and ((    $P{id_situacao_atendimento}   is not null and sa2.id =  $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  = 0 ) OR (  $P{id_situacao_atendimento}  is null )))
 	and ((    $P{turno}  is not null and a2.turno =  $P{turno} ) or  (  $P{turno}  is null ))
 	and ((    $P{codprofissional}   is not null and a11.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or (  $P{codprofissional}  is null)))
 	and ((    $P{codespecialidade}   is not null and f2.codespecialidade = $P{codespecialidade}  ) or ((  $P{codespecialidade} = 0) or (  $P{codespecialidade} is null)))
 	and $X{IN, extract (dow from a2.dtaatende), diassemanalista}
+	and $X{IN, u2.id,  listaunidades}
+	and $X{IN, a2.codprograma, listaprogramas}
 	AND (SELECT extract(year from age(pa2.dtanascimento))) >=  $P{idademinima} 
 	AND (SELECT extract(year from age(pa2.dtanascimento))) <=  $P{idademaxima} 
 	group by pa2.id_paciente, p2.id_programa) as qtd on (qtd.id_paciente = pa.id_paciente and qtd.id_programa = p.id_programa)
 
 where sa.atendimento_realizado is true
 and a.dtaatende between  $P{dt_inicial}   and  $P{dt_final} 
-and ((   $P{cod_programa}  is not null and a.codprograma =  $P{cod_programa}    ) or ((   $P{cod_programa}  = 0 ) OR (  $P{cod_programa}   is null )))
-AND (( $P{codunidade}  IS NOT NULL AND a.cod_unidade=  $P{codunidade}  ) OR ((   $P{codunidade}   =0 ) OR (   $P{codunidade}   is null )))
 and ((   $P{id_situacao_atendimento}   is not null and sa.id =   $P{id_situacao_atendimento}   ) or ((   $P{id_situacao_atendimento}     =0 ) OR (   $P{id_situacao_atendimento}  is null )))
 and ((   $P{turno}    is not null and a.turno =  $P{turno}  ) or  (  $P{turno}   is null ))
 and ((   $P{id_paciente}    is not null and a.codpaciente =   $P{id_paciente}  ) or ((   $P{id_paciente}  = 0) or (  $P{id_paciente}   is null)))
@@ -94,6 +90,8 @@ and ((   $P{codespecialidade}  is not null and f.codespecialidade = $P{codespeci
 		or (( $P{qtdatendimentosmenorigual}   = 0 and  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}  is null and  $P{qtdatendimentosmaiorigual}  is null))
 	) )
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+and $X{IN, u.id,  listaunidades}
+and $X{IN, a.codprograma, listaprogramas}
 AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
 AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
 order by 1;]]>
@@ -141,17 +139,49 @@ order by 1;]]>
 		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
+	<field name="cod_unidade" class="java.lang.Integer"/>
+	<field name="nome_unidade" class="java.lang.String"/>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
 	</variable>
-	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Count">
+	<variable name="total_atendimentos" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
-	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
+	<variable name="total_atend_unidade" class="java.lang.Integer" resetType="Group" resetGroup="grupoUnidade" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
-	<group name="grupoPrograma" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
+	<variable name="total_atend_programa" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	</variable>
+	<group name="grupoUnidade" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupHeader>
+			<band height="25">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<staticText>
+					<reportElement x="1" y="0" width="141" height="20" uuid="538e44ca-3151-4b64-a9fa-a6cedefaa376"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Unidade]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="143" y="2" width="246" height="17" uuid="90f4daa5-4dab-4d2e-bad3-ecaf58ac3e25"/>
+					<textFieldExpression><![CDATA[$F{nome_unidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="22">
+				<textField>
+					<reportElement x="2" y="2" width="229" height="13" uuid="2a15286d-6782-4b5a-972c-81eeeb822600"/>
+					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+$V{total_atend_unidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupoPrograma">
+		<groupExpression><![CDATA[$F{cod_programa} + ""+ $F{cod_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="65">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -204,16 +234,16 @@ order by 1;]]>
 					<text><![CDATA[Programa]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="142" y="2" width="138" height="20" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
+					<reportElement x="142" y="2" width="250" height="20" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="38">
+			<band height="32">
 				<textField>
 					<reportElement x="1" y="10" width="229" height="13" uuid="9fa4b3b6-e9ad-463a-878f-9ad54f0f0e1f"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{nome_paciente1}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{total_atend_programa}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -312,7 +342,7 @@ order by 1;]]>
 			<textField>
 				<reportElement x="0" y="0" width="320" height="20" uuid="4da50d34-f10d-4194-93d7-d911eb5365bf"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["Total Geral de Atendimentos: "+$V{nome_paciente_1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Total geral de Atendimentos: "+$V{total_atendimentos}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
