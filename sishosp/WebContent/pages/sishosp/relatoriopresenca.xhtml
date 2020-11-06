@@ -10,8 +10,6 @@
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction
-			action="#{RelatoriosController.preparaRelatorioAgendamentos()}" />
-		<f:viewAction
 				action="#{RelatoriosController.adicionaDiasDaSemanaPadrao()}" />
 		<f:viewAction
 				action="#{RelatoriosController.setaTurnoPadrao}" />
@@ -38,7 +36,7 @@
 								requiredMessage="Informe o Tipo da Geração" id="console"
 								value="#{RelatoriosController.atributoGenerico1}"
 								unselectable="true">
-								<f:selectItem itemLabel="Analítico " itemValue="A" />
+								<f:selectItem itemLabel="Analítico " itemValue="A" itemDisabled="true"/>
 								<f:selectItem itemLabel="Sintético" itemValue="S" />
 								<p:ajax update="frm" event="valueChange" />
 							</p:selectOneRadio>
@@ -354,10 +352,8 @@
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						target="_blank" style="font-size: 12px;  text-align: right;"
 						update="grw"
-						actionListener="#{RelatoriosController.gerarRelatorioAtendimento(RelatoriosController.pacienteInstituicao, RelatoriosController.programa, RelatoriosController.pacienteInstituicao.grupo)}"
+						actionListener="#{RelatoriosController.gerarRelatorioPresenca(RelatoriosController.pacienteInstituicao, RelatoriosController.programa, RelatoriosController.pacienteInstituicao.grupo)}"
 						ajax="false" />
-
-
 				</h:form>
 			</div>
 		</div>
