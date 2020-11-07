@@ -582,8 +582,13 @@ public class RelatoriosController implements Serializable {
 		map.put("dt_inicial", dataInicial);
 		map.put("dt_final", dataFinal);
 		
-		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
-			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+		if(!listaUnidadesSelecionadas.isEmpty()) {
+			map.put("listaunidades", retornaListaIdUnidades(listaUnidadesSelecionadas));
+		}
+		
+		if(!listaProgramaSelecionados.isEmpty()) {
+			map.put("listaprogramas", retornaListaIdProgramas(listaProgramaSelecionados));
+		}
 		
 		if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
 			map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
@@ -597,7 +602,6 @@ public class RelatoriosController implements Serializable {
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade))
 			map.put("codespecialidade", especialidade.getCodEspecialidade());
 
-		map.put("codunidade", user_session.getUnidade().getId());
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
@@ -630,8 +634,9 @@ public class RelatoriosController implements Serializable {
 		
 		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
-				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
+			}	
 			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
@@ -650,11 +655,36 @@ public class RelatoriosController implements Serializable {
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 		else {
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
-				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
+			}
 			relatorio = caminho + "atendimentosporprogramagruposintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
+	}
+	
+	private List<Integer> retornaListaIdUnidades(List<UnidadeBean> listaUnidades){
+		List<Integer> listaIds = new ArrayList<>();
+		for (UnidadeBean unidade : listaUnidades) {
+			listaIds.add(unidade.getId());
+		}
+		return listaIds;
+	}
+	
+	private List<Integer> retornaListaIdProgramas(List<ProgramaBean> listaProgramas){
+		List<Integer> listaIds = new ArrayList<>();
+		for (ProgramaBean programa : listaProgramas) {
+			listaIds.add(programa.getIdPrograma());
+		}
+		return listaIds;
+	}
+	
+	private List<Integer> retornaListaIdGrupos(List<GrupoProgramaUnidadeDTO> listaGrupos){
+		List<Integer> listaIds = new ArrayList<>();
+		for (GrupoProgramaUnidadeDTO grupo : listaGrupos) {
+			listaIds.add(grupo.getGrupo().getIdGrupo());
+		}
+		return listaIds;
 	}
 	
 	private boolean validaValorQuantidade() {
