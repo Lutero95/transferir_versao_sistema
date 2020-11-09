@@ -37,9 +37,19 @@
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (u.id, u.nome, a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
-u.id as cod_unidade, u.nome as nome_unidade, a.codprograma as cod_programa, p.descprograma as nome_programa,
+		<![CDATA[select distinct  CASE 
+      WHEN $P{agruparunidade}   is true THEN (u.id, u.nome, p.descprograma, a.dtaatende, pa.nome)
+      ELSE (p.descprograma, a.dtaatende, pa.nome) 
+      END,
+      
+      CASE 
+      WHEN $P{agruparunidade}  is true then u.nome
+      ELSE 'TODAS'
+      end nome_unidade,
+u.id as cod_unidade,   
+a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
 pr.nome as nome_proc, sa.descricao status, nome_principal
@@ -154,10 +164,11 @@ order by 1;]]>
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
 					<reportElement x="1" y="0" width="141" height="20" uuid="538e44ca-3151-4b64-a9fa-a6cedefaa376"/>
 					<textElement verticalAlignment="Middle">
@@ -173,6 +184,7 @@ order by 1;]]>
 		</groupHeader>
 		<groupFooter>
 			<band height="22">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
 					<reportElement x="2" y="2" width="229" height="13" uuid="2a15286d-6782-4b5a-972c-81eeeb822600"/>
 					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+$V{total_atend_unidade}]]></textFieldExpression>
@@ -181,7 +193,7 @@ order by 1;]]>
 		</groupFooter>
 	</group>
 	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_programa} + ""+ $F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="65">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>

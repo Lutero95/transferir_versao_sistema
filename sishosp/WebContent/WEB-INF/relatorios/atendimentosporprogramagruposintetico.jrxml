@@ -38,11 +38,41 @@
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (cod_unidade,nome_unidade, cod_programa, nome_programa, codgrupo, nome_grupo), 
-qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal, cod_unidade, nome_unidade from ( 
-	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
-	 p.descprograma as nome_programa, nome_principal, a.codgrupo, g.descgrupo as nome_grupo, u.id as cod_unidade, u.nome as nome_unidade 
+		<![CDATA[select distinct 
+	CASE 
+    WHEN  $P{agruparunidade}  is true THEN (cod_unidade, nome_unidade, cod_programa, nome_programa, codgrupo, nome_grupo)
+    ELSE (cod_programa, nome_programa, codgrupo, nome_grupo) 
+    END,
+      
+    CASE 
+    WHEN  $P{agruparunidade}  is true then nome_unidade
+    ELSE 'TODAS'
+    END nome_unidade,
+qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal, cod_unidade from ( 
+	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, 
+		CASE 
+      	WHEN $P{agruparunidade} is true THEN (u.id)
+      	ELSE (0) 
+		END cod_unidade,
+      
+	    CASE 
+	    WHEN $P{agruparunidade} is true THEN (u.nome)
+        ELSE ('TODAS') 
+	    END nome_unidade,
+      
+      	CASE 
+	    WHEN $P{agruparunidade} is true THEN (a.codprograma)
+      	ELSE (0) 
+	    END cod_programa,
+	    
+	    CASE 
+	    WHEN $P{agruparunidade} is true THEN (a.codgrupo)
+      	ELSE (0) 
+	    END codgrupo,
+
+	 p.descprograma as nome_programa, nome_principal, g.descgrupo as nome_grupo 
 	from hosp.atendimentos a
 	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -55,24 +85,24 @@ qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_gr
 	CROSS JOIN hosp.empresa e 
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where sa.atendimento_realizado is true
-	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
-	and ((  $P{id_situacao_atendimento}    is not null and sa.id =    $P{id_situacao_atendimento}   ) or ((   $P{id_situacao_atendimento}   =0 ) OR (  $P{id_situacao_atendimento}  is null )))
-	and ((  $P{turno}  is not null and a.turno =   $P{turno}    ) or  (   $P{turno}  is null ))
-	and ((  $P{id_paciente}  is not null and a.codpaciente =   $P{id_paciente}   ) or ((   $P{id_paciente}  = 0) or ( $P{id_paciente}  is null)))
-	and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
-	and ((  $P{codespecialidade}   is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or (   $P{codespecialidade}   is null)))
-	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
-	and $X{IN, u.id,  listaunidades}
-	and $X{IN, a.codprograma, listaprogramas}
-	and $X{IN, g.id_grupo, listagrupos}
-	AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
-	AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
-	group by  u.nome, u.id, p.descprograma, a.codprograma, g.descgrupo, a.codgrupo, pa.nome,  pa.id_paciente, nome_principal
+	and a.dtaatende between   $P{dt_inicial}   and  $P{dt_final} 
+	and ((  $P{id_situacao_atendimento}   is not null and sa.id =   $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
+	and ((  $P{turno}   is not null and a.turno =  $P{turno} ) or  ( $P{turno}  is null ))
+	and ((  $P{id_paciente}   is not null and a.codpaciente = $P{id_paciente}   ) or ((   $P{id_paciente}   = 0) or (  $P{id_paciente}   is null)))
+	and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento =   $P{codprofissional}  ) or (( $P{codprofissional}  = 0) or ( $P{codprofissional}  is null)))
+	and ((   $P{codespecialidade}  is not null and f.codespecialidade = $P{codespecialidade} ) or (( $P{codespecialidade} = 0) or (  $P{codespecialidade}  is null)))
+    and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+    and $X{IN, u.id,  listaunidades}
+    and $X{IN, a.codprograma, listaprogramas}
+    and $X{IN, g.id_grupo, listagrupos}
+	AND (SELECT extract(year from age(pa.dtanascimento))) >=   $P{idademinima}  
+	AND (SELECT extract(year from age(pa.dtanascimento))) <=   $P{idademaxima} 
+	group by  4, 5, p.descprograma, 6, g.descgrupo, 7, pa.nome,  pa.id_paciente, nome_principal
 	order by p.descprograma,pa.nome) a
-where(  ((   $P{qtdatendimentosmenorigual}   is not null and a.qtd <=  $P{qtdatendimentosmenorigual}  ) or ((  $P{qtdatendimentosmenorigual}  =0 ) OR (  $P{qtdatendimentosmenorigual}  is null )))
-and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=  $P{qtdatendimentosmaiorigual} ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmaiorigual}   is null ))) )
-or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiorigual}   is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
-		or ((  $P{qtdatendimentosmenorigual}  = 0 and   $P{qtdatendimentosmaiorigual}   = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and  $P{qtdatendimentosmaiorigual}  is null))
+where(  ((   $P{qtdatendimentosmenorigual}  is not null and a.qtd <=  $P{qtdatendimentosmenorigual}    ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR ( $P{qtdatendimentosmenorigual}  is null )))
+and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=   $P{qtdatendimentosmaiorigual}    ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null ))) )
+or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}    is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
+		or (( $P{qtdatendimentosmenorigual}   = 0 and   $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and   $P{qtdatendimentosmaiorigual}  is null))
 )  order by 1;]]>
 	</queryString>
 	<field name="nome_paciente" class="java.lang.String">
@@ -113,9 +143,10 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
 					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="6a5f35b9-471f-45ee-bd73-204ff1502d77"/>
 					<textElement verticalAlignment="Middle">
@@ -131,6 +162,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		</groupHeader>
 		<groupFooter>
 			<band height="24">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
 					<reportElement x="0" y="6" width="229" height="13" uuid="17b23dc6-1a11-4ef9-8299-38401e6c8eb6"/>
 					<textFieldExpression><![CDATA["Total de Atendimentos no Unidade: "+ $V{total_atend_unidade}]]></textFieldExpression>
@@ -139,7 +171,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		</groupFooter>
 	</group>
 	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_unidade} +""+ $F{cod_programa}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
 				<line>
@@ -181,7 +213,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		</groupFooter>
 	</group>
 	<group name="grupoGrupo">
-		<groupExpression><![CDATA[$F{cod_unidade} + ""+ $F{cod_programa} +""+ $F{codgrupo}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_grupo}]]></groupExpression>
 		<groupHeader>
 			<band height="45">
 				<staticText>

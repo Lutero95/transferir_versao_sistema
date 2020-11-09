@@ -14,10 +14,10 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="696"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="290"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="267"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="726"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -38,8 +38,18 @@
 	<parameter name="listaunidades" class="java.util.ArrayList"/>
 	<parameter name="listaprogramas" class="java.util.ArrayList"/>
 	<parameter name="listagrupos" class="java.util.ArrayList"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (u.id, u.nome, a.codprograma, a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
+		<![CDATA[select distinct  
+      CASE 
+      WHEN  $P{agruparunidade}  is true THEN (u.id, u.nome, p.descprograma, grupo.descgrupo, a.dtaatende, pa.nome)
+      ELSE (p.descprograma, grupo.descgrupo, a.dtaatende, pa.nome) 
+      END,
+      
+      CASE 
+      WHEN  $P{agruparunidade}  is true then u.nome
+      ELSE 'TODAS'
+      end nome_unidade,
 u.id as cod_unidade, u.nome as nome_unidade, a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
@@ -172,10 +182,11 @@ order by 1]]>
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
 					<reportElement x="1" y="0" width="141" height="20" uuid="e3e9245c-1367-429b-8483-b8d8ed5b3841"/>
 					<textElement verticalAlignment="Middle">
@@ -191,6 +202,7 @@ order by 1]]>
 		</groupHeader>
 		<groupFooter>
 			<band height="35">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
 					<reportElement x="1" y="5" width="229" height="13" uuid="302e616d-b4d2-41fc-8cbc-07ddea7b6955"/>
 					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+$V{total_atend_unidade}]]></textFieldExpression>
@@ -199,7 +211,7 @@ order by 1]]>
 		</groupFooter>
 	</group>
 	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_unidade} +""+ $F{cod_programa}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="52">
 				<line>
@@ -266,7 +278,7 @@ order by 1]]>
 		</groupFooter>
 	</group>
 	<group name="grpgrupo">
-		<groupExpression><![CDATA[$F{cod_unidade} +""+$F{cod_programa} +""+  $F{codgrupo}]]></groupExpression>
+		<groupExpression><![CDATA[$F{descgrupo}]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<textField>

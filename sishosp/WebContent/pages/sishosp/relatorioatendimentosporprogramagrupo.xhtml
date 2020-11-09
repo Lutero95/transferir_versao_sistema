@@ -46,7 +46,7 @@
 						</b:column>
 
 						<b:column class="label-position new-data-size new-comple1">
-							<b:label value="Agrupar relatório por:" severity="info" />
+							<b:label value="Gerar relatório por:" severity="info" />
 							<p:selectOneRadio required="true"
 											  requiredMessage="Informe o Tipo de Agrupamento" id="agrupamento"
 											  value="#{RelatoriosController.atributoGenerico3}"
@@ -56,6 +56,14 @@
 								
 								<p:ajax update="frm:outgrupo"/>
 							</p:selectOneRadio> 
+						</b:column>
+						
+						<b:column class="label-position new-data-size new-comple1">
+							<b:label value="Agrupar relatório por unidade:" severity="info" />
+							<p:selectBooleanCheckbox required="true"
+											  value="#{RelatoriosController.agruparPorUnidade}">
+								<p:ajax update="frm:outgrupo"/>
+							</p:selectBooleanCheckbox> 
 						</b:column>
 					</b:row>
 					<hr />

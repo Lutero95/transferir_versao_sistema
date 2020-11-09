@@ -37,35 +37,60 @@
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="listaunidades" class="java.util.ArrayList"/>
 	<parameter name="listaprogramas" class="java.util.ArrayList"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (cod_unidade,nome_unidade, cod_programa, nome_programa), qtd, nome_paciente, 
-id_paciente, cod_unidade,nome_unidade, cod_programa, nome_programa, nome_principal from ( 
-	select count(*) qtd, pa.nome as nome_paciente,  pa.id_paciente, u.id as cod_unidade, u.nome as nome_unidade,
-	a.codprograma as cod_programa, p.descprograma as nome_programa, nome_principal 
-	from hosp.atendimentos a
-	inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
-	inner join hosp.programa p on (a.codprograma = p.id_programa)
-	inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
-	inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
-	inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-	JOIN hosp.unidade u ON u.id = a.cod_unidade   
-	CROSS JOIN hosp.empresa e 
-	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
-	where sa.atendimento_realizado is true
-	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
-	and ((  $P{id_situacao_atendimento}  is not null and sa.id = $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
-	and ((  $P{turno}  is not null and a.turno =  $P{turno}  ) or  ( $P{turno}   is null ))
-	and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente} ) or (( $P{id_paciente}  = 0) or (  $P{id_paciente}   is null)))
-	and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento = $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or ( $P{codprofissional}  is null)))
-	and ((   $P{codespecialidade}  is not null and f.codespecialidade =  $P{codespecialidade} ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}  is null)))
-	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
-	and  $X{IN, u.id, listaunidades} 
-	and $X{IN, p.id_programa, listaprogramas} 
-	AND (SELECT extract(year from age(pa.dtanascimento))) >=   $P{idademinima} 
-	AND (SELECT extract(year from age(pa.dtanascimento))) <=    $P{idademaxima} 
-	group by u.id, u.nome, p.descprograma, a.codprograma, pa.nome,  pa.id_paciente, nome_principal
-	order by p.descprograma,pa.nome) a
+		<![CDATA[select distinct  
+	CASE 
+    WHEN  $P{agruparunidade}  is true THEN (cod_unidade, nome_unidade, nome_programa)
+    ELSE (cod_programa, nome_programa) 
+    END,
+      
+    CASE 
+    WHEN $P{agruparunidade}  is true then nome_unidade
+    ELSE 'TODAS'
+    END nome_unidade,
+ qtd, nome_paciente, 
+ id_paciente, cod_unidade, cod_programa, nome_programa, nome_principal from ( 
+		select count(*) qtd, pa.nome as nome_paciente,  pa.id_paciente,
+		  CASE 
+      		WHEN  $P{agruparunidade}  is true THEN (u.id)
+      		ELSE (0) 
+		    END cod_unidade,
+      
+	        CASE 
+	        WHEN  $P{agruparunidade}  is true THEN (u.nome)
+        	ELSE ('TODAS') 
+	        END nome_unidade,
+      
+      		CASE 
+	        WHEN  $P{agruparunidade}  is true THEN (a.codprograma)
+      		ELSE (0) 
+	        END cod_programa,
+    	p.descprograma as nome_programa, nome_principal 
+	    from hosp.atendimentos a
+	    inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
+	    join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
+	    join hosp.programa p on (a.codprograma = p.id_programa)
+    	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
+	    join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
+    	join hosp.proc pr on (a1.codprocedimento = pr.id)	
+	    JOIN hosp.unidade u ON u.id = a.cod_unidade   
+	    CROSS JOIN hosp.empresa e 
+	    left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
+	    where sa.atendimento_realizado is true
+	    and a.dtaatende between   $P{dt_inicial}   and   $P{dt_final} 
+	    and ((  $P{id_situacao_atendimento}   is not null and sa.id =  $P{id_situacao_atendimento}  ) or (( $P{id_situacao_atendimento} = 0 ) OR (  $P{id_situacao_atendimento}  is null )))
+	    and ((  $P{turno}  is not null and a.turno =   $P{turno}   ) or  ( $P{turno}  is null ))
+	    and ((  $P{id_paciente}   is not null and a.codpaciente =  $P{id_paciente} ) or (( $P{id_paciente}  = 0) or ( $P{id_paciente} is null)))
+	    and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento = $P{codprofissional}  ) or (( $P{codprofissional} = 0) or ( $P{codprofissional}  is null)))
+	    and ((   $P{codespecialidade} is not null and f.codespecialidade =  $P{codespecialidade} ) or (( $P{codespecialidade}  = 0) or ( $P{codespecialidade}  is null)))
+  		and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+  		and  $X{IN, u.id, listaunidades} 
+  		and $X{IN, p.id_programa, listaprogramas} 
+	    AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima}   
+	    AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
+    	group by 4, 5, p.descprograma, 6, pa.nome,  pa.id_paciente, nome_principal
+	    order by p.descprograma,pa.nome) a
 where(  ((   $P{qtdatendimentosmenorigual}  is not null and a.qtd <=  $P{qtdatendimentosmenorigual}    ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR ( $P{qtdatendimentosmenorigual}  is null )))
 and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=   $P{qtdatendimentosmaiorigual}    ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null ))) )
 or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}    is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
@@ -102,9 +127,10 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
 					<reportElement x="-1" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="30e4b1ce-911e-45ec-a6a1-cae7d65eca7f"/>
 					<textElement verticalAlignment="Middle">
@@ -120,6 +146,7 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		</groupHeader>
 		<groupFooter>
 			<band height="23">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
 					<reportElement x="0" y="10" width="229" height="13" uuid="79fea142-4657-44bc-bee3-a9ab7e4699d6"/>
 					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+ $V{total_atend_unidade}]]></textFieldExpression>
@@ -128,7 +155,7 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		</groupFooter>
 	</group>
 	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_unidade} + ""+ $F{cod_programa}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="55">
 				<line>
