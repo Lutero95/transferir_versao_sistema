@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="326"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="338"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -46,7 +46,7 @@
 	 p.descprograma as nome_programa, nome_principal, a.codgrupo, g.descgrupo as nome_grupo 
 	from hosp.atendimentos a
 	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
+left 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 	join hosp.programa p on (a.codprograma = p.id_programa)
 	join hosp.grupo g on (a.codgrupo = g.id_grupo)
 	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
@@ -56,6 +56,7 @@
 	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where a.presenca = 'S'
+	and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
 	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 	and ((  $P{cod_programa}     is not null and a.codprograma =  $P{cod_programa}    ) or ((  $P{cod_programa}  = 0 ) OR (   $P{cod_programa}  is null )))
 	and ((  $P{cod_grupo}   is not null and a.codgrupo =   $P{cod_grupo}  ) or (( $P{cod_grupo}   =0 ) OR (   $P{cod_grupo}  is null )))

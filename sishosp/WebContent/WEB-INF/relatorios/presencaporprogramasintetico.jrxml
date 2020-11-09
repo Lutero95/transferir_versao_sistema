@@ -45,7 +45,7 @@
 	 p.descprograma as nome_programa, nome_principal 
 	from hosp.atendimentos a
 	inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
+left 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
 	inner join hosp.programa p on (a.codprograma = p.id_programa)
 	inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 	inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
@@ -54,6 +54,7 @@
 	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where a.presenca = 'S'
+		and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
 	and a.dtaatende between   $P{dt_inicial}   and  $P{dt_final} 
 	and (( $P{cod_programa}    is not null and a.codprograma=   $P{cod_programa}   ) or ((  $P{cod_programa}  =0 ) OR (  $P{cod_programa}   is null )))
 	AND ((  $P{codunidade}   IS NOT NULL AND a.cod_unidade=  $P{codunidade}    ) OR ((  $P{codunidade}  =0 ) OR (   $P{codunidade}   is null )))
