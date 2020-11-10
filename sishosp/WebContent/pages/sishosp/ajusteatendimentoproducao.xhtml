@@ -89,48 +89,29 @@
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" paginator="true" rows="20" style="margin-top: 10px"
 						value="#{AtendimentoController.listAtendimentos}">
 
-						<p:column>
-							<f:facet name="header">
-                            	Profissional
-                        	</f:facet>
+						<p:column headerText="Profissional">
 							<h:outputText value="#{tab.funcionario.nome}" />
 						</p:column>
 
-						<p:column>
-							<f:facet name="header">
-                            	Paciente
-                        	</f:facet>
+						<p:column headerText="Paciente">
 							<h:outputText value="#{tab.paciente.nome}" />
 						</p:column>
 						
-						<p:column>
-							<f:facet name="header">
-                            	Procedimento
-                        	</f:facet>
+						<p:column headerText="Procedimento">
 							<h:outputText value="#{tab.procedimento.nomeProc}" />
 						</p:column>
 						
-						<p:column>
-							<f:facet name="header">
-                            	CID
-                        	</f:facet>
+						<p:column headerText="CID">
 							<h:outputText value="#{tab.cidPrimario.cid}" />
 						</p:column>
 						
-						<p:column width="80">
-							<f:facet name="header">
-                            	Data
-                        	</f:facet>
+						<p:column headerText="Data" width="80">
 							<h:outputText value="#{tab.dataAtendimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
 
-						<p:column width="70">
-							<f:facet name="header">
-                            	Alterar Cid
-                        	</f:facet>
-
+						<p:column headerText="Alterar Cid" width="70">
 							<p:commandButton title="Alterar cid" icon="ui-icon-pencil"
 								size="sm" oncomplete="PF('dlgConsulCid1').show();"
 								action="#{AtendimentoController.limparDialogBuscaCid()}" update=":formConsulCid1"
@@ -140,15 +121,19 @@
 							</p:commandButton>
 						</p:column>
 
-						<p:column width="70">
-							<f:facet name="header">
-								Alterar Proced.
-							</f:facet>
-
+						<p:column headerText="Alterar Proced." width="70">
 							<p:commandButton title="Alterar Procedimento" icon="ui-icon-pencil"
 											 size="sm" oncomplete="PF('dlgConsulProc').show();"
 											 actionListener="#{AtendimentoController.listarProcedimentos()}" update=":formConsulProc"
 											 disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
+								<f:setPropertyActionListener value="#{tab}"
+															 target="#{AtendimentoController.atendimento}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Excluir Agendame." width="70">
+							<p:commandButton title="Alterar Procedimento" icon="ui-icon-close"
+											 size="sm" oncomplete="PF('dialogExclusao').show();" update=":frmExcluir">
 								<f:setPropertyActionListener value="#{tab}"
 															 target="#{AtendimentoController.atendimento}" />
 							</p:commandButton>
@@ -324,6 +309,63 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog widgetVar="dialogExclusao" modal="true"
+			header="Cancelar Agendamento" resizable="false" showEffect="clip"
+			hideEffect="clip">
+
+			<h:form id="frmExcluir">
+				<h:panelGrid columns="1">
+					<div class="alert alert-warning" role="alert">Deseja excluir o agendamento selecionado?</div>
+				</h:panelGrid>
+
+				<div align="center">
+					<p:separator />
+					<p:commandButton look="success" value="Sim" style="float:left;"
+						action="#{AtendimentoController.preparaDialogParaExcluirAgendamentoProfissional()}" ajax="true"
+						class="btn-sim" icon="ui-icon-check"
+						update=":frmLiberacao" />
+
+					<p:commandButton value="Não"
+						oncomplete="PF('dialogExclusao').hide();" look="info"
+						ajax="true" icon="ui-icon-close" class="btn-nao"
+						style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Liberação de Exclusão de Agendamento" widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					<h:outputLabel value="Você está tentando excluir um agendamento de um paciente, Insira o CPF e Senha para liberação"/>
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{AtendimentoController.funcionario.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{AtendimentoController.funcionario.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AtendimentoController.validarSenhaLiberacaoExclusaoAgendamento()}" 
+						update="msgPagina :frmPrincipal" />
+						
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

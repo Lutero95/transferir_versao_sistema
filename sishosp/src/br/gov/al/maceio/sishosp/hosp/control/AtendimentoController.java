@@ -965,6 +965,38 @@ public class AtendimentoController implements Serializable {
     public void removerProcedimentoCidSecundario(ProcedimentoCidDTO procedimentoCidDTO) {
     	this.atendimento.getListaProcedimentoCid().remove(procedimentoCidDTO);
     }
+    
+    public void preparaDialogParaExcluirAgendamentoProfissional() throws ProjetoException {
+    	limpaDadosDialogLiberacao();
+    	JSFUtil.abrirDialog("dlgLiberacao");
+    }
+    
+    private void limpaDadosDialogLiberacao() {
+    	this.funcionario = new FuncionarioBean();
+	}
+
+	public void validarSenhaLiberacaoExclusaoAgendamento() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+                ValidacaoSenha.LIBERACAO.getSigla());
+
+        if (func != null) {
+            excluirAgendamentoPaciente(func, atendimento);
+            JSFUtil.fecharDialog("dlgLiberacao");
+            JSFUtil.fecharDialog("dialogExclusao");
+            listaAtendimentos1Ajustes();
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+    
+    private void excluirAgendamentoPaciente(FuncionarioBean funcionarioLiberacao, AtendimentoBean atendimento) throws ProjetoException {
+    	boolean agendamentoExcluido = new AgendaDAO().excluirAgendamentoPaciente(atendimento, funcionarioLiberacao);
+    	if(agendamentoExcluido) {
+    		JSFUtil.adicionarMensagemSucesso("Agendamento Excluído com Sucesso", "");
+    	}
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
