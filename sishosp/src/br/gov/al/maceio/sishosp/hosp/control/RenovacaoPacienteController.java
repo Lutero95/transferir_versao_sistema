@@ -802,8 +802,11 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void carregarLaudoPaciente() throws ProjetoException {
 
+//        String condicao_datas_laudo = compararDatasLaudo(laudoAtual.getMesFinal(), laudoAtual.getAnoFinal(),
+//                insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
+        
         String condicao_datas_laudo = compararDatasLaudo(laudoAtual.getMesFinal(), laudoAtual.getAnoFinal(),
-                insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
+                insercao.getLaudo().getVigenciaInicial());
 
         if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
             JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
@@ -821,15 +824,15 @@ public class RenovacaoPacienteController implements Serializable {
         }
     }
 
-    public String compararDatasLaudo(Integer mesAtual, Integer anoAtual, Integer mesNovo, Integer anoNovo){
+    public String compararDatasLaudo(Integer mesAtual, Integer anoAtual, Date dataLaudoNovo){
 
         String retorno = "";
 
-        final Boolean INICIO_MES = true;
+        //final Boolean INICIO_MES = true;
         final Boolean FIM_MES = false;
 
         Date dataLaudoAtual = DataUtil.adicionarMesIhAnoEmDate(mesAtual, anoAtual, FIM_MES);
-        Date dataLaudoNovo = DataUtil.adicionarMesIhAnoEmDate(mesNovo, anoNovo, INICIO_MES);
+        //Date dataLaudoNovo = DataUtil.adicionarMesIhAnoEmDate(mesNovo, anoNovo, INICIO_MES);
 
         long totalDiasDataLaudoAtual = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoAtual);
         long totalDiasDataLaudoNovo = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoNovo);
