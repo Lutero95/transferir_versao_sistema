@@ -48,7 +48,7 @@ public class LaudoDAO {
                 "	select l.id_laudo from hosp.laudo l " +
                 "		where l.codpaciente = ? and l.mes_inicio = ? and l.ano_inicio = ? " +
                 "		and l.mes_final = ? and l.ano_final = ? and l.codprocedimento_primario = ? "+
-                "		and l.cod_profissional = ?) existe_laudo_com_mesmos_dados";
+                "		and l.cod_profissional = ? and l.ativo is true) existe_laudo_com_mesmos_dados";
 
         try {
             conexao = ConnectionFactory.getConnection();
