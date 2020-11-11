@@ -42,7 +42,7 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar, String campoBusca, String tipoBusca) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo, coalesce(gp.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma, prog.descprograma, prog.permite_paciente_sem_laudo, p.codgrupo, g.descgrupo, coalesce(gp.qtdfrequencia,0) qtdfrequencia, coalesce(l.codpaciente, p.id_paciente) codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
                 + "coalesce((SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))),\n" +
                 " date_trunc('month',p.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day') as datafinal, p.inclusao_sem_laudo "
@@ -144,6 +144,7 @@ public class GerenciarPacienteDAO {
                 gerenciarPaciente.setInclusaoSemLaudo(rs.getBoolean("inclusao_sem_laudo"));
                 gerenciarPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gerenciarPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                gerenciarPaciente.getPrograma().setPermitePacienteSemLaudo(rs.getBoolean("permite_paciente_sem_laudo"));
                 gerenciarPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gerenciarPaciente.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 //gerenciarPaciente.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));

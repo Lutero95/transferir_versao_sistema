@@ -184,7 +184,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelFrequencia() throws ProjetoException {
 		atributoGenerico1 = "P";
 	}
-	
+
 	public void preparaRelFrequenciaPreenchida() throws ProjetoException {
 		atributoGenerico1 = "P";
 		listarAnosAtendimentos();
@@ -193,7 +193,7 @@ public class RelatoriosController implements Serializable {
 	public void preparaRelatorioAgendamentos() {
 		atributoGenerico1 = "A";
 	}
-	
+
 	public void preparaRelatorioAtendimentos() {
 		atributoGenerico3 = "P";
 	}
@@ -269,7 +269,7 @@ public class RelatoriosController implements Serializable {
 			}
 		}
 	}
-	
+
 	public void listaEquipePorGrupo() throws ProjetoException {
 		EquipeDAO eDao = new EquipeDAO();
 		listaEquipe = eDao.listarEquipePorGrupo(grupo.getIdGrupo());
@@ -312,7 +312,7 @@ public class RelatoriosController implements Serializable {
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
 				map.put("mostrarlaudosvencidos", atributoGenerico3);
 			else
-			map.put("mostrarlaudosvencidos", null);
+				map.put("mostrarlaudosvencidos", null);
 			this.executeReport(relatorio, map, "relatorio.pdf");
 			// this.executeReportNewTab(relatorio, "laudovencer.pdf",
 			// map);
@@ -353,33 +353,33 @@ public class RelatoriosController implements Serializable {
 
 	public void geraFrequenciaPreenchida(PacienteBean paciente, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		
-			String caminho = "/WEB-INF/relatorios/";
-			String relatorio = "";
-			relatorio = caminho + "frequencia_preenchida.jasper";
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ano", this.ano);
-			map.put("mes", this.mes);
-			map.put("codunidade", user_session.getUnidade().getId());
-			if (!VerificadorUtil.verificarSeObjetoNulo(programa))
-				map.put("codprograma", programa.getIdPrograma());
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
-				map.put("codgrupo", grupo.getIdGrupo());
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		relatorio = caminho + "frequencia_preenchida.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ano", this.ano);
+		map.put("mes", this.mes);
+		map.put("codunidade", user_session.getUnidade().getId());
+		if (!VerificadorUtil.verificarSeObjetoNulo(programa))
+			map.put("codprograma", programa.getIdPrograma());
 
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
-				map.put("codpaciente", paciente.getId_paciente());
+		if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
+			map.put("codgrupo", grupo.getIdGrupo());
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-			this.executeReport(relatorio, map, "relatorio.pdf");
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+			map.put("codpaciente", paciente.getId_paciente());
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		this.executeReport(relatorio, map, "relatorio.pdf");
 
 	}
-	
+
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-		
+
 		if(camposvalidos(programa, grupo)) {
-			
+
 			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
 			pacienteInstituicao.setPrograma(programa);
 			pacienteInstituicao.setGrupo(grupo);
@@ -414,90 +414,90 @@ public class RelatoriosController implements Serializable {
 			}
 		}
 	}
-	
+
 	private void listarAnosAtendimentos() throws ProjetoException {
 		this.listaAnos = new AtendimentoDAO().listaAnosDeAtendimentos();
 	}
-	
+
 	private boolean camposvalidos(ProgramaBean programa, GrupoBean grupo) {
-		
+
 		boolean valido = true;
-		
+
 		if (VerificadorUtil.verificarSeObjetoNulo(programa) || VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdPrograma())){
 			JSFUtil.adicionarMensagemErro("Programa: Campo obrigatório!", "");
-			valido = false;			
+			valido = false;
 		}
-		
+
 		if(VerificadorUtil.verificarSeObjetoNulo(grupo) || VerificadorUtil.verificarSeObjetoNuloOuZero(grupo.getIdGrupo())) {
 			JSFUtil.adicionarMensagemErro("Grupo: Campo obrigatório!", "");
 			valido = false;
 		}
-		return valido;	
+		return valido;
 	}
-	
+
 	public void limparFiltroPorQuantidade() {
 		atributoGenerico2 = "ME";
 		valorGenerico1 = null;
 		valorGenerico2 = null;
 	}
-	
+
 	public void listarUnidadesUsuario() throws ProjetoException {
 		listaUnidades = new UnidadeDAO().carregarUnidadesDoFuncionario();
 		JSFUtil.abrirDialog("dlgConsulUni");
 	}
-	
+
 	public void adicionarUnidadeSelecionada(UnidadeBean unidadeSelecionada) {
 		if(!unidadeJaFoiAdicionada(unidadeSelecionada)) {
 			listaUnidadesSelecionadas.add(unidadeSelecionada);
 			JSFUtil.fecharDialog("dlgConsulUni");
 		}
 	}
-	
+
 	private boolean unidadeJaFoiAdicionada(UnidadeBean unidadeSelecionada) {
-			if(listaUnidadesSelecionadas.contains(unidadeSelecionada)) {
-				JSFUtil.adicionarMensagemErro("Está Unidade Já foi Adicionada", "");
-				return true;
+		if(listaUnidadesSelecionadas.contains(unidadeSelecionada)) {
+			JSFUtil.adicionarMensagemErro("Está Unidade Já foi Adicionada", "");
+			return true;
 		}
 		return false;
 	}
-	
+
 	public void adicionarTodasUnidadesSelecionadas() {
 		listaUnidadesSelecionadas.clear();
 		listaUnidadesSelecionadas.addAll(listaUnidades);
 		JSFUtil.fecharDialog("dlgConsulUni");
 	}
-	
+
 	public void removerUnidadeAdicionada(UnidadeBean unidadeSelecionada) {
 		if(!existemProgramasAssociadosComEssaUnidade(unidadeSelecionada.getId()))
 			listaUnidadesSelecionadas.remove(unidadeSelecionada);
 	}
-	
+
 	private boolean existemProgramasAssociadosComEssaUnidade(Integer idUnidade) {
-		
+
 		for (ProgramaBean programa : listaProgramaSelecionados) {
 			if(programa.getCodUnidade().equals(idUnidade)) {
 				JSFUtil.adicionarMensagemErro
-					("Existe(m) programas associados a esta unidade por favor remova-o(s) primeiro", "");
+						("Existe(m) programas associados a esta unidade por favor remova-o(s) primeiro", "");
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public void listarProgramasPorUnidades() throws ProjetoException {
 		listaPrograma = new ProgramaDAO().buscaProgramasPorUnidade(listaUnidadesSelecionadas);
 		JSFUtil.abrirDialog("dlgConsuProg");
 	}
-	
+
 	public void adicionarProgramaSelecionada(ProgramaBean programaSelecionado) {
 		if(!programaJaFoiAdicionada(programaSelecionado)) {
 			listaProgramaSelecionados.add(programaSelecionado);
 			JSFUtil.fecharDialog("dlgConsuProg");
 		}
 	}
-	
+
 	private boolean programaJaFoiAdicionada(ProgramaBean programaSelecionado) {
-		
+
 		for (ProgramaBean programa : listaProgramaSelecionados) {
 			if(programa.getIdPrograma().equals(programaSelecionado.getIdPrograma())) {
 				JSFUtil.adicionarMensagemErro("Este Programa Já foi Adicionado", "");
@@ -506,42 +506,42 @@ public class RelatoriosController implements Serializable {
 		}
 		return false;
 	}
-	
+
 	public void adicionarTodosProgramaSelecionados() {
 		listaProgramaSelecionados.clear();
 		listaProgramaSelecionados.addAll(listaPrograma);
 		JSFUtil.fecharDialog("dlgConsuProg");
 	}
-	
+
 	public void removerProgramaAdicionado(ProgramaBean programaSelecionado) {
 		if(!existemGruposAssociadosComEssePrograma(programaSelecionado.getIdPrograma()))
 			listaProgramaSelecionados.remove(programaSelecionado);
 	}
-	
+
 	private boolean existemGruposAssociadosComEssePrograma(Integer idPrograma) {
-		
+
 		for (GrupoProgramaUnidadeDTO grupoProgramaUnidadeDTO : listaGruposProgramaUnidadeDTOSelecionados) {
 			if(grupoProgramaUnidadeDTO.getPrograma().getIdPrograma().equals(idPrograma)) {
 				JSFUtil.adicionarMensagemErro
-					("Existe(m) grupos associados a este programa por favor remova-o(s) primeiro", "");
+						("Existe(m) grupos associados a este programa por favor remova-o(s) primeiro", "");
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public void listarGruposPorProgramasUnidades() throws ProjetoException {
 		listaGruposProgramaUnidadeDTO = grupoDao.buscaProgramasPorUnidade(listaProgramaSelecionados);
 		JSFUtil.abrirDialog("dlgConsuGrop");
 	}
-	
+
 	public void adicionarGrupoPorProgramaUnidadeSelecionada(GrupoProgramaUnidadeDTO grupoSelecionado) {
 		if(!grupoPorProgramaUnidadeJaFoiAdicionada(grupoSelecionado)) {
 			listaGruposProgramaUnidadeDTOSelecionados.add(grupoSelecionado);
 			JSFUtil.fecharDialog("dlgConsuGrop");
 		}
 	}
-	
+
 	private boolean grupoPorProgramaUnidadeJaFoiAdicionada(GrupoProgramaUnidadeDTO grupoSelecionado) {
 		for (GrupoProgramaUnidadeDTO grupoDTO : listaGruposProgramaUnidadeDTOSelecionados) {
 			if(grupoDTO.getGrupo().getIdGrupo().equals(grupoSelecionado.getGrupo().getIdGrupo())
@@ -552,13 +552,13 @@ public class RelatoriosController implements Serializable {
 		}
 		return false;
 	}
-	
+
 	public void adicionarTodosGrupoPorProgramaUnidadeSelecionados() {
 		listaGruposProgramaUnidadeDTOSelecionados.clear();
 		listaGruposProgramaUnidadeDTOSelecionados.addAll(listaGruposProgramaUnidadeDTO);
 		JSFUtil.fecharDialog("dlgConsuGrop");
 	}
-	
+
 	public void removerGrupoPorProgramaUnidadeAdicionado(GrupoProgramaUnidadeDTO grupoSelecionado) {
 		listaGruposProgramaUnidadeDTOSelecionados.remove(grupoSelecionado);
 	}
@@ -570,29 +570,29 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setGrupo(grupo);
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
-		
+
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
-		
+
 		if(!validaValorQuantidade())
 			return;
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		map.put("dt_inicial", dataInicial);
 		map.put("dt_final", dataFinal);
-		
+
 		if(!listaUnidadesSelecionadas.isEmpty()) {
 			map.put("listaunidades", retornaListaIdUnidades(listaUnidadesSelecionadas));
 		}
-		
+
 		if(!listaProgramaSelecionados.isEmpty()) {
 			map.put("listaprogramas", retornaListaIdProgramas(listaProgramaSelecionados));
 		}
-		
+
 		if(!VerificadorUtil.verificarSeObjetoNuloOuZero(this.idSituacaoAtendimento))
 			map.put("id_situacao_atendimento", this.idSituacaoAtendimento);
-		
+
 		if(this.turnoSelecionado.equals(Turno.MANHA.getSigla()) || this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			map.put("turno", this.turnoSelecionado);
 
@@ -605,7 +605,7 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
-		
+
 		if (VerificadorUtil.verificarSeObjetoNuloOuZero(idadeMinima))
 			map.put("idademinima", 0);
 		else
@@ -615,10 +615,10 @@ public class RelatoriosController implements Serializable {
 			map.put("idademaxima", 200);
 		else
 			map.put("idademaxima", idadeMaxima);
-		
+
 		if ((!VerificadorUtil.verificarSeObjetoNulo(prof)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(prof.getId())))
 			map.put("codprofissional", this.prof.getId());
-		
+
 		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(atributoGenerico2)) {
 			if (atributoGenerico2.equals("EN")) {
 				map.put("qtdatendimentosmenorigual", valorGenerico1);
@@ -629,14 +629,14 @@ public class RelatoriosController implements Serializable {
 				map.put("qtdatendimentosmenorigual", valorGenerico1);
 			}
 		}
-		
+
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-		
+
 		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
-			}	
+			}
 			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
@@ -649,7 +649,7 @@ public class RelatoriosController implements Serializable {
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
-		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla()) 
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
 				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())){
 			relatorio = caminho + "atendimentosporprogramasintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
@@ -662,7 +662,7 @@ public class RelatoriosController implements Serializable {
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
 	}
-	
+
 	private List<Integer> retornaListaIdUnidades(List<UnidadeBean> listaUnidades){
 		List<Integer> listaIds = new ArrayList<>();
 		for (UnidadeBean unidade : listaUnidades) {
@@ -670,7 +670,7 @@ public class RelatoriosController implements Serializable {
 		}
 		return listaIds;
 	}
-	
+
 	private List<Integer> retornaListaIdProgramas(List<ProgramaBean> listaProgramas){
 		List<Integer> listaIds = new ArrayList<>();
 		for (ProgramaBean programa : listaProgramas) {
@@ -678,7 +678,7 @@ public class RelatoriosController implements Serializable {
 		}
 		return listaIds;
 	}
-	
+
 	private List<Integer> retornaListaIdGrupos(List<GrupoProgramaUnidadeDTO> listaGrupos){
 		List<Integer> listaIds = new ArrayList<>();
 		for (GrupoProgramaUnidadeDTO grupo : listaGrupos) {
@@ -686,38 +686,38 @@ public class RelatoriosController implements Serializable {
 		}
 		return listaIds;
 	}
-	
+
 	private boolean validaValorQuantidade() {
 		if(VerificadorUtil.verificarSeObjetoNuloOuVazio(atributoGenerico2))
 			return true;
 		else if (atributoGenerico2.equals("EN")) {
-			
-			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) 
-				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
-				|| (VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) 
-				&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) )) {
+
+			if( (VerificadorUtil.verificarSeObjetoNulo(valorGenerico1)
+					&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico2) )
+					|| (VerificadorUtil.verificarSeObjetoNulo(valorGenerico2)
+					&& !VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) )) {
 				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
-				return false;				
+				return false;
 			}
 
-			else if ( (valorGenerico1 > 0 && valorGenerico2 <= 0) 
+			else if ( (valorGenerico1 > 0 && valorGenerico2 <= 0)
 					|| (valorGenerico2 > 0 && valorGenerico1 <= 0) ) {
 				JSFUtil.adicionarMensagemErro("Insira os dois valores válidos para filtrar a quantidade!", "");
-				return false;				
+				return false;
 			}
-			
+
 			else if(valorGenerico1 >= valorGenerico2) {
 				JSFUtil.adicionarMensagemErro("Segundo valor da quantidade deve ser maior que o primeiro!", "");
 				return false;
 			}
-		}	
+		}
 		else if(!VerificadorUtil.verificarSeObjetoNulo(valorGenerico1) && valorGenerico1 < 0) {
 			JSFUtil.adicionarMensagemErro("Insira um valor válido para filtrar a quantidade!", "");
-			return false;								
+			return false;
 		}
 		return true;
 	}
-	
+
 	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
@@ -739,7 +739,7 @@ public class RelatoriosController implements Serializable {
 		if (this.turnoSelecionado.equals(Turno.MANHA.getSigla())
 				|| this.turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			map.put("turno", this.turnoSelecionado);
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNulo(paciente) && !VerificadorUtil.verificarSeObjetoNuloOuZero(paciente.getId_paciente()))
 			map.put("id_paciente", paciente.getId_paciente());
 
@@ -779,18 +779,18 @@ public class RelatoriosController implements Serializable {
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		if (atributoGenerico1.equals("A")) {
 			idadeMaxima = 200;
 		}
 		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
-		
+
 		if(atributoGenerico3.equals("E")) {
 			relatorio = caminho + "pacientes_ativos_por_programa_grupo_equipe.jasper";
 			if (!VerificadorUtil.verificarSeObjetoNulo(grupo))
 				map.put("codgrupo", grupo.getIdGrupo());
 			if (!VerificadorUtil.verificarSeObjetoNulo(equipe))
-				map.put("codequipe", equipe.getCodEquipe());			
+				map.put("codequipe", equipe.getCodEquipe());
 		}
 		else if (atributoGenerico3.equals("G")) {
 			relatorio = caminho + "pacientes_ativos_por_programa_grupo.jasper";
@@ -800,7 +800,7 @@ public class RelatoriosController implements Serializable {
 		else if (atributoGenerico3.equals("P")) {
 			relatorio = caminho + "pacientes_ativos_por_programa.jasper";
 		}
-		
+
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("filtromunicipio", idMunicipiosSelecionados);
 		map.put("sexo", this.atributoGenerico2);
@@ -827,7 +827,7 @@ public class RelatoriosController implements Serializable {
 		this.executeReport(relatorio, map, "relatoriopacientesativos.pdf");
 
 	}
-	
+
 	public void limparGrupoEquipe() {
 		if(atributoGenerico3.equals("P")) {
 			this.grupo = new GrupoBean();
@@ -838,7 +838,7 @@ public class RelatoriosController implements Serializable {
 			this.equipe = new EquipeBean();
 		}
 	}
-	
+
 	private void setaDiasSemanaComoListaDeInteiro(ArrayList<Integer> diasSemanaInteger) {
 		for (String dia : diasSemana) {
 			diasSemanaInteger.add(Integer.valueOf(dia));
@@ -859,7 +859,7 @@ public class RelatoriosController implements Serializable {
 	private void limparTurno() {
 		this.turnos = new ArrayList<String>();
 	}
-	
+
 	public void gerarPacientesAtivosSemEvolucao() throws IOException, ParseException, ProjetoException {
 
 		if (atributoGenerico1.equals("A")) {
@@ -1804,7 +1804,7 @@ public class RelatoriosController implements Serializable {
 	public void setFiltrarPorMunicipio(Boolean filtrarPorMunicipio) {
 		this.filtrarPorMunicipio = filtrarPorMunicipio;
 	}
-	
+
 	public Integer getIdSituacaoAtendimento() {
 		return idSituacaoAtendimento;
 	}
@@ -1934,5 +1934,5 @@ public class RelatoriosController implements Serializable {
 			List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTOSelecionados) {
 		this.listaGruposProgramaUnidadeDTOSelecionados = listaGruposProgramaUnidadeDTOSelecionados;
 	}
-	
+
 }

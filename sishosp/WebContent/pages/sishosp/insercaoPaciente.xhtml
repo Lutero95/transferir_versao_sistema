@@ -21,7 +21,50 @@
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
-					<p:fieldset legend="Dados do Laudo">
+                	
+                	<b:row>
+						<b:column span="3">
+							<p:selectBooleanCheckbox label="Paciente Sem Laudo"
+								itemLabel="Paciente Sem Laudo" id="statuspacientelaudo"
+								style="color:#2e84ce;"
+								value="#{InsercaoController.insercao.insercaoPacienteSemLaudo}">
+								<p:ajax
+									listener="#{InsercaoController.limparLaudo()}"
+									event="change" process=":formInsercao:statuspacientelaudo"
+									update=":formInsercao :formInsercao2"/>
+							</p:selectBooleanCheckbox>
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<b:column span="3"
+                                          class="label-position new-data-size new-comple1">
+							<b:label value="Paciente:" severity="info" 
+							rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == true}"/>
+
+                            <p:outputPanel id="outPac1">
+                                <p:autoComplete value="#{InsercaoController.insercao.paciente}"
+                                                size="31" converter="conPaciente" required="true"
+                                                requiredMessage="Escolha um paciente!"
+                                                class="select-agendaEquipe4"
+                                                completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nome}"
+                                                rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == true}">
+                                    <p:ajax event="itemSelect"
+                                            update=":formInsercao:outPac1"/>
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusPa" icon="ui-icon-search"
+                                                 process="@this" update="formConsuPac"
+                                                 oncomplete="PF('dlgConsuPac').show();"
+                                                 rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == true}"/>
+                            </p:outputPanel>
+						</b:column>
+					</b:row>
+                
+					<p:fieldset legend="Dados do Laudo" rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == false}">
 						<b:row>
 							<b:column span="2" class="label-position">
 								<p:outputLabel value="Laudo:"
@@ -95,7 +138,8 @@
 
                 <h:form id="formInsercao2">
                     <p:outputPanel
-                            rendered="#{InsercaoController.renderizarAposLaudo == true}">
+                            rendered="#{InsercaoController.renderizarAposLaudo == true
+                             or InsercaoController.insercao.insercaoPacienteSemLaudo == true}">
                         <b:row>
 
                             <b:column span="3" class="btn-radio-table">
@@ -493,9 +537,17 @@
                                              icon="ui-icon-check"
                                              update=":grw :msgPagina :formInsercao2 :formInsercao"
                                              class="btn-incluir"
-                                             action="#{InsercaoController.validarInsercaoPaciente()}"/>
+                                             action="#{InsercaoController.validarInsercaoPaciente()}"
+                                             rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == false}"/>
 
-                            <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+							<p:commandButton value="Gravar" look="success" size="sm"
+								icon="ui-icon-check"
+								update=":grw :msgPagina :formInsercao2 :formInsercao"
+								class="btn-incluir"
+								action="#{InsercaoController.validarInsercaoNormalDePacienteSemLaudo()}"
+								rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == true}" />
+
+							<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                              size="sm" immediate="true" look="info" class="btn-voltar"
                                              action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
                             </p:commandButton>
@@ -507,7 +559,73 @@
         </div>
 
 
+		 <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+                  dynamic="true" modal="true" width="750px" height="400px"
+                  responsive="true">
+            <h:form id="formConsuPac">
+                <p:growl id="msgC"/>
 
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                </div>
+
+                <p:row>
+                    <p:panelGrid columns="4">
+
+                        <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <f:selectItem itemLabel="Prontuário" itemValue="prontuario"/>
+                            <f:selectItem itemLabel="Matrícula" itemValue="matricula"/>
+                            <f:selectItem itemLabel="CPF" itemValue="cpf"/>
+                            <f:selectItem itemLabel="CNS" itemValue="cns"/>
+                        </p:selectOneMenu>
+
+                        <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca"
+                                     style="margin-left: 10px;"/>
+
+                        <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}"
+                                         update="tabelapacientes"
+                                         icon="ui-icon-search" style="margin-left: 10px;"/>
+
+                        <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                         icon="limpar" style="margin-left: 10px;"/>
+                    </p:panelGrid>
+
+                </p:row>
+                <p:dataTable paginator="true" rows="10" id="tabelapacientes"
+                             var="pacie" value="#{PacienteController.listaPacientes}"
+                             emptyMessage="Nenhum Paciente">
+
+                    <p:column headerText="Prontuário" width="100">
+                        <p:outputLabel value="#{pacie.id_paciente}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{pacie.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Matrícula">
+                        <p:outputLabel value="#{pacie.matricula}"/>
+                    </p:column>
+
+                    <p:column headerText="CNS">
+                        <p:outputLabel value="#{pacie.cns}"/>
+                    </p:column>
+
+                    <p:column headerText="Selecionar">
+                        <p:commandButton
+                                update=":formInsercao:outPac1"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuPac').hide();">
+                            <f:setPropertyActionListener value="#{pacie}"
+                                                         target="#{InsercaoController.insercao.paciente}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
 
 
         <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" dynamic="true"

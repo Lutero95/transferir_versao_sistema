@@ -30,20 +30,20 @@ public class AlteracaoPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id) throws ProjetoException {
 
-		String sql = "select id, dias_paciente_sem_laudo_ativo, codprograma, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
+		String sql = "select id, dias_paciente_sem_laudo_ativo, codprograma, permite_paciente_sem_laudo, descprograma, cod_procedimento, codgrupo, descgrupo, codpaciente_laudo,\n" +
 				"codpaciente_instituicao, nome, codequipe, descequipe, turno, horario, mes_final, ano_final,\n" +
 				"codprofissional,descfuncionario, observacao , codlaudo, data_solicitacao ,\n" +
 				"codprocedimento_primario, codprocedimento_secundario1, \n" +
 				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5,\n" +
-				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario, sessoes " +
+				"(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as vigencia_final, id_cidprimario, sessoes, inclusao_sem_laudo " +
 				" from (\n" +
-				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
+				"select pi.id, p.dias_paciente_sem_laudo_ativo, pi.codprograma, p.permite_paciente_sem_laudo, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, \n" +
 				"l.codpaciente codpaciente_laudo, pi.id_paciente codpaciente_instituicao, pacientes.nome, \n" +
 				" pi.codequipe, e.descequipe, pi.turno, pi.horario, \n" +
 				"  coalesce(l.mes_final,extract (month from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) mes_final, \n" +
 				" coalesce(l.ano_final, extract (year from ( date_trunc('month',pi.data_solicitacao+ interval '2 months') + INTERVAL'1 month' - INTERVAL'1 day'))) ano_final,\n" +
 				" pi.codprofissional, f.descfuncionario, pi.observacao, pi.codlaudo, pi.data_solicitacao, codprocedimento_primario, codprocedimento_secundario1, \n" +
-				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, l.cid1 id_cidprimario, pi.sessoes from hosp.paciente_instituicao pi \n" +
+				" codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, l.cid1 id_cidprimario, pi.sessoes, inclusao_sem_laudo from hosp.paciente_instituicao pi \n" +
 				" left join hosp.programa p on (p.id_programa = pi.codprograma) \n" +
 				" left join hosp.grupo g on (pi.codgrupo = g.id_grupo) \n" +
 				" left join hosp.equipe e on (pi.codequipe = e.id_equipe) \n" +
@@ -67,10 +67,12 @@ public class AlteracaoPacienteDAO {
 
 				insercaoPaciente.setId(rs.getInt("id"));
 				insercaoPaciente.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				insercaoPaciente.getPrograma().setPermitePacienteSemLaudo(rs.getBoolean("permite_paciente_sem_laudo"));
 				insercaoPaciente.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				insercaoPaciente.getPrograma().setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
 				insercaoPaciente.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				insercaoPaciente.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+				insercaoPaciente.setInsercaoPacienteSemLaudo(rs.getBoolean("inclusao_sem_laudo"));
 				if ((rs.getString("codpaciente_laudo"))!=null) {
 					insercaoPaciente.getLaudo().setId(rs.getInt("codlaudo"));
 					insercaoPaciente.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente_laudo"));
@@ -82,12 +84,10 @@ public class AlteracaoPacienteDAO {
 					insercaoPaciente.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
 					insercaoPaciente.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
 					insercaoPaciente.getLaudo().getCid1().setIdCid(rs.getInt("id_cidprimario"));
-					insercaoPaciente.setInsercaoPacienteSemLaudo(false);
 				} else
 				{
 					insercaoPaciente.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
 					insercaoPaciente.getPaciente().setNome(rs.getString("nome"));
-					insercaoPaciente.setInsercaoPacienteSemLaudo(true);
 				}
 				insercaoPaciente.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				insercaoPaciente.getEquipe().setDescEquipe(rs.getString("descequipe"));
@@ -1390,7 +1390,7 @@ public class AlteracaoPacienteDAO {
 
 			InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();
 
-			insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao);
+			insercaoPacienteDAO.inserirDiasAtendimentoTurno(idPacienteInstituicao, listaProfissionais, conexao, null);
 
 			List<AgendaBean> listAgendamentoProfissionalAux = new ArrayList<>();
 			listAgendamentoProfissionalAux.addAll(listAgendamentoProfissional);

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +31,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
@@ -45,6 +48,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -610,22 +614,36 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getDataSolicitacao();
-        Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
+        
+        Date dataInicial = null;
+        Date dataFinal = null;
+        Calendar calendar = Calendar.getInstance();
+        
+        if(insercao.isInsercaoPacienteSemLaudo()) {
+        	dataInicial = insercao.getDataSolicitacao();
+            calendar.setTime(dataInicial);
+            calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
+            dataFinal = calendar.getTime();
+        }
+        else {        	
+        	GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+			dataInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        }
+        
+        Long dt = (dataFinal.getTime() - dataInicial.getTime());
 
         dt = (dt / 86400000L);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getDataSolicitacao());
+        calendar.setTime(insercao.getDataSolicitacao());
 
         for (int i = 0; i <= dt; i++) {
 
             if (i > 0) {
-                c.add(Calendar.DAY_OF_MONTH, 1);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
 
-            int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+            int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
 
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
                 for (int j = 0; j < insercao.getFuncionario()
@@ -639,7 +657,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                         agenda.setPaciente(
                                 insercao.getLaudo().getPaciente());
 
-                        agenda.setDataAtendimento(c.getTime());
+                        agenda.setDataAtendimento(calendar.getTime());
 
                         listAgendamentoProfissional.add(agenda);
 
@@ -655,39 +673,48 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
 
+    	GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-        Date d1 = periodoInicial;
-        Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        Date dataInicial = null;
+        Date dataFinal = null;
+        Calendar calendar = Calendar.getInstance();
         
-        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d2.getTime() , d1.getTime());
+        if(insercao.isInsercaoPacienteSemLaudo()) {
+        	dataInicial = insercao.getDataSolicitacao();
+            calendar.setTime(dataInicial);
+            calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
+            dataFinal = calendar.getTime();
+        }
+        else {        	
+        	dataInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        }
+        
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataFinal.getTime() , dataInicial.getTime());
       
-
-        Calendar c = Calendar.getInstance();
-        c.setTime(periodoInicial);
+        calendar.setTime(dataInicial);
         
         for (int i = 0; i <= dt; i++) {
 
-            int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+            int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
                     for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().size(); h++) {
-                        if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                        if (!listaDatasDeAtendimento.contains(calendar.getTime())) {
                             if (diaSemana == listaProfissionaisAdicionados.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
                                 AgendaBean agenda = new AgendaBean();
 
                                 agenda.setPaciente(
                                         insercao.getLaudo().getPaciente());
 
-                                agenda.setDataAtendimento(c.getTime());
+                                agenda.setDataAtendimento(calendar.getTime());
 
                                 agenda.setProfissional(listaProfissionaisAdicionados.get(j));
 
                                 listAgendamentoProfissional.add(agenda);
-                                listaDatasDeAtendimento.add(c.getTime());
+                                listaDatasDeAtendimento.add(calendar.getTime());
 
                             }
                         }
@@ -695,38 +722,51 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 }
 
             }
-            c.add(Calendar.DAY_OF_MONTH, 1);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         }
 
     }
+    
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
 
+    	GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-        Date d1 = periodoInicial;
-        Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
+        Date dataInicial = null;
+        Date dataFinal = null;
+        
+        Calendar calendar = Calendar.getInstance();
+        
+        if(insercao.isInsercaoPacienteSemLaudo()) {
+        	dataInicial = insercao.getDataSolicitacao();
+            calendar.setTime(dataInicial);
+            calendar.add(Calendar.DAY_OF_MONTH, new UnidadeDAO().retornaValidadePadraoLaudo());
+            dataFinal = calendar.getTime();
+        }
+        else {        	
+        	dataInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
+        	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        }
+        
+        Long dt = (dataFinal.getTime() - dataInicial.getTime());
 
         dt = (dt / 86400000L);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(periodoInicial);
+        calendar.setTime(dataInicial);
 
         for (int i = 0; i <= dt; i++) {
 
             if (i > 0) {
-                c.add(Calendar.DAY_OF_MONTH, 1);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
 
-            int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+            int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int h = 0; h < listaDias.size(); h++) {
-                    if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                    if (!listaDatasDeAtendimento.contains(calendar.getTime())) {
                         if (diaSemana == listaDias.get(h)) {
 
                             AgendaBean agenda = new AgendaBean();
@@ -734,10 +774,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                             agenda.setPaciente(
                                     insercao.getLaudo().getPaciente());
 
-                            agenda.setDataAtendimento(c.getTime());
+                            agenda.setDataAtendimento(calendar.getTime());
 
                             listAgendamentoProfissional.add(agenda);
-                            listaDatasDeAtendimento.add(c.getTime());
+                            listaDatasDeAtendimento.add(calendar.getTime());
 
                         }
                     }
@@ -764,19 +804,61 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	return false;
     }
     
+    public void validarInsercaoNormalDePacienteSemLaudo() throws ProjetoException, SQLException {
+
+    	if(!pacienteValido(insercao.getPaciente()))
+    		return;
+    	
+		if (VerificadorUtil.verificarSeObjetoNulo(insercao.getTurno())) {
+			JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
+		} 
+		else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getIdPrograma())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getGrupo().getIdGrupo())) {
+			if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+					insercao.getGrupo().getIdGrupo(), insercao.getPaciente().getId_paciente())) {
+				JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
+			}
+
+			else if (insercao.getEncaixe()) {
+				gravarInsercaoPaciente();
+			}
+
+			else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+				if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
+					gravarInsercaoPaciente();
+				} else {
+					JSFUtil.adicionarMensagemErro(
+							"Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!", "Erro");
+				}
+			}
+		}
+
+		else {
+			if (insercao.getEncaixe()) {
+				gravarInsercaoPaciente();
+			} else if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
+				gravarInsercaoPaciente();
+			} else {
+				JSFUtil.adicionarMensagemErro(
+						"Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
+						"Erro");
+			}
+		}
+    }
+    
+    public boolean pacienteValido(PacienteBean paciente) {
+    	if(VerificadorUtil.verificarSeObjetoNulo(paciente) 
+    			|| VerificadorUtil.verificarSeObjetoNuloOuZero(paciente.getId_paciente())) {
+    		JSFUtil.adicionarMensagemErro("Paciente: Campo Obrigatório", "");
+    		return false;
+    	}
+    	return true;
+    }
+    
     public void validarInsercaoPaciente() throws ProjetoException, SQLException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
     			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getLaudo().getPaciente())) {
-			
-//			  GerenciarPacienteController gerenciarPacienteController = new
-//			  GerenciarPacienteController(); 
-//			  Date dataSolicitacaoCorreta =
-//			  gerenciarPacienteController.ajustarDataDeSolicitacao(
-//			  insercao.getDataSolicitacao(), insercao.getLaudo().getId(),
-//			  insercao.getPaciente().getId_paciente(),
-//			  insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
-			 
-			// insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+
 			if (VerificadorUtil.verificarSeObjetoNulo(insercao.getTurno())) {
 				JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
 			} else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getIdPrograma()) && !VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getGrupo().getIdGrupo())) {
@@ -813,6 +895,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 			}
     	}
     }
+    
     
     public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente) throws ProjetoException, SQLException {
     	ProgramaDAO programaDAO = new ProgramaDAO();
@@ -867,7 +950,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     } */
 
     public void gravarInsercaoPaciente() throws ProjetoException {
-            if (insercao.getLaudo().getId() != null) {
+            if (insercao.isInsercaoPacienteSemLaudo() || insercao.getLaudo().getId() != null) {
 
                 Boolean cadastrou = false;
 
@@ -883,13 +966,24 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
                 if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 	if(!listaProfissionaisAdicionadosEstaVazia(this.listaProfissionaisAdicionados)) {
-                		// gerarListaAgendamentosEquipe();
-                		if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
-                			cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal,
-								listaLiberacao, listaProfissionaisAdicionados);
-                		else
+                		if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+                			if(insercao.isInsercaoPacienteSemLaudo()) {
+                				cadastrou = iDao.gravarInsercaoNormalSemLaudo(insercao, 
+                						listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, OpcaoAtendimento.SOMENTE_HORARIO);                				
+                			} else {
+                				cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal,
+                						listaLiberacao, listaProfissionaisAdicionados);
+                			}
+                		}
+                		else {
+                			if(insercao.isInsercaoPacienteSemLaudo()) {
+                				cadastrou = iDao.gravarInsercaoNormalSemLaudo(insercao, 
+                						listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, OpcaoAtendimento.SOMENTE_TURNO);
+                			} else {
                 			cadastrou = iDao.gravarInsercaoEquipeTurno(insercao, listaProfissionaisAdicionados,
 								listaAgendamentosProfissionalFinal, listaLiberacao);
+                			}
+                		}
                     }
                 }
                 if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
@@ -930,7 +1024,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void listarProfissionaisEquipe() throws ProjetoException {
     	limparTabelasProfissionais();
-        if (insercao.getLaudo().getId() != null) {
+        if (insercao.getLaudo().getId() != null || insercao.isInsercaoPacienteSemLaudo()) {
             if (insercao.getEquipe() != null) {
                 if (insercao.getEquipe().getCodEquipe() != null) {
                     listaProfissionaisEquipe = eDao
@@ -941,7 +1035,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 JSFUtil.adicionarMensagemErro("Escolha uma equipe!",
                         "Bloqueio");
             }
-        } else {
+        } else if(!insercao.isInsercaoPacienteSemLaudo()){
             JSFUtil.adicionarMensagemErro("Carregue um laudo primeiro!", "Bloqueio");
 
         }
@@ -1226,6 +1320,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	}
     	else
     		this.existeCargaSigtapParaDataSolicitacao = true;
+    }
+    
+    public void limparLaudo() {
+    	insercao.setLaudo(new LaudoBean());
     }
 
     public InsercaoPacienteBean getInsercao() {

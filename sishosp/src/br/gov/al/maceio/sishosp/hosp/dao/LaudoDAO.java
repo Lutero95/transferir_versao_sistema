@@ -850,7 +850,7 @@ public class LaudoDAO {
 
         LaudoBean laudo = new LaudoBean();
 
-        String sql = "select mes_final, ano_final from hosp.laudo where laudo.id_laudo=(\n" +
+        String sql = "select id_laudo, mes_final, ano_final from hosp.laudo where laudo.id_laudo=(\n" +
                 " select max(l1.id_laudo) from hosp.paciente_instituicao pi1\n" +
                 " join hosp.laudo l1 on l1.id_laudo = pi1.codlaudo where l1.codpaciente=? and pi1.codprograma=? and pi1.codgrupo=? " +
                 " and to_char(l1.ano_final, '9999')||lpad(trim(to_char(l1.mes_final,'99')),2,'0')=\n" +
@@ -872,6 +872,7 @@ public class LaudoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
+            	laudo.setId(rs.getInt("id_laudo"));
                 laudo.setMesFinal(rs.getInt("mes_final"));
                 laudo.setAnoFinal(rs.getInt("ano_final"));
             }
