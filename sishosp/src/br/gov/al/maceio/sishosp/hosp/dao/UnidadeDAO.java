@@ -1000,5 +1000,33 @@ public class UnidadeDAO {
         }
         return resultado;
     }
+    
+    public Integer retornaValidadePadraoLaudo() throws ProjetoException {
+
+        Integer validade = null;
+        String sql = "select validade_padrao_laudo from hosp.parametro where codunidade = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getUnidade().getId());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                validade = rs.getInt("validade_padrao_laudo");
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return validade;
+    }
 
 }
