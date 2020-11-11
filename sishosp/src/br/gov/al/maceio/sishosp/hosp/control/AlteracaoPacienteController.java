@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +15,8 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import org.joda.time.LocalDate;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
@@ -965,7 +968,7 @@ public class AlteracaoPacienteController implements Serializable {
 
     private void validaDataLaudoComDataAnteriorPacienteSemLaudo() throws ProjetoException {
 
-        String condicaoDatasLaudo = retornaCondicaoLaudo();
+        String condicaoDatasLaudo = compararDatasLaudo(insercao.getDataSolicitacao(), insercao.getLaudo().getMesFinal(), insercao.getLaudo().getAnoFinal());
 
         if(condicaoDatasLaudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
             JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
@@ -986,38 +989,13 @@ public class AlteracaoPacienteController implements Serializable {
         }
     }
 
-    private String retornaCondicaoLaudo() {
-
-        Integer mesLaudoAtual;
-        Integer anoLaudoAtual;
-        boolean vigenciaInicial;
-
-        if(VerificadorUtil.verificarSeObjetoNuloOuZero(laudo.getId())) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(insercao.getDataSolicitacao());
-            mesLaudoAtual = calendar.get(Calendar.MONTH)+1;
-            anoLaudoAtual = calendar.get(Calendar.YEAR);
-            vigenciaInicial = true;
-        }
-        else {
-            mesLaudoAtual = laudo.getMesFinal();
-            anoLaudoAtual = laudo.getAnoFinal();
-            vigenciaInicial = false;
-        }
-
-        return compararDatasLaudo(mesLaudoAtual, anoLaudoAtual,
-                insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio(), vigenciaInicial);
-    }
-
-
-    private String compararDatasLaudo(Integer mesAtual, Integer anoAtual, Integer mesNovo, Integer anoNovo, boolean vigenciaInicial){
+    private String compararDatasLaudo(Date dataLaudoAtual, Integer mesNovo, Integer anoNovo) {
 
         String retorno = "";
 
-        final Boolean INICIO_MES = true;
+        final Boolean FIM_MES = false;
 
-        Date dataLaudoAtual = DataUtil.adicionarMesIhAnoEmDate(mesAtual, anoAtual, vigenciaInicial);
-        Date dataLaudoNovo = DataUtil.adicionarMesIhAnoEmDate(mesNovo, anoNovo, INICIO_MES);
+        Date dataLaudoNovo = DataUtil.adicionarMesIhAnoEmDate(mesNovo, anoNovo, FIM_MES);
 
         long totalDiasDataLaudoAtual = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoAtual);
         long totalDiasDataLaudoNovo = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoNovo);
@@ -1033,9 +1011,7 @@ public class AlteracaoPacienteController implements Serializable {
         else{
             retorno = RetornoLaudoRenovacao.DATA_OK.getSigla();
         }
-
         return retorno;
-
     }
 
 

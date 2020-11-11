@@ -1263,7 +1263,7 @@ public class AlteracaoPacienteDAO {
 
 		Boolean retorno = false;
 
-		String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ? and codpaciente=? and coalesce(situacao,'')<>'C'";
+		String sql = "SELECT a.id_atendimento FROM hosp.atendimentos a join hosp.atendimentos1 a1 on a1.id_atendimento  = a.id_atendimento  WHERE a.codprograma = ? AND a.codgrupo = ? AND a.codequipe = ? AND a.dtaatende = ? and a.codpaciente=? and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido, 'N' )= 'N'";
 
 		try {
 			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
