@@ -468,7 +468,7 @@ public class GerenciarPacienteDAO {
                     "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
                     "WHERE   coalesce(a1.excluido, 'N' )='N' and  a.id_paciente_instituicao = ? AND a.dtaatende >= current_date AND  " +
                     "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento and coalesce(aa1.excluido, 'N' )='N') = " +
-                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND a1.id_situacao_atendimento IS NULL and coalesce(aaa1.excluido, 'N' )='N') " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL and coalesce(aaa1.excluido, 'N' )='N') " +
                     "ORDER BY a1.id_atendimento;";
 
 
