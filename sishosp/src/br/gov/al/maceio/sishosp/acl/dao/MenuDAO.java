@@ -1000,7 +1000,7 @@ public class MenuDAO {
 	public ArrayList<Menu> listarMenusPerfil(Long idPerfil)
 			throws ProjetoException {
 
-		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
+		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, "
 				+ "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
 				+ "si.descricao as desc_sis, si.sigla as sigla_sis from acl.perm_perfil pp "
 				+ "join acl.permissao pm on pm.id = pp.id_permissao "

@@ -282,45 +282,177 @@ public class FuncionarioDAO {
 
 	public List<Permissoes> carregarPermissoes(FuncionarioBean u) throws ProjetoException {
 
-		String sql = "select  distinct si.id as sid, si.descricao as sdesc, pf.descricao pfdesc, "
-				+ "pm.id as pmid, pm.descricao as pmdesc, 0 as funid, '' as fundesc, '' as funcodigo, "
-				+ " false as funativa, 0 as funidsis, me.id as meid, me.descricao as medesc, me.desc_pagina, "
-				+ "me.diretorio, me.extensao, me.codigo as cod_menu, me.indice, me.tipo, me.ativo as meativo, "
-				+ "me.action_rel, me.onclick_rel from acl.perm_perfil pp "
-				+ "join acl.funcionarios us on us.id_perfil = pp.id_perfil "
-				+ "join acl.perfil pf on pf.id = pp.id_perfil " + "join acl.permissao pm on pm.id = pp.id_permissao "
-				+ "join acl.perm_geral pg on pg.id_permissao = pm.id " + "join acl.menu me on me.id = pg.id_menu "
-				+ "join acl.menu_sistema ms on ms.id_menu = me.id "
-				+ "join acl.sistema si on si.id = ms.id_sistema where us.id_funcionario = ? and me.ativo = true "
-				+ "union select si.id as sid, si.descricao as sdesc, pf.descricao pfdesc, "
-				+ "pm.id pmid, pm.descricao as pmdesc, fun.id as funid, fun.descricao as fundesc, "
-				+ "fun.codigo as funcodigo, fun.ativa as funativa, fun.id_sistema as fusidsis, 0 as meid, "
-				+ "'' as medesc, '', '', '', '' as cod_menu, '', case when '' = '' then 'funcao' end, "
-				+ "false as meativo, '', '' from acl.perm_perfil pp "
-				+ "join acl.funcionarios us on us.id_perfil = pp.id_perfil "
-				+ "join acl.perfil pf on pf.id = pp.id_perfil " + "join acl.permissao pm on pm.id = pp.id_permissao "
-				+ "join acl.perm_geral pg on pg.id_permissao = pm.id " + "join acl.funcao fun on fun.id = pg.id_funcao "
-				+ "join acl.sistema si on si.id = fun.id_sistema where us.id_funcionario = ? and fun.ativa = true "
-				+ "union select si.id as sid, si.descricao as sdesc, '' as pfdesc, "
-				+ "pm.id as pmid, pm.descricao as pmdesc, 0 as funid, '' as fundesc, '' as funcodigo, "
-				+ "false as funativa, 0 as funidsis, me.id as meid, me.descricao as medesc, me.desc_pagina, "
-				+ "me.diretorio, me.extensao, me.codigo as cod_menu, me.indice, me.tipo, me.ativo as meativo, "
-				+ "me.action_rel, me.onclick_rel from acl.perm_usuario pu "
-				+ "join acl.funcionarios us on us.id_funcionario = pu.id_usuario "
-				+ "join acl.permissao pm on pm.id = pu.id_permissao "
-				+ "join acl.perm_geral pg on pg.id_permissao = pm.id " + "join acl.menu me on me.id = pg.id_menu "
-				+ "join acl.menu_sistema ms on ms.id_menu = me.id "
-				+ "join acl.sistema si on si.id = ms.id_sistema where us.id_funcionario = ? and me.ativo = true "
-				+ "union select   si.id as sid, si.descricao as sdesc, '', "
-				+ "pm.id pmid, pm.descricao as pmdesc, fun.id as funid, fun.descricao as fundesc, "
-				+ "fun.codigo as funcodigo, fun.ativa as funativa, fun.id_sistema as funidsis, 0 as meid, "
-				+ "'' as medesc, '', '', '', '' as cod_menu, '', case when '' = '' then 'funcao' end, "
-				+ "false as meativo, '', ''  from acl.perm_usuario pu "
-				+ "join acl.funcionarios us on us.id_funcionario = pu.id_usuario "
-				+ "join acl.permissao pm on pm.id = pu.id_permissao "
-				+ "join acl.perm_geral pg on pg.id_permissao = pm.id " + "join acl.funcao fun on fun.id = pg.id_funcao "
-				+ "join acl.sistema si on si.id = fun.id_sistema where us.id_funcionario = ? and fun.ativa = true "
-				+ "order by medesc, sid";
+		String sql = "\n" +
+				"select\n" +
+				"\tdistinct si.id as sid,\n" +
+				"\tsi.descricao as sdesc,\n" +
+				"\tpf.descricao pfdesc,\n" +
+				"\tpm.id as pmid,\n" +
+				"\tpm.descricao as pmdesc,\n" +
+				"\t0 as funid,\n" +
+				"\t'' as fundesc,\n" +
+				"\t'' as funcodigo,\n" +
+				"\tfalse as funativa,\n" +
+				"\t0 as funidsis,\n" +
+				"\tme.id as meid,\n" +
+				"\tme.descricao as medesc,\n" +
+				"\tme.desc_pagina,\n" +
+				"\tme.diretorio,\n" +
+				"\tme.extensao,\n" +
+				"\tme.codigo as cod_menu,\n" +
+				"\tme.indice,\n" +
+				"\tme.tipo,\n" +
+				"\tme.ativo as meativo,\n" +
+				"\tme.action_rel,\n" +
+				"\tme.onclick_rel\n" +
+				"from\n" +
+				"\tacl.perm_perfil pp\n" +
+				"join acl.funcionarios us on\n" +
+				"\tus.id_perfil = pp.id_perfil\n" +
+				"join acl.perfil pf on\n" +
+				"\tpf.id = pp.id_perfil\n" +
+				"join acl.permissao pm on\n" +
+				"\tpm.id = pp.id_permissao\n" +
+				"join acl.perm_geral pg on\n" +
+				"\tpg.id_permissao = pm.id\n" +
+				"join acl.menu me on\n" +
+				"\tme.id = pg.id_menu\n" +
+				"join acl.menu_sistema ms on\n" +
+				"\tms.id_menu = me.id\n" +
+				"join acl.sistema si on\n" +
+				"\tsi.id = ms.id_sistema\n" +
+				"where\n" +
+				"\tus.id_funcionario = ?\n" +
+				"\tand me.ativo = true\n" +
+				"union\n" +
+				"select distinct \n" +
+				"\tsi.id as sid,\n" +
+				"\tsi.descricao as sdesc,\n" +
+				"\tpf.descricao pfdesc,\n" +
+				"\tpm.id pmid,\n" +
+				"\tpm.descricao as pmdesc,\n" +
+				"\tfun.id as funid,\n" +
+				"\tfun.descricao as fundesc,\n" +
+				"\tfun.codigo as funcodigo,\n" +
+				"\tfun.ativa as funativa,\n" +
+				"\tfun.id_sistema as fusidsis,\n" +
+				"\t0 as meid,\n" +
+				"\t'' as medesc,\n" +
+				"\t'',\n" +
+				"\t'',\n" +
+				"\t'',\n" +
+				"\t'' as cod_menu,\n" +
+				"\t'',\n" +
+				"\tcase\n" +
+				"\t\twhen '' = '' then 'funcao'\n" +
+				"\tend,\n" +
+				"\tfalse as meativo,\n" +
+				"\t'',\n" +
+				"\t''\n" +
+				"from\n" +
+				"\tacl.perm_perfil pp\n" +
+				"join acl.funcionarios us on\n" +
+				"\tus.id_perfil = pp.id_perfil\n" +
+				"join acl.perfil pf on\n" +
+				"\tpf.id = pp.id_perfil\n" +
+				"join acl.permissao pm on\n" +
+				"\tpm.id = pp.id_permissao\n" +
+				"join acl.perm_geral pg on\n" +
+				"\tpg.id_permissao = pm.id\n" +
+				"join acl.funcao fun on\n" +
+				"\tfun.id = pg.id_funcao\n" +
+				"join acl.sistema si on\n" +
+				"\tsi.id = fun.id_sistema\n" +
+				"where\n" +
+				"\tus.id_funcionario = ?\n" +
+				"\tand fun.ativa = true\n" +
+				"union\n" +
+				"select distinct \n" +
+				"\tsi.id as sid,\n" +
+				"\tsi.descricao as sdesc,\n" +
+				"\tpf.descricao as pfdesc,\n" +
+				"\tpm.id as pmid,\n" +
+				"\tpm.descricao as pmdesc,\n" +
+				"\t0 as funid,\n" +
+				"\t'' as fundesc,\n" +
+				"\t'' as funcodigo,\n" +
+				"\tfalse as funativa,\n" +
+				"\t0 as funidsis,\n" +
+				"\tme.id as meid,\n" +
+				"\tme.descricao as medesc,\n" +
+				"\tme.desc_pagina,\n" +
+				"\tme.diretorio,\n" +
+				"\tme.extensao,\n" +
+				"\tme.codigo as cod_menu,\n" +
+				"\tme.indice,\n" +
+				"\tme.tipo,\n" +
+				"\tme.ativo as meativo,\n" +
+				"\tme.action_rel,\n" +
+				"\tme.onclick_rel\n" +
+				"from\n" +
+				"\tacl.perm_usuario pu\n" +
+				"join acl.funcionarios us on\n" +
+				"\tus.id_funcionario = pu.id_usuario\n" +
+				"join acl.permissao pm on\n" +
+				"\tpm.id = pu.id_permissao\n" +
+				"join acl.perm_geral pg on\n" +
+				"\tpg.id_permissao = pm.id\n" +
+				"join acl.menu me on\n" +
+				"\tme.id = pg.id_menu\n" +
+				"join acl.menu_sistema ms on\n" +
+				"\tms.id_menu = me.id\n" +
+				"join acl.sistema si on\n" +
+				"\tsi.id = ms.id_sistema\n" +
+				"\tjoin acl.perfil pf on\n" +
+				"\tpf.id = us.id_perfil \n" +
+				"where\n" +
+				"\tus.id_funcionario = ?\n" +
+				"\tand me.ativo = true\n" +
+				"union\n" +
+				"select distinct \n" +
+				"\tsi.id as sid,\n" +
+				"\tsi.descricao as sdesc,\n" +
+				"\tpf.descricao as pfdesc,\n" +
+				"\tpm.id pmid,\n" +
+				"\tpm.descricao as pmdesc,\n" +
+				"\tfun.id as funid,\n" +
+				"\tfun.descricao as fundesc,\n" +
+				"\tfun.codigo as funcodigo,\n" +
+				"\tfun.ativa as funativa,\n" +
+				"\tfun.id_sistema as funidsis,\n" +
+				"\t0 as meid,\n" +
+				"\t'' as medesc,\n" +
+				"\t'',\n" +
+				"\t'',\n" +
+				"\t'',\n" +
+				"\t'' as cod_menu,\n" +
+				"\t'',\n" +
+				"\tcase\n" +
+				"\t\twhen '' = '' then 'funcao'\n" +
+				"\tend,\n" +
+				"\tfalse as meativo,\n" +
+				"\t'',\n" +
+				"\t''\n" +
+				"from\n" +
+				"\tacl.perm_usuario pu\n" +
+				"join acl.funcionarios us on\n" +
+				"\tus.id_funcionario = pu.id_usuario\n" +
+				"join acl.permissao pm on\n" +
+				"\tpm.id = pu.id_permissao\n" +
+				"join acl.perm_geral pg on\n" +
+				"\tpg.id_permissao = pm.id\n" +
+				"join acl.funcao fun on\n" +
+				"\tfun.id = pg.id_funcao\n" +
+				"join acl.sistema si on\n" +
+				"\tsi.id = fun.id_sistema\n" +
+				"\tjoin acl.perfil pf on\n" +
+				"\tpf.id = us.id_perfil \t\n" +
+				"where\n" +
+				"\tus.id_funcionario = ?\n" +
+				"\tand fun.ativa = true\n" +
+				"order by\n" +
+				"\tmedesc,\n" +
+				"\tsid;";
 
 		List<Permissoes> lista = new ArrayList<>();
 		// FacesContext fc = FacesContext.getCurrentInstance();
