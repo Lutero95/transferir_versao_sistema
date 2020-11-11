@@ -997,6 +997,11 @@ public class AtendimentoController implements Serializable {
     		JSFUtil.adicionarMensagemSucesso("Agendamento Excluído com Sucesso", "");
     	}
     }
+    
+    public void preparaAbrirDialogAjustesEmMassa() {
+    	this.atendimento = new AtendimentoBean();
+    	JSFUtil.abrirDialog("dlgAjustes");
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;

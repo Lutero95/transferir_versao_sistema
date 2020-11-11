@@ -80,14 +80,22 @@
 					
 					<p:row>
 						<br />
-						<p:panelGrid columns="1">
-							<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
-								itemLabel="Listar Apenas Atendimentos sem Cid" />
+						<p:panelGrid columns="2">
+							<p:column colspan="4">
+								<p:selectBooleanCheckbox
+									value="#{AtendimentoController.semCids}"
+									itemLabel="Listar Apenas Atendimentos sem Cid" />
+							</p:column>	
+							
+							<p:column colspan="8">
+								<p:commandButton value="Ajustar em Massa" update=":formAjustes"
+								 action="#{AtendimentoController.preparaAbrirDialogAjustesEmMassa()}"/>
+							</p:column>
 						</p:panelGrid>
 					</p:row>
 
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" paginator="true" rows="20" style="margin-top: 10px"
-						value="#{AtendimentoController.listAtendimentos}">
+						value="#{AtendimentoController.listAtendimentos}" emptyMessage="Nenhum procedimento listado">
 
 						<p:column headerText="Profissional">
 							<h:outputText value="#{tab.funcionario.nome}" />
@@ -100,6 +108,14 @@
 						<p:column headerText="Procedimento">
 							<h:outputText value="#{tab.procedimento.nomeProc}" />
 						</p:column>
+						
+						<p:column headerText="Programa">
+							<h:outputText value="#{tab.programa.descPrograma}" />
+						</p:column>
+						
+						<p:column headerText="Grupo" width="8%">
+							<h:outputText value="#{tab.grupo.descGrupo}" />
+						</p:column>						
 						
 						<p:column headerText="CID">
 							<h:outputText value="#{tab.cidPrimario.cid}" />
@@ -143,6 +159,163 @@
 				</h:form>
 			</div>
 		</div>
+
+		<p:dialog header="Ajustar Atendimentos em Massa"
+			widgetVar="dlgAjustes" responsive="true" width="1000" modal="true" resizable="false">
+			<h:form id="formAjustes">
+
+				<b:row>
+					<b:column span="6">
+						<b:label value="Dia de Atendimento:" severity="info"
+							style="margin-left: 0px;" />
+						<p:panelGrid columns="5" style="margin-left: 2.6%;">
+							<p:column span="3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									required="true" requiredMessage="Insira a data inicial"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
+							</p:column>
+
+							<p:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="à" />
+								</p:outputLabel>
+							</p:column>
+
+							<p:column span="2" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									required="true" requiredMessage="Insira a data final"
+									class="select-agendaEquipe2" showOn="button" size="15"
+									id="dtagen3" locale="pt"
+									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
+							</p:column>
+						</p:panelGrid>
+					</b:column>
+
+					<b:column span="5">
+						<p:panelGrid columns="4" style="margin-top: 3%;">
+							<p:selectOneMenu value="#{AtendimentoController.tipoBusca}">
+								<f:selectItem itemLabel="Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente"
+									itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente"
+									itemValue="matpaciente" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{AtendimentoController.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar" required="true"
+								requiredMessage="Paciente: Campo obrigatório!"
+								style="margin-left: 10px;width:300px" />
+						</p:panelGrid>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<p:outputPanel class="data-size5">
+
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Programa" severity="info" />
+
+							<p:outputPanel id="outProg">
+								<p:autoComplete
+									value="#{AtendimentoController.atendimento.programa}" size="31"
+									converter="conPrograma" class="select-agendaEquipe4"
+									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descPrograma}">
+									<p:ajax event="itemSelect"
+										update=":formAjustes:outProg,
+											:formAjustes:btBusGr, :formAjustes:outGrupo" />
+								</p:autoComplete>
+
+								<p:commandButton id="btBusPr" icon="ui-icon-search"
+									process="@this"
+									action="#{ProgramaController.carregaListaProgramasUsuario()}"
+									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
+							</p:outputPanel>
+						</b:column>
+
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Grupo" severity="info" />
+
+							<p:outputPanel id="outGrupo">
+								<p:autoComplete
+									value="#{AtendimentoController.atendimento.grupo}" size="31"
+									converter="conGrupo" class="select-agendaEquipe4"
+									disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+									completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descGrupo}">
+									<p:ajax event="itemSelect" update=":formAjustes:outGrupo" />
+								</p:autoComplete>
+
+								<p:commandButton id="btBusGr" icon="ui-icon-search"
+									process="@this"
+									action="#{AtendimentoController.listarGruposPorProgramas()}"
+									disabled="#{AtendimentoController.atendimento.programa.idPrograma==null}"
+									update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
+							</p:outputPanel>
+						</b:column>
+
+						<b:column span="2">
+							<p:commandButton value="Buscar" icon="fa fa-fw fa-search"
+								action="#{AtendimentoController.consultarAtendimentos()}"
+								update="dtAtendimentosMassa, msgPagina"
+								style="margin-top: 20%">
+							</p:commandButton>
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+				
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
+							itemLabel="Listar Apenas Atendimentos sem Cid" />
+					</p:column>
+				</p:row>
+
+				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
+					paginator="true" rows="20" style="margin-top: 10px"
+					value="#{AtendimentoController.listAtendimentos}"
+					 emptyMessage="Nenhum procedimento listado">
+
+					<p:column headerText="Profissional">
+						<h:outputText value="#{tab.funcionario.nome}" />
+					</p:column>
+
+					<p:column headerText="Paciente">
+						<h:outputText value="#{tab.paciente.nome}" />
+					</p:column>
+
+					<p:column headerText="Procedimento">
+						<h:outputText value="#{tab.procedimento.nomeProc}" />
+					</p:column>
+
+					<p:column headerText="CID">
+						<h:outputText value="#{tab.cidPrimario.cid}" />
+					</p:column>
+
+					<p:column headerText="Data" width="80">
+						<h:outputText value="#{tab.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+						update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgAjustes').hide();"
+						style="margin-left: 10px;" />
+				</div>
+			</h:form>
+		</p:dialog>
 		
 		<p:dialog header="Alteração de CID " widgetVar="dlgConsulCid1"
                   responsive="true" height="350" modal="true" dynamic="true">
@@ -363,9 +536,76 @@
 					<p:commandButton value="Cancelar" look="cancel" size="sm"
 						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
 				</div>
-
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
+			<h:form id="formConsuProg">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+					display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                            Programa
+                        </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":formAjustes:outProg :formAjustes:btBusGr, :formAjustes:outGrupo"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AtendimentoController.atendimento.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			draggable="false" resizable="false" closable="true" modal="true"
+			styleClass="sm-size-dlg topDialog2" showEffect="fade" hideEffect="clip"
+			responsive="true">
+			
+			<h:form id="formConsuGrop">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AtendimentoController.listaGrupos}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
+                            Grupo
+                        </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":formAjustes:outGrupo"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AtendimentoController.atendimento.grupo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+		
 
 	</ui:define>
 </ui:composition>
