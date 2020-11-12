@@ -99,7 +99,7 @@ public class TransferenciaPacienteDAO {
 
             String sql = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " +
                     "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
-                    "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  " +
+                    "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND coalesce(a.situacao,'A') <> 'C' AND coalesce(a1.excluido,'N')='N' and coalesce(a.presenca,'N') ='N' AND  " +
                     "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " +
                     "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL) " +
                     "ORDER BY a1.id_atendimento;";
