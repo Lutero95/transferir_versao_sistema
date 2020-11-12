@@ -1934,7 +1934,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                                             String campoBusca, String tipo) throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
-        String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
+        String sql = "SELECT distinct a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso,  "
                 + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, prog.id_programa, prog.descprograma, "
                 + " gr.id_grupo, gr.descgrupo, "
@@ -1947,13 +1947,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N') "
                 + " then 'Atendimento Informado' " + " else 'Atendimento Informado Parcialmente' " + " end as situacao_atendimento_informado "
 
-                + " FROM  hosp.atendimentos a "
+                + " FROM  hosp.atendimentos a join hosp.atendimentos1 a1 on a1.id_atendimento  = a.id_atendimento  "
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
                 + " LEFT JOIN hosp.programa prog ON (prog.id_programa = a.codprograma) "
                 + " LEFT JOIN hosp.grupo gr ON (gr.id_grupo = a.codgrupo) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
-                + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + " WHERE a.cod_unidade = ? and coalesce(a.situacao,'')<>'C' ";
+                + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) " + " WHERE a.cod_unidade = ? and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N' )='N' ";
         if (dataAgenda != null)
             sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
         if (!situacao.equals("T"))

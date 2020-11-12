@@ -493,7 +493,7 @@ public class AtendimentoDAO {
 				" left join hosp.programa pr on (pr.id_programa = a.codprograma) " + 
 				" left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento) " + 
 				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " + 
-				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C'";
+				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C' and coalesce(a1.excluido,'N' )='N'";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
