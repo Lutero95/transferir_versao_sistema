@@ -620,7 +620,7 @@ public class EquipeDAO {
         return retorno;
     }
 
-    public Boolean excluirProfissionalDeEquipe
+    private Boolean excluirProfissionalDeEquipe
     	(int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
     		throws ProjetoException, SQLException {
 
@@ -634,8 +634,8 @@ public class EquipeDAO {
             ps.setLong(2, codigoProfissional);
             ps.execute();
 
-            retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(
-                    listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), codigoProfissional, idRemocaoProfissionalEquipe, con);
+            retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), 
+                    codigoProfissional, idRemocaoProfissionalEquipe, codigoEquipe, con);
 
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
@@ -647,7 +647,7 @@ public class EquipeDAO {
         return retorno;
     }
 
-    public ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar)
+    private ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar)
     		throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
@@ -678,8 +678,8 @@ public class EquipeDAO {
         return lista;
     }
 
-    public Boolean gravarLogRemocaoProfissionalEquipeAtendimentos1(
-            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+    private Boolean gravarLogRemocaoProfissionalEquipeAtendimentos1(
+            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Integer codigoEquipe, Connection conAuxiliar)
             		throws SQLException, ProjetoException {
 
         Boolean retorno = false;
@@ -697,7 +697,7 @@ public class EquipeDAO {
             }
 
             retorno = excluirAtendimentosProfissionalRemovidoEquipe(
-                    listaAtendimentos1, codigoProfissional, idRemocaoProfissionalEquipe, con);
+                    listaAtendimentos1, codigoProfissional, idRemocaoProfissionalEquipe, codigoEquipe, con);
 
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
@@ -709,8 +709,8 @@ public class EquipeDAO {
         return retorno;
     }
 
-    public Boolean excluirAtendimentosProfissionalRemovidoEquipe(
-            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+    private Boolean excluirAtendimentosProfissionalRemovidoEquipe(
+            List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Integer codigoEquipe, Connection conAuxiliar)
             		throws ProjetoException, SQLException {
 
         Boolean retorno = false;
@@ -727,7 +727,7 @@ public class EquipeDAO {
 
             retorno = gravarLogRemocaoProfissionalEquipePacienteInstituicao(
                     listarIdPacienteInstituicaoAhSeremApagados(
-                            codigoProfissional, listaAtendimentos1, conAuxiliar), codigoProfissional, idRemocaoProfissionalEquipe, conAuxiliar);
+                            codigoProfissional, codigoEquipe, conAuxiliar), codigoProfissional, idRemocaoProfissionalEquipe, conAuxiliar);
 
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
@@ -739,32 +739,26 @@ public class EquipeDAO {
         return retorno;
     }
 
-    public ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, List<Integer> listaAtendimentos1, Connection conAuxiliar) 
+    private ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, Integer idEquipe, Connection conAuxiliar) 
     		throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
-        String sql = "SELECT DISTINCT pda.id_paciente_instituicao " +
-                "FROM hosp.profissional_dia_atendimento pda " +
-                "JOIN hosp.atendimentos a ON (pda.id_paciente_instituicao = a.id_paciente_instituicao) " +
-                "WHERE pda.id_profissional = ? " +
-                "AND a.id_atendimento = " +
-                "(SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 WHERE a1.id_atendimentos1 = ?);";
+        String sql = "select distinct pda.id_paciente_instituicao from hosp.profissional_dia_atendimento pda " + 
+        		"join hosp.paciente_instituicao pi on pda.id_paciente_instituicao = pi.id " + 
+        		"where pi.status = 'A' and pi.codequipe = ? and pda.id_profissional = ?;";
 
         try {
-            for (int i = 0; i < listaAtendimentos1.size(); i++) {
-                PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-                stm.setLong(1, codigoProfissional);
-                stm.setInt(2, listaAtendimentos1.get(i));
-                ResultSet rs = stm.executeQuery();
-                
-                while (rs.next()) {
-                    Integer idPacienteInstituicao = null;
-                    idPacienteInstituicao =  rs.getInt("id_paciente_instituicao");
-                    if (!lista.contains(idPacienteInstituicao))
-                    lista.add(idPacienteInstituicao);
-                }
-            }
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+			stm.setInt(1, idEquipe);
+			stm.setLong(2, codigoProfissional);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Integer idPacienteInstituicao = null;
+				idPacienteInstituicao = rs.getInt("id_paciente_instituicao");
+				lista.add(idPacienteInstituicao);
+			}
         } catch (SQLException sqle) {
         	conAuxiliar.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -775,7 +769,7 @@ public class EquipeDAO {
         return lista;
     }
 
-    public Boolean gravarLogRemocaoProfissionalEquipePacienteInstituicao(
+    private Boolean gravarLogRemocaoProfissionalEquipePacienteInstituicao(
             List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) 
             		throws ProjetoException, SQLException {
 
