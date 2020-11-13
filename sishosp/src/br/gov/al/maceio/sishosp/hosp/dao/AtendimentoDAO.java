@@ -1520,10 +1520,14 @@ public class AtendimentoDAO {
 		else if ((tipoBusca.equals("prontpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
 			sql += " and pa.id_paciente = ?";
 		
-		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma()))
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
 			sql += " and a.codprograma = ? ";
-		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo()))
+		}	
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
 			sql += " and a.codgrupo = ? ";		
+		}	
 		
 		String filtroSql = "and a1.id_cidprimario is null "; 
 		String ordenacaoSql = "order by a.dtaatende, pa.nome; ";
@@ -1553,13 +1557,15 @@ public class AtendimentoDAO {
 			}
 			
 			int contador = 4;
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
 				stm.setInt(contador, atendimentoBusca.getPrograma().getIdPrograma());
 				contador++;
 			}	
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo()))
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
 				stm.setInt(contador, atendimentoBusca.getGrupo().getIdGrupo());
-			
+			}
 			ResultSet rs = stm.executeQuery();
 			while(rs.next()) {
 				AtendimentoBean atendimento = new AtendimentoBean();

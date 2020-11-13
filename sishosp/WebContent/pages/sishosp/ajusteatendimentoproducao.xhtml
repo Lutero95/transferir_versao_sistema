@@ -89,7 +89,8 @@
 							
 							<p:column colspan="8">
 								<p:commandButton value="Ajustar em Massa" update=":formAjustes"
-								 action="#{AtendimentoController.preparaAbrirDialogAjustesEmMassa()}"/>
+								 action="#{AtendimentoController.preparaAbrirDialogAjustesEmMassa()}"
+								 disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}"/>
 							</p:column>
 						</p:panelGrid>
 					</p:row>
@@ -129,8 +130,8 @@
 
 						<p:column headerText="Alterar Cid" width="70">
 							<p:commandButton title="Alterar cid" icon="ui-icon-pencil"
-								size="sm" oncomplete="PF('dlgConsulCid1').show();"
-								action="#{AtendimentoController.limparDialogBuscaCid()}" update=":formConsulCid1"
+								size="sm"  update=":formConsulCid1" actionListener="#{AtendimentoController.configuraDialogsParaAlteracaoUnica()}"
+								action="#{AtendimentoController.limparDialogBuscaCid()}"
 								disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{AtendimentoController.atendimento}" />
@@ -160,8 +161,8 @@
 			</div>
 		</div>
 
-		<p:dialog header="Ajustar Atendimentos em Massa"
-			widgetVar="dlgAjustes" responsive="true" width="1000" modal="true" resizable="false">
+		<p:dialog header="Ajustar Atendimentos em Massa" height="350" width="1000"
+			widgetVar="dlgAjustes" responsive="true" modal="true" resizable="false">
 			<h:form id="formAjustes">
 
 				<b:row>
@@ -263,7 +264,7 @@
 
 						<b:column span="2">
 							<p:commandButton value="Buscar" icon="fa fa-fw fa-search"
-								action="#{AtendimentoController.consultarAtendimentos()}"
+								action="#{AtendimentoController.listaAtendimentos1AjustesEmMassa()}"
 								update="dtAtendimentosMassa, msgPagina"
 								style="margin-top: 20%">
 							</p:commandButton>
@@ -271,17 +272,10 @@
 					</p:outputPanel>
 				</b:row>
 				
-				<p:row>
-					<p:column>
-						<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
-							itemLabel="Listar Apenas Atendimentos sem Cid" />
-					</p:column>
-				</p:row>
-
 				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
-					paginator="true" rows="20" style="margin-top: 10px"
-					value="#{AtendimentoController.listAtendimentos}"
-					 emptyMessage="Nenhum procedimento listado">
+					paginator="true" rows="5" style="margin-top: 10px"
+					value="#{AtendimentoController.listaAtendimentosFiltro}"
+					 emptyMessage="Nenhum procedimento listado" reflow="true">
 
 					<p:column headerText="Profissional">
 						<h:outputText value="#{tab.funcionario.nome}" />
@@ -304,11 +298,29 @@
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
+
+					<p:column headerText="Selecionar" width="100">
+						<p:commandButton
+							actionListener="#{AtendimentoController.adicionarOuRemoverAtendimentoSelecionado(tab)}"
+							icon="fa fa-fw ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'fa-check' : 'fa-square-o'}"
+							title="Selecionar" update="formAjustes"
+							style="margin-left:30%;"
+							class="new-btn-acao-table ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'acao-editar' : ''}" />
+					</p:column>
 				</p:dataTable>
 
 				<div align="center" style="margin-top: 5%;">
-					<p:commandButton value="Confirmar"
-						update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
+					<p:commandButton value="Alterar Procedimento" 
+						actionListener="#{AtendimentoController.configuraDialogsParaAlteracaoEmMassa()}" 
+						oncomplete="PF('dlgConsulProc').show();"
+						action="#{AtendimentoController.listarProcedimentos()}"
+						update=":frmPrincipal :formConsulProc :msgPagina" style="margin-left: 10px;"
+						disabled="#{AtendimentoController.listaAtendimentosSelecionados.size() == 0}" />
+				
+					<p:commandButton value="Alterar CID" actionListener="#{AtendimentoController.configuraDialogsParaAlteracaoEmMassa()}"
+						action="#{AtendimentoController.limparDialogBuscaCid()}" 
+						update=":frmPrincipal :formConsulCid1 :msgPagina" style="margin-left: 10px;"
+						disabled="#{AtendimentoController.listaAtendimentosSelecionados.size() == 0}" />
 
 					<p:commandButton value="Cancelar"
 						oncomplete="PF('dlgAjustes').hide();"
@@ -338,8 +350,14 @@
                             <p:commandButton
                                     action="#{AtendimentoController.listarCids1()}"
                                     update="tabelacid1 :msgPagina" icon="ui-icon-search"
-                                    style="margin-left: 10px;">
-                            </p:commandButton>
+                                    style="margin-left: 10px;"
+                                    rendered="#{AtendimentoController.alteracaoEmMassa == false}"/>
+                             
+                            <p:commandButton
+                                    action="#{AtendimentoController.listarCidsAlteracaoEmMassa()}"
+                                    update="tabelacid1 :msgPagina" icon="ui-icon-search"
+                                    style="margin-left: 10px;"
+                                    rendered="#{AtendimentoController.alteracaoEmMassa == true}"/>       
                         </p:panelGrid>
 
                     </p:row>
@@ -347,41 +365,41 @@
                                  paginator="true" id="tabelacid1" style="width:500px"
                                  value="#{AtendimentoController.listaCids}" var="tab">
 
-                        <p:column>
-                            <f:facet name="header">
-                                Descrição
-                            </f:facet>
-
+                        <p:column headerText="Descrição">
                             <h:outputText value="#{tab.descCidAbrev}"/>
                         </p:column>
 
-
-                        <p:column>
-                            <f:facet name="header">
-                                CID
-                            </f:facet>
-
+                        <p:column headerText="CID">
                             <h:outputText value="#{tab.cid}"/>
                         </p:column>
 
+						<p:column headerText="Selecionar">
+							<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+								size="sm" class="new-btn-acao-table acao-editar"
+								update=":formConfirmacao"
+								oncomplete="PF('dlgConfirmacao').show();"
+								rendered="#{AtendimentoController.alteracaoEmMassa == false}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{AtendimentoController.atendimento.cidPrimario}" />
+							</p:commandButton>
 
-                        <p:column>
-                            <f:facet name="header">
-                                Selecionar
-                            </f:facet>
-
-                            <p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
-                                             size="sm" class="new-btn-acao-table acao-editar"
-                                             update=":formConfirmacao"
-                                             oncomplete="PF('dlgConfirmacao').show();">
-                                <f:setPropertyActionListener value="#{tab}"
-                                                             target="#{AtendimentoController.atendimento.cidPrimario}"/>
-                            </p:commandButton>
-
-                        </p:column>
-
+							<p:commandButton
+								actionListener="#{AtendimentoController.selecionarCid(tab)}"
+								icon="fa fa-fw ${AtendimentoController.cid.idCid == tab.idCid ? 'fa-check' : 'fa-square-o'}"
+								title="Selecionar" update="formConsulCid1"
+								style="margin-left:30%;"
+								class="new-btn-acao-table ${AtendimentoController.cid.idCid == tab.idCid ? 'acao-editar' : ''}"
+								rendered="#{AtendimentoController.alteracaoEmMassa == true}" />
+						</p:column>
                     </p:dataTable>
-                </p:outputPanel>
+					<br />
+					<div align="center">
+						<p:commandButton value="Alterar Cid"
+							update=":formConfirmacaoCid2" oncomplete="PF('dlgConfirmacaoCid2').show();"
+							rendered="#{AtendimentoController.alteracaoEmMassa == true}"
+							disabled="#{AtendimentoController.cid.idCid == null || AtendimentoController.cid.idCid == 0}" />
+					</div>
+				</p:outputPanel>
             </h:form>
         </p:dialog>
         
@@ -411,6 +429,29 @@
 
 					<p:commandButton value="Cancelar"
 						oncomplete="PF('dlgConfirmacao').hide();"
+						style="margin-left: 10px;" />	
+				</div>
+			</h:form>
+        </p:dialog>
+        
+        <p:dialog header="Confirmar Edição em Massa de Cid" widgetVar="dlgConfirmacaoCid2"
+                  responsive="true" height="130" width="400" modal="true" resizable="false">
+            <h:form id="formConfirmacaoCid2">
+            	<p>
+            		Deseja mesmo atribuir o cid 
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.cid.descCidAbrev}"/>
+            		</STRONG>
+            		aos atendimentos selecionados?
+            	</p>
+            	
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+						oncomplete="PF('dlgConsulCid1').hide(); PF('dlgConfirmacaoCid2').hide();"
+						update=":formAjustes :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgConfirmacaoCid2').hide();"
 						style="margin-left: 10px;" />	
 				</div>
 			</h:form>
@@ -446,6 +487,28 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="Confirmar Edição em Massa de Procedimento"
+			widgetVar="dlgConfirmacaoProc2" responsive="true" height="130"
+			width="400" modal="true" resizable="false">
+			<h:form id="formConfirmacaoproc2">
+				<p>
+					Deseja mesmo atribuir o Procedimento 
+					<STRONG> 
+						<h:outputText value="#{AtendimentoController.procedimento.nomeProc}" />
+					</STRONG>
+					aos atendimentos selecionados?
+				</p>
+
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+						update=":formAjustes :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgConfirmacaoProc2').hide();"
+						style="margin-left: 10px;" />
+				</div>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog header="Consultar Procedimento"
 				  widgetVar="dlgConsulProc" modal="true" resizable="false"
@@ -471,13 +534,29 @@
 							<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
 											 size="sm" class="new-btn-acao-table acao-editar"
 											 update=":formConfirmacaoproc"
-											 oncomplete="PF('dlgConfirmacaoProc').show();">
+											 oncomplete="PF('dlgConfirmacaoProc').show();"
+											 rendered="#{AtendimentoController.alteracaoEmMassa == false}">
 								<f:setPropertyActionListener value="#{proc}"
 															 target="#{AtendimentoController.atendimento.procedimento}"/>
 							</p:commandButton>
 
+							<p:commandButton
+								actionListener="#{AtendimentoController.selecionarProcedimento(proc)}"
+								icon="fa fa-fw ${AtendimentoController.procedimento.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
+								title="Selecionar" update="formConsulProc"
+								style="margin-left:30%;"
+								class="new-btn-acao-table ${AtendimentoController.procedimento.idProc == proc.idProc ? 'acao-editar' : ''}"
+								rendered="#{AtendimentoController.alteracaoEmMassa == true}" />
 						</h:column>
 					</b:dataTable>
+					
+					<br />
+					<div align="center">
+						<p:commandButton value="Alterar Procedimento"
+							update=":formConfirmacaoproc2" oncomplete="PF('dlgConfirmacaoProc2').show();"
+							rendered="#{AtendimentoController.alteracaoEmMassa == true}"
+							disabled="#{AtendimentoController.procedimento.idProc == null || AtendimentoController.procedimento.idProc == 0}" />
+					</div>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
