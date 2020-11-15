@@ -80,23 +80,20 @@
 					
 					<p:row>
 						<br />
-						<p:panelGrid columns="2">
-							<p:column colspan="4">
-								<p:selectBooleanCheckbox
-									value="#{AtendimentoController.semCids}"
-									itemLabel="Listar Apenas Atendimentos sem Cid" />
-							</p:column>	
-							
-							<p:column colspan="8">
-								<p:commandButton value="Ajustar em Massa" update=":formAjustes"
-								 action="#{AtendimentoController.preparaAbrirDialogAjustesEmMassa()}"
-								 disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}"/>
-							</p:column>
-						</p:panelGrid>
+						<p:column colspan="8">
+							<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
+								itemLabel="Listar Apenas Atendimentos sem Cid" />
+						</p:column>
+
+						<p:column colspan="4">
+							<p:commandButton value="Ajustar em Massa" update=":formAjustes" style="float:right;"
+								action="#{AtendimentoController.preparaAbrirDialogAjustesEmMassa()}"
+								disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}" />
+						</p:column>
 					</p:row>
 
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" paginator="true" rows="20" style="margin-top: 10px"
-						value="#{AtendimentoController.listAtendimentos}" emptyMessage="Nenhum procedimento listado">
+						value="#{AtendimentoController.listAtendimentos}" emptyMessage="Nenhum procedimento listado" reflow="true">
 
 						<p:column headerText="Profissional">
 							<h:outputText value="#{tab.funcionario.nome}" />
@@ -119,7 +116,7 @@
 						</p:column>						
 						
 						<p:column headerText="CID">
-							<h:outputText value="#{tab.cidPrimario.cid}" />
+							<h:outputText value="#{tab.cidPrimario.descCidAbrev}" />
 						</p:column>
 						
 						<p:column headerText="Data" width="80">
@@ -290,7 +287,7 @@
 					</p:column>
 
 					<p:column headerText="CID">
-						<h:outputText value="#{tab.cidPrimario.cid}" />
+						<h:outputText value="#{tab.cidPrimario.descCidAbrev}" />
 					</p:column>
 
 					<p:column headerText="Data" width="80">
@@ -322,7 +319,7 @@
 						update=":frmPrincipal :formConsulCid1 :msgPagina" style="margin-left: 10px;"
 						disabled="#{AtendimentoController.listaAtendimentosSelecionados.size() == 0}" />
 
-					<p:commandButton value="Cancelar"
+					<p:commandButton value="Fechar"
 						oncomplete="PF('dlgAjustes').hide();"
 						style="margin-left: 10px;" />
 				</div>
@@ -342,7 +339,7 @@
                                 <f:selectItem itemLabel="Descrição ou CID" itemValue="desccid"/>
                             </p:selectOneMenu>
 
-                            <p:inputText value="#{AtendimentoController.campoBusca}"
+                            <p:inputText value="#{AtendimentoController.campoBuscaCid}"
                                          required="true"
                                          requiredMessage="Informe a descrição da doença ou o Código do CID"
                                          placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
@@ -442,13 +439,12 @@
             		<STRONG>
             			<h:outputText value="#{AtendimentoController.cid.descCidAbrev}"/>
             		</STRONG>
-            		aos atendimentos selecionados?
+            		a(os) atendimento(s) selecionado(s)?
             	</p>
             	
 				<div align="center" style="margin-top: 5%;">
-					<p:commandButton value="Confirmar"
-						oncomplete="PF('dlgConsulCid1').hide(); PF('dlgConfirmacaoCid2').hide();"
-						update=":formAjustes :msgPagina" style="margin-left: 10px;" />
+					<p:commandButton value="Confirmar" action="#{AtendimentoController.gravarAlteracaoCidEmMassa()}"
+						update=":formAjustes:dtAtendimentosMassa :msgPagina" style="margin-left: 10px;" />
 
 					<p:commandButton value="Cancelar"
 						oncomplete="PF('dlgConfirmacaoCid2').hide();"
@@ -496,11 +492,11 @@
 					<STRONG> 
 						<h:outputText value="#{AtendimentoController.procedimento.nomeProc}" />
 					</STRONG>
-					aos atendimentos selecionados?
+					a(os) atendimento(s) selecionado(s)?
 				</p>
 
 				<div align="center" style="margin-top: 5%;">
-					<p:commandButton value="Confirmar"
+					<p:commandButton value="Confirmar" action="#{AtendimentoController.gravarAlteracaoProcedimentoEmMassa()}"
 						update=":formAjustes :msgPagina" style="margin-left: 10px;" />
 
 					<p:commandButton value="Cancelar"

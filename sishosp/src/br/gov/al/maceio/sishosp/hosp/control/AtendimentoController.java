@@ -60,7 +60,7 @@ public class AtendimentoController implements Serializable {
     private String tipoBusca;
     private String buscaEvolucao;
     private String buscaTurno;
-    private String campoBusca;
+    private String campoBusca, campoBuscaCid;
     private String opcaoAtendimento;
     private boolean listarEvolucoesPendentes;
     private static final String SIM = "Sim";
@@ -857,12 +857,12 @@ public class AtendimentoController implements Serializable {
             existeCargaSigtapParaEsteMesOuAnterior(dataAtende, NAO_EH_EVOLUCAO);
 
             if(existeCargaSigtapParaEsteMesOuAnterior) {
-                listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBusca,
+                listaCids = cidDao.listarCidsBuscaPorProcedimento(campoBuscaCid,
                         this.atendimento.getProcedimento().getCodProc(), dataAtende);
             }
         }
         else
-            listaCids = cidDao.listarCidsBusca(campoBusca);
+            listaCids = cidDao.listarCidsBusca(campoBuscaCid);
     }
 
     public void limparDialogBuscaCid() {
@@ -1045,7 +1045,66 @@ public class AtendimentoController implements Serializable {
     }
     
     public void listarCidsAlteracaoEmMassa() throws ProjetoException {
-    	listaCids = cidDao.listarCidsBusca(campoBusca);
+    	listaCids = cidDao.listarCidsBusca(campoBuscaCid);
+    }
+    
+    public void gravarAlteracaoCidEmMassa() throws ProjetoException {
+    	if(this.unidadeValidaDadosSigtap) {
+    		listaAtendimentosSelecionados = setaAtendimentoValidadoPeloSigtapAnteriorParaAtendimentosEmMassa(listaAtendimentosSelecionados);
+    		
+    		LaudoController laudoController = new LaudoController();
+    		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
+    			laudoController.validarCidPorProcedimento(cid, atendimento.getDataAtendimento(), atendimento.getProcedimento().getCodProc());
+			}
+    	}
+    	
+    	boolean alterou = atendimentoDAO.atualizaCidDeVariosAtendimento(listaAtendimentosSelecionados, cid);
+    	if(alterou) {
+    		JSFUtil.adicionarMensagemSucesso("Atendimentos Alterados com Sucesso!", "");
+    		JSFUtil.fecharDialog("dlgConsulCid1");
+    		JSFUtil.fecharDialog("dlgConfirmacaoCid2");
+    		this.campoBusca = new String();
+    		listaAtendimentos1AjustesEmMassa();
+    	}
+    }
+    
+    public void gravarAlteracaoProcedimentoEmMassa() throws ProjetoException {
+    	if(this.unidadeValidaDadosSigtap) {
+    		listaAtendimentosSelecionados = setaAtendimentoValidadoPeloSigtapAnteriorParaAtendimentosEmMassa(listaAtendimentosSelecionados);
+    		
+    		LaudoController laudoController = new LaudoController();
+    		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
+    			laudoController.idadeValida(atendimento.getDataAtendimento(), atendimento.getPaciente(), procedimento.getCodProc());
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente());
+            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), atendimento.getFuncionario().getId(), procedimento.getCodProc());
+            	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc());
+    		}
+    	}
+    	
+    	boolean alterou = atendimentoDAO.atualizaProcedimentoVariosAtendimento(listaAtendimentosSelecionados, procedimento);
+    	if(alterou) {
+    		JSFUtil.adicionarMensagemSucesso("Atendimentos Alterados com Sucesso!", "");
+    		JSFUtil.fecharDialog("dlgConsulProc");
+    		JSFUtil.fecharDialog("dlgConfirmacaoProc2");
+    		listaAtendimentos1AjustesEmMassa();
+    	}
+    	else {
+    		JSFUtil.fecharDialog("dlgConsulProc");
+    		JSFUtil.fecharDialog("dlgConfirmacaoProc2");
+    	}
+    }
+    
+    private List<AtendimentoBean> setaAtendimentoValidadoPeloSigtapAnteriorParaAtendimentosEmMassa(List<AtendimentoBean> listaAtendimento) {
+    	for (int i = 0; i < listaAtendimento.size(); i++) {
+    		if (!existeCargaSigtapParaDataAtende(listaAtendimento.get(i).getDataAtendimento())) {
+    			listaAtendimento.get(i).setDataAtendimento(DataUtil.retornaDataComMesAnterior(listaAtendimento.get(i).getDataAtendimento()));
+    			listaAtendimento.get(i).setValidadoPeloSigtapAnterior(true);
+    		}
+    		else {
+    			listaAtendimento.get(i).setValidadoPeloSigtapAnterior(false);
+    		}
+		}
+        return listaAtendimento;
     }
 
     public AtendimentoBean getAtendimento() {
@@ -1402,4 +1461,13 @@ public class AtendimentoController implements Serializable {
 	public void setCid(CidBean cid) {
 		this.cid = cid;
 	}
+
+	public String getCampoBuscaCid() {
+		return campoBuscaCid;
+	}
+
+	public void setCampoBuscaCid(String campoBuscaCid) {
+		this.campoBuscaCid = campoBuscaCid;
+	}
+	
 }
