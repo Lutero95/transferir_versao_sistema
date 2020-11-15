@@ -867,7 +867,7 @@ public class AtendimentoController implements Serializable {
 
     public void limparDialogBuscaCid() {
         this.listaCids.clear();
-        this.campoBusca = new String();
+        this.campoBuscaCid = new String();
         JSFUtil.abrirDialog("dlgConsulCid1");
     }
 
