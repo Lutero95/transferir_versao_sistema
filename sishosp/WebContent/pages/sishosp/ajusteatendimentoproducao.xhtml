@@ -191,20 +191,26 @@
 					</b:column>
 
 					<b:column span="5">
-						<p:panelGrid columns="4" style="margin-top: 3%;">
-							<p:selectOneMenu value="#{AtendimentoController.tipoBusca}">
-								<f:selectItem itemLabel="Paciente" itemValue="paciente" />
-								<f:selectItem itemLabel="Protuário Paciente"
-									itemValue="prontpaciente" />
-								<f:selectItem itemLabel="Matrícula Paciente"
-									itemValue="matpaciente" />
-							</p:selectOneMenu>
+						<b:label value="Paciente" severity="info" />
 
-							<p:inputText value="#{AtendimentoController.campoBusca}"
-								placeholder="Digite aqui o que deseja buscar" required="true"
-								requiredMessage="Paciente: Campo obrigatório!"
-								style="margin-left: 10px;width:300px" />
-						</p:panelGrid>
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{AtendimentoController.atendimento.paciente}"
+												size="31" converter="conPaciente"
+												class="select-agendaEquipe4"
+												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.nome}"
+												required="true" requiredMessage="Paciente: Campo Obrigatório!">
+									<p:ajax event="itemSelect"
+											update="msgPagina :formAjustes:outPa" global="false" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBPa" immediate="true"
+												 icon="ui-icon-search" update=":formConsuPac"
+												 oncomplete="PF('dlgConsuPac').show();" />
+							</p:outputPanel>
 					</b:column>
 				</b:row>
 
@@ -681,6 +687,73 @@
 			</h:form>
 		</p:dialog>
 		
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+			dynamic="true" modal="true" width="750px" height="400px"
+			responsive="true">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
 
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+				<p:row>
+
+					<p:panelGrid columns="4">
+
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{PacienteController.campoBusca}"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+						<p:commandButton
+							action="#{PacienteController.buscarPacientesPorTipo()}"
+							update="tabelapacientes" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
+
+					</p:panelGrid>
+
+				</p:row>
+				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
+
+					<p:column width="100" headerText="Prontuário">
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
+
+					<p:column headerText="Matrícula">
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
+
+					<p:column headerText="CNS">
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column headerText="Selecionar">
+						<p:commandButton update=":formAjustes:outPa" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							oncomplete="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+								target="#{AtendimentoController.atendimento.paciente}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

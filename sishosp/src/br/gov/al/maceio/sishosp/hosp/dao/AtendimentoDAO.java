@@ -23,6 +23,7 @@ import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
@@ -1500,7 +1501,7 @@ public class AtendimentoDAO {
 		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
 		
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
-				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.dtanascimento, p.id as id_procedimento, " + 
+				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.id_paciente, pa.dtanascimento, p.id as id_procedimento, " + 
 				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, c.cid, p.codproc, "+
 				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo " +
 				"from hosp.atendimentos1 a1 " + 
@@ -1581,6 +1582,7 @@ public class AtendimentoDAO {
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getFuncionario().setId(rs.getLong("id_funcionario"));
 				atendimento.getPaciente().setNome(rs.getString("paciente"));
+				atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
 				atendimento.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
 				atendimento.getProcedimento().setNomeProc(rs.getString("procedimento"));
@@ -1778,7 +1780,8 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 	
-	public boolean atualizaCidDeVariosAtendimento(List<AtendimentoBean> listaAtendimento, CidBean cid) throws ProjetoException {
+	public boolean atualizaCidDeVariosAtendimento(List<AtendimentoBean> listaAtendimento, CidBean cid)
+			throws ProjetoException {
 
 		boolean alterou = false;
 		
@@ -1794,12 +1797,18 @@ public class AtendimentoDAO {
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 				
-				LogBean log = new LogBean(user_session.getId(), "", Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+				String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
 				
-				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
-					log.adicionarDescricao("Cid1", new String(), cid.getIdCid().toString());
-				else
-					log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
+				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
+					log.adicionarDescricao("Cid1", "", cid.getDescCidAbrev());
+					log.adicionarDescricao("ID Cid1", "", cid.getIdCid().toString());
+				}
+				else {
+					log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getDescCidAbrev(), cid.getDescCidAbrev());
+					log.adicionarDescricao("ID Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
+				}
 				new LogDAO().gravarLog(log, con);
 			}
 			alterou = true;
@@ -1816,6 +1825,13 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+
+	private String montarDescricaoLogAlteracaoAtendimento(AtendimentoBean atendimento) {
+		String descricao = "Paciente: "+ atendimento.getPaciente().getNome()+ 
+				" ID Paciente: "+atendimento.getPaciente().getId_paciente() +
+				" ID Atendimento1: "+ atendimento.getId1()+" \n";
+		return descricao;
 	}
 	
 	public boolean atualizaProcedimentoVariosAtendimento
@@ -1835,14 +1851,18 @@ public class AtendimentoDAO {
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 				
-				LogBean log = new LogBean(user_session.getId(), "", Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+				String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
+				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
 				
-				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
-					log.adicionarDescricao
-						("Procedimento: ", new String(), procedimento.getIdProc().toString());
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
+					log.adicionarDescricao("Procedimento", "", procedimento.getNomeProc());
+					log.adicionarDescricao("ID Procedimento", "", procedimento.getIdProc().toString());
+				}
 				else {
 					log.adicionarDescricao
-						("Procedimento: ", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
+						("Procedimento", atendimento.getProcedimento().getNomeProc(), procedimento.getNomeProc());
+					log.adicionarDescricao
+						("ID Procedimento", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
 				}	
 				new LogDAO().gravarLog(log, con);
 			}

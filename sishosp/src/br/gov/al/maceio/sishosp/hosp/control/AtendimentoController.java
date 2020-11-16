@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaPaciente;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
@@ -836,7 +837,7 @@ public class AtendimentoController implements Serializable {
     }
     
     public void listaAtendimentos1AjustesEmMassa() throws ProjetoException {
-        this.listaAtendimentosFiltro = atendimentoDAO.listaAtendimentos1FiltroAjustes(atendimento, this.semCids, this.campoBusca, this.tipoBusca);
+        this.listaAtendimentosFiltro = atendimentoDAO.listaAtendimentos1FiltroAjustes(atendimento, this.semCids, atendimento.getPaciente().getNome(), TipoBuscaPaciente.PACIENTE.getSigla());
         this.listaAtendimentosSelecionados.clear();
     }
     

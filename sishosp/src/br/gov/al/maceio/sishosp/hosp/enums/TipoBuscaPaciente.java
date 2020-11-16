@@ -6,6 +6,7 @@ public enum TipoBuscaPaciente {
 	CPF("cpf"),
 	MATRICULA("matricula"),
     NOME("nome"),
+    PACIENTE("paciente"),
     PRONTUARIO("prontuario"),
     PRONTUARIO_ANTIGO("prontuario_antigo");
 
