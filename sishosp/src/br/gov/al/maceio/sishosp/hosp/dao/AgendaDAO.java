@@ -23,6 +23,7 @@ import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -3300,4 +3301,60 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
         return existe;
     }
+    
+    public boolean excluirAgendamentoPaciente(AtendimentoBean atendimento, FuncionarioBean funcionario) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "update hosp.atendimentos1 set excluido = 'S', data_hora_exclusao=current_timestamp, usuario_exclusao=?  where id_atendimentos1 = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().get("obj_funcionario");
+            stmt.setLong(1, user_session.getId());
+            stmt.setInt(2, atendimento.getId1());
+            stmt.execute();
+            gravarLiberacaoAgendamento(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getSigla());
+            con.commit();
+            retorno = true;
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+    
+	private void gravarLiberacaoAgendamento(Connection conexao, AtendimentoBean atendimento,
+			FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
+
+		String sql = "INSERT INTO hosp.liberacoes " + 
+				"(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " + 
+				"VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?, ?);";
+		try {
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setString(1, motivoLiberacao);
+			stm.setLong(2, usuarioLiberacao.getId());
+			stm.setInt(3, atendimento.getId());
+			stm.setInt(4, usuarioLiberacao.getUnidade().getId());
+			stm.setInt(5, atendimento.getId1());
+			stm.executeUpdate();
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+
 }

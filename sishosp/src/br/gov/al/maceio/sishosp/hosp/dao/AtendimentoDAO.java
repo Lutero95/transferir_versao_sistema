@@ -17,8 +17,13 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.BuscaEvolucao;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoInconsistencia;
+import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
+import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
+import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaGrupoEvolucaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PendenciaEvolucaoProgramaGrupoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
@@ -1495,27 +1500,39 @@ public class AtendimentoDAO {
 		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
 		
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
-				"f.descfuncionario, pa.nome as paciente, p.id as id_procedimento, " + 
-				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, p.codproc " +
+				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.dtanascimento, p.id as id_procedimento, " + 
+				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, c.cid, p.codproc, "+
+				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo " +
 				"from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
 				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
 				"join hosp.proc p on a1.codprocedimento = p.id " + 
 				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
 				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
+				"left join hosp.programa pro on a.codprograma = pro.id_programa " + 
+				"left join hosp.grupo g on a.codgrupo = g.id_grupo "+
 				"where a.dtaatende between ? and ? and p.ativo = 'S' and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  ";
 		
 		if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
-			sql = sql + " and pa.nome ilike ?";
+			sql += " and pa.nome ilike ?";
 
 		else if ((tipoBusca.equals("codproc") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
-			sql = sql + " and p.codproc = ?";
+			sql += " and p.codproc = ?";
 		
 		else if ((tipoBusca.equals("matpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
-			sql = sql + " and upper(pa.matricula) = ?";
+			sql += " and upper(pa.matricula) = ?";
 		
 		else if ((tipoBusca.equals("prontpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
-			sql = sql + " and pa.id_paciente = ?";
+			sql += " and pa.id_paciente = ?";
+		
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
+			sql += " and a.codprograma = ? ";
+		}	
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
+			sql += " and a.codgrupo = ? ";		
+		}	
 		
 		String filtroSql = "and a1.id_cidprimario is null "; 
 		String ordenacaoSql = "order by a.dtaatende, pa.nome; ";
@@ -1544,6 +1561,16 @@ public class AtendimentoDAO {
 				stm.setInt(3,Integer.valueOf((campoBusca)));
 			}
 			
+			int contador = 4;
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
+				stm.setInt(contador, atendimentoBusca.getPrograma().getIdPrograma());
+				contador++;
+			}	
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
+				stm.setInt(contador, atendimentoBusca.getGrupo().getIdGrupo());
+			}
 			ResultSet rs = stm.executeQuery();
 			while(rs.next()) {
 				AtendimentoBean atendimento = new AtendimentoBean();
@@ -1552,13 +1579,20 @@ public class AtendimentoDAO {
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setValidadoPeloSigtapAnterior(rs.getBoolean("validado_pelo_sigtap_anterior"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+				atendimento.getFuncionario().setId(rs.getLong("id_funcionario"));
 				atendimento.getPaciente().setNome(rs.getString("paciente"));
+				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
 				atendimento.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
 				atendimento.getProcedimento().setNomeProc(rs.getString("procedimento"));
 				atendimento.getProcedimento().setCodProc(rs.getString("codproc"));
 				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
-				atendimento.getCidPrimario().setCid(rs.getString("desccidabrev"));
+				atendimento.getCidPrimario().setDescCidAbrev(rs.getString("desccidabrev"));
+				atendimento.getCidPrimario().setCid(rs.getString("cid"));
+				atendimento.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				atendimento.getPrograma().setDescPrograma(rs.getString("descprograma"));
+				atendimento.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				atendimento.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				
 				listaAtendimentos.add(atendimento);
 			}
@@ -1742,5 +1776,89 @@ public class AtendimentoDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 		return listaAnos;
+	}
+	
+	public boolean atualizaCidDeVariosAtendimento(List<AtendimentoBean> listaAtendimento, CidBean cid) throws ProjetoException {
+
+		boolean alterou = false;
+		
+		String sql = "UPDATE hosp.atendimentos1 SET id_cidprimario = ? WHERE id_atendimentos1 = ?;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			for (AtendimentoBean atendimento : listaAtendimento) {
+				stm.setInt(1, cid.getIdCid());
+				stm.setInt(2, atendimento.getId1());
+				stm.executeUpdate();
+				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+				
+				LogBean log = new LogBean(user_session.getId(), "", Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
+					log.adicionarDescricao("Cid1", new String(), cid.getIdCid().toString());
+				else
+					log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
+				new LogDAO().gravarLog(log, con);
+			}
+			alterou = true;
+			con.commit();	
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
+	}
+	
+	public boolean atualizaProcedimentoVariosAtendimento
+		(List<AtendimentoBean> listaAtendimento, ProcedimentoBean procedimento) throws ProjetoException {
+
+		boolean alterou = false;
+
+		String sql = "UPDATE hosp.atendimentos1 SET codprocedimento = ? WHERE id_atendimentos1 = ?;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			for (AtendimentoBean atendimento : listaAtendimento) {
+				stm.setInt(1, procedimento.getIdProc());
+				stm.setInt(2, atendimento.getId1());
+				stm.executeUpdate();
+				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+				
+				LogBean log = new LogBean(user_session.getId(), "", Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
+					log.adicionarDescricao
+						("Procedimento: ", new String(), procedimento.getIdProc().toString());
+				else {
+					log.adicionarDescricao
+						("Procedimento: ", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
+				}	
+				new LogDAO().gravarLog(log, con);
+			}
+			alterou = true;
+			con.commit();
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
 	}
 }

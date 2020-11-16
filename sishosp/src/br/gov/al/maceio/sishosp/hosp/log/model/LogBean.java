@@ -1,6 +1,5 @@
 package br.gov.al.maceio.sishosp.hosp.log.model;
 
-import java.util.Date;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 public class LogBean extends LogAbstract{
 
