@@ -144,25 +144,25 @@
 								</div>
 
 								<div class="content-div-flex">
-									<p:dataTable id="dtAdicionados" resizableColumns="true"
+									<p:dataTable id="dtAdicionados"
 										value="#{AlteracaoPacienteController.listaProfissionaisAdicionados}"
 										var="funcionario" emptyMessage="Sem registros."
-										styleClass="table-left" reflow="true">
+										reflow="true">
 
-										<p:column headerText="Profissional" width="30%">
+										<p:column headerText="Profissional">
 											<h:outputLabel value="#{funcionario.nome}" />
 										</p:column>
 
-										<p:column headerText="Especialidade" width="20%">
+										<p:column headerText="Especialidade">
 											<h:outputLabel
 												value="#{funcionario.especialidade.descEspecialidade}" />
 										</p:column>
 
-										<p:column headerText="Dias Atendimento" width="38%">
+										<p:column headerText="Dias Atendimento">
 											<h:outputLabel value="#{funcionario.diasSemana}" />
 										</p:column>
 
-										<p:column headerText="Excluir" width="12%">
+										<p:column headerText="Excluir">
 											<div align="center">
 												<p:commandButton icon="ui-icon-trash" process="@this"
 													action="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento}"
