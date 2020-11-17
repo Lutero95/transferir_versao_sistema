@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{palavraChaveEvolucaoController.getEditaPalavraChave()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{palavraChaveEvolucaoController.cabecalho}" class="panel-title"></h:outputText>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Atendimento Realizado" severity="info" />
+							<br />
+							<br />
+							<p:selectBooleanCheckbox itemLabel="Sim" 
+							value="#{palavraChaveEvolucaoController.palavraChaveEvolucao.atendimentoRealizado}"/>
+						</b:column>
+					</b:row>
+
+					<b:row>
+						<b:column span="12" class="label-position">
+							<b:label value="Descrição" severity="info" />
+							
+							<b:inputText value="#{palavraChaveEvolucaoController.palavraChaveEvolucao.descricao}" 
+								class="form-control" required="true" id="incDesc"
+								requiredMessage="Descrição: Campo obrigatório!"/>
+						</b:column>
+					</b:row>
+					<br />
+
+					<p:commandButton action="#{palavraChaveEvolucaoController.gravarPalavraChave()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{palavraChaveEvolucaoController.tipo == 1}" />
+
+					<p:commandButton action="#{palavraChaveEvolucaoController.alterarPalavraChave()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{palavraChaveEvolucaoController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciarpalavrachaveevolucao.xhtml?faces-redirect=true">
+					</p:commandButton>
+
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public final class TratamentoErrosUtil {
 	
 	//MENSAGENS DE RETORNO
-	private static final String MENSAGEM_UNIQUE = "Já existe Valor que não pode ser repetido está sendo utilizado, por favor mude o valor";
+	private static final String MENSAGEM_UNIQUE = "Valor já foi cadastrado, por favor mude o valor";
 	private static final String MENSAGEM_CHECK = "Valor não permitido para o campo!";
 	private static final String MENSAGEM_NOT_NULL = "Existe um ou mais campos em branco que tem preenchimento obrigatório!";
 	private static final String MENSAGEM_FK_INSERCAO = "Campo com valor não permitido sendo passado!";
