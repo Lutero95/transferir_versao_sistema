@@ -27,7 +27,7 @@
                         <b:label value="Opção de Geração:" severity="info" />
                         <p:selectOneRadio required="false"
                                           requiredMessage="Informe o tipo da Geração da Produção"
-                                          value="#{bpaController.atributoGenerico1}"
+                                          value="#{bpaController.sAtributoGenerico1}"
                                           unselectable="true">
                             <f:selectItem itemLabel="A partir dos atendimentos realizados" itemValue="A" />
                             <f:selectItem itemLabel="A partir dos agendamentos confirmados Presença" itemValue="P" />
@@ -38,7 +38,7 @@
 			<b:row>
                     <p:outputPanel id="intervaloIdades">
                         <b:column span="12"
-                                  rendered="#{bpaController.atributoGenerico1=='A'}"
+                                  rendered="#{bpaController.sAtributoGenerico1=='A'}"
                                   >
                             <div class="alert alert-success part-verd" role="alert" align="center">
 								<p>  A produção será gerada a partir dos atendimentos que foram realizados e confirmados via sistema.</p>
@@ -48,7 +48,7 @@
 </b:column>
 
                         <b:column span="12"
-                                  rendered="#{bpaController.atributoGenerico1=='P'}"
+                                  rendered="#{bpaController.sAtributoGenerico1=='P'}"
                                   >
                             <div class="alert alert-danger" role="alert" align="center">
 
@@ -74,6 +74,85 @@
 							</b:selectOneMenu>
 						</b:column>
 					</b:row>
+
+<hr/>
+					<b:row>
+						<b:column span="3">
+							<p:selectBooleanCheckbox  value="#{bpaController.bAtributoGenerico2}"   itemLabel="Atribuir Filtros" id="filtro">
+								<p:ajax update=":frmPrincipal:pnl"  listener="#{bpaController.addMessage}" />
+							</p:selectBooleanCheckbox>
+						</b:column>
+
+					</b:row>
+					<p:outputPanel id="pnl"  >
+
+					<b:row  rendered="#{bpaController.bAtributoGenerico2==true}">
+						<div class="alert alert-danger" role="alert" align="center">
+
+							<p> Selecionando algum filtro, a produção poderá ser gerada com um quantitativo a menos.</p>
+							<p><strong>O risco assumido será do usuario logado, e toda geração do arquivo no layout BPA gerá um log, com os seguintes dados: Usuário da geração, data e hora , e filtros selecionados</strong></p>
+
+						</div>
+<br/>
+						<b:row>
+
+							<b:column span="3">
+								<b:label value="Numeração da Folha" severity="info" style="margin-left: 14px;"  />
+								<p:selectBooleanCheckbox value="#{bpaController.bAtributoGenerico3}"
+														 style="margin-top: 10px;margin-left:14px"
+														 itemLabel="Informar Número Inicial da Folha">
+									<p:ajax update="diasPaciente"
+									/>
+								</p:selectBooleanCheckbox>
+
+							</b:column>
+						</b:row>
+						<b:row>
+							<b:column span="3" class="label-position new-data-size new-comple1">
+
+								<p:spinner id="diasPaciente" value="#{bpaController.iAtributoGenerico4}"
+										   style="margin-left: -5%;" size="5"
+										   disabled="#{bpaController.bAtributoGenerico3 == false}"
+										   min="1"  required="true" requiredMessage="Dias Ativo Paciente sem Laudo: campo obrigatório"/>
+							</b:column>
+						</b:row>
+					<b:column >
+						<b:label value="Filtrar Procedimentos" severity="info" />
+						<br/>
+						<br/>
+					<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Procedimento"
+							update=":msgPagina :formConsulProc"
+							class="btn-acao-table acao-editar"
+							process="@this"
+							action="#{ProcedimentoController.limparDados}"
+							oncomplete="PF('dlgConsulProc').show();" />
+
+					<p:dataTable id="tabProcedimento" var="proc"
+								 value="#{bpaController.listaProcedimentos}"
+								 emptyMessage="Nenhum Procedimento foi adicionado" reflow="true">
+
+						<p:column headerText="Código Procedimento">
+							<h:outputText value="#{proc.codProc}" />
+						</p:column>
+						<p:column headerText="Procedimento">
+							<h:outputText value="#{proc.nomeProc}" />
+						</p:column>
+
+
+
+						<p:column headerText="Remover" width="80">
+							<p:commandButton icon="fa fa-fw fa-times"
+											 actionListener="#{bpaController.removerProcedimentoFiltro(proc)}"
+											 title="Remover" update="frmPrincipal:tabProcedimento"
+											 style="margin-left:28%;" process="@this" immediate="true"
+											 class="new-btn-acao-table acao-excluir"/>
+						</p:column>
+					</p:dataTable>
+					</b:column>
+					</b:row>
+					</p:outputPanel>
 				</div>
 				<div style="margin-left:0.5%; margin-bottom:0.5%;">
 					<p:commandButton value="Gerar Produção" ajax="false" actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
@@ -82,5 +161,39 @@
 				</div>
 			</h:form>
 		</div>
+
+		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
+				  widgetVar="dlgConsulProc" modal="true" resizable="false"
+				  draggable="false" responsive="true" width="40%">
+			<h:form id="formConsulProc">
+				<p:outputPanel >
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+
+						<h:column>
+							<f:facet name="header">
+								Descrição
+							</f:facet>
+							<p:outputLabel value="#{proc.nomeProc}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<div align="center">
+								<p:commandButton
+										icon="fa fa-fw fa-check" title="Selecionar"
+										class="new-btn-acao-table acao-editar"
+										update=":frmPrincipal:tabProcedimento :msgPagina"
+										action="#{bpaController.adicionarProcedimentoFiltro(proc)}"/>
+
+							</div>
+						</h:column>
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

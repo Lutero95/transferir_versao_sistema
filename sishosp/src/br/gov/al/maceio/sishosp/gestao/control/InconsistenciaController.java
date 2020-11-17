@@ -1,15 +1,18 @@
 package br.gov.al.maceio.sishosp.gestao.control;
 
+import static br.gov.al.maceio.sishosp.comum.util.JSFUtil.resgatarObjetoDaSessao;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -20,7 +23,7 @@ import br.gov.al.maceio.sishosp.gestao.model.InconsistenciaBean;
 import br.gov.al.maceio.sishosp.gestao.model.dto.InconsistenciaDTO;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class InconsistenciaController {
 
 	private InconsistenciaBean inconsistencia;
@@ -36,6 +39,7 @@ public class InconsistenciaController {
 	private List<Perfil> listaPerfisSelecionadoFiltro;
 	private List<InconsistenciaDTO> listaInconsistenciasDTO;
 	private InconsistenciaDTO inconsistenciaDTOSelecionada;
+	private boolean dialogJaFoiAbertoNaSessao;
 	
 	private static final String ENDERECO_CADASTRO = "cadastroinconsistencia?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
@@ -146,14 +150,21 @@ public class InconsistenciaController {
     }
     
     public void listarInconsistenciasPerfil() throws ProjetoException {
-		this.listaInconsistenciasDTO = inconsistenciaDAO.listarInconsistenciasPeloPerfil();
-		if(!this.listaInconsistenciasDTO.isEmpty())
-			JSFUtil.abrirDialog("dlgInconsistencias");
+    	if(!dialogJaFoiAbertoNaSessao) {
+    		this.listaInconsistenciasDTO = inconsistenciaDAO.listarInconsistenciasPeloPerfil();
+		//		if(!this.listaInconsistenciasDTO.isEmpty())
+				JSFUtil.abrirDialog("dlgInconsistencias");
+    	}
     }
 	
 	public void buscarInconsistencias() throws ProjetoException {
 		this.listaInconsistencias = inconsistenciaDAO.buscarInconsistencias(campoBusca, tipoBusca);
 	}
+	
+    public void marcarVisualizado() {
+    	dialogJaFoiAbertoNaSessao = true;
+    	JSFUtil.fecharDialog("dlgInconsistencias");
+    }
 
 	public String redirecionaInsercao() {
 	    return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
@@ -270,4 +281,12 @@ public class InconsistenciaController {
 		this.inconsistenciaDTOSelecionada = inconsistenciaDTOSelecionada;
 	}
 
+	public boolean isDialogJaFoiAbertoNaSessao() {
+		return dialogJaFoiAbertoNaSessao;
+	}
+
+	public void setDialogJaFoiAbertoNaSessao(boolean dialogJaFoiAbertoNaSessao) {
+		this.dialogJaFoiAbertoNaSessao = dialogJaFoiAbertoNaSessao;
+	}
+	
 }

@@ -17,11 +17,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -37,10 +39,6 @@ import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
 import br.gov.al.maceio.sishosp.hosp.enums.MesExtensaoArquivoBPA;
-import br.gov.al.maceio.sishosp.hosp.model.BpaCabecalhoBean;
-import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean
 @ViewScoped
@@ -60,11 +58,13 @@ public class BpaController {
 	private List<BpaIndividualizadoBean> listaDeBpaIndividualizado;
 	private List<BpaConsolidadoBean> listaDeBpaConsolidado;
 	private List<String> linhasLayoutImportacao;
-	
+	private List<ProcedimentoBean> listaProcedimentos;
 	private static final String NOME_ARQUIVO = "BPA_layout_Importacao";
 	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
 	private String descricaoArquivo;
-	private String atributoGenerico1;
+	private String sAtributoGenerico1;
+	private Boolean bAtributoGenerico2, bAtributoGenerico3;
+	private Integer iAtributoGenerico4;
 	private Date dataInicioAtendimento;
 	private Date dataFimAtendimento;
 	private String competencia;
@@ -80,8 +80,13 @@ public class BpaController {
 		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
 		limparDadosLayoutGerado();
+
 	}
-	
+
+	public void addMessage() {
+		String summary =  "Checked";
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(summary));
+	}
 	public void listarCompetencias() throws ProjetoException {
 		this.listaCompetencias = bpaIndividualizadoDAO.listarCompetencias();
 	}
@@ -95,17 +100,38 @@ public class BpaController {
 		FacesContext context = FacesContext.getCurrentInstance();
 		return context;
 	}
+
+	public void adicionarProcedimentoFiltro(ProcedimentoBean procedimento) {
+		if (!existeProcedimentoPermitido(procedimento)) {
+			listaProcedimentos.add(procedimento);
+			JSFUtil.fecharDialog("dlgConsulProc");
+		}
+	}
+
+	public void removerProcedimentoFiltro(ProcedimentoBean procedimentoSelecionado) {
+		listaProcedimentos.remove(procedimentoSelecionado);
+	}
+
+	private boolean existeProcedimentoPermitido(ProcedimentoBean procedimentoSelecionado) {
+		for (ProcedimentoBean procedimento : listaProcedimentos) {
+			if(procedimentoSelecionado.getIdProc().equals(procedimento.getIdProc())) {
+				JSFUtil.adicionarMensagemAdvertencia("Não é possível adicionar o procedimento novamente", "");
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException, SQLException {
 		try {
 			limparDadosLayoutGerado();
 			this.competencia = formataCompetenciaParaBanco();
 			setaDataInicioIhFimAtendimento(this.competencia);
-			executaMetodosParaGerarBpaConsolidado(atributoGenerico1);
-			executaMetodosParaGerarBpaIndividualizado(atributoGenerico1);
+			executaMetodosParaGerarBpaConsolidado(sAtributoGenerico1);
+			executaMetodosParaGerarBpaIndividualizado(sAtributoGenerico1);
 			executaMetodosParaGerarBpaCabecalho();
 			
-			if (!existeInconsistencias(atributoGenerico1)) {
+			if (!existeInconsistencias(sAtributoGenerico1)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -182,6 +208,7 @@ public class BpaController {
 		this.extensao = null;
 		this.descricaoArquivo = null;
 		this.bpaCabecalho = new BpaCabecalhoBean();
+		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 	}
 	
 	public StreamedContent download() throws IOException, ProjetoException {
@@ -419,7 +446,9 @@ public class BpaController {
 	}
 
 	public void setaOpcaoGeracaoProducao(){
-		atributoGenerico1 = "A";
+		sAtributoGenerico1 = "A";
+		bAtributoGenerico3 = false;
+		bAtributoGenerico2 = false;
 	}
 	
 	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
@@ -562,11 +591,43 @@ public class BpaController {
 		this.listaCompetencias = listaCompetencias;
 	}
 
-	public String getAtributoGenerico1() {
-		return atributoGenerico1;
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
 	}
 
-	public void setAtributoGenerico1(String atributoGenerico1) {
-		this.atributoGenerico1 = atributoGenerico1;
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
+
+	public String getsAtributoGenerico1() {
+		return sAtributoGenerico1;
+	}
+
+	public void setsAtributoGenerico1(String sAtributoGenerico1) {
+		this.sAtributoGenerico1 = sAtributoGenerico1;
+	}
+
+	public Boolean getbAtributoGenerico2() {
+		return bAtributoGenerico2;
+	}
+
+	public void setbAtributoGenerico2(Boolean bAtributoGenerico2) {
+		this.bAtributoGenerico2 = bAtributoGenerico2;
+	}
+
+	public Boolean getbAtributoGenerico3() {
+		return bAtributoGenerico3;
+	}
+
+	public void setbAtributoGenerico3(Boolean bAtributoGenerico3) {
+		this.bAtributoGenerico3 = bAtributoGenerico3;
+	}
+
+	public Integer getiAtributoGenerico4() {
+		return iAtributoGenerico4;
+	}
+
+	public void setiAtributoGenerico4(Integer iAtributoGenerico4) {
+		this.iAtributoGenerico4 = iAtributoGenerico4;
 	}
 }

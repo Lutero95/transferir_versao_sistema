@@ -8,6 +8,7 @@
 	<f:metadata>
 		<f:viewAction action="#{novidadeController.listarNovidades()}"/>
 		<f:viewAction action="#{AtendimentoController.listarTotalPendencias()}"/>
+		<f:viewAction action="#{inconsistenciaController.listarInconsistenciasPerfil()}"/>
 	</f:metadata>
 	
 	
@@ -159,5 +160,6 @@
 
 		<ui:include src="../comum/dialogs/dialogNovidades.xhtml"/>
 		<ui:include src="../comum/dialogs/dialogDescricaoNovidade.xhtml"/>
+		<ui:include src="../comum/dialogs/dialogInconsistencias.xhtml"/>
     </ui:define>
 </ui:composition>
