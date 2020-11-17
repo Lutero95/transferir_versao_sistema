@@ -8,10 +8,10 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:body>
 	<p:dialog widgetVar="dlgInconsistencias" resizable="false"
-		draggable="false" closable="false" width="620"
+		draggable="false" closable="false" width="620" 
 		header="Situações Pendentes" closeOnEscape="false"
 		responsive="true" modal="true">
-		<h:form id="formInconsistencias">
+		<h:form id="formInconsistencias"> 
 			<div align="center">
 
 				<p:dataTable value="#{inconsistenciaController.listaInconsistenciasDTO}" var="inc"
@@ -51,8 +51,7 @@
 				<p:separator />
 				<div>
 					<p:commandButton value="Fechar" ajax="true"
-						action="#{novidadeController.marcarVisualizado()}"
-						oncomplete="PF('dlgInconsistencias').hide();" />
+						action="#{inconsistenciaController.marcarVisualizado()}"/>
 				</div>
 			</div>
 		</h:form>
