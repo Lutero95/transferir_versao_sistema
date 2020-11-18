@@ -25,6 +25,7 @@ public class FuncionarioBean implements Serializable {
     private boolean primeiroAcesso;
     private Boolean realizaAtendimento;
     private Boolean realizaLiberacoes;
+    private Boolean realizaAuditoria;
     private Boolean realizaEncaixes;
     private Boolean permiteAutorizacaoLaudo;
     private String cns;
@@ -524,6 +525,14 @@ public class FuncionarioBean implements Serializable {
 	public void setExcecaoBloqueioHorario(Boolean excecaoBloqueioHorario) {
 		this.excecaoBloqueioHorario = excecaoBloqueioHorario;
 	}
+
+    public Boolean getRealizaAuditoria() {
+        return realizaAuditoria;
+    }
+
+    public void setRealizaAuditoria(Boolean realizaAuditoria) {
+        this.realizaAuditoria = realizaAuditoria;
+    }
 
     @Override
     public boolean equals(Object o) {

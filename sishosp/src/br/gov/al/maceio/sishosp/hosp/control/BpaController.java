@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,8 +62,8 @@ public class BpaController {
 	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
 	private String descricaoArquivo;
 	private String sAtributoGenerico1;
-	private Boolean bAtributoGenerico2, bAtributoGenerico3;
-	private Integer iAtributoGenerico4;
+	private Boolean bAtributoGenerico2, informaNumeroFolhaFiltro;
+	private Integer numeroFolhaFiltro;
 	private Date dataInicioAtendimento;
 	private Date dataFimAtendimento;
 	private String competencia;
@@ -329,7 +328,11 @@ public class BpaController {
 		List<String> listaCbos = retornaUnicamenteCbosParaBpaConsolidado();
 		for (String cbo : listaCbos) {
 			Integer quantidadeRegistrosPorFolha = 0;
-			Integer numeroFolhaBpaConsolidado = 1;
+			Integer numeroFolhaBpaConsolidado = null;
+			if (informaNumeroFolhaFiltro)
+				numeroFolhaBpaConsolidado = numeroFolhaFiltro;
+						else
+				numeroFolhaBpaConsolidado = 1;
 			for(int i = 0; i < this.listaDeBpaConsolidado.size(); i++) {
 				if(this.listaDeBpaConsolidado.get(i).getPrdCbo().equals(cbo)) {
 					if(quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_CONSOLIDADO) { 
@@ -419,7 +422,12 @@ public class BpaController {
             List<String> listaCnsDosMedicos = retornaUnicamenteCnsParaBpaIndividualizado();
             for (String cnsMedico : listaCnsDosMedicos) {
                 Integer quantidadeRegistrosPorFolha = 0;
-                Integer numeroFolhaBpaIndividualizado = 1;
+
+				Integer numeroFolhaBpaIndividualizado = null;
+				if (informaNumeroFolhaFiltro)
+					numeroFolhaBpaIndividualizado = numeroFolhaFiltro;
+				else
+					numeroFolhaBpaIndividualizado = 1;
                 for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
                     if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedico)) {
                         if (quantidadeRegistrosPorFolha < MAXIMO_DE_REGISTROS_FOLHA_INDIVIDUALIZADO) {
@@ -447,7 +455,7 @@ public class BpaController {
 
 	public void setaOpcaoGeracaoProducao(){
 		sAtributoGenerico1 = "A";
-		bAtributoGenerico3 = false;
+		informaNumeroFolhaFiltro = false;
 		bAtributoGenerico2 = false;
 	}
 	
@@ -615,19 +623,20 @@ public class BpaController {
 		this.bAtributoGenerico2 = bAtributoGenerico2;
 	}
 
-	public Boolean getbAtributoGenerico3() {
-		return bAtributoGenerico3;
+
+	public Integer getNumeroFolhaFiltro() {
+		return numeroFolhaFiltro;
 	}
 
-	public void setbAtributoGenerico3(Boolean bAtributoGenerico3) {
-		this.bAtributoGenerico3 = bAtributoGenerico3;
+	public void setNumeroFolhaFiltro(Integer numeroFolhaFiltro) {
+		this.numeroFolhaFiltro = numeroFolhaFiltro;
 	}
 
-	public Integer getiAtributoGenerico4() {
-		return iAtributoGenerico4;
+	public Boolean getInformaNumeroFolhaFiltro() {
+		return informaNumeroFolhaFiltro;
 	}
 
-	public void setiAtributoGenerico4(Integer iAtributoGenerico4) {
-		this.iAtributoGenerico4 = iAtributoGenerico4;
+	public void setInformaNumeroFolhaFiltro(Boolean informaNumeroFolhaFiltro) {
+		this.informaNumeroFolhaFiltro = informaNumeroFolhaFiltro;
 	}
 }

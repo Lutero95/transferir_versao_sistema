@@ -148,7 +148,7 @@ public class FuncionarioDAO {
 				+ " p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
-				+ " p.verifica_periodo_inicial_evolucao_programa  "
+				+ " p.verifica_periodo_inicial_evolucao_programa, us.realiza_auditoria  "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -206,7 +206,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setCpfPacienteObrigatorio(rs.getBoolean("cpf_paciente_obrigatorio"));
 				funcionario.getUnidade().getParametro().setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
-
+				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
 				funcionario.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
@@ -1095,8 +1095,8 @@ public class FuncionarioDAO {
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
-				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1150,7 +1150,7 @@ public class FuncionarioDAO {
 			ps.setBoolean(14, profissional.getRealizaEncaixes());
 			ps.setBoolean(15, profissional.getExcecaoBloqueioHorario());
 			ps.setBoolean(16, profissional.getPermiteAutorizacaoLaudo());
-
+			ps.setBoolean(17, profissional.getRealizaAuditoria());
 			ResultSet rs = ps.executeQuery();
 
 			int idProf = 0;
@@ -1603,7 +1603,7 @@ public class FuncionarioDAO {
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
-				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=? "
+				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=? "
 				+ " where id_funcionario = ?";
 
 		try {
@@ -1659,7 +1659,8 @@ public class FuncionarioDAO {
 			stmt.setLong(13, profissional.getUnidade().getId());
 			stmt.setBoolean(14, profissional.getExcecaoBloqueioHorario());
 			stmt.setBoolean(15, profissional.getPermiteAutorizacaoLaudo());
-			stmt.setLong(16, profissional.getId());
+			stmt.setBoolean(16, profissional.getRealizaAuditoria());
+			stmt.setLong(17, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -1892,7 +1893,7 @@ public class FuncionarioDAO {
 		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, permite_autorizacao_laudo,"
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria  "
 				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
 		try {
@@ -1921,6 +1922,7 @@ public class FuncionarioDAO {
 				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 				profissional.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 				profissional.setPermiteAutorizacaoLaudo(rs.getBoolean("permite_autorizacao_laudo"));
+				profissional.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 			}
 
 		} catch (SQLException sqle) {

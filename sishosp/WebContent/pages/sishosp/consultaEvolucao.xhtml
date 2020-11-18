@@ -134,7 +134,7 @@
 											</h:outputLabel>
 										</b:column>
 									</b:row>
-									<b:row rendered="#{evo.tipoAt.descTipoAt!=null}">
+									<b:row rendered="#{evo.tipoAt.descTipoAt!=null and MBFuncionarios.usuarioLogado.realizaAuditoria==false}">
 										<b:column span="12">
 											<h:outputLabel value="Tipo de Atendimento: " />
 											<h:outputLabel value="#{evo.tipoAt.descTipoAt}"
@@ -175,7 +175,7 @@
 										</b:column>
 									</b:row>
 
-									<b:row>
+									<b:row rendered="#{MBFuncionarios.usuarioLogado.realizaAuditoria==false}">
 										<b:column span="12">
 											<h:outputLabel value="Situação do Atendimento:" />
 											<br />

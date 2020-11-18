@@ -68,7 +68,7 @@ public class BpaIndividualizadoDAO {
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
-				" and pm.competencia_atual = ?  \n" +
+				" and pm.competencia_atual = ?  and a1.codprocedimento in(?) " +
 				"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  ";
 
 
@@ -100,6 +100,10 @@ public class BpaIndividualizadoDAO {
             ps.setDate(2, new java.sql.Date(dataFim.getTime()));
             ps.setString(3, CODIGO_BPA_INDIVIDUALIZADO);
             ps.setString(4, competencia);
+            List<Integer> lista = new ArrayList<>();
+            lista.add(1);
+            lista.add(2);
+			ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

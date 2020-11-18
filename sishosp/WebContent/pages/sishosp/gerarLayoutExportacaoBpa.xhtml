@@ -98,7 +98,7 @@
 
 							<b:column span="3">
 								<b:label value="Numeração da Folha" severity="info" style="margin-left: 14px;"  />
-								<p:selectBooleanCheckbox value="#{bpaController.bAtributoGenerico3}"
+								<p:selectBooleanCheckbox value="#{bpaController.informaNumeroFolhaFiltro}"
 														 style="margin-top: 10px;margin-left:14px"
 														 itemLabel="Informar Número Inicial da Folha">
 									<p:ajax update="diasPaciente"
@@ -110,9 +110,9 @@
 						<b:row>
 							<b:column span="3" class="label-position new-data-size new-comple1">
 
-								<p:spinner id="diasPaciente" value="#{bpaController.iAtributoGenerico4}"
+								<p:spinner id="diasPaciente" value="#{bpaController.numeroFolhaFiltro}"
 										   style="margin-left: -5%;" size="5"
-										   disabled="#{bpaController.bAtributoGenerico3 == false}"
+										   disabled="#{bpaController.informaNumeroFolhaFiltro == false}"
 										   min="1"  required="true" requiredMessage="Dias Ativo Paciente sem Laudo: campo obrigatório"/>
 							</b:column>
 						</b:row>
