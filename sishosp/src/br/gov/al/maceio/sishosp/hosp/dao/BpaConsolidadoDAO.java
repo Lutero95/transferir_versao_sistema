@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class BpaConsolidadoDAO {
 
@@ -20,7 +21,7 @@ public class BpaConsolidadoDAO {
 	/* ESTA CONSTANTE SERÁ SUBSTITUÍDA DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_IDADE = "000";
 
-	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
+	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
@@ -43,6 +44,8 @@ public class BpaConsolidadoDAO {
         		" and pm.competencia_atual = ? "+
         		"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  " ;
 
+		if (listaProcedimentosFiltro.size()>0)
+			sql+=" and a1.codprocedimento = any(?) ";
 
 
         if (tipoGeracao.equals("A")){
@@ -61,6 +64,14 @@ public class BpaConsolidadoDAO {
             ps.setDate(2, new java.sql.Date(dataFim.getTime()));
             ps.setString(3, CODIGO_BPA_CONSOLIDADO);
             ps.setString(4, competencia);
+			ArrayList<Integer> lista = new ArrayList<>();
+			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+			}
+
+			if (listaProcedimentosFiltro.size()>0)
+				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

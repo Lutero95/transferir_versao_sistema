@@ -625,7 +625,7 @@ public class InsercaoPacienteDAO {
 
 		Date data = null;
 
-		String sql = "select (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))  + INTERVAL '1 DAYS' as datafinal  from hosp.paciente_instituicao pi  join hosp.laudo l on l.id_laudo = pi.codlaudo  where codpaciente=? and pi.codprograma=? and pi.codgrupo=?  and l.id_laudo= ( " + 
+		String sql = "select (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD')))  + INTERVAL '1 DAYS' as datafinal  from hosp.paciente_instituicao pi  join hosp.laudo l on l.id_laudo = pi.codlaudo  where l.codpaciente=? and pi.codprograma=? and pi.codgrupo=?  and l.id_laudo= ( " +
 				"  select max(l1.id_laudo) from hosp.paciente_instituicao pi1 " + 
 				" join hosp.laudo l1 on l1.id_laudo = pi1.codlaudo where l1.codpaciente=? and pi1.codprograma=? and pi1.codgrupo=? " + 
 				" and to_char(l1.ano_final, '9999')||lpad(trim(to_char(l1.mes_final,'99')),2,'0')= " + 

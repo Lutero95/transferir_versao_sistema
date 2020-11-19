@@ -1706,7 +1706,7 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 	
-	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao) throws ProjetoException {
+	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 		
@@ -1723,6 +1723,9 @@ public class AtendimentoDAO {
 				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
+		if (listaProcedimentosFiltro.size()>0)
+			sql+=" and a1.codprocedimento = any(?) ";
+
 		if (tipoGeracao.equals("A")){
 			sql+=" and sa.atendimento_realizado = true";
 		}
@@ -1735,6 +1738,13 @@ public class AtendimentoDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
 			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+			ArrayList<Integer> lista = new ArrayList<>();
+			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+			}
+
+			if (listaProcedimentosFiltro.size()>0)
+				ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 			
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {

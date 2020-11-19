@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class BpaIndividualizadoDAO {
 
@@ -28,7 +29,7 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_DDTEL_PCNT = "           ";
 	private static final String PRD_INE = "          ";
 	
-    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
+    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
         String sql = "select count(*) qtdproc ,\n" +
@@ -68,8 +69,11 @@ public class BpaIndividualizadoDAO {
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
-				" and pm.competencia_atual = ?  and a1.codprocedimento in(?) " +
+				" and pm.competencia_atual = ?   " +
 				"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  ";
+
+		if (listaProcedimentosFiltro.size()>0)
+			sql+=" and a1.codprocedimento = any(?) ";
 
 
 		if (tipoGeracao.equals("A")){
@@ -100,10 +104,13 @@ public class BpaIndividualizadoDAO {
             ps.setDate(2, new java.sql.Date(dataFim.getTime()));
             ps.setString(3, CODIGO_BPA_INDIVIDUALIZADO);
             ps.setString(4, competencia);
-            List<Integer> lista = new ArrayList<>();
-            lista.add(1);
-            lista.add(2);
-			ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+			ArrayList<Integer> lista = new ArrayList<>();
+			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+			}
+
+				if (listaProcedimentosFiltro.size()>0)
+				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

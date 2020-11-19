@@ -78,6 +78,7 @@ public class BpaController {
 		this.bpaIndividualizadoDAO = new BpaIndividualizadoDAO();
 		this.listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
+		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 		limparDadosLayoutGerado();
 
 	}
@@ -175,7 +176,7 @@ public class BpaController {
 	}
 	
 	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
-		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao);
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos);
 		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
 		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
 			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
@@ -207,7 +208,7 @@ public class BpaController {
 		this.extensao = null;
 		this.descricaoArquivo = null;
 		this.bpaCabecalho = new BpaCabecalhoBean();
-		listaProcedimentos = new ArrayList<ProcedimentoBean>();
+
 	}
 	
 	public StreamedContent download() throws IOException, ProjetoException {
@@ -314,14 +315,14 @@ public class BpaController {
 	}
 
 	private void executaMetodosParaGerarBpaConsolidado(String tipoGeracao) throws ProjetoException {
-		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao);
+		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao, listaProcedimentos);
 		geraNumeroDaFolhaConsolidado();
 		geraNumeroDaLinhaDaFolhaConsolidado();
 		adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido();
 	}
 
-	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
-		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia, tipoGeracao);
+	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
+		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro);
 	}
 	
 	public void geraNumeroDaFolhaConsolidado() {
@@ -407,14 +408,14 @@ public class BpaController {
 	}
 
 	private void executaMetodosParaGerarBpaIndividualizado(String tipoGeracao) throws ProjetoException {
-		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao);
+		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao, listaProcedimentos);
 		geraNumeroDaFolhaIndividualizado();
 		geraNumeroDaLinhaDaFolhaIndividualizado();
 		adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido();
 	}
 	
-	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao);
+	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
+		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro);
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
