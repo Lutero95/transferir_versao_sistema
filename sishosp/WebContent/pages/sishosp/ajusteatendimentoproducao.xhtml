@@ -276,10 +276,18 @@
 				</b:row>
 				
 				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
-					paginator="true" rows="5" style="margin-top: 10px"
+					paginator="true" scrollable="true" scrollHeight="200" style="margin-top: 10px"
 					value="#{AtendimentoController.listaAtendimentosFiltro}"
 					 emptyMessage="Nenhum procedimento listado" reflow="true">
 
+					<p:column headerText="Selecionar" width="100">
+						<p:commandButton
+								actionListener="#{AtendimentoController.adicionarOuRemoverAtendimentoSelecionado(tab)}"
+								icon="fa fa-fw ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'fa-check' : 'fa-square-o'}"
+								title="Selecionar" update="formAjustes"
+								style="margin-left:30%;"
+								class="new-btn-acao-table ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'acao-editar' : ''}" />
+					</p:column>
 					<p:column headerText="Profissional">
 						<h:outputText value="#{tab.funcionario.nome}" />
 					</p:column>
@@ -302,14 +310,7 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Selecionar" width="100">
-						<p:commandButton
-							actionListener="#{AtendimentoController.adicionarOuRemoverAtendimentoSelecionado(tab)}"
-							icon="fa fa-fw ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'fa-check' : 'fa-square-o'}"
-							title="Selecionar" update="formAjustes"
-							style="margin-left:30%;"
-							class="new-btn-acao-table ${AtendimentoController.atendimentoFoiAdicionado(tab) == true ? 'acao-editar' : ''}" />
-					</p:column>
+
 				</p:dataTable>
 
 				<div align="center" style="margin-top: 5%;">
