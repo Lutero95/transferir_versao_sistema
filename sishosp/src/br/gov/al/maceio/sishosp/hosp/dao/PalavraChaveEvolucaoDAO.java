@@ -20,7 +20,7 @@ public class PalavraChaveEvolucaoDAO {
 	
 	public boolean gravarPalavraChaveEvolucao(PalavraChaveEvolucaoBean palavraChaveEvolucao) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "INSERT INTO hosp.palvras_chave_evolucao (descricao, atendimento_realizado, excluido) " + 
+		String sql = "INSERT INTO hosp.palavra_chave_evolucao (descricao, atendimento_realizado, excluido) " + 
 				"VALUES(?, ?, false); ";
 
 		try {
@@ -51,7 +51,7 @@ public class PalavraChaveEvolucaoDAO {
 	
 	public boolean alterarPalavraChaveEvolucao(PalavraChaveEvolucaoBean palavraChaveEvolucao) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "UPDATE hosp.palvras_chave_evolucao SET descricao = ?, atendimento_realizado = ? " + 
+		String sql = "UPDATE hosp.palavra_chave_evolucao SET descricao = ?, atendimento_realizado = ? " + 
 				"WHERE id = ?";
 
 		try {
@@ -83,7 +83,7 @@ public class PalavraChaveEvolucaoDAO {
 	
 	public boolean excluirPalavraChaveEvolucao(Integer id) throws ProjetoException {
 		Boolean retorno = false;
-		String sql = "UPDATE hosp.palvras_chave_evolucao SET excluido = true WHERE id = ?";
+		String sql = "UPDATE hosp.palavra_chave_evolucao SET excluido = true WHERE id = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -114,7 +114,7 @@ public class PalavraChaveEvolucaoDAO {
 
 		PalavraChaveEvolucaoBean palavraChaveEvolucao = new PalavraChaveEvolucaoBean();
 		String sql = "SELECT id, descricao, atendimento_realizado " + 
-				"FROM hosp.palvras_chave_evolucao where excluido = false and id = ?;";
+				"FROM hosp.palavra_chave_evolucao where excluido = false and id = ?;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -143,7 +143,7 @@ public class PalavraChaveEvolucaoDAO {
 	public List<PalavraChaveEvolucaoBean> listarPalavraChaveEvolucao() throws ProjetoException {
 		List<PalavraChaveEvolucaoBean> lista = new ArrayList<>();
 		String sql = "SELECT id, descricao, atendimento_realizado " + 
-				"FROM hosp.palvras_chave_evolucao where excluido = false;";
+				"FROM hosp.palavra_chave_evolucao where excluido = false;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -170,7 +170,7 @@ public class PalavraChaveEvolucaoDAO {
 	public List<PalavraChaveEvolucaoBean> listarPalavraChaveEvolucaoFiltro(String campoBusca) throws ProjetoException {
 		List<PalavraChaveEvolucaoBean> lista = new ArrayList<>();
 		String sql = "SELECT id, descricao, atendimento_realizado " + 
-				"FROM hosp.palvras_chave_evolucao where excluido = false "+
+				"FROM hosp.palavra_chave_evolucao where excluido = false "+
 				"and descricao ilike ?;";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -203,5 +203,52 @@ public class PalavraChaveEvolucaoDAO {
 		palavraChaveEvolucao.setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
 
 		lista.add(palavraChaveEvolucao);
+	}
+	
+	public List<String> existePalavraDigitadaDeOutroTipoDeAtendimento(String[] palavrasDigitadas, Integer idSituacaoAtendimento) 
+			throws ProjetoException {
+		
+		List<String> palavrasEncontradas = new ArrayList<>();
+		
+		String sql = "	select pce.descricao from hosp.palavra_chave_evolucao pce " + 
+				"		where pce.excluido = false and pce.atendimento_realizado != " + 
+				"			(select sa.atendimento_realizado from hosp.situacao_atendimento sa where sa.id = ?)  " + 
+				"		and (pce.descricao ilike unaccent(?) ";
+		
+		String filtroDescricao = "or pce.descricao ilike unaccent(?) ";
+		String finalSql = " ) order by descricao asc;";
+		
+		for(int i = 1; i < palavrasDigitadas.length; i++) {
+			sql += filtroDescricao;
+		}
+		sql += finalSql;
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, idSituacaoAtendimento);
+			int contador = 2;
+			
+			for (String palavra : palavrasDigitadas) {
+				ps.setString(contador, palavra);
+				contador++;
+			}
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				palavrasEncontradas.add(rs.getString("descricao"));
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return palavrasEncontradas;
 	}
 }

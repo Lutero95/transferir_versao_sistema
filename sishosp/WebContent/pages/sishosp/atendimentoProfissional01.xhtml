@@ -236,7 +236,7 @@
 							disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}"
 							action="#{AtendimentoController.realizarAtendimentoProfissional()}"
 							icon="ui-icon-check" size="sm" look="success" value="Gravar"
-							update=":msgPagina" class="btn-incluir" style="float:left; margin-top:6%;" />
+							update=":frmPalavraChave :msgPagina" class="btn-incluir" style="float:left; margin-top:6%;" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							style="float:right; margin-top:6%;" size="sm" immediate="true" look="info"
@@ -247,6 +247,40 @@
 				</h:form>
 			</div>
 		</div>
+		
+		<p:dialog header="Atenção"
+			widgetVar="dlgPalavraChave" width="450px"
+			dynamic="true" resizable="false" responsive="true" modal="true">
+
+			<h:form id="frmPalavraChave">
+				<p:outputPanel id="outPalavraChave">
+					<p:row>
+						<b:column span="12" class="label-position">
+							<p:outputLabel value="Foram encontrada(s) palavra(s) que correspondem a outra situação de atendimento 
+							diferente da situação selecionada: " severity="info"/>
+							
+							<p:outputLabel value="#{AtendimentoController.palavrasChaveDivergentes}. " 
+							severity="info" style="font-weight:bold !important;"/>	
+							<p:outputLabel value="Deseja continuar?" severity="info"/>
+							<br /><br />	
+							<div align="center">
+								<p:selectOneRadio value="#{AtendimentoController.confirmacaoDialog}"
+									required="true" requiredMessage="Selecione SIM ou NÃO para continuar!">
+									<f:selectItem itemLabel="SIM" itemValue="S" />
+									<f:selectItem itemLabel="NÃO" itemValue="N" />
+								</p:selectOneRadio>
+							</div>
+							<br />		
+						</b:column>
+					</p:row>
+				</p:outputPanel>
+				
+				<div align="center">
+					<p:commandButton value="Confirmar" update=":msgPagina" 
+					action="#{AtendimentoController.realizarAtendimentoProfissional()}"/>
+				</div>
+			</h:form>
+		</p:dialog>
 		
 		<p:dialog header="Procedimento CID"
 			widgetVar="dlgConsultaProcedimentos" width="850px" height="200px"

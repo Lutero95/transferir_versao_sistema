@@ -77,7 +77,7 @@ public class AtendimentoController implements Serializable {
     private Boolean semCids;
     private CidDAO cidDao;
     private List<CidBean> listaCids;
-    private  Date dataAtende;
+    private Date dataAtende;
     private Boolean existeCargaSigtapParaEsteMesOuAnterior;
     private EspecialidadeBean especialidade;
     private List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucaoProgramaGrupo;
@@ -87,6 +87,8 @@ public class AtendimentoController implements Serializable {
     private ProcedimentoCidDTO procedimentoCidSelecionado;
     private boolean alteracaoEmMassa;
     private CidBean cid;
+    private String confirmacaoDialog;
+    private String palavrasChaveDivergentes;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -140,6 +142,8 @@ public class AtendimentoController implements Serializable {
         this.procedimentoCidSelecionado = new ProcedimentoCidDTO();
         this.listaAtendimentosFiltro = new ArrayList<>();
         this.listaAtendimentosSelecionados = new ArrayList<>();
+        this.confirmacaoDialog = "";
+        this.palavrasChaveDivergentes = "";
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -403,29 +407,68 @@ public class AtendimentoController implements Serializable {
     }
 
     public String realizarAtendimentoProfissional() throws ProjetoException {
-        if (funcionario == null) {
-            FuncionarioBean user_session = (FuncionarioBean) FacesContext
-                    .getCurrentInstance().getExternalContext().getSessionMap()
-                    .get("obj_usuario");
-            Integer valor = Integer.valueOf(user_session.getId().toString());
-            this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
-        }
+    	
+    	String[] palavrasEvolucao = retornaVetorDeTextoEvolucao();
+    	List<String> palavrasIncompativeis = new PalavraChaveEvolucaoDAO().existePalavraDigitadaDeOutroTipoDeAtendimento
+    			(palavrasEvolucao, atendimento.getSituacaoAtendimento().getId());
+    	
+    	if(this.confirmacaoDialog.equals("N")) {
+    		JSFUtil.fecharDialog("dlgPalavraChave");
+    		this.confirmacaoDialog = "";
+    		this.palavrasChaveDivergentes = "";
+    		return null;
+    	}
+    	
+    	else if(!palavrasIncompativeis.isEmpty() && 
+    			VerificadorUtil.verificarSeObjetoNuloOuVazio(this.confirmacaoDialog)) {
+    		this.confirmacaoDialog = "";
+    		popularPalavrasChavesIncompativeisParaMotrarNaTela(palavrasIncompativeis);
+    		JSFUtil.abrirDialog("dlgPalavraChave");
+    		return null;
+    	} 
+    	
+    	else {
+    		if(palavrasIncompativeis.isEmpty())
+    			palavrasChaveDivergentes = "";
+    			
+    		this.confirmacaoDialog = "";
+			if (funcionario == null) {
+				FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+						.getSessionMap().get("obj_usuario");
+				Integer valor = Integer.valueOf(user_session.getId().toString());
+				this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
+			}
 
-        buscarDadosProcedimentoPorId();
-        validarDadosSigtap();
-        buscarDadosCidPorId();
-        validarCidSigtap();
-        validarProcedimentoCidsSecundariosSigtap();
-        boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento);
-
-        if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
-            return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
-            return null;
-        }
+			buscarDadosProcedimentoPorId();
+			validarDadosSigtap();
+			buscarDadosCidPorId();
+			validarCidSigtap();
+			validarProcedimentoCidsSecundariosSigtap();
+			boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento, palavrasChaveDivergentes);
+			if (alterou == true) {
+				JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
+				JSFUtil.fecharDialog("dlgPalavraChave");
+				return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+				return null;
+			}
+    	}
     }
+
+	private void popularPalavrasChavesIncompativeisParaMotrarNaTela(List<String> palavrasIncompativeis) {
+		this.palavrasChaveDivergentes = "";
+		for (int i = 0; i < palavrasIncompativeis.size(); i++) {
+			if(i == (palavrasIncompativeis.size() - 1))
+				this.palavrasChaveDivergentes += palavrasIncompativeis.get(i);
+			else
+				this.palavrasChaveDivergentes += palavrasIncompativeis.get(i) + ", ";
+		}
+	}
+
+	private String[] retornaVetorDeTextoEvolucao() {
+		return atendimento.getEvolucao().replace(",", " ").replaceAll("\\s+", " ").replace("<p>", "").replace("</p>", "").split(" ");
+	}
 
     public void alterarSituacaoDeAtendimentoPorProfissional() {
         try {
@@ -1469,6 +1512,18 @@ public class AtendimentoController implements Serializable {
 
 	public void setCampoBuscaCid(String campoBuscaCid) {
 		this.campoBuscaCid = campoBuscaCid;
+	}
+
+	public String getConfirmacaoDialog() {
+		return confirmacaoDialog;
+	}
+
+	public void setConfirmacaoDialog(String confirmacaoDialog) {
+		this.confirmacaoDialog = confirmacaoDialog;
+	}
+
+	public String getPalavrasChaveDivergentes() {
+		return palavrasChaveDivergentes;
 	}
 	
 }
