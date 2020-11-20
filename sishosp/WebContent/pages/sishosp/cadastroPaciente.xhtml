@@ -331,8 +331,9 @@
 									value="#{PacienteController.paciente.endereco.cep}"
 									class="form-control select-agendaEquipe2" required="true"
 									requiredMessage="CEP: Campo obrigatório!">
-
-													</p:inputMask>
+									<p:ajax listener="#{PacienteController.encontraCEP()}" 
+									update="inputrua estado outMunicipios outBairro"/>
+								</p:inputMask>
 							</b:column>
 
 							<b:column span="2" class="label-position">
@@ -360,12 +361,10 @@
 									required="true"
 									requiredMessage="Logradouro: Campo obrigatório!"
 									class="form-control" id="inputrua">
-
 								</b:inputText>
 							</b:column>
-
 						</b:row>
-						<br></br>
+						<br />
 
 						<b:row>
 
@@ -390,13 +389,10 @@
 									<f:validateLength maximum="200" />
 								</b:inputText>
 							</b:column>
-
 						</b:row>
-
-						<br></br>
+						<br />
 
 						<b:row>
-
 							<b:column span="3" class="label-position">
 								<b:label for="numero" value="Número" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
@@ -423,13 +419,10 @@
 										update="outMunicipios"></p:ajax>
 								</p:selectOneMenu>
 							</b:column>
-
 						</b:row>
-
-						<br></br>
+						<br />
 
 						<b:row>
-
 							<b:column span="3" class="label-position">
 								<b:label value="Município" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
@@ -449,7 +442,6 @@
 											update="outBairro"></p:ajax>
 									</p:selectOneMenu>
 								</p:outputPanel>
-
 							</b:column>
 
 							<b:column span="3" class="label-position">
@@ -474,28 +466,20 @@
                                                  and PacienteController.bairroExiste != null and PacienteController.paciente.endereco.cepValido == true}"
 										value="#{PacienteController.paciente.endereco.bairro}">
 										</p:outputLabel>
-
 								</p:outputPanel>
-
 							</b:column>
 
 							<b:column span="2" style="margin-top: 5px;">
-
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{PacienteController.enderecoController.limparDados}" process="@this estado"
 									update=":frmcadbairro:outcadbairro" style="margin-top:17px;"
 									oncomplete="PF('dlgcadastrobairro').show()" />
-
 							</b:column>
 						</b:row>
-
-
 					</p:tab>
 
 					<p:tab title="Documentos">
-
 						<b:row>
-
 							<b:column span="3" class="label-position">
 								<b:label for="rg" value="RG Número" severity="info" />
 
