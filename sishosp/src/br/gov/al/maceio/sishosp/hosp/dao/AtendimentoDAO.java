@@ -1503,10 +1503,11 @@ public class AtendimentoDAO {
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
 				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.id_paciente, pa.dtanascimento, p.id as id_procedimento, " + 
 				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, c.cid, p.codproc, "+
-				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo " +
+				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo, cbo.codigo codcbo " +
 				"from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
-				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " + 
+				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " +
+				" left join hosp.cbo  on cbo.id = f.codcbo "+
 				"join hosp.proc p on a1.codprocedimento = p.id " + 
 				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
 				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
@@ -1581,6 +1582,7 @@ public class AtendimentoDAO {
 				atendimento.setValidadoPeloSigtapAnterior(rs.getBoolean("validado_pelo_sigtap_anterior"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getFuncionario().setId(rs.getLong("id_funcionario"));
+				atendimento.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
 				atendimento.getPaciente().setNome(rs.getString("paciente"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));

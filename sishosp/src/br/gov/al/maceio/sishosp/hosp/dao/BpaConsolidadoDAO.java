@@ -10,7 +10,9 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.control.LaudoController;
 import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
@@ -73,8 +75,13 @@ public class BpaConsolidadoDAO {
 				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 
             ResultSet rs = ps.executeQuery();
-
+			LaudoController validacaoSigtap = new LaudoController();
             while (rs.next()) {
+				Date dataSolicitacaoRefSigtap = DataUtil.montarDataCompletaInicioMesPorAnoMesCompetencia(rs.getString("competencia_atual"));
+				String cbo = rs.getString("cbo");
+				String codProc = rs.getString("codproc");
+				validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, null);
+
             	BpaConsolidadoBean bpaConsolidado = new BpaConsolidadoBean();
             	bpaConsolidado.setPrdCnes(rs.getString("cnes"));
             	bpaConsolidado.setPrdCmp(rs.getString("competencia_atual"));

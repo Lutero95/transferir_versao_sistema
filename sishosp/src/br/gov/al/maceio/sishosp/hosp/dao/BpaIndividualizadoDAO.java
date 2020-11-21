@@ -10,8 +10,12 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.control.LaudoController;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class BpaIndividualizadoDAO {
@@ -111,9 +115,26 @@ public class BpaIndividualizadoDAO {
 
 				if (listaProcedimentosFiltro.size()>0)
 				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+
+			LaudoController validacaoSigtap = new LaudoController();
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
+				Date dataSolicitacaoRefSigtap = DataUtil.montarDataCompletaInicioMesPorAnoMesCompetencia(rs.getString("competencia_atual"));
+				String cbo = rs.getString("cbo");
+				String codProc = rs.getString("codproc");
+				PacienteBean paciente =new PacienteBean();
+				paciente.setNome(rs.getString("nomepaciente"));
+				paciente.setNome(rs.getString("nomepaciente"));
+				paciente.setDtanascimento(rs.getDate("dtanascimento"));
+				CidBean cid = new CidBean();
+				cid.setCid(rs.getString("cid"));
+				validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente);
+				validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc);
+				validacaoSigtap.validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoRefSigtap, codProc, paciente);
+				if(validacaoSigtap.procedimentoPossuiCidsAssociados(dataSolicitacaoRefSigtap, codProc))
+					validacaoSigtap.validaCidsDoLaudo(dataSolicitacaoRefSigtap, cid, codProc, paciente);
+
             	BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
             	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
             	bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));

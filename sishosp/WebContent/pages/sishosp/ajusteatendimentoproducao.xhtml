@@ -99,6 +99,10 @@
 							<h:outputText value="#{tab.funcionario.nome}" />
 						</p:column>
 
+						<p:column headerText="CBO" width="60">
+							<h:outputText value="#{tab.funcionario.cbo.codigo}" />
+						</p:column>
+
 						<p:column headerText="Paciente">
 							<h:outputText value="#{tab.paciente.nome}" />
 						</p:column>
@@ -290,6 +294,10 @@
 					</p:column>
 					<p:column headerText="Profissional">
 						<h:outputText value="#{tab.funcionario.nome}" />
+					</p:column>
+
+					<p:column headerText="CBO">
+						<h:outputText value="#{tab.funcionario.cbo.codigo}" />
 					</p:column>
 
 					<p:column headerText="Paciente">

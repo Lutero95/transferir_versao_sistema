@@ -241,6 +241,10 @@ public class LaudoController implements Serializable {
             throw new ProjetoException("Por favor informe o campo CID 1");
     }
 
+    public void imprime(){
+        DataUtil.montarDataCompletaInicioMesPorAnoMesCompetencia("202004");
+    }
+
     private void validarDadosSigtap(PacienteBean paciente, CidBean cid1) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
             Date dataSolicitacaoPeloSigtap = this.laudo.getDataSolicitacao();
@@ -255,8 +259,8 @@ public class LaudoController implements Serializable {
 
             idadeValida(dataSolicitacaoPeloSigtap, paciente, this.laudo.getProcedimentoPrimario().getCodProc());
             validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente);
-            if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap))
-                validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1);
+            if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc()))
+                validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente);
             validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProfissionalLaudo().getId(), this.laudo.getProcedimentoPrimario().getCodProc());
         }
     }
@@ -300,9 +304,9 @@ public class LaudoController implements Serializable {
         }
     }
 
-    private Boolean procedimentoPossuiCidsAssociados(Date dataSolicitacaoPeloSigtap) throws ProjetoException {
+    public Boolean procedimentoPossuiCidsAssociados(Date dataSolicitacaoPeloSigtap, String codProc) throws ProjetoException {
         Boolean possuiCidsAssociados = lDao.verificaSeProcedimentoPossuiCidsAssociados
-                (dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc());
+                (dataSolicitacaoPeloSigtap, codProc);
         return possuiCidsAssociados;
     }
 
@@ -327,7 +331,7 @@ public class LaudoController implements Serializable {
         return procedimento;
     }
 
-    private void validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap, CidBean cid1) throws ProjetoException {
+    public void validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap, CidBean cid1, String codProc, PacienteBean paciente) throws ProjetoException {
 
         List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
         listaCidsLaudo.add(cid1);
@@ -340,14 +344,13 @@ public class LaudoController implements Serializable {
         */
 
         for (CidBean cidBean : listaCidsLaudo) {
-            validarCidPorProcedimento(cidBean, dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc());
+            validarCidPorProcedimento(cidBean, dataSolicitacaoPeloSigtap, codProc, paciente);
         }
     }
 
-    public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento) throws ProjetoException {
+    public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento, PacienteBean paciente) throws ProjetoException {
         if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), data, codigoProcedimento)) {
-            throw new ProjetoException("O procedimento " +codigoProcedimento+" possui(em) Cid(s) associado(s), "
-                    + "por favor selecione apenas Cids permitidos no SIGTAP ");
+            throw new ProjetoException("O Paciente "+paciente.getNome()+" possui o procedimento " +codigoProcedimento+" incompatível com o CID "+cidBean.getCid());
         }
     }
 
@@ -357,6 +360,18 @@ public class LaudoController implements Serializable {
                 codProcedimento)) {
             throw new ProjetoException
                     ("Cbo do profissional selecionado é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
+        }
+    }
+
+    public void validaCboPermitidoProcedimento(Date dataSolicitacaoPeloSigtap, String codigoCboSelecionado, String codProcedimento, PacienteBean paciente) throws ProjetoException {
+        if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, dataSolicitacaoPeloSigtap,
+                codProcedimento)) {
+            if (paciente!=null)
+            throw new ProjetoException
+                    ("Paciente: "+paciente.getNome()+". Cbo "+codigoCboSelecionado+" é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
+            else
+                throw new ProjetoException
+                    ("Cbo "+codigoCboSelecionado+" é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
         }
     }
 

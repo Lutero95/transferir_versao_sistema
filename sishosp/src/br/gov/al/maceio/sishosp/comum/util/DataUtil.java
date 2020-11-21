@@ -234,6 +234,18 @@ public final class DataUtil {
         return data;
     }
 
+    public static Date montarDataCompletaInicioMesPorAnoMesCompetencia(String anoMesCompetencia){
+        Integer ano = Integer.valueOf(anoMesCompetencia.substring(0,4));
+        Integer mes = Integer.valueOf(anoMesCompetencia.substring(4 ,6));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, (ano));
+        cal.set(Calendar.MONTH, ajustarMes(mes));
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        Date data = cal.getTime();
+
+        return data;
+    }
+
     private static Integer ajustarMes(Integer mes){
         return mes - 1;
     }
