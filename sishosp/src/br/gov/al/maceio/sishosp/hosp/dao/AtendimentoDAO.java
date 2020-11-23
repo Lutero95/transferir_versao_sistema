@@ -38,8 +38,8 @@ public class AtendimentoDAO {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
-	public Boolean realizaAtendimentoProfissional(FuncionarioBean funcionario, AtendimentoBean atendimento)
-			throws ProjetoException {
+	public Boolean realizaAtendimentoProfissional
+		(FuncionarioBean funcionario, AtendimentoBean atendimento, String palavrasChaveIncompativeis) throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
 		try {
@@ -74,6 +74,13 @@ public class AtendimentoDAO {
 				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
 			}
 
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(palavrasChaveIncompativeis)) {
+				Integer idSituacao = atendimento.getSituacaoAtendimento().getId();
+				String descricao = montarDescricaoLogPalavraChave(atendimento, palavrasChaveIncompativeis, idSituacao);
+				
+				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.EVOLUCAO_PALAVRAS_CHAVE_DIVERGENTE.getSigla());
+				new LogDAO().gravarLog(log, con);
+			}
 			con.commit();
 
 			alterou = true;
@@ -90,6 +97,15 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+
+	private String montarDescricaoLogPalavraChave(AtendimentoBean atendimento, String palavrasChaveIncompativeis,
+			Integer idSituacao) throws ProjetoException, SQLException {
+		String descricao = "Id_atendimento_1: "+ atendimento.getId1();
+		descricao += " Id_situacao_atendimento: "+ idSituacao+" Situação: "+
+		new SituacaoAtendimentoDAO().buscaDescricaoSituacaoAtendimento(idSituacao, con)+"\n";
+		descricao += "Palavras-chave: "+palavrasChaveIncompativeis;
+		return descricao;
 	}
 	
 	private void gravarProcedimentosSecundariosEvolucao(Connection conexao, AtendimentoBean atendimento) 

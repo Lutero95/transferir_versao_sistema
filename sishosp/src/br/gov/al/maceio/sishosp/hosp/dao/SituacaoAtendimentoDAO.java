@@ -339,5 +339,26 @@ public class SituacaoAtendimentoDAO {
 		return existeSituacaoComAbonoFalta;
 	}
 
+	public String buscaDescricaoSituacaoAtendimento(Integer idSituacao, Connection conexaoAuxiliar) 
+			throws ProjetoException, SQLException {
 
+		String sql = "select sa.descricao from hosp.situacao_atendimento sa where sa.id = ? ";
+		String descricao = "";
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setInt(1, idSituacao);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				descricao = rs.getString("descricao");
+			}
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return descricao;
+	}
 }
