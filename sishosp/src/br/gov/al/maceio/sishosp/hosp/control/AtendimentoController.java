@@ -408,29 +408,26 @@ public class AtendimentoController implements Serializable {
 
     public String realizarAtendimentoProfissional() throws ProjetoException {
     	
-    	String[] palavrasEvolucao = retornaVetorDeTextoEvolucao();
+    	this.palavrasChaveDivergentes = "";
+    	String textoEvolucaoFormatado = retornaTextoEvolucaoSemVirgulaIhEspacoDuplo();
     	List<String> palavrasIncompativeis = new PalavraChaveEvolucaoDAO().existePalavraDigitadaDeOutroTipoDeAtendimento
-    			(palavrasEvolucao, atendimento.getSituacaoAtendimento().getId());
+    			(atendimento.getSituacaoAtendimento().getId());
+    	boolean existePalavrasDivergentes = verificaExisteTextoIncompativelEvolucao(textoEvolucaoFormatado, palavrasIncompativeis);
     	
     	if(this.confirmacaoDialog.equals("N")) {
     		JSFUtil.fecharDialog("dlgPalavraChave");
     		this.confirmacaoDialog = "";
-    		this.palavrasChaveDivergentes = "";
     		return null;
     	}
     	
-    	else if(!palavrasIncompativeis.isEmpty() && 
+    	else if(existePalavrasDivergentes && 
     			VerificadorUtil.verificarSeObjetoNuloOuVazio(this.confirmacaoDialog)) {
     		this.confirmacaoDialog = "";
-    		popularPalavrasChavesIncompativeisParaMotrarNaTela(palavrasIncompativeis);
     		JSFUtil.abrirDialog("dlgPalavraChave");
     		return null;
     	} 
     	
     	else {
-    		if(palavrasIncompativeis.isEmpty())
-    			palavrasChaveDivergentes = "";
-    			
     		this.confirmacaoDialog = "";
 			if (funcionario == null) {
 				FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -456,18 +453,23 @@ public class AtendimentoController implements Serializable {
     	}
     }
 
-	private void popularPalavrasChavesIncompativeisParaMotrarNaTela(List<String> palavrasIncompativeis) {
-		this.palavrasChaveDivergentes = "";
-		for (int i = 0; i < palavrasIncompativeis.size(); i++) {
-			if(i == (palavrasIncompativeis.size() - 1))
-				this.palavrasChaveDivergentes += palavrasIncompativeis.get(i);
-			else
-				this.palavrasChaveDivergentes += palavrasIncompativeis.get(i) + ", ";
-		}
+	private String retornaTextoEvolucaoSemVirgulaIhEspacoDuplo() {
+		return atendimento.getEvolucao().replace(",", "").replaceAll("\\s+", " ").replace("<p>", "").replace("</p>", "");
 	}
-
-	private String[] retornaVetorDeTextoEvolucao() {
-		return atendimento.getEvolucao().replace(",", " ").replaceAll("\\s+", " ").replace("<p>", "").replace("</p>", "").split(" ");
+	
+	private boolean verificaExisteTextoIncompativelEvolucao(String textoEvolucao, List<String> palavrasChaveIncompativeis) {
+		
+		boolean existe = false;
+		
+		for (String palavraChave : palavrasChaveIncompativeis) {
+			palavraChave = palavraChave.replace(",", "").replaceAll("\\s+", " ");
+			if(textoEvolucao.toUpperCase().contains(palavraChave.toUpperCase())) {
+				palavrasChaveDivergentes += palavraChave+=", ";
+				existe = true;
+			}
+		}
+		
+		return existe;
 	}
 
     public void alterarSituacaoDeAtendimentoPorProfissional() {

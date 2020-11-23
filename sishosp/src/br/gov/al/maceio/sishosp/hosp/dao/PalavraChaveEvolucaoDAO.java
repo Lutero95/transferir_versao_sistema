@@ -205,34 +205,21 @@ public class PalavraChaveEvolucaoDAO {
 		lista.add(palavraChaveEvolucao);
 	}
 	
-	public List<String> existePalavraDigitadaDeOutroTipoDeAtendimento(String[] palavrasDigitadas, Integer idSituacaoAtendimento) 
+	public List<String> existePalavraDigitadaDeOutroTipoDeAtendimento(Integer idSituacaoAtendimento) 
 			throws ProjetoException {
 		
 		List<String> palavrasEncontradas = new ArrayList<>();
 		
 		String sql = "	select pce.descricao from hosp.palavra_chave_evolucao pce " + 
 				"		where pce.excluido = false and pce.atendimento_realizado != " + 
-				"			(select sa.atendimento_realizado from hosp.situacao_atendimento sa where sa.id = ?)  " + 
-				"		and (pce.descricao ilike unaccent(?) ";
-		
-		String filtroDescricao = "or pce.descricao ilike unaccent(?) ";
-		String finalSql = " ) order by descricao asc;";
-		
-		for(int i = 1; i < palavrasDigitadas.length; i++) {
-			sql += filtroDescricao;
-		}
-		sql += finalSql;
+				"			(select sa.atendimento_realizado from hosp.situacao_atendimento sa where sa.id = ?) "+
+				" 		order by descricao asc;";
 		
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, idSituacaoAtendimento);
-			int contador = 2;
-			
-			for (String palavra : palavrasDigitadas) {
-				ps.setString(contador, palavra);
-				contador++;
-			}
+
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
