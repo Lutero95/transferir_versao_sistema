@@ -64,8 +64,8 @@ public class LaudoController implements Serializable {
             .getSessionMap().get("obj_usuario");
     private Boolean unidadeValidaDadosSigtap;
     private boolean existeAlgumaCargaSigtap;
-    private boolean existeCargaSigtapParaDataSolicitacao;
     private Boolean usuarioPodeRealizarAutorizacao;
+    private boolean existeCargaSigtapParaDataSolicitacao;
     private List<PacienteLaudoEmLoteDTO> listaPacienteLaudoEmLoteDTO;
     private List<PacienteBean> listaPacientes;
     private List<PacienteBean> listaPacientesFiltro;

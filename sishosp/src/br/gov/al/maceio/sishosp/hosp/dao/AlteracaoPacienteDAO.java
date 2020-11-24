@@ -1364,7 +1364,7 @@ public class AlteracaoPacienteDAO {
 												List<FuncionarioBean> listaProfissionais) throws ProjetoException {
 
 		boolean alterado = false;
-		String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao = ?, turno = ? where id = ?";
+		String sql = "update hosp.paciente_instituicao set data_solicitacao = ?, observacao = ?, turno = ?, sessoes=? where id = ?";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -1385,7 +1385,8 @@ public class AlteracaoPacienteDAO {
 			stmt.setDate(1, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			stmt.setString(2, insercao.getObservacao());
 			stmt.setString(3, insercao.getTurno());
-			stmt.setInt(4, insercao.getId());
+			stmt.setInt(4, insercao.getSessoes());
+			stmt.setInt(5, insercao.getId());
 			stmt.executeUpdate();
 
 			InsercaoPacienteDAO insercaoPacienteDAO = new InsercaoPacienteDAO();

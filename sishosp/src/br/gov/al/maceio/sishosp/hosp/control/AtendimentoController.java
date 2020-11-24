@@ -494,6 +494,12 @@ public class AtendimentoController implements Serializable {
 
     private void validarDadosSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
+            Date dataSolicitacaoPeloSigtap = dataAtende;
+
+            if(!existeCargaSigtapParaDataSolicitacao(dataAtende)) {
+                dataAtende= DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento());
+            }
+
             LaudoController laudoController = new LaudoController();
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc());
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente());
@@ -509,7 +515,7 @@ public class AtendimentoController implements Serializable {
             	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc());
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente());
             	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc());
-            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), atendimento.getDataAtendimentoInicio(), procedimentoCid.getProcedimento().getCodProc(), paciente);
+            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), dataAtende, procedimentoCid.getProcedimento().getCodProc(), paciente);
 			}
         }
     }
@@ -517,7 +523,7 @@ public class AtendimentoController implements Serializable {
     private void validarCidSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap && this.atendimento.getPrograma().isPermiteAlteracaoCidNaEvolucao()) {
             LaudoController laudoController = new LaudoController();
-            laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimentoInicio(), atendimento.getProcedimento().getCodProc(), paciente);
+            laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), dataAtende, atendimento.getProcedimento().getCodProc(), paciente);
         }
     }
 

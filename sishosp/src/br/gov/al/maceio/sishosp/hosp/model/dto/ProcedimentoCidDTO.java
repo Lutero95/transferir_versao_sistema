@@ -7,6 +7,7 @@ public class ProcedimentoCidDTO {
 	
 	private ProcedimentoBean procedimento;
 	private CidBean cid;
+	private Integer id;
 	
 	public ProcedimentoCidDTO() {
 		procedimento = new ProcedimentoBean();
@@ -24,5 +25,13 @@ public class ProcedimentoCidDTO {
 	}
 	public void setCid(CidBean cid) {
 		this.cid = cid;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

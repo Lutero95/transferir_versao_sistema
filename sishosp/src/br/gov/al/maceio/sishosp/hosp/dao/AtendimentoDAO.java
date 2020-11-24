@@ -68,6 +68,15 @@ public class AtendimentoDAO {
 			stmt2.setInt(1, atendimento.getId());
 
 			stmt2.executeUpdate();
+
+			String sql3 = "update hosp.atendimentos1_procedimento_secundario set excluido = 'S', data_hora_exclusao=current_timestamp, usuario_exclusao=? " + " where id_atendimentos1 = ? and coalesce(excluido,'N')='N'";
+
+			PreparedStatement stmt3 = con.prepareStatement(sql3);
+				stmt3.setLong(1, user_session.getId());
+				stmt3.setInt(2, atendimento.getId1());
+				stmt3.executeUpdate();
+
+
 			gravarProcedimentosSecundariosEvolucao(con, atendimento);
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
@@ -1050,17 +1059,18 @@ public class AtendimentoDAO {
 		
 		List<ProcedimentoCidDTO> listaProcedimentoCid = new ArrayList<>();
 		
-		String sql = "select p.id id_procedimento, p.codproc, p.nome, c.cod, c.cid, c.desccidabrev " + 
+		String sql = "select aps.id, p.id id_procedimento, p.codproc, p.nome, c.cod, c.cid, c.desccidabrev " +
 				"	from hosp.atendimentos1_procedimento_secundario aps " + 
 				"	join hosp.proc p on aps.id_procedimento = p.id " + 
 				"	join hosp.cid c on aps.id_cid = c.cod " + 
-				"	where aps.id_atendimentos1 = ? order by nome;";
+				"	where aps.id_atendimentos1 = ? and coalesce(excluido,'N')='N' order by nome;";
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
 			ps.setInt(1, idAtendimentos1);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				ProcedimentoCidDTO procedimentoCid = new ProcedimentoCidDTO();
+				procedimentoCid.setId(rs.getInt("id"));
 				procedimentoCid.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
 				procedimentoCid.getProcedimento().setCodProc(rs.getString("codproc"));
 				procedimentoCid.getProcedimento().setNomeProc(rs.getString("nome"));

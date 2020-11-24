@@ -131,7 +131,7 @@
 								 <b:label value="Sessões:" id="sessoes"
                                          severity="info" class="fire-label"/>
                                   
-                                  <p:spinner min="1" value="#{InsercaoController.insercao.sessoes}"
+                                  <p:spinner value="#{InsercaoController.insercao.sessoes}"
                                   	 class="select-agendaEquipe2" style="margin-top: -2px;"
                                   	 required="true" requiredMessage="Sessões: Campo obrigatório"/>                                   
                             </b:column>
@@ -140,7 +140,7 @@
 						<p:outputPanel id="outTabelas">
 							<h2 class="texto-titulo">Profissionais</h2>
 							<div style="display: flex;">
-								<div class="content-div-flex">
+								<div style="width: 40%;">
 									<p:dataTable id="dtEquipe" resizableColumns="true"
 										value="#{InsercaoController.listaProfissionais}" var="func"
 										emptyMessage="Sem registros." styleClass="table-right"
@@ -168,26 +168,26 @@
 									</p:dataTable>
 								</div>
 
-								<div class="content-div-flex">
-									<p:dataTable id="dtAdicionados" resizableColumns="true"
+								<div style="width: 60%;">
+									<p:dataTable id="dtAdicionados" 
 										value="#{InsercaoController.listaProfissionaisAdicionados}"
 										var="funcionario" emptyMessage="Sem registros."
-										styleClass="table-left" reflow="true">
+										 reflow="true">
 
-										<p:column headerText="Profissional" width="30%">
+										<p:column headerText="Profissional">
 											<h:outputLabel value="#{funcionario.nome}" />
 										</p:column>
 
-										<p:column headerText="Especialidade" width="20%">
+										<p:column headerText="Especialidade">
 											<h:outputLabel
 												value="#{funcionario.especialidade.descEspecialidade}" />
 										</p:column>
 
-										<p:column headerText="Dias Atendimento" width="38%">
+										<p:column headerText="Dias Atendimento">
 											<h:outputLabel value="#{funcionario.diasSemana}" />
 										</p:column>
 
-										<p:column headerText="Excluir" width="12%">
+										<p:column headerText="Excluir">
 											<div align="center">
 												<p:commandButton icon="ui-icon-trash" immediate="true"
 													actionListener="#{InsercaoController.excluirFuncionarioIhDiasDeAtendimento}"
