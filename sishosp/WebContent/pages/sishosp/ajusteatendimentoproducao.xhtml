@@ -141,7 +141,8 @@
 
 						<p:column headerText="Alterar Proced." width="70">
 							<p:commandButton title="Alterar Procedimento" icon="ui-icon-pencil"
-											 size="sm" oncomplete="PF('dlgConsulProc').show();"
+											 size="sm" oncomplete="PF('dlgConsulProc').show();" process="@this :formConsulProc"
+											 action="#{AtendimentoController.configuraDialogsParaAlteracaoUnica()}"
 											 actionListener="#{AtendimentoController.listarProcedimentos()}" update=":formConsulProc"
 											 disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
 								<f:setPropertyActionListener value="#{tab}"
@@ -211,7 +212,7 @@
 
 								</p:autoComplete>
 
-								<p:commandButton id="btBPa" immediate="true"
+								<p:commandButton id="btBPa" process="@this :formConsuPac"
 												 icon="ui-icon-search" update=":formConsuPac"
 												 oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
@@ -492,7 +493,7 @@
 									 update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
 
 					<p:commandButton value="Cancelar"
-									 oncomplete="PF('dlgConfirmacaoproc').hide();"
+									 oncomplete="PF('dlgConfirmacaoProc').hide();"
 									 style="margin-left: 10px;" />
 				</div>
 			</h:form>
@@ -525,8 +526,8 @@
 				  widgetVar="dlgConsulProc" modal="true" resizable="false"
 				  draggable="false" responsive="true">
 			<h:form id="formConsulProc">
-				<p:outputPanel >
-					<p:autoUpdate/>
+				<p:outputPanel id="outProc">
+					
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 								 value="#{AtendimentoController.listaProcedimentos}" var="proc">
 
