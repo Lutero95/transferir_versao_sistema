@@ -1,5 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BpaConsolidadoBean {
 	
 	private final String prdIdent = "02";
@@ -12,6 +15,7 @@ public class BpaConsolidadoBean {
 	private String prdIdade;
 	private String prdQt;
 	private final String prdOrg = "BPA";
+	private List<String> listaInconsistencias ;
 	
 	/*********PRD-FIM*****
 	 * 
@@ -21,6 +25,10 @@ public class BpaConsolidadoBean {
 	 * geração do layout 
 	 *
 	 */
+
+	public BpaConsolidadoBean() {
+		listaInconsistencias = new ArrayList<>();
+	}
 	
 	@Override
 	public String toString() {
@@ -81,5 +89,12 @@ public class BpaConsolidadoBean {
 	public String getPrdOrg() {
 		return prdOrg;
 	}
-	
+
+	public List<String> getListaInconsistencias() {
+		return listaInconsistencias;
+	}
+
+	public void setListaInconsistencias(List<String> listaInconsistencias) {
+		this.listaInconsistencias = listaInconsistencias;
+	}
 }

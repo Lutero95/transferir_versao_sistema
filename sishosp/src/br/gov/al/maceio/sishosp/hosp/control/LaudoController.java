@@ -257,16 +257,16 @@ public class LaudoController implements Serializable {
                 this.laudo.setValidadoPeloSigtapAnterior(false);
             }
 
-            idadeValida(dataSolicitacaoPeloSigtap, paciente, this.laudo.getProcedimentoPrimario().getCodProc());
-            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente);
+            idadeValida(dataSolicitacaoPeloSigtap, paciente, this.laudo.getProcedimentoPrimario().getCodProc(), true);
+            validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc()))
-                validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente);
-            validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProfissionalLaudo().getId(), this.laudo.getProcedimentoPrimario().getCodProc());
+                validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
+            validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProfissionalLaudo().getId(), this.laudo.getProcedimentoPrimario().getCodProc(), true);
         }
     }
 
-    public void idadeValida(Date dataValidacao, PacienteBean paciente, String codigoProcedimento) throws ProjetoException {
-
+    public String idadeValida(Date dataValidacao, PacienteBean paciente, String codigoProcedimento, boolean lancarExcecao) throws ProjetoException {
+        String msgRetornoErro = null;
         BuscaIdadePacienteDTO idadePaciente = obtemIdadePaciente(paciente.getDtanascimento());
         ProcedimentoType procedimento = buscarIdadeMinimaIhMaximaDeProcedimento(dataValidacao, codigoProcedimento);
         Boolean valido = false;
@@ -299,9 +299,12 @@ public class LaudoController implements Serializable {
             }
         }
 
-        if(!valido) {
-            throw new ProjetoException("A idade do paciente "+ paciente.getNome()+" não compreende o intervalo permitido entre idade minima e máxima para o procedimento "+codigoProcedimento);
+        if (!valido) {
+            msgRetornoErro =  "A idade do paciente "+ paciente.getNome()+" não compreende o intervalo permitido entre idade minima e máxima para o procedimento "+codigoProcedimento;
+            if (lancarExcecao)
+            throw new ProjetoException(msgRetornoErro);
         }
+        return msgRetornoErro;
     }
 
     public Boolean procedimentoPossuiCidsAssociados(Date dataSolicitacaoPeloSigtap, String codProc) throws ProjetoException {
@@ -331,10 +334,8 @@ public class LaudoController implements Serializable {
         return procedimento;
     }
 
-    public void validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap, CidBean cid1, String codProc, PacienteBean paciente) throws ProjetoException {
-
-        List<CidBean> listaCidsLaudo = new ArrayList<CidBean>();
-        listaCidsLaudo.add(cid1);
+    public String validaCidsDoLaudo(Date dataSolicitacaoPeloSigtap, CidBean cid1, String codProc, PacienteBean paciente, boolean lancarExcecao) throws ProjetoException {
+        String msgRetornoErro = null;
     /*
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(this.laudo.getCid2().getCid()))
             listaCidsLaudo.add(this.laudo.getCid2());
@@ -343,36 +344,57 @@ public class LaudoController implements Serializable {
             listaCidsLaudo.add(this.laudo.getCid3());
         */
 
-        for (CidBean cidBean : listaCidsLaudo) {
-            validarCidPorProcedimento(cidBean, dataSolicitacaoPeloSigtap, codProc, paciente);
-        }
+           msgRetornoErro =  validarCidPorProcedimento(cid1, dataSolicitacaoPeloSigtap, codProc, paciente, lancarExcecao);
+           return msgRetornoErro;
     }
 
-    public void validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento, PacienteBean paciente) throws ProjetoException {
+    public String validarCidPorProcedimento(CidBean cidBean, Date data, String codigoProcedimento, PacienteBean paciente, boolean lancarExcecao) throws ProjetoException {
+        String msgRetornoErro = null;
         if(!lDao.validaCodigoCidEmLaudo(cidBean.getCid(), data, codigoProcedimento)) {
-            throw new ProjetoException("O Paciente "+paciente.getNome()+" possui o procedimento " +codigoProcedimento+" incompatível com o CID "+cidBean.getCid());
+            if (cidBean.getCid() != null) {
+                msgRetornoErro = "O Paciente " + paciente.getNome() + " possui o procedimento " + codigoProcedimento + " incompatível com o CID " + cidBean.getCid();
+                if (lancarExcecao)
+                    throw new ProjetoException(msgRetornoErro);
+            }
+            if (cidBean.getCid() == null) {
+                msgRetornoErro = "O Paciente " + paciente.getNome() + " possui o procedimento " + codigoProcedimento + " sem CID INFORMADO";
+                if (lancarExcecao)
+                throw new ProjetoException(msgRetornoErro);
+            }
         }
+        return msgRetornoErro;
     }
 
-    public void validaCboDoProfissionalLaudo(Date dataSolicitacaoPeloSigtap, Long idProfissional, String codProcedimento) throws ProjetoException {
+    public boolean  validaCboDoProfissionalLaudo(Date dataSolicitacaoPeloSigtap, Long idProfissional, String codProcedimento, boolean lancarExcecao) throws ProjetoException {
+        boolean rst = true;
         String codigoCboSelecionado = obtemCodigoCboSelecionado(idProfissional);
         if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, dataSolicitacaoPeloSigtap,
                 codProcedimento)) {
+            rst = false;
+            if (lancarExcecao)
             throw new ProjetoException
                     ("Cbo do profissional selecionado é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
         }
+        return rst;
     }
 
-    public void validaCboPermitidoProcedimento(Date dataSolicitacaoPeloSigtap, String codigoCboSelecionado, String codProcedimento, PacienteBean paciente) throws ProjetoException {
+    public String validaCboPermitidoProcedimento(Date dataSolicitacaoPeloSigtap, String codigoCboSelecionado, String codProcedimento, PacienteBean paciente, boolean lancarExcecao) throws ProjetoException {
+        String msgRetornoErro = null;
         if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, dataSolicitacaoPeloSigtap,
                 codProcedimento)) {
-            if (paciente!=null)
-            throw new ProjetoException
-                    ("Paciente: "+paciente.getNome()+". Cbo "+codigoCboSelecionado+" é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
-            else
+            if (paciente != null) {
+                msgRetornoErro = "Paciente: " + paciente.getNome() + ". Cbo " + codigoCboSelecionado + " é incompatível com o permitido no SIGTAP para o procedimento " + codProcedimento;
+                if (lancarExcecao)
+                    throw new ProjetoException
+                            (msgRetornoErro);
+            } else {
+                msgRetornoErro = "Cbo " + codigoCboSelecionado + " é incompatível com o permitido no SIGTAP para o procedimento " + codProcedimento;
+                if (lancarExcecao)
                 throw new ProjetoException
-                    ("Cbo "+codigoCboSelecionado+" é incompatível com o permitido no SIGTAP para o procedimento "+codProcedimento);
+                        (msgRetornoErro);
+            }
         }
+        return msgRetornoErro;
     }
 
     private String obtemCodigoCboSelecionado(Long idProfissional) throws ProjetoException {
@@ -380,11 +402,15 @@ public class LaudoController implements Serializable {
         return codigoCboSelecionado;
     }
 
-    public void validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, PacienteBean paciente) throws ProjetoException {
+    public String validaSexoDoPacienteProcedimentoSigtap(Date dataSolicitacaoPeloSigtap, String codProcedimento, PacienteBean paciente, boolean lancarExcecao) throws ProjetoException {
+        String msgRetornoErro = null;
         if(!lDao.sexoDoPacienteValidoComProcedimentoSigtap
                 (dataSolicitacaoPeloSigtap, paciente.getSexo(), codProcedimento)) {
-            throw new ProjetoException("O sexo do paciente "+paciente.getNome()+" não compreende o permitido no SIGTAP para o procedimento "+codProcedimento);
+            msgRetornoErro = "O sexo do paciente "+paciente.getNome()+" não compreende o permitido no SIGTAP para o procedimento "+codProcedimento;
+            if (lancarExcecao)
+            throw new ProjetoException(msgRetornoErro);
         }
+        return msgRetornoErro;
     }
 
     public boolean existeLaudoComMesmosDados(PacienteBean paciente) {

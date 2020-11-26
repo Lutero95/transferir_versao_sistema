@@ -69,6 +69,7 @@ public class BpaController {
 	private String competencia;
 	private List<String> listaCompetencias;
 	private String extensao;
+	private List<String> listaInconsistencias;
 	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 	
@@ -130,8 +131,16 @@ public class BpaController {
 			executaMetodosParaGerarBpaConsolidado(sAtributoGenerico1);
 			executaMetodosParaGerarBpaIndividualizado(sAtributoGenerico1);
 			executaMetodosParaGerarBpaCabecalho();
-			
-			if (!existeInconsistencias(sAtributoGenerico1)) {
+			listaInconsistencias = new ArrayList<>();
+			for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
+				if (bpaIndividualizado.getListaInconsistencias().size()>0){
+					for (String inconsistencia : bpaIndividualizado.getListaInconsistencias()) {
+						listaInconsistencias.add(inconsistencia);
+					}
+				}
+
+			}
+			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -142,6 +151,9 @@ public class BpaController {
 				Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
 				Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
 			}
+			if (listaInconsistencias.size()>0)
+				JSFUtil.adicionarMensagemErro(listaInconsistencias.size()+ " Inconsistência(s) encontrada(s). Resolva para poder gerar o arquivo BPA", "ERRO");
+			JSFUtil.atualizarComponente("frmPrincipal:tabelainconsistencia");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
@@ -208,6 +220,7 @@ public class BpaController {
 		this.extensao = null;
 		this.descricaoArquivo = null;
 		this.bpaCabecalho = new BpaCabecalhoBean();
+		listaInconsistencias = new ArrayList<>();
 
 	}
 	
@@ -639,5 +652,13 @@ public class BpaController {
 
 	public void setInformaNumeroFolhaFiltro(Boolean informaNumeroFolhaFiltro) {
 		this.informaNumeroFolhaFiltro = informaNumeroFolhaFiltro;
+	}
+
+	public List<String> getListaInconsistencias() {
+		return listaInconsistencias;
+	}
+
+	public void setListaInconsistencias(List<String> listaInconsistencias) {
+		this.listaInconsistencias = listaInconsistencias;
 	}
 }

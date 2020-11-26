@@ -33,6 +33,10 @@ public class ExportacaoDatatableController {
         preProcessPDF(document, "Listagem de Laudos");
     }
 
+    public void preProcessInconsistenciasBpa(Object document) throws IOException, DocumentException {
+        preProcessPDF(document, "Listagem de Inconsistências - BPA");
+    }
+
     public void preProcessCredores(Object document) throws IOException, DocumentException {
         preProcessPDF(document, "Listagem de Despesas por Credores");
     }

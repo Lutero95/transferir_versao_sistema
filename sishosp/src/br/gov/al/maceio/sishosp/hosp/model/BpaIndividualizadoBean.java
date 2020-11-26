@@ -1,5 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BpaIndividualizadoBean {
 
 	private final String prdIdent = "03";
@@ -39,7 +42,12 @@ public class BpaIndividualizadoBean {
 	private String prdDDtelPcnte;
 	private String prdEmailPcnte;
 	private String prdIne;
-	
+	private List<String> listaInconsistencias ;
+
+	public BpaIndividualizadoBean() {
+		listaInconsistencias = new ArrayList<>();
+	}
+
 	/*********PRD-FIM*****
 	 * 
 	 *  É Correspondente aos caracteres CR - CHR(13) LF - CHR(10), do padrão
@@ -48,7 +56,9 @@ public class BpaIndividualizadoBean {
 	 * geração do layout 
 	 *
 	 */
-	
+
+
+
 	@Override
 	public String toString() {
 		return prdIdent + prdCnes + prdCmp + prdCnsmed + prdCbo + prdDtaten + prdFlh + prdSeq + prdPa
@@ -276,5 +286,12 @@ public class BpaIndividualizadoBean {
 	public String getPrdIdent() {
 		return prdIdent;
 	}
-	
+
+	public List<String> getListaInconsistencias() {
+		return listaInconsistencias;
+	}
+
+	public void setListaInconsistencias(List<String> listaInconsistencias) {
+		this.listaInconsistencias = listaInconsistencias;
+	}
 }

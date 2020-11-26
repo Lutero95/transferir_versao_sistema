@@ -20,8 +20,31 @@
 		</div>
 	
 		<div class="panel panel-primary top-primary">
-<p:messages/>
 			<h:form id="frmPrincipal">
+<p:messages/>
+				<p:panel header="Lista de Inconsistências" rendered="#{bpaController.listaInconsistencias.size()>0}">
+				<p:dataTable  id="tabelainconsistencia" var="inc" responsive="true"
+							 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {Exporters}"
+							 value="#{bpaController.listaInconsistencias}" paginator="true" rows="10">
+					<f:facet name="{Exporters}">
+						<div style="float:right !important;margin-right: 10px">
+							<h:commandLink title="Exportar para PDF">
+								<h:graphicImage url="../../imgs/file-pdf.jpg"  width="24px"/>
+								<p:dataExporter encoding="iso-8859-1" type="pdf" target="tabelainconsistencia" fileName="inconsistenciasbpa" preProcessor="#{exportacaoMB.preProcessInconsistenciasBpa}"/>
+							</h:commandLink>
+
+						</div>
+					</f:facet>
+				<p:column>
+					<f:facet name="header">
+						Inconsistência
+					</f:facet>
+
+					<h:outputText value="#{inc}"/>
+				</p:column>
+					</p:dataTable>
+				</p:panel>
                 <b:row>
                     <b:column class="label-position new-data-size new-comple1">>
                         <b:label value="Opção de Geração:" severity="info" />

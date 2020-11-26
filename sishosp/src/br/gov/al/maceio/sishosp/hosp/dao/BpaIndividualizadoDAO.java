@@ -98,7 +98,7 @@ public class BpaIndividualizadoDAO {
 				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
 				" cm.codigo, sm.codigo, \n" +
 				" emp.cnpj \n" ;
-		sql+=" order by func.cns, p.cns \t";
+		sql+=" order by func.cns, p.cns  \t";
         
         Connection con = ConnectionFactory.getConnection();
        
@@ -120,6 +120,11 @@ public class BpaIndividualizadoDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
+            	String retornoCid = null;
+            	String retornoCbo = null;
+            	String retornoIdade = null;
+            	String retornoSexo = null;
+				BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
 				Date dataSolicitacaoRefSigtap = DataUtil.montarDataCompletaInicioMesPorAnoMesCompetencia(rs.getString("competencia_atual"));
 				String cbo = rs.getString("cbo");
 				String codProc = rs.getString("codproc");
@@ -129,13 +134,21 @@ public class BpaIndividualizadoDAO {
 				paciente.setDtanascimento(rs.getDate("dtanascimento"));
 				CidBean cid = new CidBean();
 				cid.setCid(rs.getString("cid"));
-				validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente);
-				validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc);
-				validacaoSigtap.validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoRefSigtap, codProc, paciente);
-				if(validacaoSigtap.procedimentoPossuiCidsAssociados(dataSolicitacaoRefSigtap, codProc))
-					validacaoSigtap.validaCidsDoLaudo(dataSolicitacaoRefSigtap, cid, codProc, paciente);
+				retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
+				if (retornoCbo!=null)
+					bpaIndividualizado.getListaInconsistencias().add(retornoCbo);
+				retornoIdade = validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc, false);
+				if (retornoIdade!=null)
+				bpaIndividualizado.getListaInconsistencias().add(retornoIdade);
+				retornoSexo = validacaoSigtap.validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoRefSigtap, codProc, paciente, false);
+				if (retornoSexo!=null)
+				bpaIndividualizado.getListaInconsistencias().add(retornoSexo);
+				if(validacaoSigtap.procedimentoPossuiCidsAssociados(dataSolicitacaoRefSigtap, codProc)) {
+					retornoCid =validacaoSigtap.validaCidsDoLaudo(dataSolicitacaoRefSigtap, cid, codProc, paciente, false);
+					if (retornoCid!=null)
+					bpaIndividualizado.getListaInconsistencias().add(retornoCid);
+				}
 
-            	BpaIndividualizadoBean bpaIndividualizado = new BpaIndividualizadoBean();
             	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
             	bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));

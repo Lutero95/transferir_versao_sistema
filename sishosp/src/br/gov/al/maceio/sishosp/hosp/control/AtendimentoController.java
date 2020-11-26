@@ -501,9 +501,9 @@ public class AtendimentoController implements Serializable {
             }
 
             LaudoController laudoController = new LaudoController();
-            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc());
-            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente());
-            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc());
+            laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc(), true);
+            laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
+            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc(), true);
         }
     }
     
@@ -512,10 +512,10 @@ public class AtendimentoController implements Serializable {
             LaudoController laudoController = new LaudoController();
             
             for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
-            	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc());
-            	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente());
-            	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc());
-            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), dataAtende, procedimentoCid.getProcedimento().getCodProc(), paciente);
+            	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc(), true);
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc(), true);
+            	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), dataAtende, procedimentoCid.getProcedimento().getCodProc(), paciente, true);
 			}
         }
     }
@@ -523,7 +523,7 @@ public class AtendimentoController implements Serializable {
     private void validarCidSigtap() throws ProjetoException {
         if(this.unidadeValidaDadosSigtap && this.atendimento.getPrograma().isPermiteAlteracaoCidNaEvolucao()) {
             LaudoController laudoController = new LaudoController();
-            laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), dataAtende, atendimento.getProcedimento().getCodProc(), paciente);
+            laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), dataAtende, atendimento.getProcedimento().getCodProc(), paciente, true);
         }
     }
 
@@ -1108,7 +1108,7 @@ public class AtendimentoController implements Serializable {
     		
     		LaudoController laudoController = new LaudoController();
     		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
-    			laudoController.validarCidPorProcedimento(cid, atendimento.getDataAtendimento(), atendimento.getProcedimento().getCodProc(), atendimento.getPaciente());
+    			laudoController.validarCidPorProcedimento(cid, atendimento.getDataAtendimento(), atendimento.getProcedimento().getCodProc(), atendimento.getPaciente(), true);
 			}
     	}
     	
@@ -1128,11 +1128,11 @@ public class AtendimentoController implements Serializable {
     		
     		LaudoController laudoController = new LaudoController();
     		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
-    			laudoController.idadeValida(atendimento.getDataAtendimento(), atendimento.getPaciente(), procedimento.getCodProc());
-            	laudoController.validaSexoDoPacienteProcedimentoSigtap(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente());
-            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), atendimento.getFuncionario().getId(), procedimento.getCodProc());
+    			laudoController.idadeValida(atendimento.getDataAtendimento(), atendimento.getPaciente(), procedimento.getCodProc(), true);
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
+            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), atendimento.getFuncionario().getId(), procedimento.getCodProc(), true);
                 if(laudoController.procedimentoPossuiCidsAssociados(atendimento.getDataAtendimento(), procedimento.getCodProc()))
-            	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente());
+            	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
     		}
     	}
     	

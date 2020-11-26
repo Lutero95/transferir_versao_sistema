@@ -77,12 +77,13 @@ public class BpaConsolidadoDAO {
             ResultSet rs = ps.executeQuery();
 			LaudoController validacaoSigtap = new LaudoController();
             while (rs.next()) {
+				BpaConsolidadoBean bpaConsolidado = new BpaConsolidadoBean();
 				Date dataSolicitacaoRefSigtap = DataUtil.montarDataCompletaInicioMesPorAnoMesCompetencia(rs.getString("competencia_atual"));
 				String cbo = rs.getString("cbo");
 				String codProc = rs.getString("codproc");
-				validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, null);
+				bpaConsolidado.getListaInconsistencias().add(validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, null, false));
 
-            	BpaConsolidadoBean bpaConsolidado = new BpaConsolidadoBean();
+
             	bpaConsolidado.setPrdCnes(rs.getString("cnes"));
             	bpaConsolidado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaConsolidado.setPrdCbo(rs.getString("cbo"));
