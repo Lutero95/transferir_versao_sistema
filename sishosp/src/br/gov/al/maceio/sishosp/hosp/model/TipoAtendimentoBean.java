@@ -17,6 +17,7 @@ public class TipoAtendimentoBean implements Serializable {
     private Boolean profissional;
     private Boolean primeiroAt;
     private Integer intervaloMinimo;
+    private boolean agendaAvulsaValidaPacienteAtivo;
 
 
     // LISTAS
@@ -208,5 +209,11 @@ public class TipoAtendimentoBean implements Serializable {
 		this.primeiroAt = primeiroAt;
 	}
 
-	
+	public boolean isAgendaAvulsaValidaPacienteAtivo() {
+		return agendaAvulsaValidaPacienteAtivo;
+	}
+
+	public void setAgendaAvulsaValidaPacienteAtivo(boolean agendaAvulsaValidaPacienteAtivo) {
+		this.agendaAvulsaValidaPacienteAtivo = agendaAvulsaValidaPacienteAtivo;
+	}
 }
