@@ -29,7 +29,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
 import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
-import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogVisualizacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhamentoBean;
@@ -163,9 +162,13 @@ public class PacienteController implements Serializable {
 		
 		
 		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getEndereco().getCep())) {
-			paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
+			
+			EnderecoBean endereco = CEPUtil.encontraCEP(paciente.getEndereco().getCep());
+			
 			EnderecoDAO enderecoDAO = new EnderecoDAO();
-			if (paciente.getEndereco().getCepValido()) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(endereco.getCepValido()) && endereco.getCepValido()) {
+				paciente.setEndereco(endereco);
+				
 				if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getEndereco().getBairro())) {
 					paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
 							paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
@@ -187,6 +190,7 @@ public class PacienteController implements Serializable {
 			}
 			else {
 				cidadeDoCep = false;
+				paciente.getEndereco().setCep("");
 			}
 		}
 	}

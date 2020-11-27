@@ -332,7 +332,7 @@
 									class="form-control select-agendaEquipe2" required="true"
 									requiredMessage="CEP: Campo obrigatório!">
 									<p:ajax listener="#{PacienteController.encontraCEP()}" 
-									update="inputrua estado outMunicipios outBairro"/>
+									update="inputcep inputrua estado outMunicipios outBairro :msgPagina"/>
 								</p:inputMask>
 							</b:column>
 
