@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.comum.util;
 import br.com.correios.bsb.sigep.master.bean.cliente.AtendeClienteServiceLocator;
 import br.com.correios.bsb.sigep.master.bean.cliente.AtendeClienteServiceSoapBindingStub;
 import br.com.correios.bsb.sigep.master.bean.cliente.EnderecoERP;
+import br.com.correios.bsb.sigep.master.bean.cliente.SigepClienteException;
 
 public class CepWebService {
 
@@ -25,7 +26,13 @@ public class CepWebService {
 			setBairro(enderecoERP.getBairro());
 			setLogradouro(enderecoERP.getEnd());
 			setResultado(1);
-		} catch (Exception ex) {
+		} 
+		catch (SigepClienteException se) {
+			setResultado(0);
+			JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
+			se.printStackTrace();
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
