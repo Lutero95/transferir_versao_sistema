@@ -934,6 +934,16 @@ public class AtendimentoController implements Serializable {
     }
 
     public void atualizaProcedimentoDoAtendimento() throws ProjetoException {
+      //  parei aqui walter
+        if(this.unidadeValidaDadosSigtap) {
+            Date dataSolicitacaoPeloSigtap = atendimento.getDataAtendimento();
+
+            if(!existeCargaSigtapParaDataSolicitacao(dataSolicitacaoPeloSigtap)) {
+                dataSolicitacaoPeloSigtap= DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento());
+            }
+            LaudoController laudoController = new LaudoController();
+            laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc(), true);
+        }
         boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento);
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Procedimento alterado no atendimento com sucesso!", "");
