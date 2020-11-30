@@ -53,6 +53,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 public class RelatoriosController implements Serializable {
 
+	private static final String CAMINHO_PRINCIPAL = "/WEB-INF/relatorios/";
 	private static final long serialVersionUID = 1L;
 	private ProgramaBean programa;
 	private PacienteBean paciente;
@@ -276,7 +277,7 @@ public class RelatoriosController implements Serializable {
 		if (atributoGenerico1.equals(null)) {
 			JSFUtil.adicionarMensagemErro("Informe o período a vencer!", "Erro!");
 		} else {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			if (atributoGenerico1.equals("N"))
 				relatorio = caminho + "laudosvencernominal.jasper";
@@ -311,7 +312,7 @@ public class RelatoriosController implements Serializable {
 
 	public void geraLaudo(Integer idLaudo) throws IOException, ParseException, ProjetoException {
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		relatorio = caminho + "laudo.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -324,7 +325,7 @@ public class RelatoriosController implements Serializable {
 	public void gerarRelatorioPacientesAtivosLaudoVencido(ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		relatorio = caminho + "pacientes_ativos_laudo_vencido.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -343,7 +344,7 @@ public class RelatoriosController implements Serializable {
 	public void geraFrequenciaPreenchida(PacienteBean paciente, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		relatorio = caminho + "frequencia_preenchida.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -379,7 +380,7 @@ public class RelatoriosController implements Serializable {
 			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
 				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
 			} else {
-				String caminho = "/WEB-INF/relatorios/";
+				String caminho = CAMINHO_PRINCIPAL;
 				String relatorio = "";
 				relatorio = caminho + "frequencia.jasper";
 				Map<String, Object> map = new HashMap<String, Object>();
@@ -438,7 +439,7 @@ public class RelatoriosController implements Serializable {
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 
 		if(!validaValorQuantidade())
@@ -561,7 +562,7 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setPrograma(programa);
 		pacienteInstituicao.setGrupo(grupo);
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "pacientespresentes.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", dataInicial);
@@ -597,7 +598,7 @@ public class RelatoriosController implements Serializable {
 		pacienteInstituicao.setPrograma(programa);
 		pacienteInstituicao.setGrupo(grupo);
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 
 		if(!validaValorQuantidade())
@@ -702,7 +703,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarPacientesAtivos() throws IOException, ParseException, ProjetoException {
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -792,7 +793,7 @@ public class RelatoriosController implements Serializable {
 			idadeMaxima = 200;
 		}
 		List<Integer> idMunicipiosSelecionados = retornaIdDosMunicipiosSelecionados();
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		relatorio = caminho + "pacientes_ativos_sem_evolucao.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -827,7 +828,7 @@ public class RelatoriosController implements Serializable {
 
 	public void gerarPendenciasEvolucaoPorProgramaEGrupo(ArrayList<ProgramaBean> listaProgramasGrupos)
 			throws IOException, ParseException, ProjetoException {
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 
 		String relatorio = retornaTipoDoRelatorioPendenciasEvolucao(caminho);
 
@@ -869,7 +870,7 @@ public class RelatoriosController implements Serializable {
 	public void geraPtsApaeMaceio(ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		{
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			relatorio = caminho + "pts_apae_maceio.jasper";
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -889,7 +890,7 @@ public class RelatoriosController implements Serializable {
 	public void geraPtsPendenciasEspecialidades(ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		{
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			relatorio = caminho + "pts_pendentes_por_especialidade.jasper";
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -908,7 +909,7 @@ public class RelatoriosController implements Serializable {
 	public void geraPtsPacientesFaltando(ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 		{
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			relatorio = caminho + "pts_pacientes_faltando.jasper";
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -926,7 +927,7 @@ public class RelatoriosController implements Serializable {
 
 	public void gerarRelatorioEncaminhamentoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "encaminhamentoopm.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
@@ -937,7 +938,7 @@ public class RelatoriosController implements Serializable {
 
 	public void gerarRelatorioTermoCompromissoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "termocompromisso_opm.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
@@ -961,7 +962,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (this.grupo.isAuditivo()) {
@@ -999,7 +1000,7 @@ public class RelatoriosController implements Serializable {
 		dataInicial = DataUtil.adicionarMesIhAnoEmDate(mes, ano, INICIO_MES);
 		dataFinal = DataUtil.adicionarMesIhAnoEmDate(mes, ano, FIM_MES);
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 		relatorio = caminho + "mapalaudo.jasper";
@@ -1027,7 +1028,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (this.grupo.isAuditivo()) {
@@ -1064,7 +1065,7 @@ public class RelatoriosController implements Serializable {
 
 
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "agendamentosPorProfissional.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", this.dataInicial);
@@ -1092,7 +1093,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "atendPorProfissional.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("img_adefal", this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
@@ -1119,7 +1120,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "atendimentosPorPrograma.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", this.dataInicial);
@@ -1150,7 +1151,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		if (this.tipoAnalSint.equals("A")) {
 			relatorio = caminho + "atendPorProcedimentosAnalitico.jasper";
@@ -1173,7 +1174,7 @@ public class RelatoriosController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			if (this.tipoAnalSint.equals("A")) {
 				relatorio = caminho + "atendPorProcedimentosGrupoAnalitico.jasper";
@@ -1205,7 +1206,7 @@ public class RelatoriosController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = CAMINHO_PRINCIPAL;
 			String relatorio = "";
 			if (this.tipoAnalSint.equals("A")) {
 				relatorio = caminho + "atendPorProcedimentosTipoAtAnalitico.jasper";
@@ -1241,7 +1242,7 @@ public class RelatoriosController implements Serializable {
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		if (this.dataDia.equals("DS")) {
 			if (this.mes == null || this.ano == null) {
@@ -1359,7 +1360,7 @@ public class RelatoriosController implements Serializable {
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = caminho + "faltaspacientes.jasper";
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1432,7 +1433,7 @@ public class RelatoriosController implements Serializable {
 
 	public void gerarAgendamentosPorEquipe() throws IOException, ParseException, ProjetoException {
 
-		String caminho = "/WEB-INF/relatorios/";
+		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -1474,6 +1475,38 @@ public class RelatoriosController implements Serializable {
 
 	public void setaTurnoPadrao() {
 		this.turnoSelecionado = Turno.AMBOS.getSigla();
+	}
+	
+	public void gerarRelatorioEvolucao(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+
+		pacienteInstituicao.setPrograma(programa);
+		pacienteInstituicao.setGrupo(grupo);
+
+		String caminho = CAMINHO_PRINCIPAL;
+		String relatorio = "";
+
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("dt_inicial", dataInicial);
+		map.put("dt_final", dataFinal);
+		map.put("codunidade", user_session.getUnidade().getId());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
+
+		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
+			map.put("id_paciente", paciente.getId_paciente());
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+
+		if (atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
+			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
+				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
+		}
+		
+		relatorio = caminho + "evolucaoatendimentos.jasper";
+		this.executeReport(relatorio, map, "relatorio_evolucao_atendimentos.pdf");
 	}
 
 	private FacesContext getFacesContext() {
