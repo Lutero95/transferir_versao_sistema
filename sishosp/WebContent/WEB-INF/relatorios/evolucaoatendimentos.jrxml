@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="atendimentosPorProgramaGrupo" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" uuid="dae263d0-0b8f-40d7-9daf-534cca2721a3">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_programa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_grupo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codunidade" class="java.lang.Integer"/>
+	<parameter name="id_paciente" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT nome_principal, a1.evolucao, a.dtaatende, f.descfuncionario, programa.id_programa, programa.descprograma,  
+g.id_grupo, g.descgrupo, c.codigo codcbo, c.id idcbo, c.descricao desccbo,  pa.id_paciente,  pa.nome as nome_paciente 
+FROM hosp.atendimentos1 a1  
+LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  
+ left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento  
+ left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento  
+ left join hosp.pacientes pa on a.codpaciente = pa.id_paciente  
+ left join hosp.programa  on programa.id_programa = a.codprograma  
+ left join hosp.grupo g on g.id_grupo = a.codgrupo  
+LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  
+LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  
+ left join hosp.cbo c on c.id  = f.codcbo  
+ join hosp.unidade u on a.cod_unidade = u.id 
+ CROSS JOIN hosp.empresa e 
+WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
+and p.ativo = 'S' and a.cod_unidade =  $P{codunidade} 
+AND (( $P{id_paciente}  is null or  $P{id_paciente}  = 0) or (a.codpaciente =  $P{id_paciente} )) 
+AND (( $P{cod_programa}  is null or  $P{cod_programa}  = 0) or (programa.id_programa =  $P{cod_programa} ))
+AND ((  $P{cod_grupo} is null or  $P{cod_grupo}  = 0) or (g.id_grupo = $P{cod_grupo}  ))
+AND a.dtaatende >=   $P{dt_inicial} AND a.dtaatende <= $P{dt_final} 
+ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, pa.nome, pa.id_paciente]]>
+	</queryString>
+	<field name="id_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="id_grupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="evolucao" class="java.lang.String"/>
+	<field name="dtaatende" class="java.sql.Date"/>
+	<field name="descfuncionario" class="java.lang.String"/>
+	<field name="idcbo" class="java.lang.Integer"/>
+	<field name="desccbo" class="java.lang.String"/>
+	<field name="id_paciente" class="java.lang.Integer"/>
+	<field name="nome_paciente" class="java.lang.String"/>
+	<field name="nome_principal" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	</variable>
+	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	</variable>
+	<group name="grupoPrograma" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{id_programa} + ""+ $F{id_grupo}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<line>
+					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
+				</line>
+				<line>
+					<reportElement x="0" y="27" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
+				</line>
+				<textField>
+					<reportElement x="0" y="2" width="572" height="20" uuid="280a9067-fafb-4f39-96d4-4a6d84cc51b2"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24">
+				<textField>
+					<reportElement x="1" y="6" width="239" height="13" uuid="9fa4b3b6-e9ad-463a-878f-9ad54f0f0e1f"/>
+					<textFieldExpression><![CDATA["Total de Evoluções no Programa / Grupo: "+$V{nome_paciente1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupoPaciente" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{id_paciente}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<staticText>
+					<reportElement x="1" y="0" width="141" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="142" y="0" width="410" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="301" y="20" width="60" height="20" uuid="17e5a282-d6d4-4a3b-8231-238dff85f89f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Evolução]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="534" y="20" width="39" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="1" y="20" width="69" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Profissional]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="158" y="20" width="51" height="20" uuid="7b5eec80-0a73-4a3d-a400-8b53cd3cfc83"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CBO]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="30" width="555" height="20" uuid="a270820a-de51-482d-89be-3105f616cec6"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EVOLUÇÃO DE ATENDIMENTOS POR PROGRAMA E GRUPO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="14" width="571" height="16" uuid="d9d9191b-085d-488c-84b9-3adb8497b51f"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome_principal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="533" y="2" width="42" height="18" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtaatende}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="2" width="156" height="18" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descfuncionario}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="156" y="2" width="144" height="18" uuid="3af9d4eb-4f46-4b11-8f47-17fff8baa596">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{desccbo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="300" y="2" width="234" height="18" uuid="f2da5333-6a6e-4ae8-972a-995707280db6">
+					<property name="net.sf.jasperreports.style.markup" value="html"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{evolucao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy hh:mm:ss">
+				<reportElement x="1" y="0" width="149" height="22" uuid="e5ae26f5-e9b6-4c4a-a682-30a7cab9f862"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="401" y="2" width="126" height="20" uuid="bf76ad66-bb21-45ce-a94e-f9f419ea5062"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="527" y="2" width="40" height="20" uuid="4596c509-efda-439b-8059-a8f3349485fd"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="320" height="20" uuid="4da50d34-f10d-4194-93d7-d911eb5365bf"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Total Geral de Evoluções: "+$V{nome_paciente_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
