@@ -1440,4 +1440,33 @@ public class GerenciarPacienteDAO {
 		}
         return lista;
     }
+    
+    public Boolean tipoAtendimentoValidaPacienteAtivo(Integer idTipoAtendimento) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "select t.agenda_avulsa_valida_paciente_ativo from hosp.tipoatendimento t where t.id = ?;";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, idTipoAtendimento);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                retorno = rs.getBoolean("agenda_avulsa_valida_paciente_ativo");
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
 }

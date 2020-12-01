@@ -25,8 +25,9 @@ public class TipoAtendimentoDAO {
     public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws ProjetoException {
 
         Boolean retorno = false;
-        String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo, cod_unidade) "
-                + " values (?, ?, ?, DEFAULT, ?,?) RETURNING id;";
+        String sql = "insert into hosp.tipoatendimento "
+        		+ "(desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo, cod_unidade, agenda_avulsa_valida_paciente_ativo) "
+                + " values (?, ?, ?, DEFAULT, ?,?, ?) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -40,6 +41,7 @@ public class TipoAtendimentoDAO {
             }
             
             ps.setInt(5, user_session.getUnidade().getId());
+            ps.setBoolean(6, tipo.isAgendaAvulsaValidaPacienteAtivo());
 
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
@@ -76,7 +78,8 @@ public class TipoAtendimentoDAO {
     public boolean alterarTipo(TipoAtendimentoBean tipo) throws ProjetoException {
 
         Boolean retorno = false;
-        String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ?, intervalo_minimo = ? where id = ?";
+        String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, "+
+        		 "equipe_programa = ?, intervalo_minimo = ?, agenda_avulsa_valida_paciente_ativo = ? where id = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -88,7 +91,8 @@ public class TipoAtendimentoDAO {
             } else {
                 stmt.setInt(4, tipo.getIntervaloMinimo());
             }
-            stmt.setInt(5, tipo.getIdTipo());
+            stmt.setBoolean(5, tipo.isAgendaAvulsaValidaPacienteAtivo());
+            stmt.setInt(6, tipo.getIdTipo());
             stmt.executeUpdate();
 
             if (tipo.isPrimeiroAt()) {
@@ -248,7 +252,7 @@ public class TipoAtendimentoDAO {
             throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
         String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, " +
-                "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+                "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional, agenda_avulsa_valida_paciente_ativo "
                 + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
                 + " where tg.codgrupo = ?";
         	if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
@@ -270,6 +274,7 @@ public class TipoAtendimentoDAO {
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
+                tipo.setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
                 lista.add(tipo);
             }
         } catch (SQLException sqle) {
@@ -417,7 +422,7 @@ public class TipoAtendimentoDAO {
 
         try {
 			String sql = "SELECT t.id, t.desctipoatendimento, t.primeiroatendimento, t.intervalo_minimo, t.equipe_programa, "
-					+ "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+					+ "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional, agenda_avulsa_valida_paciente_ativo "
 					+ "FROM hosp.tipoatendimento t LEFT JOIN hosp.tipoatendimento_grupo tg ON (t.id = tg.codtipoatendimento) "
 					+ "WHERE t.cod_unidade=? and tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? ";
 			if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
@@ -434,14 +439,15 @@ public class TipoAtendimentoDAO {
 
 
             while (rs.next()) {
-                TipoAtendimentoBean tipo1 = new TipoAtendimentoBean();
-                tipo1.setIdTipo(rs.getInt("id"));
-                tipo1.setDescTipoAt(rs.getString("desctipoatendimento"));
-                tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
-                tipo1.setEquipe(rs.getBoolean("equipe_programa"));
-                tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
-                tipo1.setProfissional(rs.getBoolean("profissional"));
-                lista.add(tipo1);
+                TipoAtendimentoBean tipo = new TipoAtendimentoBean();
+                tipo.setIdTipo(rs.getInt("id"));
+                tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+                tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
+                tipo.setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
+                lista.add(tipo);
             }
         } catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -458,8 +464,9 @@ public class TipoAtendimentoDAO {
     }
 
     public TipoAtendimentoBean listarTipoPorId(int id) throws ProjetoException {
-        String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
-        + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+        String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) "
+        		+ "primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
+        + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional, agenda_avulsa_valida_paciente_ativo "
                 + " from hosp.tipoatendimento WHERE id = ?";
         TipoAtendimentoBean tipo = null;
         try {
@@ -480,6 +487,7 @@ public class TipoAtendimentoDAO {
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
+                tipo.setAgendaAvulsaValidaPacienteAtivo(rs.getBoolean("agenda_avulsa_valida_paciente_ativo"));
             }
         } catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
