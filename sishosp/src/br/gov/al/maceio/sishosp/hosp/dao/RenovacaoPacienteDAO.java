@@ -75,51 +75,6 @@ public class RenovacaoPacienteDAO {
 		return ip;
 	}
 
-	public ArrayList<GerenciarPacienteBean> listarDiasAtendimentoProfissionalEquipe(Integer id)
-			throws ProjetoException {
-
-		ArrayList<GerenciarPacienteBean> lista = new ArrayList<>();
-
-		String sql = "select distinct(p.id_profissional), f.descfuncionario, f.codcbo, p.id_paciente_instituicao, dia_semana, "
-				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
-				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
-				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
-				+ " end as dia from hosp.profissional_dia_atendimento p "
-				+ " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
-				+ " where p.id_paciente_instituicao = ? " + " order by id_profissional";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-
-			stm.setInt(1, id);
-
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				GerenciarPacienteBean gerenciar = new GerenciarPacienteBean();
-				gerenciar.getFuncionario().setNome(rs.getString("descfuncionario"));
-				gerenciar.getFuncionario().setId(rs.getLong("id_profissional"));
-				gerenciar.setId(rs.getInt("id_paciente_instituicao"));
-				gerenciar.getFuncionario().setDiasSemana(rs.getString("dia"));
-				gerenciar.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
-				gerenciar.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
-
-				lista.add(gerenciar);
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return lista;
-	}
-
 	public ArrayList<String> listarDiasAtendimentoProfissional(Integer id) throws ProjetoException {
 
 		ArrayList<String> lista = new ArrayList<>();

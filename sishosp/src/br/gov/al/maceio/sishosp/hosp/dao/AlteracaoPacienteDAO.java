@@ -126,13 +126,16 @@ public class AlteracaoPacienteDAO {
 
 		ArrayList<GerenciarPacienteBean> lista = new ArrayList<>();
 
-		String sql = "select distinct(p.id_profissional), f.descfuncionario, f.codcbo, p.id_paciente_instituicao, dia_semana, "
-				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
-				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
-				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
-				+ " end as dia, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento from hosp.profissional_dia_atendimento p "
-				+ " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
-				+ " where p.id_paciente_instituicao = ? " + " order by id_profissional";
+		String sql = "select distinct(p.id_profissional), f.descfuncionario, c.id codcbo, p.id_paciente_instituicao, dia_semana, " + 
+				" case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' " + 
+				" when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' " + 
+				" when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' " + 
+				" end as dia, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento from hosp.profissional_dia_atendimento p " + 
+				" join acl.funcionarios f on (f.id_funcionario = p.id_profissional) " + 
+				" join hosp.atendimentos a on (p.id_paciente_instituicao = a.id_paciente_instituicao) " + 
+				" join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento and a1.codprofissionalatendimento = f.id_funcionario)  " + 
+				" JOIN hosp.cbo c ON (a1.cbo = c.id) " + 
+				" where p.id_paciente_instituicao = ? order by id_profissional";
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
@@ -142,17 +145,17 @@ public class AlteracaoPacienteDAO {
 			ResultSet rs = stm.executeQuery();
 			AgendaDAO aDao = new AgendaDAO();
 			while (rs.next()) {
-				GerenciarPacienteBean ge = new GerenciarPacienteBean();
-				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
-				ge.getFuncionario().setId(rs.getLong("id_profissional"));
-				ge.setId(rs.getInt("id_paciente_instituicao"));
-				ge.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
-				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
-				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
-				ge.getFuncionario().setListaDiasAtendimentoSemana(aDao.listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
-						id, ge.getFuncionario().getId(), conexao));
+				GerenciarPacienteBean gerenciarPaciente = new GerenciarPacienteBean();
+				gerenciarPaciente.getFuncionario().setNome(rs.getString("descfuncionario"));
+				gerenciarPaciente.getFuncionario().setId(rs.getLong("id_profissional"));
+				gerenciarPaciente.setId(rs.getInt("id_paciente_instituicao"));
+				gerenciarPaciente.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
+				gerenciarPaciente.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
+				gerenciarPaciente.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				gerenciarPaciente.getFuncionario().setListaDiasAtendimentoSemana(aDao.listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
+						id, gerenciarPaciente.getFuncionario().getId(), conexao));
 
-				lista.add(ge);
+				lista.add(gerenciarPaciente);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);

@@ -38,6 +38,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
@@ -65,6 +66,7 @@ public class FuncionarioController implements Serializable {
 	private Empresa empresa;
 	private List<UnidadeBean> listaUnidadesDoUsuario;
 	private UnidadeBean unidadeParaProgramasIhGrupos;
+	
 
 	// SESSÃO
 	private FuncionarioBean usuarioLogado;
@@ -778,9 +780,7 @@ public class FuncionarioController implements Serializable {
 		else if (verificaUnidadePadraoFoiAdicionadaLista(profissional.getUnidade().getId()))
 			return;
 
-		else
-
-		if (listaSistemasDual.getTarget().size() == 0) {
+		else if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
 			if (validaCboProfissional()) {
@@ -833,15 +833,15 @@ public class FuncionarioController implements Serializable {
 	}
 
 	private Boolean validaCboProfissional() {
-		if(this.profissional.getRealizaAtendimento() == true) {
-			if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.profissional.getCbo().getCodigo())) {
-				JSFUtil.adicionarMensagemAdvertencia("Campo CBO é obrigatório", "");
+		if(this.profissional.getRealizaAtendimento()) {
+			if (this.profissional.getListaCbos().isEmpty()) {
+				JSFUtil.adicionarMensagemAdvertencia("Adicione pelo menos um CBO", "");
 				return false;
 			}
 		}
 		return true;
 	}
-
+	
 	public void excluirProfissional() throws ProjetoException {
 
 		boolean excluiu = fDao.excluirProfissional(profissional);
@@ -948,7 +948,7 @@ public class FuncionarioController implements Serializable {
 	public void listarProfissionais() throws ProjetoException {
 		listaProfissional = fDao.listarTodosOsProfissional();
 	}
-
+	
 	public void listarProfissionaisConfigAgenda() throws ProjetoException {
 		listaProfissional = fDao.listarProfissionalAtendimento();
 	}
@@ -1040,10 +1040,12 @@ public class FuncionarioController implements Serializable {
 	public void getEditProfissional() throws ProjetoException, SQLException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+		profissional.getListaCbos().clear();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 			this.profissional = fDao.buscarProfissionalPorId(id);
+			profissional.setListaCbos(fDao.buscarCbosFuncionario(id));
 			profissional.setListaUnidades(fDao.listarUnidadesUsuarioVisualiza(id));
 			listaGruposEProgramasProfissional = fDao.carregaProfissionalProgramaEGrupos(id);
 			carregaListaSistemasDualAlteracao();
@@ -1167,6 +1169,27 @@ public class FuncionarioController implements Serializable {
 		JSFUtil.fecharDialog("dlgUnidadesParaProgramaGrupo");
 		JSFUtil.abrirDialog("dlgConsuGrupos");
 	}
+	
+	public void adicionarCbo(CboBean cboSelecionado) {
+		if(!cboFoiAdicionado(cboSelecionado)) {
+			this.profissional.getListaCbos().add(cboSelecionado);
+			JSFUtil.fecharDialog("dlgConsulCbo");
+		}
+	}
+	
+	private boolean cboFoiAdicionado(CboBean cboSelecionado) {
+		for (CboBean cbo : this.profissional.getListaCbos()) {
+			if(cbo.getCodCbo().equals(cboSelecionado.getCodCbo())) {
+				JSFUtil.adicionarMensagemErro("CBO já foi adicionado", "");
+				return true;
+			}			
+		}
+		return false;
+	}
+	
+	public void removerCbo(CboBean cboSelecionado) {
+		this.profissional.getListaCbos().remove(cboSelecionado);
+	}
 
 	public FuncionarioBean getProfissional() {
 		return profissional;
@@ -1252,6 +1275,19 @@ public class FuncionarioController implements Serializable {
 		}
 
 		return retorno;
+	}
+	
+	/*TODO APAGAR ESTE MÉTODO APÓS FAZER O UPDATE DE TODOS OS 
+	 * FUNCIONARIOS DO BANCO PARA INSERIR OS CBOS NA NOVA TABELA*/
+	public void atualizarCBOsDosFuncionariosDoBanco() throws ProjetoException, SQLException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+		List<FuncionarioBean> listaFuncionarios = funcionarioDAO.listarTodosOsProfissionaisParaAtualizarCBO();
+		JSFUtil.adicionarMensagemSucesso("Funcionários listados para atualizar os CBOS na nova tabela", "");
+		
+		boolean cbosFuncionariosAtualizados = 
+				funcionarioDAO.gravarCbosProfissionalParaAtualizarBanco(listaFuncionarios);
+		if(cbosFuncionariosAtualizados)
+			JSFUtil.adicionarMensagemSucesso("CBO DOS FUNCIONÁRIOS GRAVADOS NA NOVA TABELA", "");
 	}
 
 	// PROFISSIONAL GETTES E SETTERS FIM
@@ -1681,5 +1717,4 @@ public class FuncionarioController implements Serializable {
 	public void setListaProgramaGrupoParaAdicionar(ArrayList<ProgramaBean> listaProgramaGrupoParaAdicionar) {
 		this.listaProgramaGrupoParaAdicionar = listaProgramaGrupoParaAdicionar;
 	}
-	
 }
