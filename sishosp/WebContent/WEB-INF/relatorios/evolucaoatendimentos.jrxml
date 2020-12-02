@@ -5,6 +5,11 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -14,11 +19,6 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="586"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="400"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="388"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="605"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -89,7 +89,7 @@ ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, p
 	<variable name="nome_paciente1" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
-	<group name="grupoPrograma" isStartNewPage="true">
+	<group name="grupoPrograma" isStartNewPage="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{id_programa} + ""+ $F{id_grupo}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
@@ -120,45 +120,51 @@ ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, p
 	<group name="grupoPaciente" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{id_paciente}]]></groupExpression>
 		<groupHeader>
-			<band height="40">
+			<band height="50">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<staticText>
-					<reportElement x="1" y="0" width="141" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
+					<reportElement x="1" y="0" width="45" height="13" uuid="925a3c50-65d1-4782-97c1-7003d4294eba">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Paciente]]></text>
+					<text><![CDATA[Paciente:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="142" y="0" width="410" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
+					<reportElement x="47" y="0" width="410" height="13" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="301" y="20" width="60" height="20" uuid="17e5a282-d6d4-4a3b-8231-238dff85f89f"/>
+					<reportElement x="240" y="20" width="60" height="20" uuid="17e5a282-d6d4-4a3b-8231-238dff85f89f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Evolução]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="534" y="20" width="39" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<reportElement x="1" y="22" width="39" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="1" y="20" width="69" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<reportElement x="51" y="20" width="69" height="12" uuid="a32877d4-d454-425b-9538-f49fff39f09f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Profissional]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="158" y="20" width="51" height="20" uuid="7b5eec80-0a73-4a3d-a400-8b53cd3cfc83"/>
+					<reportElement x="51" y="32" width="51" height="12" uuid="7b5eec80-0a73-4a3d-a400-8b53cd3cfc83"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -183,7 +189,7 @@ ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, p
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[EVOLUÇÃO DE ATENDIMENTOS POR PROGRAMA E GRUPO]]></text>
+				<text><![CDATA[EVOLUÇÃO DE ATENDIMENTOS]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="1" y="14" width="571" height="16" uuid="d9d9191b-085d-488c-84b9-3adb8497b51f"/>
@@ -198,9 +204,15 @@ ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, p
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="26" splitType="Stretch">
+		<band height="12" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<rectangle>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="571" height="12" isPrintWhenDetailOverflows="true" uuid="6b8638ff-9446-40c7-9330-ad34fe0e0a3e">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="533" y="2" width="42" height="18" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+				<reportElement x="1" y="0" width="42" height="12" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -209,32 +221,35 @@ ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, p
 				<textFieldExpression><![CDATA[$F{dtaatende}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="2" width="156" height="18" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="48" y="0" width="189" height="12" uuid="cf8eacae-7e2c-4841-9bf2-d4d2655eb7f5">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{descfuncionario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descfuncionario}+"\n"+
+$F{desccbo}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="156" y="2" width="144" height="18" uuid="3af9d4eb-4f46-4b11-8f47-17fff8baa596">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{desccbo}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="300" y="2" width="234" height="18" uuid="f2da5333-6a6e-4ae8-972a-995707280db6">
+				<reportElement x="240" y="0" width="332" height="12" uuid="f2da5333-6a6e-4ae8-972a-995707280db6">
 					<property name="net.sf.jasperreports.style.markup" value="html"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{evolucao}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement stretchType="RelativeToTallestObject" x="46" y="0" width="1" height="12" isPrintWhenDetailOverflows="true" uuid="bb52d508-07d3-4497-8444-ce5c729f05bd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToTallestObject" x="238" y="0" width="1" height="12" isPrintWhenDetailOverflows="true" uuid="7471c7f5-e4eb-4632-806b-517c3d8f55b5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</detail>
 	<pageFooter>

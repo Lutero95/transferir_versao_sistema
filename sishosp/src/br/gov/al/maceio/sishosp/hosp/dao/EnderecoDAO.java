@@ -596,6 +596,14 @@ public class EnderecoDAO {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
         MunicipioBean municipio = null;
+        String nomeAux = nomeMunicipio;
+        Integer in1 = nomeAux.indexOf('(');
+        Integer in2 = nomeAux.indexOf(')');
+
+        if (in1>0) {
+            ;;
+            nomeMunicipio = nomeAux.substring(in1+1, in2);
+        }
 
         try {
             String sql = "select id_municipio, unaccent(nome) nome, "

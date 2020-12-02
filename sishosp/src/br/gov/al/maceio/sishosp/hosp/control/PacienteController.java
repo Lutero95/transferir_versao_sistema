@@ -153,6 +153,8 @@ public class PacienteController implements Serializable {
 		return listaPacientes;
 	}
 
+
+
 	public void buscarPacientesPorTipo() throws ProjetoException {
 		listaPacientes = pDao.buscarPacientes(campoBusca, tipoBusca);
 	}
