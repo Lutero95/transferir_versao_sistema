@@ -1344,7 +1344,7 @@ public class ProgramaDAO {
     }
     
     public ProcedimentoBean retornaProcedimentoPadraoDoProgramaPorIdade (Integer idPrograma, Integer idPaciente) throws ProjetoException, SQLException {
-        ProcedimentoBean procedimento = null;
+        ProcedimentoBean procedimento = new ProcedimentoBean();
         try {
             con = ConnectionFactory.getConnection();
             String sql = "SELECT id_procedimento FROM hosp.programa_procedimento_idade_especifica where id_programa = ? " + 

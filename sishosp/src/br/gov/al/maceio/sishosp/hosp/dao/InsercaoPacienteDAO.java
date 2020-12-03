@@ -848,7 +848,7 @@ public class InsercaoPacienteDAO {
 		String sql = "SELECT pi.codprograma, pi.id FROM hosp.paciente_instituicao pi " + 
 				"left join hosp.laudo l on l.id_laudo = pi.codlaudo " + 
 				" WHERE pi.status = 'A' AND pi.codprograma = ? AND pi.codgrupo = ?" + 
-				" and pi.id_paciente = ?";
+				" and coalesce(l.codpaciente,pi.id_paciente) = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();

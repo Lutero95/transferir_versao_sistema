@@ -46,7 +46,8 @@ public class BpaIndividualizadoDAO {
 				" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \n" +
 				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, \n" +
 				" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\n" +
-				" sm.codigo codigo_servico, cm.codigo codigo_classificacao  \n" +
+				"  case when proc.exige_info_servico is true then  sm.codigo else '' end  codigo_servico, \n" +
+				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end  codigo_classificacao    \n" +
 				" from hosp.atendimentos1 a1  \n" +
 				"join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \n" +
 				"  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \n" +
@@ -67,8 +68,8 @@ public class BpaIndividualizadoDAO {
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
 				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
 				" cross join hosp.empresa emp\n" +
-				"join sigtap.servico sm on sm.id = prog.id_servico \n" +
-				"  join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
+				"left join sigtap.servico sm on sm.id = prog.id_servico \n" +
+				"left   join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
 				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
@@ -96,7 +97,8 @@ public class BpaIndividualizadoDAO {
 				" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , \n" +
 				" p.logradouro, p.complemento , p.numero, \n" +
 				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
-				" cm.codigo, sm.codigo, \n" +
+				" case when proc.exige_info_servico is true then  sm.codigo else '' end  , \n" +
+				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \n" +
 				" emp.cnpj \n" ;
 		sql+=" order by func.cns, p.cns  \t";
         
