@@ -37,9 +37,19 @@
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (u.id, u.nome, a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
-u.id as cod_unidade, u.nome as nome_unidade, a.codprograma as cod_programa, p.descprograma as nome_programa,
+		<![CDATA[select distinct  CASE 
+      WHEN $P{agruparunidade}   is true THEN (u.id, u.nome, p.descprograma, a.dtaatende, pa.nome)
+      ELSE (p.descprograma, a.dtaatende, pa.nome) 
+      END,
+      
+      CASE 
+      WHEN $P{agruparunidade}  is true then u.nome
+      ELSE 'TODAS'
+      end nome_unidade,
+u.id as cod_unidade,   
+a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento,pa.cns, pa.nome as nome_paciente,
 a.dtaatende as data_agend, f.descfuncionario as nome_profissional,
 pr.nome as nome_proc, sa.descricao status, nome_principal
@@ -154,87 +164,105 @@ order by 1;]]>
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
-					<reportElement x="1" y="0" width="141" height="20" uuid="538e44ca-3151-4b64-a9fa-a6cedefaa376"/>
+					<reportElement mode="Opaque" x="1" y="0" width="141" height="20" backcolor="#EDE8E8" uuid="538e44ca-3151-4b64-a9fa-a6cedefaa376"/>
 					<textElement verticalAlignment="Middle">
 						<font size="11" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Unidade]]></text>
+					<text><![CDATA[Unidade:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="143" y="2" width="246" height="17" uuid="90f4daa5-4dab-4d2e-bad3-ecaf58ac3e25"/>
+					<reportElement mode="Opaque" x="143" y="0" width="429" height="20" backcolor="#EDE8E8" uuid="90f4daa5-4dab-4d2e-bad3-ecaf58ac3e25">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_unidade}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="22">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
-					<reportElement x="2" y="2" width="229" height="13" uuid="2a15286d-6782-4b5a-972c-81eeeb822600"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+$V{total_atend_unidade}]]></textFieldExpression>
+					<reportElement x="2" y="2" width="570" height="13" uuid="2a15286d-6782-4b5a-972c-81eeeb822600"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade "+$F{nome_unidade}+": "+$V{total_atend_unidade}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_programa} + ""+ $F{cod_unidade}]]></groupExpression>
+	<group name="grupoPrograma" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
-			<band height="65">
+			<band height="49">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<line>
-					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
+					<reportElement x="0" y="0" width="575" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 				</line>
 				<line>
-					<reportElement x="0" y="40" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
+					<reportElement x="0" y="24" width="575" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 				</line>
 				<staticText>
-					<reportElement x="71" y="44" width="137" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
+					<reportElement x="71" y="27" width="137" height="20" uuid="925a3c50-65d1-4782-97c1-7003d4294eba"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="393" y="44" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
+					<reportElement x="393" y="27" width="145" height="20" uuid="2dd48226-ba31-42f2-a442-0d21d8d96fe3"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Procedimento]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="212" y="44" width="41" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
+					<reportElement x="212" y="27" width="41" height="20" uuid="1651b8f2-149c-4165-82af-a970e3ce8c50"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="257" y="44" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
+					<reportElement x="257" y="27" width="121" height="20" uuid="a32877d4-d454-425b-9538-f49fff39f09f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Profissional]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="2" y="44" width="33" height="20" uuid="84f3443a-3caf-4cad-9533-d48260fbfd74"/>
+					<reportElement x="2" y="27" width="33" height="20" uuid="84f3443a-3caf-4cad-9533-d48260fbfd74"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Cns]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="1" y="2" width="141" height="20" uuid="34807fb0-480a-4407-a50a-fe600f5f29c2"/>
+					<reportElement mode="Opaque" x="1" y="2" width="141" height="20" backcolor="#EDE8E8" uuid="34807fb0-480a-4407-a50a-fe600f5f29c2"/>
 					<textElement verticalAlignment="Middle">
 						<font size="11" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Programa]]></text>
+					<text><![CDATA[Programa:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="142" y="2" width="250" height="20" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
+					<reportElement mode="Opaque" x="142" y="2" width="432" height="20" backcolor="#EDE8E8" uuid="8eaa55b4-14e6-4dfc-b599-33eb52e5ffb9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
 			</band>
@@ -242,8 +270,11 @@ order by 1;]]>
 		<groupFooter>
 			<band height="32">
 				<textField>
-					<reportElement x="1" y="10" width="229" height="13" uuid="9fa4b3b6-e9ad-463a-878f-9ad54f0f0e1f"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{total_atend_programa}]]></textFieldExpression>
+					<reportElement x="1" y="10" width="573" height="13" uuid="9fa4b3b6-e9ad-463a-878f-9ad54f0f0e1f"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos no Programa "+$F{nome_programa}+": "+$V{total_atend_programa}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -324,15 +355,23 @@ order by 1;]]>
 		<band height="22" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy hh:mm:ss">
 				<reportElement x="1" y="0" width="149" height="22" uuid="e5ae26f5-e9b6-4c4a-a682-30a7cab9f862"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="401" y="2" width="126" height="20" uuid="bf76ad66-bb21-45ce-a94e-f9f419ea5062"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="527" y="2" width="40" height="20" uuid="4596c509-efda-439b-8059-a8f3349485fd"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

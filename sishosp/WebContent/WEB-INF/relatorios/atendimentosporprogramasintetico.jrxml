@@ -37,35 +37,60 @@
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="listaunidades" class="java.util.ArrayList"/>
 	<parameter name="listaprogramas" class="java.util.ArrayList"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select distinct (cod_unidade,nome_unidade, cod_programa, nome_programa), qtd, nome_paciente, 
-id_paciente, cod_unidade,nome_unidade, cod_programa, nome_programa, nome_principal from ( 
-	select count(*) qtd, pa.nome as nome_paciente,  pa.id_paciente, u.id as cod_unidade, u.nome as nome_unidade,
-	a.codprograma as cod_programa, p.descprograma as nome_programa, nome_principal 
-	from hosp.atendimentos a
-	inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
-	inner join hosp.programa p on (a.codprograma = p.id_programa)
-	inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
-	inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
-	inner join hosp.proc pr on (a1.codprocedimento = pr.id)	
-	JOIN hosp.unidade u ON u.id = a.cod_unidade   
-	CROSS JOIN hosp.empresa e 
-	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
-	where sa.atendimento_realizado is true
-	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
-	and ((  $P{id_situacao_atendimento}  is not null and sa.id = $P{id_situacao_atendimento} ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
-	and ((  $P{turno}  is not null and a.turno =  $P{turno}  ) or  ( $P{turno}   is null ))
-	and ((  $P{id_paciente}  is not null and a.codpaciente =  $P{id_paciente} ) or (( $P{id_paciente}  = 0) or (  $P{id_paciente}   is null)))
-	and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento = $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or ( $P{codprofissional}  is null)))
-	and ((   $P{codespecialidade}  is not null and f.codespecialidade =  $P{codespecialidade} ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}  is null)))
-	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
-	and  $X{IN, u.id, listaunidades} 
-	and $X{IN, p.id_programa, listaprogramas} 
-	AND (SELECT extract(year from age(pa.dtanascimento))) >=   $P{idademinima} 
-	AND (SELECT extract(year from age(pa.dtanascimento))) <=    $P{idademaxima} 
-	group by u.id, u.nome, p.descprograma, a.codprograma, pa.nome,  pa.id_paciente, nome_principal
-	order by p.descprograma,pa.nome) a
+		<![CDATA[select distinct  
+	CASE 
+    WHEN  $P{agruparunidade}  is true THEN (cod_unidade, nome_unidade, nome_programa)
+    ELSE (cod_programa, nome_programa) 
+    END,
+      
+    CASE 
+    WHEN $P{agruparunidade}  is true then nome_unidade
+    ELSE 'TODAS'
+    END nome_unidade,
+ qtd, nome_paciente, 
+ id_paciente, cod_unidade, cod_programa, nome_programa, nome_principal from ( 
+		select count(*) qtd, pa.nome as nome_paciente,  pa.id_paciente,
+		  CASE 
+      		WHEN  $P{agruparunidade}  is true THEN (u.id)
+      		ELSE (0) 
+		    END cod_unidade,
+      
+	        CASE 
+	        WHEN  $P{agruparunidade}  is true THEN (u.nome)
+        	ELSE ('TODAS') 
+	        END nome_unidade,
+      
+      		CASE 
+	        WHEN  $P{agruparunidade}  is true THEN (a.codprograma)
+      		ELSE (0) 
+	        END cod_programa,
+    	p.descprograma as nome_programa, nome_principal 
+	    from hosp.atendimentos a
+	    inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
+	    join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
+	    join hosp.programa p on (a.codprograma = p.id_programa)
+    	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
+	    join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
+    	join hosp.proc pr on (a1.codprocedimento = pr.id)	
+	    JOIN hosp.unidade u ON u.id = a.cod_unidade   
+	    CROSS JOIN hosp.empresa e 
+	    left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
+	    where sa.atendimento_realizado is true
+	    and a.dtaatende between   $P{dt_inicial}   and   $P{dt_final} 
+	    and ((  $P{id_situacao_atendimento}   is not null and sa.id =  $P{id_situacao_atendimento}  ) or (( $P{id_situacao_atendimento} = 0 ) OR (  $P{id_situacao_atendimento}  is null )))
+	    and ((  $P{turno}  is not null and a.turno =   $P{turno}   ) or  ( $P{turno}  is null ))
+	    and ((  $P{id_paciente}   is not null and a.codpaciente =  $P{id_paciente} ) or (( $P{id_paciente}  = 0) or ( $P{id_paciente} is null)))
+	    and ((   $P{codprofissional}   is not null and a1.codprofissionalatendimento = $P{codprofissional}  ) or (( $P{codprofissional} = 0) or ( $P{codprofissional}  is null)))
+	    and ((   $P{codespecialidade} is not null and f.codespecialidade =  $P{codespecialidade} ) or (( $P{codespecialidade}  = 0) or ( $P{codespecialidade}  is null)))
+  		and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+  		and  $X{IN, u.id, listaunidades} 
+  		and $X{IN, p.id_programa, listaprogramas} 
+	    AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima}   
+	    AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
+    	group by 4, 5, p.descprograma, 6, pa.nome,  pa.id_paciente, nome_principal
+	    order by p.descprograma,pa.nome) a
 where(  ((   $P{qtdatendimentosmenorigual}  is not null and a.qtd <=  $P{qtdatendimentosmenorigual}    ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR ( $P{qtdatendimentosmenorigual}  is null )))
 and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=   $P{qtdatendimentosmaiorigual}    ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null ))) )
 or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}    is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
@@ -102,50 +127,60 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
 			<band height="32">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<staticText>
-					<reportElement x="-1" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="30e4b1ce-911e-45ec-a6a1-cae7d65eca7f"/>
+					<reportElement mode="Opaque" x="-1" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" backcolor="#EDE8E8" uuid="30e4b1ce-911e-45ec-a6a1-cae7d65eca7f"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Unidade]]></text>
+					<text><![CDATA[Unidade:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="90" y="1" width="141" height="20" uuid="ec51b764-0d7b-4d09-9080-8119e5d744fd"/>
+					<reportElement mode="Opaque" x="90" y="1" width="482" height="20" backcolor="#EDE8E8" uuid="ec51b764-0d7b-4d09-9080-8119e5d744fd"/>
+					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{nome_unidade}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="23">
+				<printWhenExpression><![CDATA[$P{agruparunidade}.equals( true )]]></printWhenExpression>
 				<textField>
-					<reportElement x="0" y="10" width="229" height="13" uuid="79fea142-4657-44bc-bee3-a9ab7e4699d6"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade: "+ $V{total_atend_unidade}]]></textFieldExpression>
+					<reportElement x="0" y="10" width="572" height="13" uuid="79fea142-4657-44bc-bee3-a9ab7e4699d6"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos na Unidade "+$F{nome_unidade}+": "+ $V{total_atend_unidade}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_unidade} + ""+ $F{cod_programa}]]></groupExpression>
+	<group name="grupoPrograma" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{nome_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="55">
 				<line>
-					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
+					<reportElement x="0" y="0" width="575" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 				</line>
 				<line>
-					<reportElement x="0" y="32" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
+					<reportElement x="0" y="32" width="575" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
 				</line>
 				<staticText>
-					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="feef2009-e4fc-4a25-8a2f-7f2b4edb9f14"/>
+					<reportElement mode="Opaque" x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" backcolor="#EDE8E8" uuid="feef2009-e4fc-4a25-8a2f-7f2b4edb9f14"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Programa]]></text>
+					<text><![CDATA[Programa:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="89" y="1" width="230" height="20" printWhenGroupChanges="grupoPrograma" uuid="2f94ad7e-7679-495f-9847-938c47b0998c"/>
+					<reportElement mode="Opaque" x="89" y="1" width="483" height="20" printWhenGroupChanges="grupoPrograma" backcolor="#EDE8E8" uuid="2f94ad7e-7679-495f-9847-938c47b0998c"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10"/>
 					</textElement>
@@ -170,14 +205,20 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		<groupFooter>
 			<band height="28">
 				<textField>
-					<reportElement x="0" y="10" width="229" height="13" uuid="1afc9e3f-6744-4c9c-975c-14e4a3d2e90c"/>
-					<textFieldExpression><![CDATA["Total de Atendimentos no Programa: "+$V{nome_paciente1}]]></textFieldExpression>
+					<reportElement x="0" y="10" width="360" height="13" uuid="1afc9e3f-6744-4c9c-975c-14e4a3d2e90c"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos no Programa "+$F{nome_programa}+": "+$V{nome_paciente1}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="376" y="10" width="160" height="13" uuid="1b3fbf80-82be-43eb-b9b6-68ee691089ad">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
 					<textFieldExpression><![CDATA["Total de Pacientes: "+$V{paciente_programa}]]></textFieldExpression>
 				</textField>
 			</band>
@@ -238,15 +279,23 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		<band height="22" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy hh:mm:ss">
 				<reportElement x="1" y="0" width="149" height="22" uuid="e5ae26f5-e9b6-4c4a-a682-30a7cab9f862"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="401" y="2" width="126" height="20" uuid="bf76ad66-bb21-45ce-a94e-f9f419ea5062"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="527" y="2" width="40" height="20" uuid="4596c509-efda-439b-8059-a8f3349485fd"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

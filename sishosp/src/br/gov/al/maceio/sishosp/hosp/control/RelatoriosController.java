@@ -100,6 +100,7 @@ public class RelatoriosController implements Serializable {
 	private Integer mes;
 	private Integer ano;
 	private Boolean filtrarPorMunicipio;
+	private boolean agruparPorUnidade;
 
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
@@ -586,6 +587,7 @@ public class RelatoriosController implements Serializable {
 
 		map.put("dt_inicial", dataInicial);
 		map.put("dt_final", dataFinal);
+		map.put("agruparunidade", agruparPorUnidade);
 
 		if(!listaUnidadesSelecionadas.isEmpty()) {
 			map.put("listaunidades", retornaListaIdUnidades(listaUnidadesSelecionadas));
@@ -758,7 +760,7 @@ public class RelatoriosController implements Serializable {
 		this.executeReport(relatorio, map, "relatorio_presenca.pdf");
 
 	}
-	
+
 	public void gerarRelatorioPresenca(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
@@ -1643,7 +1645,7 @@ public class RelatoriosController implements Serializable {
 	public void setaTurnoPadrao() {
 		this.turnoSelecionado = Turno.AMBOS.getSigla();
 	}
-	
+
 	public void gerarRelatorioEvolucao(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
 
@@ -1671,7 +1673,7 @@ public class RelatoriosController implements Serializable {
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
 				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
 		}
-		
+
 		relatorio = caminho + "evolucaoatendimentos.jasper";
 		this.executeReport(relatorio, map, "relatorio_evolucao_atendimentos.pdf");
 	}
@@ -2069,6 +2071,14 @@ public class RelatoriosController implements Serializable {
 	public void setListaGruposProgramaUnidadeDTOSelecionados(
 			List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTOSelecionados) {
 		this.listaGruposProgramaUnidadeDTOSelecionados = listaGruposProgramaUnidadeDTOSelecionados;
+	}
+
+	public boolean isAgruparPorUnidade() {
+		return agruparPorUnidade;
+	}
+
+	public void setAgruparPorUnidade(boolean agruparPorUnidade) {
+		this.agruparPorUnidade = agruparPorUnidade;
 	}
 
 }
