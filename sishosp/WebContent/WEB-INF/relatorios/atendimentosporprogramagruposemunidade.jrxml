@@ -38,6 +38,7 @@
 	<parameter name="listaunidades" class="java.util.ArrayList"/>
 	<parameter name="listaprogramas" class="java.util.ArrayList"/>
 	<parameter name="listagrupos" class="java.util.ArrayList"/>
+	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<queryString>
 		<![CDATA[select distinct (u.id, u.nome, a.codprograma, a.codprograma, a.codgrupo, a.dtaatende, pa.nome),
 u.id as cod_unidade, u.nome as nome_unidade, a.codprograma as cod_programa, p.descprograma as nome_programa,
@@ -172,7 +173,7 @@ order by 1]]>
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
+		<groupExpression><![CDATA[$P{agruparunidade}.equals( true ) && !$F{cod_unidade}.equals(null)]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -199,7 +200,7 @@ order by 1]]>
 		</groupFooter>
 	</group>
 	<group name="grupoPrograma">
-		<groupExpression><![CDATA[$F{cod_unidade} +""+ $F{cod_programa}]]></groupExpression>
+		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
 		<groupHeader>
 			<band height="52">
 				<line>
@@ -266,7 +267,7 @@ order by 1]]>
 		</groupFooter>
 	</group>
 	<group name="grpgrupo">
-		<groupExpression><![CDATA[$F{cod_unidade} +""+$F{cod_programa} +""+  $F{codgrupo}]]></groupExpression>
+		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
 		<groupHeader>
 			<band height="25">
 				<textField>

@@ -25,25 +25,24 @@
 	<parameter name="dt_final" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="cod_programa" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<parameter name="id_situacao_atendimento" class="java.lang.Integer"/>
 	<parameter name="turno" class="java.lang.String"/>
 	<parameter name="diassemanalista" class="java.util.ArrayList"/>
-	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
+	<parameter name="listaunidades" class="java.util.ArrayList"/>
+	<parameter name="listaprogramas" class="java.util.ArrayList"/>
+	<parameter name="listagrupos" class="java.util.ArrayList"/>
 	<parameter name="codespecialidade" class="java.lang.Integer"/>
 	<parameter name="codprofissional" class="java.lang.Long"/>
 	<parameter name="qtdatendimentosmenorigual" class="java.lang.Integer"/>
 	<parameter name="qtdatendimentosmaiorigual" class="java.lang.Integer"/>
-	<parameter name="cod_grupo" class="java.lang.Integer"/>
 	<parameter name="idademinima" class="java.lang.Integer"/>
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select distinct (cod_programa, codgrupo), qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal from ( 
+		<![CDATA[select distinct (cod_unidade,nome_unidade, cod_programa, nome_programa, codgrupo, nome_grupo), 
+qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, nome_principal, cod_unidade, nome_unidade from ( 
 	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, a.codprograma as cod_programa, 
-	 p.descprograma as nome_programa, nome_principal, a.codgrupo, g.descgrupo as nome_grupo 
+	 p.descprograma as nome_programa, nome_principal, a.codgrupo, g.descgrupo as nome_grupo, u.id as cod_unidade, u.nome as nome_unidade 
 	from hosp.atendimentos a
 	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -52,23 +51,23 @@
 	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 	join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)
 	join hosp.proc pr on (a1.codprocedimento = pr.id)	
-	JOIN hosp.unidade u ON u.id =   $P{codunidade} 
-	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
+	JOIN hosp.unidade u ON u.id = a.cod_unidade   
+	CROSS JOIN hosp.empresa e 
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where sa.atendimento_realizado is true
 	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
-	and ((  $P{cod_programa}     is not null and a.codprograma =  $P{cod_programa}    ) or ((  $P{cod_programa}  = 0 ) OR (   $P{cod_programa}  is null )))
-	and ((  $P{cod_grupo}   is not null and a.codgrupo =   $P{cod_grupo}  ) or (( $P{cod_grupo}   =0 ) OR (   $P{cod_grupo}  is null )))
-	AND ((  $P{codunidade}  IS NOT NULL AND a.cod_unidade=   $P{codunidade}  ) OR ((  $P{codunidade}  =0 ) OR (  $P{codunidade}  is null )))
 	and ((  $P{id_situacao_atendimento}    is not null and sa.id =    $P{id_situacao_atendimento}   ) or ((   $P{id_situacao_atendimento}   =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 	and ((  $P{turno}  is not null and a.turno =   $P{turno}    ) or  (   $P{turno}  is null ))
 	and ((  $P{id_paciente}  is not null and a.codpaciente =   $P{id_paciente}   ) or ((   $P{id_paciente}  = 0) or ( $P{id_paciente}  is null)))
 	and ((  $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
 	and ((  $P{codespecialidade}   is not null and f.codespecialidade =  $P{codespecialidade}  ) or (( $P{codespecialidade}   = 0) or (   $P{codespecialidade}   is null)))
 	and $X{IN, extract (dow from a.dtaatende), diassemanalista}
+	and $X{IN, u.id,  listaunidades}
+	and $X{IN, a.codprograma, listaprogramas}
+	and $X{IN, g.id_grupo, listagrupos}
 	AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
 	AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
-	group by p.descprograma, a.codprograma, g.descgrupo, a.codgrupo, pa.nome,  pa.id_paciente, nome_principal
+	group by  u.nome, u.id, p.descprograma, a.codprograma, g.descgrupo, a.codgrupo, pa.nome,  pa.id_paciente, nome_principal
 	order by p.descprograma,pa.nome) a
 where(  ((   $P{qtdatendimentosmenorigual}   is not null and a.qtd <=  $P{qtdatendimentosmenorigual}  ) or ((  $P{qtdatendimentosmenorigual}  =0 ) OR (  $P{qtdatendimentosmenorigual}  is null )))
 and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=  $P{qtdatendimentosmaiorigual} ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmaiorigual}   is null ))) )
@@ -87,6 +86,8 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 	<field name="qtd" class="java.lang.Integer"/>
 	<field name="codgrupo" class="java.lang.Integer"/>
 	<field name="nome_grupo" class="java.lang.String"/>
+	<field name="cod_unidade" class="java.lang.Integer"/>
+	<field name="nome_unidade" class="java.lang.String"/>
 	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
@@ -108,15 +109,44 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 	<variable name="nome_paciente_grupo" class="java.lang.Integer" resetType="Group" resetGroup="grupoGrupo" calculation="Sum">
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
-	<group name="grupoPrograma" isStartNewPage="true">
-		<groupExpression><![CDATA[$F{cod_programa}]]></groupExpression>
+	<variable name="total_atend_unidade" class="java.lang.Integer" resetType="Group" resetGroup="grupoUnidade" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
+	</variable>
+	<group name="grupoUnidade" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{cod_unidade}]]></groupExpression>
 		<groupHeader>
-			<band height="41">
+			<band height="32">
+				<staticText>
+					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="6a5f35b9-471f-45ee-bd73-204ff1502d77"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Unidade]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="90" y="0" width="229" height="21" uuid="9aadb6f4-f49d-438a-9afb-a27c490ec803"/>
+					<textFieldExpression><![CDATA[$F{nome_unidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24">
+				<textField>
+					<reportElement x="0" y="6" width="229" height="13" uuid="17b23dc6-1a11-4ef9-8299-38401e6c8eb6"/>
+					<textFieldExpression><![CDATA["Total de Atendimentos no Unidade: "+ $V{total_atend_unidade}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupoPrograma">
+		<groupExpression><![CDATA[$F{cod_unidade} +""+ $F{cod_programa}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
 				<line>
 					<reportElement x="0" y="0" width="555" height="1" uuid="492fc899-08a5-45f1-9e5c-e7fc67afcfc0"/>
 				</line>
 				<line>
-					<reportElement x="0" y="40" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
+					<reportElement x="0" y="28" width="555" height="1" uuid="b9b688d1-8ef3-43a1-af19-83781349f709"/>
 				</line>
 				<staticText>
 					<reportElement x="0" y="1" width="90" height="20" printWhenGroupChanges="grupoPrograma" uuid="feef2009-e4fc-4a25-8a2f-7f2b4edb9f14"/>
@@ -151,7 +181,7 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		</groupFooter>
 	</group>
 	<group name="grupoGrupo">
-		<groupExpression><![CDATA[$F{cod_programa} +""+ $F{codgrupo}]]></groupExpression>
+		<groupExpression><![CDATA[$F{cod_unidade} + ""+ $F{cod_programa} +""+ $F{codgrupo}]]></groupExpression>
 		<groupHeader>
 			<band height="45">
 				<staticText>

@@ -1375,4 +1375,51 @@ public class ProgramaDAO {
         }
         return procedimento;
     }
+    
+    public ArrayList<ProgramaBean> buscaProgramasPorUnidade(List<UnidadeBean> listaUnidade) throws ProjetoException {
+        PreparedStatement ps = null;
+        con = ConnectionFactory.getConnection();
+
+        String sql = "SELECT p.id_programa, p.descprograma, u.id id_unidade, u.nome FROM hosp.programa p "+
+        		"JOIN hosp.unidade u ON (p.cod_unidade = u.id ) where u.id = ? ";
+        
+        String filtroUnidade = " or u.id = ? ";
+        String ordenacao = " order by descprograma";
+        
+        for (int i = 1; i < listaUnidade.size(); i++) {
+			sql += filtroUnidade;
+		}
+        sql += ordenacao;
+        
+        ArrayList<ProgramaBean> lista = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, listaUnidade.get(0).getId());
+            for (int i = 1; i < listaUnidade.size(); i++) {
+    			ps.setInt(i+1, listaUnidade.get(i).getId());
+    		}
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                programa.setCodUnidade(rs.getInt("id_unidade"));
+                programa.setDescricaoUnidade(rs.getString("nome"));
+                lista.add(programa);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 }
