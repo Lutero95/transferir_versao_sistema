@@ -10,6 +10,7 @@
 	<p:dialog widgetVar="dlgInconsistencias" resizable="false"
 		draggable="false" closable="false" width="620" 
 		header="Situações Pendentes" closeOnEscape="false"
+			  rendered="#{inconsistenciaController.listaInconsistenciasDTO.size()>0}"
 		responsive="true" modal="true">
 		<h:form id="formInconsistencias"> 
 			<div align="center">
