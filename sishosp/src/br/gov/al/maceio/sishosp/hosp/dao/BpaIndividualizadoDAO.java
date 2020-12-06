@@ -25,7 +25,6 @@ public class BpaIndividualizadoDAO {
 	/* ESTAS CONSTANTES SERAM SUBSTITUÍDAS DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_CATEN = "01";
 	private static final String PRD_NAUT = "             ";
-	private static final String PRD_ETNIA = "    ";
 	private static final String PRD_NAC = "010";
 	private static final String PRD_EQUIPE_SEQ = "        ";
 	private static final String PRD_EQUIPE_AREA = "    ";
@@ -41,7 +40,7 @@ public class BpaIndividualizadoDAO {
 				"  pm.competencia_atual, \n" +
 				"  func.cns cnsprofissional\n" +
 				"  , cbo.codigo cbo, proc.codproc, \n" +
-				"  p.cns cnspaciente,\n" +
+				"  p.cns cnspaciente, lpad(coalesce(etnia.codetnia ,'    '),4,'0')  codetnia, \n" +
 				" p.sexo, substring(to_char(m.codigo,'9999999')\t,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \n" +
 				" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \n" +
 				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, \n" +
@@ -56,6 +55,7 @@ public class BpaIndividualizadoDAO {
 				" left join hosp.bairros on bairros.id_bairro = p.codbairro  \n" +
 				" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \n" +
 				" left join hosp.raca on raca.id_raca = p.codraca  \n" +
+				" left join hosp.etnia on etnia.id_etnia = p.codetnia  \n" +
 				" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \n" +
 				" join hosp.proc on proc.id = a1.codprocedimento  \n" +
 				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
@@ -99,7 +99,7 @@ public class BpaIndividualizadoDAO {
 				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
 				" case when proc.exige_info_servico is true then  sm.codigo else '' end  , \n" +
 				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \n" +
-				" emp.cnpj \n" ;
+				" emp.cnpj, etnia.codetnia \n" ;
 		sql+=" order by func.cns, p.cns  \t";
         
         Connection con = ConnectionFactory.getConnection();
@@ -171,7 +171,7 @@ public class BpaIndividualizadoDAO {
             	bpaIndividualizado.setPrdDtnasc(rs.getString("dtanascimento").toString().replaceAll("-", ""));
             	bpaIndividualizado.setPrdRaca(rs.getString("codraca"));
             	
-            	bpaIndividualizado.setPrdEtnia(PRD_ETNIA);
+            	bpaIndividualizado.setPrdEtnia(rs.getString("codetnia"));
             	bpaIndividualizado.setPrdNac(PRD_NAC);
             	bpaIndividualizado.setPrdSrv(rs.getString("codigo_servico"));
             	bpaIndividualizado.setPrdClf(rs.getString("codigo_classificacao"));

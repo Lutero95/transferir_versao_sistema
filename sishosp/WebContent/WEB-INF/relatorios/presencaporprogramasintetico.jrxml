@@ -54,6 +54,7 @@ left 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento
 	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where a.presenca = 'S'
+	and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))
 		and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
 	and a.dtaatende between   $P{dt_inicial}   and  $P{dt_final} 
 	and (( $P{cod_programa}    is not null and a.codprograma=   $P{cod_programa}   ) or ((  $P{cod_programa}  =0 ) OR (  $P{cod_programa}   is null )))

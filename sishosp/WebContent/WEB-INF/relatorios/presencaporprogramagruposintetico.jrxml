@@ -56,6 +56,7 @@ left 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento
 	JOIN hosp.empresa e ON e.cod_empresa = u.cod_empresa
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where a.presenca = 'S'
+	and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))
 	and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
 	and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 	and ((  $P{cod_programa}     is not null and a.codprograma =  $P{cod_programa}    ) or ((  $P{cod_programa}  = 0 ) OR (   $P{cod_programa}  is null )))
@@ -77,17 +78,40 @@ or ((  $P{qtdatendimentosmenorigual}  is not null and   $P{qtdatendimentosmaiori
 		or ((  $P{qtdatendimentosmenorigual}  = 0 and   $P{qtdatendimentosmaiorigual}   = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and  $P{qtdatendimentosmaiorigual}  is null))
 )  order by 1;]]>
 	</queryString>
+	<field name="row" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="row"/>
+	</field>
+	<field name="qtd" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="qtd"/>
+	</field>
 	<field name="nome_paciente" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="id_paciente" class="java.lang.Integer"/>
-	<field name="nome_programa" class="java.lang.String"/>
-	<field name="cod_programa" class="java.lang.Integer"/>
-	<field name="nome_principal" class="java.lang.String"/>
-	<field name="qtd" class="java.lang.Integer"/>
-	<field name="codgrupo" class="java.lang.Integer"/>
-	<field name="nome_grupo" class="java.lang.String"/>
+	<field name="id_paciente" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_paciente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
+	</field>
+	<field name="cod_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="nome_programa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_programa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
+	<field name="codgrupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codgrupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="atendimentos"/>
+	</field>
+	<field name="nome_grupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_grupo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
+	</field>
+	<field name="nome_principal" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
 	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
