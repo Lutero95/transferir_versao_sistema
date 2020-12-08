@@ -313,9 +313,7 @@
                         </b:row>
 
                         <b:row rendered="#{InsercaoController.tipo == 'E' and InsercaoController.ehAvaliacao == false}">
-
                             <b:column span="5" class="label-position">
-
                                 <p:outputLabel value="Listar todos os profissionais:"
                                                style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
@@ -325,14 +323,11 @@
                                         value="#{InsercaoController.todosOsProfissionais}">
                                     <p:ajax></p:ajax>
                                 </p:selectBooleanCheckbox>
-
                             </b:column>
-
                         </b:row>
 
                         <b:row>
                             <p:outputPanel id="outProf">
-
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label value="Profissional:" id="prof" class="fire-label"
@@ -353,7 +348,6 @@
                                                      action="#{InsercaoController.listarProfissionais()}"
                                                      update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
                                                      rendered="#{InsercaoController.tipo == 'P'}"/>
-
                                 </b:column>
                             </p:outputPanel>
                         </b:row>

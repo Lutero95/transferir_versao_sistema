@@ -2,10 +2,11 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -272,21 +273,32 @@ public class InsercaoPacienteDAO {
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), lista.get(j).getCbo().getCodCbo(),
 											insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
 							
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
+							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
 
 							ps4.setLong(1, lista.get(j).getId());
 							ps4.setInt(2, idAtendimento);
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(j).getCbo().getCodCbo())) {
+							
+							CboBean cboCompativel = null;
+							if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+								Date data = retornaDataSolicitacaoParaSigtap(insercao);					            
+								cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+				            			lista.get(j).getId(), con);
+							} else {
+								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(lista.get(j).getId());
+							}
+								
+							if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
 								ps4.setNull(3, Types.NULL);
 							} else {
-								ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
+								ps4.setInt(3, cboCompativel.getCodCbo());
 							}
 							
 							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) 
 								ps4.setInt(4, idProcedimentoEspecifico);
-							else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc()))
-								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 							else
 								ps4.setNull(4, Types.NULL);
 
@@ -295,7 +307,6 @@ public class InsercaoPacienteDAO {
 							} else {
 								ps4.setInt(5, insercao.getLaudo().getCid1().getIdCid());
 							}
-
 							ps4.executeUpdate();
 						}
 					}
@@ -326,6 +337,20 @@ public class InsercaoPacienteDAO {
 			}
 		}
 		return retorno;
+	}
+
+	private Date retornaDataSolicitacaoParaSigtap(InsercaoPacienteBean insercao) {
+		Date data = null;	
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(insercao.getDataSolicitacao());
+		int mesSolicitacao = calendar.get(Calendar.MONTH);
+		mesSolicitacao++;
+		int anoSolicitacao = calendar.get(Calendar.YEAR);
+		if(!new ProcedimentoDAO().verificaExisteCargaSigtapParaData(mesSolicitacao, anoSolicitacao))
+			data = DataUtil.retornaDataComMesAnterior(insercao.getDataSolicitacao());
+		else
+			data = insercao.getDataSolicitacao();
+		return data;
 	}
 
 	public boolean gravarInsercaoEquipeDiaHorario(InsercaoPacienteBean insercao,
@@ -421,22 +446,32 @@ public class InsercaoPacienteDAO {
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
 											insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
 							
 							PreparedStatement ps4 = null;
 							ps4 = con.prepareStatement(sql4);
 
 							ps4.setLong(1, listaProfissionais.get(j).getId());
 							ps4.setInt(2, idAtendimento);
-							if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
-								ps4.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+							
+							CboBean cboCompativel = null;
+							if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+								Date data = retornaDataSolicitacaoParaSigtap(insercao);					            
+								cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+										listaProfissionais.get(j).getId(), con);
+							} else {
+								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
+							}
+							
+							if (!VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
+								ps4.setInt(3, cboCompativel.getCodCbo());
 							} else {
 								ps4.setNull(3, Types.NULL);
 							}
 
 							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) 
 								ps4.setInt(4, idProcedimentoEspecifico);
-							else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc()))
-								ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 							 else
 								ps4.setNull(4, Types.NULL);
 							
@@ -1022,18 +1057,30 @@ public class InsercaoPacienteDAO {
 
 					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 					ps = conAuxiliar.prepareStatement(sql);
-
-					ps.setLong(1, profissional.getId());
-					ps.setInt(2, idAtendimento);
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getCbo().getCodCbo())) {
-						ps.setNull(3, Types.NULL);
-					} else {
-						ps.setInt(3, profissional.getCbo().getCodCbo());
-					}
 					
 					Integer idProcedimentoEspecifico = new AgendaDAO().
 							retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), profissional.getCbo().getCodCbo(),
 									insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conAuxiliar);
+					if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+						idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
+
+					ps.setLong(1, profissional.getId());
+					ps.setInt(2, idAtendimento);
+					
+					CboBean cboCompativel = null;
+					if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+						Date data = retornaDataSolicitacaoParaSigtap(insercao);					            
+						cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+								profissional.getId(), con);
+					} else {
+						cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
+					}
+					
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
+						ps.setNull(3, Types.NULL);
+					} else {
+						ps.setInt(3, cboCompativel.getCodCbo());
+					}
 					
 					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 						ps.setInt(4, idProcedimentoEspecifico);
@@ -1240,12 +1287,15 @@ public class InsercaoPacienteDAO {
 
 					ps.setLong(1, profissional.getId());
 					ps.setInt(2, idAtendimento);
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getCbo().getCodCbo())) {
+					
+					CboBean cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
+					
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
 						ps.setNull(3, Types.NULL);
 					} else {
-						ps.setInt(3, profissional.getCbo().getCodCbo());
+						ps.setInt(3, cboCompativel.getCodCbo());
 					}
-
+					
 					ps.setNull(4, Types.NULL);
 					ps.setNull(5, Types.NULL);
 					ps.executeUpdate();

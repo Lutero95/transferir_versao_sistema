@@ -2662,8 +2662,9 @@ public class FuncionarioDAO {
 		return listaCbos;
 	}
 	
-	public CboBean buscaCboCompativelComProcedimento (Date data, Integer idProcedimento, Long idFuncionario)
-			throws ProjetoException {
+	public CboBean buscaCboCompativelComProcedimento 
+		(Date data, Integer idProcedimento, Long idFuncionario, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
 
 		String sql = "select cbo.id, cbo.descricao, cbo.codigo from hosp.cbo_funcionario cf " + 
 				"	join hosp.cbo cbo on cf.id_cbo = cbo.id " + 
@@ -2676,9 +2677,10 @@ public class FuncionarioDAO {
 				"   order by id limit 1;";
 
 		CboBean cbo = new CboBean();
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement ps = con.prepareStatement(sql);
+		try {			
+			PreparedStatement ps = null;
+			ps = conexaoAuxiliar.prepareStatement(sql);
+			
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(data);
 			int mes = calendar.get(Calendar.MONDAY) + 1;
@@ -2692,16 +2694,12 @@ public class FuncionarioDAO {
 			}
 
 		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 		return cbo;
 	}
 	

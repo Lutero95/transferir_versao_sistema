@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -551,36 +552,33 @@ public class AtendimentoController implements Serializable {
         return existeCargaSigtapParaDataSolicitacao;
     }
 
-    public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
-    	
-        if(this.unidadeValidaDadosSigtap) {
-            for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
-            	
-            	if(!existeCargaSigtapParaDataSolicitacao(atendimento.getDataAtendimento())) {
-            		atendimento.setDataAtendimento(DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento()));
-            	}
-            	
-            	atendimento.getFuncionario().setCbo(funcionarioDAO.buscaCboCompativelComProcedimento
-            			(atendimento.getDataAtendimento(), atendimento.getProcedimento().getIdProc(), atendimento.getFuncionario().getId()));
-            	
-            	if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getFuncionario().getCbo())) {
-            		throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
-                            + " não possui um CBO válido para este procedimento");
-            	}
+//    public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException, SQLException {
+//    	
+//        if(this.unidadeValidaDadosSigtap) {
+//            for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
+//            	
+//            	if(!existeCargaSigtapParaDataSolicitacao(atendimento.getDataAtendimento())) {
+//            		atendimento.setDataAtendimento(DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento()));
+//            	}
+//            	
+//            	atendimento.getFuncionario().setCbo(funcionarioDAO.buscaCboCompativelComProcedimento(	
+//            			atendimento.getDataAtendimento(), atendimento.getProcedimento().getIdProc(), 
+//            			atendimento.getFuncionario().getId(), null));
+//            	
+//            	if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getFuncionario().getCbo())) {
+//            		throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
+//                            + " não possui um CBO válido para este procedimento");
+//            	}
 //            		
 //                if (!procedimentoDAO.validaCboProfissionalParaProcedimento(atendimento.getProcedimento().getIdProc(),
 //                        atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())) {
 //                    throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
 //                            + " não possui um CBO válido para este procedimento");
 //                }
-            }
-        }
-        else {
-        	atendimento.getFuncionario().setCbo
-        		(funcionarioDAO.retornaPrimeiroCboProfissional(atendimento.getFuncionario().getId()));
-        	System.out.println("");
-        }
-    }
+//            }
+//        }
+//
+//    }
     
     private void validarDadosSigtapDeListaDeAtendimentos(List<AtendimentoBean> listaAtendimento) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
