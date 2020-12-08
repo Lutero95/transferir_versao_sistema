@@ -31,6 +31,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -261,7 +262,7 @@ public class LaudoController implements Serializable {
             validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc()))
                 validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
-            validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProfissionalLaudo().getId(), this.laudo.getProcedimentoPrimario().getCodProc(), true);
+            validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getProfissionalLaudo().getCbo(), true);
         }
     }
 
@@ -365,11 +366,11 @@ public class LaudoController implements Serializable {
         return msgRetornoErro;
     }
 
-    public boolean  validaCboDoProfissionalLaudo(Date dataSolicitacaoPeloSigtap, Long idProfissional, String codProcedimento, boolean lancarExcecao) throws ProjetoException {
+    public boolean  validaCboDoProfissionalLaudo(Date dataSolicitacaoPeloSigtap,  
+    		String codProcedimento, CboBean cbo, boolean lancarExcecao) throws ProjetoException {
         boolean rst = true;
-        String codigoCboSelecionado = obtemCodigoCboSelecionado(idProfissional);
-        if (!lDao.validaCodigoCboEmLaudo(codigoCboSelecionado, dataSolicitacaoPeloSigtap,
-                codProcedimento)) {
+        //String codigoCboSelecionado = obtemCodigoCboSelecionado(idProfissional);
+        if (!lDao.validaCodigoCboEmLaudo(cbo.getCodigo(), dataSolicitacaoPeloSigtap, codProcedimento)) {
             rst = false;
             if (lancarExcecao)
             throw new ProjetoException

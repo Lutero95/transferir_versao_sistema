@@ -66,6 +66,7 @@ public class FuncionarioController implements Serializable {
 	private Empresa empresa;
 	private List<UnidadeBean> listaUnidadesDoUsuario;
 	private UnidadeBean unidadeParaProgramasIhGrupos;
+	private List<CboBean> listaCbos;
 	
 
 	// SESSÃO
@@ -129,6 +130,7 @@ public class FuncionarioController implements Serializable {
 		empresa = new Empresa();
 		listaUnidadesDoUsuario = new ArrayList<>();
 		unidadeParaProgramasIhGrupos = new UnidadeBean();
+		listaCbos = new ArrayList<>();
 
 		// ACL
 		usuarioLogado = new FuncionarioBean();
@@ -1156,13 +1158,23 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void montarListaDeUnidadesDoUsuario() throws ProjetoException {
-		listaUnidadesDoUsuario = new ArrayList<>();
-		listaUnidadesDoUsuario.add(unidadeDAO.buscarUnidadePorId(profissional.getUnidade().getId()));
+		if (unidadePadraoValida()) {
+			listaUnidadesDoUsuario = new ArrayList<>();
+			listaUnidadesDoUsuario.add(unidadeDAO.buscarUnidadePorId(profissional.getUnidade().getId()));
 
-		for (int i=0; i<profissional.getListaUnidades().size(); i++){
-			listaUnidadesDoUsuario.add(profissional.getListaUnidades().get(i));
+			for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
+				listaUnidadesDoUsuario.add(profissional.getListaUnidades().get(i));
+			}
+			JSFUtil.abrirDialog("dlgUnidadesParaProgramaGrupo");
 		}
+	}
 
+	private boolean unidadePadraoValida() {
+		if(VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getUnidade().getId())) {
+			JSFUtil.adicionarMensagemAdvertencia("Selecione a Unidade Padrão do Funcionário", "");
+			return false;
+		}
+		return true;
 	}
 
 	public void acoesAposEscolherUnidadeParaCarregarProgramasIhGrupos(){
@@ -1277,6 +1289,10 @@ public class FuncionarioController implements Serializable {
 		return retorno;
 	}
 	
+	public void limparCbos() {
+		listaCbos = new ArrayList<>();
+	}
+	
 	/*TODO APAGAR ESTE MÉTODO APÓS FAZER O UPDATE DE TODOS OS 
 	 * FUNCIONARIOS DO BANCO PARA INSERIR OS CBOS NA NOVA TABELA*/
 	public void atualizarCBOsDosFuncionariosDoBanco() throws ProjetoException, SQLException {
@@ -1288,6 +1304,10 @@ public class FuncionarioController implements Serializable {
 				funcionarioDAO.gravarCbosProfissionalParaAtualizarBanco(listaFuncionarios);
 		if(cbosFuncionariosAtualizados)
 			JSFUtil.adicionarMensagemSucesso("CBO DOS FUNCIONÁRIOS GRAVADOS NA NOVA TABELA", "");
+	}
+	
+	public void listarCbosFuncionarios(Long idFuncionario) throws ProjetoException {
+		this.listaCbos = fDao.listaCbosProfissional(idFuncionario);
 	}
 
 	// PROFISSIONAL GETTES E SETTERS FIM
@@ -1716,5 +1736,13 @@ public class FuncionarioController implements Serializable {
 
 	public void setListaProgramaGrupoParaAdicionar(ArrayList<ProgramaBean> listaProgramaGrupoParaAdicionar) {
 		this.listaProgramaGrupoParaAdicionar = listaProgramaGrupoParaAdicionar;
+	}
+
+	public List<CboBean> getListaCbos() {
+		return listaCbos;
+	}
+
+	public void setListaCbos(List<CboBean> listaCbos) {
+		this.listaCbos = listaCbos;
 	}
 }

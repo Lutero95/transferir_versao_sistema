@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -1095,10 +1097,10 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 
-		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
+		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
 				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1118,41 +1120,32 @@ public class FuncionarioDAO {
 				ps.setNull(5, Types.INTEGER);
 			}
 
-			if (profissional.getCns() == null) {
+			if (VerificadorUtil.verificarSeObjetoNuloOuVazio(profissional.getCns())) {
 				ps.setNull(6, Types.NULL);
 			} else {
 				ps.setString(6, profissional.getCns().toUpperCase());
 			}
 
-			if (profissional.getCbo() != null) {
-				if (profissional.getCbo().getCodCbo() == null) {
+
+			if (profissional.getProc1() != null) {
+				if (profissional.getProc1().getIdProc() == null) {
 					ps.setNull(7, Types.NULL);
 				} else {
-					ps.setInt(7, profissional.getCbo().getCodCbo());
+					ps.setInt(7, profissional.getProc1().getIdProc());
 				}
 			} else {
 				ps.setNull(7, Types.NULL);
 			}
 
-			if (profissional.getProc1() != null) {
-				if (profissional.getProc1().getIdProc() == null) {
-					ps.setNull(8, Types.NULL);
-				} else {
-					ps.setInt(8, profissional.getProc1().getIdProc());
-				}
-			} else {
-				ps.setNull(8, Types.NULL);
-			}
-
-			ps.setString(9, profissional.getAtivo());
-			ps.setBoolean(10, profissional.getRealizaAtendimento());
-			ps.setLong(11, profissional.getPerfil().getId());
-			ps.setInt(12, profissional.getUnidade().getId());
-			ps.setBoolean(13, profissional.getRealizaLiberacoes());
-			ps.setBoolean(14, profissional.getRealizaEncaixes());
-			ps.setBoolean(15, profissional.getExcecaoBloqueioHorario());
-			ps.setBoolean(16, profissional.getPermiteAutorizacaoLaudo());
-			ps.setBoolean(17, profissional.getRealizaAuditoria());
+			ps.setString(8, profissional.getAtivo());
+			ps.setBoolean(9, profissional.getRealizaAtendimento());
+			ps.setLong(10, profissional.getPerfil().getId());
+			ps.setInt(11, profissional.getUnidade().getId());
+			ps.setBoolean(12, profissional.getRealizaLiberacoes());
+			ps.setBoolean(13, profissional.getRealizaEncaixes());
+			ps.setBoolean(14, profissional.getExcecaoBloqueioHorario());
+			ps.setBoolean(15, profissional.getPermiteAutorizacaoLaudo());
+			ps.setBoolean(16, profissional.getRealizaAuditoria());
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -1352,6 +1345,24 @@ public class FuncionarioDAO {
 			throws ProjetoException, SQLException {
 
 		String sql = "DELETE FROM hosp.cbo_funcionario WHERE id_profissional = ?;";
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setLong(1, idProfissional);
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+	
+	private void removerProfissionalPermissaoSistema(Long idProfissional, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
+
+		String sql = "DELETE FROM acl.perm_sistema WHERE id_usuario = ?;";
 		try {
 			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
 			ps.setLong(1, idProfissional);
@@ -1671,13 +1682,15 @@ public class FuncionarioDAO {
 			ps = con.prepareStatement(sql3);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
+			
+			removerCbosProfissional(profissional.getId(), con);
+			removerProfissionalPermissaoSistema(profissional.getId(), con);
 
 			ps = con.prepareStatement(sql4);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
-
+			
 			con.commit();
-
 			retorno = true;
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
@@ -1698,7 +1711,7 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
+				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=? "
 				+ " where id_funcionario = ?";
 
@@ -1726,9 +1739,9 @@ public class FuncionarioDAO {
 
 			stmt.setString(4, profissional.getAtivo());
 
-			if (profissional.getCbo() != null) {
-				if (profissional.getCbo().getCodCbo() != null) {
-					stmt.setInt(5, profissional.getCbo().getCodCbo());
+			if (profissional.getProc1() != null) {
+				if (profissional.getProc1().getCodProc() != null) {
+					stmt.setInt(5, profissional.getProc1().getIdProc());
 				} else {
 					stmt.setNull(5, Types.NULL);
 				}
@@ -1736,27 +1749,17 @@ public class FuncionarioDAO {
 				stmt.setNull(5, Types.NULL);
 			}
 
-			if (profissional.getProc1() != null) {
-				if (profissional.getProc1().getCodProc() != null) {
-					stmt.setInt(6, profissional.getProc1().getIdProc());
-				} else {
-					stmt.setNull(6, Types.NULL);
-				}
-			} else {
-				stmt.setNull(6, Types.NULL);
-			}
-
-			stmt.setLong(7, profissional.getPerfil().getId());
-			stmt.setBoolean(8, profissional.getRealizaLiberacoes());
-			stmt.setBoolean(9, profissional.getRealizaAtendimento());
-			stmt.setBoolean(10, profissional.getRealizaEncaixes());
-			stmt.setString(11, profissional.getSenha());
-			stmt.setString(12, profissional.getCpf().replaceAll("[^0-9]", ""));
-			stmt.setLong(13, profissional.getUnidade().getId());
-			stmt.setBoolean(14, profissional.getExcecaoBloqueioHorario());
-			stmt.setBoolean(15, profissional.getPermiteAutorizacaoLaudo());
-			stmt.setBoolean(16, profissional.getRealizaAuditoria());
-			stmt.setLong(17, profissional.getId());
+			stmt.setLong(6, profissional.getPerfil().getId());
+			stmt.setBoolean(7, profissional.getRealizaLiberacoes());
+			stmt.setBoolean(8, profissional.getRealizaAtendimento());
+			stmt.setBoolean(9, profissional.getRealizaEncaixes());
+			stmt.setString(10, profissional.getSenha());
+			stmt.setString(11, profissional.getCpf().replaceAll("[^0-9]", ""));
+			stmt.setLong(12, profissional.getUnidade().getId());
+			stmt.setBoolean(13, profissional.getExcecaoBloqueioHorario());
+			stmt.setBoolean(14, profissional.getPermiteAutorizacaoLaudo());
+			stmt.setBoolean(15, profissional.getRealizaAuditoria());
+			stmt.setLong(16, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -2053,9 +2056,7 @@ public class FuncionarioDAO {
 
 			while (rs.next()) {
 				CboBean cbo = new CboBean();
-				cbo.setCodCbo(rs.getInt("id"));
-				cbo.setDescCbo(rs.getString("descricao"));
-				cbo.setCodigo(rs.getString("codigo"));
+				mapearResultSetCbo(cbo, rs);
 				listaCbos.add(cbo);
 			}
 
@@ -2636,8 +2637,8 @@ public class FuncionarioDAO {
 			throws ProjetoException, SQLException {
 
 		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
-				"left join hosp.cbo c on cf.id_cbo = c.id " + 
-				"where cf.id_profissional = ?;";
+				" join hosp.cbo c on cf.id_cbo = c.id " + 
+				" where cf.id_profissional = ?;";
 		
 		List<CboBean> listaCbos = new ArrayList<>();
 
@@ -2647,9 +2648,7 @@ public class FuncionarioDAO {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				CboBean cbo = new CboBean();
-				cbo.setCodCbo(rs.getInt("id"));
-				cbo.setDescCbo(rs.getString("descricao"));
-				cbo.setCodigo(rs.getString("codigo"));
+				mapearResultSetCbo(cbo, rs);
 				listaCbos.add(cbo);
 			}
 
@@ -2662,5 +2661,114 @@ public class FuncionarioDAO {
 		}
 		return listaCbos;
 	}
+	
+	public CboBean buscaCboCompativelComProcedimento (Date data, Integer idProcedimento, Long idFuncionario)
+			throws ProjetoException {
 
+		String sql = "select cbo.id, cbo.descricao, cbo.codigo from hosp.cbo_funcionario cf " + 
+				"	join hosp.cbo cbo on cf.id_cbo = cbo.id " + 
+				"	join sigtap.cbo_procedimento_mensal cpm on cf.id_cbo = cpm.id_cbo " + 
+				"	join sigtap.procedimento_mensal pm on cpm.id_procedimento_mensal = pm.id " + 
+				"	join hosp.proc p on pm.id_procedimento = p.id " + 
+				"	join sigtap.historico_consumo_sigtap hcs on pm.id_historico_consumo_sigtap = hcs.id " + 
+				"	join acl.funcionarios f on cf.id_profissional = f.id_funcionario " + 
+				"	where p.ativo = 'S' and hcs.status = 'A' and hcs.mes = ? and hcs.ano = ? and p.id = ? and f.id_funcionario = ? "+
+				"   order by id limit 1;";
+
+		CboBean cbo = new CboBean();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(data);
+			int mes = calendar.get(Calendar.MONDAY) + 1;
+			ps.setInt(1, mes);
+			ps.setInt(2, calendar.get(Calendar.YEAR));
+			ps.setInt(3, idProcedimento);
+			ps.setLong(4, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				mapearResultSetCbo(cbo, rs);
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return cbo;
+	}
+	
+	public CboBean retornaPrimeiroCboProfissional(Long idFuncionario) throws ProjetoException {
+
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
+				" join hosp.cbo c on cf.id_cbo = c.id " + 
+				" where cf.id_profissional = ? order by c.id limit 1;";
+		
+		CboBean cbo = new CboBean();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setLong(1, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				mapearResultSetCbo(cbo, rs);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return cbo;
+	}
+	
+	public List<CboBean> listaCbosProfissional(Long idFuncionario) throws ProjetoException {
+
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
+				" join hosp.cbo c on cf.id_cbo = c.id " + 
+				" where cf.id_profissional = ? order by c.descricao;";
+		List<CboBean> listaCbos = new ArrayList<>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setLong(1, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				CboBean cbo = new CboBean();
+				mapearResultSetCbo(cbo, rs);
+				listaCbos.add(cbo);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return listaCbos;
+	}
+
+	private void mapearResultSetCbo(CboBean cbo, ResultSet rs) throws SQLException {
+		cbo.setCodCbo(rs.getInt("id"));
+		cbo.setDescCbo(rs.getString("descricao"));
+		cbo.setCodigo(rs.getString("codigo"));
+	}
 }
