@@ -43,7 +43,8 @@ public class BpaIndividualizadoDAO {
 				"  p.cns cnspaciente, lpad(coalesce(etnia.codetnia ,'    '),4,'0')  codetnia, \n" +
 				" p.sexo, substring(to_char(m.codigo,'9999999')\t,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \n" +
 				" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \n" +
-				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  emp.cnpj, \n" +
+				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  "+
+				"  case when proc.exige_cnpj is true then  emp.cnpj else '              ' end  cnpj, \n" +
 				" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\n" +
 				"  case when proc.exige_info_servico is true then  sm.codigo else '' end  codigo_servico, \n" +
 				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end  codigo_classificacao    \n" +
@@ -99,7 +100,7 @@ public class BpaIndividualizadoDAO {
 				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
 				" case when proc.exige_info_servico is true then  sm.codigo else '' end  , \n" +
 				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \n" +
-				" emp.cnpj, etnia.codetnia \n" ;
+				" case when proc.exige_cnpj is true then  emp.cnpj else '              ' end, etnia.codetnia \n" ;
 		sql+=" order by func.cns, p.cns  \t";
         
         Connection con = ConnectionFactory.getConnection();
