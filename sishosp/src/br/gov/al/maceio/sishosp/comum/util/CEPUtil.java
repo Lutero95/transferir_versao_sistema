@@ -82,7 +82,10 @@ public final class CEPUtil {
         } catch (ExecutionException e) {
 			JSFUtil.adicionarMensagemAdvertencia("Não foi possível consultar o CEP informado", "");
         	e.printStackTrace();
-        } finally {
+        } catch (Exception e) {
+			JSFUtil.adicionarMensagemAdvertencia("Não foi possível consultar o CEP informado", "");
+        	e.printStackTrace();
+        }finally {
            future.cancel(true);
         }
         return endereco;

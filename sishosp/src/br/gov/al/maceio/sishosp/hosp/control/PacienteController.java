@@ -191,10 +191,16 @@ public class PacienteController implements Serializable {
 				cidadeDoCep = true;
 			}
 			else {
-				cidadeDoCep = false;
-				paciente.getEndereco().setCep("");
+				JSFUtil.abrirDialog("dlgConfirmaCep");
+				bairroExiste = true;
 			}
 		}
+	}
+	
+	public void limparCep() {
+		cidadeDoCep = false;
+		JSFUtil.fecharDialog("dlgConfirmaCep");
+		paciente.getEndereco().setCep("");
 	}
 
 	public void gravarPaciente() throws ProjetoException {
