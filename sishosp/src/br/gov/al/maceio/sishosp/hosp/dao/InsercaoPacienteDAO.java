@@ -291,11 +291,7 @@ public class InsercaoPacienteDAO {
 								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(lista.get(j).getId());
 							}
 								
-							if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
-								ps4.setNull(3, Types.NULL);
-							} else {
-								ps4.setInt(3, cboCompativel.getCodCbo());
-							}
+							ps4.setInt(3, cboCompativel.getCodCbo());
 							
 							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) 
 								ps4.setInt(4, idProcedimentoEspecifico);
@@ -339,7 +335,7 @@ public class InsercaoPacienteDAO {
 		return retorno;
 	}
 
-	private Date retornaDataSolicitacaoParaSigtap(InsercaoPacienteBean insercao) {
+	public Date retornaDataSolicitacaoParaSigtap(InsercaoPacienteBean insercao) {
 		Date data = null;	
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(insercao.getDataSolicitacao());
@@ -464,11 +460,7 @@ public class InsercaoPacienteDAO {
 								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
 							}
 							
-							if (!VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
-								ps4.setInt(3, cboCompativel.getCodCbo());
-							} else {
-								ps4.setNull(3, Types.NULL);
-							}
+							ps4.setInt(3, cboCompativel.getCodCbo());
 
 							if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) 
 								ps4.setInt(4, idProcedimentoEspecifico);
@@ -591,20 +583,29 @@ public class InsercaoPacienteDAO {
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
 								insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), con);
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+					idProcedimentoEspecifico = insercao.getFuncionario().getProc1().getIdProc();
+				
 				PreparedStatement ps4 = null;
 				ps4 = con.prepareStatement(sql4);
 
 				ps4.setLong(1, insercao.getFuncionario().getId());
 				ps4.setInt(2, idAgend);
-				ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
 				
-				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) 
-					ps4.setInt(4, idProcedimentoEspecifico);
-				else
-					ps4.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
 				
+				CboBean cboCompativel = null;
+				if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+					Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
+					cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+							insercao.getFuncionario().getId(), con);
+				} else {
+					cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(insercao.getFuncionario().getId());
+				}
+				
+				ps4.setInt(3, cboCompativel.getCodCbo());
+				ps4.setInt(4, idProcedimentoEspecifico);
 				ps4.setInt(5, insercao.getLaudo().getCid1().getIdCid());
-
 				ps4.executeUpdate();
 			}
 
@@ -1076,11 +1077,7 @@ public class InsercaoPacienteDAO {
 						cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
 					}
 					
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
-						ps.setNull(3, Types.NULL);
-					} else {
-						ps.setInt(3, cboCompativel.getCodCbo());
-					}
+					ps.setInt(3, cboCompativel.getCodCbo());
 					
 					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 						ps.setInt(4, idProcedimentoEspecifico);
@@ -1290,11 +1287,7 @@ public class InsercaoPacienteDAO {
 					
 					CboBean cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
 					
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
-						ps.setNull(3, Types.NULL);
-					} else {
-						ps.setInt(3, cboCompativel.getCodCbo());
-					}
+					ps.setInt(3, cboCompativel.getCodCbo());
 					
 					ps.setNull(4, Types.NULL);
 					ps.setNull(5, Types.NULL);
