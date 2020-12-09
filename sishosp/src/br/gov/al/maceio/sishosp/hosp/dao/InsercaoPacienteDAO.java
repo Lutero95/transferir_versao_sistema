@@ -1081,9 +1081,7 @@ public class InsercaoPacienteDAO {
 					
 					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 						ps.setInt(4, idProcedimentoEspecifico);
-					else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
-						ps.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
-					} else {
+					 else {
 						ps.setNull(4, Types.NULL);
 					}
 					
