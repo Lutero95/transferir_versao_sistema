@@ -13,7 +13,6 @@
 		</f:metadata>
 		<h:form class="form-horizontal" id="frmPrincipal">
 		
-
 			<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
 					<h:outputText value="#{PacienteController.cabecalho}"
@@ -261,13 +260,10 @@
 									update=":frmPrincipal:tbv:outTabelaTelefones">
 								</p:commandButton>
 							</b:column>
-
 						</b:row>
 
 						<b:row>
-
 							<b:column span="12">
-
 								<p:outputPanel id="outTabelaTelefones">
 									<p:dataTable emptyMessage="Nenhum telefone adicionado"
 										styleClass="table table-hover" id="tabela"
@@ -279,7 +275,6 @@
 											width="100">
 											<h:outputText value="#{tab.telefone}" />
 										</p:column>
-
 
 										<p:column headerText="Parentesco" style="font-weight:bold;"
 											width="150">
@@ -312,17 +307,12 @@
 										</p:column>
 									</p:dataTable>
 								</p:outputPanel>
-
 							</b:column>
-
 						</b:row>
-
 					</p:tab>
 
 					<p:tab title="Endereço">
-
 						<b:row>
-
 							<b:column span="2" class="label-position">
 								<b:label for="inputcep" value="CEP" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
@@ -586,13 +576,11 @@
 									class="form-control" id="carttrabalho">
 								</b:inputText>
 							</b:column>
-
 						</b:row>
 
-						<br></br>
+						<br />
 
 						<b:row>
-
 							<b:column span="3" class="label-position">
 								<b:label for="serie" value="CTPS Série" severity="info" />
 
@@ -630,10 +618,8 @@
 									<f:validateLength maximum="20" />
 								</b:inputText>
 							</b:column>
-
 						</b:row>
-
-						<br></br>
+						<br />
 
 						<b:row>
 
@@ -665,14 +651,10 @@
 									locale="pt" />
 							</b:column>
 						</b:row>
-
-
 					</p:tab>
 
 					<p:tab title="Complemento">
-
 						<b:row>
-
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Escolaridade" severity="info" />
@@ -697,13 +679,11 @@
 							</b:column>
 
 							<b:column span="1" >
-
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EscolaridadeController.limparDados}"
 									update=":frmcadescolaridade:outescolaridade"
 									style="margin-top:17px;" title="incluir Escolaridade"
 									oncomplete="PF('dlgcadastroescolaridade').show()" />
-
 							</b:column>
 
 							<b:column span="3"
@@ -735,14 +715,9 @@
 									oncomplete="PF('dlgcadastroescola').show()" />
 
 							</b:column>
-
-
-							
-
 						</b:row>
 
 						<b:row>
-
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Profissão" severity="info" class="fire-label" />
@@ -762,23 +737,18 @@
 									actionListener="#{ProfissaoController.listarProfissoes()}"
 									onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search"
 									update=":buscaprofissao" />
-
 							</b:column>
 
 							<b:column span="2" style="width:5px">
-
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{ProfissaoController.limparDados}"
 									title="Incluir Profissão"
 									update=":frmcadprofissao:outprofissao" style="margin-top:17px;"
 									oncomplete="PF('dlgcadastroprofissao').show()" />
-
 							</b:column>
-
 						</b:row>
 
 						<b:row>
-
 							<b:column span="2" class="new-data-size2">
 								<p:outputLabel value="Trabalha:"
 									style="margin-top: 8px;
@@ -790,7 +760,6 @@
 									<f:selectItem itemLabel="Não" itemValue="N" />
 								</p:selectOneRadio>
 							</b:column>
-
 
 							<b:column span="3" class="label-position">
 								<b:label value="Local" severity="info" />
@@ -805,8 +774,6 @@
 						</b:row>
 
 						<b:row>
-
-
 							<b:column span="2" class="label-position">
 								<b:label value="Grau de Relação Responsável" severity="info" />
 
@@ -843,7 +810,6 @@
 						</b:row>
 
 						<b:row>
-
 							<b:column span="2" class="label-position">
 								<b:label value="RG Responsável" severity="info" />
 
@@ -876,11 +842,9 @@
 									yearRange="-111:+39" pages="1" showOn="button" size="15"
 									value="#{PacienteController.paciente.dataNascimentoresp}"
 									locale="pt" class="select-agendaEquipe2" />
-
 							</b:column>
 						</b:row>
 						<b:row>
-
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Encaminhamento" severity="info" />
@@ -903,13 +867,11 @@
 							</b:column>
 
 							<b:column span="1">
-
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EncaminhadoController.limparDados}"
 									update=":frmcadtipoencaminhamento:outtipoencaminhamento"
 									style="margin-top:17px;" title="Incluir tipo de Encaminhamento"
 									oncomplete="PF('dlgcadastrotipoencaminhamento').show()" />
-
 							</b:column>
 
 							<b:column span="3"
@@ -1000,12 +962,9 @@
 					</p:tab>
 
 					<p:tab title="Dados Internet">
-
-
 						<p:outputPanel id="outDadosInternet">
 						<p:autoUpdate/>
 							<b:row>
-
 								<b:column span="6" class="label-position">
 									<b:label value="E-mail " severity="info" />
 
@@ -1013,11 +972,9 @@
 										class="form-control" id="inputemail">
 									</b:inputText>
 								</b:column>
-
 							</b:row>
 
 							<b:row>
-
 								<b:column span="6" class="label-position">
 									<b:label value="Facebook " severity="info" />
 
@@ -1025,11 +982,9 @@
 										class="form-control" id="inputfacebook">
 									</b:inputText>
 								</b:column>
-
 							</b:row>
 
 							<b:row>
-
 								<b:column span="6" class="label-position">
 									<b:label value="Instagram" severity="info" />
 
@@ -1037,18 +992,13 @@
 										class="form-control" id="inputinstagram">
 									</b:inputText>
 								</b:column>
-
 							</b:row>
-
 						</p:outputPanel>
-
-
 					</p:tab>
-
 				</p:tabView>
 			</div>
 
-			<br></br>
+			<br />
 
 			<div align="center">
 				<p:commandButton action="#{PacienteController.gravarPaciente()}"
@@ -1067,10 +1017,24 @@
 					look="info"
 					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
 				</p:commandButton>
-
 			</div>
-
 		</h:form>
+
+		<p:dialog header="Atenção!" widgetVar="dlgConfirmaCep" minHeight="40"
+			resizable="false" closable="false" draggable="false" modal="true" width="500">
+			<h:form>
+				<h:outputLabel
+					value="O CEP informado é inválido! Um CEP errado pode afetar a produção!
+					 Deseja continuar com este CEP por sua conta e risco?" />
+
+				<br /><br />
+				<div align="center">
+					<p:commandButton value="Sim" oncomplete="PF('dlgConfirmaCep').hide();" style="margin-right:1%;"/>
+					<p:commandButton value="Não" action="#{PacienteController.limparCep()}" 
+						update=":frmPrincipal:tbv:inputcep"  style="margin-left:1%;"/>
+				</div>
+			</h:form>
+		</p:dialog>
 
 
 		<p:dialog widgetVar="dlgbuscaescola" modal="true" resizable="false"

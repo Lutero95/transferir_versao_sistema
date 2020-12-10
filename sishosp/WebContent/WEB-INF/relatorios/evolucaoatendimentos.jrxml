@@ -49,12 +49,12 @@ LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendiment
  join hosp.unidade u on a.cod_unidade = u.id 
  CROSS JOIN hosp.empresa e 
 WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' 
-and p.ativo = 'S' and a.cod_unidade =  $P{codunidade} 
+and a.cod_unidade =  $P{codunidade} 
 AND (( $P{id_paciente}  is null or  $P{id_paciente}  = 0) or (a.codpaciente =  $P{id_paciente} )) 
 AND (( $P{cod_programa}  is null or  $P{cod_programa}  = 0) or (programa.id_programa =  $P{cod_programa} ))
 AND ((  $P{cod_grupo} is null or  $P{cod_grupo}  = 0) or (g.id_grupo = $P{cod_grupo}  ))
 AND a.dtaatende >=   $P{dt_inicial} AND a.dtaatende <= $P{dt_final} 
-ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, pa.nome, pa.id_paciente]]>
+ORDER BY programa.id_programa, programa.descprograma, g.id_grupo, g.descgrupo, pa.nome, pa.id_paciente, a.dtaatende]]>
 	</queryString>
 	<field name="id_programa" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>

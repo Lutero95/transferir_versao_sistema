@@ -80,6 +80,8 @@ left join (
 	CROSS JOIN hosp.empresa e2 
 	left join hosp.especialidade es2 on es2.id_especialidade = f2.codespecialidade
 	where sa2.atendimento_realizado is true
+	and coalesce(a.situacao,'A')<>'C'
+and coalesce(a1.excluido,'N' )='N'
 	and a2.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 	and ((  $P{id_situacao_atendimento}    is not null and sa2.id =   $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 	and ((   $P{turno}  is not null and a2.turno =   $P{turno}  ) or  (   $P{turno}  is null ))
@@ -94,6 +96,8 @@ left join (
 	group by pa2.id_paciente, p2.id_programa, g2.id_grupo ) as qtd on 
 	(qtd.id_paciente = pa.id_paciente and qtd.id_programa = p.id_programa and grupo.id_grupo = qtd.id_grupo)
 where sa.atendimento_realizado is true
+and coalesce(a.situacao,'A')<>'C'
+and coalesce(a1.excluido,'N' )='N'
 and a.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 and ((   $P{id_situacao_atendimento}  is not null and sa.id =  $P{id_situacao_atendimento}   ) or ((  $P{id_situacao_atendimento}   =0 ) OR (  $P{id_situacao_atendimento}   is null )))
 and ((   $P{turno}  is not null and a.turno =  $P{turno}  ) or  (   $P{turno}   is null ))

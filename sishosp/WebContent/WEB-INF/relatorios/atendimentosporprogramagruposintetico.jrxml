@@ -85,6 +85,8 @@ qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_gr
 	CROSS JOIN hosp.empresa e 
 	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade
 	where sa.atendimento_realizado is true
+	and coalesce(a.situacao,'A')<>'C'
+and coalesce(a1.excluido,'N' )='N'
 	and a.dtaatende between   $P{dt_inicial}   and  $P{dt_final} 
 	and ((  $P{id_situacao_atendimento}   is not null and sa.id =   $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 	and ((  $P{turno}   is not null and a.turno =  $P{turno} ) or  ( $P{turno}  is null ))
