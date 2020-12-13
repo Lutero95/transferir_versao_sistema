@@ -1444,17 +1444,13 @@ public class FuncionarioDAO {
 
 		StringBuilder sql = new StringBuilder();
 
-		sql.append(
-				"SELECT DISTINCT h.id_funcionario,  h.descfuncionario AS descfuncionario, h.codespecialidade, h.permite_liberacao, ");
-		sql.append(
-				"h.permite_encaixe, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade,c.codigo codigocbo, c.descricao AS desccbo, p.nome AS descproc ");
+		sql.append("SELECT DISTINCT h.id_funcionario,  h.descfuncionario AS descfuncionario, h.codespecialidade, h.permite_liberacao, ");
+		sql.append("h.permite_encaixe, h.cns, h.ativo, h.codprocedimentopadrao, e.descespecialidade, p.nome AS descproc ");
 		sql.append("FROM acl.funcionarios h ");
-		sql.append("JOIN hosp.profissional_programa_grupo ppg ON (h.id_funcionario = ppg.codprofissional)");
+		sql.append("JOIN hosp.profissional_programa_grupo ppg ON (h.id_funcionario = ppg.codprofissional) ");
 		sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
-		sql.append("LEFT JOIN hosp.cbo c ON (c.id = h.codcbo) ");
 		sql.append("LEFT JOIN hosp.proc p ON (p.id = h.codprocedimentopadrao) ");
-		sql.append(
-				"WHERE UPPER(id_funcionario ||' - '|| descfuncionario) LIKE ? AND ppg.codgrupo = ? AND h.ativo = 'S' ");
+		sql.append("WHERE UPPER(id_funcionario ||' - '|| descfuncionario) LIKE ? AND ppg.codgrupo = ? AND h.ativo = 'S' ");
 		sql.append("AND realiza_atendimento IS TRUE ORDER BY descfuncionario ");
 
 		try {
@@ -1474,9 +1470,6 @@ public class FuncionarioDAO {
 				funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				funcionario.setCns(rs.getString("cns"));
 				funcionario.setAtivo(rs.getString("ativo"));
-				funcionario.getCbo().setCodCbo(rs.getInt("codcbo"));
-				funcionario.getCbo().setCodigo(rs.getString("codigocbo"));
-				funcionario.getCbo().setDescCbo(rs.getString("desccbo"));
 				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				funcionario.getProc1().setNomeProc(rs.getString("descproc"));
 				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
@@ -1618,11 +1611,10 @@ public class FuncionarioDAO {
 
 	public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo) throws ProjetoException {
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-		String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns,\n"
-				+ "m.codcbo, c.id idcbo,c.descricao desccbo\n" + "from acl.funcionarios m\n"
+		String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns\n"
+				+ "	from acl.funcionarios m \n"
 				+ "                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n"
 				+ "                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n"
-				+ "                 left join hosp.cbo c on (c.id = m.codcbo)\n"
 				+ "                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1637,11 +1629,6 @@ public class FuncionarioDAO {
 				profissional.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
 				profissional.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				profissional.setCns(rs.getString("cns"));
-				CboBean cbo = new CboBean();
-				cbo.setCodCbo(rs.getInt("idcbo"));
-				cbo.setCodigo(rs.getString("codcbo"));
-				cbo.setDescCbo(rs.getString("desccbo"));
-				profissional.setCbo(cbo);
 				listaProf.add(profissional);
 			}
 		} catch (SQLException sqle) {
@@ -2761,6 +2748,32 @@ public class FuncionarioDAO {
 				e.printStackTrace();
 			}
 		}
+		return listaCbos;
+	}
+	
+	public List<CboBean> listaCbosProfissionalComMesmaConexao(Long idFuncionario, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
+				" join hosp.cbo c on cf.id_cbo = c.id " + 
+				" where cf.id_profissional = ? order by c.descricao;";
+		List<CboBean> listaCbos = new ArrayList<>();
+
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setLong(1, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				CboBean cbo = new CboBean();
+				mapearResultSetCbo(cbo, rs);
+				listaCbos.add(cbo);
+			}
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 		return listaCbos;
 	}
 

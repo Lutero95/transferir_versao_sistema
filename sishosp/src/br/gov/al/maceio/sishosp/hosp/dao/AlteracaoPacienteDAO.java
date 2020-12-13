@@ -340,6 +340,9 @@ public class AlteracaoPacienteDAO {
 
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
+						List<CboBean> listaCbosProfissional = 
+								new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(listaProfissionais.get(j).getId(), conexao);
+						
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
@@ -349,7 +352,7 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
-												listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
+												listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
@@ -360,14 +363,8 @@ public class AlteracaoPacienteDAO {
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
 								
-								CboBean cboCompativel = null;
-								if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-									Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-									cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-											listaProfissionais.get(j).getId(), conexao);
-								} else {
-									cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
-								}
+								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+										(insercao.getDataSolicitacao(), listaProfissionais.get(j), idProcedimentoEspecifico, conexao);
 								
 								ps8.setInt(3, cboCompativel.getCodCbo());
 
@@ -713,6 +710,9 @@ public class AlteracaoPacienteDAO {
 
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
+						List<CboBean> listaCbosProfissional = 
+								new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(listaProfissionais.get(j).getId(), conexao);
+						
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
@@ -720,7 +720,7 @@ public class AlteracaoPacienteDAO {
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
-										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
+										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
 												insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
@@ -732,14 +732,8 @@ public class AlteracaoPacienteDAO {
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
 								
-								CboBean cboCompativel = null;
-								if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-									Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-									cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-											listaProfissionais.get(j).getId(), conexao);
-								} else {
-									cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
-								}
+								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+										(insercao.getDataSolicitacao(), listaProfissionais.get(j), idProcedimentoEspecifico, conexao);
 									
 								ps8.setInt(3, cboCompativel.getCodCbo());
 								
@@ -1000,6 +994,9 @@ public class AlteracaoPacienteDAO {
 
 					for (int j = 0; j < listaProfissionais.size(); j++) {
 
+						List<CboBean> listaCbosProfissional = 
+								new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(listaProfissionais.get(j).getId(), conexao);
+						
 						for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 							if (DataUtil.extrairDiaDeData(
@@ -1008,7 +1005,7 @@ public class AlteracaoPacienteDAO {
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
-										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
+										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
 												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 
 								PreparedStatement ps8 = null;
@@ -1140,9 +1137,11 @@ public class AlteracaoPacienteDAO {
 				}
 
 				String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
-
+				List<CboBean> listaCbosProfissional = 
+						new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
+				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
-						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
+						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
 								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 				
 				if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
@@ -1154,14 +1153,8 @@ public class AlteracaoPacienteDAO {
 				ps7.setLong(1, insercao.getFuncionario().getId());
 				ps7.setInt(2, idAgend);
 				
-				CboBean cboCompativel = null;
-				if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-					Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-					cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-							insercao.getFuncionario().getId(), conexao);
-				} else {
-					cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(insercao.getFuncionario().getId());
-				}
+				CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+						(insercao.getDataSolicitacao(), insercao.getFuncionario(), idProcedimentoEspecifico, conexao);
 				
 				ps7.setInt(3, cboCompativel.getCodCbo());
 				ps7.setInt(4, idProcedimentoEspecifico);

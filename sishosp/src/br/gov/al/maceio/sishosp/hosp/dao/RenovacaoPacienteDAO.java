@@ -10,6 +10,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
@@ -117,6 +118,7 @@ public class RenovacaoPacienteDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -278,6 +280,9 @@ public class RenovacaoPacienteDAO {
 
 				for (int j = 0; j < listaProfissionais.size(); j++) {
 
+					List<CboBean> listaCbosProfissional = 
+							funcionarioDAO.listaCbosProfissionalComMesmaConexao(listaProfissionais.get(j).getId(), conexao);
+					
 					for (int h = 0; h < listaProfissionais.get(j).getListaDiasAtendimentoSemana().size(); h++) {
 
 						if (DataUtil.extrairDiaDeData(
@@ -286,7 +291,7 @@ public class RenovacaoPacienteDAO {
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
-									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
+									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
 											codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 							
 							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
@@ -298,14 +303,8 @@ public class RenovacaoPacienteDAO {
 							ps4.setLong(1, listaProfissionais.get(j).getId());
 							ps4.setInt(2, idAgend);
 							
-							CboBean cboCompativel = null;
-							if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-								Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-								cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-										listaProfissionais.get(j).getId(), conexao);
-							} else {
-								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
-							}
+							CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+									(insercao.getDataSolicitacao(), listaProfissionais.get(j), idProcedimentoEspecifico, conexao);
 							
 							ps4.setInt(3, cboCompativel.getCodCbo());
 
@@ -357,6 +356,7 @@ public class RenovacaoPacienteDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -455,7 +455,6 @@ public class RenovacaoPacienteDAO {
 			}
 
 
-
 			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente,  situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
 					+ " VALUES (?,  'A', ?, ?, ?,?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
@@ -519,6 +518,10 @@ public class RenovacaoPacienteDAO {
 				}
 
 				for (int h = 0; h < listaProfissionais.size(); h++) {
+					
+					List<CboBean> listaCbosProfissional = 
+							funcionarioDAO.listaCbosProfissionalComMesmaConexao(listaProfissionais.get(h).getId(), conexao);
+					
 					for (int l = 0; l < listaProfissionais.get(h).getListaDiasAtendimentoSemana().size(); l++) {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i)
@@ -528,7 +531,7 @@ public class RenovacaoPacienteDAO {
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
-											listaProfissionais.get(h).getCbo().getCodCbo(), codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
+											listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
 							
 							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
@@ -539,14 +542,8 @@ public class RenovacaoPacienteDAO {
 							ps4.setLong(1, listaProfissionais.get(h).getId());
 							ps4.setInt(2, idAgend);
 							
-							CboBean cboCompativel = null;
-							if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-								Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-								cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-										listaProfissionais.get(h).getId(), conexao);
-							} else {
-								cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(h).getId());
-							}
+							CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+									(insercao.getDataSolicitacao(), listaProfissionais.get(h), idProcedimentoEspecifico, conexao);
 							
 							ps4.setInt(3, cboCompativel.getCodCbo());
 							
@@ -607,6 +604,7 @@ public class RenovacaoPacienteDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
 		Boolean retorno = false;
 		ResultSet rs = null;
@@ -685,8 +683,11 @@ public class RenovacaoPacienteDAO {
 
 				String sql5 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 				
+				List<CboBean> listaCbosProfissional = 
+						funcionarioDAO.listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
+				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
-						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(), 
+						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
 								insercao.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
 				
 				if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
@@ -698,14 +699,8 @@ public class RenovacaoPacienteDAO {
 				ps5.setLong(1, insercao.getFuncionario().getId());
 				ps5.setInt(2, idAgend);
 				
-				CboBean cboCompativel = null;
-				if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
-					Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
-					cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
-							insercao.getFuncionario().getId(), conexao);
-				} else {
-					cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(insercao.getFuncionario().getId());
-				}
+				CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
+						(insercao.getDataSolicitacao(), insercao.getFuncionario(), idProcedimentoEspecifico, conexao);
 				
 				ps4.setInt(3, cboCompativel.getCodCbo());
 				ps5.setInt(4, idProcedimentoEspecifico);

@@ -396,21 +396,9 @@
                             </b:column>
                         </p:outputPanel>
                     </b:row>
-
-                    <b:row rendered="#{TransferenciaPacienteController.opcaoAtendimento == 'H'}">
-                        <p:outputPanel>
-                            <b:column span="3" class="label-position">
-                                <b:label value="Horário:" severity="info" class="fire-label"/>
-
-                            </b:column>
-                        </p:outputPanel>
-                    </b:row>
-
-
-                    <br></br>
+                    <br />
 
                     <div align="center">
-
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="ui-icon-check" update=":msgPagina"
                                          class="btn-incluir"
@@ -418,9 +406,7 @@
 
                         <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
-                                         action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
-                        </p:commandButton>
-
+                                         action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true"/>
                     </div>
                 </h:form>
             </div>
