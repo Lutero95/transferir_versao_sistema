@@ -2782,4 +2782,34 @@ public class FuncionarioDAO {
 		cbo.setDescCbo(rs.getString("descricao"));
 		cbo.setCodigo(rs.getString("codigo"));
 	}
+	
+	public boolean cboCompativelComProfissional (Integer idCbo, Long idFuncionario) throws ProjetoException {
+
+		String sql = "select exists (select cf.id from hosp.cbo_funcionario cf " + 
+				"	where cf.id_cbo = ? and cf.id_profissional = ?) cbo_compativel_profissional ";
+				
+		boolean cboCompativel = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, idCbo);
+			ps.setLong(2, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				cboCompativel = rs.getBoolean("cbo_compativel_profissional");
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return cboCompativel;
+	}
 }
