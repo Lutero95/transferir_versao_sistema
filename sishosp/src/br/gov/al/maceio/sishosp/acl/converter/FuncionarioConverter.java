@@ -20,7 +20,7 @@ public class FuncionarioConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return fDAO.buscarProfissionalConverterPorId(id);
+			return fDAO.buscarProfissionalPorIdParaConverter(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

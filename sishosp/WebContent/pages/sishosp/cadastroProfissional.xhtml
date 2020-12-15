@@ -239,8 +239,8 @@
 													 tooltip="Incluir Profissional" icon="ui-icon-plus"
 													 class="new-btn-acao-table acao-editar"
 													 style="margin-left: 20px;"
-													 action="#{MBFuncionarios.montarListaDeUnidadesDoUsuario}"
-													 oncomplete="PF('dlgUnidadesParaProgramaGrupo').show();" update=":frmUnidadesParaProgramaGrupo"/>
+													 action="#{MBFuncionarios.montarListaDeUnidadesDoUsuario}" 
+													 update=":frmUnidadesParaProgramaGrupo :msgPagina"/>
 								</b:column>
 
 								<b:column span="6" class="label-position">
@@ -275,20 +275,15 @@
 											</div>
 										</p:column>
 									</p:dataTable>
-
 								</b:column>
-
 							</b:row>
-
 						</p:outputPanel>
-
 					</p:tab>
 
 
 					<p:tab title="Dados para Atendimento">
 
 						<p:outputPanel id="outAtendimento">
-
 							<div align="center">
 								<p:outputLabel
 										value="Marque a opção 'Realiza Atendimento' para carregar os itens dessa opção."
@@ -298,13 +293,11 @@
 
 							<b:row
 									rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
-
 								<b:column span="3"
 										  class="label-position new-data-size new-comple1">
 									<b:label value="Especialidade" severity="info" />
 
 									<p:outputPanel id="outEspeci">
-
 										<p:autoComplete
 												value="#{MBFuncionarios.profissional.especialidade}"
 												size="31" converter="conEspecialidade" id="descE"
@@ -321,44 +314,12 @@
 														 onclick="PF('dlgConsulEspecialidade').show();"
 														 immediate="true"
 														 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
-
 									</p:outputPanel>
-
 								</b:column>
 
 								<b:column span="3"
 										  class="label-position new-data-size new-comple1">
-									<b:label value="C.B.O" severity="info" />
 
-									<p:outputPanel id="outCboP">
-
-										<p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
-														size="31" converter="conCbo" id="descCbo"
-														class="select-agendaEquipe4"
-														completeMethod="#{CboController.listaCboAutoComplete}"
-														effect="fade" var="theme" forceSelection="true"
-														minQueryLength="1" itemValue="#{theme}" required="true"
-														requiredMessage="CBO: Campo obrigatório!"
-														itemLabel="#{theme.descCbo}">
-										</p:autoComplete>
-
-										<p:commandButton id="btBusCbo" icon="ui-icon-search"
-														 update=":formConsulCbo" style="margin-top: 5px;"
-														 immediate="true"
-														 actionListener="#{CboController.listarCbos()}"
-														 oncomplete="PF('dlgConsulCbo').show();" />
-
-									</p:outputPanel>
-
-								</b:column>
-
-							</b:row>
-
-							<b:row
-									rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
-
-								<b:column span="3"
-										  class="label-position new-data-size new-comple1">
 									<b:label value="Procedimento" severity="info" />
 
 									<p:outputPanel id="outProcP1">
@@ -377,7 +338,7 @@
 														 style="margin-top: 5px;" />
 									</p:outputPanel>
 								</b:column>
-
+								
 								<b:column span="3" class="label-position">
 									<b:label value="CNS" severity="info" />
 
@@ -391,14 +352,43 @@
 													global="false" event="blur" immediate="true"
 													update=":msgPagina" />
 										</b:inputText>
-
 									</p:outputPanel>
 								</b:column>
-
 							</b:row>
 
-						</p:outputPanel>
+							<b:row rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
+								<p:commandButton icon="ui-icon-plus" size="sm"
+									title="Adicionar Registro"
+									update=":formConsulCbo" 
+									class="btn-acao-table acao-editar" process="@this"
+									actionListener="#{CboController.listarCbos()}"
+									oncomplete="PF('dlgConsulCbo').show();" />
 
+								<p:dataTable id="dataTableCbos" var="tab" responsive="true"
+									rows="20" style="margin-top: 10px"
+									value="#{MBFuncionarios.profissional.listaCbos}" paginator="true"
+									emptyMessage="Nenhum CBO adicionado">
+
+									<p:column headerText="Descrição">
+										<h:outputText value="#{tab.descCbo}" />
+									</p:column>
+
+									<p:column headerText="CBO" width="30%">
+										<h:outputText value="#{tab.codigo}" />
+									</p:column>
+
+									<p:column headerText="Ação" width="20%">
+										<div align="center">
+											<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+												size="sm" ajax="true" style="margin-left:10px"
+												class="btn-acao-table acao-excluir" process="@this"
+												action="#{MBFuncionarios.removerCbo(tab)}"
+												update=":frmPrincipal:tbv:dataTableCbos" />
+										</div>	
+									</p:column>
+								</p:dataTable>
+							</b:row>
+						</p:outputPanel>
 					</p:tab>
 
 
@@ -494,7 +484,6 @@
 
 
 					<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 2}">
-
 						<p:outputPanel id="outPermissoesAlterar">
 							<div align="center">
 								<p:outputLabel
@@ -553,14 +542,10 @@
 							</p:tabView>
 							<br/>
 						</p:outputPanel>
-
 					</p:tab>
-
 				</p:tabView>
-
-
-
-				<br></br>
+				<br />
+				
 
 				<div align="center">
 					<p:commandButton action="#{MBFuncionarios.gravarProfissional()}"
@@ -637,14 +622,10 @@
 						<f:facet name="header">
 							Adicionar
 						</f:facet>
-						<p:commandButton update=":frmPrincipal:tbv:outCboP" icon="fa fa-fw fa-check"
+						<p:commandButton update=":frmPrincipal:tbv:dataTableCbos :msgPagina" icon="fa fa-fw fa-check"
 										 class="new-btn-acao-table acao-editar" title="Selecionar"
-										 onclick="PF('dlgConsulCbo').hide();">
-							<f:setPropertyActionListener value="#{cbo}"
-														 target="#{MBFuncionarios.profissional.cbo}" />
-						</p:commandButton>
+										 action="#{MBFuncionarios.adicionarCbo(cbo)}"/>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>

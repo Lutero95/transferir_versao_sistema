@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -538,7 +539,7 @@ public class ConfigAgendaDAO {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
 		String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.data_especifica, d.turno, c.mes, c.ano, "
-				+ "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao "
+				+ "f.descfuncionario, f.cns, f.codprocedimentopadrao "
 				+ "FROM hosp.config_agenda_profissional c "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
 				+ "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) "
@@ -602,7 +603,6 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().setId(rs.getLong("codmedico"));
 				conf.getProfissional().setNome(rs.getString("descfuncionario"));
 				conf.getProfissional().setCns(rs.getString("cns"));
-				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.setDiaDaSemana(rs.getInt("dia"));
 				conf.setDataEspecifica(rs.getDate("data_especifica"));
@@ -610,9 +610,9 @@ public class ConfigAgendaDAO {
 				conf.setTurno(rs.getString("turno"));
 				conf.setMes(rs.getInt("mes"));
 				conf.setAno(rs.getInt("ano"));
+				conf.getProfissional().setListaCbos(new FuncionarioDAO().listarCbosProfissional(rs.getLong("codmedico"), con));
 
 				lista.add(conf);
-
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -768,7 +768,7 @@ public class ConfigAgendaDAO {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
 		String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, d.turno, c.mes, c.ano, d.data_especifica, "
-				+ "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao "
+				+ "f.descfuncionario, f.cns, f.codprocedimentopadrao "
 				+ "FROM hosp.config_agenda_profissional c "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
 				+ "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) " + "WHERE c.codmedico = ?";
@@ -785,7 +785,6 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().setId(rs.getLong("codmedico"));
 				conf.getProfissional().setNome(rs.getString("descfuncionario"));
 				conf.getProfissional().setCns(rs.getString("cns"));
-				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.setDiaDaSemana(rs.getInt("dia"));
 				conf.setDataEspecifica(rs.getDate("data_especifica"));
@@ -793,6 +792,7 @@ public class ConfigAgendaDAO {
 				conf.setTurno(rs.getString("turno"));
 				conf.setMes(rs.getInt("mes"));
 				conf.setAno(rs.getInt("ano"));
+				conf.getProfissional().setListaCbos(new FuncionarioDAO().listarCbosProfissional(rs.getLong("codmedico"), con));
 				lista.add(conf);
 			}
 		} catch (SQLException ex2) {
@@ -844,7 +844,7 @@ public class ConfigAgendaDAO {
 		ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 
 		String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, c.mes, c.ano, c.opcao, d.data_especifica, d.horario_inicio, d.horario_final, "
-				+ "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao, " + "CASE WHEN "
+				+ "f.descfuncionario, f.cns, f.codprocedimentopadrao, " + "CASE WHEN "
 				+ "(SELECT count(DISTINCT turno) FROM hosp.config_agenda_profissional cc "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias dd ON (cc.id_configagenda = dd.id_config_agenda_profissional) "
 				+ "WHERE cc.id_configagenda = c.id_configagenda) > 1 THEN 'A' " + "ELSE d.turno END AS turno "
@@ -862,7 +862,6 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().setId(rs.getLong("codmedico"));
 				conf.getProfissional().setNome(rs.getString("descfuncionario"));
 				conf.getProfissional().setCns(rs.getString("cns"));
-				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.setDiaDaSemana(rs.getInt("dia"));
 				conf.setDataEspecifica(rs.getDate("data_especifica"));
@@ -873,6 +872,7 @@ public class ConfigAgendaDAO {
 				conf.setOpcao(rs.getString("opcao"));
 				conf.setHorarioInicio(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_inicio")));
 				conf.setHorarioFinal(DataUtil.ajustarHorarioParaHoraIhMinuto(rs.getString("horario_final")));
+				conf.getProfissional().setListaCbos(new FuncionarioDAO().listarCbosProfissional(rs.getLong("codmedico"), con));
 
 			}
 		} catch (SQLException ex2) {
@@ -1525,7 +1525,7 @@ public class ConfigAgendaDAO {
 
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
-		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao, e.descespecialidade "
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, f.descfuncionario, f.cns, f.codprocedimentopadrao, e.descespecialidade "
 				+ "FROM hosp.config_agenda_profissional c "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
 				+ "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) "
@@ -1543,7 +1543,7 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().setId(rs.getLong("codmedico"));
 				conf.getProfissional().setNome(rs.getString("descfuncionario"));
 				conf.getProfissional().setCns(rs.getString("cns"));
-				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
+				conf.getProfissional().setListaCbos(new FuncionarioDAO().listarCbosProfissional(rs.getLong("codmedico"), con));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
@@ -1567,7 +1567,7 @@ public class ConfigAgendaDAO {
 
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 
-		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, d.data_especifica, f.descfuncionario, f.cns, f.codcbo, "
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, d.data_especifica, f.descfuncionario, f.cns, "
 				+ "f.codprocedimentopadrao, e.descespecialidade, c.mes, c.ano "
 				+ "FROM hosp.config_agenda_profissional c "
 				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
@@ -1586,7 +1586,6 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().setId(rs.getLong("codmedico"));
 				conf.getProfissional().setNome(rs.getString("descfuncionario"));
 				conf.getProfissional().setCns(rs.getString("cns"));
-				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.setDataEspecifica(rs.getDate("data_especifica"));
 				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("mes"))){
@@ -1597,6 +1596,7 @@ public class ConfigAgendaDAO {
 				}
 				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
+				conf.getProfissional().setListaCbos(new FuncionarioDAO().listarCbosProfissional(rs.getLong("codmedico"), con));
 				lista.add(conf);
 			}
 		} catch (SQLException ex2) {

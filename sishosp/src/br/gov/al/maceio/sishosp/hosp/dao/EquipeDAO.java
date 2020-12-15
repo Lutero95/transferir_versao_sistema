@@ -525,16 +525,14 @@ public class EquipeDAO {
         String sql = "";
 
         if (todosOsProfissionais) {
-            sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao, "
-                    + " c.codigo , c.descricao desccbo  from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+            sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codprocedimentopadrao "
+                    + " from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
                     + " left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
-                    + " left join hosp.cbo c on c.id  = f.codcbo "
                     + " where codunidade = ? order by f.descfuncionario ";
         } else {
-            sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao, "
-                    + " c.codigo , c.descricao desccbo from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+            sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codprocedimentopadrao "
+                    + " from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
                     + " left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
-                    + " left join hosp.cbo c on c.id  = f.codcbo "
                     + " where equipe = ? order by f.descfuncionario ";
         }
 
@@ -550,17 +548,15 @@ public class EquipeDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                FuncionarioBean func = new FuncionarioBean();
-                func.setId(rs.getLong("medico"));
-                func.setNome(rs.getString("descfuncionario"));
-                func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-                func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-                func.getCbo().setCodCbo(rs.getInt("codcbo"));
-                func.getCbo().setCodigo(rs.getString("codigo"));
-                func.getCbo().setDescCbo(rs.getString("desccbo"));
-                func.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+                FuncionarioBean funcionario = new FuncionarioBean();
+                funcionario.setId(rs.getLong("medico"));
+                funcionario.setNome(rs.getString("descfuncionario"));
+                funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+                funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+                funcionario.setListaCbos(new FuncionarioDAO().listarCbosProfissional(funcionario.getId(), con));
 
-                lista.add(func);
+                lista.add(funcionario);
             }
         } catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);

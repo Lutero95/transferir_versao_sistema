@@ -2,10 +2,12 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
@@ -15,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -126,13 +129,16 @@ public class AlteracaoPacienteDAO {
 
 		ArrayList<GerenciarPacienteBean> lista = new ArrayList<>();
 
-		String sql = "select distinct(p.id_profissional), f.descfuncionario, f.codcbo, p.id_paciente_instituicao, dia_semana, "
-				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
-				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
-				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
-				+ " end as dia, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento from hosp.profissional_dia_atendimento p "
-				+ " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
-				+ " where p.id_paciente_instituicao = ? " + " order by id_profissional";
+		String sql = "select distinct(p.id_profissional), f.descfuncionario, c.id codcbo, p.id_paciente_instituicao, dia_semana, " + 
+				" case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' " + 
+				" when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' " + 
+				" when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' " + 
+				" end as dia, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento from hosp.profissional_dia_atendimento p " + 
+				" join acl.funcionarios f on (f.id_funcionario = p.id_profissional) " + 
+				" join hosp.atendimentos a on (p.id_paciente_instituicao = a.id_paciente_instituicao) " + 
+				" join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento and a1.codprofissionalatendimento = f.id_funcionario)  " + 
+				" JOIN hosp.cbo c ON (a1.cbo = c.id) " + 
+				" where p.id_paciente_instituicao = ? order by id_profissional";
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stm = conexao.prepareStatement(sql);
@@ -142,17 +148,17 @@ public class AlteracaoPacienteDAO {
 			ResultSet rs = stm.executeQuery();
 			AgendaDAO aDao = new AgendaDAO();
 			while (rs.next()) {
-				GerenciarPacienteBean ge = new GerenciarPacienteBean();
-				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
-				ge.getFuncionario().setId(rs.getLong("id_profissional"));
-				ge.setId(rs.getInt("id_paciente_instituicao"));
-				ge.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
-				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
-				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
-				ge.getFuncionario().setListaDiasAtendimentoSemana(aDao.listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
-						id, ge.getFuncionario().getId(), conexao));
+				GerenciarPacienteBean gerenciarPaciente = new GerenciarPacienteBean();
+				gerenciarPaciente.getFuncionario().setNome(rs.getString("descfuncionario"));
+				gerenciarPaciente.getFuncionario().setId(rs.getLong("id_profissional"));
+				gerenciarPaciente.setId(rs.getInt("id_paciente_instituicao"));
+				gerenciarPaciente.getFuncionario().setDiasSemana(rs.getString("dia")+ " "+rs.getString("horario_atendimento"));
+				gerenciarPaciente.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
+				gerenciarPaciente.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				gerenciarPaciente.getFuncionario().setListaDiasAtendimentoSemana(aDao.listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
+						id, gerenciarPaciente.getFuncionario().getId(), conexao));
 
-				lista.add(ge);
+				lista.add(gerenciarPaciente);
 			}
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -221,7 +227,7 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
 
-			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
+			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
 			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 
@@ -232,7 +238,6 @@ public class AlteracaoPacienteDAO {
 					(id_paciente, conexao, true, listaSubstituicao, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe, listaAtendimento1ComLiberacao)) {
 
 				conexao.close();
-
 				return retorno;
 			}
 
@@ -345,22 +350,29 @@ public class AlteracaoPacienteDAO {
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
 												listaProfissionais.get(j).getCbo().getCodCbo(), codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
+								
+								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
-								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
-									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+								
+								CboBean cboCompativel = null;
+								if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+									Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
+									cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+											listaProfissionais.get(j).getId(), conexao);
 								} else {
-									ps8.setNull(3, Types.NULL);
+									cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
 								}
+								
+								ps8.setInt(3, cboCompativel.getCodCbo());
 
-								if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
 									ps8.setInt(4, idProcedimentoEspecifico);
-								else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
-									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
 								}
@@ -370,7 +382,6 @@ public class AlteracaoPacienteDAO {
 								} else {
 									ps8.setInt(5, insercao.getLaudo().getCid1().getIdCid());
 								}
-
 								ps8.executeUpdate();
 							}
 						}
@@ -595,7 +606,7 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
-			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
+			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
 			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao(id_paciente, conexao) ;
 
@@ -711,22 +722,29 @@ public class AlteracaoPacienteDAO {
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaProfissionais.get(j).getCbo().getCodCbo(),
 												insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+								
+								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
 								ps8.setLong(1, listaProfissionais.get(j).getId());
 								ps8.setInt(2, idAgend);
-								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(listaProfissionais.get(j).getCbo().getCodCbo())) {
-									ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+								
+								CboBean cboCompativel = null;
+								if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+									Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
+									cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+											listaProfissionais.get(j).getId(), conexao);
 								} else {
-									ps8.setNull(3, Types.NULL);
+									cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(listaProfissionais.get(j).getId());
 								}
-
-								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+									
+								ps8.setInt(3, cboCompativel.getCodCbo());
+								
+								if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
 									ps8.setInt(4, idProcedimentoEspecifico);
-								else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getProcedimento().getIdProc())) {
-									ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 								} else {
 									ps8.setNull(4, Types.NULL);
 								}
@@ -1126,23 +1144,29 @@ public class AlteracaoPacienteDAO {
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), insercao.getFuncionario().getCbo().getCodCbo(),
 								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+					idProcedimentoEspecifico = insercao.getFuncionario().getProc1().getIdProc();
 
 				PreparedStatement ps7 = null;
 				ps7 = conexao.prepareStatement(sql7);
 
 				ps7.setLong(1, insercao.getFuncionario().getId());
 				ps7.setInt(2, idAgend);
-				ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-
-				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
-					ps7.setInt(4, idProcedimentoEspecifico);
-				else
-					ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
-
+				
+				CboBean cboCompativel = null;
+				if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+					Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(insercao);					            
+					cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+							insercao.getFuncionario().getId(), conexao);
+				} else {
+					cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(insercao.getFuncionario().getId());
+				}
+				
+				ps7.setInt(3, cboCompativel.getCodCbo());
+				ps7.setInt(4, idProcedimentoEspecifico);
 				ps7.executeUpdate();
-
 			}
-
 
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getId())) {
 				List<Integer> listaIdAtendimento1 = listaIdAtendimentos1PorPacienteInstituicao(idPacienteInstituicao, conexao);
@@ -1321,7 +1345,7 @@ public class AlteracaoPacienteDAO {
 		return retorno;
 	}
 
-	public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, java.util.Date dataInclusao) throws ProjetoException {
+	public boolean dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo(Integer idLaudo, Date dataInclusao) throws ProjetoException {
 
 		boolean dataValida = false;
 		String sql = "select exists ( " + 
@@ -1337,7 +1361,7 @@ public class AlteracaoPacienteDAO {
 			PreparedStatement stm = conexao.prepareStatement(sql);
 
 			stm.setInt(1, idLaudo);
-			stm.setDate(2, new Date(dataInclusao.getTime()));
+			stm.setDate(2, new java.sql.Date(dataInclusao.getTime()));
 			ResultSet rs = stm.executeQuery();
 
 			if (rs.next()) {

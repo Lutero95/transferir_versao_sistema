@@ -1018,12 +1018,14 @@ public class GerenciarPacienteDAO {
     }
 
 
-    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdPacienteInstituicao
+    public ArrayList<InsercaoProfissionalEquipe> listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe
             (Integer idPacienteInstituicao, Connection conAuxiliar) throws ProjetoException, SQLException {
 
         ArrayList<InsercaoProfissionalEquipe> lista = new ArrayList<InsercaoProfissionalEquipe>();
         try {
-            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" +
+            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, "+
+            		" id_insercao_profissional_equipe_atendimento, id_profissional, a1.cbo codcbo "+
+            		" from adm.insercao_profissional_equipe_atendimento_1 ipe \n" +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
                     " join acl.funcionarios f on f.id_funcionario = ipe.id_profissional " +
@@ -1071,7 +1073,7 @@ public class GerenciarPacienteDAO {
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
 
         try {
-            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 ipe \n" +
+            String sql = "select distinct a.codpaciente,a.dtaatende, a.codprograma, a.codgrupo,a.codequipe, ipe.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional,  a1.cbo codcbo  from adm.remocao_profissional_equipe_atendimento_1 ipe \n" +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
                     " join acl.funcionarios f on f.id_funcionario = ipe.id_profissional \n" +
@@ -1117,7 +1119,8 @@ public class GerenciarPacienteDAO {
 
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
         try {
-            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, ipe.id_remocao_profissional_equipe, ipe.id_funcionario id_profissional, f.codcbo from logs.remocao_profissional_equipe_atendimentos1 ipe \n" +
+            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, ipe.id_remocao_profissional_equipe, ipe.id_funcionario id_profissional, a1.cbo codcbo "+
+            		" from logs.remocao_profissional_equipe_atendimentos1 ipe \n" +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
                     " join acl.funcionarios f on f.id_funcionario = ipe.id_funcionario \n" +
@@ -1205,7 +1208,8 @@ public class GerenciarPacienteDAO {
 
         ArrayList<InsercaoProfissionalEquipe> lista = new ArrayList<InsercaoProfissionalEquipe>();
         try {
-            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.insercao_profissional_equipe_atendimento_1 ipe \n" +
+            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, ipe.id_atendimentos1, id_insercao_profissional_equipe_atendimento, id_profissional, a1.cbo codcbo "+
+            		" from adm.insercao_profissional_equipe_atendimento_1 ipe \n" +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = ipe.id_atendimentos1 \n" +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
                     " join acl.funcionarios f on f.id_funcionario = ipe.id_profissional " +
@@ -1252,7 +1256,8 @@ public class GerenciarPacienteDAO {
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<RemocaoProfissionalEquipe>();
 
         try {
-            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, rpea.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, f.codcbo from adm.remocao_profissional_equipe_atendimento_1 rpea \n" +
+            String sql = "select distinct a.dtaatende, a.codprograma, a.codgrupo, rpea.id_atendimentos1, id_remocao_profissional_equipe_atendimento, id_profissional, a1.cbo codcbo "+
+            		" from adm.remocao_profissional_equipe_atendimento_1 rpea \n" +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = rpea.id_atendimentos1 \n" +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \n" +
                     " join acl.funcionarios f on f.id_funcionario = rpea.id_profissional \n" +
@@ -1301,7 +1306,7 @@ public class GerenciarPacienteDAO {
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
                     "	left join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " +
-                    "	left join hosp.cbo c on c.id = f.codcbo " +
+                    "	left join hosp.cbo c on c.id = a1.cbo " +
                     "	where sf.id_atendimentos1 in ( " +
                     "	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1 " +
                     "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +

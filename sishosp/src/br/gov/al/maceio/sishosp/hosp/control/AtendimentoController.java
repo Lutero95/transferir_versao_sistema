@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -89,6 +90,7 @@ public class AtendimentoController implements Serializable {
     private CidBean cid;
     private String confirmacaoDialog;
     private String palavrasChaveDivergentes;
+    private CboBean cboSelecionado;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -144,6 +146,7 @@ public class AtendimentoController implements Serializable {
         this.listaAtendimentosSelecionados = new ArrayList<>();
         this.confirmacaoDialog = "";
         this.palavrasChaveDivergentes = "";
+        this.cboSelecionado = new CboBean();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -476,8 +479,6 @@ public class AtendimentoController implements Serializable {
 
     public void alterarSituacaoDeAtendimentoPorProfissional() {
         try {
-            verificaSeCboProfissionalEhValidoParaProcedimento();
-            validarDadosSigtap();
 
             if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.ehEquipe) || !this.ehEquipe.equalsIgnoreCase(SIM)) {
                 if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional
@@ -503,7 +504,7 @@ public class AtendimentoController implements Serializable {
             LaudoController laudoController = new LaudoController();
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc(), true);
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
-            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc(), true);
+            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getFuncionario().getCbo(), true);
         }
     }
     
@@ -514,7 +515,7 @@ public class AtendimentoController implements Serializable {
             for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
             	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc(), true);
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
-            	laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getFuncionario().getId(), procedimentoCid.getProcedimento().getCodProc(), true);
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getFuncionario().getCbo(), true);
             	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), dataAtende, procedimentoCid.getProcedimento().getCodProc(), paciente, true);
 			}
         }
@@ -551,21 +552,47 @@ public class AtendimentoController implements Serializable {
         return existeCargaSigtapParaDataSolicitacao;
     }
 
-    public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException {
-    	
+//    public void verificaSeCboProfissionalEhValidoParaProcedimento() throws ProjetoException, SQLException {
+//    	
+//        if(this.unidadeValidaDadosSigtap) {
+//            for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
+//            	
+//            	if(!existeCargaSigtapParaDataSolicitacao(atendimento.getDataAtendimento())) {
+//            		atendimento.setDataAtendimento(DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento()));
+//            	}
+//            	
+//            	atendimento.getFuncionario().setCbo(funcionarioDAO.buscaCboCompativelComProcedimento(	
+//            			atendimento.getDataAtendimento(), atendimento.getProcedimento().getIdProc(), 
+//            			atendimento.getFuncionario().getId(), null));
+//            	
+//            	if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getFuncionario().getCbo())) {
+//            		throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
+//                            + " não possui um CBO válido para este procedimento");
+//            	}
+//            		
+//                if (!procedimentoDAO.validaCboProfissionalParaProcedimento(atendimento.getProcedimento().getIdProc(),
+//                        atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())) {
+//                    throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
+//                            + " não possui um CBO válido para este procedimento");
+//                }
+//            }
+//        }
+//
+//    }
+    
+    private void validarDadosSigtapDeListaDeAtendimentos(List<AtendimentoBean> listaAtendimento) throws ProjetoException {
         if(this.unidadeValidaDadosSigtap) {
-            for (AtendimentoBean atendimento : this.listAtendimentosEquipe) {
-            	
-            	if(!existeCargaSigtapParaDataSolicitacao(atendimento.getDataAtendimento())) {
-            		atendimento.setDataAtendimento(DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento()));
+            for (AtendimentoBean atendimento : listaAtendimento) {
+            	dataAtende = atendimento.getDataAtendimento();
+            	if(!existeCargaSigtapParaDataSolicitacao(dataAtende)) {
+            		dataAtende= DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento());
             	}
             	
-                if (!procedimentoDAO.validaCboProfissionalParaProcedimento(atendimento.getProcedimento().getIdProc(),
-                        atendimento.getFuncionario().getId(), atendimento.getDataAtendimento())) {
-                    throw new ProjetoException("O profissional " + atendimento.getFuncionario().getNome()
-                            + " não possui um CBO válido para este procedimento");
-                }
-            }
+            	LaudoController laudoController = new LaudoController();
+            	laudoController.idadeValida(dataAtende, atendimento.getPaciente(), atendimento.getProcedimento().getCodProc(), true);
+            	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, atendimento.getProcedimento().getCodProc(), atendimento.getPaciente(), true);
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, atendimento.getProcedimento().getCodProc(), atendimento.getFuncionario().getCbo(), true);				
+			}
         }
     }
     
@@ -610,15 +637,18 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void insereProfissionalParaRealizarAtendimentoNaEquipe() throws ProjetoException {
+    public void insereProfissionalParaRealizarAtendimentoNaEquipe(CboBean cbo) throws ProjetoException {
         AtendimentoBean atendimentoAux = new AtendimentoBean();
         //boolean gravou = aDao.insereProfissionalParaRealizarAtendimentoNaEquipe(atendimento, funcionarioAux);
 
         atendimentoAux = listAtendimentosEquipe.get(0);
 
+        cbo = new CboDAO().listarCboPorId(cbo.getCodCbo());
+        funcionarioAux.setCbo(cbo);
+        
         AtendimentoBean aux = new AtendimentoBean();
         aux.setId(atendimentoAux.getId());
-        aux.setCbo(atendimentoAux.getCbo());
+        aux.setCbo(cbo);
         aux.setDataAtendimento(atendimentoAux.getDataAtendimento());
         aux.setProcedimento(atendimento.getProcedimento());
         aux.setFuncionario(funcionarioAux);
@@ -629,6 +659,7 @@ public class AtendimentoController implements Serializable {
 
     public void limpaInclusaoProfissionalAtendimento() {
         funcionarioAux = new FuncionarioBean();
+        cboSelecionado = new CboBean();
     }
 
     public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
@@ -655,22 +686,15 @@ public class AtendimentoController implements Serializable {
 
     public List<AtendimentoBean> listarAtendimentosEquipe()
             throws ProjetoException {
-        if (procedimento.getIdProc() != null) {
-            if (procedimento.getIdProc() > 0) {
-
-                for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-
-                    if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-                            .getId1()) {
-                        listAtendimentosEquipe.get(i).setProcedimento(
-                                procedimento);
-                    }
-                }
-            }
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getIdProc())) {
+			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista.getId1()) {
+					listAtendimentosEquipe.get(i).setProcedimento(procedimento);
+				}
+			}
         }
 
         if (funcionario != null) {
-
             CboDAO cDao = new CboDAO();
             CboBean cbo = new CboBean();
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo()))
@@ -764,8 +788,9 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        validarDadosSigtap();
-
+        //validarDadosSigtap();
+        validarDadosSigtapDeListaDeAtendimentos(listAtendimentosEquipe);
+        
         if(!validarSeEhNecessarioInformarGrupo()) {
             if(!validarSeEhNecessarioInformarLaudo()) {
 
@@ -942,7 +967,8 @@ public class AtendimentoController implements Serializable {
                 dataSolicitacaoPeloSigtap= DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento());
             }
             LaudoController laudoController = new LaudoController();
-            laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.atendimento.getFuncionario().getId(), this.atendimento.getProcedimento().getCodProc(), true);
+            laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.atendimento.getProcedimento().getCodProc(),
+            		this.atendimento.getFuncionario().getCbo(), true);
         }
         boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento);
         if (alterou) {
@@ -1140,7 +1166,7 @@ public class AtendimentoController implements Serializable {
     		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
     			laudoController.idadeValida(atendimento.getDataAtendimento(), atendimento.getPaciente(), procedimento.getCodProc(), true);
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
-            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), atendimento.getFuncionario().getId(), procedimento.getCodProc(), true);
+            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getFuncionario().getCbo() ,true);
                 if(laudoController.procedimentoPossuiCidsAssociados(atendimento.getDataAtendimento(), procedimento.getCodProc()))
             	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
     		}
@@ -1546,5 +1572,12 @@ public class AtendimentoController implements Serializable {
 	public String getPalavrasChaveDivergentes() {
 		return palavrasChaveDivergentes;
 	}
-	
+
+	public CboBean getCboSelecionado() {
+		return cboSelecionado;
+	}
+
+	public void setCboSelecionado(CboBean cboSelecionado) {
+		this.cboSelecionado = cboSelecionado;
+	}
 }

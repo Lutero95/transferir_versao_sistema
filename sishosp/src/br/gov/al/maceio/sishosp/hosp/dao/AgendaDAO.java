@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -2839,11 +2840,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
-        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao, c.codigo codcbo  "
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade "
                 + " FROM hosp.profissional_dia_atendimento p "
                 + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
                 + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
-                + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ?";
+                + "WHERE p.id_paciente_instituicao = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -2859,9 +2860,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.setNome(rs.getString("descfuncionario"));
                 funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
                 funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
-                funcionario.getCbo().setCodCbo(rs.getInt("id"));
-                funcionario.getCbo().setDescCbo(rs.getString("descricao"));
-                funcionario.getCbo().setCodigo(rs.getString("codcbo"));
+                funcionario.setListaCbos(new FuncionarioDAO().listarCbosProfissional(funcionario.getId(), con));
                 lista.add(funcionario);
             }
         } catch (SQLException ex2) {
@@ -2882,11 +2881,15 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             Integer idPacienteInstituicao) throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
-        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao, c.codigo codcbo,   to_char(p.horario_atendimento,'HH24:MI') horario_atendimento  "
-                + "  FROM hosp.profissional_dia_atendimento p "
-                + "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) "
-                + "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
-                + "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " + "WHERE p.id_paciente_instituicao = ? order by f.descfuncionario";
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, " + 
+        		"c.id, c.descricao, c.codigo codcbo, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento " + 
+        		"  FROM hosp.profissional_dia_atendimento p " + 
+        		"JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) " + 
+        		"LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " + 
+        		" join hosp.atendimentos a on (p.id_paciente_instituicao = a.id_paciente_instituicao) " + 
+        		" join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento and a1.codprofissionalatendimento = f.id_funcionario) " + 
+        		" JOIN hosp.cbo c ON (a1.cbo = c.id) " + 
+        		" WHERE p.id_paciente_instituicao = ? order by f.descfuncionario;";
 
         try {
             con = ConnectionFactory.getConnection();
