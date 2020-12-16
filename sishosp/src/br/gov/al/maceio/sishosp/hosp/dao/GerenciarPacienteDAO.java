@@ -978,7 +978,7 @@ public class GerenciarPacienteDAO {
 
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
         try {
-            String sql = "select a.codpaciente,a.dtaatende, sf.* from adm.substituicao_funcionario sf " +
+            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.* from adm.substituicao_funcionario sf " +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
                     "	where sf.id_atendimentos1 in ( " +
@@ -998,6 +998,7 @@ public class GerenciarPacienteDAO {
                 SubstituicaoProfissional substituicao = new SubstituicaoProfissional();
                 substituicao.setDataAtendimento(rs.getDate("dtaatende"));
                 substituicao.getAtendimento().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                substituicao.getAtendimento().getCbo().setCodCbo(rs.getInt("cbo"));
                 substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
                 substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
@@ -1048,9 +1049,9 @@ public class GerenciarPacienteDAO {
                 insercao.setDataAtendimento(rs.getDate("dtaatende"));
                 insercao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 insercao.getAtendimentoBean().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                insercao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 insercao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
                 insercao.getFuncionario().setId(rs.getLong("id_profissional"));
-                insercao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
                 insercao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 insercao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 insercao.getEquipe().setCodEquipe(rs.getInt("codequipe"));
@@ -1097,7 +1098,7 @@ public class GerenciarPacienteDAO {
                 remocao.getAtendimentoBean().getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 remocao.setId(rs.getInt("id_remocao_profissional_equipe_atendimento"));
                 remocao.getFuncionario().setId(rs.getLong("id_profissional"));
-                remocao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+                remocao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 remocao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 remocao.getEquipe().setCodEquipe(rs.getInt("codequipe"));
@@ -1143,7 +1144,7 @@ public class GerenciarPacienteDAO {
                 remocao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 remocao.setId(rs.getInt("id_remocao_profissional_equipe"));
                 remocao.getFuncionario().setId(rs.getLong("id_profissional"));
-                remocao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+                remocao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 remocao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 lista.add(remocao);
@@ -1234,7 +1235,7 @@ public class GerenciarPacienteDAO {
                 insercao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 insercao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
                 insercao.getFuncionario().setId(rs.getLong("id_profissional"));
-                insercao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+                insercao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 insercao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 insercao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 lista.add(insercao);
@@ -1281,7 +1282,7 @@ public class GerenciarPacienteDAO {
                 remocao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 remocao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
                 remocao.getFuncionario().setId(rs.getLong("id_profissional"));
-                remocao.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+                remocao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 remocao.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 lista.add(remocao);
@@ -1326,7 +1327,7 @@ public class GerenciarPacienteDAO {
                 substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
                 substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
                 substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
-                substituicao.getFuncionario().getCbo().setCodCbo(rs.getInt("id_cbo"));
+                substituicao.getAtendimento().getCbo().setCodCbo(rs.getInt("id_cbo"));
                 lista.add(substituicao);
             }
         } catch (SQLException sqle) {

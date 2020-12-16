@@ -1266,7 +1266,10 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				FuncionarioBean profissioanl = new FuncionarioBean();
 				profissioanl.setId(rs.getLong("id_funcionario"));
-				profissioanl.getCbo().setCodCbo(rs.getInt("codcbo"));
+				
+				CboBean cbo = new CboBean();
+				cbo.setCodCbo(rs.getInt("codcbo"));
+				profissioanl.getListaCbos().add(cbo);
 
 				listaProfissional.add(profissioanl);
 			}
@@ -1297,8 +1300,8 @@ public class FuncionarioDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			
 			for (FuncionarioBean funcionario : listaFuncionarios) {
-				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo())) {
-					ps.setInt(1, funcionario.getCbo().getCodCbo());
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getListaCbos().get(0).getCodCbo())) {
+					ps.setInt(1, funcionario.getListaCbos().get(0).getCodCbo());
 					ps.setLong(2, funcionario.getId());
 					ps.executeUpdate();
 				}
@@ -2106,51 +2109,6 @@ public class FuncionarioDAO {
 		return profissional;
 	}
 
-	public FuncionarioBean buscarProfissionalRealizaAtendimentoPorId(Integer id) throws ProjetoException {
-		FuncionarioBean profissional = null;
-
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-				+ " cpf, senha, realiza_atendimento, permite_liberacao, permite_encaixe "
-				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' and realiza_atendimento is true order by descfuncionario";
-
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				profissional = new FuncionarioBean();
-				profissional.setId(rs.getLong("id_funcionario"));
-				profissional.setNome(rs.getString("descfuncionario"));
-				profissional.setCpf(rs.getString("cpf"));
-				profissional.setSenha(rs.getString("senha"));
-				profissional.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
-				profissional.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				profissional.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
-				profissional.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
-				profissional.setCns(rs.getString("cns"));
-				profissional.setAtivo(rs.getString("ativo"));
-				profissional.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				profissional.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
-				profissional.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
-				profissional.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-			}
-
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return profissional;
-	}
-
 	public List<FuncionarioBean> listarProfissionaisPorEquipe(int id, Connection conAuxiliar) throws ProjetoException, SQLException {
 
 		List<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
@@ -2689,6 +2647,53 @@ public class FuncionarioDAO {
 		} 
 		return cbo;
 	}
+	
+	public boolean funcionarioPossuiCboCompativelComProcedimento(Date data, Integer idProcedimento, Long idFuncionario)
+			throws ProjetoException {
+
+		String sql = "select exists (select cbo.id, cbo.descricao, cbo.codigo from hosp.cbo_funcionario cf "
+				+ "	join hosp.cbo cbo on cf.id_cbo = cbo.id "
+				+ "	join sigtap.cbo_procedimento_mensal cpm on cf.id_cbo = cpm.id_cbo "
+				+ "	join sigtap.procedimento_mensal pm on cpm.id_procedimento_mensal = pm.id "
+				+ "	join hosp.proc p on pm.id_procedimento = p.id "
+				+ "	join sigtap.historico_consumo_sigtap hcs on pm.id_historico_consumo_sigtap = hcs.id "
+				+ "	join acl.funcionarios f on cf.id_profissional = f.id_funcionario "
+				+ "	where p.ativo = 'S' and hcs.status = 'A' and hcs.mes = ? and hcs.ano = ? and p.id = ? and f.id_funcionario = ? "
+				+ "   order by id limit 1) existe;";
+
+		boolean existe = false;
+		try {
+			PreparedStatement ps = null;
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(data);
+			int mes = calendar.get(Calendar.MONDAY) + 1;
+			ps.setInt(1, mes);
+			ps.setInt(2, calendar.get(Calendar.YEAR));
+			ps.setInt(3, idProcedimento);
+			ps.setLong(4, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				existe = rs.getBoolean("existe");
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return existe;
+	}
+
 	
 	public CboBean retornaPrimeiroCboProfissional(Long idFuncionario) throws ProjetoException {
 

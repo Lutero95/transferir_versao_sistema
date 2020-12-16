@@ -491,6 +491,7 @@ public class AlteracaoPacienteController implements Serializable {
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
         Integer codPaciente = retornaIdPacienteCorreto();
+        listAgendamentoProfissional.clear();
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
@@ -591,8 +592,8 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
-
         Integer codPaciente = retornaIdPacienteCorreto();
+        listAgendamentoProfissional.clear();
     	
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
@@ -725,7 +726,7 @@ public class AlteracaoPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
-
+    	listAgendamentoProfissional.clear();
         Boolean temAtendimento = false;
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);

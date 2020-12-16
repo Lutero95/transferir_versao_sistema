@@ -1025,7 +1025,6 @@ public class FuncionarioController implements Serializable {
 		}
 		else {
 			profissional.setEspecialidade(null);
-			profissional.setCbo(null);
 			profissional.setProc1(null);
 			profissional.setCns(null);
 		}

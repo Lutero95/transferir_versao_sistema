@@ -646,7 +646,7 @@ public class TransferenciaPacienteDAO {
 				ps8 = null;
 				ps8 = conexao.prepareStatement(sql8);
 				ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-				ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+				ps8.setLong(2, listaSubstituicao.get(i).getAtendimento().getCbo().getCodCbo());
 				ps8.setLong(3, idPacienteInstituicaoNovo);
 				ps8.setDate(4,new java.sql.Date( listaSubstituicao.get(i).getDataAtendimento().getTime()));
 				ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());

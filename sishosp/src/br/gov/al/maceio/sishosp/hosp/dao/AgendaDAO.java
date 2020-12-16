@@ -148,12 +148,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 						
 						ps.setInt(3, cboCompativel.getCodCbo());
                         
-                        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProfissional().getCbo().getCodCbo()))
-                            ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
-                        else
-                            ps.setNull(3, Types.NULL);
-
-
                         if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
                             ps.setInt(4, idProcedimentoEspecifico);
                         }
@@ -2929,9 +2923,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 funcionario.setListaDiasAtendimentoSemana(listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
                         idPacienteInstituicao, funcionario.getId(), con));
                 funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
-                funcionario.getCbo().setCodCbo(rs.getInt("id"));
-                funcionario.getCbo().setDescCbo(rs.getString("descricao"));
-                funcionario.getCbo().setCodigo(rs.getString("codcbo"));
                 funcionario.setHorarioAtendimento(rs.getString("horario_atendimento"));
                 lista.add(funcionario);
             }

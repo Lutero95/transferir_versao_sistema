@@ -483,7 +483,7 @@ public class EquipeDAO {
 
     public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe) throws ProjetoException {
         ArrayList<FuncionarioBean> lista = new ArrayList<>();
-        String sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+        String sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade "
                 + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
                 + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
                 + " where equipe = ? order by f.descfuncionario ";
@@ -500,7 +500,6 @@ public class EquipeDAO {
                 func.setNome(rs.getString("descfuncionario"));
                 func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
                 func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-                func.getCbo().setCodCbo(rs.getInt("codcbo"));
 
                 lista.add(func);
             }

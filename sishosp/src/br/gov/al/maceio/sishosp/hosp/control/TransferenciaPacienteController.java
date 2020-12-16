@@ -104,6 +104,7 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
+    	listAgendamentoProfissional.clear();
     	Integer codPaciente = null;
     	if ((insercao.getLaudo() != null) && (insercao.getLaudo().getId() != null)) 
     			codPaciente = insercao.getLaudo().getPaciente().getId_paciente();
@@ -168,7 +169,7 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
-
+    	listAgendamentoProfissional.clear();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();

@@ -54,7 +54,6 @@ public class RenovacaoPacienteController implements Serializable {
     private InsercaoPacienteDAO iDao;
     private ArrayList<String> listaHorarios;
     private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
-    private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private ArrayList<AgendaBean> listAgendamentoProfissional;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
@@ -80,7 +79,6 @@ public class RenovacaoPacienteController implements Serializable {
         listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
         tipo = "";
         iDao = new InsercaoPacienteDAO();
-        listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
         listAgendamentoProfissional = new ArrayList<AgendaBean>();
         funcionario = new FuncionarioBean();
         laudoAtual = new LaudoBean();
@@ -312,8 +310,6 @@ public class RenovacaoPacienteController implements Serializable {
                     && insercao.getEquipe().getCodEquipe() > 0) {
             	listarProfissionaisEquipe() ;
                 tipo = TipoAtendimento.EQUIPE.getSigla();
-                listaDiasProfissional = aDao
-                        .listarDiasAtendimentoProfissionalEquipe(id);
 
                 List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
                 for(int i=0; i<listaFuncionarioAuxiliar.size(); i++){
@@ -963,15 +959,6 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public ArrayList<GerenciarPacienteBean> getListaDiasProfissional() {
-        return listaDiasProfissional;
-    }
-
-    public void setListaDiasProfissional(
-            ArrayList<GerenciarPacienteBean> listaDiasProfissional) {
-        this.listaDiasProfissional = listaDiasProfissional;
     }
 
     public InsercaoPacienteBean getInsercaoParaLaudo() {

@@ -248,7 +248,7 @@ public class AtendimentoDAO {
 					PreparedStatement ps8 = null;
 					ps8 = con.prepareStatement(sql8);
 					ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-					ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+					ps8.setLong(2, listaSubstituicao.get(i).getAtendimento().getCbo().getCodCbo());
 					ps8.setLong(3, idAtendimento);
 					ps8.setDate(4, new java.sql.Date(listaSubstituicao.get(i).getDataAtendimento().getTime()));
 					ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
@@ -448,10 +448,10 @@ public class AtendimentoDAO {
 			PreparedStatement stmt2 = con.prepareStatement(sql2);
 			stmt2.setLong(1, atendimento.getId());
 			stmt2.setLong(2, novoProfissional.getId());
-			if (VerificadorUtil.verificarSeObjetoNuloOuZero(novoProfissional.getCbo().getCodCbo())) {
+			if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCbo().getCodCbo())) {
 				stmt2.setNull(3, Types.NULL);
 			} else {
-				stmt2.setInt(3, novoProfissional.getCbo().getCodCbo());
+				stmt2.setInt(3, atendimento.getCbo().getCodCbo());
 			}
 
 			stmt2.setInt(4, atendimento.getPrograma().getIdPrograma());
@@ -1020,7 +1020,7 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setCodProc(rs.getString("codigo_procedimento"));
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
-				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
@@ -1308,9 +1308,9 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setNomeProc(rs.getString("nome"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getFuncionario().setCns(rs.getString("cns"));
-				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("idcbo"));
-				atendimento.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
-				atendimento.getFuncionario().getCbo().setDescCbo(rs.getString("desccbo"));
+				atendimento.getCbo().setCodCbo(rs.getInt("idcbo"));
+				atendimento.getCbo().setCodigo(rs.getString("codcbo"));
+				atendimento.getCbo().setDescCbo(rs.getString("desccbo"));
 				atendimento.setEvolucao(rs.getString("evolucao"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
@@ -1997,5 +1997,39 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+	
+	public CboBean retornaCboProfissionalNoAtendimento(Integer idAtendimento, Long idFuncionario) throws ProjetoException {
+
+		String sql = "select a1.cbo from hosp.atendimentos1 a1 " + 
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"where a.id_atendimento = ? and a1.codprofissionalatendimento = ?;";
+		
+		CboBean cbo = new CboBean();
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, idAtendimento);
+			ps.setLong(2, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				cbo.setCodCbo(rs.getInt("cbo"));
+			}
+			
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return cbo;
 	}
 }
