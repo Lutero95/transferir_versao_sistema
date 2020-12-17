@@ -3,19 +3,21 @@ package br.gov.al.maceio.sishosp.administrativo.model.dto;
 import br.gov.al.maceio.sishosp.administrativo.model.InsercaoProfissionalEquipe;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class GravarInsercaoProfissionalEquipeAtendimentoDTO implements Serializable {
 
     private InsercaoProfissionalEquipe insercaoProfissionalEquipe;
-    private List<Integer> listaAtendimentos;
+    private List<BuscarAtendimentosParaAdicionarProfissionalDTO> listaAtendimentos;
 
     public GravarInsercaoProfissionalEquipeAtendimentoDTO() {
         insercaoProfissionalEquipe = new InsercaoProfissionalEquipe();
+        listaAtendimentos = new ArrayList<>();
     }
 
-    public GravarInsercaoProfissionalEquipeAtendimentoDTO(InsercaoProfissionalEquipe insercaoProfissionalEquipe, List<Integer> listaAtendimentos) {
+    public GravarInsercaoProfissionalEquipeAtendimentoDTO(InsercaoProfissionalEquipe insercaoProfissionalEquipe, List<BuscarAtendimentosParaAdicionarProfissionalDTO> listaAtendimentos) {
         this.insercaoProfissionalEquipe = insercaoProfissionalEquipe;
         this.listaAtendimentos = listaAtendimentos;
     }
@@ -24,7 +26,7 @@ public class GravarInsercaoProfissionalEquipeAtendimentoDTO implements Serializa
         return insercaoProfissionalEquipe;
     }
 
-    public List<Integer> getListaAtendimentos() {
+    public List<BuscarAtendimentosParaAdicionarProfissionalDTO> getListaAtendimentos() {
         return listaAtendimentos;
     }
 
