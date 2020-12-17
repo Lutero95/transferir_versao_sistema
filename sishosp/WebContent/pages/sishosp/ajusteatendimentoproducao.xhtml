@@ -34,7 +34,7 @@
 							<p:column span="3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									required="true" requiredMessage="Insira a data inicial"
-									showOn="button" size="15" class="select-agendaEquipe2"
+									showOn="button" size="15" locale="pt" class="select-agendaEquipe2"
 									value="#{AtendimentoController.atendimentoAux.dataAtendimentoInicio}"/>
 							</p:column>
 
@@ -100,7 +100,7 @@
 						</p:column>
 
 						<p:column headerText="CBO" width="60">
-							<h:outputText value="#{tab.funcionario.cbo.codigo}" />
+							<h:outputText value="#{tab.cbo.codigo}" />
 						</p:column>
 
 						<p:column headerText="Paciente">
@@ -127,6 +127,17 @@
 							<h:outputText value="#{tab.dataAtendimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Alterar Cbo" width="70">
+							<p:commandButton title="Alterar cbo" icon="ui-icon-pencil"
+								size="sm"  update=":frmcbo" actionListener="#{AtendimentoController.configuraDialogsParaAlteracaoUnica()}"
+								action="#{MBFuncionarios.listarCbosFuncionarios(AtendimentoController.atendimento.funcionario.id)}"
+								oncomplete="PF('dlgcbo').show();"
+								disabled="#{AtendimentoController.existeAlgumaCargaSigtap == false or AtendimentoController.existeCargaSigtapParaEsteMesOuAnterior == false}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{AtendimentoController.atendimento}" />		
+							</p:commandButton>
 						</p:column>
 
 						<p:column headerText="Alterar Cid" width="70">
@@ -157,14 +168,13 @@
 															 target="#{AtendimentoController.atendimento}" />
 							</p:commandButton>
 						</p:column>
-
 					</p:dataTable>
 				</h:form>
 			</div>
 		</div>
 
-		<p:dialog header="Ajustar Atendimentos em Massa" height="350" width="1000"
-			widgetVar="dlgAjustes" responsive="true" modal="true" resizable="false">
+		<p:dialog header="Ajustar Atendimentos em Massa" height="500" width="1000"
+			widgetVar="dlgAjustes" responsive="true" modal="true" resizable="true">
 			<h:form id="formAjustes">
 
 				<b:row>
@@ -175,7 +185,7 @@
 							<p:column span="3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									required="true" requiredMessage="Insira a data inicial"
-									showOn="button" size="15" class="select-agendaEquipe2"
+									showOn="button" size="15" class="select-agendaEquipe2" locale="pt"
 									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
 							</p:column>
 
@@ -273,16 +283,22 @@
 						<b:column span="2">
 							<p:commandButton value="Buscar" icon="fa fa-fw fa-search"
 								action="#{AtendimentoController.listaAtendimentos1AjustesEmMassa()}"
-								update="dtAtendimentosMassa, msgPagina"
+								update="dtAtendimentosMassa, selecionarTudo, msgPagina"
 								style="margin-top: 20%">
 							</p:commandButton>
 						</b:column>
 					</p:outputPanel>
 				</b:row>
+
+				<p:selectBooleanCheckbox value="#{AtendimentoController.selecionarTodos}"
+					itemLabel="Selecionar todos" id="selecionarTudo">
+					<p:ajax update="formAjustes:dtAtendimentosMassa" 
+						listener="#{AtendimentoController.selecionarOuRemoverTodosAtendimentos(AtendimentoController.listaAtendimentosFiltro)}" />
+				</p:selectBooleanCheckbox>
 				
 				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
-					paginator="true" scrollable="true" scrollHeight="200" style="margin-top: 10px"
-					value="#{AtendimentoController.listaAtendimentosFiltro}"
+					paginator="true" paginatorPosition="bottom" scrollable="true" scrollHeight="300" style="margin-top: 10px"
+					value="#{AtendimentoController.listaAtendimentosFiltro}" rows="10"
 					 emptyMessage="Nenhum procedimento listado" reflow="true">
 
 					<p:column headerText="Selecionar" width="100">
@@ -298,7 +314,7 @@
 					</p:column>
 
 					<p:column headerText="CBO">
-						<h:outputText value="#{tab.funcionario.cbo.codigo}" />
+						<h:outputText value="#{tab.cbo.codigo}" />
 					</p:column>
 
 					<p:column headerText="Paciente">
@@ -334,6 +350,12 @@
 						action="#{AtendimentoController.limparDialogBuscaCid()}" 
 						update=":frmPrincipal :formConsulCid1 :msgPagina" style="margin-left: 10px;"
 						disabled="#{AtendimentoController.listaAtendimentosSelecionados.size() == 0}" />
+					
+					<p:commandButton value="Alterar CBO" actionListener="#{AtendimentoController.configuraDialogsParaAlteracaoEmMassa()}"
+						action="#{AtendimentoController.listarTodosCbos()}"
+						oncomplete="PF('dlgcbo').show();" 
+						update=":frmPrincipal :frmcbo :msgPagina" style="margin-left: 10px;"
+						disabled="#{AtendimentoController.listaAtendimentosSelecionados.size() == 0}" />	
 
 					<p:commandButton value="Fechar"
 						oncomplete="PF('dlgAjustes').hide();"
@@ -391,10 +413,8 @@
 								size="sm" class="new-btn-acao-table acao-editar"
 								update=":formConfirmacao"
 								oncomplete="PF('dlgConfirmacao').show();"
-								rendered="#{AtendimentoController.alteracaoEmMassa == false}">
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{AtendimentoController.atendimento.cidPrimario}" />
-							</p:commandButton>
+								actionListener="#{AtendimentoController.selecionarCid(tab)}"
+								rendered="#{AtendimentoController.alteracaoEmMassa == false}"/>
 
 							<p:commandButton
 								actionListener="#{AtendimentoController.selecionarCid(tab)}"
@@ -547,10 +567,8 @@
 											 size="sm" class="new-btn-acao-table acao-editar"
 											 update=":formConfirmacaoproc"
 											 oncomplete="PF('dlgConfirmacaoProc').show();"
-											 rendered="#{AtendimentoController.alteracaoEmMassa == false}">
-								<f:setPropertyActionListener value="#{proc}"
-															 target="#{AtendimentoController.atendimento.procedimento}"/>
-							</p:commandButton>
+											 actionListener="#{AtendimentoController.selecionarProcedimento(proc)}"
+											 rendered="#{AtendimentoController.alteracaoEmMassa == false}"/>
 
 							<p:commandButton
 								actionListener="#{AtendimentoController.selecionarProcedimento(proc)}"
@@ -708,9 +726,7 @@
 				</div>
 
 				<p:row>
-
 					<p:panelGrid columns="4">
-
 						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
 							style="margin-top: -13px">
 							<f:selectItem itemLabel="Nome" itemValue="nome" />
@@ -765,5 +781,116 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Alterar CBO Profissional para Atendimento" modal="true"
+			widgetVar="dlgcbo" resizable="false">
+			<h:form id="frmcbo">
+
+				<b:row rendered="#{AtendimentoController.alteracaoEmMassa == false}">
+					<b:column span="3" class="label-position new-data-size new-comple1">
+						<h:outputLabel
+							value="CBO Atual: #{AtendimentoController.atendimento.cbo.descCbo}">
+							<p:autoUpdate />
+						</h:outputLabel>
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column span="8">
+						<p:selectOneMenu autoWidth="true"
+							rendered="#{AtendimentoController.alteracaoEmMassa == false}"
+							value="#{AtendimentoController.cboSelecionado.codCbo}">
+							<f:selectItem itemLabel="Selecione o CBO" itemValue="" />
+							<f:selectItems value="#{MBFuncionarios.listaCbos}" var="cbo"
+								itemLabel="#{cbo.descCbo}" itemValue="#{cbo.codCbo}" />
+						</p:selectOneMenu>
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column span="8">
+						<p:selectOneMenu autoWidth="true"
+							rendered="#{AtendimentoController.alteracaoEmMassa == true}"
+							value="#{AtendimentoController.cboSelecionado.codCbo}">
+							<f:selectItem itemLabel="Selecione o CBO" itemValue="" />
+							<f:selectItems value="#{AtendimentoController.listaCbos}" var="cbo"
+								itemLabel="#{cbo.descCbo}" itemValue="#{cbo.codCbo}" />
+						</p:selectOneMenu>
+					</b:column>
+				</b:row>
+
+				<div align="center">
+					<p:separator />
+					<p:commandButton look="success" value="Alterar" style="margin-right:1%;"
+						rendered="#{AtendimentoController.alteracaoEmMassa == false}"
+						oncomplete="PF('dlgConfirmacaoCbo').show();"
+						icon="ui-icon-check" update=":formConfirmacaocbo :msgPagina"/>
+					
+					<p:commandButton look="success" value="Alterar" style="margin-right:1%;"
+						rendered="#{AtendimentoController.alteracaoEmMassa == true}"
+						action="#{AtendimentoController.buscaCboPorId()}"
+						oncomplete="PF('dlgConfirmacaoCbo2').show();"
+						icon="ui-icon-check" update=":formConfirmacaocbo2 :msgPagina"/>
+
+					<p:commandButton value="Fechar"
+						oncomplete="PF('dlgcbo').hide();" look="info" ajax="true"
+						icon="ui-icon-close" style="margin-left:1%;" />
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Confirmar Edição do Cbo" widgetVar="dlgConfirmacaoCbo"
+                  responsive="true" height="130" width="400" modal="true" resizable="false">
+            <h:form id="formConfirmacaocbo">
+            	<p>
+            		Deseja mesmo atribuir o cbo 
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.cboSelecionado.descCbo}"/>
+            		</STRONG>
+            		ao atendimento do(a) paciente
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.atendimento.paciente.nome}"/>
+            		</STRONG>	
+            		com o(a) profissional
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.atendimento.funcionario.nome}?"/>
+            		</STRONG>	
+            	</p>
+            	
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar"
+						action="#{AtendimentoController.atualizaCboDeAtendimento()}"
+						oncomplete="PF('dlgcbo').hide(); PF('dlgConfirmacaoCbo').hide();"
+						update=":frmPrincipal :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgConfirmacaoCbo').hide();"
+						style="margin-left: 10px;" />	
+				</div>
+			</h:form>
+        </p:dialog>
+        
+        <p:dialog header="Confirmar Edição em Massa de Cbo" widgetVar="dlgConfirmacaoCbo2"
+                  responsive="true" height="130" width="400" modal="true" resizable="false">
+            <h:form id="formConfirmacaocbo2">
+            	<p>
+            		Deseja mesmo atribuir o cbo 
+            		<STRONG>
+            			<h:outputText value="#{AtendimentoController.cboSelecionado.descCbo}"/>
+            		</STRONG>
+            		a(os) atendimento(s) selecionado(s)?
+            	</p>
+            	
+				<div align="center" style="margin-top: 5%;">
+					<p:commandButton value="Confirmar" action="#{AtendimentoController.gravarAlteracaoCboEmMassa()}"
+						update=":formAjustes:dtAtendimentosMassa :msgPagina" style="margin-left: 10px;" />
+
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('dlgConfirmacaoCbo2').hide();"
+						style="margin-left: 10px;" />	
+				</div>
+			</h:form>
+        </p:dialog>
+		
 	</ui:define>
 </ui:composition>

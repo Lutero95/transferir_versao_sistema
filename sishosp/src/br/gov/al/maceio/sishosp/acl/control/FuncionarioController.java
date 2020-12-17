@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AtalhosAmbulatorialDTO;
 import org.primefaces.event.TransferEvent;
@@ -1024,7 +1025,6 @@ public class FuncionarioController implements Serializable {
 		}
 		else {
 			profissional.setEspecialidade(null);
-			profissional.setCbo(null);
 			profissional.setProc1(null);
 			profissional.setCns(null);
 		}
@@ -1309,7 +1309,7 @@ public class FuncionarioController implements Serializable {
 	public void listarCbosFuncionarios(Long idFuncionario) throws ProjetoException {
 		this.listaCbos = fDao.listaCbosProfissional(idFuncionario);
 	}
-
+	
 	// PROFISSIONAL GETTES E SETTERS FIM
 
 	public FuncionarioBean getUsuario() {

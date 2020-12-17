@@ -51,7 +51,6 @@ public class FuncionarioBean implements Serializable {
 
     // HERDADOS
     private EspecialidadeBean especialidade;
-    private CboBean cbo;
     private ProcedimentoBean proc1;
     private ProcedimentoBean proc2;
     private ProgramaBean progAdd;
@@ -80,7 +79,6 @@ public class FuncionarioBean implements Serializable {
         this.grupo = new ArrayList<GrupoBean>();
         this.grupoNovo = new ArrayList<GrupoBean>();
         this.especialidade = new EspecialidadeBean();
-        this.cbo = new CboBean();
         this.proc1 = new ProcedimentoBean();
         this.progAdd = new ProgramaBean();
         this.grupoAdd = new GrupoBean();
@@ -253,14 +251,6 @@ public class FuncionarioBean implements Serializable {
 
     public void setEspecialidade(EspecialidadeBean especialidade) {
         this.especialidade = especialidade;
-    }
-
-    public CboBean getCbo() {
-        return cbo;
-    }
-
-    public void setCbo(CboBean cbo) {
-        this.cbo = cbo;
     }
 
     public ProcedimentoBean getProc1() {
@@ -575,7 +565,6 @@ public class FuncionarioBean implements Serializable {
                 Objects.equals(getGrupoNovo(), that.getGrupoNovo()) &&
                 Objects.equals(getListaUnidades(), that.getListaUnidades()) &&
                 Objects.equals(getEspecialidade(), that.getEspecialidade()) &&
-                Objects.equals(getCbo(), that.getCbo()) &&
                 Objects.equals(getProc1(), that.getProc1()) &&
                 Objects.equals(getProc2(), that.getProc2()) &&
                 Objects.equals(getProgAdd(), that.getProgAdd()) &&
@@ -597,7 +586,7 @@ public class FuncionarioBean implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getCbo(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos());
+        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos());
     }
 }
 

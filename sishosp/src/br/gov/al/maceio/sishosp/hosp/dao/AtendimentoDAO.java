@@ -21,6 +21,7 @@ import br.gov.al.maceio.sishosp.hosp.log.dao.LogDAO;
 import br.gov.al.maceio.sishosp.hosp.log.enums.Rotina;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -247,7 +248,7 @@ public class AtendimentoDAO {
 					PreparedStatement ps8 = null;
 					ps8 = con.prepareStatement(sql8);
 					ps8.setLong(1, listaSubstituicao.get(i).getFuncionario().getId());
-					ps8.setLong(2, listaSubstituicao.get(i).getFuncionario().getCbo().getCodCbo());
+					ps8.setLong(2, listaSubstituicao.get(i).getAtendimento().getCbo().getCodCbo());
 					ps8.setLong(3, idAtendimento);
 					ps8.setDate(4, new java.sql.Date(listaSubstituicao.get(i).getDataAtendimento().getTime()));
 					ps8.setLong(5, listaSubstituicao.get(i).getAfastamentoProfissional().getFuncionario().getId());
@@ -447,10 +448,10 @@ public class AtendimentoDAO {
 			PreparedStatement stmt2 = con.prepareStatement(sql2);
 			stmt2.setLong(1, atendimento.getId());
 			stmt2.setLong(2, novoProfissional.getId());
-			if (VerificadorUtil.verificarSeObjetoNuloOuZero(novoProfissional.getCbo().getCodCbo())) {
+			if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCbo().getCodCbo())) {
 				stmt2.setNull(3, Types.NULL);
 			} else {
-				stmt2.setInt(3, novoProfissional.getCbo().getCodCbo());
+				stmt2.setInt(3, atendimento.getCbo().getCodCbo());
 			}
 
 			stmt2.setInt(4, atendimento.getPrograma().getIdPrograma());
@@ -1019,7 +1020,7 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setCodProc(rs.getString("codigo_procedimento"));
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
-				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
+				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
@@ -1307,9 +1308,9 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setNomeProc(rs.getString("nome"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getFuncionario().setCns(rs.getString("cns"));
-				atendimento.getFuncionario().getCbo().setCodCbo(rs.getInt("idcbo"));
-				atendimento.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
-				atendimento.getFuncionario().getCbo().setDescCbo(rs.getString("desccbo"));
+				atendimento.getCbo().setCodCbo(rs.getInt("idcbo"));
+				atendimento.getCbo().setCodigo(rs.getString("codcbo"));
+				atendimento.getCbo().setDescCbo(rs.getString("desccbo"));
 				atendimento.setEvolucao(rs.getString("evolucao"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
@@ -1500,7 +1501,7 @@ public class AtendimentoDAO {
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
 				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.id_paciente, pa.dtanascimento, p.id as id_procedimento, " + 
 				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, c.cid, p.codproc, "+
-				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo, cbo.codigo codcbo " +
+				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo, cbo.id idcbo, cbo.descricao, cbo.codigo codcbo " +
 				"from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
 				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " +
@@ -1579,7 +1580,9 @@ public class AtendimentoDAO {
 				atendimento.setValidadoPeloSigtapAnterior(rs.getBoolean("validado_pelo_sigtap_anterior"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getFuncionario().setId(rs.getLong("id_funcionario"));
-				atendimento.getFuncionario().getCbo().setCodigo(rs.getString("codcbo"));
+				atendimento.getCbo().setCodCbo(rs.getInt("idcbo"));
+				atendimento.getCbo().setDescCbo(rs.getString("descricao"));
+				atendimento.getCbo().setCodigo(rs.getString("codcbo"));
 				atendimento.getPaciente().setNome(rs.getString("paciente"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
@@ -1613,7 +1616,7 @@ public class AtendimentoDAO {
 	}
 	
 	
-	public boolean atualizaCidDeAtendimento(AtendimentoBean atendimento) throws ProjetoException {
+	public boolean atualizaCidDeAtendimento(AtendimentoBean atendimento, CidBean cid) throws ProjetoException {
 
 		boolean alterou = false;
 		
@@ -1623,10 +1626,13 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 
-			stm.setInt(1, atendimento.getCidPrimario().getIdCid());
+			stm.setInt(1, cid.getIdCid());
 			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+			
+			gerarLogAlteracaoCid(atendimento, cid, con);
+			
 			alterou = true;
 			con.commit();	
 		} catch (SQLException ex2) {
@@ -1643,7 +1649,27 @@ public class AtendimentoDAO {
 		return alterou;
 	}
 
-	public boolean atualizaProcedimentoDoAtendimento(AtendimentoBean atendimento) throws ProjetoException {
+	private void gerarLogAlteracaoCid(AtendimentoBean atendimento, CidBean cid, Connection conexao) throws ProjetoException, SQLException {
+		try {
+			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
+			
+			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
+				log.adicionarDescricao("Cid1", "", cid.getDescCidAbrev());
+				log.adicionarDescricao("ID Cid1", "", cid.getIdCid().toString());
+			}
+			else {
+				log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getDescCidAbrev(), cid.getDescCidAbrev());
+				log.adicionarDescricao("ID Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
+			}
+			new LogDAO().gravarLog(log, conexao);			
+		} catch (Exception e) {
+			conexao.rollback();
+		}
+	}
+
+	public boolean atualizaProcedimentoDoAtendimento(AtendimentoBean atendimento, ProcedimentoBean procedimento) throws ProjetoException {
 
 		boolean alterou = false;
 
@@ -1653,10 +1679,13 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 
-			stm.setInt(1, atendimento.getProcedimento().getIdProc());
+			stm.setInt(1, procedimento.getIdProc());
 			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+			
+			gerarLogAlteracaoProcedimento(atendimento, procedimento, con);
+			
 			alterou = true;
 			con.commit();
 		} catch (SQLException ex2) {
@@ -1671,6 +1700,75 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+
+	private void gerarLogAlteracaoProcedimento(AtendimentoBean atendimento, ProcedimentoBean procedimento, Connection conexao)
+			throws ProjetoException, SQLException {
+		try {
+			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
+			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getProcedimento().getIdProc())) {
+				log.adicionarDescricao("Procedimento", "", procedimento.getNomeProc());
+				log.adicionarDescricao("ID Procedimento", "", procedimento.getIdProc().toString());
+			}
+			else {
+				log.adicionarDescricao
+				("Procedimento", atendimento.getProcedimento().getNomeProc(), procedimento.getNomeProc());
+				log.adicionarDescricao
+				("ID Procedimento", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
+			}	
+			new LogDAO().gravarLog(log, conexao);			
+		} catch (Exception e) {
+			conexao.rollback();
+		}
+	}
+	
+	public boolean atualizaCboDeAtendimento(AtendimentoBean atendimento, CboBean cbo) throws ProjetoException {
+
+		boolean alterou = false;
+		
+		String sql = "UPDATE hosp.atendimentos1 SET cbo = ? WHERE id_atendimentos1 = ?;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, cbo.getCodCbo());
+			stm.setInt(2, atendimento.getId1());
+			stm.executeUpdate();
+			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+			
+			gerarLogAlteracaoCbo(atendimento, cbo, con);
+			
+			alterou = true;
+			con.commit();	
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
+	}
+
+	private void gerarLogAlteracaoCbo(AtendimentoBean atendimento, CboBean cbo, Connection conexao) throws ProjetoException, SQLException {
+		try {
+			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
+			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
+			
+			log.adicionarDescricao("CBO", atendimento.getCbo().getDescCbo(), cbo.getDescCbo());
+			log.adicionarDescricao("ID CBO", atendimento.getCbo().getCodCbo().toString(), cbo.getCodCbo().toString());
+			
+			new LogDAO().gravarLog(log, conexao);			
+		} catch (Exception e) {
+			conexao.rollback();
+		}
 	}
 	
 	public List<Integer> listaAnosDeAtendimentos() throws ProjetoException {
@@ -1806,19 +1904,7 @@ public class AtendimentoDAO {
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 				
-				String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
-				
-				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
-				
-				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
-					log.adicionarDescricao("Cid1", "", cid.getDescCidAbrev());
-					log.adicionarDescricao("ID Cid1", "", cid.getIdCid().toString());
-				}
-				else {
-					log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getDescCidAbrev(), cid.getDescCidAbrev());
-					log.adicionarDescricao("ID Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
-				}
-				new LogDAO().gravarLog(log, con);
+				gerarLogAlteracaoCid(atendimento, cid, con);
 			}
 			alterou = true;
 			con.commit();	
@@ -1860,20 +1946,7 @@ public class AtendimentoDAO {
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 				
-				String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
-				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
-				
-				if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
-					log.adicionarDescricao("Procedimento", "", procedimento.getNomeProc());
-					log.adicionarDescricao("ID Procedimento", "", procedimento.getIdProc().toString());
-				}
-				else {
-					log.adicionarDescricao
-						("Procedimento", atendimento.getProcedimento().getNomeProc(), procedimento.getNomeProc());
-					log.adicionarDescricao
-						("ID Procedimento", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
-				}	
-				new LogDAO().gravarLog(log, con);
+				gerarLogAlteracaoProcedimento(atendimento, procedimento, con);
 			}
 			alterou = true;
 			con.commit();
@@ -1889,5 +1962,74 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+	
+	public boolean atualizaCboVariosAtendimentos(List<AtendimentoBean> listaAtendimento, CboBean cbo)
+			throws ProjetoException {
+
+		boolean alterou = false;
+
+		String sql = "UPDATE hosp.atendimentos1 SET cbo = ? WHERE id_atendimentos1 = ?;";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			for (AtendimentoBean atendimento : listaAtendimento) {
+				stm.setInt(1, cbo.getCodCbo());
+				stm.setInt(2, atendimento.getId1());
+				stm.executeUpdate();
+				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+
+				gerarLogAlteracaoCbo(atendimento, cbo, con);
+			}
+			alterou = true;
+			con.commit();
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return alterou;
+	}
+	
+	public CboBean retornaCboProfissionalNoAtendimento(Integer idAtendimento, Long idFuncionario) throws ProjetoException {
+
+		String sql = "select a1.cbo from hosp.atendimentos1 a1 " + 
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"where a.id_atendimento = ? and a1.codprofissionalatendimento = ?;";
+		
+		CboBean cbo = new CboBean();
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, idAtendimento);
+			ps.setLong(2, idFuncionario);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				cbo.setCodCbo(rs.getInt("cbo"));
+			}
+			
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return cbo;
 	}
 }

@@ -91,6 +91,8 @@ public class AtendimentoController implements Serializable {
     private String confirmacaoDialog;
     private String palavrasChaveDivergentes;
     private CboBean cboSelecionado;
+    private List<CboBean> listaCbos;
+    private boolean selecionarTodos;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -147,6 +149,7 @@ public class AtendimentoController implements Serializable {
         this.confirmacaoDialog = "";
         this.palavrasChaveDivergentes = "";
         this.cboSelecionado = new CboBean();
+        this.listaCbos = new ArrayList<>();
     }
 
     public void carregarGerenciamentoAtendimento() throws ProjetoException{
@@ -504,7 +507,7 @@ public class AtendimentoController implements Serializable {
             LaudoController laudoController = new LaudoController();
             laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), this.atendimento.getProcedimento().getCodProc(), true);
             laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
-            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getFuncionario().getCbo(), true);
+            laudoController.validaCboDoProfissionalLaudo(dataAtende, this.atendimento.getProcedimento().getCodProc(), this.atendimento.getCbo(), true);
         }
     }
     
@@ -515,7 +518,7 @@ public class AtendimentoController implements Serializable {
             for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
             	laudoController.idadeValida(dataAtende, this.atendimento.getPaciente(), procedimentoCid.getProcedimento().getCodProc(), true);
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getPaciente(), true);
-            	laudoController.validaCboDoProfissionalLaudo(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getFuncionario().getCbo(), true);
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, procedimentoCid.getProcedimento().getCodProc(), this.atendimento.getCbo(), true);
             	laudoController.validarCidPorProcedimento(procedimentoCid.getCid(), dataAtende, procedimentoCid.getProcedimento().getCodProc(), paciente, true);
 			}
         }
@@ -591,7 +594,7 @@ public class AtendimentoController implements Serializable {
             	LaudoController laudoController = new LaudoController();
             	laudoController.idadeValida(dataAtende, atendimento.getPaciente(), atendimento.getProcedimento().getCodProc(), true);
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(dataAtende, atendimento.getProcedimento().getCodProc(), atendimento.getPaciente(), true);
-            	laudoController.validaCboDoProfissionalLaudo(dataAtende, atendimento.getProcedimento().getCodProc(), atendimento.getFuncionario().getCbo(), true);				
+            	laudoController.validaCboDoProfissionalLaudo(dataAtende, atendimento.getProcedimento().getCodProc(), atendimento.getCbo(), true);				
 			}
         }
     }
@@ -644,7 +647,6 @@ public class AtendimentoController implements Serializable {
         atendimentoAux = listAtendimentosEquipe.get(0);
 
         cbo = new CboDAO().listarCboPorId(cbo.getCodCbo());
-        funcionarioAux.setCbo(cbo);
         
         AtendimentoBean aux = new AtendimentoBean();
         aux.setId(atendimentoAux.getId());
@@ -695,17 +697,13 @@ public class AtendimentoController implements Serializable {
         }
 
         if (funcionario != null) {
-            CboDAO cDao = new CboDAO();
-            CboBean cbo = new CboBean();
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getCbo().getCodCbo()))
-                cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
-
+            
             for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 
                 if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
                         .getId1()) {
                     listAtendimentosEquipe.get(i).setFuncionario(funcionario);
-                    listAtendimentosEquipe.get(i).setCbo(cbo);
+                    listAtendimentosEquipe.get(i).setCbo(atendimentoDAO.retornaCboProfissionalNoAtendimento(idAtendimentos, funcionario.getId()));
                 }
             }
 
@@ -917,6 +915,7 @@ public class AtendimentoController implements Serializable {
     public void listaAtendimentos1AjustesEmMassa() throws ProjetoException {
         this.listaAtendimentosFiltro = atendimentoDAO.listaAtendimentos1FiltroAjustes(atendimento, this.semCids, atendimento.getPaciente().getNome(), TipoBuscaPaciente.PACIENTE.getSigla());
         this.listaAtendimentosSelecionados.clear();
+        this.selecionarTodos = false;
     }
     
     public void adicionarOuRemoverAtendimentoSelecionado(AtendimentoBean atendimento) {
@@ -925,6 +924,14 @@ public class AtendimentoController implements Serializable {
     	else
     		this.listaAtendimentosSelecionados.add(atendimento);
     }
+    
+    public void selecionarOuRemoverTodosAtendimentos(List<AtendimentoBean> lista) {
+    	if(!selecionarTodos)
+    		this.listaAtendimentosSelecionados.clear();
+    	else
+    		this.listaAtendimentosSelecionados.addAll(lista);
+    }
+    
     
     public boolean atendimentoFoiAdicionado(AtendimentoBean atendimento) {
     	return this.listaAtendimentosSelecionados.contains(atendimento);
@@ -951,9 +958,18 @@ public class AtendimentoController implements Serializable {
     }
 
     public void atualizaCidDeAtendimento() throws ProjetoException {
-        boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento);
+        boolean alterou = atendimentoDAO.atualizaCidDeAtendimento(atendimento, cid);
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("CID alterado no atendimento com sucesso!", "");
+            listaAtendimentos1Ajustes();
+        }
+    }
+    
+    public void atualizaCboDeAtendimento() throws ProjetoException {
+    	buscaCboPorId();
+        boolean alterou = atendimentoDAO.atualizaCboDeAtendimento(atendimento, cboSelecionado);
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("CBO alterado no atendimento com sucesso!", "");
             listaAtendimentos1Ajustes();
         }
     }
@@ -968,9 +984,9 @@ public class AtendimentoController implements Serializable {
             }
             LaudoController laudoController = new LaudoController();
             laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.atendimento.getProcedimento().getCodProc(),
-            		this.atendimento.getFuncionario().getCbo(), true);
+            		this.atendimento.getCbo(), true);
         }
-        boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento);
+        boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento, procedimento);
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Procedimento alterado no atendimento com sucesso!", "");
             JSFUtil.fecharDialog("dlgConsulProc");
@@ -1166,9 +1182,9 @@ public class AtendimentoController implements Serializable {
     		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
     			laudoController.idadeValida(atendimento.getDataAtendimento(), atendimento.getPaciente(), procedimento.getCodProc(), true);
             	laudoController.validaSexoDoPacienteProcedimentoSigtap(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
-            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getFuncionario().getCbo() ,true);
+            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getCbo() ,true);
                 if(laudoController.procedimentoPossuiCidsAssociados(atendimento.getDataAtendimento(), procedimento.getCodProc()))
-            	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
+                	laudoController.validarCidPorProcedimento(atendimento.getCidPrimario(), atendimento.getDataAtendimento(), procedimento.getCodProc(), atendimento.getPaciente(), true);
     		}
     	}
     	
@@ -1185,6 +1201,7 @@ public class AtendimentoController implements Serializable {
     	}
     }
     
+    
     private List<AtendimentoBean> setaAtendimentoValidadoPeloSigtapAnteriorParaAtendimentosEmMassa(List<AtendimentoBean> listaAtendimento) {
     	for (int i = 0; i < listaAtendimento.size(); i++) {
     		if (!existeCargaSigtapParaDataAtende(listaAtendimento.get(i).getDataAtendimento())) {
@@ -1197,6 +1214,69 @@ public class AtendimentoController implements Serializable {
 		}
         return listaAtendimento;
     }
+    
+	public void listarTodosCbos() throws ProjetoException {
+		this.cboSelecionado = new CboBean();
+		this.listaCbos = new CboDAO().listarCbo();
+	}
+	
+	public void buscaCboPorId() throws ProjetoException {
+		this.cboSelecionado = new CboDAO().listarCboPorId(this.cboSelecionado.getCodCbo());
+	}
+	
+    public void gravarAlteracaoCboEmMassa() throws ProjetoException {
+    	if(this.unidadeValidaDadosSigtap) {
+    		listaAtendimentosSelecionados = setaAtendimentoValidadoPeloSigtapAnteriorParaAtendimentosEmMassa(listaAtendimentosSelecionados);
+    		List<FuncionarioBean> listaProfissionais = filtraProfissionaisRepetidosDaLista(listaAtendimentosSelecionados);
+    		
+    		if (!todosProfissionaisPossuemOhCboSelecionado(listaProfissionais)) {
+    			JSFUtil.fecharDialog("dlgConfirmacaoCbo2");
+    			return;
+    		}
+    		
+    		LaudoController laudoController = new LaudoController();
+    		for (AtendimentoBean atendimento : listaAtendimentosSelecionados) {
+            	laudoController.validaCboDoProfissionalLaudo(atendimento.getDataAtendimento(), atendimento.getProcedimento().getCodProc(), cboSelecionado ,true);
+    		}
+    	}
+    	
+    	boolean alterou = atendimentoDAO.atualizaCboVariosAtendimentos(listaAtendimentosSelecionados, cboSelecionado);
+    	if(alterou) {
+    		JSFUtil.adicionarMensagemSucesso("Atendimentos Alterados com Sucesso!", "");
+    		JSFUtil.fecharDialog("dlgcbo");
+    		JSFUtil.fecharDialog("dlgConfirmacaoCbo2");
+    		listaAtendimentos1AjustesEmMassa();
+    	}
+    	else {
+    		JSFUtil.fecharDialog("dlgcbo");
+    		JSFUtil.fecharDialog("dlgConfirmacaoCbo2");
+    	}
+    }
+
+	private boolean todosProfissionaisPossuemOhCboSelecionado(List<FuncionarioBean> listaProfissionais)
+			throws ProjetoException {
+		for (FuncionarioBean profissional : listaProfissionais) {
+			if(!funcionarioDAO.cboCompativelComProfissional(cboSelecionado.getCodCbo(), profissional.getId())) {
+				JSFUtil.adicionarMensagemErro
+				("Erro o profissional " +profissional.getNome()+ " não possui este CBO cadastrado", "");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private List<FuncionarioBean> filtraProfissionaisRepetidosDaLista(List<AtendimentoBean> listaAtendimentos) {
+		List<FuncionarioBean> listaProfissionais = new ArrayList<>();
+		List<Long> ids = new ArrayList<>();
+		for (AtendimentoBean atendimento : listaAtendimentos) {
+			
+			if(!ids.contains(atendimento.getFuncionario().getId())) {
+				ids.add(atendimento.getFuncionario().getId());
+				listaProfissionais.add(atendimento.getFuncionario());
+			}
+		}
+		return listaProfissionais;
+	}
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
@@ -1580,4 +1660,21 @@ public class AtendimentoController implements Serializable {
 	public void setCboSelecionado(CboBean cboSelecionado) {
 		this.cboSelecionado = cboSelecionado;
 	}
+
+	public List<CboBean> getListaCbos() {
+		return listaCbos;
+	}
+
+	public void setListaCbos(List<CboBean> listaCbos) {
+		this.listaCbos = listaCbos;
+	}
+
+	public boolean isSelecionarTodos() {
+		return selecionarTodos;
+	}
+
+	public void setSelecionarTodos(boolean selecionarTodos) {
+		this.selecionarTodos = selecionarTodos;
+	}
+	
 }

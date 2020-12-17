@@ -2480,7 +2480,7 @@ public class ProcedimentoDAO {
             stm.setInt(2, user_session.getUnidade().getId());
             stm.setInt(3, atendimento.getId());
             stm.setInt(4, user_session.getUnidade().getId());
-            stm.setInt(5, atendimento.getFuncionario().getCbo().getCodCbo());
+            stm.setInt(5, atendimento.getCbo().getCodCbo());
             stm.setInt(6, atendimento.getPrograma().getIdPrograma());
             ResultSet rs = stm.executeQuery();
 

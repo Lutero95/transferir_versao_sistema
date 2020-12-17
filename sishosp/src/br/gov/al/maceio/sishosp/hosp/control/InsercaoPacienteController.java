@@ -600,6 +600,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
 
+    	listAgendamentoProfissional.clear();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         
@@ -661,6 +662,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
 
+    	listAgendamentoProfissional.clear();
     	GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
@@ -719,6 +721,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
 
+    	listAgendamentoProfissional.clear();
     	GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);

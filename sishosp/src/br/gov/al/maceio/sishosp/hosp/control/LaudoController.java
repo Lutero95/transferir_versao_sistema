@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -262,7 +265,12 @@ public class LaudoController implements Serializable {
             validaSexoDoPacienteProcedimentoSigtap(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc()))
                 validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
-            validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getProfissionalLaudo().getCbo(), true);
+            
+            if(!new FuncionarioDAO().funcionarioPossuiCboCompativelComProcedimento(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getIdProc(), this.laudo.getProfissionalLaudo().getId())) {
+                throw new ProjetoException
+                ("Cbo do profissional selecionado é incompatível com o permitido no SIGTAP para o procedimento "+this.laudo.getProcedimentoPrimario().getCodProc());
+            }
+            //validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc(), this.laudo.getProfissionalLaudo().getCbo(), true);
         }
     }
 
