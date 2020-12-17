@@ -303,8 +303,8 @@ public class RenovacaoPacienteDAO {
 							ps4.setLong(1, listaProfissionais.get(j).getId());
 							ps4.setInt(2, idAgend);
 							
-							CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-									(insercao.getDataSolicitacao(), listaProfissionais.get(j), idProcedimentoEspecifico, conexao);
+							CboBean cboCompativel = retornaCboCompativelParaAgenda
+									(insercao.getDataSolicitacao(), listaProfissionais.get(j), idProcedimentoEspecifico, insercao.getId(), conexao);
 							
 							ps4.setInt(3, cboCompativel.getCodCbo());
 
@@ -542,8 +542,8 @@ public class RenovacaoPacienteDAO {
 							ps4.setLong(1, listaProfissionais.get(h).getId());
 							ps4.setInt(2, idAgend);
 							
-							CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-									(insercao.getDataSolicitacao(), listaProfissionais.get(h), idProcedimentoEspecifico, conexao);
+							CboBean cboCompativel = retornaCboCompativelParaAgenda
+									(insercao.getDataSolicitacao(), listaProfissionais.get(h), idProcedimentoEspecifico, insercao.getId(), conexao);
 							
 							ps4.setInt(3, cboCompativel.getCodCbo());
 							
@@ -699,8 +699,8 @@ public class RenovacaoPacienteDAO {
 				ps5.setLong(1, insercao.getFuncionario().getId());
 				ps5.setInt(2, idAgend);
 				
-				CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-						(insercao.getDataSolicitacao(), insercao.getFuncionario(), idProcedimentoEspecifico, conexao);
+				CboBean cboCompativel = retornaCboCompativelParaAgenda
+						(insercao.getDataSolicitacao(), insercao.getFuncionario(), idProcedimentoEspecifico, insercao.getId(), conexao);
 				
 				ps4.setInt(3, cboCompativel.getCodCbo());
 				ps5.setInt(4, idProcedimentoEspecifico);
@@ -731,6 +731,58 @@ public class RenovacaoPacienteDAO {
 			}
 		}
 		return retorno;
+	}
+	
+	private CboBean retornaCboCompativelParaAgenda(Date dataSolicitacao, FuncionarioBean profissional,
+			Integer idProcedimentoEspecifico, Integer idPacienteInstituicao, Connection conexao) throws ProjetoException, SQLException {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+		
+		CboBean cboCompativel;
+		if(user_session.getUnidade().getParametro().isValidaDadosLaudoSigtap()) {
+			Date data = new InsercaoPacienteDAO().retornaDataSolicitacaoParaSigtap(dataSolicitacao);					            
+			cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+					profissional.getId(), conexao);
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
+				data = retornaUltimaDataSolicitacao(idPacienteInstituicao, conexao);
+				cboCompativel = new FuncionarioDAO().buscaCboCompativelComProcedimento(data, idProcedimentoEspecifico, 
+						profissional.getId(), conexao);	
+			}
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(cboCompativel.getCodCbo())) {
+				throw new ProjetoException
+					("CBO do profissional "+profissional.getNome()+
+							" não é compatível com este procedimento ou com o especifíco do programa!");
+			}
+		} else {
+			cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
+		}
+		return cboCompativel;
+	}
+	
+	public Date retornaUltimaDataSolicitacao(Integer idPacienteInstituicao, Connection conexaoAuxiliar) 
+			throws ProjetoException, SQLException {
+		
+		String sql = "SELECT data_solicitacao FROM hosp.paciente_instituicao where id = ?;"; 
+		Date dataSolicitacao = null;
+		
+		try {
+			PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+			stm.setInt(1, idPacienteInstituicao);
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				dataSolicitacao = rs.getDate("data_solicitacao");
+			}
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
+		return dataSolicitacao;
 	}
 
 }
