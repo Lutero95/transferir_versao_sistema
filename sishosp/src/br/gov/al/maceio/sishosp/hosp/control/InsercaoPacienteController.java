@@ -892,10 +892,17 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	ProgramaDAO programaDAO = new ProgramaDAO();
     	ProcedimentoBean procedimentoPadraoGrupo = programaDAO.retornaProcedimentoPadraoDoGrupoNoPrograma(programa, grupo);
     	ProcedimentoBean procedimentoIdade = programaDAO.retornaProcedimentoPadraoDoProgramaPorIdade(programa.getIdPrograma(), paciente.getId_paciente());
+    	List<ProcedimentoBean> listaProcedimentosPermitidos = programaDAO.listarProcedimentosPermitidos(programa.getIdPrograma());
     	
         if((!procedimentoLaudo.getIdProc().equals(programa.getProcedimento().getIdProc())) 
         		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoPadraoGrupo)) && (!procedimentoLaudo.getIdProc().equals(procedimentoPadraoGrupo.getIdProc())))
         		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoIdade)) && (!procedimentoLaudo.getIdProc().equals(procedimentoIdade.getIdProc()))) ) {
+        	
+        	for (ProcedimentoBean procedimentoPermitido : listaProcedimentosPermitidos) {
+				if(procedimentoPermitido.getIdProc().equals(procedimentoLaudo.getIdProc()))
+					return true;
+			}
+        	
     		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incompatível com o Procedimento do Programa Selecionado", "");
     		return false;
     	}

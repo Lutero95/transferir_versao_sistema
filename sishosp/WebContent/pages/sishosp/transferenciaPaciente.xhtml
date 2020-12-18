@@ -177,20 +177,21 @@
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descPrograma}">
                                         <p:ajax event="itemSelect"
-                                                listener="#{TransferenciaPacienteController.selecionarPrograma()}"
-                                                update="outGrupo, outEquipe"/>
+                                                listener="#{TransferenciaPacienteController.limparGrupo()}"
+                                                update="outGrupo, outEquipe outTabelas"/>
                                     </p:autoComplete>
-
+                                    <p:commandButton id="btBusPr" immediate="true"
+                                                     icon="ui-icon-search"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
                                 </b:column>
                             </p:outputPanel>
-
                         </b:row>
 
                         <b:row>
                             <p:outputPanel id="outGrupo">
-
                                 <b:column span="5"
-                                          class="label-position new-data-size4 new-comple1">
+                                          class="label-position new-data-size new-comple1">
                                     <b:label for="prog" value="Grupo:" id="grupo" class="fire-label"
                                              severity="info"/>
 
@@ -204,19 +205,21 @@
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descGrupo}">
                                         <p:ajax event="itemSelect"
-                                                listener="#{TransferenciaPacienteController.selecionarGrupo()}"
+                                                listener="#{TransferenciaPacienteController.limparEquipe()}"
                                                 update="outEquipe outTabelas"/>
                                     </p:autoComplete>
 
-                                </b:column>
-
+									<p:commandButton id="btBusGr" immediate="true"
+										icon="ui-icon-search"
+										action="#{TransferenciaPacienteController.listarGrupos()}"
+										disabled="#{TransferenciaPacienteController.insercao.programa.idPrograma == null}"
+										update=":formConsuGrop" oncomplete="PF('dlgConsuGrop').show();" />
+								</b:column>
                             </p:outputPanel>
-
                         </b:row>
 
                         <b:row>
                             <p:outputPanel id="outEquipe">
-
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
@@ -261,11 +264,8 @@
                                                      action="#{TransferenciaPacienteController.carregaHorariosEquipe()}"
                                                      immediate="true" oncomplete="PF('dlgQtdAgendamentos').show();"/>
                                 </b:column>
-
                             </p:outputPanel>
-
                         </b:row>
-
                     </p:fieldset>
 
                     <b:row>
@@ -285,11 +285,9 @@
                                 </p:selectManyCheckbox>
                             </b:column>
                         </p:outputPanel>
-
                     </b:row>
 
-                    <br></br>
-
+                    <br />
                     <b:row>
                         <p:outputPanel id="outTabelas">
                             <b:column span="5" style="margin-bottom:15px;">
@@ -360,14 +358,10 @@
                                 </p:dataTable>
                             </b:column>
                         </p:outputPanel>
-
                     </b:row>
-
-
-                    <br></br>
+                    <br />
 
                     <b:row>
-
                         <b:column span="11" class="label-position">
                             <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
 
@@ -376,7 +370,6 @@
                                              autoResize="false" class="select-agendaEquipe2">
                             </b:inputTextarea>
                         </b:column>
-
                     </b:row>
 
                     <b:row rendered="#{TransferenciaPacienteController.opcaoAtendimento == 'T'}">
@@ -492,7 +485,6 @@
                     </p:column>
 
                 </p:dataTable>
-
             </h:form>
         </p:dialog>
 
@@ -533,11 +525,9 @@
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoHorario" width="600px" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimentoHorario">
-
-                <p:growl id="grwDias"></p:growl>
+                <p:growl id="grwDias"/>
 
                 <b:row>
-
                     <b:column span="3" class="label-position">
                         <b:label value="Dias:" severity="info" class="fire-label"/>
                         <p:selectOneMenu required="true" class="select-agendaEquipe2"
@@ -552,11 +542,9 @@
                             <f:selectItem itemLabel="Sábado" itemValue="7"/>
                         </p:selectOneMenu>
                     </b:column>
-
                 </b:row>
 
                 <b:row>
-
                     <p:outputPanel>
                         <b:column span="3" class="label-position">
                             <b:label value="Horário:" severity="info" class="fire-label"/>
@@ -569,7 +557,6 @@
                             </p:selectOneMenu>
                         </b:column>
                     </p:outputPanel>
-
                 </b:row>
 
                 <div align="center">
@@ -581,11 +568,9 @@
                                          action="#{TransferenciaPacienteController.adicionarFuncionarioDiaHorario()}"/>
                     </div>
                 </div>
-
-                <br></br>
+                <br />
 
                 <b:row>
-
                     <p:dataTable id="dtHorariosDias" resizableColumns="true"
                                  value="#{TransferenciaPacienteController.listaHorarioAtendimentos}" var="var"
                                  emptyMessage="Sem registros.">
@@ -622,11 +607,10 @@
                         </p:column>
 
                     </p:dataTable>
-
                 </b:row>
 
-                <br></br>
-                <br></br>
+                <br />
+                <br />
 
                 <div align="center">
                     <p:commandButton value="Salvar" style="margin-top:5px;"
@@ -637,6 +621,73 @@
                 </div>
             </h:form>
         </p:dialog>
+        
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true" responsive="true" modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao2:outProg, :formInsercao2:outGrupo :formConsuGrop 
+                                :formInsercao2:outEquipe :formInsercao2:outTabelas"
+                                class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+                                title="Selecionar" 
+                                action="#{TransferenciaPacienteController.limparGrupo()}"
+                                onclick="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{TransferenciaPacienteController.insercao.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  dynamic="true" responsive="true" modal="true" styleClass="topDialog">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+                             responsive="true" save-state="false" saveState="false"
+                             value="#{TransferenciaPacienteController.listaGrupos}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe, :formInsercao2:outTabelas"
+                                icon="fa fa-fw fa-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                action="#{TransferenciaPacienteController.limparEquipe()}"
+                                oncomplete="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{TransferenciaPacienteController.insercao.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+        
     </ui:define>
 
 </ui:composition>
