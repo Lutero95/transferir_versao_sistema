@@ -530,7 +530,7 @@
                 <b:row>
                     <b:column span="3" class="label-position">
                         <b:label value="Dias:" severity="info" class="fire-label"/>
-                        <p:selectOneMenu required="true" class="select-agendaEquipe2"
+                        <b:selectOneMenu required="true" class="select-agendaEquipe2"
                                          requiredMessage="Escolha ao menos um dia da semana!"
                                          value="#{TransferenciaPacienteController.insercao.horarioAtendimento.diaSemana}">
                             <f:selectItem itemLabel="Domingo" itemValue="1"/>
@@ -540,7 +540,7 @@
                             <f:selectItem itemLabel="Quinta" itemValue="5"/>
                             <f:selectItem itemLabel="Sexta" itemValue="6"/>
                             <f:selectItem itemLabel="Sábado" itemValue="7"/>
-                        </p:selectOneMenu>
+                        </b:selectOneMenu>
                     </b:column>
                 </b:row>
 
@@ -549,12 +549,12 @@
                         <b:column span="3" class="label-position">
                             <b:label value="Horário:" severity="info" class="fire-label"/>
 
-                            <p:selectOneMenu class="select-agendaEquipe2" required="true"
+                            <b:selectOneMenu class="select-agendaEquipe2" required="true"
                                              requiredMessage="Horário: Campo obrigatório!"
                                              value="#{TransferenciaPacienteController.insercao.horarioAtendimento.horario}">
                                 <f:selectItems
                                         value="#{TransferenciaPacienteController.listaHorarios}"/>
-                            </p:selectOneMenu>
+                            </b:selectOneMenu>
                         </b:column>
                     </p:outputPanel>
                 </b:row>

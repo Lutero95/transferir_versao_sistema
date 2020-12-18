@@ -1371,4 +1371,46 @@ public class ProgramaDAO {
         }
         return procedimento;
     }
+    
+    public ProcedimentoBean listaProcedimentoEspecificoCboParaPrograma(Integer idPrograma, Long idFuncionario)
+            throws SQLException, ProjetoException {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc " +  
+        		"	from hosp.programa_procedimento_cbo_especifico ppc " + 
+        		"	join hosp.programa p on ppc.id_programa = p.id_programa " + 
+        		"	join hosp.proc pr on ppc.id_procedimento = pr.id " + 
+        		"	join hosp.cbo c on ppc.id_cbo = c.id " + 
+        		"	join hosp.cbo_funcionario cf on c.id = cf.id_cbo " + 
+        		"	where p.id_programa = ? and p.cod_unidade = ? and cf.id_profissional =? " + 
+        		"   and pr.ativo = 'S' ;";
+        ProcedimentoBean procedimento = new ProcedimentoBean();
+        try {
+        	con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            stm.setLong(3, idFuncionario);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                procedimento.setIdProc(rs.getInt("id_procedimento"));
+                procedimento.setNomeProc(rs.getString("nome_procedimento"));
+                procedimento.setCodProc(rs.getString("codproc"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+			}
+		}
+        return procedimento;
+    }
 }

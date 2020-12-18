@@ -848,7 +848,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     
     public void validarInsercaoPaciente() throws ProjetoException, SQLException {
     	if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo() && 
-    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercao.getLaudo().getPaciente())) {
+    			procedimentoValido(insercao.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), 
+    					insercao.getGrupo(), insercao.getLaudo().getPaciente(), listaProfissionaisAdicionados)) {
 
 			if (VerificadorUtil.verificarSeObjetoNulo(insercao.getTurno())) {
 				JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
@@ -888,7 +889,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
     
     
-    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, GrupoBean grupo, PacienteBean paciente) throws ProjetoException, SQLException {
+    public boolean procedimentoValido(ProcedimentoBean procedimentoLaudo, ProgramaBean programa, 
+    		GrupoBean grupo, PacienteBean paciente, List<FuncionarioBean> listaFuncionarios) throws ProjetoException, SQLException {
+    	
     	ProgramaDAO programaDAO = new ProgramaDAO();
     	ProcedimentoBean procedimentoPadraoGrupo = programaDAO.retornaProcedimentoPadraoDoGrupoNoPrograma(programa, grupo);
     	ProcedimentoBean procedimentoIdade = programaDAO.retornaProcedimentoPadraoDoProgramaPorIdade(programa.getIdPrograma(), paciente.getId_paciente());
@@ -898,16 +901,44 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoPadraoGrupo)) && (!procedimentoLaudo.getIdProc().equals(procedimentoPadraoGrupo.getIdProc())))
         		&& ((!VerificadorUtil.verificarSeObjetoNulo(procedimentoIdade)) && (!procedimentoLaudo.getIdProc().equals(procedimentoIdade.getIdProc()))) ) {
         	
-        	for (ProcedimentoBean procedimentoPermitido : listaProcedimentosPermitidos) {
-				if(procedimentoPermitido.getIdProc().equals(procedimentoLaudo.getIdProc()))
-					return true;
-			}
+        	if(validaProcedimentoLaudoComProcedimentosPermitidos(procedimentoLaudo, listaProcedimentosPermitidos))
+        		return true;
+        	
+        	if(validaProcedimentoCboDoProgramaComProcedimentoLaudo(procedimentoLaudo, programa, listaFuncionarios,
+					programaDAO)) {
+        		return true;
+        	}
         	
     		JSFUtil.adicionarMensagemErro("Procedimento do Laudo é Incompatível com o Procedimento do Programa Selecionado", "");
     		return false;
     	}
     	return true;
     }
+
+	private boolean validaProcedimentoCboDoProgramaComProcedimentoLaudo(ProcedimentoBean procedimentoLaudo,
+			ProgramaBean programa, List<FuncionarioBean> listaFuncionarios, ProgramaDAO programaDAO)
+			throws SQLException, ProjetoException {
+		for (FuncionarioBean funcionario : listaFuncionarios) {
+			ProcedimentoBean procedimentosCboFuncionario
+				= programaDAO.listaProcedimentoEspecificoCboParaPrograma(programa.getIdPrograma(), funcionario.getId());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimentosCboFuncionario.getIdProc()) 
+					|| !procedimentosCboFuncionario.getIdProc().equals(procedimentoLaudo.getIdProc())) {
+				JSFUtil.adicionarMensagemErro("Procedimento inválido para o profissional "+funcionario.getNome(), "");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean validaProcedimentoLaudoComProcedimentosPermitidos(ProcedimentoBean procedimentoLaudo,
+			List<ProcedimentoBean> listaProcedimentosPermitidos) {
+		for (ProcedimentoBean procedimentoPermitido : listaProcedimentosPermitidos) {
+			if(procedimentoPermitido.getIdProc().equals(procedimentoLaudo.getIdProc()))
+				return true;
+		}
+		return false;
+	}
 
     public ArrayList<AgendaBean> validarDatas(ArrayList<AgendaBean> listaAgendamentos, String turno) throws ProjetoException {
         ArrayList<AgendaBean> listaAgendamentosAux = new ArrayList<>();

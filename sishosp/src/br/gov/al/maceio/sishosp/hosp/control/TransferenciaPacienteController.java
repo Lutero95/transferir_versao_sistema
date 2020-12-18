@@ -235,7 +235,8 @@ public class TransferenciaPacienteController implements Serializable {
 		}
 
         else if(insercaoPacienteController.procedimentoValido
-        		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(), insercaoParaLaudo.getLaudo().getPaciente())
+        		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(),
+        				insercaoParaLaudo.getLaudo().getPaciente(), listaProfissionaisAdicionados)
         		&& validarProfissionaisAdicionados()) {
             Boolean cadastrou = null;
 

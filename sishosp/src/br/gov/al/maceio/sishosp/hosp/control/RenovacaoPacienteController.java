@@ -685,7 +685,8 @@ public class RenovacaoPacienteController implements Serializable {
         		pacienteAux = insercaoParaLaudo.getLaudo().getPaciente();
         	
 			if (verificaPeriodoValidoRenovacaoLaudo() && 
-					insercaoPacienteController.procedimentoValido(retornaProcedimentoLaudo(), insercao.getPrograma(), insercao.getGrupo(), pacienteAux)) {
+					insercaoPacienteController.procedimentoValido
+					(retornaProcedimentoLaudo(), insercao.getPrograma(), insercao.getGrupo(), pacienteAux, listaProfissionaisAdicionados)) {
 																					// Verifica se a data de renovacao
 																					// está dentro do periodo do laudo
 																					// ou da nova solicitacao sem laudo
