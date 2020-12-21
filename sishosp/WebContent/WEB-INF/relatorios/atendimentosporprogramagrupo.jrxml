@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="267"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="726"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -80,8 +80,8 @@ left join (
 	CROSS JOIN hosp.empresa e2 
 	left join hosp.especialidade es2 on es2.id_especialidade = f2.codespecialidade
 	where sa2.atendimento_realizado is true
-	and coalesce(a.situacao,'A')<>'C'
-and coalesce(a1.excluido,'N' )='N'
+	and coalesce(a2.situacao,'A')<>'C'
+and coalesce(a11.excluido,'N' )='N'
 	and a2.dtaatende between  $P{dt_inicial}  and  $P{dt_final} 
 	and ((  $P{id_situacao_atendimento}    is not null and sa2.id =   $P{id_situacao_atendimento}  ) or ((  $P{id_situacao_atendimento}  =0 ) OR (  $P{id_situacao_atendimento}  is null )))
 	and ((   $P{turno}  is not null and a2.turno =   $P{turno}  ) or  (   $P{turno}  is null ))
@@ -119,6 +119,17 @@ order by 1]]>
 	</queryString>
 	<field name="row" class="java.lang.Object">
 		<property name="com.jaspersoft.studio.field.label" value="row"/>
+	</field>
+	<field name="nome_unidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_unidade"/>
+	</field>
+	<field name="cod_unidade" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_unidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidade"/>
+	</field>
+	<field name="COLUMN_4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_unidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="unidade"/>
 	</field>
 	<field name="cod_programa" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
@@ -168,8 +179,6 @@ order by 1]]>
 		<property name="com.jaspersoft.studio.field.label" value="nome_principal"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
-	<field name="cod_unidade" class="java.lang.Integer"/>
-	<field name="nome_unidade" class="java.lang.String"/>
 	<variable name="cod_atendimento_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{cod_atendimento}]]></variableExpression>
 	</variable>
