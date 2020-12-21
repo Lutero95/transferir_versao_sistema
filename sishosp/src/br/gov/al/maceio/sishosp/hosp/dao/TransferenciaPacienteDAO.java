@@ -350,7 +350,10 @@ public class TransferenciaPacienteDAO {
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
 											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
-							
+
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
+
 							ps4 = null;
 							ps4 = conexao.prepareStatement(sql4);
 
@@ -597,7 +600,10 @@ public class TransferenciaPacienteDAO {
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
 											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
-							
+
+							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
+
 							PreparedStatement ps10 = null;
 							ps10 = conexao.prepareStatement(sql10);
 

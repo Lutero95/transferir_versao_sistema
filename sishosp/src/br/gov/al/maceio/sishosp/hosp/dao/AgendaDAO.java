@@ -283,7 +283,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 Integer idProcedimentoEspecifico = 
                 		retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(), listaCbosProfissional,
                 				agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(), con);
-                
+
+
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                    idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
+
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, funcionario.getId());
                 ps.setInt(2, idAtendimento);
@@ -418,7 +422,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
 						listaCbosProfissional, pacienteComInformacaoAtendimentoDTO.getPaciente().getId_paciente(),
 						agenda.getGrupo().getIdGrupo(), con);
-				
+
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                    idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
+
 				
 				ps = con.prepareStatement(sql2);
 				ps.setLong(1, agenda.getProfissional().getId());
