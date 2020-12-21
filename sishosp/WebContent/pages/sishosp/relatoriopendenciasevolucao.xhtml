@@ -55,9 +55,6 @@
 										showOn="button" size="8" id="dtagen3" locale="pt"
 										value="#{RelatoriosController.dataFinal}" />
 						</b:column>
-
-
-
 					</b:row>
 
 					<p:fieldset legend="Filtrar por Programa/Grupo">
@@ -108,17 +105,9 @@
 									</p:dataTable>
 
 								</b:column>
-
 							</b:row>
-
 						</p:outputPanel>
 					</p:fieldset>
-
-
-
-
-
-
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
@@ -126,22 +115,19 @@
 									 update="grw"
 									 actionListener="#{RelatoriosController.gerarPendenciasEvolucaoPorProgramaEGrupo(MBFuncionarios.listaGruposEProgramasProfissional)}"
 									 ajax="false" />
-
-
 				</h:form>
 			</div>
 		</div>
 
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuProgsGrupos"
-				  dynamic="true" modal="true" styleClass="topDialog">
+				  dynamic="true" modal="true" styleClass="topDialog" height="450">
 			<h:form id="formConsuGrops">
 				<p:outputPanel>
 					<p:autoUpdate />
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}" 
 								 value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
 								 var="programa">
-
 
 						<h:column>
 							<f:facet name="header">
@@ -157,27 +143,37 @@
 							<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
 						</h:column>
 
-
 						<h:column>
 							<f:facet name="header">
 								Adicionar
 							</f:facet>
-							<p:commandButton update=":frm:tabelagrupo :msgPagina"
-											 icon="fa fa-fw fa-check" title="Selecionar"
-											 class="new-btn-acao-table acao-editar"
-											 oncomplete="PF('dlgConsuProgsGrupos').hide();"
-											 action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
-								<f:setPropertyActionListener value="#{programa}"
-															 target="#{MBFuncionarios.profissional.progAdd}" />
-							</p:commandButton>
+							<div align="center">
+								<p:commandButton
+									rendered="#{MBFuncionarios.programaGrupoFoiClicadoNoDialog(programa) == false}"
+									update=":formConsuGrops:dtGrupos :msgPagina"
+									icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar"
+									action="#{MBFuncionarios.adicionarProgramaGrupoParaExibirNaTela(programa)}"/>
+									
+								<p:commandButton
+									rendered="#{MBFuncionarios.programaGrupoFoiClicadoNoDialog(programa) == true}"
+									update=":formConsuGrops:dtGrupos :msgPagina"
+									icon="fa fa-fw fa-trash" title="Remover"
+									class="new-btn-acao-table acao-excluir"
+									action="#{MBFuncionarios.removerProgramaGrupoParaExibirNaTela(programa)}"/>	
+							</div>
 						</h:column>
-
 					</b:dataTable>
 				</p:outputPanel>
+
+				<div align="center">
+					<p:commandButton update=":frm:outProgramaGrupo :msgPagina"
+						value="Adicionar" title="Adicionar Programa / Grupo"
+						onclick="PF('dlgConsuGrupos').hide();"
+						action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}" />
+				</div>
 			</h:form>
 		</p:dialog>
-
-
 	</ui:define>
 
 </ui:composition>
