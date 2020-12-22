@@ -637,19 +637,19 @@
 				</div>
 
 				<div align="center">
-					<p:commandButton value="Liberar A" look="success" size="sm"
+					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsa()}" 
 						update="frmLiberacao msgPagina :formAgendaMedica" 
 						rendered="#{AgendaController.motivoLiberacao == 'DUPLI_AG_AVULSA'}"/>
 						
-					<p:commandButton value="Liberar E" look="success" size="sm"
+					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoEspecialidadeAgendaAvulsaPaciente()}" 
 						update="frmLiberacao msgPagina :formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
 						rendered="#{AgendaController.motivoLiberacao == 'DUPLI_ESP'}"/>
 						
-					<p:commandButton value="Liberar P" look="success" size="sm"
+					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsaComProcedimento()}" 
 						update="frmLiberacao msgPagina :formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"

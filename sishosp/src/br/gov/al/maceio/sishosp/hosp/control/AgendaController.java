@@ -886,6 +886,21 @@ public class AgendaController implements Serializable {
 	public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
 		limpaDadosDialogLiberacao();
+		
+		// verificar se existe algum campo nao preenchido
+		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
+				|| (this.agenda.getTipoAt() == null) || this.agenda.getDataAtendimento() == null 
+				|| VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getGrupo().getIdGrupo())
+				||VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getTipoAt().getIdTipo())) {
+			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
+			return;
+		}
+		
+		if (this.listaFuncionariosTarget.isEmpty()) {
+			JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
+			return;
+		}
+		
 		if (procedimentoValido() && pacienteValido(agenda.getPaciente())) {
 			
 			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
@@ -1119,18 +1134,7 @@ public class AgendaController implements Serializable {
 	}
 
 	private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-		// verificar se existe algum campo nao preenchido
-		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
-				|| (this.agenda.getTipoAt() == null) || this.agenda.getDataAtendimento() == null) {
-			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-			return;
-		}
-
-		if (this.listaFuncionariosTarget.isEmpty()) {
-			JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
-			return;
-		}
-		
+	
 		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
 				|| !incluirProcedimentos) {
 

@@ -285,8 +285,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ps.setLong(1, funcionario.getId());
                 ps.setInt(2, idAtendimento);
                 
-				CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-						(agenda.getDataAtendimento(), funcionario, idProcedimentoEspecifico, con);
+                CboBean cboCompativel = null;
+                
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {                	
+					cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
+							agenda.getDataAtendimento(), funcionario, idProcedimentoEspecifico, con);
+                } else {
+                	cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(funcionario.getId());
+                }
 				
 				ps.setInt(3, cboCompativel.getCodCbo());
                 
