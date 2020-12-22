@@ -1461,7 +1461,7 @@ public class AtendimentoDAO {
 				"VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?, ?); ";
 		try {
 			PreparedStatement stm = conexao.prepareStatement(sql);
-			stm.setString(1, MotivoLiberacao.CANCELAR_EVOLUCAO.getSigla());
+			stm.setString(1, MotivoLiberacao.CANCELAR_EVOLUCAO.getTitulo());
 			stm.setLong(2,  usuarioLiberacao.getId());
 			stm.setInt(3, idAtendimento);
 			stm.setInt(4, usuarioLiberacao.getUnidade().getId());

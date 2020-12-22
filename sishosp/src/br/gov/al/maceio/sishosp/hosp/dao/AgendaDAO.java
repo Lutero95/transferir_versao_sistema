@@ -29,7 +29,9 @@ import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
     private static final String NAO = "N";
@@ -275,14 +277,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             for (FuncionarioBean funcionario : listaProfissionais) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
+                        + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?) returning id_atendimentos1";
                 
-            	List<CboBean> listaCbosProfissional = 
-						new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(funcionario.getId(), con);
-                
-                Integer idProcedimentoEspecifico = 
-                		retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(), listaCbosProfissional,
-                				agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(), con);
+                Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda, funcionario); 
                 
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, funcionario.getId());
@@ -312,8 +309,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 else
                     ps.setInt(6, agenda.getIdCidPrimario());
 
-                ps.executeUpdate();
-
+                rs = ps.executeQuery();
+                
+                if(rs.next()) {
+                	gravarProcedimentosSecundarios(con, agenda, rs.getInt("id_atendimentos1"));
+                }
             }
 
             if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
@@ -456,10 +456,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 					
 					for (String motivo : listaMotivosLiberacao) {
 						if(pacienteComInformacaoAtendimentoDTO.isDuplicidadeEspecialidade() 
-								&& motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
+								&& motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo())) {
 							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
 						}
-						else if (motivo.equals(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla()))
+						else if (motivo.equals(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo()))
 							gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);	
 					}
 				}
@@ -3339,7 +3339,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.setLong(1, user_session.getId());
             stmt.setInt(2, atendimento.getId1());
             stmt.execute();
-            gravarLiberacaoAgendamento(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getSigla());
+            gravarLiberacaoAgendamento(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getTitulo());
             con.commit();
             retorno = true;
         } catch (SQLException ex2) {
@@ -3370,6 +3370,57 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			stm.setInt(4, usuarioLiberacao.getUnidade().getId());
 			stm.setInt(5, atendimento.getId1());
 			stm.executeUpdate();
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+	
+	private Integer retornaIdProcedimentoDaAgendaOuEspecifico(Connection conexao, AgendaBean agenda,
+			FuncionarioBean funcionario) throws SQLException, ProjetoException {
+
+		Integer idProcedimentoEspecifico = null;
+		try {
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+							
+				List<CboBean> listaCbosProfissional = new FuncionarioDAO()
+						.listaCbosProfissionalComMesmaConexao(funcionario.getId(), conexao);
+
+				idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
+						listaCbosProfissional, agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(),
+						conexao);
+			}
+			else {
+				idProcedimentoEspecifico = agenda.getProcedimento().getIdProc();
+			}
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return idProcedimentoEspecifico;
+	}
+	
+	private void gravarProcedimentosSecundarios(Connection conexao, AgendaBean agenda, Integer idAtendimento1) 
+			throws SQLException, ProjetoException {
+		
+		String sql = "INSERT INTO hosp.atendimentos1_procedimento_secundario " + 
+				"(id_atendimentos1, id_procedimento) " + 
+				"VALUES(?, ?);";
+		try {
+			if(!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+				for (ProcedimentoBean procedimento : agenda.getListaProcedimentosSecundarios()) {
+					PreparedStatement stm = conexao.prepareStatement(sql);
+					stm.setInt(1, idAtendimento1);
+					stm.setInt(2, procedimento.getIdProc());
+					stm.executeUpdate();
+				}
+			}
 		} catch (SQLException ex2) {
 			conexao.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);

@@ -43,10 +43,11 @@ public class AgendaBean implements Serializable {
     private FuncionarioBean profissional;
     private EquipeBean equipe;
     private UnidadeBean unidade;
+    private List<ProcedimentoBean> listaProcedimentosSecundarios;
 
     public AgendaBean() {
         this.paciente = new PacienteBean();
-        this.procedimento = null;
+        this.procedimento = new ProcedimentoBean();
         this.grupo = new GrupoBean();
         this.programa = new ProgramaBean();
         this.programaAvaliacao = new ProgramaBean();
@@ -70,6 +71,7 @@ public class AgendaBean implements Serializable {
         encaixe = false;
         avulso = false;
         this.listaNomeProfissionais = new ArrayList<String>();
+        this.listaProcedimentosSecundarios = new ArrayList<>();
     }
 
     public Integer getIdAgenda() {
@@ -313,6 +315,14 @@ public class AgendaBean implements Serializable {
 
 	public void setIdCidPrimario(Integer idCidPrimario) {
 		this.idCidPrimario = idCidPrimario;
+	}
+
+	public List<ProcedimentoBean> getListaProcedimentosSecundarios() {
+		return listaProcedimentosSecundarios;
+	}
+
+	public void setListaProcedimentosSecundarios(List<ProcedimentoBean> listaProcedimentosSecundarios) {
+		this.listaProcedimentosSecundarios = listaProcedimentosSecundarios;
 	}
 	
 }

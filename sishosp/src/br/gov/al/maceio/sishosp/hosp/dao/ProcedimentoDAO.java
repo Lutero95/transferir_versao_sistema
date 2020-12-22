@@ -599,9 +599,9 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
-                + "from hosp.proc where ativo = 'S' ";
+                + "from hosp.proc join hosp.procedimentos_unidades pu on (proc.id = pu.id_procedimento) where ativo = 'S' ";
         if (tipoBuscar == 1) {
-            sql += " and (codproc ||' - '|| nome) ILIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
+            sql += " and (codproc ||' - '|| nome) ILIKE ? and pu.id_unidade = ? and gera_laudo_digita is true order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
