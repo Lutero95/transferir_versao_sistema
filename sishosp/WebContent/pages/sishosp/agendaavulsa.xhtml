@@ -396,7 +396,8 @@
 						
 					<br />	
 					<div align="center">
-
+						
+						<br />
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
 							actionListener="#{AgendaController.preparaGravarAgendaAvulsa()}"
@@ -652,7 +653,7 @@
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsaComProcedimento()}" 
-						update="frmLiberacao msgPagina :formAgendaMedica:tbfuncionarios :formAgendaMedica:tbfuncionarioselecionado"
+						update="frmLiberacao msgPagina :formAgendaMedica"
 						rendered="#{AgendaController.motivoLiberacao == 'AG_AVULSA_PROC'}"/>			
 						
 					<p:commandButton value="Cancelar" look="cancel" size="sm"

@@ -199,6 +199,7 @@ public class AgendaController implements Serializable {
         this.agenda.setProfissional(new FuncionarioBean());
         this.listaPacientesSelecionadosComInformacaoDTO.clear();
         confirmaAgendamentoComProcedimentos = false;
+        incluirProcedimentos = false;
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
@@ -1021,6 +1022,22 @@ public class AgendaController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
 		}
 	}
+	
+	public void validarSenhaLiberacaoAgendaAvulsaPorProfissionalComProcedimento() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			listaLiberacoes.add(MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getTitulo());
+			confirmaAgendamentoComProcedimentos = true;
+			gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
+			JSFUtil.fecharDialog("dlgLiberacao");
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
 
 	private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
 		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
@@ -1141,13 +1158,13 @@ public class AgendaController implements Serializable {
 			boolean cadastrou = false;
 
 			List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
-
 			cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao,
 					listaLiberacoesFiltradas);
 
 			if (cadastrou) {
 				limparDados();
 				carregaListaFuncionariosDual();
+				JSFUtil.fecharDialog("dlgLiberacao");
 				JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
 			} else {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
@@ -1155,12 +1172,7 @@ public class AgendaController implements Serializable {
 			limparDados();
 		} 			
 		else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
-			JSFUtil.fecharDialog("dlgLiberacao");
-			limpaDadosDialogLiberacao();
-			mensagemDialogLiberacao = "Liberação de Agendamento com Procedimento:\n Você está tentando gravar um agendamento do qual você está informando o(s) procedimento(s) utilizado(s).\r\n" + 
-					"					Você está ciente de que quaisquer erros em relação ao sigtap ou outras validações são de sua responsabilidade?";
-			motivoLiberacao = MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getSigla();
-			JSFUtil.abrirDialog("dlgLiberacao");
+			configuraDialogLiberacaoParaAgendaComProcedimento();
 		}
 	}
 
@@ -1184,26 +1196,42 @@ public class AgendaController implements Serializable {
 			if ((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
 					|| !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
 					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
-				gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
+				gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
 			}
 		}
 	}
 
-	private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-		boolean cadastrou = false;
+	private void gravarAgendaAvulsaPorProfissional(FuncionarioBean usuarioLiberacao) throws ProjetoException {
+		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
+				|| !incluirProcedimentos) {
+			
+			boolean cadastrou = false;
 
-		List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
-		cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda,
-				this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoesFiltradas);
+			List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
+			cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda,
+					this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoesFiltradas);
 
-		if (cadastrou) {
+			if (cadastrou) {
+				limparDados();
+				listarPacientes();
+				JSFUtil.fecharDialog("dlgLiberacao");
+				JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
 			limparDados();
-			listarPacientes();
-			JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
-		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+		} else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
+			configuraDialogLiberacaoParaAgendaComProcedimento();
 		}
-		limparDados();
+	}
+
+	private void configuraDialogLiberacaoParaAgendaComProcedimento() {
+		limpaDadosDialogLiberacao();
+		JSFUtil.fecharDialog("dlgLiberacao");
+		mensagemDialogLiberacao = "Liberação de Agendamento com Procedimento:\n Você está tentando gravar um agendamento do qual você está informando o(s) procedimento(s) utilizado(s).\r\n" + 
+				"					Você está ciente de que quaisquer erros em relação ao sigtap ou outras validações são de sua responsabilidade?";
+		motivoLiberacao = MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getSigla();
+		JSFUtil.abrirDialog("dlgLiberacao");
 	}
 
 	public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
@@ -1214,8 +1242,9 @@ public class AgendaController implements Serializable {
 
 		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
 			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo());
-			gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
-			JSFUtil.fecharDialog("dlgLiberacao");
+			gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
+			if(!incluirProcedimentos)
+				JSFUtil.fecharDialog("dlgLiberacao");
 		} else {
 			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
 		}
@@ -1563,7 +1592,6 @@ public class AgendaController implements Serializable {
                     listaProfissionalPorGrupo = fDao.listarProfissionalPorGrupo(agenda.getGrupo().getIdGrupo());
                 }
             }
-
         }
 
         public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query) throws ProjetoException {
@@ -1718,7 +1746,7 @@ public class AgendaController implements Serializable {
             
             if(aDao.verificaExisteEspecialidadeNestaData
                     (paciente.getPaciente().getId_paciente(), agenda.getDataAtendimento(), agenda.getProfissional().getEspecialidade().getCodEspecialidade())) {
-                mensagemDialogLiberacao = "Não é possível adicionar o paciente "+paciente.getPaciente().getNome()+
+                mensagemDialogLiberacao = "Duplicidade De Agenda Avulsa: Não é possível adicionar o paciente "+paciente.getPaciente().getNome()+
                         ".\n Já existe um agendamento nessa data na mesma especialidade para este paciente. Para continuar, digite seu CPF e senha";
                 this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla(); 
             }

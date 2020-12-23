@@ -1618,7 +1618,7 @@ public class FuncionarioDAO {
 				+ "	from acl.funcionarios m \n"
 				+ "                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n"
 				+ "                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n"
-				+ "                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
+				+ "                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ? order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
