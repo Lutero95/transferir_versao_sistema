@@ -8,14 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
-import br.gov.al.maceio.sishosp.acl.control.FuncionarioController;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
@@ -49,7 +48,6 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -64,7 +62,7 @@ import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
 @ViewScoped
 public class AgendaController implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
     List<ConfigAgendaParte1Bean> listaConfigAgendaGeral = new ArrayList<>();
     List<ConfigAgendaParte1Bean> listaConfigAgendaMesAtual = new ArrayList<>();
     private AgendaBean agenda;
@@ -117,7 +115,6 @@ public class AgendaController implements Serializable {
     private TipoAtendimentoBean tipoAtendimentoSelecionado;
     private List<Date> listaNaoPermitidosIntervaloDeDatas;
     private FuncionarioBean funcionario;
-    private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
     private List<GrupoBean> listaDeGruposFiltrada;
     private ArrayList<String> listaHorarios;
     private List<PacientesComInformacaoAtendimentoDTO> listaPacientesComInformacaoDTO;
@@ -135,6 +132,14 @@ public class AgendaController implements Serializable {
     private boolean incluirProcedimentos;
     private String tipoProcedimento;
     private boolean confirmaAgendamentoComProcedimentos;
+    
+    private static final String ERRO = "Erro!";
+	private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
+	private static final String DIALOG_LIBERACAO = "dlgLiberacao";
+	private static final String PAGINA_AGENDA_AVULSA_PROFISSIONAL = "agendaavulsacominfoatendimento.faces";
+	private static final String PAGINA_AGENDA_AVULSA = "agendaavulsa.faces";
+	private static final String PAGINA_AGENDA_MEDICA = "agendaMedica.faces";
+	
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -471,7 +476,7 @@ public class AgendaController implements Serializable {
 
     public void verificarDisponibilidadeDataEspecifica(Integer quantidade, Integer maxima) {
         if (quantidade >= maxima) {
-            JSFUtil.adicionarMensagemErro("Já atingiu a quantidade máxima para essa data específica!", "Erro!");
+            JSFUtil.adicionarMensagemErro("Já atingiu a quantidade máxima para essa data específica!", ERRO);
         }
 
     }
@@ -863,25 +868,28 @@ public class AgendaController implements Serializable {
     public void verificarPacienteAtivoInstituicao() throws ProjetoException {
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-        Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao
-                (agenda.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(), agenda.getGrupo().getIdGrupo());
+		if (procedimentoValido()) {
+			Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(
+					agenda.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(),
+					agenda.getGrupo().getIdGrupo());
 
-        if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
-                && VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
-            zerarValoresAgendaMaximoIhQuantidade();
-        }
+			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
+					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
+				zerarValoresAgendaMaximoIhQuantidade();
+			}
 
-        if ((agenda.getEquipe().getCodEquipe() != null) && (agenda.getAvaliacao() == false)) {
+			if ((agenda.getEquipe().getCodEquipe() != null) && (agenda.getAvaliacao() == false)) {
 
-            if (pacienteAtivo) {
-                gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
-            } else {
-                funcionario = new FuncionarioBean();
-                JSFUtil.abrirDialog("dlgSenha");
-            }
-        } else if ((agenda.getProfissional().getId() != null) || (agenda.getAvaliacao() == true)) {
-            gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
-        }
+				if (pacienteAtivo) {
+					gravarAgenda(new FuncionarioBean());
+				} else {
+					funcionario = new FuncionarioBean();
+					JSFUtil.abrirDialog("dlgSenha");
+				}
+			} else if ((agenda.getProfissional().getId() != null) || (agenda.getAvaliacao() == true)) {
+				gravarAgenda(new FuncionarioBean());
+			}
+		}
     }
 
 	public void preparaGravarAgendaAvulsa() throws ProjetoException {
@@ -973,7 +981,7 @@ public class AgendaController implements Serializable {
 					+ "Digite o CPF e senha para liberação!";
 			
 			this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla();
-			JSFUtil.abrirDialog("dlgLiberacao");
+			JSFUtil.abrirDialog(DIALOG_LIBERACAO);
 			limpaDadosDialogLiberacao();
 		}
 
@@ -990,9 +998,9 @@ public class AgendaController implements Serializable {
 			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo());
 			gravarAgendaAvulsa(usuarioLiberacao);
 			if(!incluirProcedimentos)
-				JSFUtil.fecharDialog("dlgLiberacao");
+				JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, ERRO);
 		}
 	}
 
@@ -1007,7 +1015,7 @@ public class AgendaController implements Serializable {
 		adicionarFuncionario(this.funcionarioSelecionado);
 	}
 	
-	public void validarSenhaLiberacaoAgendaAvulsaComProcedimento() throws ProjetoException {
+	public void validarSenhaLiberacaoAgendaComProcedimento() throws ProjetoException {
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
 		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
@@ -1016,33 +1024,29 @@ public class AgendaController implements Serializable {
 		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
 			listaLiberacoes.add(MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getTitulo());
 			confirmaAgendamentoComProcedimentos = true;
-			gravarAgendaAvulsa(usuarioLiberacao);
-			JSFUtil.fecharDialog("dlgLiberacao");
+			String pagina = retornaPagina();
+			
+			if(pagina.contains(PAGINA_AGENDA_AVULSA))
+				gravarAgendaAvulsa(usuarioLiberacao);
+			else if(pagina.contains(PAGINA_AGENDA_AVULSA_PROFISSIONAL))
+				gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
+			else if(pagina.contains(PAGINA_AGENDA_MEDICA))
+				gravarAgenda(usuarioLiberacao);
+			JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, ERRO);
 		}
 	}
 	
-	public void validarSenhaLiberacaoAgendaAvulsaPorProfissionalComProcedimento() throws ProjetoException {
-		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-				ValidacaoSenha.LIBERACAO.getSigla());
-
-		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-			listaLiberacoes.add(MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getTitulo());
-			confirmaAgendamentoComProcedimentos = true;
-			gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
-			JSFUtil.fecharDialog("dlgLiberacao");
-		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
-		}
+	private String retornaPagina() {
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+	    return request.getRequestURL().toString();
 	}
-
+	
 	private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
 		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
 			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo());
-			JSFUtil.fecharDialog("dlgLiberacao");
+			JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 		}
 	}
 
@@ -1068,14 +1072,14 @@ public class AgendaController implements Serializable {
 	public void validarSenhaLiberacao() throws ProjetoException {
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-		FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+		FuncionarioBean usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
 				ValidacaoSenha.LIBERACAO.getSigla());
 
-		if (func != null) {
+		if (usuarioLiberacao != null) {
 			JSFUtil.fecharDialog("dlgSenha");
-			gravarAgenda(func.getId().intValue());
+			gravarAgenda(usuarioLiberacao);
 		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, ERRO);
 		}
 	}
 
@@ -1089,7 +1093,7 @@ public class AgendaController implements Serializable {
 			JSFUtil.fecharDialog("dlgSenhaEncaixe");
 			preparaConfirmar();
 		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, ERRO);
 		}
 	}
 
@@ -1109,7 +1113,7 @@ public class AgendaController implements Serializable {
 		return retorno;
 	}
 
-	public void gravarAgenda(Integer funcionarioLiberacao) throws ProjetoException {
+	public void gravarAgenda(FuncionarioBean funcionarioLiberacao) throws ProjetoException {
 		// verificar se existe algum campo nao preenchido
 		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
 				|| ((this.agenda.getTipoAt() == null) && (this.agenda.getAvaliacao() == false))
@@ -1135,19 +1139,26 @@ public class AgendaController implements Serializable {
 			return;
 		}
 
-		boolean cadastrou = false;
+		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
+				|| !incluirProcedimentos) {
+			boolean cadastrou = false;
 
-		cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao);
+			List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
+			cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao, listaLiberacoesFiltradas);
 
-		if (cadastrou) {
+			if (cadastrou) {
+				limparDados();
+				this.agenda.setTurno(Turno.MANHA.getSigla());
+				JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
 			limparDados();
 			this.agenda.setTurno(Turno.MANHA.getSigla());
-			JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
-		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			
+		} else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
+			configuraDialogLiberacaoParaAgendaComProcedimento();
 		}
-		limparDados();
-		this.agenda.setTurno(Turno.MANHA.getSigla());
 	}
 
 	private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
@@ -1164,7 +1175,7 @@ public class AgendaController implements Serializable {
 			if (cadastrou) {
 				limparDados();
 				carregaListaFuncionariosDual();
-				JSFUtil.fecharDialog("dlgLiberacao");
+				JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 				JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
 			} else {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
@@ -1186,7 +1197,8 @@ public class AgendaController implements Serializable {
 	}
 
 	public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
-		if (existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
+		
+		if (procedimentoValido() && existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
 			insereIdCidPrimarioEmPacientesSelecionados();
 
 			limpaDadosDialogLiberacao();
@@ -1214,7 +1226,7 @@ public class AgendaController implements Serializable {
 			if (cadastrou) {
 				limparDados();
 				listarPacientes();
-				JSFUtil.fecharDialog("dlgLiberacao");
+				JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 				JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
 			} else {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
@@ -1227,13 +1239,13 @@ public class AgendaController implements Serializable {
 
 	private void configuraDialogLiberacaoParaAgendaComProcedimento() {
 		limpaDadosDialogLiberacao();
-		JSFUtil.fecharDialog("dlgLiberacao");
+		JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 		mensagemDialogLiberacao = "Liberação de Agendamento com Procedimento:\n Você está tentando gravar um agendamento do qual você está informando o(s) procedimento(s) utilizado(s).\r\n" + 
 				"					Você está ciente de que quaisquer erros em relação ao sigtap ou outras validações são de sua responsabilidade?";
 		motivoLiberacao = MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getSigla();
-		JSFUtil.abrirDialog("dlgLiberacao");
+		JSFUtil.abrirDialog(DIALOG_LIBERACAO);
 	}
-
+	
 	public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
@@ -1244,9 +1256,9 @@ public class AgendaController implements Serializable {
 			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo());
 			gravarAgendaAvulsaPorProfissional(usuarioLiberacao);
 			if(!incluirProcedimentos)
-				JSFUtil.fecharDialog("dlgLiberacao");
+				JSFUtil.fecharDialog(DIALOG_LIBERACAO);
 		} else {
-			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, ERRO);
 		}
 	}
 
@@ -1734,7 +1746,7 @@ public class AgendaController implements Serializable {
             if(this.motivoLiberacao.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
                 funcionarioSelecionado = funcionario;
                 limpaDadosDialogLiberacao();
-                JSFUtil.abrirDialog("dlgLiberacao");
+                JSFUtil.abrirDialog(DIALOG_LIBERACAO);
                 return true;
             }
             return false;
@@ -1755,7 +1767,7 @@ public class AgendaController implements Serializable {
                 pacienteSelecionado = paciente;
                 pacienteSelecionado.setDuplicidadeEspecialidade(true);
                 limpaDadosDialogLiberacao();
-                JSFUtil.abrirDialog("dlgLiberacao");
+                JSFUtil.abrirDialog(DIALOG_LIBERACAO);
                 return true;
             }
             return false;
@@ -2039,10 +2051,6 @@ public class AgendaController implements Serializable {
 
         public static long getSerialversionuid() {
             return serialVersionUID;
-        }
-
-        public static Integer getSemFuncionarioLiberacao() {
-            return SEM_FUNCIONARIO_LIBERACAO;
         }
 
         public List<GrupoBean> getListaDeGruposFiltrada() {

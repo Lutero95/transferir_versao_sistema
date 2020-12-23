@@ -10,6 +10,7 @@
 
 		<f:metadata>
 			<f:event type="preRenderView" listener="#{AgendaController.carregarHorarioOuTurno()}"/>
+			<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -23,7 +24,6 @@
 					<p:growl id="growlMsg"></p:growl>
 
 					<b:row>
-
 						<b:column span="3">
 							<p:selectBooleanCheckbox label="Avaliação" itemLabel="Avaliação"
 								style="color:#2e84ce;" 
@@ -34,8 +34,7 @@
 							</p:selectBooleanCheckbox>
 						</b:column>
 					</b:row>
-
-					<br></br>
+					<br />
 
 					<b:row>
 						<b:column span="3"
@@ -54,7 +53,6 @@
 									<p:ajax event="itemSelect"
 										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
 										global="false" />
-
 								</p:autoComplete>
 
 								<p:commandButton id="btBPa" immediate="true"
@@ -62,7 +60,6 @@
 									oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
 						</b:column>
-
 					</b:row>
 
 					<p:outputPanel id="rowProgramaTipoAtendimento">
@@ -86,7 +83,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao}"
 											update="outTip2, :formAgendaMedica, msgPagina, outTipoAt, :formAgendaMedica:outEquipeAvaliacaoRow" />
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusPr2" immediate="true"
@@ -105,9 +101,7 @@
 								<b:inputText id="outTip2"
 									value="#{AgendaController.agenda.tipoAt.descTipoAt}"
 									class="select-agendaEquipe2" readonly="true" />
-
 							</b:column>
-
 						</b:row>
 					</p:outputPanel>
 
@@ -131,8 +125,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectPrograma}"
 											update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt, outProfissional, outEquipeRow" />
-
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusPr" immediate="true"
@@ -161,7 +153,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectGrupo}"
 											update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi, outProfissional, outEquipeRow" />
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusGr" immediate="true"
@@ -201,9 +192,7 @@
 										onclick="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
-
 					</p:outputPanel>
 
 					<p:outputPanel id="outProfissional">
@@ -228,7 +217,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
 											update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissionalEspecifico outHorariosProfissionalGeral"></p:ajax>
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -241,10 +229,8 @@
 							</b:column>
 
 							<b:column span="3">
-
 								<p:outputPanel id="outHorariosProfissionalEspecifico"
 									rendered="#{(AgendaController.agenda.profissional.id!=null) and (AgendaController.listaConfigAgendaMesAtual.size()>0) }">
-
 									<div>
 										<h:outputText
 											value="Agenda Específica #{AgendaController.dataAtual}"
@@ -254,7 +240,6 @@
 										resizableColumns="true"
 										value="#{AgendaController.listaConfigAgendaMesAtual}"
 										var="agend" emptyMessage="Sem registros.">
-
 
 										<p:column headerText="Dia da Semana" width="21">
 											<h:outputLabel value="#{agend.diaSemana}" />
@@ -269,13 +254,10 @@
 												<f:convertDateTime pattern="dd/MM/yyyy" />
 											</h:outputLabel>
 										</p:column>
-
 									</p:dataTable>
-
-
-
 								</p:outputPanel>
 							</b:column>
+							
 							<b:column span="2">
 								<p:outputPanel id="outHorariosProfissionalGeral"
 									rendered="#{(AgendaController.agenda.profissional.id!=null)  and (AgendaController.listaConfigAgendaGeral.size()	>0)}">
@@ -288,7 +270,6 @@
 										value="#{AgendaController.listaConfigAgendaGeral}" var="agend"
 										emptyMessage="Sem registros.">
 
-
 										<p:column headerText="Dia da Semana" width="21">
 											<h:outputLabel value="#{agend.diaSemana}" />
 										</p:column>
@@ -296,12 +277,7 @@
 										<p:column headerText="Turno" width="5">
 											<h:outputLabel value="#{agend.turno}" />
 										</p:column>
-
-
-
 									</p:dataTable>
-
-
 								</p:outputPanel>
 							</b:column>
 						</b:row>
@@ -328,7 +304,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
 											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax, opHorario"></p:ajax>
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusEqui" immediate="true"
@@ -340,7 +315,6 @@
 										rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
 								</p:outputPanel>
 							</b:column>
-
 
 							<b:column span="2"
 								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null)  and (AgendaController.listaConfigAgendaGeral.size()	>0)}">
@@ -354,7 +328,6 @@
 										value="#{AgendaController.listaConfigAgendaGeral}" var="agend"
 										emptyMessage="Sem registros.">
 
-
 										<p:column headerText="Dia da Semana" width="20">
 											<h:outputLabel value="#{agend.diaSemana}" />
 										</p:column>
@@ -362,12 +335,7 @@
 										<p:column headerText="Turno" width="5">
 											<h:outputLabel value="#{agend.turno}" />
 										</p:column>
-
-
-
 									</p:dataTable>
-
-
 								</p:outputPanel>
 							</b:column>
 
@@ -375,7 +343,6 @@
 								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null) and (AgendaController.listaConfigAgendaMesAtual.size()>0) }">
 
 								<p:outputPanel id="outHorariosEquipeEspecifico">
-
 									<div>
 										<h:outputText
 											value="Agenda Específica #{AgendaController.dataAtual}"
@@ -385,7 +352,6 @@
 										resizableColumns="true"
 										value="#{AgendaController.listaConfigAgendaMesAtual}"
 										var="agend" emptyMessage="Sem registros.">
-
 
 										<p:column headerText="Dia da Semana" width="21">
 											<h:outputLabel value="#{agend.diaSemana}" />
@@ -400,18 +366,11 @@
 												<f:convertDateTime pattern="dd/MM/yyyy" />
 											</h:outputLabel>
 										</p:column>
-
 									</p:dataTable>
-
-
-
 								</p:outputPanel>
 							</b:column>
-
-
 						</b:row>
 					</p:outputPanel>
-
 
 					<p:outputPanel id="outEquipeAvaliacaoRow" >
 						<b:row
@@ -447,44 +406,28 @@
 										rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
 					</p:outputPanel>
 
-
-
-
-
-
-
-
-
-
-
 					<b:row>
-
 						<b:column span="11" class="label-position">
 							<b:label for="obs" value="Observação" severity="info" />
 
 							<b:inputTextarea id="obs" rows="1" class="select-agendaEquipe2"
 								value="#{AgendaController.agenda.observacao}" autoResize="false" />
 						</b:column>
-
 					</b:row>
 
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 
 						<p:outputPanel>
 							<b:column span="2" class="new-data-size2">
-
 								<p:outputLabel value="Turno:"
 									style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
 							</b:column>
 
 							<b:column span="3" class="btn-radio-table">
-
 								<p:selectOneRadio value="#{AgendaController.agenda.turno}">
 									<f:selectItem itemLabel="Manhã" itemValue="M" />
 									<f:selectItem itemLabel="Tarde" itemValue="T" />
@@ -492,21 +435,17 @@
 										listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
 										update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissionalEspecifico outHorariosProfissionalGeral"></p:ajax>
 								</p:selectOneRadio>
-
 							</b:column>
 						</p:outputPanel>
 					</b:row>
-
-					<br></br>
+					<br />
 
 					<b:row rendered="false">
 
 						<b:column span="2" class="new-data-size2">
-
 							<p:outputLabel value="Data para Atendimento:"
 								style="margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
+    									margin-bottom: 15px;color:#2e84ce;"/>
 						</b:column>
 
 						<b:column span="3" class="btn-radio-table">
@@ -518,7 +457,6 @@
 								<p:ajax update="outdata, outIntervaloDatas, outQtdIhMax"></p:ajax>
 							</p:selectOneRadio>
 						</b:column>
-
 					</b:row>
 
 					<br></br>
@@ -537,12 +475,9 @@
 										listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
 										process="@this dtagen" update="msgPagina, outQtdIhMax, opHorario"></p:ajax>
 								</p:calendar>
-
 							</b:column>
-
 						</b:row>
 					</p:outputPanel>
-
 					<br/>
 
 					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
@@ -562,9 +497,7 @@
 					</b:row>
 
 					<b:row>
-
 						<b:column span="3" class="label-position">
-
 							<p:outputLabel value="Encaixe:"
 								style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
@@ -573,12 +506,9 @@
 								style="margin-left: 10px;margin-top: 5px"
 								value="#{AgendaController.agenda.encaixe}">
 							</p:selectBooleanCheckbox>
-
 						</b:column>
-
 					</b:row>
-
-					<br></br>
+					<br />
 
 					<!-- INTERVALO DE DATAS -->
 					<p:outputLabel id="outIntervaloDatas">
@@ -599,20 +529,16 @@
 							</b:column>
 
 							<b:column span="2" class="label-position data-size bottom-size2">
-
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
 									class="select-agendaEquipe2" required="true"
 									requiredMessage="Data Final: Campo obrigatório!"
 									value="#{AgendaController.agenda.dataAtendimentoFinal}"
 									id="dtagen3" locale="pt" navigator="true" mask="true"
 									showOn="button" pattern="dd/MM/yyyy" size="15" />
-
 							</b:column>
-
 						</b:row>
 					</p:outputLabel>
-
-					<br></br>
+					<br />
 
 					<p:outputPanel id="outQtdIhMax">
 						<b:row rendered="#{AgendaController.tipoData == 'U'}">
@@ -633,12 +559,10 @@
 									rendered="#{AgendaController.tipoData == 'U'}"
 									class="select-agendaEquipe2" readonly="true" />
 							</b:column>
-
 						</b:row>
 					</p:outputPanel>
 
 					<div align="center">
-
 						<p:commandButton value="Confirmar" style="margin-top:5px;"
 							class="btn-acao-table acao-confirmar"
 							update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe, outQtdIhMax"
@@ -669,10 +593,8 @@
 								actionListener="#{AgendaController.carregarListaOcupados()}"
 								update=":frmOcupados" />
 						</p:outputPanel>
-
 					</div>
-
-					<br></br>
+					<br />
 
 					<b:row>
 						<b:column span="12">
@@ -700,23 +622,88 @@
 								<p:column headerText="Tipo de Atendimento">
 									<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
 								</p:column>
-
 							</p:dataTable>
-
 						</b:column>
 					</b:row>
+					
+					<b:row>
+						<b:column span="3" class="label-position">
+							<br />
+							<p:selectBooleanCheckbox
+								value="#{AgendaController.incluirProcedimentos}"
+								itemLabel="Incluir Procedimentos">
+								<p:ajax update="outprocedimentos" listener="#{AgendaController.limparProcedimentos()}" />
+							</p:selectBooleanCheckbox>
+						</b:column>
+					</b:row>
+					
+					<p:outputPanel id="outprocedimentos">
+						<b:row rendered="#{AgendaController.incluirProcedimentos == true}">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Procedimento Principal:" severity="info" />
 
-					<br></br>
+								<p:outputPanel id="outProcP1">
+									<p:autoComplete
+										value="#{AgendaController.agenda.procedimento}"
+										size="31" converter="conProcedimento" id="descProcP1"
+										class="select-agendaEquipe4"
+										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nomeProc}">
+										<p:ajax event="itemSelect" immediate="true" process="@this descProcP1 :formConsulProc" update=":msgPagina" 
+											listener="#{AgendaController.selecionarProcedimentoPrincipal(theme)}"/>
+									</p:autoComplete>
 
+									<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+										update=":formConsulProc" process="@this"
+									    action="#{AgendaController.configuraDialogProcedimentoPrincipal()}"/>
+								</p:outputPanel>
+							</b:column>
+						</b:row>
+						
+						<b:row rendered="#{AgendaController.incluirProcedimentos == true}">
+							<b:column>
+								<p:commandButton icon="ui-icon-plus" size="sm"
+									title="Adicionar Registro" update=":msgPagina :formConsulProc"
+									class="btn-acao-table acao-editar" process="@this"
+									action="#{AgendaController.configuraDialogProcedimentoSecundario()}" />
 
-					<br></br>
+								<p:dataTable id="tabProcedimento" var="proc"
+									value="#{AgendaController.agenda.listaProcedimentosSecundarios}"
+									emptyMessage="Nenhum registro foi adicionado" reflow="true">
+
+									<p:column headerText="Procedimento">
+										<h:outputText value="#{proc.nomeProc}" />
+									</p:column>
+
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proc.codProc}" />
+									</p:column>
+
+									<p:column headerText="Remover" width="80">
+										<p:commandButton icon="fa fa-fw fa-times"
+											actionListener="#{AgendaController.removerProcedimentoSecundario(proc)}"
+											title="Remover" update="tabProcedimento"
+											style="margin-left:28%;" process="@this" immediate="true"
+											class="new-btn-acao-table acao-excluir" />
+									</p:column>
+								</p:dataTable>
+								<br />
+								<br />
+							</b:column>
+						</b:row>						
+					</p:outputPanel>
+
+					<br />
+					<br />
 
 					<div align="center">
-
 						<p:commandButton value="Gravar" look="success" size="sm"
 							id="bgravar" icon="ui-icon-check"
 							action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
-							update=":formAgendaMedica, :frmSenha, outProf"
+							update=":formAgendaMedica, :frmLiberacao :frmSenha, outProf"
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
@@ -725,9 +712,7 @@
 							actionListener="#{AgendaController.limparDados()}"
 							action="/pages/sishosp/principal.xhtml?faces-redirect=true">
 						</p:commandButton>
-
 					</div>
-
 				</h:form>
 			</div>
 		</div>
@@ -742,67 +727,51 @@
 					<div class="col-sm-2"></div>
 				</div>
 
-    <p:row>
+				<p:row>
+					<p:panelGrid columns="4">
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
 
-                        <p:panelGrid columns="4">
+						<p:inputText value="#{PacienteController.campoBusca}"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
 
-                            <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
-                                <f:selectItem itemLabel="Nome" itemValue="nome" />
-                                <f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
-                                <f:selectItem itemLabel="Matrícula" itemValue="matricula" />
-                                <f:selectItem itemLabel="CPF" itemValue="cpf" />
-                                <f:selectItem itemLabel="CNS" itemValue="cns" />
-                            </p:selectOneMenu>
+						<p:commandButton
+							action="#{PacienteController.buscarPacientesPorTipo()}"
+							update="tabelapacientes" icon="ui-icon-search"
+							style="margin-left: 10px;" />
 
-                            <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
-
-                            <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}" update="tabelapacientes"
-                                             icon="ui-icon-search" style="margin-left: 10px;"/>
-
-                            <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
-                                             icon="limpar" style="margin-left: 10px;"/>
-
-                        </p:panelGrid>
-
-                    </p:row>
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+							update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
+					</p:panelGrid>
+				</p:row>
+				
 				<p:dataTable paginator="true"  rows="10"  id="tabelapacientes"
 					var="pacie" value="#{PacienteController.listaPacientes}"
 					emptyMessage="Nenhum Paciente">
 
-					<p:column width="100">
-						<f:facet name="header">
-                            Prontuário
-                        </f:facet>
-
+					<p:column headerText="Prontuário" width="100">
 						<p:outputLabel value="#{pacie.id_paciente}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            Nome
-                        </f:facet>
-
+					<p:column headerText="Nome">
 						<p:outputLabel value="#{pacie.nome}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            Matrícula
-                        </f:facet>
+					<p:column headerText="Matrícula">
 						<p:outputLabel value="#{pacie.matricula}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            CNS
-                        </f:facet>
+					<p:column headerText="CNS">
 						<p:outputLabel value="#{pacie.cns}" />
 					</p:column>
 
-					<p:column>
-						<f:facet name="header">
-                            Selecionar
-                        </f:facet>
+					<p:column headerText="Selecionar">
 						<p:commandButton
 							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
 							icon="fa fa-fw fa-check" title="Selecionar"
@@ -811,10 +780,7 @@
 							<f:setPropertyActionListener value="#{pacie}"
 								target="#{AgendaController.agenda.paciente}" />
 						</p:commandButton>
-
 					</p:column>
-
-
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
@@ -848,7 +814,6 @@
 								target="#{AgendaController.agenda.programa}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -916,7 +881,6 @@
 								target="#{AgendaController.agenda.grupo}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -948,7 +912,6 @@
 								target="#{AgendaController.agenda.tipoAt}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -980,7 +943,6 @@
 								target="#{AgendaController.agenda.equipe}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -1012,7 +974,6 @@
 								target="#{AgendaController.agenda.profissional}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -1074,9 +1035,7 @@
 						<p:column headerText="Tipo de Atendimento">
 							<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
 						</p:column>
-
 					</p:dataTable>
-
 				</p:panelGrid>
 			</h:form>
 		</p:dialog>
@@ -1109,7 +1068,6 @@
 						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
 						action="#{AgendaController.validarSenhaLiberacao()}" />
 				</div>
-
 			</h:form>
 		</p:dialog>
 
@@ -1119,7 +1077,6 @@
 			<div class="alert alert-warning" role="alert">Para permitir o encaixe do Paciente digite a senha para liberação!
 					</div>
 				<h:panelGrid columns="1" cellpadding="3">
-
 					<b:inputText mask="999-999-999-99" style="padding:10px;"
 						required="true" value="#{AgendaController.funcionario.cpf}"
 						placeholder="Digite o CPF" render-label="true"
@@ -1130,7 +1087,6 @@
 						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
 						value="#{AgendaController.funcionario.senha}"></b:inputSecret>
 					<b:message for="@previous" />
-
 				</h:panelGrid>
 
 				<div align="center">
@@ -1139,10 +1095,42 @@
 						update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
 						action="#{AgendaController.validarSenhaEncaixe()}" />
 				</div>
-
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Confirmar Liberação" widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					<h:outputLabel value="#{AgendaController.mensagemDialogLiberacao}"/>
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{AgendaController.funcionario.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
 
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{AgendaController.funcionario.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AgendaController.validarSenhaLiberacaoAgendaComProcedimento()}" 
+						update="frmLiberacao msgPagina :formAgendaMedica"
+						rendered="#{AgendaController.motivoLiberacao == 'AG_PROC'}"/>	
+							
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+			</h:form>
+		</p:dialog>
+		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
 	</ui:define>
-
 </ui:composition>

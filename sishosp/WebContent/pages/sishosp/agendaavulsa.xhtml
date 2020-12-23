@@ -652,9 +652,9 @@
 						
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
-						action="#{AgendaController.validarSenhaLiberacaoAgendaAvulsaComProcedimento()}" 
+						action="#{AgendaController.validarSenhaLiberacaoAgendaComProcedimento()}" 
 						update="frmLiberacao msgPagina :formAgendaMedica"
-						rendered="#{AgendaController.motivoLiberacao == 'AG_AVULSA_PROC'}"/>			
+						rendered="#{AgendaController.motivoLiberacao == 'AG_PROC'}"/>			
 						
 					<p:commandButton value="Cancelar" look="cancel" size="sm"
 						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
@@ -662,46 +662,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
-			widgetVar="dlgConsulProc" modal="true" resizable="false"
-			draggable="false" responsive="true" width="40%">
-			<h:form id="formConsulProc">
-				<p:outputPanel>
-					<p:autoUpdate />
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{ProcedimentoController.listaProcedimentos}" var="proc">
-
-						<h:column>
-							<f:facet name="header">
-                                Descrição
-                            </f:facet>
-							<p:outputLabel value="#{proc.nomeProc}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">
-                                Adicionar
-                            </f:facet>
-							<div align="center">
-								<p:commandButton
-									rendered="#{AgendaController.tipoProcedimento == 'P'}"
-									icon="fa fa-fw fa-check" title="Selecionar P"
-									class="new-btn-acao-table acao-editar"
-									update=":formAgendaMedica:outProcP1 :msgPagina"
-									action="#{AgendaController.selecionarProcedimentoPrincipal(proc)}" />
-									
-								<p:commandButton
-									rendered="#{AgendaController.tipoProcedimento == 'S'}"
-									icon="fa fa-fw fa-check" title="Selecionar S"
-									class="new-btn-acao-table acao-editar"
-									update=":formAgendaMedica:tabProcedimento :msgPagina"
-									action="#{AgendaController.adicionarProcedimentoSecundario(proc)}" />	
-							</div>
-						</h:column>
-					</b:dataTable>
-				</p:outputPanel>
-			</h:form>
-		</p:dialog>
+		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
 	</ui:define>
 
 </ui:composition>
