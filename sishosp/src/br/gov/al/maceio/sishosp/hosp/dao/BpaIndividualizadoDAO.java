@@ -51,7 +51,7 @@ public class BpaIndividualizadoDAO {
 				" from hosp.atendimentos1 a1  \n" +
 				"join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \n" +
 				"  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \n" +
-				" left join hosp.cbo on cbo.id = func.codcbo  \n" +
+				" left join hosp.cbo on cbo.id = a1.cbo  \n" +
 				"  join hosp.pacientes p on p.id_paciente  = a.codpaciente  \n" +
 				" left join hosp.bairros on bairros.id_bairro = p.codbairro  \n" +
 				" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \n" +

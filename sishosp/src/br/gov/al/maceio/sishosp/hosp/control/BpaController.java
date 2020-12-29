@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -23,9 +24,17 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -38,11 +47,13 @@ import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
 import br.gov.al.maceio.sishosp.hosp.enums.MesExtensaoArquivoBPA;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoExportacao;
 
 @ManagedBean
 @ViewScoped
 public class BpaController {
 	
+	private static final String TIPO_FOLHA_PARA_GERAR_EXCEL = "Java Books";
 	private static final int VALOR_PADRAO_PARA_GERAR_SMT_VRF = 1111;
 	private static final int MES_MINIMO_COMPETENCIA_PARA_INE = 8;
 	private static final int ANO_MINIMO_COMPETENCIA_PARA_INE = 2015;
@@ -60,8 +71,9 @@ public class BpaController {
 	private List<ProcedimentoBean> listaProcedimentos;
 	private static final String NOME_ARQUIVO = "BPA_layout_Importacao";
 	private static final String PASTA_RAIZ = "/WEB-INF/documentos/";
+	private static final String ARQUIVO_EXCEL = ".xlsx";
 	private String descricaoArquivo;
-	private String sAtributoGenerico1;
+	private String sAtributoGenerico1, formatoExportacao, tipoExportacao;
 	private Boolean bAtributoGenerico2, informaNumeroFolhaFiltro;
 	private Integer numeroFolhaFiltro;
 	private Date dataInicioAtendimento;
@@ -83,6 +95,37 @@ public class BpaController {
 		limparDadosLayoutGerado();
 
 	}
+	
+	public static void main(String[] args) throws IOException {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet(TIPO_FOLHA_PARA_GERAR_EXCEL);
+
+		Object[][] bookData = { { "Nome", "Idade"}, { "Walter", "24"},
+				{ "Manoel", "22"}};
+
+		int rowCount = -1;
+
+		for (Object[] aBook : bookData) {
+			Row row = sheet.createRow(++rowCount);
+
+			int columnCount = -1;
+
+			for (Object field : aBook) {
+				Cell cell = row.createCell(++columnCount);
+				if (field instanceof String) {
+					cell.setCellValue((String) field);
+				} else if (field instanceof Integer) {
+					cell.setCellValue((Integer) field);
+				}
+			}
+		}
+
+		try (FileOutputStream outputStream = new FileOutputStream("C:\\Users\\henri\\OneDrive\\Documentos\\FREELA\\JavaBooks.xlsx")) {
+			workbook.write(outputStream);
+		} finally {
+			workbook.close();
+		}
+	}
 
 	public void addMessage() {
 		String summary =  "Checked";
@@ -100,6 +143,10 @@ public class BpaController {
 	private FacesContext getFacesContext() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		return context;
+	}
+	
+	public void limparTipoLayout() {
+		tipoExportacao = new String();
 	}
 
 	public void adicionarProcedimentoFiltro(ProcedimentoBean procedimento) {
@@ -123,6 +170,270 @@ public class BpaController {
 		return false;
 	}
 	
+	public void gerarLayoutBpaExcel() throws ProjetoException, ParseException, SQLException {
+		limparDadosLayoutGerado();
+		this.competencia = formataCompetenciaParaBanco();
+		setaDataInicioIhFimAtendimento(this.competencia);
+		
+		if(tipoExportacao.equals(TipoExportacao.INDIVIDUALIZADO.getSigla())) {
+			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			gerarLayoutBpaIndividualizadoExcel();
+		}
+		else if(tipoExportacao.equals(TipoExportacao.CONSOLIDADO.getSigla())) {
+			// TODO GERAR CONSOLIDADO
+		}
+		else {
+			// TODO GERAR COMPLETO (INDIVIDUALIZADO E CONSOLIDADO)
+		}
+	}
+	
+	private void gerarLayoutBpaIndividualizadoExcel() {
+		try {
+			FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			XSSFSheet sheet = workbook.createSheet(TIPO_FOLHA_PARA_GERAR_EXCEL);
+
+			int contadorLinha = -1;
+			int contadorColuna = -1;
+			
+			String cnsAnterior = "";
+
+			for (BpaIndividualizadoBean individualizado : listaDeBpaIndividualizado) {
+				
+				CellStyle cellStyle = retornaEstiloColuna(sheet);
+				Row row = sheet.createRow(++contadorLinha);
+				
+				if(VerificadorUtil.verificarSeObjetoNuloOuVazio(cnsAnterior) || !cnsAnterior.equals(individualizado.getPrdCnsmed())) {
+					cnsAnterior = individualizado.getPrdCnsmed();
+					FuncionarioBean funcionario = funcionarioDAO.buscarProfissionalPorCns(individualizado.getPrdCnsmed());
+					
+					if(!VerificadorUtil.verificarSeObjetoNuloOuZero(contadorLinha))
+						row = sheet.createRow(++contadorLinha);
+					
+					contadorColuna = gerarColunasFuncionarioBpaIndividualizado(contadorColuna, cellStyle, row,
+							funcionario);
+					
+					row = sheet.createRow(++contadorLinha);
+					contadorColuna = -1;
+				
+					contadorColuna = gerarColunasPacienteBpaIndividualizado(contadorColuna, cellStyle, row);
+					
+					row = sheet.createRow(++contadorLinha);
+				} 
+				contadorColuna = -1;
+				contadorColuna = gerarLinhasPacienteBpaIndividualizado(contadorColuna, individualizado, row);
+				contadorColuna = -1;
+			}
+
+			this.extensao = ARQUIVO_EXCEL;
+			String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + this.extensao;
+			
+			try (FileOutputStream outputStream = new FileOutputStream(this.getServleContext().getRealPath(caminhoIhArquivo))) {
+				this.descricaoArquivo = NOME_ARQUIVO + this.extensao;
+				workbook.write(outputStream);
+			} finally {
+				workbook.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private int gerarColunasFuncionarioBpaIndividualizado(int contadorColuna, CellStyle cellStyle, Row row,
+			FuncionarioBean funcionario) {
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Profissional: " + funcionario.getNome());
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CNS: " + funcionario.getCns());
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Especialidade: " + funcionario.getEspecialidade().getDescEspecialidade());
+		cell.setCellStyle(cellStyle);
+		return contadorColuna;
+	}
+
+	private int gerarColunasPacienteBpaIndividualizado(int contadorColuna, CellStyle cellStyle, Row row) {
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Data Atendimento");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Código procedimento");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Paciente");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CNS");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Endereço");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Código Tipo Logradouro");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Número");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Bairro");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("IBG Muni.");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Sexo");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CID");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Data de Nascimento");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Idade");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Telefone");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Email");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Raça / Cor");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Nacionalidade");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("QTD de Procedimento Produzidos");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Caracter de atendimento");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Origem das Informações");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Cod Serviço");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Cod Classificação");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Cod da Sequência Equipe");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Cod da Área Equipe");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CNPJ");
+		cell.setCellStyle(cellStyle);
+		return contadorColuna;
+	}
+	
+	private int gerarLinhasPacienteBpaIndividualizado(int contadorColuna, BpaIndividualizadoBean individualizado,
+			Row row) {
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(formataDataBpaParaDataDoBrasil(individualizado.getPrdDtaten()));
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdPa());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdNmpac());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdCnspac());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdEndPcnte());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdLogradPcnte());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdNumPcnte());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdBairroPcnte());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdIbge());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdSexo());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdCid());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(formataDataBpaParaDataDoBrasil(individualizado.getPrdDtnasc()));
+		cell = row.createCell(++contadorColuna);				
+		cell.setCellValue(individualizado.getPrdIdade());
+		cell = row.createCell(++contadorColuna);				
+		cell.setCellValue(individualizado.getPrdDDtelPcnte());
+		cell = row.createCell(++contadorColuna);				
+		cell.setCellValue(individualizado.getPrdEmailPcnte());
+		cell = row.createCell(++contadorColuna);				
+		cell.setCellValue(individualizado.getPrdRaca());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdNac());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdQt());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdCaten());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdOrg());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdSrv());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdClf());		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdEquipeSeq());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdEquipeArea());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdCnpj());
+		return contadorColuna;
+	}
+
+	private CellStyle retornaEstiloColuna(Sheet sheet) {
+	    CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+	    Font font = sheet.getWorkbook().createFont();
+	    font.setBold(true);
+	    font.setFontHeightInPoints((short) 12);
+	    cellStyle.setFont(font);
+	    return cellStyle;
+	}
+	
+	private String formataDataBpaParaDataDoBrasil(String data) {
+		String ano = data.substring(0, 4);
+		String mes = data.substring(4, 6);
+		String dia = data.substring(6, 8);
+		String competenciaFormatada = dia+"/"+mes+"/"+ano;
+		return competenciaFormatada; 
+	}
+	
 	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException, SQLException {
 		try {
 			limparDadosLayoutGerado();
@@ -140,6 +451,7 @@ public class BpaController {
 				}
 
 			}
+			
 			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
@@ -198,6 +510,7 @@ public class BpaController {
 			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -471,6 +784,7 @@ public class BpaController {
 		sAtributoGenerico1 = "A";
 		informaNumeroFolhaFiltro = false;
 		bAtributoGenerico2 = false;
+		formatoExportacao = "T";
 	}
 	
 	public void geraNumeroDaLinhaDaFolhaIndividualizado() {
@@ -660,5 +974,21 @@ public class BpaController {
 
 	public void setListaInconsistencias(List<String> listaInconsistencias) {
 		this.listaInconsistencias = listaInconsistencias;
+	}
+
+	public String getFormatoExportacao() {
+		return formatoExportacao;
+	}
+
+	public void setFormatoExportacao(String formatoExportacao) {
+		this.formatoExportacao = formatoExportacao;
+	}
+
+	public String getTipoExportacao() {
+		return tipoExportacao;
+	}
+
+	public void setTipoExportacao(String tipoExportacao) {
+		this.tipoExportacao = tipoExportacao;
 	}
 }

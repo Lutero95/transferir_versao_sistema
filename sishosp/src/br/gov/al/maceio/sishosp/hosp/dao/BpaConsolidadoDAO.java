@@ -30,7 +30,7 @@ public class BpaConsolidadoDAO {
         		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo cbo " +
         		" from hosp.atendimentos1 a1 " + 
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento " + 
-        		" left join hosp.cbo on cbo.id = func.codcbo " + 
+        		" left join hosp.cbo on cbo.id = a1.cbo " + 
         		" join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento " + 
         		" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "+
         		" join hosp.proc on proc.id = a1.codprocedimento " + 

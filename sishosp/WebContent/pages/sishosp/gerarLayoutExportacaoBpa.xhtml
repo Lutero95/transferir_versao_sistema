@@ -21,7 +21,7 @@
 	
 		<div class="panel panel-primary top-primary">
 			<h:form id="frmPrincipal">
-<p:messages/>
+				<p:messages/>
 				<p:panel header="Lista de Inconsistências" rendered="#{bpaController.listaInconsistencias.size()>0}">
 				<p:dataTable  id="tabelainconsistencia" var="inc" responsive="true"
 							 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
@@ -45,20 +45,51 @@
 				</p:column>
 					</p:dataTable>
 				</p:panel>
-                <b:row>
-                    <b:column class="label-position new-data-size new-comple1">>
-                        <b:label value="Opção de Geração:" severity="info" />
-                        <p:selectOneRadio required="false"
-                                          requiredMessage="Informe o tipo da Geração da Produção"
-                                          value="#{bpaController.sAtributoGenerico1}"
-                                          unselectable="true">
-                            <f:selectItem itemLabel="A partir dos atendimentos realizados" itemValue="A" />
-                            <f:selectItem itemLabel="A partir dos agendamentos confirmados Presença" itemValue="P" />
-                            <p:ajax update="intervaloIdades" event="valueChange" />
-                        </p:selectOneRadio>
-                    </b:column>
-					</b:row>
-			<b:row>
+				
+				<b:row>
+					<b:column class="label-position new-data-size new-comple1">
+                        <b:label value="Formato de Geração:"
+							severity="info" />
+						<p:selectOneRadio required="true"
+							requiredMessage="Informe o formato da Geração da Produção"
+							value="#{bpaController.formatoExportacao}" unselectable="true">
+							<f:selectItem itemLabel="Texto" itemValue="T" />
+							<f:selectItem itemLabel="Excel" itemValue="E" />
+							<p:ajax update="outlayout outgerarbpa" event="valueChange" listener="#{bpaController.limparTipoLayout()}"/>
+						</p:selectOneRadio>
+					</b:column>
+
+					<p:outputPanel id="outlayout">
+						<b:column class="label-position new-data-size new-comple1" rendered="#{bpaController.formatoExportacao == 'E'}">
+							<b:label value="Gerar Layout:" severity="info" />
+							<p:selectOneRadio required="true"
+								requiredMessage="Informe o layout da Geração da Produção"
+								value="#{bpaController.tipoExportacao}" unselectable="true">
+								<f:selectItem itemLabel="Individualizado" itemValue="I" />
+								<f:selectItem itemLabel="Consolidado" itemValue="CS"
+									itemDisabled="true" />
+								<f:selectItem itemLabel="Completo" itemValue="CP"
+									itemDisabled="true" />
+							</p:selectOneRadio>
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+				
+				<b:row>
+					<b:column class="label-position new-data-size new-comple1">
+                        <b:label value="Opção de Geração:"
+							severity="info" />
+						<p:selectOneRadio required="false"
+							requiredMessage="Informe o tipo da Geração da Produção"
+							value="#{bpaController.sAtributoGenerico1}" unselectable="true">
+							<f:selectItem itemLabel="A partir dos atendimentos realizados" itemValue="A" />
+							<f:selectItem
+								itemLabel="A partir dos agendamentos confirmados Presença" itemValue="P" />
+							<p:ajax update="intervaloIdades" event="valueChange" />
+						</p:selectOneRadio>
+					</b:column>
+				</b:row>
+				<b:row>
                     <p:outputPanel id="intervaloIdades">
                         <b:column span="12"
                                   rendered="#{bpaController.sAtributoGenerico1=='A'}"
@@ -67,8 +98,7 @@
 								<p>  A produção será gerada a partir dos atendimentos que foram realizados e confirmados via sistema.</p>
 								<p><strong>ESTA É A OPÇÃO RECOMENDADA PARA A GERAÇÃO DA PRODUÇÃO</strong></p>
                             </div>
-
-</b:column>
+						</b:column>
 
                         <b:column span="12"
                                   rendered="#{bpaController.sAtributoGenerico1=='P'}"
@@ -98,7 +128,7 @@
 						</b:column>
 					</b:row>
 
-<hr/>
+					<hr/>
 					<b:row>
 						<b:column span="3">
 							<p:selectBooleanCheckbox  value="#{bpaController.bAtributoGenerico2}"   itemLabel="Atribuir Filtros" id="filtro">
@@ -178,9 +208,19 @@
 					</p:outputPanel>
 				</div>
 				<div style="margin-left:0.5%; margin-bottom:0.5%;">
-					<p:commandButton value="Gerar Produção" ajax="false" actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
-						<p:fileDownload value="#{bpaController.download()}" />
-					</p:commandButton>
+					<p:outputPanel id="outgerarbpa">
+						<p:commandButton value="Gerar Produção" ajax="false"
+							rendered="#{bpaController.formatoExportacao != 'E'}"
+							actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
+							<p:fileDownload value="#{bpaController.download()}" />
+						</p:commandButton>
+
+						<p:commandButton value="Gerar Produção 2" ajax="false"
+							rendered="#{bpaController.formatoExportacao == 'E'}"
+							actionListener="#{bpaController.gerarLayoutBpaExcel()}">
+							<p:fileDownload value="#{bpaController.download()}" />
+						</p:commandButton>
+					</p:outputPanel>
 				</div>
 			</h:form>
 		</div>
