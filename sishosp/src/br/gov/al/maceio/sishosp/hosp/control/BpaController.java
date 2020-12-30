@@ -39,7 +39,6 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
@@ -184,47 +183,21 @@ public class BpaController {
 			gerarLayoutBpaConsolidadoExcel();
 		}
 		else {
-			// TODO GERAR COMPLETO (INDIVIDUALIZADO E CONSOLIDADO)
+			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			gerarLayoutBpaCompletoExcel();
 		}
 	}
 	
 	private void gerarLayoutBpaIndividualizadoExcel() {
 		try {
-			FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 			XSSFWorkbook workbook = new XSSFWorkbook();
 			XSSFSheet sheet = workbook.createSheet(TIPO_FOLHA_PARA_GERAR_EXCEL);
 
 			int contadorLinha = -1;
 			int contadorColuna = -1;
 			
-			String cnsAnterior = "";
-
-			for (BpaIndividualizadoBean individualizado : listaDeBpaIndividualizado) {
-				
-				CellStyle cellStyle = retornaEstiloColuna(sheet);
-				Row row = sheet.createRow(++contadorLinha);
-				
-				if(VerificadorUtil.verificarSeObjetoNuloOuVazio(cnsAnterior) || !cnsAnterior.equals(individualizado.getPrdCnsmed())) {
-					cnsAnterior = individualizado.getPrdCnsmed();
-					FuncionarioBean funcionario = funcionarioDAO.buscarProfissionalPorCns(individualizado.getPrdCnsmed());
-					
-					if(!VerificadorUtil.verificarSeObjetoNuloOuZero(contadorLinha))
-						row = sheet.createRow(++contadorLinha);
-					
-					contadorColuna = gerarColunasFuncionarioBpaIndividualizado(contadorColuna, cellStyle, row,
-							funcionario);
-					
-					row = sheet.createRow(++contadorLinha);
-					contadorColuna = -1;
-				
-					contadorColuna = gerarColunasAtendimentoBpaIndividualizado(contadorColuna, cellStyle, row);
-					
-					row = sheet.createRow(++contadorLinha);
-				} 
-				contadorColuna = -1;
-				contadorColuna = gerarLinhasAtendimentoBpaIndividualizado(contadorColuna, individualizado, row);
-				contadorColuna = -1;
-			}
+			montarLayoutBpaIndividualizado(sheet, contadorLinha, contadorColuna);
 
 			this.extensao = ARQUIVO_EXCEL;
 			String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + this.extensao;
@@ -238,6 +211,47 @@ public class BpaController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void montarLayoutBpaIndividualizado(XSSFSheet sheet, int contadorLinha, int contadorColuna)
+			throws ProjetoException {
+		
+		Row row = sheet.createRow(++contadorLinha);
+		row = sheet.createRow(++contadorLinha);
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("BPA INDIVIDUALIZADO");
+		cell.setCellStyle(retornaEstiloColunaPrimaria(sheet));
+		contadorColuna = -1;
+		
+		String cnsAnterior = "";
+
+		for (BpaIndividualizadoBean individualizado : listaDeBpaIndividualizado) {
+			
+			CellStyle cellStyle = retornaEstiloColunaSecundaria(sheet);
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuVazio(cnsAnterior) || !cnsAnterior.equals(individualizado.getPrdCnsmed())) {
+				cnsAnterior = individualizado.getPrdCnsmed();
+				FuncionarioBean funcionario = new FuncionarioDAO().buscarProfissionalPorCns(individualizado.getPrdCnsmed());
+				
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(contadorLinha))
+					row = sheet.createRow(++contadorLinha);
+				
+				contadorColuna = gerarColunasFuncionarioBpaIndividualizado(contadorColuna, cellStyle, row,
+						funcionario);
+				
+				row = sheet.createRow(++contadorLinha);
+				contadorColuna = -1;
+			
+				contadorColuna = gerarColunasAtendimentoBpaIndividualizado(contadorColuna, cellStyle, row);
+				
+				row = sheet.createRow(++contadorLinha);
+			} 
+			contadorColuna = -1;
+			contadorColuna = gerarLinhasAtendimentoBpaIndividualizado(contadorColuna, individualizado, row);
+			contadorColuna = -1;
+			row = sheet.createRow(++contadorLinha);
 		}
 	}
 	
@@ -432,18 +446,7 @@ public class BpaController {
 			int contadorLinha = -1;
 			int contadorColuna = -1;
 			
-			CellStyle cellStyle = retornaEstiloColuna(sheet);
-			Row row = sheet.createRow(++contadorLinha);
-			contadorColuna = gerarColunasBpaConsolidado(contadorColuna, cellStyle, row);
-			
-			for (BpaConsolidadoBean consolidado : listaDeBpaConsolidado) {
-
-				row = sheet.createRow(++contadorLinha);
-				contadorColuna = -1;
-					
-				contadorColuna = gerarLinhasBpaConsolidado(contadorColuna, consolidado, row);
-				contadorColuna = -1;
-			}
+			montarLayoutBpaConsolidado(sheet, contadorLinha, contadorColuna);
 
 			this.extensao = ARQUIVO_EXCEL;
 			String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + this.extensao;
@@ -458,6 +461,30 @@ public class BpaController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private int montarLayoutBpaConsolidado(XSSFSheet sheet, int contadorLinha, int contadorColuna) {
+		CellStyle cellStyle = retornaEstiloColunaSecundaria(sheet);
+		Row row = sheet.createRow(++contadorLinha);
+		
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("BPA CONSOLIDADO");
+		cell.setCellStyle(retornaEstiloColunaPrimaria(sheet));
+		contadorColuna = -1;
+		
+		row = sheet.createRow(++contadorLinha);
+		contadorColuna = gerarColunasBpaConsolidado(contadorColuna, cellStyle, row);
+		
+		for (BpaConsolidadoBean consolidado : listaDeBpaConsolidado) {
+
+			row = sheet.createRow(++contadorLinha);
+			contadorColuna = -1;
+				
+			contadorColuna = gerarLinhasBpaConsolidado(contadorColuna, consolidado, row);
+			contadorColuna = -1;
+		}
+		return contadorLinha;
 	}
 	
 	private int gerarColunasBpaConsolidado(int contadorColuna, CellStyle cellStyle, Row row) {
@@ -512,8 +539,47 @@ public class BpaController {
 		cell = row.createCell(++contadorColuna);
 		return contadorColuna;
 	}
+	
+	private void gerarLayoutBpaCompletoExcel() {
+		try {
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			XSSFSheet sheet = workbook.createSheet(TIPO_FOLHA_PARA_GERAR_EXCEL);
 
-	private CellStyle retornaEstiloColuna(Sheet sheet) {
+			int contadorLinha = -1;
+			int contadorColuna = -1;
+			
+			contadorLinha = montarLayoutBpaConsolidado(sheet, contadorLinha, contadorColuna);
+			
+			contadorColuna = -1;
+			sheet.createRow(++contadorLinha);
+			
+			montarLayoutBpaIndividualizado(sheet, contadorLinha, contadorColuna);
+
+			this.extensao = ARQUIVO_EXCEL;
+			String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + this.extensao;
+			
+			try (FileOutputStream outputStream = new FileOutputStream(this.getServleContext().getRealPath(caminhoIhArquivo))) {
+				this.descricaoArquivo = NOME_ARQUIVO + this.extensao;
+				workbook.write(outputStream);
+			} finally {
+				workbook.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private CellStyle retornaEstiloColunaPrimaria(Sheet sheet) {
+	    CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+	    Font font = sheet.getWorkbook().createFont();
+	    font.setBold(true);
+	    font.setFontHeightInPoints((short) 14);
+	    cellStyle.setFont(font);
+	    return cellStyle;
+	}
+
+	private CellStyle retornaEstiloColunaSecundaria(Sheet sheet) {
 	    CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
 	    Font font = sheet.getWorkbook().createFont();
 	    font.setBold(true);
@@ -547,8 +613,8 @@ public class BpaController {
 				}
 
 			}
-			
-			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+			//TODO
+			if ((!existeInconsistencias(sAtributoGenerico1)) /*&& (listaInconsistencias.size()==0)*/) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -596,17 +662,17 @@ public class BpaController {
 	}
 	
 	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
-		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos);
-		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
-		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
-			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
-			return true;
-		}
-		else if (totalAtendimentoGeradoBPA > totalAtendimentos) {
-			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
-			return true;
-		}
-		
+//		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos);
+//		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
+//		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
+//			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
+//			return true;
+//		}
+//		else if (totalAtendimentoGeradoBPA > totalAtendimentos) {
+//			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
+//			return true;
+//		}
+//TODO		
 		return false;
 	}
 	
