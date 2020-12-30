@@ -66,8 +66,7 @@
 								requiredMessage="Informe o layout da Geração da Produção"
 								value="#{bpaController.tipoExportacao}" unselectable="true">
 								<f:selectItem itemLabel="Individualizado" itemValue="I" />
-								<f:selectItem itemLabel="Consolidado" itemValue="CS"
-									itemDisabled="true" />
+								<f:selectItem itemLabel="Consolidado" itemValue="CS" />
 								<f:selectItem itemLabel="Completo" itemValue="CP"
 									itemDisabled="true" />
 							</p:selectOneRadio>
@@ -215,7 +214,7 @@
 							<p:fileDownload value="#{bpaController.download()}" />
 						</p:commandButton>
 
-						<p:commandButton value="Gerar Produção 2" ajax="false"
+						<p:commandButton value="Gerar Produção" ajax="false"
 							rendered="#{bpaController.formatoExportacao == 'E'}"
 							actionListener="#{bpaController.gerarLayoutBpaExcel()}">
 							<p:fileDownload value="#{bpaController.download()}" />

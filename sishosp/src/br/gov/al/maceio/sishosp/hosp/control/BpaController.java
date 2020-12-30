@@ -180,7 +180,8 @@ public class BpaController {
 			gerarLayoutBpaIndividualizadoExcel();
 		}
 		else if(tipoExportacao.equals(TipoExportacao.CONSOLIDADO.getSigla())) {
-			// TODO GERAR CONSOLIDADO
+			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			gerarLayoutBpaConsolidadoExcel();
 		}
 		else {
 			// TODO GERAR COMPLETO (INDIVIDUALIZADO E CONSOLIDADO)
@@ -216,12 +217,12 @@ public class BpaController {
 					row = sheet.createRow(++contadorLinha);
 					contadorColuna = -1;
 				
-					contadorColuna = gerarColunasPacienteBpaIndividualizado(contadorColuna, cellStyle, row);
+					contadorColuna = gerarColunasAtendimentoBpaIndividualizado(contadorColuna, cellStyle, row);
 					
 					row = sheet.createRow(++contadorLinha);
 				} 
 				contadorColuna = -1;
-				contadorColuna = gerarLinhasPacienteBpaIndividualizado(contadorColuna, individualizado, row);
+				contadorColuna = gerarLinhasAtendimentoBpaIndividualizado(contadorColuna, individualizado, row);
 				contadorColuna = -1;
 			}
 
@@ -257,7 +258,7 @@ public class BpaController {
 		return contadorColuna;
 	}
 
-	private int gerarColunasPacienteBpaIndividualizado(int contadorColuna, CellStyle cellStyle, Row row) {
+	private int gerarColunasAtendimentoBpaIndividualizado(int contadorColuna, CellStyle cellStyle, Row row) {
 		Cell cell;
 		cell = row.createCell(++contadorColuna);
 		cell.setCellValue("Data Atendimento");
@@ -297,6 +298,10 @@ public class BpaController {
 		
 		cell = row.createCell(++contadorColuna);
 		cell.setCellValue("Sexo");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CBO");
 		cell.setCellStyle(cellStyle);
 		
 		cell = row.createCell(++contadorColuna);
@@ -361,7 +366,7 @@ public class BpaController {
 		return contadorColuna;
 	}
 	
-	private int gerarLinhasPacienteBpaIndividualizado(int contadorColuna, BpaIndividualizadoBean individualizado,
+	private int gerarLinhasAtendimentoBpaIndividualizado(int contadorColuna, BpaIndividualizadoBean individualizado,
 			Row row) {
 		Cell cell;
 		cell = row.createCell(++contadorColuna);
@@ -385,6 +390,8 @@ public class BpaController {
 		cell = row.createCell(++contadorColuna);
 		cell.setCellValue(individualizado.getPrdSexo());
 		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(individualizado.getPrdCbo());
+		cell = row.createCell(++contadorColuna);		
 		cell.setCellValue(individualizado.getPrdCid());
 		cell = row.createCell(++contadorColuna);
 		cell.setCellValue(formataDataBpaParaDataDoBrasil(individualizado.getPrdDtnasc()));
@@ -414,6 +421,95 @@ public class BpaController {
 		cell.setCellValue(individualizado.getPrdEquipeArea());
 		cell = row.createCell(++contadorColuna);
 		cell.setCellValue(individualizado.getPrdCnpj());
+		return contadorColuna;
+	}
+	
+	private void gerarLayoutBpaConsolidadoExcel() {
+		try {
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			XSSFSheet sheet = workbook.createSheet(TIPO_FOLHA_PARA_GERAR_EXCEL);
+
+			int contadorLinha = -1;
+			int contadorColuna = -1;
+			
+			CellStyle cellStyle = retornaEstiloColuna(sheet);
+			Row row = sheet.createRow(++contadorLinha);
+			contadorColuna = gerarColunasBpaConsolidado(contadorColuna, cellStyle, row);
+			
+			for (BpaConsolidadoBean consolidado : listaDeBpaConsolidado) {
+
+				row = sheet.createRow(++contadorLinha);
+				contadorColuna = -1;
+					
+				contadorColuna = gerarLinhasBpaConsolidado(contadorColuna, consolidado, row);
+				contadorColuna = -1;
+			}
+
+			this.extensao = ARQUIVO_EXCEL;
+			String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + this.extensao;
+			
+			try (FileOutputStream outputStream = new FileOutputStream(this.getServleContext().getRealPath(caminhoIhArquivo))) {
+				this.descricaoArquivo = NOME_ARQUIVO + this.extensao;
+				workbook.write(outputStream);
+			} finally {
+				workbook.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private int gerarColunasBpaConsolidado(int contadorColuna, CellStyle cellStyle, Row row) {
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CNES");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Competencia");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("CBO");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Procedimento");
+		cell.setCellStyle(cellStyle);
+		
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Idade");
+		cell.setCellStyle(cellStyle);
+
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("QTD de Procedimento Produzidos");
+		cell.setCellStyle(cellStyle);
+
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue("Origem das Informações");
+		cell.setCellStyle(cellStyle);
+		
+		return contadorColuna;
+	}
+	
+	private int gerarLinhasBpaConsolidado(int contadorColuna, BpaConsolidadoBean consolidado, Row row) {
+		Cell cell;
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdCnes());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdCmp());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdCbo());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdPa());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdIdade());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdQt());
+		cell = row.createCell(++contadorColuna);
+		cell.setCellValue(consolidado.getPrdOrg());
+		cell = row.createCell(++contadorColuna);
 		return contadorColuna;
 	}
 
