@@ -39,6 +39,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
@@ -613,8 +614,8 @@ public class BpaController {
 				}
 
 			}
-			//TODO
-			if ((!existeInconsistencias(sAtributoGenerico1)) /*&& (listaInconsistencias.size()==0)*/) {
+			
+			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -662,17 +663,17 @@ public class BpaController {
 	}
 	
 	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
-//		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos);
-//		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
-//		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
-//			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
-//			return true;
-//		}
-//		else if (totalAtendimentoGeradoBPA > totalAtendimentos) {
-//			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
-//			return true;
-//		}
-//TODO		
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos);
+		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
+		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
+			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
+			return true;
+		}
+		else if (totalAtendimentoGeradoBPA > totalAtendimentos) {
+			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  maior do que o total de atendimentos do sistema", "Erro");
+			return true;
+		}
+	
 		return false;
 	}
 	
