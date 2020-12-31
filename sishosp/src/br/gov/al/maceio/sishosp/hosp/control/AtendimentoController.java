@@ -93,6 +93,7 @@ public class AtendimentoController implements Serializable {
     private CboBean cboSelecionado;
     private List<CboBean> listaCbos;
     private boolean selecionarTodos;
+    private List<EquipeBean> listaEquipe;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -173,6 +174,7 @@ public class AtendimentoController implements Serializable {
             if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla())) {
                 atendimento.setGrupo(buscaSessaoDTO.getGrupoBean());
                 atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
+                atendimento.setEquipe(buscaSessaoDTO.getEquipeBean());
                 atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
                 if  (buscaSessaoDTO.getCampoBusca()!=null)
@@ -227,7 +229,7 @@ public class AtendimentoController implements Serializable {
                 return;
             }
         }
-        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
+        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(), atendimento.getEquipe(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(),
                 TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla(), this.campoBusca, this.tipoBusca,
                 this.buscaEvolucao, this.listarEvolucoesPendentes);
@@ -870,12 +872,28 @@ public class AtendimentoController implements Serializable {
         } else {
             return null;
         }
-
+    }
+    
+	public List<EquipeBean> listaEquipeAutoComplete(String query) throws ProjetoException {
+		return new EquipeDAO().listarEquipePorGrupoAutoComplete(query, this.atendimento.getGrupo().getIdGrupo());
+	}
+	
+    public void carregaListaEquipePorGrupo() throws ProjetoException {
+           listaEquipe = new EquipeDAO().listarEquipePorGrupo(this.atendimento.getGrupo().getIdGrupo());
     }
 
     public void listarGruposPorProgramas() throws ProjetoException {
         listaGrupos = gDao.listarGruposPorPrograma(atendimento.getPrograma().getIdPrograma());
     }
+    
+    public void limparGrupoIhEquipe() {
+    	atendimento.setGrupo(new GrupoBean());
+    	atendimento.setEquipe(new EquipeBean());
+    }
+    
+    public void limparEquipe() {
+    	atendimento.setEquipe(new EquipeBean());
+    }    
 
     public void limparFuncionarioLiberacao() {
         this.funcionarioLiberacao = new FuncionarioBean();
@@ -1676,5 +1694,12 @@ public class AtendimentoController implements Serializable {
 	public void setSelecionarTodos(boolean selecionarTodos) {
 		this.selecionarTodos = selecionarTodos;
 	}
-	
+
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
 }
