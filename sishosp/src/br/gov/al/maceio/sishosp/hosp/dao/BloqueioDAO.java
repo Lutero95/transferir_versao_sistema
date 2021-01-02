@@ -63,7 +63,7 @@ public class BloqueioDAO {
 
         Calendar calendarData = Calendar.getInstance();
         Boolean condicao = true;
-        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, cod_empresa) values (?, ?, ?, ?, ?);";
+        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, cod_unidade) values (?, ?, ?, ?, ?);";
 
         try {
             ps = conAuxiliar.prepareStatement(sql);
@@ -160,7 +160,7 @@ public class BloqueioDAO {
         List<BloqueioBean> lista = new ArrayList<>();
         String sql = "select b.id_bloqueioagenda, b.codmedico, m.descfuncionario, b.dataagenda, b.turno, b.descricao "
                 + " from hosp.bloqueio_agenda b left join acl.funcionarios m on (b.codmedico = m.id_funcionario) " +
-                " where b.cod_empresa = ? order by b.id_bloqueioagenda";
+                " where b.cod_unidade = ? order by b.id_bloqueioagenda";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);

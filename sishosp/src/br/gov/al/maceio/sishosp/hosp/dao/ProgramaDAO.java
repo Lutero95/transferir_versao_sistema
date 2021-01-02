@@ -294,7 +294,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-        		+ "left join hosp.proc on proc.id = programa.cod_procedimento "
+                + "left join hosp.proc on proc.id = programa.cod_procedimento "
                 + "where proc.ativo = 'S' and codprofissional = ? and programa.cod_unidade=?";
 
         if (tipo == 1) {
@@ -336,9 +336,9 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa, id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
                 + "dias_paciente_sem_laudo_ativo from hosp.programa "
-        		+ "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "where programa.permite_paciente_sem_laudo = true and programa.cod_unidade = ? "
-        		+ "and codprofissional = ? "
+                + "and codprofissional = ? "
                 + "and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma ";
 
         try {
@@ -419,7 +419,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento, "
                 + " dias_paciente_sem_laudo_ativo from hosp.programa "
-                + " left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma " + 
+                + " left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma " +
                 "where programa.cod_unidade = ? and codprofissional = ? and permite_paciente_sem_laudo = true order by descprograma";
 
         try {
@@ -428,7 +428,7 @@ public class ProgramaDAO {
 
             stm.setLong(1, user_session.getUnidade().getId());
             stm.setLong(2, user_session.getId());
-            
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1338,15 +1338,15 @@ public class ProgramaDAO {
         }
         return programa;
     }
-    
+
     public ProcedimentoBean retornaProcedimentoPadraoDoProgramaPorIdade (Integer idPrograma, Integer idPaciente) throws ProjetoException, SQLException {
         ProcedimentoBean procedimento = new ProcedimentoBean();
         try {
             con = ConnectionFactory.getConnection();
-            String sql = "SELECT id_procedimento FROM hosp.programa_procedimento_idade_especifica where id_programa = ? " + 
-            		"	and   (select extract (year from age(p.dtanascimento)) idade from hosp.pacientes p " + 
-            		"        			where p.id_paciente = ?) " + 
-            		"        		between idade_minima and idade_maxima;";
+            String sql = "SELECT id_procedimento FROM hosp.programa_procedimento_idade_especifica where id_programa = ? " +
+                    "	and   (select extract (year from age(p.dtanascimento)) idade from hosp.pacientes p " +
+                    "        			where p.id_paciente = ?) " +
+                    "        		between idade_minima and idade_maxima;";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, idPrograma);
@@ -1371,29 +1371,29 @@ public class ProgramaDAO {
         }
         return procedimento;
     }
-    
+
     public ArrayList<ProgramaBean> buscaProgramasPorUnidade(List<UnidadeBean> listaUnidade) throws ProjetoException {
         PreparedStatement ps = null;
         con = ConnectionFactory.getConnection();
 
         String sql = "SELECT p.id_programa, p.descprograma, u.id id_unidade, u.nome FROM hosp.programa p "+
-        		"JOIN hosp.unidade u ON (p.cod_unidade = u.id ) where u.id = ? ";
-        
+                "JOIN hosp.unidade u ON (p.cod_unidade = u.id ) where u.id = ? ";
+
         String filtroUnidade = " or u.id = ? ";
         String ordenacao = " order by descprograma";
-        
+
         for (int i = 1; i < listaUnidade.size(); i++) {
-			sql += filtroUnidade;
-		}
+            sql += filtroUnidade;
+        }
         sql += ordenacao;
-        
+
         ArrayList<ProgramaBean> lista = new ArrayList<>();
         try {
             ps = con.prepareStatement(sql);
             ps.setInt(1, listaUnidade.get(0).getId());
             for (int i = 1; i < listaUnidade.size(); i++) {
-    			ps.setInt(i+1, listaUnidade.get(i).getId());
-    		}
+                ps.setInt(i+1, listaUnidade.get(i).getId());
+            }
 
             ResultSet rs = ps.executeQuery();
 
@@ -1417,5 +1417,47 @@ public class ProgramaDAO {
             }
         }
         return lista;
+    }
+
+    public ProcedimentoBean listaProcedimentoEspecificoCboParaPrograma(Integer idPrograma, Long idFuncionario)
+            throws SQLException, ProjetoException {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        String sql = "select pr.id id_procedimento, pr.nome nome_procedimento, pr.codproc " +
+                "	from hosp.programa_procedimento_cbo_especifico ppc " +
+                "	join hosp.programa p on ppc.id_programa = p.id_programa " +
+                "	join hosp.proc pr on ppc.id_procedimento = pr.id " +
+                "	join hosp.cbo c on ppc.id_cbo = c.id " +
+                "	join hosp.cbo_funcionario cf on c.id = cf.id_cbo " +
+                "	where p.id_programa = ? and p.cod_unidade = ? and cf.id_profissional =? " +
+                "   and pr.ativo = 'S' ;";
+        ProcedimentoBean procedimento = new ProcedimentoBean();
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            stm.setLong(3, idFuncionario);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                procedimento.setIdProc(rs.getInt("id_procedimento"));
+                procedimento.setNomeProc(rs.getString("nome_procedimento"));
+                procedimento.setCodProc(rs.getString("codproc"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+        return procedimento;
     }
 }

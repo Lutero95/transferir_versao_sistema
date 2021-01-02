@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,6 +64,7 @@ public class TransferenciaPacienteController implements Serializable {
     private AgendaDAO agendaDAO = new AgendaDAO();
     private List<AgendaBean> listaHorariosAgenda;
     private List<EquipeBean> listaEquipePorGrupo;
+    private List<GrupoBean> listaGrupos;
 
     public TransferenciaPacienteController() {
         insercao = new InsercaoPacienteBean();
@@ -80,7 +82,7 @@ public class TransferenciaPacienteController implements Serializable {
         listaHorarios = new ArrayList<>();
         listaHorarioAtendimentosAuxiliar = new ArrayList<>();
         listaProfissionaisEquipe = new ArrayList<>();
-
+        listaGrupos = new ArrayList<>();
     }
     public void carregarTransferencia() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -222,15 +224,21 @@ public class TransferenciaPacienteController implements Serializable {
         listaProfissionaisAdicionados.remove(funcionario);
     }
 
-    public String gravarAlteracaoPaciente() throws ProjetoException {
+    public String gravarAlteracaoPaciente() throws ProjetoException, SQLException {
 
         String retorno = "";
+        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+        
+        if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+				insercao.getGrupo().getIdGrupo(), insercaoParaLaudo.getLaudo().getPaciente().getId_paciente())) {
+			JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
+		}
 
-        if(validarProfissionaisAdicionados()) {
+        else if(insercaoPacienteController.procedimentoValido
+        		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), insercao.getGrupo(),
+        				insercaoParaLaudo.getLaudo().getPaciente(), listaProfissionaisAdicionados)
+        		&& validarProfissionaisAdicionados()) {
             Boolean cadastrou = null;
-
-            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
-
 
             GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
             Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
@@ -489,7 +497,10 @@ public class TransferenciaPacienteController implements Serializable {
         } else {
             return null;
         }
-
+    }
+    
+    public void listarGrupos() throws ProjetoException {
+    	this.listaGrupos = new GrupoDAO().listarGruposDoPrograma(insercao.getPrograma().getIdPrograma());
     }
 
     public void listarProfissionaisEquipe() throws ProjetoException {
@@ -692,12 +703,12 @@ public class TransferenciaPacienteController implements Serializable {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
-    public void selecionarPrograma(){
+    public void limparGrupo(){
         insercao.setGrupo(new GrupoBean());
-        insercao.setEquipe(new EquipeBean());
+        limparEquipe();
     }
 
-    public void selecionarGrupo(){
+    public void limparEquipe(){
         insercao.setEquipe(new EquipeBean());
         limparTabelasProfissionais();
     }
@@ -818,4 +829,11 @@ public class TransferenciaPacienteController implements Serializable {
 	public void setListaHorarios(ArrayList<String> listaHorarios) {
 		this.listaHorarios = listaHorarios;
 	}
+	public List<GrupoBean> getListaGrupos() {
+		return listaGrupos;
+	}
+	public void setListaGrupos(List<GrupoBean> listaGrupos) {
+		this.listaGrupos = listaGrupos;
+	}
+	
 }
