@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{conselhoController.getEditaConselho()}" />
+			<f:viewAction action="#{conselhoController.listarCbos()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{conselhoController.cabecalho}" class="panel-title"></h:outputText>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+					<b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Descrição" severity="info" />
+
+							<b:inputText value="#{conselhoController.conselho.descricao}"
+								class="form-control" required="true" id="descricao"
+								requiredMessage="Descrição: Campo obrigatório!" />
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<b:column>
+							<p:commandButton icon="ui-icon-plus" size="sm"
+								title="Adicionar Registro" update=":msgPagina :formCBO"
+								class="btn-acao-table acao-editar" process="@this"
+								action="#{conselhoController.limparDialogCbo()}"
+								oncomplete="PF('dlgCBO').show();" />
+
+							<p:dataTable id="tabCbo" var="cbo"
+								value="#{conselhoController.conselho.listaCbos}"
+								emptyMessage="Nenhum registro foi adicionado" reflow="true">
+
+								<p:column headerText="CBO">
+									<h:outputText value="#{cbo.descCbo}" />
+								</p:column>
+
+								<p:column headerText="Código CBO" width="100">
+									<h:outputText value="#{cbo.codigo}" />
+								</p:column>
+
+								<p:column headerText="Remover" width="80">
+									<p:commandButton icon="fa fa-fw fa-times"
+										actionListener="#{conselhoController.removerCbo(cbo)}"
+										title="Remover" update="frmPrincipal:tabCbo"
+										style="margin-left:28%;" process="@this" immediate="true"
+										class="new-btn-acao-table acao-excluir" />
+								</p:column>
+							</p:dataTable>
+						</b:column>
+					</b:row>
+					
+					<br />
+
+					<p:commandButton action="#{conselhoController.cadastrarConselho()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{conselhoController.tipo == 1}" />
+
+					<p:commandButton action="#{conselhoController.alterarConselho()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{conselhoController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciarconselho.faces?faces-redirect=true">
+					</p:commandButton>
+
+				</h:form>
+			</div>
+		</div>
+		
+		<p:dialog header="Consultar CBOS" styleClass="topDialog"
+                  widgetVar="dlgCBO" modal="true" resizable="false" height="400" width="70%" 
+                  draggable="true" responsive="true" dynamic="true" minHeight="200">
+            <h:form id="formCBO">
+                
+                <br />
+                <p:outputPanel id="outcbo">
+                		<p:dataTable var="cbo" value="#{conselhoController.listaCbos}"
+							emptyMessage="Nenhuma ocupação encontrada" paginator="true" rows="5"
+							paginatorPosition="bottom">
+							<p:column filterBy="#{cbo.descCbo}" footerText="contains" filterMatchMode="contains" headerText="CBO">
+								<h:outputText value="#{cbo.descCbo}" />
+							</p:column>
+
+							<p:column headerText="Código" width="100">
+								<h:outputText value="#{cbo.codigo}" />
+							</p:column>
+							
+							<p:column headerText="Selecionar" width="100">
+								<p:commandButton actionListener="#{conselhoController.adicionarOuRemoverCboSelecionado(cbo)}"
+                                	icon="fa fa-fw ${conselhoController.cboFoiAdicionado(cbo) == true ? 'fa-check' : 'fa-square-o'}"
+                                	title="Selecionar" update="formCBO"
+                                	style="margin-left:30%;"
+                                	class="new-btn-acao-table ${conselhoController.cboFoiAdicionado(cbo) == true ? 'acao-editar' : ''}"/>
+							</p:column>
+						</p:dataTable>
+                </p:outputPanel>
+                
+                <br />
+                <div align="center">
+                	<p:commandButton value="Incluir" 
+                	update=":frmPrincipal:tabCbo :msgPagina"
+                	action="#{conselhoController.adicionarCbos()}"
+                	disabled="#{conselhoController.listaCbosSelecionados.size() == 0}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+	</ui:define>
+</ui:composition>

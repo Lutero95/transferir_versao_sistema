@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{conselhoController.listarConselhos()}"/>
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Conselho</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+				<h:form id="frmPrincipal">
+
+					<p:commandButton id="btninc" value="Novo" size="sm"
+						action="#{conselhoController.redirecionaInsercao()}" icon="glyphicon-plus"
+						class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{conselhoController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</p:commandButton>
+
+					<p:row>
+						<p:panelGrid columns="4" id="panelBusca">
+							<p:selectOneMenu value="#{conselhoController.tipoBusca}">
+								<f:selectItem itemLabel="Descrição" itemValue="descricao" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{conselhoController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{conselhoController.buscarConselhosFiltro()}" update="dataTablePrincipal"
+											 icon="ui-icon-search" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{conselhoController.listarConselhos()}"
+											 actionListener="#{conselhoController.limparCamposBusca()}"
+											 update="dataTablePrincipal, panelBusca"
+											 icon="limpar" style="margin-left: 10px"/>
+						</p:panelGrid>
+					</p:row>
+
+					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
+						value="#{conselhoController.listaConselhos}" paginator="true" emptyMessage="Nenhum conselho foi encontrado">
+
+						<p:column headerText="Descrição" width="80%">
+							<h:outputText value="#{tab.descricao}" />
+						</p:column>
+
+						<p:column headerText="Ação">
+							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+								size="sm" action="#{conselhoController.redirecionaEdicao()}"
+								class="btn-acao-table acao-editar">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{conselhoController.conselho}" />
+
+								<f:setPropertyActionListener value="2"
+									target="#{conselhoController.tipo}" />
+							</p:commandButton>
+
+							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
+								oncomplete="PF('dialogExclusao').show()">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{conselhoController.conselho}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+			</div>
+		</div>
+
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="frmExcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Conselho?</div>
+				<div align="center">
+					<p:separator />
+					<p:commandButton look="success" value="Sim" style="float:left;"
+						action="#{conselhoController.excluirConselho()}" ajax="true"
+						icon="ui-icon-check" update=":frmPrincipal msgPagina" class="btn-sim" />
+
+					<p:commandButton value="Não"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="ui-icon-close" style="margin-left:5px;float:right;"
+						class="btn-nao" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
