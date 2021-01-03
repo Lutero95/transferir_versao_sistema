@@ -43,10 +43,11 @@ public class BuscaSessaoDTO implements Serializable {
         this.tela = tela;
     }
     
-    public BuscaSessaoDTO(ProgramaBean programaBean, GrupoBean grupoBean, Date periodoInicial, Date periodoFinal, String tela,
+    public BuscaSessaoDTO(ProgramaBean programaBean, GrupoBean grupoBean, EquipeBean equipeBean, Date periodoInicial, Date periodoFinal, String tela,
     		String campoBusca, String tipoBusca, String buscaEvolucao, boolean listarEvolucoesPendentes) {
         this.programaBean = programaBean;
         this.grupoBean = grupoBean;
+        this.equipeBean = equipeBean;
         this.periodoInicial = periodoInicial;
         this.periodoFinal = periodoFinal;
         this.tela = tela;

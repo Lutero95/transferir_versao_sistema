@@ -796,11 +796,17 @@ public class AtendimentoDAO {
 				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento and coalesce(a11.excluido,'N')='N') and a1.codprofissionalatendimento=?";
 
-		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 			sql = sql + " and  a.codprograma = ?";
 		}
-		if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 			sql = sql + " and  a.codgrupo = ?";
+		}
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe())
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
+			sql = sql + " and  a.codequipe = ?";
 		}
 
 		if ((buscaEvolucao!=null) && (buscaEvolucao.equals(BuscaEvolucao.COM_EVOLUCAO.getSigla()))) {
@@ -851,13 +857,21 @@ public class AtendimentoDAO {
 				i = 7;
 			}
 
-			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
 				i = i + 1;
 			}
-			if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
 				i = i + 1;
+			}
+			
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe())
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
+				stm.setInt(i, atendimento.getEquipe().getCodEquipe());
+				i = i + 1;				
 			}
 
 			if (!buscaTurno.equals("A")) {
