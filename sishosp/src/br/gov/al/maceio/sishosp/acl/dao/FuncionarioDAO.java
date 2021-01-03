@@ -2817,4 +2817,38 @@ public class FuncionarioDAO {
 		}
 		return cboCompativel;
 	}
+	
+	public FuncionarioBean buscarProfissionalPorCns(String cns) throws ProjetoException {
+		FuncionarioBean profissional = null;
+
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns "
+				+ " from acl.funcionarios where cns = ?  order by descfuncionario";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setString(1, cns);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				profissional = new FuncionarioBean();
+				profissional.setId(rs.getLong("id_funcionario"));
+				profissional.setNome(rs.getString("descfuncionario"));
+				profissional.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				profissional.setCns(rs.getString("cns"));
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return profissional;
+	}
 }
