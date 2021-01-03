@@ -45,6 +45,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
@@ -53,6 +54,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -124,12 +126,15 @@ public class AgendaController implements Serializable {
     private PacienteDAO pacienteDAO;
     private FuncionarioBean user_session;
     private String mensagemDialogLiberacao;
-    private boolean liberacaoEspecialidade;
+    private String motivoLiberacao;
     private FuncionarioBean usuarioLiberacao;
     private List<String> listaLiberacoes;
     private FuncionarioBean funcionarioSelecionado;
     private PacientesComInformacaoAtendimentoDTO pacienteSelecionado;
     private List<Long> listaIdFuncionariosComDuplicidadeEspecialidade;
+    private boolean incluirProcedimentos;
+    private String tipoProcedimento;
+    private boolean confirmaAgendamentoComProcedimentos;
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -193,6 +198,7 @@ public class AgendaController implements Serializable {
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.listaPacientesSelecionadosComInformacaoDTO.clear();
+        confirmaAgendamentoComProcedimentos = false;
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
@@ -275,7 +281,7 @@ public class AgendaController implements Serializable {
         this.listaFuncionariosSoucerFiltro.add(funcionarioSelecionado);
 
         if(listaIdFuncionariosComDuplicidadeEspecialidade.contains(funcionarioSelecionado.getId()))
-            this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
+            this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo());
         if(listaLiberacoes.isEmpty())
             usuarioLiberacao = new FuncionarioBean();
     }
@@ -879,8 +885,24 @@ public class AgendaController implements Serializable {
 
 	public void preparaGravarAgendaAvulsa() throws ProjetoException {
 
-		if (pacienteValido(agenda.getPaciente())) {
-
+		limpaDadosDialogLiberacao();
+		
+		// verificar se existe algum campo nao preenchido
+		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
+				|| (this.agenda.getTipoAt() == null) || this.agenda.getDataAtendimento() == null 
+				|| VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getGrupo().getIdGrupo())
+				||VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getTipoAt().getIdTipo())) {
+			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
+			return;
+		}
+		
+		if (this.listaFuncionariosTarget.isEmpty()) {
+			JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
+			return;
+		}
+		
+		if (procedimentoValido() && pacienteValido(agenda.getPaciente())) {
+			
 			if (VerificadorUtil.verificarSeObjetoNulo(agenda.getMax())
 					&& VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())) {
 				zerarValoresAgendaMaximoIhQuantidade();
@@ -899,464 +921,493 @@ public class AgendaController implements Serializable {
 			}
 		}
 	}
+	
+	private boolean procedimentoValido() {
+		if(!incluirProcedimentos)
+			return true;
+		else if(incluirProcedimentos && (VerificadorUtil.verificarSeObjetoNulo(agenda.getProcedimento())
+				|| VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) ) {
+			JSFUtil.adicionarMensagemErro("Escolha o procedimento principal!", "");
+			agenda.setProcedimento(new ProcedimentoBean());
+			return false;
+		}
+		return true;
+	}
 
-        private void insereIdCidPrimarioEmAgendaAvulsa() throws ProjetoException {
-            Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(), agenda.getPaciente().getId_paciente());
-            this.agenda.setIdCidPrimario(idCid);
-        }
+	private void insereIdCidPrimarioEmAgendaAvulsa() throws ProjetoException {
+		Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(),
+				agenda.getPaciente().getId_paciente());
+		this.agenda.setIdCidPrimario(idCid);
+	}
 
-        private boolean pacienteValido(PacienteBean paciente) throws ProjetoException {
+	private boolean pacienteValido(PacienteBean paciente) throws ProjetoException {
 
-            if(user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
-				
-				GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+		if (user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
+
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+			Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(paciente.getId_paciente(),
+					agenda.getPrograma().getIdPrograma(), agenda.getGrupo().getIdGrupo());
+
+			agenda.getTipoAt().setAgendaAvulsaValidaPacienteAtivo(
+					gerenciarPacienteDAO.tipoAtendimentoValidaPacienteAtivo(agenda.getTipoAt().getIdTipo()));
+
+			if (!pacienteAtivo && agenda.getTipoAt().isAgendaAvulsaValidaPacienteAtivo()) {
+				JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo neste programa e grupo", "");
+				JSFUtil.adicionarMensagemErro("Este tipo de atendimento não permite pacientes inativos", "");
+				return false;
+			} else if (!pacienteAtivo && !agenda.getTipoAt().isAgendaAvulsaValidaPacienteAtivo())
+				return true;
+
+			return pacienteAtivo;
+		}
+		return true;
+	}
+        
+	private boolean existeDuplicidadeAgendaAvulsa() throws ProjetoException {
+		Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda);
+
+		if ((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (existeDuplicidade)) {
+			mensagemDialogLiberacao = "Duplicidade De Agenda Avulsa: Você está tentando realizar um agendamento avulso que já possui cadastro nesta \n"
+					+ "data para este programa, grupo e tipo de atendimento! \n"
+					+ "Digite o CPF e senha para liberação!";
+			
+			this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla();
+			JSFUtil.abrirDialog("dlgLiberacao");
+			limpaDadosDialogLiberacao();
+		}
+
+		return existeDuplicidade;
+	}
+
+	public void validarSenhaLiberacaoAgendaAvulsa() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo());
+			gravarAgendaAvulsa(usuarioLiberacao);
+			if(!incluirProcedimentos)
+				JSFUtil.fecharDialog("dlgLiberacao");
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
+
+	public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaPaciente() throws ProjetoException, SQLException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		adicionarLiberacaoEspecialidade();
+		listaIdFuncionariosComDuplicidadeEspecialidade.add(this.funcionarioSelecionado.getId());
+		adicionarFuncionario(this.funcionarioSelecionado);
+	}
+	
+	public void validarSenhaLiberacaoAgendaAvulsaComProcedimento() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			listaLiberacoes.add(MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getTitulo());
+			confirmaAgendamentoComProcedimentos = true;
+			gravarAgendaAvulsa(usuarioLiberacao);
+			JSFUtil.fecharDialog("dlgLiberacao");
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
+
+	private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo());
+			JSFUtil.fecharDialog("dlgLiberacao");
+		}
+	}
+
+	public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional() throws ProjetoException, SQLException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+		adicionarLiberacaoEspecialidade();
+		adicionarPacienteSelecionado(pacienteSelecionado);
+	}
+
+	private void limpaDadosDialogLiberacao() {
+		this.funcionario.setCpf(new String());
+		this.funcionario.setSenha(new String());
+	}
+
+	public void zerarValoresAgendaMaximoIhQuantidade() {
+		agenda.setQtd(0);
+		agenda.setMax(0);
+	}
+
+	public void validarSenhaLiberacao() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (func != null) {
+			JSFUtil.fecharDialog("dlgSenha");
+			gravarAgenda(func.getId().intValue());
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
+
+	public void validarSenhaEncaixe() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.ENCAIXE.getSigla());
+
+		if (func != null) {
+			JSFUtil.fecharDialog("dlgSenhaEncaixe");
+			preparaConfirmar();
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
+
+	public Boolean verificarEncaixe() {
+		Boolean retorno = false;
+
+		if (agenda.getEncaixe()) {
+			if (SessionUtil.recuperarDadosSessao().getRealizaEncaixes()) {
+				retorno = true;
+			} else {
+				JSFUtil.adicionarMensagemAdvertencia("Usuário não tem permissão para fazer encaixe!", "Atenção");
+			}
+		} else {
+			retorno = true;
+		}
+
+		return retorno;
+	}
+
+	public void gravarAgenda(Integer funcionarioLiberacao) throws ProjetoException {
+		// verificar se existe algum campo nao preenchido
+		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
+				|| ((this.agenda.getTipoAt() == null) && (this.agenda.getAvaliacao() == false))
+				|| this.agenda.getDataAtendimento() == null) {
+			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
+			return;
+		}
+
+		// verificar as quantidades de vagas
+		if ((this.agenda.getMax() <= 0) && (!agenda.getEncaixe())) {
+			JSFUtil.adicionarMensagemErro("Quantidade máxima inválida!", "Erro");
+			return;
+		}
+
+		// verificar a quantidade de agendamentos
+		if (this.agenda.getQtd() >= this.agenda.getMax() && !agenda.getEncaixe()) {
+			JSFUtil.adicionarMensagemErro("Quantidade de agendamentos está no limite!", "Erro");
+			return;
+		}
+
+		if (this.listaNovosAgendamentos.isEmpty()) {
+			JSFUtil.adicionarMensagemErro("A lista de novos agendamentos está vazia!", "Erro");
+			return;
+		}
+
+		boolean cadastrou = false;
+
+		cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao);
+
+		if (cadastrou) {
+			limparDados();
+			this.agenda.setTurno(Turno.MANHA.getSigla());
+			JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+		}
+		limparDados();
+		this.agenda.setTurno(Turno.MANHA.getSigla());
+	}
+
+	private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
+	
+		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
+				|| !incluirProcedimentos) {
+
+			boolean cadastrou = false;
+
+			List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
+
+			cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao,
+					listaLiberacoesFiltradas);
+
+			if (cadastrou) {
+				limparDados();
+				carregaListaFuncionariosDual();
+				JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+			}
+			limparDados();
+		} 			
+		else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
+			JSFUtil.fecharDialog("dlgLiberacao");
+			limpaDadosDialogLiberacao();
+			mensagemDialogLiberacao = "Liberação de Agendamento com Procedimento:\n Você está tentando gravar um agendamento do qual você está informando o(s) procedimento(s) utilizado(s).\r\n" + 
+					"					Você está ciente de que quaisquer erros em relação ao sigtap ou outras validações são de sua responsabilidade?";
+			motivoLiberacao = MotivoLiberacao.AGENDA_AVULSA_COM_PROCEDIMENTO.getSigla();
+			JSFUtil.abrirDialog("dlgLiberacao");
+		}
+	}
+
+	private List<String> retornaLiberacoesNaoRepetidas() {
+		List<String> listaLiberacoesFiltradas = new ArrayList<>();
+		for (String liberacao : listaLiberacoes) {
+			if (!listaLiberacoesFiltradas.contains(liberacao))
+				listaLiberacoesFiltradas.add(liberacao);
+		}
+		return listaLiberacoesFiltradas;
+	}
+
+	public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
+		if (existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
+			insereIdCidPrimarioEmPacientesSelecionados();
+
+			limpaDadosDialogLiberacao();
+			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
+			boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
+
+			if ((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
+					|| !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
+					|| !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
+				gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
+			}
+		}
+	}
+
+	private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
+		boolean cadastrou = false;
+
+		List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
+		cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda,
+				this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoesFiltradas);
+
+		if (cadastrou) {
+			limparDados();
+			listarPacientes();
+			JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+		}
+		limparDados();
+	}
+
+	public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo());
+			gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
+			JSFUtil.fecharDialog("dlgLiberacao");
+		} else {
+			JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+		}
+	}
+
+	private boolean todosPacienteSelecionadoSaoAtivos() throws ProjetoException {
+		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
+		Boolean retorno = true;
+		if (user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
+			for (PacientesComInformacaoAtendimentoDTO pacienteDTO : listaPacientesSelecionadosComInformacaoDTO) {
 				Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(
-						paciente.getId_paciente(), agenda.getPrograma().getIdPrograma(),
+						pacienteDTO.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(),
 						agenda.getGrupo().getIdGrupo());
 
-				agenda.getTipoAt().setAgendaAvulsaValidaPacienteAtivo
-					(gerenciarPacienteDAO.tipoAtendimentoValidaPacienteAtivo(agenda.getTipoAt().getIdTipo()));
-				
-				if (!pacienteAtivo && agenda.getTipoAt().isAgendaAvulsaValidaPacienteAtivo()) {
-					JSFUtil.adicionarMensagemErro("Paciente selecionado não está ativo neste programa e grupo", "");
-					JSFUtil.adicionarMensagemErro("Este tipo de atendimento não permite pacientes inativos", "");
-					return false;
+				if (!pacienteAtivo) {
+					JSFUtil.adicionarMensagemErro("Paciente " + pacienteDTO.getPaciente().getNome()
+							+ " não está ativo neste programa e grupo", "");
+					retorno = false;
 				}
-				else if (!pacienteAtivo && !agenda.getTipoAt().isAgendaAvulsaValidaPacienteAtivo())
-					return true;
-
-				return pacienteAtivo;
-            }
-            return true;
-        }
-        
-        private boolean existeDuplicidadeAgendaAvulsa() throws ProjetoException {
-            Boolean existeDuplicidade = aDao.verificarDuplicidadeAgendaAvulsa(agenda);
-
-            if((!user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade()) && (existeDuplicidade)) {
-                mensagemDialogLiberacao = "Você está tentando realizar um agendamento avulso que já possui cadastro nesta \n" +
-                        "data para este programa, grupo e tipo de atendimento! \n" +
-                        "Digite o CPF e senha para liberação!";
-                this.liberacaoEspecialidade = false;
-                JSFUtil.abrirDialog("dlgLiberacao");
-                limpaDadosDialogLiberacao();
-            }
-
-            return existeDuplicidade;
-        }
-
-        public void validarSenhaLiberacaoAgendaAvulsa() throws ProjetoException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.LIBERACAO.getSigla());
-
-            if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-                listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
-                gravarAgendaAvulsa(usuarioLiberacao);
-                JSFUtil.fecharDialog("dlgLiberacao");
-            } else {
-                JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
-            }
-        }
-
-        public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaPaciente()
-    		throws ProjetoException, SQLException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.LIBERACAO.getSigla());
-
-            adicionarLiberacaoEspecialidade();
-            listaIdFuncionariosComDuplicidadeEspecialidade.add(this.funcionarioSelecionado.getId());
-            adicionarFuncionario(this.funcionarioSelecionado);
-        }
-
-        private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
-            if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-                listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
-                JSFUtil.fecharDialog("dlgLiberacao");
-            }
-        }
-
-        public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional()
-    		throws ProjetoException, SQLException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.LIBERACAO.getSigla());
-            adicionarLiberacaoEspecialidade();
-            adicionarPacienteSelecionado(pacienteSelecionado);
-        }
-
-        private void limpaDadosDialogLiberacao() {
-            this.funcionario.setCpf(new String());
-            this.funcionario.setSenha(new String());
-        }
-
-        public void zerarValoresAgendaMaximoIhQuantidade() {
-            agenda.setQtd(0);
-            agenda.setMax(0);
-        }
-
-        public void validarSenhaLiberacao() throws ProjetoException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.LIBERACAO.getSigla());
-
-            if (func != null) {
-                JSFUtil.fecharDialog("dlgSenha");
-                gravarAgenda(func.getId().intValue());
-            } else {
-                JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
-            }
-        }
-
-        public void validarSenhaEncaixe() throws ProjetoException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            FuncionarioBean func = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.ENCAIXE.getSigla());
-
-            if (func != null) {
-                JSFUtil.fecharDialog("dlgSenhaEncaixe");
-                preparaConfirmar();
-            } else {
-                JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
-            }
-        }
-
-        public Boolean verificarEncaixe() {
-            Boolean retorno = false;
-
-            if (agenda.getEncaixe()) {
-                if (SessionUtil.recuperarDadosSessao().getRealizaEncaixes()) {
-                    retorno = true;
-                } else {
-                    JSFUtil.adicionarMensagemAdvertencia("Usuário não tem permissão para fazer encaixe!", "Atenção");
-                }
-            } else {
-                retorno = true;
-            }
-
-            return retorno;
-        }
-
-        public void gravarAgenda(Integer funcionarioLiberacao) throws ProjetoException {
-            // verificar se existe algum campo nao preenchido
-            if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
-                    || ((this.agenda.getTipoAt() == null) && (this.agenda.getAvaliacao() == false))
-                    || this.agenda.getDataAtendimento() == null) {
-                JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-                return;
-            }
-
-            // verificar as quantidades de vagas
-            if ((this.agenda.getMax() <= 0) && (!agenda.getEncaixe())) {
-                JSFUtil.adicionarMensagemErro("Quantidade máxima inválida!", "Erro");
-                return;
-            }
-
-            // verificar a quantidade de agendamentos
-            if (this.agenda.getQtd() >= this.agenda.getMax() && !agenda.getEncaixe()) {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos está no limite!", "Erro");
-                return;
-            }
-
-            if (this.listaNovosAgendamentos.isEmpty()) {
-                JSFUtil.adicionarMensagemErro("A lista de novos agendamentos está vazia!", "Erro");
-                return;
-            }
-
-            boolean cadastrou = false;
-
-            cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao);
-
-            if (cadastrou) {
-                limparDados();
-                this.agenda.setTurno(Turno.MANHA.getSigla());
-                JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            }
-            limparDados();
-            this.agenda.setTurno(Turno.MANHA.getSigla());
-        }
-
-        private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-            // verificar se existe algum campo nao preenchido
-            if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
-                    || (this.agenda.getTipoAt() == null)
-                    || this.agenda.getDataAtendimento() == null) {
-                JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-                return;
-            }
-
-            if (this.listaFuncionariosTarget.isEmpty()) {
-                JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
-                return;
-            }
-
-            boolean cadastrou = false;
-
-            List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
-
-            cadastrou = aDao.gravarAgendaAvulsa(this.agenda, this.listaFuncionariosTarget, usuarioLiberacao, listaLiberacoesFiltradas);
-
-            if (cadastrou) {
-                limparDados();
-                carregaListaFuncionariosDual();
-                JSFUtil.adicionarMensagemSucesso("Agenda cadastrada com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            }
-            limparDados();
-        }
-
-        private List<String> retornaLiberacoesNaoRepetidas() {
-            List<String> listaLiberacoesFiltradas = new ArrayList<>();
-            for (String liberacao : listaLiberacoes) {
-                if(!listaLiberacoesFiltradas.contains(liberacao))
-                    listaLiberacoesFiltradas.add(liberacao);
-            }
-            return listaLiberacoesFiltradas;
-        }
-
-        public void validarAgendamentosInformandoAtendimento() throws ProjetoException {
-            if(existemPacientesAdicionados() && todosPacienteSelecionadoSaoAtivos()) {
-                insereIdCidPrimarioEmPacientesSelecionados();
-
-                limpaDadosDialogLiberacao();
-                boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
-                boolean permiteDuplicidade = user_session.getUnidade().getParametro().isPermiteAgendamentoDuplicidade();
-
-                if((existeDuplicidadeAgendaAvulsa && permiteDuplicidade)
-                        || !existeDuplicidadeAgendaAvulsa && !permiteDuplicidade
-                        || !existeDuplicidadeAgendaAvulsa && permiteDuplicidade) {
-                    gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
-                }
-            }
-        }
-
-        private void gravarAgendamentosInformandoAtendimento(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-            boolean cadastrou = false;
-
-            List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
-            cadastrou = aDao.gravarAgendamentosInformandoAtendimento(this.agenda, this.listaPacientesSelecionadosComInformacaoDTO, usuarioLiberacao, listaLiberacoesFiltradas);
-
-            if (cadastrou) {
-                limparDados();
-                listarPacientes();
-                JSFUtil.adicionarMensagemSucesso("Agendamentos cadastrados com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            }
-            limparDados();
-        }
-
-        public void validarSenhaLiberacaoAgendamentosInformandoAtendimento() throws ProjetoException {
-            FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-
-            usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
-                    ValidacaoSenha.LIBERACAO.getSigla());
-
-            if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
-                listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getSigla());
-                gravarAgendamentosInformandoAtendimento(usuarioLiberacao);
-                JSFUtil.fecharDialog("dlgLiberacao");
-            } else {
-                JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
-            }
-        }
-
-        private boolean todosPacienteSelecionadoSaoAtivos() throws ProjetoException {
-            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-
-            Boolean retorno = true;
-            if(user_session.getUnidade().getParametro().isAgendaAvulsaValidaPacienteAtivo()) {
-                for (PacientesComInformacaoAtendimentoDTO pacienteDTO : listaPacientesSelecionadosComInformacaoDTO) {
-                    Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(
-                            pacienteDTO.getPaciente().getId_paciente(), agenda.getPrograma().getIdPrograma(),
-                            agenda.getGrupo().getIdGrupo());
-
-                    if (!pacienteAtivo) {
-                        JSFUtil.adicionarMensagemErro("Paciente " + pacienteDTO.getPaciente().getNome()
-                                + " não está ativo neste programa e grupo", "");
-                        retorno = false;
-                    }
-                }
-            }
-            return retorno;
-        }
-
-        private boolean existemPacientesAdicionados() {
-            if(this.listaPacientesSelecionadosComInformacaoDTO.isEmpty()) {
-                JSFUtil.adicionarMensagemErro("Adicione pelo menos um paciente", "");
-                return false;
-            }
-            return true;
-        }
-
-        public void listarPacientes() throws ProjetoException {
-            this.listaPacientesSelecionadosComInformacaoDTO.clear();
-            this.listaPacientesComInformacaoDTOFiltro.clear();
-            this.listaPacientesComInformacaoDTO = pacienteDAO.listaPacientesComInformacaoDTO();
-            this.listaPacientesComInformacaoDTOFiltro.addAll(listaPacientesComInformacaoDTO);
-            this.listaLiberacoes.clear();
-        }
-
-        public void validaPacienteParaAdicionar(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
-           agenda.setDataAtendimento(dataAtendimentoC);
-            if(camposValidosParaValidarEspecialidadeProfissional(agenda.getProfissional(), agenda.getDataAtendimento())
-                    && !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {
-                adicionarPacienteSelecionado(pacienteSelecionado);
-           }
-        }
-
-        public void adicionarPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
-            if(!pacienteFoiAdicionado(pacienteSelecionado))
-                this.listaPacientesSelecionadosComInformacaoDTO.add(pacienteSelecionado);
-        }
-
-        private boolean pacienteFoiAdicionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
-            for (PacientesComInformacaoAtendimentoDTO paciente : listaPacientesSelecionadosComInformacaoDTO) {
-                if(paciente.getPaciente().getId_paciente().equals(pacienteSelecionado.getPaciente().getId_paciente())) {
-                    JSFUtil.adicionarMensagemAdvertencia("Este paciente já foi adicionado", "");
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public void removerPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) throws ProjetoException, SQLException {
-
-            int tamanhoLista = listaPacientesSelecionadosComInformacaoDTO.size();
-
-            for (int i = 0; i < tamanhoLista; i++) {
-                if(listaPacientesSelecionadosComInformacaoDTO.get(i).getPaciente().getId_paciente()
-                        .equals(pacienteSelecionado.getPaciente().getId_paciente())) {
-                    this.listaPacientesSelecionadosComInformacaoDTO.remove(i);
-                    this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla());
-                    break;
-                }
-            }
-
-            if(this.listaLiberacoes.isEmpty())
-                usuarioLiberacao = new FuncionarioBean();
-
-        }
-
-        private void insereIdCidPrimarioEmPacientesSelecionados() throws ProjetoException {
-            for(int i = 0; i < listaPacientesSelecionadosComInformacaoDTO.size(); i++) {
-                Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(),
-                        this.listaPacientesSelecionadosComInformacaoDTO.get(i).getPaciente().getId_paciente());
-                this.listaPacientesSelecionadosComInformacaoDTO.get(i).setIdCidPrimario(idCid);
-            }
-        }
-
-        public void contalistafunctarget(){
-            System.out.println(this.listaFuncionariosTarget.size());
-        }
-
-        public void onTransferFuncionario(TransferEvent event) {
-
-            StringBuilder builder = new StringBuilder();
-
-            for (Object item : event.getItems()) {
-                FuncionarioBean funcionario = (FuncionarioBean) item;
-                builder.append(funcionario.getId());
-
-                if(listaFuncionariosTarget.isEmpty()) {
-                    listaFuncionariosTarget.add(funcionario);
-                }
-
-                else {
-                    List<FuncionarioBean> listaFuncionariosTargetAux = new ArrayList<>();
-                    listaFuncionariosTargetAux.addAll(listaFuncionariosTarget);
-
-                    for (Integer i = 0; i < listaFuncionariosTargetAux.size(); i++) {
-                        if (listaFuncionariosTarget.get(i).getId().equals(funcionario.getId())) {
-                            listaFuncionariosTarget.remove(i.intValue());
-                            break;
-                        } else {
-                            listaFuncionariosTarget.add(funcionario);
-                        }
-                    }
-                }
-            }
-        }
-
-        public void consultarAgenda(String situacao) throws ProjetoException {
-            SessionUtil.adicionarBuscaPtsNaSessao(null, null, dataAtendimentoC,
-                    dataAtendimentoFinalC, TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
-            /*
-             * if (this.dataAtendimentoC == null) {
-             * JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
-             * return; }
-             */
-            this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC, dataAtendimentoFinalC,
-                    agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
-        }
-
-        public void carregarBuscaConsultaAgendamento() {
-            BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
-            if (!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
-                if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla())) {
-                    dataAtendimentoC = buscaSessaoDTO.getPeriodoInicial();
-                    dataAtendimentoFinalC = buscaSessaoDTO.getPeriodoFinal();
-                }
-            }
-            else
-            {
-                dataAtendimentoC = new Date();
-                dataAtendimentoFinalC = new Date();
-
-            }
-
-        }
-
-        public void resetaParametrosConsultaAgenda() {
-            agenda.setPresenca("T");
-        }
-
-        public void iniciarPaginaConsultarAgendamentos() {
-            carregarBuscaConsultaAgendamento();
-            resetaParametrosConsultaAgenda();
-        }
-
-        // SEM USO NO MOMENTO
-        public void excluirAgendamento() throws ProjetoException {
-            boolean excluiu = aDao.excluirAgendamento(this.agenda);
-            if (excluiu) {
-                limparDados();
-                JSFUtil.adicionarMensagemSucesso("Agendamento excluído com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
-            }
-            limparDados();
-        }
-
-        public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
-            if(!atendimentoFoiEvoluido(agendaSelecionada)) {
-                boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
-                if (mudouStatusPresenca) {
-                    if (agendaSelecionada.getPresenca().equals("S"))
-                        rowBean.setPresenca("N");
-                    else if (agendaSelecionada.getPresenca().equals("N"))
-                        rowBean.setPresenca("S");
-                    rowBean.getPresenca();
-                    AgendaBean linhaCapturada = rowBean;
-                    consultarAgenda(agenda.getPresenca());
-                    rowBean = linhaCapturada;
-                    // rowBean = new AgendaBean();
-                    JSFUtil.adicionarMensagemSucesso("ação concluída com sucesso!", "Sucesso");
-                } else {
-                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
-                }
-            }
-
-        }
+			}
+		}
+		return retorno;
+	}
+
+	private boolean existemPacientesAdicionados() {
+		if (this.listaPacientesSelecionadosComInformacaoDTO.isEmpty()) {
+			JSFUtil.adicionarMensagemErro("Adicione pelo menos um paciente", "");
+			return false;
+		}
+		return true;
+	}
+
+	public void listarPacientes() throws ProjetoException {
+		this.listaPacientesSelecionadosComInformacaoDTO.clear();
+		this.listaPacientesComInformacaoDTOFiltro.clear();
+		this.listaPacientesComInformacaoDTO = pacienteDAO.listaPacientesComInformacaoDTO();
+		this.listaPacientesComInformacaoDTOFiltro.addAll(listaPacientesComInformacaoDTO);
+		this.listaLiberacoes.clear();
+	}
+
+	public void validaPacienteParaAdicionar(PacientesComInformacaoAtendimentoDTO pacienteSelecionado)
+			throws ProjetoException, SQLException {
+		agenda.setDataAtendimento(dataAtendimentoC);
+		if (camposValidosParaValidarEspecialidadeProfissional(agenda.getProfissional(), agenda.getDataAtendimento())
+				&& !existeEspecialidaAgendaAvulsaNaInsercaoPaciente(agenda, pacienteSelecionado)) {
+			adicionarPacienteSelecionado(pacienteSelecionado);
+		}
+	}
+
+	public void adicionarPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
+		if (!pacienteFoiAdicionado(pacienteSelecionado))
+			this.listaPacientesSelecionadosComInformacaoDTO.add(pacienteSelecionado);
+	}
+
+	private boolean pacienteFoiAdicionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado) {
+		for (PacientesComInformacaoAtendimentoDTO paciente : listaPacientesSelecionadosComInformacaoDTO) {
+			if (paciente.getPaciente().getId_paciente().equals(pacienteSelecionado.getPaciente().getId_paciente())) {
+				JSFUtil.adicionarMensagemAdvertencia("Este paciente já foi adicionado", "");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void removerPacienteSelecionado(PacientesComInformacaoAtendimentoDTO pacienteSelecionado)
+			throws ProjetoException, SQLException {
+
+		int tamanhoLista = listaPacientesSelecionadosComInformacaoDTO.size();
+
+		for (int i = 0; i < tamanhoLista; i++) {
+			if (listaPacientesSelecionadosComInformacaoDTO.get(i).getPaciente().getId_paciente()
+					.equals(pacienteSelecionado.getPaciente().getId_paciente())) {
+				this.listaPacientesSelecionadosComInformacaoDTO.remove(i);
+				this.listaLiberacoes.remove(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo());
+				break;
+			}
+		}
+
+		if (this.listaLiberacoes.isEmpty())
+			usuarioLiberacao = new FuncionarioBean();
+
+	}
+
+	private void insereIdCidPrimarioEmPacientesSelecionados() throws ProjetoException {
+		for (int i = 0; i < listaPacientesSelecionadosComInformacaoDTO.size(); i++) {
+			Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(),
+					this.listaPacientesSelecionadosComInformacaoDTO.get(i).getPaciente().getId_paciente());
+			this.listaPacientesSelecionadosComInformacaoDTO.get(i).setIdCidPrimario(idCid);
+		}
+	}
+
+	public void contalistafunctarget() {
+		System.out.println(this.listaFuncionariosTarget.size());
+	}
+
+	public void onTransferFuncionario(TransferEvent event) {
+
+		StringBuilder builder = new StringBuilder();
+
+		for (Object item : event.getItems()) {
+			FuncionarioBean funcionario = (FuncionarioBean) item;
+			builder.append(funcionario.getId());
+
+			if (listaFuncionariosTarget.isEmpty()) {
+				listaFuncionariosTarget.add(funcionario);
+			}
+
+			else {
+				List<FuncionarioBean> listaFuncionariosTargetAux = new ArrayList<>();
+				listaFuncionariosTargetAux.addAll(listaFuncionariosTarget);
+
+				for (Integer i = 0; i < listaFuncionariosTargetAux.size(); i++) {
+					if (listaFuncionariosTarget.get(i).getId().equals(funcionario.getId())) {
+						listaFuncionariosTarget.remove(i.intValue());
+						break;
+					} else {
+						listaFuncionariosTarget.add(funcionario);
+					}
+				}
+			}
+		}
+	}
+
+	public void consultarAgenda(String situacao) throws ProjetoException {
+		SessionUtil.adicionarBuscaPtsNaSessao(null, null, dataAtendimentoC, dataAtendimentoFinalC,
+				TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
+		/*
+		 * if (this.dataAtendimentoC == null) {
+		 * JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
+		 * return; }
+		 */
+		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC, dataAtendimentoFinalC,
+				agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
+	}
+
+	public void carregarBuscaConsultaAgendamento() {
+		BuscaSessaoDTO buscaSessaoDTO = (BuscaSessaoDTO) SessionUtil.resgatarDaSessao(BUSCA_SESSAO);
+		if (!VerificadorUtil.verificarSeObjetoNulo(buscaSessaoDTO)) {
+			if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla())) {
+				dataAtendimentoC = buscaSessaoDTO.getPeriodoInicial();
+				dataAtendimentoFinalC = buscaSessaoDTO.getPeriodoFinal();
+			}
+		} else {
+			dataAtendimentoC = new Date();
+			dataAtendimentoFinalC = new Date();
+
+		}
+
+	}
+
+	public void resetaParametrosConsultaAgenda() {
+		agenda.setPresenca("T");
+	}
+
+	public void iniciarPaginaConsultarAgendamentos() {
+		carregarBuscaConsultaAgendamento();
+		resetaParametrosConsultaAgenda();
+	}
+
+	// SEM USO NO MOMENTO
+	public void excluirAgendamento() throws ProjetoException {
+		boolean excluiu = aDao.excluirAgendamento(this.agenda);
+		if (excluiu) {
+			limparDados();
+			JSFUtil.adicionarMensagemSucesso("Agendamento excluído com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+		}
+		limparDados();
+	}
+
+	public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
+		if (!atendimentoFoiEvoluido(agendaSelecionada)) {
+			boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
+			if (mudouStatusPresenca) {
+				if (agendaSelecionada.getPresenca().equals("S"))
+					rowBean.setPresenca("N");
+				else if (agendaSelecionada.getPresenca().equals("N"))
+					rowBean.setPresenca("S");
+				rowBean.getPresenca();
+				AgendaBean linhaCapturada = rowBean;
+				consultarAgenda(agenda.getPresenca());
+				rowBean = linhaCapturada;
+				// rowBean = new AgendaBean();
+				JSFUtil.adicionarMensagemSucesso("ação concluída com sucesso!", "Sucesso");
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+			}
+		}
+
+	}
 
     private boolean atendimentoFoiEvoluido(AgendaBean agenda) throws ProjetoException {
         if (aDao.verificarSeAtendimentoFoiEvoluido(agenda.getIdAgenda())) {
@@ -1632,26 +1683,27 @@ public class AgendaController implements Serializable {
 
         private boolean existeEspecialidaAgendaAvulsaNaInsercaoFuncionario(AgendaBean agenda, FuncionarioBean funcionario)
     		throws ProjetoException, SQLException {
-            this.liberacaoEspecialidade = false;
+            
+            this.motivoLiberacao = "";
             if(aDao.verificaExisteEspecialidadeNestaData
                     (agenda.getPaciente().getId_paciente(), agenda.getDataAtendimento(), funcionario.getEspecialidade().getCodEspecialidade())) {
-                mensagemDialogLiberacao = "Não é possível adicionar o profissional "+funcionario.getNome()+
+                mensagemDialogLiberacao = "Duplicidade De Agenda Avulsa: Não é possível adicionar o profissional "+funcionario.getNome()+
                         ".\n Já existe um agendamento nessa data na mesma especialidade para o paciente";
-                this.liberacaoEspecialidade = true;
+                this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla();
             }
 
             else {
                 for (FuncionarioBean funcionarioAdicionado : this.listaFuncionariosTarget) {
                     if(funcionarioAdicionado.getEspecialidade().getCodEspecialidade().
                             equals(funcionario.getEspecialidade().getCodEspecialidade())) {
-                        mensagemDialogLiberacao = "Não é possível adicionar o profissional "+funcionario.getNome()+
+                        mensagemDialogLiberacao = "Duplicidade De Agenda Avulsa: Não é possível adicionar o profissional "+funcionario.getNome()+
                                 "\n Já existe um agendamento nessa data na mesma especialidade para o paciente";
-                        this.liberacaoEspecialidade = true;
+                        this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla();
                     }
                 }
             }
 
-            if(this.liberacaoEspecialidade) {
+            if(this.motivoLiberacao.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
                 funcionarioSelecionado = funcionario;
                 limpaDadosDialogLiberacao();
                 JSFUtil.abrirDialog("dlgLiberacao");
@@ -1662,15 +1714,16 @@ public class AgendaController implements Serializable {
 
         private boolean existeEspecialidaAgendaAvulsaNaInsercaoPaciente(AgendaBean agenda, PacientesComInformacaoAtendimentoDTO paciente)
     		throws ProjetoException, SQLException {
-            this.liberacaoEspecialidade = false;
+        	this.motivoLiberacao = "";
+            
             if(aDao.verificaExisteEspecialidadeNestaData
                     (paciente.getPaciente().getId_paciente(), agenda.getDataAtendimento(), agenda.getProfissional().getEspecialidade().getCodEspecialidade())) {
                 mensagemDialogLiberacao = "Não é possível adicionar o paciente "+paciente.getPaciente().getNome()+
                         ".\n Já existe um agendamento nessa data na mesma especialidade para este paciente. Para continuar, digite seu CPF e senha";
-                this.liberacaoEspecialidade = true;
+                this.motivoLiberacao = MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla(); 
             }
 
-            if(this.liberacaoEspecialidade) {
+            if(this.motivoLiberacao.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getSigla())) {
                 pacienteSelecionado = paciente;
                 pacienteSelecionado.setDuplicidadeEspecialidade(true);
                 limpaDadosDialogLiberacao();
@@ -1689,6 +1742,71 @@ public class AgendaController implements Serializable {
         public void setaDataAtendeParaValidacaoProfissional(Date data) throws ProjetoException {
             this.dataAtendimentoC = data;
             listarPacientes();
+        }
+        
+        public void limparProcedimentos() {
+        	this.agenda.setProcedimento(new ProcedimentoBean());
+        	this.agenda.setListaProcedimentosSecundarios(new ArrayList<>());
+        }
+        
+        public void configuraDialogProcedimentoPrincipal() {
+        	this.tipoProcedimento = TipoProcedimentoAgenda.PROCEDIMENTO_PRINCIPAL.getSigla();
+        	JSFUtil.abrirDialog("dlgConsulProc");
+        }
+        
+        public void configuraDialogProcedimentoSecundario() {
+        	this.tipoProcedimento = TipoProcedimentoAgenda.PROCEDIMENTO_SECUNDARIO.getSigla();
+        	JSFUtil.abrirDialog("dlgConsulProc");
+        }
+        
+        public void selecionarProcedimentoPrincipal(ProcedimentoBean procedimentoSelecionado) {
+        	if(!procedimentoSelecionadoEhIgualAlgumSecundario(procedimentoSelecionado)) {
+        		this.agenda.setProcedimento(procedimentoSelecionado);
+        		JSFUtil.fecharDialog("dlgConsulProc");
+        	}
+        }
+        
+        private boolean procedimentoSelecionadoEhIgualAlgumSecundario(ProcedimentoBean procedimentoSelecionado) {
+        	for (ProcedimentoBean procedimento : this.agenda.getListaProcedimentosSecundarios()) {
+				if(procedimentoSelecionado.getIdProc().equals(procedimento.getIdProc())) {
+					JSFUtil.adicionarMensagemErro("Procedimento já foi adicionado como um secudário", "");
+					return true;
+				}
+			}
+        	return false;
+        }
+        
+        public void adicionarProcedimentoSecundario(ProcedimentoBean procedimentoSelecionado) {
+        	
+        	if(procedimentoSelecionadoEhIgualPrincipal(procedimentoSelecionado))
+        		return;
+        		
+        	if(this.agenda.getListaProcedimentosSecundarios().isEmpty()) {
+        		this.agenda.getListaProcedimentosSecundarios().add(procedimentoSelecionado);
+        		JSFUtil.fecharDialog("dlgConsulProc");
+        	} 
+        	else if(!procedimentoSelecionadoEhIgualAlgumSecundario(procedimentoSelecionado)) {
+        			this.agenda.getListaProcedimentosSecundarios().add(procedimentoSelecionado);
+        			JSFUtil.fecharDialog("dlgConsulProc");
+        	}
+        }
+        
+        private boolean procedimentoSelecionadoEhIgualPrincipal(ProcedimentoBean procedimentoSelecionado) {
+        	if(procedimentoSelecionado.getIdProc().equals(this.agenda.getProcedimento().getIdProc())) {
+        		JSFUtil.adicionarMensagemErro("Procedimento já foi adicionado como o principal", "");
+        		return true;
+        	}
+        	return false;
+        }
+        
+        public void removerProcedimentoSecundario(ProcedimentoBean procedimentoSelecionado) {
+        	List<ProcedimentoBean> listaAux = new ArrayList<>();
+        	listaAux.addAll(this.agenda.getListaProcedimentosSecundarios());
+        	
+        	for (ProcedimentoBean procedimento : listaAux) {
+				if(procedimentoSelecionado.getIdProc().equals(procedimento.getIdProc()))
+					this.agenda.getListaProcedimentosSecundarios().remove(procedimento);
+			}
         }
 
         public ProgramaBean getProgramaSelecionado() {
@@ -2038,11 +2156,35 @@ public class AgendaController implements Serializable {
             this.mensagemDialogLiberacao = mensagemDialogLiberacao;
         }
 
-        public boolean isLiberacaoEspecialidade() {
-            return liberacaoEspecialidade;
-        }
+		public boolean isIncluirProcedimentos() {
+			return incluirProcedimentos;
+		}
 
-        public void setLiberacaoEspecialidade(boolean liberacaoEspecialidade) {
-            this.liberacaoEspecialidade = liberacaoEspecialidade;
-        }
+		public void setIncluirProcedimentos(boolean incluirProcedimentos) {
+			this.incluirProcedimentos = incluirProcedimentos;
+		}
+
+		public String getTipoProcedimento() {
+			return tipoProcedimento;
+		}
+
+		public void setTipoProcedimento(String tipoProcedimento) {
+			this.tipoProcedimento = tipoProcedimento;
+		}
+
+		public boolean isConfirmaAgendamentoComProcedimentos() {
+			return confirmaAgendamentoComProcedimentos;
+		}
+
+		public void setConfirmaAgendamentoComProcedimentos(boolean confirmaAgendamentoComProcedimentos) {
+			this.confirmaAgendamentoComProcedimentos = confirmaAgendamentoComProcedimentos;
+		}
+
+		public String getMotivoLiberacao() {
+			return motivoLiberacao;
+		}
+
+		public void setMotivoLiberacao(String motivoLiberacao) {
+			this.motivoLiberacao = motivoLiberacao;
+		}
     }

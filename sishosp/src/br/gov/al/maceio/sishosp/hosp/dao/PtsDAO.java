@@ -338,7 +338,7 @@ public class PtsDAO {
             }
             
             if(!VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId()) && statusPTS.equals(StatusPTS.RENOVADO.getSigla())) {
-            	inserirLiberacaoPts(MotivoLiberacao.RENOVAO_PTS_ANTES_VENCIMENTO.getSigla(), codPts, usuarioLiberacao, conexao);
+            	inserirLiberacaoPts(MotivoLiberacao.RENOVAO_PTS_ANTES_VENCIMENTO.getTitulo(), codPts, usuarioLiberacao, conexao);
             }
 
             if (inserirAreaPts(pts, codPts, conexao)) {
@@ -417,7 +417,7 @@ public class PtsDAO {
             inserirAreaPts(pts, pts.getId(), conexao);
 
             if (verificarSeDataPtsMudou) {
-                inserirLiberacaoPts(MotivoLiberacao.ALTERAR_DATA_PTS.getSigla(), pts.getId(), usuarioLiberacao, conexao);
+                inserirLiberacaoPts(MotivoLiberacao.ALTERAR_DATA_PTS.getTitulo(), pts.getId(), usuarioLiberacao, conexao);
             }
 
             conexao.commit();

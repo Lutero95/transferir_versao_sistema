@@ -272,7 +272,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         if (func!=null) {
             liberacao = true;
             JSFUtil.fecharDialog("dlgSenha");
-            adicionarLiberacaoNaLista(montarLiberacao(MotivoLiberacao.AVALIACAO.getSigla(), func.getId()));
+            adicionarLiberacaoNaLista(montarLiberacao(MotivoLiberacao.AVALIACAO.getTitulo(), func.getId()));
             carregarLaudoPaciente(insercao.getLaudo().getId());
             listarProfissionaisEquipe();
         } else {
