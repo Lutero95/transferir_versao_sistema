@@ -12,6 +12,7 @@
 			<f:viewAction action="#{AgendaController.carregarHorarioOuTurno()}" />
 			<f:viewAction action="#{AgendaController.limparTurno()}" />
 			<f:viewAction action="#{AgendaController.listarPacientes()}" />
+			<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -157,35 +158,6 @@
 						</b:column>
 					</b:row>
 					
-										<b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
-						<b:column span="1" class="label-position btn-radio-table">
-							<br />
-							<b:label value="Turno" severity="info" />
-							<p:selectOneRadio  value="#{AgendaController.agenda.turno}"
-								required="true" requiredMessage="Turno: Campo obrigatório!"
-							 	style="margin-left:-15px;margin-top:10px">
-								<f:selectItem itemLabel="Manhã" itemValue="M" />
-								<f:selectItem itemLabel="Tarde" itemValue="T" />
-							</p:selectOneRadio>
-						</b:column>
-					</b:row>
-
-					<b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<br />
-								<b:label value="Horário:" severity="info" class="fire-label" />
-
-								<b:selectOneMenu class="select-agendaEquipe2" required="true"
-									requiredMessage="Horário: Campo obrigatório!"
-									value="#{AgendaController.agenda.horario}">
-									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-									<f:selectItems value="#{AgendaController.listaHorarios}"/>
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
 					<b:row>
 						<b:column span="3" class="label-position data-size new-comple1">
 							<b:label value="Data" severity="info" />
@@ -202,10 +174,103 @@
 										listener="#{AgendaController.setaDataAtendeParaValidacaoProfissional(AgendaController.agenda.dataAtendimento)}"/>
 				
 							</p:calendar>
+						</b:column>
+					
+						<b:column span="1" class="label-position btn-radio-table" 
+							rendered="#{AgendaController.opcaoAtendimento == 'T'}">
+							<br />
+							<b:label value="Turno" severity="info" />
+							<p:selectOneRadio  value="#{AgendaController.agenda.turno}"
+								required="true" requiredMessage="Turno: Campo obrigatório!"
+							 	style="margin-left:-15px;margin-top:10px">
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</p:selectOneRadio>
+						</b:column>
+						
+						<p:outputPanel rendered="#{AgendaController.opcaoAtendimento == 'H'}">
+							<b:column span="3" class="label-position">
+								<br />
+								<b:label value="Horário:" severity="info" class="fire-label" />
 
+								<b:selectOneMenu class="select-agendaEquipe2" required="true"
+									requiredMessage="Horário: Campo obrigatório!"
+									value="#{AgendaController.agenda.horario}">
+									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+									<f:selectItems value="#{AgendaController.listaHorarios}"/>
+								</b:selectOneMenu>
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+					
+					<b:row>
+						<b:column span="3" class="label-position">
+							<p:selectBooleanCheckbox
+								value="#{AgendaController.incluirProcedimentos}"
+								itemLabel="Incluir Procedimentos">
+								<p:ajax update="outprocedimentos" listener="#{AgendaController.limparProcedimentos()}" />
+							</p:selectBooleanCheckbox>
 						</b:column>
 					</b:row>
 					
+					<p:outputPanel id="outprocedimentos">
+						<b:row rendered="#{AgendaController.incluirProcedimentos == true}">
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Procedimento Principal:" severity="info" />
+
+								<p:outputPanel id="outProcP1">
+									<p:autoComplete
+										value="#{AgendaController.agenda.procedimento}"
+										size="31" converter="conProcedimento" id="descProcP1"
+										class="select-agendaEquipe4"
+										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nomeProc}">
+										<p:ajax event="itemSelect" immediate="true" process="@this descProcP1 :formConsulProc" update=":msgPagina" 
+											listener="#{AgendaController.selecionarProcedimentoPrincipal(theme)}"/>
+									</p:autoComplete>
+
+									<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+										update=":formConsulProc" process="@this"
+									    action="#{AgendaController.configuraDialogProcedimentoPrincipal()}"/>
+								</p:outputPanel>
+							</b:column>
+						</b:row>
+						
+						<b:row rendered="#{AgendaController.incluirProcedimentos == true}">
+							<b:column>
+								<p:commandButton icon="ui-icon-plus" size="sm"
+									title="Adicionar Registro" update=":msgPagina :formConsulProc"
+									class="btn-acao-table acao-editar" process="@this"
+									action="#{AgendaController.configuraDialogProcedimentoSecundario()}" />
+
+								<p:dataTable id="tabProcedimento" var="proc"
+									value="#{AgendaController.agenda.listaProcedimentosSecundarios}"
+									emptyMessage="Nenhum registro foi adicionado" reflow="true">
+
+									<p:column headerText="Procedimento">
+										<h:outputText value="#{proc.nomeProc}" />
+									</p:column>
+
+									<p:column headerText="Código Procedimento">
+										<h:outputText value="#{proc.codProc}" />
+									</p:column>
+
+									<p:column headerText="Remover" width="80">
+										<p:commandButton icon="fa fa-fw fa-times"
+											actionListener="#{AgendaController.removerProcedimentoSecundario(proc)}"
+											title="Remover" update="tabProcedimento"
+											style="margin-left:28%;" process="@this" immediate="true"
+											class="new-btn-acao-table acao-excluir" />
+									</p:column>
+								</p:dataTable>
+								<br />
+								<br />
+							</b:column>
+						</b:row>						
+					</p:outputPanel>
 					<b:row>
 						<b:column span="12">
 							<div style="display: flex;">
@@ -470,7 +535,7 @@
 			</h:form>
 		</p:dialog>
 		
-		<p:dialog header="Duplicidade De Agenda Avulsa" widgetVar="dlgLiberacao"
+		<p:dialog header="Confirmar Liberação" widgetVar="dlgLiberacao"
 			modal="true" width="400" responsive="true" resizable="false">
 			<h:form id="frmLiberacao">
 				<div class="alert alert-warning" role="alert">
@@ -495,22 +560,27 @@
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoAgendamentosInformandoAtendimento()}" 
-						update="msgPagina :formAgendaMedica"
-						rendered="#{AgendaController.liberacaoEspecialidade == false}"/>
+						update="frmLiberacao msgPagina :formAgendaMedica"
+						rendered="#{AgendaController.motivoLiberacao == 'DUPLI_AG_AVULSA'}"/>
 						
 					<p:commandButton value="Liberar" look="success" size="sm"
 						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
 						action="#{AgendaController.validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional()}" 
-						update="msgPagina :formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
-						rendered="#{AgendaController.liberacaoEspecialidade == true}"/>
+						update="frmLiberacao msgPagina :formAgendaMedica:tabelapacientes :formAgendaMedica:tabelaPacientesSelecionados"
+						rendered="#{AgendaController.motivoLiberacao == 'DUPLI_ESP'}"/>
+						
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{AgendaController.validarSenhaLiberacaoAgendaComProcedimento()}" 
+						update="frmLiberacao msgPagina :formAgendaMedica"
+						rendered="#{AgendaController.motivoLiberacao == 'AG_PROC'}"/>	
 							
 					<p:commandButton value="Cancelar" look="cancel" size="sm"
 						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" onclick="PF('dlgLiberacao').hide();"/>	
 				</div>
-
 			</h:form>
 		</p:dialog>
-
+		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
 	</ui:define>
 
 </ui:composition>

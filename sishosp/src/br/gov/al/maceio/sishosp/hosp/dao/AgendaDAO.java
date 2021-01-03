@@ -44,7 +44,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     PreparedStatement ps = null;
 
     public boolean gravarAgenda(AgendaBean agenda, List<AgendaBean> listaNovosAgendamentos,
-                                Integer funcionarioLiberacao) throws ProjetoException {
+                                FuncionarioBean funcionarioLiberacao, List<String> listaMotivosLiberacao) throws ProjetoException {
 
         Boolean retorno = false;
         int idAtendimento = 0;
@@ -97,8 +97,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
 
                 ps.setBoolean(13, agenda.getEncaixe());
-                if (funcionarioLiberacao > 0) {
-                    ps.setLong(14, funcionarioLiberacao);
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionarioLiberacao.getId())) {
+                    ps.setLong(14, funcionarioLiberacao.getId());
                 } else {
                     ps.setNull(14, Types.NULL);
                 }
@@ -131,23 +131,27 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     }
 
                     String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                            + " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+                            + " cbo, codprocedimento) VALUES  (?, ?, ?, ?) returning id_atendimentos1";
                     ps = con.prepareStatement(sql2);
                     if (agenda.getProfissional().getId() != null) {
 
-                        List<CboBean> listaCbosProfissional =
-                                new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(agenda.getProfissional().getId(), con);
+                        Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda,
+                                agenda.getProfissional(), agenda.getPaciente().getId_paciente());
+                        if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                            idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
 
-                        Integer idProcedimentoEspecifico =
-                                retornaIdProcedimentoEspecifico(idPrograma, listaCbosProfissional,
-                                        agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(), con);
+                        CboBean cboCompativel = null;
+
+                        if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                            cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
+                                    agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
+                        } else {
+                            cboCompativel = new FuncionarioDAO()
+                                    .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());
+                        }
 
                         ps.setLong(1, agenda.getProfissional().getId());
                         ps.setInt(2, idAtendimento);
-
-                        CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-                                (agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
-
                         ps.setInt(3, cboCompativel.getCodCbo());
 
                         if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
@@ -158,25 +162,34 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                         } else {
                             ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                         }
-                        ps.executeUpdate();
+                        rs = ps.executeQuery();
+
+                        if(rs.next()) {
+                            gravarProcedimentosSecundarios(con, agenda, rs.getInt("id_atendimentos1"));
+                        }
                     } else if (agenda.getEquipe().getCodEquipe() != null) {
                         agenda.getEquipe().setProfissionais(new EquipeDAO().listarProfissionaisDaEquipe(agenda.getEquipe().getCodEquipe()));
 
                         for (FuncionarioBean prof : agenda.getEquipe().getProfissionais()) {
 
-                            List<CboBean> listaCbosProfissional =
-                                    new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(prof.getId(), con);
+                            Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda,
+                                    prof, agenda.getPaciente().getId_paciente());
 
-                            Integer idProcedimentoEspecifico =
-                                    retornaIdProcedimentoEspecifico(idPrograma, listaCbosProfissional,
-                                            agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(), con);
+                            if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                                idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
+
+                            CboBean cboCompativel = null;
+
+                            if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                                cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
+                                        agenda.getDataAtendimento(), prof, idProcedimentoEspecifico, con);
+                            } else {
+                                cboCompativel = new FuncionarioDAO()
+                                        .retornaPrimeiroCboProfissional(prof.getId());
+                            }
 
                             ps.setLong(1, prof.getId());
                             ps.setInt(2, idAtendimento);
-
-                            CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-                                    (agenda.getDataAtendimento(), prof, idProcedimentoEspecifico, con);
-
                             ps.setInt(3, cboCompativel.getCodCbo());
 
                             if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
@@ -193,8 +206,17 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                                 else
                                     ps.setNull(4, Types.NULL);
                             }
-                            ps.executeUpdate();
+                            rs = ps.executeQuery();
+
+                            if(rs.next()) {
+                                gravarProcedimentosSecundarios(con, agenda, rs.getInt("id_atendimentos1"));
+                            }
                         }
+                    }
+                }
+                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionarioLiberacao)) {
+                    for (String motivo : listaMotivosLiberacao) {
+                        gravarLiberacaoAgenda(con, idAtendimento, funcionarioLiberacao, motivo);
                     }
                 }
             }
@@ -279,7 +301,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                         + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?) returning id_atendimentos1";
 
-                Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda, funcionario);
+                Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda, funcionario, agenda.getPaciente().getId_paciente());
                 if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
                     idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
 
@@ -327,7 +349,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)
                     && !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
                 for (String motivo : listaMotivosLiberacao) {
-                    gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
+                    gravarLiberacaoAgenda(con, idAtendimento, usuarioLiberacao, motivo);
                 }
             }
 
@@ -367,6 +389,22 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         try {
             con = ConnectionFactory.getConnection();
             for (PacientesComInformacaoAtendimentoDTO pacienteComInformacaoAtendimentoDTO : listaPacientesComInformacaoAtendimentoDTO) {
+
+                Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda,
+                        agenda.getProfissional(), pacienteComInformacaoAtendimentoDTO.getPaciente().getId_paciente());
+
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
+                    idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
+
+                CboBean cboCompativel = null;
+
+                if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                    cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
+                            agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
+                } else {
+                    cboCompativel = new FuncionarioDAO()
+                            .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());
+                }
 
                 ps = con.prepareStatement(sql);
 
@@ -418,25 +456,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
 
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
-
-                List<CboBean> listaCbosProfissional =
-                        new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(agenda.getProfissional().getId(), con);
-
-                Integer idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
-                        listaCbosProfissional, pacienteComInformacaoAtendimentoDTO.getPaciente().getId_paciente(),
-                        agenda.getGrupo().getIdGrupo(), con);
-
-                if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
-                    idProcedimentoEspecifico = agenda.getPrograma().getProcedimento().getIdProc();
-
+                        + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?) returning id_atendimentos1";
 
                 ps = con.prepareStatement(sql2);
                 ps.setLong(1, agenda.getProfissional().getId());
                 ps.setInt(2, idAtendimento);
-
-                CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
-                        (agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
 
                 ps.setInt(3, cboCompativel.getCodCbo());
 
@@ -460,7 +484,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 else
                     ps.setInt(6, pacienteComInformacaoAtendimentoDTO.getIdCidPrimario());
 
-                ps.executeUpdate();
+                rs = ps.executeQuery();
+                if(rs.next()) {
+                    gravarProcedimentosSecundarios(con, agenda, rs.getInt("id_atendimentos1"));
+                }
 
                 if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)
                         && !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
@@ -468,10 +495,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     for (String motivo : listaMotivosLiberacao) {
                         if(pacienteComInformacaoAtendimentoDTO.isDuplicidadeEspecialidade()
                                 && motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo())) {
-                            gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
+                            gravarLiberacaoAgenda(con, idAtendimento, usuarioLiberacao, motivo);
                         }
-                        else if (motivo.equals(MotivoLiberacao.DUPLICIDADE_AGENDA_AVULSA.getTitulo()))
-                            gravarLiberacaoDuplicidadeAgendaAvulsa(con, idAtendimento, usuarioLiberacao, motivo);
+                        else if (!motivo.equals(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo())) {
+                            gravarLiberacaoAgenda(con, idAtendimento, usuarioLiberacao, motivo);
+                        }
                     }
                 }
             }
@@ -493,8 +521,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
 
-    private void gravarLiberacaoDuplicidadeAgendaAvulsa(Connection conexao, Integer idAtendimento,
-                                                        FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
+    private void gravarLiberacaoAgenda(Connection conexao, Integer idAtendimento,
+                                       FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
 
         String sql = "INSERT INTO hosp.liberacoes "
                 + "(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade) "
@@ -3350,7 +3378,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.setLong(1, user_session.getId());
             stmt.setInt(2, atendimento.getId1());
             stmt.execute();
-            gravarLiberacaoAgendamento(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getTitulo());
+            gravarLiberacaoAtendimento1(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getTitulo());
             con.commit();
             retorno = true;
         } catch (SQLException ex2) {
@@ -3367,8 +3395,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return retorno;
     }
 
-    private void gravarLiberacaoAgendamento(Connection conexao, AtendimentoBean atendimento,
-                                            FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
+    private void gravarLiberacaoAtendimento1(Connection conexao, AtendimentoBean atendimento,
+                                             FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
 
         String sql = "INSERT INTO hosp.liberacoes " +
                 "(motivo, usuario_liberacao, data_hora_liberacao, codatendimento, cod_unidade, id_atendimentos1) " +
@@ -3391,7 +3419,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     private Integer retornaIdProcedimentoDaAgendaOuEspecifico(Connection conexao, AgendaBean agenda,
-                                                              FuncionarioBean funcionario) throws SQLException, ProjetoException {
+                                                              FuncionarioBean funcionario, Integer idPaciente) throws SQLException, ProjetoException {
 
         Integer idProcedimentoEspecifico = null;
         try {
@@ -3401,7 +3429,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                         .listaCbosProfissionalComMesmaConexao(funcionario.getId(), conexao);
 
                 idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
-                        listaCbosProfissional, agenda.getPaciente().getId_paciente(), agenda.getGrupo().getIdGrupo(),
+                        listaCbosProfissional, idPaciente, agenda.getGrupo().getIdGrupo(),
                         conexao);
             }
             else {

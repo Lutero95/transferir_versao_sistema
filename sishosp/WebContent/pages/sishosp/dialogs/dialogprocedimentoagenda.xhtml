@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+<h:body>
+	<p:dialog header="Consultar Procedimento" styleClass="topDialog"
+		widgetVar="dlgConsulProc" modal="true" resizable="false"
+		draggable="false" responsive="true" width="40%">
+		<h:form id="formConsulProc">
+			<p:outputPanel>
+				<p:autoUpdate />
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+
+					<h:column>
+						<f:facet name="header">
+                                Descrição
+                            </f:facet>
+						<p:outputLabel value="#{proc.nomeProc}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                                Adicionar
+                            </f:facet>
+						<div align="center">
+							<p:commandButton
+								rendered="#{AgendaController.tipoProcedimento == 'P'}"
+								icon="fa fa-fw fa-check" title="Selecionar P"
+								class="new-btn-acao-table acao-editar"
+								update=":formAgendaMedica:outProcP1 :msgPagina"
+								action="#{AgendaController.selecionarProcedimentoPrincipal(proc)}" />
+
+							<p:commandButton
+								rendered="#{AgendaController.tipoProcedimento == 'S'}"
+								icon="fa fa-fw fa-check" title="Selecionar S"
+								class="new-btn-acao-table acao-editar"
+								update=":formAgendaMedica:tabProcedimento :msgPagina"
+								action="#{AgendaController.adicionarProcedimentoSecundario(proc)}" />
+						</div>
+					</h:column>
+				</b:dataTable>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>
