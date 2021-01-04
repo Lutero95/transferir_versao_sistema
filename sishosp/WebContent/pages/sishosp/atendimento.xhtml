@@ -47,7 +47,7 @@
 					<b:row>
 						<p:outputPanel class="data-size5">
 
-							<b:column span="2" class="label-position data-size1">
+							<b:column span="2" class="label-position data-size3">
 								<b:label value="Dia de Atendimento:" severity="info" />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
@@ -80,9 +80,9 @@
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descPrograma}">
-										<p:ajax event="itemSelect"
+										<p:ajax event="itemSelect" listener="#{AtendimentoController.limparGrupoIhEquipe()}"
 											update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
-							:formConsAge:btBusGr, :formConsAge:outGrupo" />
+											:formConsAge:btBusGr, :formConsAge:outGrupo :formConsAge:outEquipe" />
 
 									</p:autoComplete>
 
@@ -93,7 +93,11 @@
 										oncomplete="PF('dlgConsuProg').show();" />
 								</p:outputPanel>
 							</b:column>
-
+						</p:outputPanel>
+					</b:row>
+					
+					<b:row>
+						
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Grupo" severity="info" />
@@ -107,8 +111,8 @@
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descGrupo}">
-										<p:ajax event="itemSelect" update=":formConsAge:outGrupo" />
-
+										<p:ajax event="itemSelect" listener="#{AtendimentoController.limparEquipe()}" 
+											update=":formConsAge:outGrupo :formConsAge:outEquipe" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusGr" icon="ui-icon-search"
@@ -118,8 +122,31 @@
 										update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
 								</p:outputPanel>
 							</b:column>
+							
+							<b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Equipe" severity="info"/>
 
-						</p:outputPanel>
+                                <p:outputPanel id="outEquipe">
+                                    <p:autoComplete
+                                            value="#{AtendimentoController.atendimento.equipe}"
+                                            size="31" converter="conEquipe"
+                                            disabled="#{AtendimentoController.atendimento.grupo.idGrupo == null}"
+                                            class="select-agendaEquipe4"
+                                            completeMethod="#{AtendimentoController.listaEquipeAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descEquipe}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusEqui" immediate="true"
+                                                     disabled="#{AtendimentoController.atendimento.grupo.idGrupo == null}"
+                                                     action="#{AtendimentoController.carregaListaEquipePorGrupo()}"
+                                                     icon="ui-icon-search"
+                                                     oncomplete="PF('dlgConsuEquipe').show();"
+                                                     update=":formConsuEquipe"/>
+                                </p:outputPanel>
+                            </b:column>
 					</b:row>
 
 
@@ -310,9 +337,10 @@
                         </f:facet>
 						<p:commandButton
 							update=":formConsAge:outProg, :formConsuGrop:dtGrupo,
-							:formConsAge:btBusGr, :formConsAge:outGrupo"
+							:formConsAge:btBusGr, :formConsAge:outGrupo, :formConsAge:outEquipe"
 							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
+							title="Selecionar" onclick="PF('dlgConsuProg').hide();"
+							action="#{AtendimentoController.limparGrupoIhEquipe()}">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{AtendimentoController.atendimento.programa}" />
 						</p:commandButton>
@@ -343,10 +371,11 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formConsAge:outGrupo"
+						<p:commandButton update=":formConsAge:outGrupo :formConsAge:outEquipe"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();">
+							oncomplete="PF('dlgConsuGrop').hide();"
+							action="#{AtendimentoController.limparEquipe()}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{AtendimentoController.atendimento.grupo}" />
 						</p:commandButton>
@@ -355,7 +384,6 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
-
+		<ui:include src="dialogs/dialogequipeatendimento.xhtml"/>
 	</ui:define>
-
 </ui:composition>

@@ -445,37 +445,7 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
-		
-		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
-                  dynamic="true" modal="true" responsive="true">
-            <h:form id="formConsuEquipe">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{AtendimentoController.listaEquipe}"
-                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
-
-                    <h:column>
-                        <f:facet name="header">
-                            Equipe
-                        </f:facet>
-                        <p:outputLabel value="#{equipe.descEquipe}"/>
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">
-                            Adicionar
-                        </f:facet>
-                        <p:commandButton
-                                 icon="fa fa-fw fa-check" update=":formConsAge:outEquipe"
-                                title="Selecionar" class="new-btn-acao-table acao-editar"
-                                oncomplete="PF('dlgConsuEquipe').hide();">
-                            <f:setPropertyActionListener value="#{equipe}"
-                                                         target="#{AtendimentoController.atendimento.equipe}"/>
-                        </p:commandButton>
-                    </h:column>
-
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+		<ui:include src="dialogs/dialogequipeatendimento.xhtml"/>		
 
 	</ui:define>
 
