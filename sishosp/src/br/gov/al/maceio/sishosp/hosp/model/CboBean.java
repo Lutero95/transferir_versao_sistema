@@ -4,11 +4,17 @@ import java.io.Serializable;
 
 public class CboBean implements Serializable {
 
-    private Integer codCbo;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer codCbo;
     private String descCbo;
     private String codigo;
+    private ConselhoBean conselho;
 
     public CboBean() {
+    	this.conselho = new ConselhoBean();
     }
 
 
@@ -16,6 +22,7 @@ public class CboBean implements Serializable {
         this.codCbo = codCbo;
         this.descCbo = descCbo;
         this.codigo = codigo;
+        this.conselho = new ConselhoBean();
     }
 
     public Integer getCodCbo() {
@@ -43,6 +50,13 @@ public class CboBean implements Serializable {
         this.codigo = codigo;
     }
 
-	
 
+	public ConselhoBean getConselho() {
+		return conselho;
+	}
+
+
+	public void setConselho(ConselhoBean conselho) {
+		this.conselho = conselho;
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConselhoBean;
 
@@ -270,6 +271,42 @@ public class ConselhoDAO {
             }
         }
         return removido;
+    }
+	
+	public boolean existeCboEmConselho(Integer idConselho, Integer idCbo) throws ProjetoException {
+
+		boolean existe = false;
+        String sql = "select exists (select cc.id_cbo from hosp.cbo_conselho cc where id_cbo = ? ";
+        		
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idConselho)) {
+        	sql += "		and id_conselho != ? ";
+        }
+        sql += ");";
+        	
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idCbo);
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idConselho))
+            	ps.setInt(2, idConselho);
+            
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+            	existe = rs.getBoolean("exists");
+            }
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
     }
 	
 }

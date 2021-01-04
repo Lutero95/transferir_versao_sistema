@@ -988,19 +988,22 @@ public class AtendimentoDAO {
 	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
-				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
-				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
-				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo, pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev from hosp.atendimentos a "
-				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
-				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
-				+ "left join hosp.programa pro on (pro.id_programa = a.codprograma)"
-				+ "left join hosp.grupo g on (g.id_grupo = a.codgrupo)"
-				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
-				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
-				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
-				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "
-				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
+		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario,  " + 
+				"pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao,  " + 
+				"a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo,  " + 
+				" a.codgrupo, g.descgrupo, a1.cbo codcbo, pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev, con.id id_conselho, con.descricao conselho " + 
+				" from hosp.atendimentos a  " + 
+				"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento  " + 
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " + 
+				"left join hosp.programa pro on (pro.id_programa = a.codprograma) " + 
+				"left join hosp.grupo g on (g.id_grupo = a.codgrupo) " + 
+				"left join hosp.pacientes p on (p.id_paciente = a.codpaciente)  " + 
+				"left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento)  " + 
+				"left join hosp.proc pr on (pr.id = a1.codprocedimento)  " + 
+				"left join hosp.cid c on c.cod = a1.id_cidprimario  " + 
+				"left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " + 
+				"left join hosp.conselho con on cc.id_conselho = con.id  " + 
+				"where a.id_atendimento = ? and a1.codprofissionalatendimento = ? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1021,6 +1024,8 @@ public class AtendimentoDAO {
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
+				atendimento.getCbo().getConselho().setId(rs.getInt("id_conselho"));
+				atendimento.getCbo().getConselho().setDescricao(rs.getString("conselho"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
@@ -1251,7 +1256,8 @@ public class AtendimentoDAO {
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao, EspecialidadeBean especialidade) throws ProjetoException {
 
 		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,  " + 
-				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, pa.nome as nome_paciente " + 
+				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, "+
+				"pa.nome as nome_paciente,  con.id id_conselho, con.descricao conselho " + 
 				"FROM hosp.atendimentos1 a1  " + 
 				"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
 				" left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento  " + 
@@ -1259,9 +1265,11 @@ public class AtendimentoDAO {
 				" left join hosp.pacientes pa on a.codpaciente = pa.id_paciente  " + 
 				" left join hosp.programa  on programa.id_programa = a.codprograma  " + 
 				" left join hosp.grupo g on g.id_grupo = a.codgrupo  " + 
-				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " + 
-				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
+				" LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " + 
+				" LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
 				" left join hosp.cbo c on c.id  = a1.cbo  " + 
+				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo \r\n" + 
+				" left join hosp.conselho con on cc.id_conselho = con.id "+
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
 				"and p.ativo = 'S' and a.cod_unidade=?";
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente))
@@ -1311,6 +1319,8 @@ public class AtendimentoDAO {
 				atendimento.getCbo().setCodCbo(rs.getInt("idcbo"));
 				atendimento.getCbo().setCodigo(rs.getString("codcbo"));
 				atendimento.getCbo().setDescCbo(rs.getString("desccbo"));
+				atendimento.getCbo().getConselho().setId(rs.getInt("id_conselho"));
+				atendimento.getCbo().getConselho().setDescricao(rs.getString("conselho"));
 				atendimento.setEvolucao(rs.getString("evolucao"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));

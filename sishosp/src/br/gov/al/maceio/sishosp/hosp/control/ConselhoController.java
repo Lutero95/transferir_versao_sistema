@@ -80,18 +80,31 @@ public class ConselhoController {
 		}
 	}
 	
-    public void adicionarOuRemoverCboSelecionado(CboBean cbo) {
+    public void adicionarOuRemoverCboSelecionado(CboBean cbo) throws ProjetoException {
     	if(cboFoiAdicionado(cbo))
     		this.listaCbosSelecionados.remove(cbo);
     	else
     		this.listaCbosSelecionados.add(cbo);
     }
+
+	private boolean cboExisteEmOutroConselho(CboBean cbo) throws ProjetoException {
+		boolean existe = conselhoDAO.existeCboEmConselho(conselho.getId(), cbo.getCodCbo());
+		if(existe)
+			JSFUtil.adicionarMensagemErro("CBO "+ cbo.getDescCbo()+" já foi adicionado em outro conselho", "");
+		return existe;
+	}
     
     public boolean cboFoiAdicionado(CboBean cbo) {
     	return this.listaCbosSelecionados.contains(cbo);
     }
     
-    public void adicionarCbos() {
+    public void adicionarCbos() throws ProjetoException {
+    	
+    	for (CboBean cbo : listaCbosSelecionados) {
+			if(cboExisteEmOutroConselho(cbo))
+				return;
+		}
+    	
     	if(!existeAlgumCboAdicionado(listaCbosSelecionados)) {
     		this.conselho.getListaCbos().addAll(listaCbosSelecionados);
     		JSFUtil.fecharDialog("dlgCBO");
