@@ -749,7 +749,7 @@
 					
 					<b:row>
 						<b:column span="8">
-						<p:selectOneMenu id="selectCbo" autoWidth="true"
+						<p:selectOneMenu id="selectCbo" autoWidth="true" requiredMessage="Informe o CBO" required="true"
 							value="#{AtendimentoController.cboSelecionado.codCbo}" >
             				<f:selectItem itemLabel="Selecione o CBO" itemValue="" />
             				<f:selectItems value="#{MBFuncionarios.listaCbos}" var="cbo" 

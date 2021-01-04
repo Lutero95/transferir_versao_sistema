@@ -2937,13 +2937,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
 
         String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, " +
-                "c.id, c.descricao, c.codigo codcbo, to_char(p.horario_atendimento,'HH24:MI') horario_atendimento " +
+                "  to_char(p.horario_atendimento,'HH24:MI') horario_atendimento " +
                 "  FROM hosp.profissional_dia_atendimento p " +
                 "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) " +
                 "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
-                " join hosp.atendimentos a on (p.id_paciente_instituicao = a.id_paciente_instituicao) " +
-                " join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento and a1.codprofissionalatendimento = f.id_funcionario) " +
-                " JOIN hosp.cbo c ON (a1.cbo = c.id) " +
                 " WHERE p.id_paciente_instituicao = ? order by f.descfuncionario;";
 
         try {
