@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.gestao.control;
 
 import static br.gov.al.maceio.sishosp.comum.util.JSFUtil.resgatarObjetoDaSessao;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import br.gov.al.maceio.sishosp.gestao.model.dto.InconsistenciaDTO;
 
 @ManagedBean
 @SessionScoped
-public class InconsistenciaController {
+public class InconsistenciaController implements Serializable {
 
 	private InconsistenciaBean inconsistencia;
 	private Integer tipo;

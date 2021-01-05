@@ -1,10 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +47,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoExportacao;
 
 @ManagedBean
 @ViewScoped
-public class BpaController {
+public class BpaController implements Serializable {
 	
 	private static final String TIPO_FOLHA_PARA_GERAR_EXCEL = "Java Books";
 	private static final int VALOR_PADRAO_PARA_GERAR_SMT_VRF = 1111;

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 @ManagedBean(name = "exportacaoMB")
 @SessionScoped
-public class ExportacaoDatatableController {
+public class ExportacaoDatatableController implements Serializable {
     public void preProcessLaudo(Object document) throws IOException, DocumentException {
         preProcessPDF(document, "Listagem de Laudos");
     }

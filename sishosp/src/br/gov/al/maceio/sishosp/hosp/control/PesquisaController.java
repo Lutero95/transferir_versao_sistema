@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import br.gov.al.maceio.sishosp.hosp.model.dto.PacientePesquisaDTO;
 
 @ManagedBean
 @ViewScoped
-public class PesquisaController {
+public class PesquisaController implements Serializable {
 
 	private List<PacienteBean> listaPacientes;
 	private GerenciarPacienteDAO gerenciarPacienteDAO;

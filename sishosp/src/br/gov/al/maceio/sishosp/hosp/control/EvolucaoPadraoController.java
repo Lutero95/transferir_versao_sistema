@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EvolucaoPadraoBean;
 
 @ManagedBean
 @ViewScoped
-public class EvolucaoPadraoController {
+public class EvolucaoPadraoController implements Serializable {
 
 	private Integer tipo;
 	private List<EvolucaoPadraoBean> listaEvolucoesPadrao;

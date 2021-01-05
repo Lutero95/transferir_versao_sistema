@@ -943,13 +943,14 @@ public class AtendimentoDAO {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome,a1.codprofissionalatendimento , f.descfuncionario, a1.codprocedimento, pr.codproc, p.dtanascimento, p.sexo, "
-				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma "
+				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma,a1.cbo codcbo, cbo.codigo codigocbo "
 				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.programa on (programa.id_programa = a.codprograma) "
 				+ "left join hosp.proc pr on (pr.id = coalesce(a1.codprocedimento, programa.cod_procedimento)) "
+				+ " left join hosp.cbo  on cbo.id  = a1.cbo "
 				+ "where a.id_atendimento = ? and coalesce(a.situacao, 'A')<> 'C' and coalesce(a1.excluido, 'N' )= 'N' "
 				+ "and pr.ativo = 'S'";
 		try {
@@ -970,7 +971,8 @@ public class AtendimentoDAO {
 				atendimento.getProcedimento().setNomeProc(rs.getString("procedimento"));
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
-
+				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
+				atendimento.getCbo().setCodigo(rs.getString("codigocbo"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
@@ -1109,7 +1111,7 @@ public class AtendimentoDAO {
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
 
 		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns, " + 
-				" a1.cbo codcbo, c.descricao, a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, "+
+				" a1.cbo codcbo, c.descricao,c.codigo codigocbo,  a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, "+
 				" a1.codprocedimento, pr.nome as procedimento, pr.codproc, a1.evolucao, a1.perfil_avaliacao,  " + 
 				" to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento, a.codprograma, a.codgrupo, p.id_paciente, p.dtanascimento, p.sexo  " + 
 				" from hosp.atendimentos1 a1 " + 
@@ -1140,6 +1142,7 @@ public class AtendimentoDAO {
 				atendimento.getFuncionario().setCns(rs.getString("cns"));
 				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
 				atendimento.getCbo().setDescCbo(rs.getString("descricao"));
+				atendimento.getCbo().setCodigo(rs.getString("codigocbo"));
 
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("situacao_descricao"));

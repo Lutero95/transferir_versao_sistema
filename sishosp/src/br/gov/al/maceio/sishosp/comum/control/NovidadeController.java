@@ -11,6 +11,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import static br.gov.al.maceio.sishosp.comum.util.JSFUtil.resgatarObjetoDaSessao
 
 @ManagedBean
 @SessionScoped
-public class NovidadeController {
+public class NovidadeController implements Serializable {
     private List<Novidade> novidades;
     private NovidadeDAO novidadeDAO;
     private Novidade novidade;

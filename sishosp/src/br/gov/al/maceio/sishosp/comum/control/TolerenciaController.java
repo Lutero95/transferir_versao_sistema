@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.control;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.faces.bean.ManagedBean;
@@ -18,7 +19,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 
 @ManagedBean
 @SessionScoped
-public class TolerenciaController {
+public class TolerenciaController implements Serializable {
 
 	private HorarioFuncionamento horarioFuncionamento;
 	private ToleranciaDAO toleranciaDAO;
