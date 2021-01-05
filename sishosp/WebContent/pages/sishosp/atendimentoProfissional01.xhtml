@@ -190,6 +190,18 @@
 					</p:row>
 					<br />
 					
+					<p:row rendered="#{AtendimentoController.atendimento.cbo.conselho.id > 0}">
+						<b:column span="12" class="label-position">
+							<p:outputLabel value="Conselho" severity="info"
+								style="font-weight:bold !important" />
+							<p:outputLabel
+								value="#{AtendimentoController.atendimento.cbo.conselho.descricao}"
+								readonly="true" class="form-control select-agendaEquipe5"
+								id="inputnameconselho" />
+						</b:column>
+					</p:row>
+					<br />
+					
 					<p:row>
 						<b:column span="12">
 							<p:outputLabel value="Texto Padrão para Evolução" severity="info"

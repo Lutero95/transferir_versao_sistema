@@ -170,7 +170,15 @@
 									<b:row>
 										<b:column span="12">
 											<h:outputLabel value="CBO: " />
-											<h:outputLabel value="#{evo.funcionario.cbo.descCbo}"
+											<h:outputLabel value="#{evo.cbo.descCbo}"
+												style="font-weight:bold; margin-left:10px" />
+										</b:column>
+									</b:row>
+									
+									<b:row rendered="#{evo.cbo.conselho.id > 0}">
+										<b:column span="12">
+											<h:outputLabel value="Conselho: " />
+											<h:outputLabel value="#{evo.cbo.conselho.descricao}"
 												style="font-weight:bold; margin-left:10px" />
 										</b:column>
 									</b:row>

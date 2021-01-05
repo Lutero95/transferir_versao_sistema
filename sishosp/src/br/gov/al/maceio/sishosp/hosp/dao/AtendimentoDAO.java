@@ -40,7 +40,7 @@ public class AtendimentoDAO {
 			.getSessionMap().get("obj_usuario");
 
 	public Boolean realizaAtendimentoProfissional
-		(FuncionarioBean funcionario, AtendimentoBean atendimento, String palavrasChaveIncompativeis) throws ProjetoException {
+			(FuncionarioBean funcionario, AtendimentoBean atendimento, String palavrasChaveIncompativeis) throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
 		try {
@@ -73,21 +73,21 @@ public class AtendimentoDAO {
 			String sql3 = "update hosp.atendimentos1_procedimento_secundario set excluido = 'S', data_hora_exclusao=current_timestamp, usuario_exclusao=? " + " where id_atendimentos1 = ? and coalesce(excluido,'N')='N'";
 
 			PreparedStatement stmt3 = con.prepareStatement(sql3);
-				stmt3.setLong(1, user_session.getId());
-				stmt3.setInt(2, atendimento.getId1());
-				stmt3.executeUpdate();
+			stmt3.setLong(1, user_session.getId());
+			stmt3.setInt(2, atendimento.getId1());
+			stmt3.executeUpdate();
 
 
 			gravarProcedimentosSecundariosEvolucao(con, atendimento);
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
 			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
-				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);
 			}
 
 			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(palavrasChaveIncompativeis)) {
 				Integer idSituacao = atendimento.getSituacaoAtendimento().getId();
 				String descricao = montarDescricaoLogPalavraChave(atendimento, palavrasChaveIncompativeis, idSituacao);
-				
+
 				LogBean log = new LogBean(user_session.getId(), descricao, Rotina.EVOLUCAO_PALAVRAS_CHAVE_DIVERGENTE.getSigla());
 				new LogDAO().gravarLog(log, con);
 			}
@@ -110,19 +110,19 @@ public class AtendimentoDAO {
 	}
 
 	private String montarDescricaoLogPalavraChave(AtendimentoBean atendimento, String palavrasChaveIncompativeis,
-			Integer idSituacao) throws ProjetoException, SQLException {
+												  Integer idSituacao) throws ProjetoException, SQLException {
 		String descricao = "Id_atendimento_1: "+ atendimento.getId1();
 		descricao += " Id_situacao_atendimento: "+ idSituacao+" Situação: "+
-		new SituacaoAtendimentoDAO().buscaDescricaoSituacaoAtendimento(idSituacao, con)+"\n";
+				new SituacaoAtendimentoDAO().buscaDescricaoSituacaoAtendimento(idSituacao, con)+"\n";
 		descricao += "Palavras-chave: "+palavrasChaveIncompativeis;
 		return descricao;
 	}
-	
-	private void gravarProcedimentosSecundariosEvolucao(Connection conexao, AtendimentoBean atendimento) 
+
+	private void gravarProcedimentosSecundariosEvolucao(Connection conexao, AtendimentoBean atendimento)
 			throws SQLException, ProjetoException {
-		
-		String sql = "INSERT INTO hosp.atendimentos1_procedimento_secundario " + 
-				"(id_atendimentos1, id_procedimento, id_cid) " + 
+
+		String sql = "INSERT INTO hosp.atendimentos1_procedimento_secundario " +
+				"(id_atendimentos1, id_procedimento, id_cid) " +
 				"VALUES(?, ?, ?);";
 		try {
 			for (ProcedimentoCidDTO procedimentoCid : atendimento.getListaProcedimentoCid()) {
@@ -130,7 +130,7 @@ public class AtendimentoDAO {
 				stm.setInt(1, atendimento.getId1());
 				stm.setInt(2, procedimentoCid.getProcedimento().getIdProc());
 				stm.setInt(3, procedimentoCid.getCid().getIdCid());
-				stm.executeUpdate();				
+				stm.executeUpdate();
 			}
 		} catch (SQLException ex2) {
 			conexao.rollback();
@@ -206,7 +206,7 @@ public class AtendimentoDAO {
 						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
 					else
 						stmt2.setNull(8, Types.NULL);
-					
+
 					ResultSet rs = stmt2.executeQuery();
 					if(rs.next()) {
 						lista.get(i).setId1(rs.getInt("id_atendimentos1"));
@@ -348,11 +348,11 @@ public class AtendimentoDAO {
 					}
 				}
 			}
-			
+
 			gravarValidacaoSigtapAnterior(con, idAtendimento, validaSigtapAnterior);
 			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
 				for (AtendimentoBean atendimento : lista) {
-					verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+					verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);
 				}
 			}
 
@@ -373,21 +373,21 @@ public class AtendimentoDAO {
 	}
 
 	private void verificarInconsistenciaEvolucaoProgramaGrupo
-		(AtendimentoBean atendimento, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
-		
+			(AtendimentoBean atendimento, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+
 		List<ProgramaGrupoEvolucaoBean> listaProgramaGrupoEvolucao =
 				new UnidadeDAO().carregarProgramasEGruposEmEvolucao(user_session.getUnidade().getId(), conexaoAuxiliar);
-		
+
 		boolean existe = false;
 		for (ProgramaGrupoEvolucaoBean programaGrupoEvolucao : listaProgramaGrupoEvolucao) {
-			if(programaGrupoEvolucao.getPrograma().getIdPrograma() == atendimento.getPrograma().getIdPrograma() 
+			if(programaGrupoEvolucao.getPrograma().getIdPrograma() == atendimento.getPrograma().getIdPrograma()
 					&& programaGrupoEvolucao.getGrupo().getIdGrupo() == atendimento.getGrupo().getIdGrupo()) {
 				existe = true;
 			}
 		}
 		if(!existe && !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId())) {
 			gravarTabelaInconsistenciasAtendimento
-				(atendimento.getId1(), TipoInconsistencia.EVOLUCAO_PROGRAMA_GRUPO.getSigla(), conexaoAuxiliar);
+					(atendimento.getId1(), TipoInconsistencia.EVOLUCAO_PROGRAMA_GRUPO.getSigla(), conexaoAuxiliar);
 		}
 	}
 
@@ -508,23 +508,23 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario, " + 
-				" a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, p.matricula,  " + 
-				" a.codequipe, e.descequipe, a.avaliacao,   " + 
-				" case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, coalesce(a.presenca, 'N') presenca, a.avulso,  " + 
-				" case when  " + 
-				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =   " + 
-				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N')  " + 
-				" then 'Atendimento Não Informado'  when  " + 
-				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is not null and coalesce(a1.excluido,'N')='N') =  " + 
-				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N')  " + 
-				" then 'Atendimento Informado'  else 'Atendimento Informado Parcialmente'  end as situacao  " + 
-				" from hosp.atendimentos a left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " + 
-				" join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " + 
-				" left join acl.funcionarios f on (f.id_funcionario = a.codmedico) " + 
-				" left join hosp.programa pr on (pr.id_programa = a.codprograma) " + 
-				" left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento) " + 
-				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " + 
+		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario, " +
+				" a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, p.matricula,  " +
+				" a.codequipe, e.descequipe, a.avaliacao,   " +
+				" case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, coalesce(a.presenca, 'N') presenca, a.avulso,  " +
+				" case when  " +
+				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =   " +
+				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N')  " +
+				" then 'Atendimento Não Informado'  when  " +
+				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is not null and coalesce(a1.excluido,'N')='N') =  " +
+				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N')  " +
+				" then 'Atendimento Informado'  else 'Atendimento Informado Parcialmente'  end as situacao  " +
+				" from hosp.atendimentos a left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
+				" join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
+				" left join acl.funcionarios f on (f.id_funcionario = a.codmedico) " +
+				" left join hosp.programa pr on (pr.id_programa = a.codprograma) " +
+				" left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento) " +
+				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " +
 				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C' and coalesce(a1.excluido,'N' )='N'";
 
 		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
@@ -602,7 +602,7 @@ public class AtendimentoDAO {
 
 				if(at.getAvulso() || at.getEhEquipe().equalsIgnoreCase("Sim"))
 					at.setListaNomeProfissionais(retornaNomeProfissionaisAtendimento(rs.getInt("id_atendimento"), con));
-				
+
 				lista.add(at);
 			}
 
@@ -622,32 +622,32 @@ public class AtendimentoDAO {
 
 
 	public List<String> retornaNomeProfissionaisAtendimento(int idAtendimento, Connection con) throws SQLException, ProjetoException {
-    	
+
 		List<String> listaProfissionais = new ArrayList<>();
-    	String sql = "select distinct f.descfuncionario " + 
-    			" from acl.funcionarios f " + 
-    			" join hosp.atendimentos1 a1 on (f.id_funcionario = a1.codprofissionalatendimento) " + 
-    			" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
-    			" where a1.id_atendimento = ? and coalesce(a1.excluido, 'N') = 'N' " + 
-    			" order by 1"; 
-        try {
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, idAtendimento);
-            
-            ResultSet rs = stm.executeQuery();
+		String sql = "select distinct f.descfuncionario " +
+				" from acl.funcionarios f " +
+				" join hosp.atendimentos1 a1 on (f.id_funcionario = a1.codprofissionalatendimento) " +
+				" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
+				" where a1.id_atendimento = ? and coalesce(a1.excluido, 'N') = 'N' " +
+				" order by 1";
+		try {
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idAtendimento);
 
-            while (rs.next()) {
-            	listaProfissionais.add(rs.getString("descfuncionario"));
-            }
+			ResultSet rs = stm.executeQuery();
 
-        } catch (SQLException ex2) {
-        	con.rollback();
+			while (rs.next()) {
+				listaProfissionais.add(rs.getString("descfuncionario"));
+			}
+
+		} catch (SQLException ex2) {
+			con.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
 			con.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
-        return listaProfissionais;
+		return listaProfissionais;
 	}
 
 	public Integer retornaQuantidadeDePendenciasAnterioresDeEvolucao
@@ -697,30 +697,30 @@ public class AtendimentoDAO {
 		}
 		return quantidadeDePendenciasAnterioresDeEvolucao;
 	}
-	
+
 	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
 
-		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1  " + 
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " + 
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente  " + 
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento  " + 
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade  " + 
-				"	JOIN hosp.unidade u ON u.id = ?  " + 
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa  " + 
-				"	join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id  " + 
-				"	join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa  " + 
-				"	join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo  " + 
-				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " + 
-				" 	where a.presenca='S' and a1.id_situacao_atendimento is null  " + 
-				"	and a.codprograma = ceu.codprograma  " + 
-				"	and a.codgrupo = ceu.codgrupo  " + 
-				"	and a.dtaatende>= ceu.inicio_evolucao " + 
-				"	and a.dtaatende<current_date  " + 
-				"	and a1.codprofissionalatendimento = ? " + 
-				"	and coalesce(a.situacao,'A')<>'C' " + 
-				"	and coalesce(a1.excluido,'N' )='N' " + 
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1  " +
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " +
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente  " +
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento  " +
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade  " +
+				"	JOIN hosp.unidade u ON u.id = ?  " +
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa  " +
+				"	join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id  " +
+				"	join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa  " +
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo  " +
+				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " +
+				" 	where a.presenca='S' and a1.id_situacao_atendimento is null  " +
+				"	and a.codprograma = ceu.codprograma  " +
+				"	and a.codgrupo = ceu.codgrupo  " +
+				"	and a.dtaatende>= ceu.inicio_evolucao " +
+				"	and a.dtaatende<current_date  " +
+				"	and a1.codprofissionalatendimento = ? " +
+				"	and coalesce(a.situacao,'A')<>'C' " +
+				"	and coalesce(a1.excluido,'N' )='N' " +
 				"	group by p.descprograma, g.descgrupo";
-		
+
 		List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
@@ -779,11 +779,11 @@ public class AtendimentoDAO {
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
 				+ " left join hosp.parametro parm on (parm.codunidade = a.cod_unidade) and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 
-		
+
 		if(listaEvolucoesPendentes && !user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
 			sql += " where a.dtaatende >= parm.inicio_evolucao_unidade and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null ";
 		}
-		
+
 		else if(listaEvolucoesPendentes) {
 			sql +=  " join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = a.cod_unidade and ceu.codprograma = a.codprograma and ceu.codgrupo = a.codgrupo  "
 					+ " where a.dtaatende >= ceu.inicio_evolucao and a.dtaatende<=current_date and coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null ";
@@ -796,11 +796,11 @@ public class AtendimentoDAO {
 				+ " and exists (select id_atendimento from hosp.atendimentos1 a11 "
 				+ " where a11.codprofissionalatendimento=? and a11.id_atendimento = a.id_atendimento and coalesce(a11.excluido,'N')='N') and a1.codprofissionalatendimento=?";
 
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 			sql = sql + " and  a.codprograma = ?";
 		}
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 			sql = sql + " and  a.codgrupo = ?";
 		}
@@ -857,21 +857,21 @@ public class AtendimentoDAO {
 				i = 7;
 			}
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
 				i = i + 1;
 			}
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
 				i = i + 1;
 			}
-			
+
 			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
 				stm.setInt(i, atendimento.getEquipe().getCodEquipe());
-				i = i + 1;				
+				i = i + 1;
 			}
 
 			if (!buscaTurno.equals("A")) {
@@ -1015,8 +1015,10 @@ public class AtendimentoDAO {
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
-				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "
-                + " left join hosp.cbo  on cbo.id  = a1.cbo "
+				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "+
+		"left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
+				"left join hosp.conselho con on cc.id_conselho = con.id  "
+				+ " left join hosp.cbo  on cbo.id  = a1.cbo "
 				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1038,7 +1040,9 @@ public class AtendimentoDAO {
 				atendimento.getFuncionario().setId(rs.getLong("codprofissionalatendimento"));
 				atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
 				atendimento.getCbo().setCodCbo(rs.getInt("codcbo"));
-                atendimento.getCbo().setCodigo(rs.getString("codigocbo"));
+				atendimento.getCbo().setCodigo(rs.getString("codigocbo"));
+				atendimento.getCbo().getConselho().setId(rs.getInt("id_conselho"));
+				atendimento.getCbo().getConselho().setDescricao(rs.getString("conselho"));
 				atendimento.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimento.getSituacaoAtendimento().setDescricao(rs.getString("descricao"));
 				atendimento.getSituacaoAtendimento().setAtendimentoRealizado(rs.getBoolean("atendimento_realizado"));
@@ -1056,7 +1060,7 @@ public class AtendimentoDAO {
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
 				atendimento.getCidPrimario().setDescCidAbrev(rs.getString("desccidabrev"));
 			}
-			
+
 			atendimento.setListaProcedimentoCid(listarProcedimentosCids(con, atendimento.getId1()));
 
 		} catch (SQLException ex2) {
@@ -1072,15 +1076,15 @@ public class AtendimentoDAO {
 		}
 		return atendimento;
 	}
-	
+
 	private List<ProcedimentoCidDTO> listarProcedimentosCids (Connection conexao, Integer idAtendimentos1) throws SQLException, ProjetoException {
-		
+
 		List<ProcedimentoCidDTO> listaProcedimentoCid = new ArrayList<>();
-		
+
 		String sql = "select aps.id, p.id id_procedimento, p.codproc, p.nome, c.cod, c.cid, c.desccidabrev " +
-				"	from hosp.atendimentos1_procedimento_secundario aps " + 
-				"	join hosp.proc p on aps.id_procedimento = p.id " + 
-				"	join hosp.cid c on aps.id_cid = c.cod " + 
+				"	from hosp.atendimentos1_procedimento_secundario aps " +
+				"	join hosp.proc p on aps.id_procedimento = p.id " +
+				"	join hosp.cid c on aps.id_cid = c.cod " +
 				"	where aps.id_atendimentos1 = ? and coalesce(excluido,'N')='N' order by nome;";
 		try {
 			PreparedStatement ps = conexao.prepareStatement(sql);
@@ -1095,7 +1099,7 @@ public class AtendimentoDAO {
 				procedimentoCid.getCid().setIdCid(rs.getInt("cod"));
 				procedimentoCid.getCid().setCid(rs.getString("cid"));
 				procedimentoCid.getCid().setDescCidAbrev(rs.getString("desccidabrev"));
-				
+
 				listaProcedimentoCid.add(procedimentoCid);
 			}
 		} catch (SQLException ex2) {
@@ -1110,17 +1114,17 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer idAtendimento) throws ProjetoException {
 
-		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns, " + 
+		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns, " +
 				" a1.cbo codcbo, c.descricao,c.codigo codigocbo,  a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, "+
-				" a1.codprocedimento, pr.nome as procedimento, pr.codproc, a1.evolucao, a1.perfil_avaliacao,  " + 
-				" to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento, a.codprograma, a.codgrupo, p.id_paciente, p.dtanascimento, p.sexo  " + 
-				" from hosp.atendimentos1 a1 " + 
-				" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " + 
-				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " + 
-				" left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) " + 
-				" left join hosp.cbo c on (a1.cbo = c.id) " + 
-				" left join hosp.pacientes p on (a.codpaciente = p.id_paciente)   " + 
-				" left join hosp.proc pr on (a1.codprocedimento = pr.id) where a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' " + 
+				" a1.codprocedimento, pr.nome as procedimento, pr.codproc, a1.evolucao, a1.perfil_avaliacao,  " +
+				" to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento, a.codprograma, a.codgrupo, p.id_paciente, p.dtanascimento, p.sexo  " +
+				" from hosp.atendimentos1 a1 " +
+				" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " +
+				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " +
+				" left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento) " +
+				" left join hosp.cbo c on (a1.cbo = c.id) " +
+				" left join hosp.pacientes p on (a.codpaciente = p.id_paciente)   " +
+				" left join hosp.proc pr on (a1.codprocedimento = pr.id) where a1.id_atendimento = ? and coalesce(a1.excluido,'N')='N' " +
 				" order by a1.id_atendimentos1";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -1160,7 +1164,7 @@ public class AtendimentoDAO {
 					atendimento.setHorarioAtendimento(rs.getString("horario_atendimento"));
 				atendimento.getPrograma().setIdPrograma(rs.getInt("codprograma"));
 				atendimento.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-				
+
 				atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
 				atendimento.getPaciente().setSexo(rs.getString("sexo"));
@@ -1269,29 +1273,32 @@ public class AtendimentoDAO {
 
 	public List<AtendimentoBean> carregarTodasAsEvolucoesDoPaciente(Integer codPaciente, Date periodoInicialEvolucao, Date periodoFinalEvolucao, EspecialidadeBean especialidade) throws ProjetoException {
 
-		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,  " + 
-				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, pa.nome as nome_paciente " + 
-				"FROM hosp.atendimentos1 a1  " + 
-				"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " + 
-				" left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento  " + 
-				" left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento  " + 
-				" left join hosp.pacientes pa on a.codpaciente = pa.id_paciente  " + 
-				" left join hosp.programa  on programa.id_programa = a.codprograma  " + 
-				" left join hosp.grupo g on g.id_grupo = a.codgrupo  " + 
-				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " + 
-				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " + 
-				" left join hosp.cbo c on c.id  = a1.cbo  " + 
+		String sql = "SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,  " +
+				"g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo, "+
+				"pa.nome as nome_paciente,  con.id id_conselho, con.descricao conselho " +
+				"FROM hosp.atendimentos1 a1  " +
+				"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " +
+				" left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento  " +
+				" left  join hosp.situacao_atendimento sa on sa.id  = a1.id_situacao_atendimento  " +
+				" left join hosp.pacientes pa on a.codpaciente = pa.id_paciente  " +
+				" left join hosp.programa  on programa.id_programa = a.codprograma  " +
+				" left join hosp.grupo g on g.id_grupo = a.codgrupo  " +
+				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " +
+				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " +
+				" left join hosp.cbo c on c.id  = a1.cbo  " +
+				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo \r\n" +
+				" left join hosp.conselho con on cc.id_conselho = con.id "+
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
 				"and p.ativo = 'S' and a.cod_unidade=?";
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente))
 			sql += "AND a.codpaciente = ? ";
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao))
 			sql += " AND a.dtaatende >= ? AND a.dtaatende <= ? ";
 
 		if ((!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade)) && (!VerificadorUtil.verificarSeObjetoNuloOuZero(especialidade.getCodEspecialidade())))
 			sql += "AND f.codespecialidade = ? ";
-		
+
 		sql += "ORDER BY pa.nome, a.dtaatende ";
 
 		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -1302,12 +1309,12 @@ public class AtendimentoDAO {
 			int i = 2;
 
 			stm.setInt(1, user_session.getUnidade().getId());
-			
+
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(codPaciente)) {
 				stm.setInt(i, codPaciente);
 				i++;
 			}
-				
+
 			if (!VerificadorUtil.verificarSeObjetoNulo(periodoInicialEvolucao)) {
 				stm.setDate(i, new java.sql.Date(periodoInicialEvolucao.getTime()));
 				i++;
@@ -1319,7 +1326,7 @@ public class AtendimentoDAO {
 				stm.setInt(i, especialidade.getCodEspecialidade());
 				i++;
 			}
-			
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -1330,6 +1337,8 @@ public class AtendimentoDAO {
 				atendimento.getCbo().setCodCbo(rs.getInt("idcbo"));
 				atendimento.getCbo().setCodigo(rs.getString("codcbo"));
 				atendimento.getCbo().setDescCbo(rs.getString("desccbo"));
+				atendimento.getCbo().getConselho().setId(rs.getInt("id_conselho"));
+				atendimento.getCbo().getConselho().setDescricao(rs.getString("conselho"));
 				atendimento.setEvolucao(rs.getString("evolucao"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
@@ -1406,13 +1415,13 @@ public class AtendimentoDAO {
 			stm.setInt(2,  atendimento.getId());
 
 			stm.executeUpdate();
-			
+
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(),atendimento.isValidadoPeloSigtapAnterior());
 			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()) {
 				atendimento.getSituacaoAtendimento().setId(idSituacaoAtendimento);
-				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);					
+				verificarInconsistenciaEvolucaoProgramaGrupo(atendimento, con);
 			}
-			
+
 			con.commit();
 			alterado = true;
 		} catch (SQLException ex2) {
@@ -1455,15 +1464,15 @@ public class AtendimentoDAO {
 		}
 		return alterado;
 	}
-	
-	private void removerProcedimentosSecundariosEvolucao(Connection conexao, Integer idAtendimento1) 
+
+	private void removerProcedimentosSecundariosEvolucao(Connection conexao, Integer idAtendimento1)
 			throws SQLException, ProjetoException {
-		
+
 		String sql = "DELETE FROM hosp.atendimentos1_procedimento_secundario WHERE id_atendimentos1 = ?; ";
 		try {
 			PreparedStatement stm = conexao.prepareStatement(sql);
 			stm.setInt(1, idAtendimento1);
-			stm.executeUpdate();				
+			stm.executeUpdate();
 		} catch (SQLException ex2) {
 			conexao.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1494,9 +1503,9 @@ public class AtendimentoDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 	}
-	
+
 	private void gravarValidacaoSigtapAnterior(Connection conexao, Integer idAtendimento, boolean validadoPeloSigtapAnterior) throws SQLException, ProjetoException {
-		
+
 		String sql = "update hosp.atendimentos set validado_pelo_sigtap_anterior = ? where id_atendimento = ?";
 		try {
 			PreparedStatement stm = conexao.prepareStatement(sql);
@@ -1511,81 +1520,81 @@ public class AtendimentoDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 	}
-	
+
 	public List<AtendimentoBean> listaAtendimentos1FiltroAjustes(AtendimentoBean atendimentoBusca, boolean apenasSemCids,
 																 String campoBusca, String tipoBusca) throws ProjetoException {
 
 		List<AtendimentoBean> listaAtendimentos = new ArrayList<>();
-		
+
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.validado_pelo_sigtap_anterior, "+
-				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.id_paciente, pa.dtanascimento, p.id as id_procedimento, " + 
+				"f.descfuncionario, f.id_funcionario, pa.nome as paciente, pa.id_paciente, pa.dtanascimento, p.id as id_procedimento, " +
 				"p.nome as procedimento, a.dtaatende, c.cod as id_cidprimario, c.desccidabrev, c.cid, p.codproc, "+
 				"a.codprograma, pro.descprograma, a.codgrupo, g.descgrupo, cbo.id idcbo, cbo.descricao, cbo.codigo codcbo " +
-				"from hosp.atendimentos1 a1 " + 
-				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+				"from hosp.atendimentos1 a1 " +
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " +
 				"join acl.funcionarios f on a1.codprofissionalatendimento = f.id_funcionario " +
 				" left join hosp.cbo  on cbo.id = a1.cbo "+
-				"join hosp.proc p on a1.codprocedimento = p.id " + 
-				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " + 
-				"left join hosp.cid c on a1.id_cidprimario = c.cod " + 
-				"left join hosp.programa pro on a.codprograma = pro.id_programa " + 
+				"join hosp.proc p on a1.codprocedimento = p.id " +
+				"join hosp.pacientes pa on a.codpaciente = pa.id_paciente " +
+				"left join hosp.cid c on a1.id_cidprimario = c.cod " +
+				"left join hosp.programa pro on a.codprograma = pro.id_programa " +
 				"left join hosp.grupo g on a.codgrupo = g.id_grupo "+
 				"where a.dtaatende between ? and ? and p.ativo = 'S' and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  ";
-		
+
 		if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql += " and pa.nome ilike ?";
 
-		else if ((tipoBusca.equals("codproc") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
+		else if ((tipoBusca.equals("codproc") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql += " and p.codproc = ?";
-		
+
 		else if ((tipoBusca.equals("matpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql += " and upper(pa.matricula) = ?";
-		
-		else if ((tipoBusca.equals("prontpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
+
+		else if ((tipoBusca.equals("prontpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 			sql += " and pa.id_paciente = ?";
-		
+
 		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
 			sql += " and a.codprograma = ? ";
-		}	
+		}
 		if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
-			sql += " and a.codgrupo = ? ";		
-		}	
-		
-		String filtroSql = "and a1.id_cidprimario is null "; 
+			sql += " and a.codgrupo = ? ";
+		}
+
+		String filtroSql = "and a1.id_cidprimario is null ";
 		String ordenacaoSql = "order by a.dtaatende, pa.nome; ";
-		
+
 		if(!apenasSemCids)
 			sql += ordenacaoSql;
 		else
 			sql += filtroSql + ordenacaoSql;
-		
-		
+
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setDate(1, new java.sql.Date(atendimentoBusca.getDataAtendimentoInicio().getTime()));
 			stm.setDate(2,  new java.sql.Date(atendimentoBusca.getDataAtendimentoFinal().getTime()));
-			if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
+			if ((tipoBusca.equals("paciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
 
-			else if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) 
+			else if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))))
 				stm.setString(3, campoBusca.toUpperCase());
-			
+
 			else if ((tipoBusca.equals("prontpaciente") && (!VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca)))) {
 				campoBusca = campoBusca.replaceAll("[^\\d.]", "");
 				if(campoBusca.isEmpty())
 					campoBusca = "0";
 				stm.setInt(3,Integer.valueOf((campoBusca)));
 			}
-			
+
 			int contador = 4;
 			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getPrograma())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getPrograma().getIdPrograma())) {
 				stm.setInt(contador, atendimentoBusca.getPrograma().getIdPrograma());
 				contador++;
-			}	
+			}
 			if (!VerificadorUtil.verificarSeObjetoNulo(atendimentoBusca.getGrupo())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimentoBusca.getGrupo().getIdGrupo())) {
 				stm.setInt(contador, atendimentoBusca.getGrupo().getIdGrupo());
@@ -1593,7 +1602,7 @@ public class AtendimentoDAO {
 			ResultSet rs = stm.executeQuery();
 			while(rs.next()) {
 				AtendimentoBean atendimento = new AtendimentoBean();
-				
+
 				atendimento.setId(rs.getInt("id_atendimento"));
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setValidadoPeloSigtapAnterior(rs.getBoolean("validado_pelo_sigtap_anterior"));
@@ -1616,10 +1625,10 @@ public class AtendimentoDAO {
 				atendimento.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				atendimento.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				atendimento.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				
+
 				listaAtendimentos.add(atendimento);
 			}
-				
+
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1633,14 +1642,14 @@ public class AtendimentoDAO {
 		}
 		return listaAtendimentos;
 	}
-	
-	
+
+
 	public boolean atualizaCidDeAtendimento(AtendimentoBean atendimento, CidBean cid) throws ProjetoException {
 
 		boolean alterou = false;
-		
+
 		String sql = "UPDATE hosp.atendimentos1 SET id_cidprimario = ? WHERE id_atendimentos1 = ?;";
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1649,11 +1658,11 @@ public class AtendimentoDAO {
 			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-			
+
 			gerarLogAlteracaoCid(atendimento, cid, con);
-			
+
 			alterou = true;
-			con.commit();	
+			con.commit();
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1671,9 +1680,9 @@ public class AtendimentoDAO {
 	private void gerarLogAlteracaoCid(AtendimentoBean atendimento, CidBean cid, Connection conexao) throws ProjetoException, SQLException {
 		try {
 			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
-			
+
 			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
-			
+
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid())) {
 				log.adicionarDescricao("Cid1", "", cid.getDescCidAbrev());
 				log.adicionarDescricao("ID Cid1", "", cid.getIdCid().toString());
@@ -1682,7 +1691,7 @@ public class AtendimentoDAO {
 				log.adicionarDescricao("Cid1", atendimento.getCidPrimario().getDescCidAbrev(), cid.getDescCidAbrev());
 				log.adicionarDescricao("ID Cid1", atendimento.getCidPrimario().getIdCid().toString(), cid.getIdCid().toString());
 			}
-			new LogDAO().gravarLog(log, conexao);			
+			new LogDAO().gravarLog(log, conexao);
 		} catch (Exception e) {
 			conexao.rollback();
 		}
@@ -1702,9 +1711,9 @@ public class AtendimentoDAO {
 			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-			
+
 			gerarLogAlteracaoProcedimento(atendimento, procedimento, con);
-			
+
 			alterou = true;
 			con.commit();
 		} catch (SQLException ex2) {
@@ -1726,29 +1735,29 @@ public class AtendimentoDAO {
 		try {
 			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
 			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
-			
+
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getProcedimento().getIdProc())) {
 				log.adicionarDescricao("Procedimento", "", procedimento.getNomeProc());
 				log.adicionarDescricao("ID Procedimento", "", procedimento.getIdProc().toString());
 			}
 			else {
 				log.adicionarDescricao
-				("Procedimento", atendimento.getProcedimento().getNomeProc(), procedimento.getNomeProc());
+						("Procedimento", atendimento.getProcedimento().getNomeProc(), procedimento.getNomeProc());
 				log.adicionarDescricao
-				("ID Procedimento", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
-			}	
-			new LogDAO().gravarLog(log, conexao);			
+						("ID Procedimento", atendimento.getProcedimento().getIdProc().toString(), procedimento.getIdProc().toString());
+			}
+			new LogDAO().gravarLog(log, conexao);
 		} catch (Exception e) {
 			conexao.rollback();
 		}
 	}
-	
+
 	public boolean atualizaCboDeAtendimento(AtendimentoBean atendimento, CboBean cbo) throws ProjetoException {
 
 		boolean alterou = false;
-		
+
 		String sql = "UPDATE hosp.atendimentos1 SET cbo = ? WHERE id_atendimentos1 = ?;";
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1757,11 +1766,11 @@ public class AtendimentoDAO {
 			stm.setInt(2, atendimento.getId1());
 			stm.executeUpdate();
 			gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-			
+
 			gerarLogAlteracaoCbo(atendimento, cbo, con);
-			
+
 			alterou = true;
-			con.commit();	
+			con.commit();
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1780,25 +1789,25 @@ public class AtendimentoDAO {
 		try {
 			String descricao = montarDescricaoLogAlteracaoAtendimento(atendimento);
 			LogBean log = new LogBean(user_session.getId(), descricao, Rotina.ALTERACAO_ATENDIMENTO.getSigla());
-			
+
 			log.adicionarDescricao("CBO", atendimento.getCbo().getDescCbo(), cbo.getDescCbo());
 			log.adicionarDescricao("ID CBO", atendimento.getCbo().getCodCbo().toString(), cbo.getCodCbo().toString());
-			
-			new LogDAO().gravarLog(log, conexao);			
+
+			new LogDAO().gravarLog(log, conexao);
 		} catch (Exception e) {
 			conexao.rollback();
 		}
 	}
-	
+
 	public List<Integer> listaAnosDeAtendimentos() throws ProjetoException {
-		
-		String sql = "select distinct extract (year from a.dtaatende) as ano " + 
-				"	from hosp.atendimentos a " + 
-				"	where extract (year from a.dtaatende) <= extract (year from current_date) " + 
+
+		String sql = "select distinct extract (year from a.dtaatende) as ano " +
+				"	from hosp.atendimentos a " +
+				"	where extract (year from a.dtaatende) <= extract (year from current_date) " +
 				"	and extract (year from a.dtaatende) >= 2000	order by ano desc; ";
-		
-		List<Integer> listaAnos = new ArrayList<>(); 
-		
+
+		List<Integer> listaAnos = new ArrayList<>();
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1807,7 +1816,7 @@ public class AtendimentoDAO {
 			while(rs.next()) {
 				listaAnos.add(rs.getInt("ano"));
 			}
-			
+
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1821,21 +1830,21 @@ public class AtendimentoDAO {
 		}
 		return listaAnos;
 	}
-	
+
 	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 
 		Integer totalAtendimentos = null;
-		
-		String sql = "select count(*) total " + 
-				"from hosp.atendimentos a " + 
-				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " + 
+
+		String sql = "select count(*) total " +
+				"from hosp.atendimentos a " +
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " +
 				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " +
-				"inner join hosp.programa p on (a.codprograma = p.id_programa) " + 
-				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) " + 
-				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " + 
-				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " + 
-				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" + 
-				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " + 
+				"inner join hosp.programa p on (a.codprograma = p.id_programa) " +
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) " +
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " +
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" +
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
 				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
@@ -1845,8 +1854,8 @@ public class AtendimentoDAO {
 		if (tipoGeracao.equals("A")){
 			sql+=" and sa.atendimento_realizado = true";
 		}
-        else
-		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+		else
+			sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
 
 		try {
@@ -1861,12 +1870,12 @@ public class AtendimentoDAO {
 
 			if (listaProcedimentosFiltro.size()>0)
 				ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
-			
+
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				totalAtendimentos = rs.getInt("total");
 			}
-			
+
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1882,20 +1891,20 @@ public class AtendimentoDAO {
 	}
 
 	public List<Integer> gravarTabelaInconsistenciasAtendimento
-		(Integer idAtendimento1, String descricao, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
-		
+			(Integer idAtendimento1, String descricao, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+
 		String sql = "INSERT INTO hosp.inconsistencias_log (id_funcionario, id_atendimento1, datahora, descricao) "+
 				" VALUES(?, ?, CURRENT_TIMESTAMP, ?); ";
-		
-		List<Integer> listaAnos = new ArrayList<>(); 
-		
+
+		List<Integer> listaAnos = new ArrayList<>();
+
 		try {
 			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
 			ps.setLong(1, user_session.getId());
 			ps.setInt(2, idAtendimento1);
 			ps.setString(3, descricao);
 			ps.executeUpdate();
-			
+
 		} catch (SQLException ex2) {
 			conexaoAuxiliar.rollback();
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1905,14 +1914,14 @@ public class AtendimentoDAO {
 		}
 		return listaAnos;
 	}
-	
+
 	public boolean atualizaCidDeVariosAtendimento(List<AtendimentoBean> listaAtendimento, CidBean cid)
 			throws ProjetoException {
 
 		boolean alterou = false;
-		
+
 		String sql = "UPDATE hosp.atendimentos1 SET id_cidprimario = ? WHERE id_atendimentos1 = ?;";
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1922,11 +1931,11 @@ public class AtendimentoDAO {
 				stm.setInt(2, atendimento.getId1());
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-				
+
 				gerarLogAlteracaoCid(atendimento, cid, con);
 			}
 			alterou = true;
-			con.commit();	
+			con.commit();
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
@@ -1942,14 +1951,14 @@ public class AtendimentoDAO {
 	}
 
 	private String montarDescricaoLogAlteracaoAtendimento(AtendimentoBean atendimento) {
-		String descricao = "Paciente: "+ atendimento.getPaciente().getNome()+ 
+		String descricao = "Paciente: "+ atendimento.getPaciente().getNome()+
 				" ID Paciente: "+atendimento.getPaciente().getId_paciente() +
 				" ID Atendimento1: "+ atendimento.getId1()+" \n";
 		return descricao;
 	}
-	
+
 	public boolean atualizaProcedimentoVariosAtendimento
-		(List<AtendimentoBean> listaAtendimento, ProcedimentoBean procedimento) throws ProjetoException {
+			(List<AtendimentoBean> listaAtendimento, ProcedimentoBean procedimento) throws ProjetoException {
 
 		boolean alterou = false;
 
@@ -1964,7 +1973,7 @@ public class AtendimentoDAO {
 				stm.setInt(2, atendimento.getId1());
 				stm.executeUpdate();
 				gravarValidacaoSigtapAnterior(con, atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-				
+
 				gerarLogAlteracaoProcedimento(atendimento, procedimento, con);
 			}
 			alterou = true;
@@ -1982,7 +1991,7 @@ public class AtendimentoDAO {
 		}
 		return alterou;
 	}
-	
+
 	public boolean atualizaCboVariosAtendimentos(List<AtendimentoBean> listaAtendimento, CboBean cbo)
 			throws ProjetoException {
 
@@ -2017,15 +2026,15 @@ public class AtendimentoDAO {
 		}
 		return alterou;
 	}
-	
+
 	public CboBean retornaCboProfissionalNoAtendimento(Integer idAtendimento, Long idFuncionario) throws ProjetoException {
 
-		String sql = "select a1.cbo from hosp.atendimentos1 a1 " + 
-				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
+		String sql = "select a1.cbo from hosp.atendimentos1 a1 " +
+				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " +
 				"where a.id_atendimento = ? and a1.codprofissionalatendimento = ?;";
-		
+
 		CboBean cbo = new CboBean();
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -2033,11 +2042,11 @@ public class AtendimentoDAO {
 			ps.setInt(1, idAtendimento);
 			ps.setLong(2, idFuncionario);
 			ResultSet rs = ps.executeQuery();
-			
+
 			if(rs.next()) {
 				cbo.setCodCbo(rs.getInt("cbo"));
 			}
-			
+
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
 		} catch (Exception ex) {
