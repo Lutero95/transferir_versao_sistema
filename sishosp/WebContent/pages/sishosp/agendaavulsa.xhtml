@@ -212,7 +212,7 @@
 						
 						<b:column span="1" class="label-position btn-radio-table" rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 							<b:label value="Turno" severity="info" />
-							<p:selectOneRadio value="#{AgendaController.agenda.turno}"
+							<p:selectOneRadio value="#{AgendaController.agenda.turno}" id="campoturno"
 								required="true" requiredMessage="Turno: Campo obrigatório!" 
 								style="margin-left:-15px;margin-top:10px">
 								<f:selectItem itemLabel="Manhã" itemValue="M" />
@@ -402,7 +402,7 @@
 							id="bgravar" icon="ui-icon-check"
 							actionListener="#{AgendaController.preparaGravarAgendaAvulsa()}"
 							update=":formAgendaMedica :frmLiberacao"
-							process="@all" immediate="true"
+							process="@all" 
 							class="btn-incluir" />
 
 						<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
