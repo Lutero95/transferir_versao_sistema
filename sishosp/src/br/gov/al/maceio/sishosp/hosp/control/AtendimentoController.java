@@ -159,13 +159,12 @@ public class AtendimentoController implements Serializable {
             if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla())) {
                 atendimento.setGrupo(buscaSessaoDTO.getGrupoBean());
                 atendimento.setPrograma(buscaSessaoDTO.getProgramaBean());
+                atendimento.setEquipe(buscaSessaoDTO.getEquipeBean());
                 atendimento.setDataAtendimentoInicio(buscaSessaoDTO.getPeriodoInicial());
                 atendimento.setDataAtendimentoFinal(buscaSessaoDTO.getPeriodoFinal());
             }
         }
-
         consultarAtendimentos();
-
     }
 
     public void carregarGerenciamentoAtendimentoProfissionalNaEquipe() throws ProjetoException{
@@ -202,7 +201,7 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
             return;
         }
-        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(),
+        SessionUtil.adicionarBuscaPtsNaSessao(atendimento.getPrograma(), atendimento.getGrupo(), atendimento.getEquipe(),
                 atendimento.getDataAtendimentoInicio(), atendimento.getDataAtendimentoFinal(), TelasBuscaSessao.GERENCIAR_ATENDIMENTO.getSigla());
         listarAtendimentos(campoBusca, tipoBusca);
     }
