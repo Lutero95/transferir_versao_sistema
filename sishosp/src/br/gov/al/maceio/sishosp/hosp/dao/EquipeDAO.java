@@ -35,7 +35,7 @@ public class EquipeDAO {
                 .getSessionMap().get("obj_funcionario");
 
         Boolean retorno = false;
-        String sql = "insert into hosp.equipe (descequipe, cod_unidade, realiza_avaliacao, turno) values (?, ?, ?, ?) RETURNING id_equipe;";
+        String sql = "insert into hosp.equipe (descequipe, cod_unidade, realiza_avaliacao, turno, ativo) values (?, ?, ?, ?, true) RETURNING id_equipe;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -300,7 +300,7 @@ public class EquipeDAO {
 
     public Boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
         Boolean retorno = false;
-        String sql = "update hosp.equipe set descequipe = ?, realiza_avaliacao=?, turno=? where id_equipe = ?";
+        String sql = "update hosp.equipe set descequipe = ?, realiza_avaliacao=?, turno=?, ativo = ? where id_equipe = ?";
         ps = null;
         try {
             con = ConnectionFactory.getConnection();
@@ -308,7 +308,8 @@ public class EquipeDAO {
             ps.setString(1, equipe.getDescEquipe().toUpperCase());
             ps.setBoolean(2, equipe.getRealizaAvaliacao());
             ps.setString(3, equipe.getTurno().toUpperCase());
-            ps.setInt(4, equipe.getCodEquipe());
+            ps.setBoolean(4, equipe.isAtivo());
+            ps.setInt(5, equipe.getCodEquipe());
             ps.executeUpdate();
 
             retorno = excluirTabEquipeProf(equipe.getCodEquipe());
@@ -386,7 +387,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException, SQLException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno, ativo from hosp.equipe where id_equipe = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -402,6 +403,7 @@ public class EquipeDAO {
                 equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
                 equipe.setTurno(rs.getString("turno"));
+                equipe.setAtivo(rs.getBoolean("ativo"));
             }
 
         } catch (SQLException sqle) {

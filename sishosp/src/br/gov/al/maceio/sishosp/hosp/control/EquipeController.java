@@ -82,7 +82,7 @@ public class EquipeController implements Serializable {
 
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
-
+            this.equipe.setAtivo(true);
         }
     }
 
