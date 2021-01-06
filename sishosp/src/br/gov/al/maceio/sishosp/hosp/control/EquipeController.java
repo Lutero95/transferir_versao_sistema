@@ -109,6 +109,7 @@ public class EquipeController implements Serializable {
 
             if (cadastrou == true) {
                 limparDados();
+                this.equipe.setAtivo(true);
                 JSFUtil.adicionarMensagemSucesso("Equipe cadastrada com sucesso!", "Sucesso");
                 JSFUtil.atualizarComponente("msgPagina");
             } else {
