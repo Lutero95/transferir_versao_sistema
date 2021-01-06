@@ -1007,7 +1007,7 @@ public class AtendimentoDAO {
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
-				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo,cbo.codigo codigocbo,  pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev from hosp.atendimentos a "
+				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo,cbo.codigo codigocbo,  pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev, con.id id_conselho, con.descricao conselho from hosp.atendimentos a "
 				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.programa pro on (pro.id_programa = a.codprograma)"

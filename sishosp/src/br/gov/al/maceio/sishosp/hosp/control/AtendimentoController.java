@@ -652,6 +652,7 @@ public class AtendimentoController implements Serializable {
         
         AtendimentoBean aux = new AtendimentoBean();
         aux.setId(atendimentoAux.getId());
+        aux.setPaciente(atendimento.getPaciente());
         aux.setCbo(cbo);
         aux.setDataAtendimento(atendimentoAux.getDataAtendimento());
         aux.setProcedimento(atendimento.getProcedimento());
