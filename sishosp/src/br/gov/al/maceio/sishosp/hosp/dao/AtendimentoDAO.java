@@ -527,17 +527,11 @@ public class AtendimentoDAO {
 				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " +
 				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C' and coalesce(a1.excluido,'N' )='N'";
 
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
-				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
+		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 			sql = sql + " and  a.codprograma = ?";
 		}
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
-				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
+		if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
 			sql = sql + " and  a.codgrupo = ?";
-		}
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
-				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
-			sql = sql + " and  a.codequipe = ?";
 		}
 
 		if (tipo.equals("nome")) {
@@ -564,21 +558,13 @@ public class AtendimentoDAO {
 			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
 			stm.setInt(3, user_session.getUnidade().getId());
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
-					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
+			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
 				i = i + 1;
 			}
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
-					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
+			if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
 				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
 				i = i + 1;
-			}
-			
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
-					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
-				stm.setInt(i, atendimento.getEquipe().getCodEquipe());
-				i = i + 1;				
 			}
 
 			if (!campoBusca.equals(null)) {
@@ -1859,7 +1845,7 @@ public class AtendimentoDAO {
 				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
 				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" +
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
-				"where    a.cod_unidade=4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
 		if (listaProcedimentosFiltro.size()>0)

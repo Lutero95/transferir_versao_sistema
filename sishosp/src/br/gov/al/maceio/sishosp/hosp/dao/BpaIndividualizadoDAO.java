@@ -71,7 +71,7 @@ public class BpaIndividualizadoDAO {
 				" cross join hosp.empresa emp\n" +
 				"left join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"left   join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where  a.cod_unidade=4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
@@ -137,7 +137,7 @@ public class BpaIndividualizadoDAO {
 				paciente.setDtanascimento(rs.getDate("dtanascimento"));
 				CidBean cid = new CidBean();
 				cid.setCid(rs.getString("cid"));
-			/*	retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
+				retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
 				if (retornoCbo!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCbo);
 				retornoIdade = validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc, false);
@@ -150,7 +150,7 @@ public class BpaIndividualizadoDAO {
 					retornoCid =validacaoSigtap.validaCidsDoLaudo(dataSolicitacaoRefSigtap, cid, codProc, paciente, false);
 					if (retornoCid!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCid);
-				}*/
+				}
 
             	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
             	bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));
