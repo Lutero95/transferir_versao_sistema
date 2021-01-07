@@ -900,7 +900,7 @@ public class AgendaController implements Serializable {
 		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
 				|| (this.agenda.getTipoAt() == null) || this.agenda.getDataAtendimento() == null 
 				|| VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getGrupo().getIdGrupo())
-				||VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getTipoAt().getIdTipo())) {
+				|| VerificadorUtil.verificarSeObjetoNuloOuZero(this.agenda.getTipoAt().getIdTipo())) {
 			JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
 			return;
 		}
