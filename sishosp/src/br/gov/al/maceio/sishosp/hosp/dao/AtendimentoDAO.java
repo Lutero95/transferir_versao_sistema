@@ -1859,7 +1859,7 @@ public class AtendimentoDAO {
 				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
 				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" +
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
-				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"where    a.cod_unidade=4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
 		if (listaProcedimentosFiltro.size()>0)

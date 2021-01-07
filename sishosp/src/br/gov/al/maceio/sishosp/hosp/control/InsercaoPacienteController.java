@@ -810,9 +810,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 				JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
 			}
 
-			else if (insercao.getEncaixe()) {
-				gravarInsercaoPaciente();
-			}
 
 			else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 				if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
@@ -825,9 +822,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 		}
 
 		else {
-			if (insercao.getEncaixe()) {
-				gravarInsercaoPaciente();
-			} else if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
+			if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
 				gravarInsercaoPaciente();
 			} else {
 				JSFUtil.adicionarMensagemErro(
@@ -859,10 +854,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 					JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
 				}
 				
-				else if (insercao.getEncaixe()) {
-					gravarInsercaoPaciente();
-				} 
-				
 				else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 					if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
 						gravarInsercaoPaciente();
@@ -874,10 +865,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 			}
 			
 			else {
-				if (insercao.getEncaixe()) {
-					gravarInsercaoPaciente();
-				}
-				else if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
+				if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
 					gravarInsercaoPaciente();
 				} else {
 					JSFUtil.adicionarMensagemErro(

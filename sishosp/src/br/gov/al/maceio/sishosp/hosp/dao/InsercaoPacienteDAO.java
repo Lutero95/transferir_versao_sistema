@@ -24,8 +24,8 @@ import javax.faces.context.FacesContext;
 public class InsercaoPacienteDAO {
 	
 	private static final String SQL_INSERCAO_ATENDIMENTO = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
-			+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, encaixe, codatendente, dtamarcacao, codprograma, codgrupo)"
-			+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
+			+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, codatendente, dtamarcacao, codprograma, codgrupo)"
+			+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
 	
 	Connection con = null;
 	PreparedStatement ps = null;
@@ -245,14 +245,9 @@ public class InsercaoPacienteDAO {
 					ps3.setNull(9, Types.NULL);
 				}
 
-				ps3.setBoolean(10, insercao.getEncaixe());
-
-				ps3.setLong(11, user_session.getId());
-
-				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
-
-				ps3.setLong(13, insercao.getGrupo().getIdGrupo());
-				
+				ps3.setLong(10, user_session.getId());
+				ps3.setLong(11, insercao.getPrograma().getIdPrograma());
+				ps3.setLong(12, insercao.getGrupo().getIdGrupo());
 
 				rs = ps3.executeQuery();
 
@@ -1008,10 +1003,9 @@ public class InsercaoPacienteDAO {
 					ps.setNull(9, Types.NULL);
 				}
 
-				ps.setBoolean(10, insercao.getEncaixe());
-				ps.setLong(11, user_session.getId());
-				ps.setLong(12, insercao.getPrograma().getIdPrograma());
-				ps.setLong(13, insercao.getGrupo().getIdGrupo());
+				ps.setLong(10, user_session.getId());
+				ps.setLong(11, insercao.getPrograma().getIdPrograma());
+				ps.setLong(12, insercao.getGrupo().getIdGrupo());
 				ResultSet rs = ps.executeQuery();
 
 				Integer idAtendimento = 0;
