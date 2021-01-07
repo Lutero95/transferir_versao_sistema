@@ -1,0 +1,113 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{configuracaoProducaoBpaController.getEditaConfiguracaoBpa()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading"> 
+				<h:outputText value="#{configuracaoProducaoBpaController.cabecalho}" class="panel-title"></h:outputText>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Descrição" severity="info" />
+
+							<b:inputText value="#{configuracaoProducaoBpaController.configuracaoProducaoBpa.descricao}"
+								class="form-control" required="true" id="incCid"
+								requiredMessage="Descrição: Campo obrigatório!" />
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<b:column>
+							<p:commandButton process="@this" size="sm"
+								title="Incluir Unidade" icon="ui-icon-plus"
+								class="btn-acao-table acao-editar" update=":formConsulUni"
+								action="#{configuracaoProducaoBpaController.listarUnidadesUsuario()}" />
+
+							<p:dataTable var="uni"
+								value="#{configuracaoProducaoBpaController.listaUnidadesSelecionadas}"
+								id="tabUnidade" emptyMessage="Nenhuma unidade adicionada"
+								reflow="true" paginator="true" rows="10"
+								paginatorPosition="bottom">
+								<p:column headerText="Unidade" width="80%">
+									<h:outputText value="#{uni.nomeUnidade}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<div align="center">
+										<p:commandButton tooltip="Excluir" icon="fa fa-fw fa-remove"
+											size="sm" class="new-btn-acao-table acao-excluir"
+											update=":frmPrincipal:tabUnidade :msgPagina"
+											process="@this"
+											action="#{configuracaoProducaoBpaController.removerUnidadeAdicionada(uni)}" />
+									</div>
+								</p:column>
+							</p:dataTable>
+						</b:column>
+					</b:row>
+					<br />
+
+					<p:commandButton action="#{CidController.gravarCid()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{configuracaoProducaoBpaController.tipo == 1}" />
+
+					<p:commandButton action="#{CidController.alterarCid()}"
+						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{configuracaoProducaoBpaController.tipo  == 2}" />
+
+					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciamentoproducaobpa.faces?faces-redirect=true">
+					</p:commandButton>
+				</h:form>
+			</div>
+		</div>
+		
+		<p:dialog header="Consultar Unidades" widgetVar="dlgConsulUni"
+			responsive="true" height="350" modal="true" dynamic="true">
+			<h:form id="formConsulUni">
+				<p:outputPanel id="outuni">
+					<p:commandButton process="@this" size="sm" title="Incluir Unidade"
+						value="Adicionar Todas as Unidades" class="btn-acao-table acao-editar"
+						update=":frmPrincipal:tabUnidade formConsulUni"
+						action="#{configuracaoProducaoBpaController.adicionarTodasUnidadesSelecionadas()}" />
+						
+					<p:dataTable emptyMessage="Nenhum Unidade Associada Encontrada" rows="10"
+						paginator="true" id="tabelaUnidade" style="width:500px"
+						value="#{configuracaoProducaoBpaController.listaUnidades}" var="uni" reflow="true">
+
+						<p:column headerText="Unidade" width="80%">
+							<h:outputText value="#{uni.nomeUnidade}" />
+						</p:column>
+
+						<p:column headerText="Ação">
+							<div align="center">
+								<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+									size="sm" class="new-btn-acao-table acao-editar"
+									update=":frmPrincipal:tabUnidade :msgPagina"
+									action="#{configuracaoProducaoBpaController.adicionarUnidadeSelecionada(uni)}"/>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
