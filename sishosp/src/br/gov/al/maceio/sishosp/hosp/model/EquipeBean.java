@@ -19,6 +19,7 @@ public class EquipeBean implements Serializable {
 	private Boolean realizaAvaliacao;
 	private String turno;
 	private Date dataExclusao;
+	private boolean ativo;
 
 	// LISTAS
 	private List<FuncionarioBean> profissionais;
@@ -48,8 +49,6 @@ public class EquipeBean implements Serializable {
 	public void setDescEquipe(String descEquipe) {
 		this.descEquipe = descEquipe;
 	}
-
-	
 
 	public List<FuncionarioBean> getProfissionais() {
 		return profissionais;
@@ -132,5 +131,12 @@ public class EquipeBean implements Serializable {
 	public void setDataExclusao(Date dataExclusao) {
 		this.dataExclusao = dataExclusao;
 	}
-	
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
 }

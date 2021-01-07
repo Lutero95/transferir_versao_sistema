@@ -35,7 +35,7 @@ public class EquipeDAO {
                 .getSessionMap().get("obj_funcionario");
 
         Boolean retorno = false;
-        String sql = "insert into hosp.equipe (descequipe, cod_unidade, realiza_avaliacao, turno) values (?, ?, ?, ?) RETURNING id_equipe;";
+        String sql = "insert into hosp.equipe (descequipe, cod_unidade, realiza_avaliacao, turno, ativo) values (?, ?, ?, ?, true) RETURNING id_equipe;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -93,7 +93,7 @@ public class EquipeDAO {
 
     public List<EquipeBean> listarEquipe() throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where cod_unidade = ? order by descequipe";
+        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno, ativo from hosp.equipe where cod_unidade = ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -108,6 +108,7 @@ public class EquipeDAO {
                 equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
                 equipe.setTurno(rs.getString("turno"));
+                equipe.setAtivo(rs.getBoolean("ativo"));
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
@@ -127,7 +128,7 @@ public class EquipeDAO {
     public List<EquipeBean> listarEquipeBusca(String descricao) throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
         String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_unidade, turno from hosp.equipe "
-                + "where upper(id_equipe ||'-'|| descequipe) LIKE ? and cod_unidade = ? order by descequipe";
+                + "where upper(id_equipe ||'-'|| descequipe) LIKE ? and cod_unidade = ? and ativo = true order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -162,7 +163,7 @@ public class EquipeDAO {
             throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
         String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno from hosp.equipe e "
-                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? and descequipe like ? order by descequipe ";
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where e.ativo = true and eg.id_grupo = ? and descequipe like ? order by descequipe ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -198,7 +199,7 @@ public class EquipeDAO {
         String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno "
                 + "from hosp.equipe e " + "left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) "
                 + "LEFT JOIN hosp.grupo_programa gp ON (gp.codgrupo = eg.id_grupo)"
-                + "where gp.codprograma = ? and descequipe like ? and realiza_avaliacao is true order by descequipe ";
+                + "where e.ativo = true and gp.codprograma = ? and descequipe like ? and realiza_avaliacao is true order by descequipe ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -235,7 +236,7 @@ public class EquipeDAO {
         String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno "
                 + "from hosp.equipe e " + "left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) "
                 + "LEFT JOIN hosp.grupo_programa gp ON (gp.codgrupo = eg.id_grupo)"
-                + "where gp.codprograma = ?  and realiza_avaliacao is true order by descequipe ";
+                + "where e.ativo = true and gp.codprograma = ?  and realiza_avaliacao is true order by descequipe ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -268,7 +269,7 @@ public class EquipeDAO {
     public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo) throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
         String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno from hosp.equipe e "
-                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? order by descequipe ";
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where e.ativo = true and eg.id_grupo = ? order by descequipe ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -300,7 +301,7 @@ public class EquipeDAO {
 
     public Boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
         Boolean retorno = false;
-        String sql = "update hosp.equipe set descequipe = ?, realiza_avaliacao=?, turno=? where id_equipe = ?";
+        String sql = "update hosp.equipe set descequipe = ?, realiza_avaliacao=?, turno=?, ativo = ? where id_equipe = ?";
         ps = null;
         try {
             con = ConnectionFactory.getConnection();
@@ -308,7 +309,8 @@ public class EquipeDAO {
             ps.setString(1, equipe.getDescEquipe().toUpperCase());
             ps.setBoolean(2, equipe.getRealizaAvaliacao());
             ps.setString(3, equipe.getTurno().toUpperCase());
-            ps.setInt(4, equipe.getCodEquipe());
+            ps.setBoolean(4, equipe.isAtivo());
+            ps.setInt(5, equipe.getCodEquipe());
             ps.executeUpdate();
 
             retorno = excluirTabEquipeProf(equipe.getCodEquipe());
@@ -386,7 +388,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException, SQLException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno, ativo from hosp.equipe where id_equipe = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -402,6 +404,7 @@ public class EquipeDAO {
                 equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
                 equipe.setTurno(rs.getString("turno"));
+                equipe.setAtivo(rs.getBoolean("ativo"));
             }
 
         } catch (SQLException sqle) {
@@ -421,7 +424,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorIDComConexao(Integer id, Connection conAuxiliar) throws ProjetoException, SQLException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno, ativo from hosp.equipe where id_equipe = ? and ativo = true";
 
         try {
             ps = conAuxiliar.prepareStatement(sql);
@@ -435,6 +438,7 @@ public class EquipeDAO {
                 equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
                 equipe.setTurno(rs.getString("turno"));
+                equipe.setAtivo(rs.getBoolean("ativo"));
             }
 
         } catch (SQLException sqle) {
@@ -450,7 +454,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorIDParaConverter(Integer id) throws ProjetoException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_unidade, realiza_avaliacao, turno, ativo from hosp.equipe where id_equipe = ? and ativo = true";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -465,6 +469,7 @@ public class EquipeDAO {
                 equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 equipe.setRealizaAvaliacao(rs.getBoolean("realiza_avaliacao"));
                 equipe.setTurno(rs.getString("turno"));
+                equipe.setAtivo(rs.getBoolean("ativo"));
             }
 
         } catch (SQLException sqle) {
