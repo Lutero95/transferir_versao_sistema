@@ -8,10 +8,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfiguracaoProducaoBpaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConfiguracaoProducaoBpaBean;
@@ -27,7 +29,8 @@ public class ConfiguracaoProducaoBpaController {
 	private Integer tipo;
 	private String cabecalho;
 	private List<UnidadeBean> listaUnidades;
-	private List<UnidadeBean> listaUnidadesSelecionadas;
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 	
 	private static final String ENDERECO_CADASTRO = "cadastroconfiguracaoproducaobpa?faces-redirect=true";
 	private static final String ENDERECO_TIPO = "&amp;tipo=";
@@ -40,7 +43,6 @@ public class ConfiguracaoProducaoBpaController {
 		this.listaConfiguracaoProducaoBpa = new ArrayList<>();
 		this.configuracaoProducaoBpaDAO = new ConfiguracaoProducaoBpaDAO();
 		this.listaUnidades = new ArrayList<>();
-		this.listaUnidadesSelecionadas = new ArrayList<>();
 	}
 	
 	public String redirecionaEdicao() {
@@ -76,27 +78,84 @@ public class ConfiguracaoProducaoBpaController {
 	
 	public void adicionarUnidadeSelecionada(UnidadeBean unidadeSelecionada) {
 		if(!unidadeJaFoiAdicionada(unidadeSelecionada)) {
-			listaUnidadesSelecionadas.add(unidadeSelecionada);
+			configuracaoProducaoBpa.getListaUnidades().add(unidadeSelecionada);
 			JSFUtil.fecharDialog("dlgConsulUni");
 		}
 	}
 
 	private boolean unidadeJaFoiAdicionada(UnidadeBean unidadeSelecionada) {
-		if(listaUnidadesSelecionadas.contains(unidadeSelecionada)) {
-			JSFUtil.adicionarMensagemErro("Está Unidade Já foi Adicionada", "");
-			return true;
+		for (UnidadeBean unidade : configuracaoProducaoBpa.getListaUnidades()) {
+			if(unidade.getId().equals(unidadeSelecionada.getId())) {
+				JSFUtil.adicionarMensagemErro("Está Unidade Já foi Adicionada", "");
+				return true;				
+			}
 		}
 		return false;
 	}
 
 	public void adicionarTodasUnidadesSelecionadas() {
-		listaUnidadesSelecionadas.clear();
-		listaUnidadesSelecionadas.addAll(listaUnidades);
+		configuracaoProducaoBpa.getListaUnidades().clear();
+		configuracaoProducaoBpa.getListaUnidades().addAll(listaUnidades);
 		JSFUtil.fecharDialog("dlgConsulUni");
 	}
 	
 	public void removerUnidadeAdicionada(UnidadeBean unidadeSelecionada) {
-			listaUnidadesSelecionadas.remove(unidadeSelecionada);
+		configuracaoProducaoBpa.getListaUnidades().remove(unidadeSelecionada);
+	}
+	
+	public void gravarConfiguracaoBpa() throws ProjetoException {
+		if(!listaUnidadesEstaVazia() && !existeUnidadeComConfiguracaoBpa()) {
+			configuracaoProducaoBpa.setOperadorGravacao(user_session.getId().intValue());
+			boolean cadastrou = configuracaoProducaoBpaDAO.gravarConfiguracoesBpa(configuracaoProducaoBpa);
+
+			if (cadastrou) {
+				JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "");
+				limparDados();
+			}
+		}
+	}
+	
+	public void alterarConfiguracaoBpa() throws ProjetoException {
+		if(!listaUnidadesEstaVazia() && !existeUnidadeComConfiguracaoBpa()) {
+			configuracaoProducaoBpa.setOperadorGravacao(user_session.getId().intValue());
+			boolean alterou = configuracaoProducaoBpaDAO.alterarConfiguracoesBpa(configuracaoProducaoBpa);
+
+			if (alterou) {
+				JSFUtil.adicionarMensagemSucesso("Configuração alterada com sucesso!", "");
+			}
+		}
+	}
+	
+	public void excluirConfiguracaoBpa() throws ProjetoException {
+		configuracaoProducaoBpa.setOperadorExclusao(user_session.getId().intValue());
+		boolean excluiu = configuracaoProducaoBpaDAO.excluirConfiguracoesBpa(configuracaoProducaoBpa);
+
+		if (excluiu) {
+			JSFUtil.adicionarMensagemSucesso("Configuração excluída com sucesso!", "");
+			JSFUtil.fecharDialog("dialogExclusao");
+			listarConfiguracoesBpa();
+		}
+	}
+	
+	private boolean listaUnidadesEstaVazia() {
+		if(configuracaoProducaoBpa.getListaUnidades().isEmpty()) {
+			JSFUtil.adicionarMensagemErro("Adicione pelo menos uma unidade", "");
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean existeUnidadeComConfiguracaoBpa() throws ProjetoException {
+		String nomeUnidades = configuracaoProducaoBpaDAO.retornaUnidadesQueJaPossuemConfiguracao(configuracaoProducaoBpa);
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(nomeUnidades)) {
+			JSFUtil.adicionarMensagemErro("A(s) unidade(s) "+nomeUnidades+" já possuem configuração", "");
+			return true;
+		}
+		return false;
+	}
+	
+	private void limparDados() {
+		this.configuracaoProducaoBpa = new ConfiguracaoProducaoBpaBean();
 	}
 
 	public ConfiguracaoProducaoBpaBean getConfiguracaoProducaoBpa() {
@@ -142,13 +201,5 @@ public class ConfiguracaoProducaoBpaController {
 
 	public void setListaUnidades(List<UnidadeBean> listaUnidades) {
 		this.listaUnidades = listaUnidades;
-	}
-
-	public List<UnidadeBean> getListaUnidadesSelecionadas() {
-		return listaUnidadesSelecionadas;
-	}
-
-	public void setListaUnidadesSelecionadas(List<UnidadeBean> listaUnidadesSelecionadas) {
-		this.listaUnidadesSelecionadas = listaUnidadesSelecionadas;
 	}
 }

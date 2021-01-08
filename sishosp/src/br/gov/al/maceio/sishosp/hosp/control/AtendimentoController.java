@@ -789,7 +789,7 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        //validarDadosSigtap();
+        
         validarDadosSigtapDeListaDeAtendimentos(listAtendimentosEquipe);
         
         if(!validarSeEhNecessarioInformarGrupo()) {

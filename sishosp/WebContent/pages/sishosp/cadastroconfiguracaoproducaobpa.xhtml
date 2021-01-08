@@ -39,7 +39,7 @@
 								action="#{configuracaoProducaoBpaController.listarUnidadesUsuario()}" />
 
 							<p:dataTable var="uni"
-								value="#{configuracaoProducaoBpaController.listaUnidadesSelecionadas}"
+								value="#{configuracaoProducaoBpaController.configuracaoProducaoBpa.listaUnidades}"
 								id="tabUnidade" emptyMessage="Nenhuma unidade adicionada"
 								reflow="true" paginator="true" rows="10"
 								paginatorPosition="bottom">
@@ -61,14 +61,14 @@
 					</b:row>
 					<br />
 
-					<p:commandButton action="#{CidController.gravarCid()}"
+					<p:commandButton action="#{configuracaoProducaoBpaController.gravarConfiguracaoBpa()}"
 						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal msgPagina" value="Incluir"
+						update=":frmPrincipal :msgPagina" value="Incluir"
 						rendered="#{configuracaoProducaoBpaController.tipo == 1}" />
 
-					<p:commandButton action="#{CidController.alterarCid()}"
+					<p:commandButton action="#{configuracaoProducaoBpaController.alterarConfiguracaoBpa()}"
 						icon="ui-icon-check" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal msgPagina" value="Alterar"
+						update=":frmPrincipal :msgPagina" value="Alterar"
 						rendered="#{configuracaoProducaoBpaController.tipo  == 2}" />
 
 					<p:commandButton value="Voltar" icon="glyphicon-arrow-left"
