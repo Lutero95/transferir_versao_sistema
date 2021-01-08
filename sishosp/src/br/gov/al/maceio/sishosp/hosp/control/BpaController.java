@@ -951,6 +951,8 @@ public class BpaController implements Serializable {
             String cnsMedicoAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdCnsmed();
             String numeroFolhaAuxiliador = this.listaDeBpaIndividualizado.get(0).getPrdFlh();
             Integer numeroLinha = 0;
+            
+            
             for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
                 if (this.listaDeBpaIndividualizado.get(i).getPrdCnsmed().equals(cnsMedicoAuxiliador)
                         && this.listaDeBpaIndividualizado.get(i).getPrdFlh()!=null
@@ -964,7 +966,28 @@ public class BpaController implements Serializable {
                     this.listaDeBpaIndividualizado.get(i).setPrdSeq(numeroLinha.toString());
                 }
             }
+            
+            ordenarSequenciaBpaIndividualizado();
         }
+	}
+	
+	private void ordenarSequenciaBpaIndividualizado() {
+        List<BpaIndividualizadoBean> aux = new ArrayList<>();
+        
+        Integer numeroLinha = 1;
+        while(aux.size() < this.listaDeBpaIndividualizado.size()) {
+        	
+            for (int i = 0; i < this.listaDeBpaIndividualizado.size(); i++) {
+            	if(this.listaDeBpaIndividualizado.get(i).getPrdSeq().equals(numeroLinha.toString())) {
+            		aux.add(listaDeBpaIndividualizado.get(i));
+            	}
+            }
+            numeroLinha++;
+        	
+        }
+        
+        this.listaDeBpaIndividualizado.clear();
+        this.listaDeBpaIndividualizado.addAll(aux);
 	}
 	
 	public void adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido() throws ProjetoException {
