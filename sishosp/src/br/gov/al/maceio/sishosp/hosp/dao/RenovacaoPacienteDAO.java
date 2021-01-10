@@ -672,7 +672,7 @@ public class RenovacaoPacienteDAO {
 					ps4.setNull(9, Types.NULL);
 				}
 
-				ps4.setBoolean(10, insercao.getEncaixe());
+				ps4.setBoolean(10, false);
 
 				rs = ps4.executeQuery();
 

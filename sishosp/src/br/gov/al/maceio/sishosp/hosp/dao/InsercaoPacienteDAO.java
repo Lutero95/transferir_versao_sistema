@@ -411,7 +411,7 @@ public class InsercaoPacienteDAO {
 					ps3.setNull(9, Types.NULL);
 				}
 
-				ps3.setBoolean(10, insercao.getEncaixe());
+				ps3.setBoolean(10, false);
 				ps3.setLong(11, user_session.getId());
 				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
 				ps3.setLong(13, insercao.getGrupo().getIdGrupo());
@@ -558,7 +558,7 @@ public class InsercaoPacienteDAO {
 					ps3.setNull(9, Types.NULL);
 				}
 
-				ps3.setBoolean(10, insercao.getEncaixe());
+				ps3.setBoolean(10, false);
 
 				rs = ps3.executeQuery();
 
