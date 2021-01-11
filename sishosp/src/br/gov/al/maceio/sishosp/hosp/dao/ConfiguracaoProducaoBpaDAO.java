@@ -290,4 +290,34 @@ public class ConfiguracaoProducaoBpaDAO {
 		}
 		return excluiu;
 	}
+	
+	public List<Integer> listaIdUnidadesDaConfiguracoesBpa(Integer idConfiguracao)
+			throws ProjetoException, SQLException {
+		List<Integer> lista = new ArrayList<>();
+		
+		String sql = "select u.id from hosp.configuracao_producao_bpa_unidade cpbu " + 
+				"	join hosp.unidade u on cpbu.id_unidade = u.id " + 
+				"	where cpbu.id_configuracao_producao_bpa = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, idConfiguracao);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				lista.add(rs.getInt("id"));
+			}
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return lista;
+	}
 }

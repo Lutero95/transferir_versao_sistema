@@ -11,6 +11,7 @@
 	    <f:metadata>
             <f:viewAction action="#{bpaController.listarCompetencias()}"/>
 			<f:viewAction action="#{bpaController.setaOpcaoGeracaoProducao()}"/>
+			<f:viewAction action="#{configuracaoProducaoBpaController.listarConfiguracoesBpa()}"/>
         </f:metadata>
         
         <div class="panel panel-primary top-primary">
@@ -124,7 +125,33 @@
 									itemValue="#{comp}" />
 							</b:selectOneMenu>
 						</b:column>
+						
+						<b:column span="2" class="data-size" 
+							rendered="#{configuracaoProducaoBpaController.listaConfiguracaoProducaoBpa.size() > 0}">
+							<b:label value="Configuração de Produção" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" id="confbpa"
+								value="#{bpaController.idConfiguracaoProducaoBpa}" 
+								required="true" requiredMessage="Configuração de Produção: Campo Obrigatório">
+								<f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/>
+								<f:selectItems
+									value="#{configuracaoProducaoBpaController.listaConfiguracaoProducaoBpa}"
+									var="conf" itemLabel="#{conf.descricao}"
+									itemValue="#{conf.id}" />		
+							</b:selectOneMenu>
+						</b:column>
 					</b:row>
+					
+					<b:row rendered="#{configuracaoProducaoBpaController.listaConfiguracaoProducaoBpa.size() == 0}">
+						<br />
+						<p:outputPanel>
+							<b:column span="12">
+								<div class="alert alert-danger" role="alert" align="center">
+									<p>A produção gerada será a partir de <strong>TODAS AS UNIDADES</strong> da produção.</p>
+								</div>
+							</b:column>
+						</p:outputPanel>
+	                </b:row>
 
 					<hr/>
 					<b:row>
@@ -209,6 +236,7 @@
 					<p:outputPanel id="outgerarbpa">
 						<p:commandButton value="Gerar Produção" ajax="false"
 							rendered="#{bpaController.formatoExportacao != 'E'}"
+
 							actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
 							<p:fileDownload value="#{bpaController.download()}" />
 						</p:commandButton>
