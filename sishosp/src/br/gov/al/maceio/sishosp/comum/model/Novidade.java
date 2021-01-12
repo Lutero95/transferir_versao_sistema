@@ -1,7 +1,11 @@
 package br.gov.al.maceio.sishosp.comum.model;
 
-public class Novidade {
-    private Integer id;
+import java.io.Serializable;
+
+public class Novidade implements Serializable{
+    
+	private static final long serialVersionUID = 8074388627433110457L;
+	private Integer id;
     private Boolean Visualizado;
     private String nomeSistema;
     private String novidade;

@@ -1,10 +1,11 @@
 package br.gov.al.maceio.sishosp.comum.model;
 
+import java.io.Serializable;
 import java.sql.Time;
-import java.util.Date;
 
-public class HorarioFuncionamento {
+public class HorarioFuncionamento implements Serializable{
 	
+	private static final long serialVersionUID = -1273406828915890957L;
 	private Time horarioInicio;
 	private Time horarioFim;
 	

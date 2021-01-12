@@ -1,12 +1,15 @@
 package br.gov.al.maceio.sishosp.gestao.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.gestao.enums.TipoInconsistencia;
 
-public class InconsistenciaBean {
+public class InconsistenciaBean implements Serializable{
 	
+	
+	private static final long serialVersionUID = -9112953924404906134L;
 	private Integer id;
 	private String titulo;
 	private String descricao;

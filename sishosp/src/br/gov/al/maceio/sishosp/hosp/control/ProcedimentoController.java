@@ -401,7 +401,7 @@ public class ProcedimentoController implements Serializable {
         if(this.listaProcedimentos.isEmpty())
             JSFUtil.adicionarMensagemErro("Não há procedimentos cadastrados", "Erro");
         else {
-            if (!verificaSeHouveCargaDoSigtapEsteMes( -1,  -1)) {
+            if (!verificaSeCargaDoSigtapEstaAtualizada( -1,  -1)) {
 
                 FuncionarioBean user_session = obterUsuarioDaSessao();
 
@@ -431,10 +431,11 @@ public class ProcedimentoController implements Serializable {
         }
     }
 
-    private Boolean verificaSeHouveCargaDoSigtapEsteMes(Integer mes, Integer ano) {
+    private Boolean verificaSeCargaDoSigtapEstaAtualizada(Integer mes, Integer ano) {
         try {
             Boolean houveCargaEsteMes = procedimentoDao.houveCargaDoSigtapEsteMes(mes, ano);
-            if(houveCargaEsteMes) {
+            Boolean cargaAtualizadaDosProcedimentos = procedimentoDao.cargaSigtapEstaAtualizada(mes, ano, listaProcedimentos);
+            if(houveCargaEsteMes && cargaAtualizadaDosProcedimentos) {
                 fecharDialogAvisoCargaSigtap();
                 JSFUtil.adicionarMensagemAdvertencia("Os Dados do SIGTAP já estão atualizados para a competência "+String.format("%02d", mes)+"/"+ano+".", "");
                 return houveCargaEsteMes;
@@ -734,7 +735,7 @@ public class ProcedimentoController implements Serializable {
             String anoMesCompetencia = recuperaCompetenciaCarga(dadosDosArquivos);
             int ano = Integer.parseInt(anoMesCompetencia.substring(0,4));
             int mes = Integer.parseInt((anoMesCompetencia.substring(4,6)));
-            if (!verificaSeHouveCargaDoSigtapEsteMes(mes, ano)) {
+            if (!verificaSeCargaDoSigtapEstaAtualizada(mes, ano)) {
 
                 transformaDadosDosArquivosTBEmListasDeObjetos(dadosDosArquivos);
                 transformaDadosDosArquivosRLEmListasDeObjetos(dadosDosArquivos);
@@ -742,7 +743,7 @@ public class ProcedimentoController implements Serializable {
                 relacionarDadosDoProcedimento();
                 try {
                     FuncionarioBean user_session = obterUsuarioDaSessao();
-                    if(this.listaGravarProcedimentosMensaisDTO.isEmpty() || VerificadorUtil.verificarSeObjetoNulo(this.listaGravarProcedimentosMensaisDTO))
+                    if(VerificadorUtil.verificarSeObjetoNulo(this.listaGravarProcedimentosMensaisDTO) || this.listaGravarProcedimentosMensaisDTO.isEmpty())
                         JSFUtil.adicionarMensagemErro("Erro não há dados válidos neste arquivo", "");
                     else {
                         procedimentoDao.executaRotinaNovaCargaSigtap(this.listaGravarProcedimentosMensaisDTO,
