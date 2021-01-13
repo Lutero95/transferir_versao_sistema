@@ -1286,7 +1286,7 @@ public class AtendimentoDAO {
 				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " +
 				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " +
 				" left join hosp.cbo c on c.id  = a1.cbo  " +
-				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo \r\n" +
+				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
 				" left join hosp.conselho con on cc.id_conselho = con.id "+
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
 				"and p.ativo = 'S' and a.cod_unidade=?";
@@ -2070,5 +2070,74 @@ public class AtendimentoDAO {
 			}
 		}
 		return cbo;
+	}
+	
+	public List<String> retornaCodigoProcedimentoDeAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim,
+			String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+			throws ProjetoException {
+
+		List<String> listaCodigosProcedimentos = new ArrayList<>();
+
+		String sql = "select distinct pr.codproc  " + 
+				"from hosp.atendimentos a  " + 
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  " + 
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " + 
+				"inner join hosp.programa p on (a.codprograma = p.id_programa)  " + 
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)  " + 
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " + 
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " + 
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id) " + 
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " + 
+				"where coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " + 
+				"and a.dtaatende between ? and ? ";
+
+		if (listaProcedimentosFiltro.size() > 0)
+			sql += " and a1.codprocedimento = any(?) ";
+
+		if (!idUnidades.isEmpty())
+			sql += " and a.cod_unidade = any(?) ";
+
+		if (tipoGeracao.equals("A")) {
+			sql += " and sa.atendimento_realizado = true";
+		} else
+			sql += " and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+			
+			ArrayList<Integer> lista = new ArrayList<>();
+			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+			}
+
+			int parametro = 3;
+			if (listaProcedimentosFiltro.size() > 0) {
+				ps.setObject(3, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+				parametro++;
+			}
+
+			if (!idUnidades.isEmpty())
+				ps.setObject(parametro, ps.getConnection().createArrayOf("INTEGER", idUnidades.toArray()));
+
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				listaCodigosProcedimentos.add(rs.getString("codproc"));
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaCodigosProcedimentos;
 	}
 }

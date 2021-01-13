@@ -176,16 +176,38 @@ public class BpaController implements Serializable {
 		
 		if(tipoExportacao.equals(TipoExportacao.INDIVIDUALIZADO.getSigla())) {
 			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
-			gerarLayoutBpaIndividualizadoExcel();
+			atualizaListaInconsistenciasIndividualizado();
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado) 
+					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+				gerarLayoutBpaIndividualizadoExcel();
+			}
 		}
 		else if(tipoExportacao.equals(TipoExportacao.CONSOLIDADO.getSigla())) {
 			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
-			gerarLayoutBpaConsolidadoExcel();
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado) 
+					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+				gerarLayoutBpaConsolidadoExcel();
+			}
 		}
 		else {
 			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
 			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
-			gerarLayoutBpaCompletoExcel();
+			atualizaListaInconsistenciasIndividualizado();
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado) 
+					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+				gerarLayoutBpaCompletoExcel();
+			}
+		}
+	}
+
+	private void atualizaListaInconsistenciasIndividualizado() {
+		listaInconsistencias = new ArrayList<>();
+		for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
+			if (bpaIndividualizado.getListaInconsistencias().size()>0){
+				for (String inconsistencia : bpaIndividualizado.getListaInconsistencias()) {
+					listaInconsistencias.add(inconsistencia);
+				}
+			}
 		}
 	}
 	
@@ -605,17 +627,10 @@ public class BpaController implements Serializable {
 			executaMetodosParaGerarBpaConsolidado(sAtributoGenerico1);
 			executaMetodosParaGerarBpaIndividualizado(sAtributoGenerico1);
 			executaMetodosParaGerarBpaCabecalho();
-			listaInconsistencias = new ArrayList<>();
-			for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
-				if (bpaIndividualizado.getListaInconsistencias().size()>0){
-					for (String inconsistencia : bpaIndividualizado.getListaInconsistencias()) {
-						listaInconsistencias.add(inconsistencia);
-					}
-				}
-
-			}
+			atualizaListaInconsistenciasIndividualizado();
 			
-			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+			if ( !existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado) 
+					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();
@@ -635,6 +650,48 @@ public class BpaController implements Serializable {
 		} catch (ProjetoException pe) {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
+	}
+	
+	private boolean existeProcedimentosForaDaCarga
+		(List<BpaIndividualizadoBean> listaBpaIndividualizado, List<BpaConsolidadoBean> listaBpaConsolidado)
+				throws ProjetoException {
+		
+		boolean existeProcedimentoSemCarga = false;
+		
+		List<String> listaCodigoProcedimentosBpa = new ArrayList<>();
+		
+		List<String> listaCodigoProcedimentos = new AtendimentoDAO().retornaCodigoProcedimentoDeAtendimentosOuAgendamentosDeUmPeriodo
+				(this.dataInicioAtendimento, this.dataFimAtendimento, sAtributoGenerico1, listaProcedimentos, listaIdUnidades);
+		
+		for (BpaIndividualizadoBean individual : listaBpaIndividualizado) {
+			if(!listaCodigoProcedimentosBpa.contains(individual.getPrdPa())) {
+				listaCodigoProcedimentosBpa.add(individual.getPrdPa());
+			}
+		}
+		
+		for (BpaConsolidadoBean consolidado : listaBpaConsolidado) {
+			if(!listaCodigoProcedimentosBpa.contains(consolidado.getPrdPa())) {
+				listaCodigoProcedimentosBpa.add(consolidado.getPrdPa());
+			}			
+		}
+		
+		String codigoProcedimentosSemCarga = "";
+		if(!listaCodigoProcedimentosBpa.isEmpty()) {
+			for (String codigo : listaCodigoProcedimentos) {
+				if (!listaCodigoProcedimentosBpa.contains(codigo)) {
+					codigoProcedimentosSemCarga += codigo + "; ";
+					existeProcedimentoSemCarga = true;
+				}
+			}
+		}
+		
+		if(existeProcedimentoSemCarga) {
+			JSFUtil.adicionarMensagemAdvertencia
+				("Não é possivel fazer a exportação do BPA pois há atendimentos com procedimento(s) sem carga do SIGTAP no periodo escolhido", "");
+			JSFUtil.adicionarMensagemAdvertencia("Procedimento(s): "+codigoProcedimentosSemCarga, "");
+		}
+		
+		return existeProcedimentoSemCarga;
 	}
 	
 	private void listarIdUnidadesConfiguracaoBpa() throws ProjetoException, SQLException {
