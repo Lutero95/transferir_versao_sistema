@@ -527,11 +527,17 @@ public class AtendimentoDAO {
 				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " +
 				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C' and coalesce(a1.excluido,'N' )='N'";
 
-		if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 			sql = sql + " and  a.codprograma = ?";
 		}
-		if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 			sql = sql + " and  a.codgrupo = ?";
+		}
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
+			sql = sql + " and  a.codequipe = ?";
 		}
 
 		if (tipo.equals("nome")) {
@@ -558,13 +564,21 @@ public class AtendimentoDAO {
 			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
 			stm.setInt(3, user_session.getUnidade().getId());
 
-			if ((atendimento.getPrograma() != null) && (atendimento.getPrograma().getIdPrograma() != null)) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
 				i = i + 1;
 			}
-			if ((atendimento.getGrupo() != null) && (atendimento.getGrupo().getIdGrupo() != null)) {
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
 				i = i + 1;
+			}
+			
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
+					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
+				stm.setInt(i, atendimento.getEquipe().getCodEquipe());
+				i = i + 1;				
 			}
 
 			if (!campoBusca.equals(null)) {
