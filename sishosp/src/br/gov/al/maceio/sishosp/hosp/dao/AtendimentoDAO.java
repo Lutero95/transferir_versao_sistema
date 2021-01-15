@@ -2074,4 +2074,36 @@ public class AtendimentoDAO {
 		}
 		return cbo;
 	}
+	
+	public boolean atendimentoPossuiSituacaoAtendimento(Integer idAtendimento1) throws ProjetoException {
+
+		String sql = "select exists (select a1.id_atendimentos1 from hosp.atendimentos1 a1 " + 
+				"	where a1.id_atendimentos1 = ? and a1.id_situacao_atendimento is not null) possui_situacao_atendimento";
+		
+		boolean possuiSituacaoAtendimento = true;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, idAtendimento1);
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				possuiSituacaoAtendimento = rs.getBoolean("possui_situacao_atendimento");
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return possuiSituacaoAtendimento;
+	}
 }

@@ -189,10 +189,24 @@ public class AtendimentoController implements Serializable {
 
     }
 
-    public void excluiProfissionalListaAtendimento(AtendimentoBean atendimento) {
-        listAtendimentosEquipeParaExcluir.add(atendimento);
-        listAtendimentosEquipe.remove(atendimento);
-        JSFUtil.fecharDialog("dlgExclusao");
+    public void excluiProfissionalListaAtendimento(AtendimentoBean atendimento) throws ProjetoException {
+    	if(!atendimentoPossuiSituacaoAtendimento(atendimento.getId1())
+    		|| (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getId1()))) {
+    		
+    		listAtendimentosEquipeParaExcluir.add(atendimento);
+    		listAtendimentosEquipe.remove(atendimento);
+    		JSFUtil.fecharDialog("dlgExclusao");
+    	}
+    }
+    
+    private boolean atendimentoPossuiSituacaoAtendimento(Integer idAtendimento1) throws ProjetoException {
+    	if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idAtendimento1) &&
+    			atendimentoDAO.atendimentoPossuiSituacaoAtendimento(idAtendimento1)) {
+    			JSFUtil.adicionarMensagemErro
+    			("Não é possível excluir este registro pois já foi informada alguma situação de Atendimento", "");
+    		return true;
+    	}
+    	return false;
     }
 
     public void consultarAtendimentos() throws ProjetoException {
