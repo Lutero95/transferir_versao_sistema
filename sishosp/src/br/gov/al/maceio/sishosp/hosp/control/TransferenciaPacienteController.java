@@ -229,8 +229,9 @@ public class TransferenciaPacienteController implements Serializable {
         String retorno = "";
         InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
         
-        if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
-				insercao.getGrupo().getIdGrupo(), insercaoParaLaudo.getLaudo().getPaciente().getId_paciente())) {
+        if (!aDao.verificarSePacienteAtivoEstaNoMesmoProgramaGrupo(insercao) &&
+        		iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
+        				insercao.getGrupo().getIdGrupo(), insercaoParaLaudo.getLaudo().getPaciente().getId_paciente())) {
 			JSFUtil.adicionarMensagemErro("Paciente já está ativo neste Programa/Grupo", "Erro");
 		}
 

@@ -690,4 +690,40 @@ public class TransferenciaPacienteDAO {
 		}
 		return retorno;
 	}
+	
+	public Boolean verificarSePacienteAtivoEstaNoMesmoProgramaGrupo(InsercaoPacienteBean insercao) throws ProjetoException {
+
+		Boolean retorno = true;
+
+		String sql = "SELECT EXISTS ( SELECT pi.id FROM hosp.paciente_instituicao pi " + 
+				"left join hosp.laudo l on l.id_laudo = pi.codlaudo " + 
+				" WHERE pi.status = 'A' AND pi.codprograma = ? AND pi.codgrupo = ?" + 
+				" and pi.id = ?) existe";
+
+		Connection con = null;
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, insercao.getPrograma().getIdPrograma());
+			ps.setInt(2, insercao.getGrupo().getIdGrupo());
+			ps.setInt(3, insercao.getId());
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				retorno = rs.getBoolean("existe");
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
 }
