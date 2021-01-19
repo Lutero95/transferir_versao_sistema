@@ -142,12 +142,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                         CboBean cboCompativel = null;
 
+                        
                         if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                            cboCompativel = new FuncionarioDAO()
+                                    .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());                    
+                        } else {
                             cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
                                     agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
-                        } else {
-                            cboCompativel = new FuncionarioDAO()
-                                    .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());
                         }
 
                         ps.setLong(1, agenda.getProfissional().getId());
@@ -181,11 +182,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                             CboBean cboCompativel = null;
 
                             if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                                cboCompativel = new FuncionarioDAO()
+                                        .retornaPrimeiroCboProfissional(prof.getId());                    
+                            } else {
                                 cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
                                         agenda.getDataAtendimento(), prof, idProcedimentoEspecifico, con);
-                            } else {
-                                cboCompativel = new FuncionarioDAO()
-                                        .retornaPrimeiroCboProfissional(prof.getId());
                             }
 
                             ps.setLong(1, prof.getId());
@@ -311,11 +312,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 CboBean cboCompativel = null;
 
-                if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
-                    cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
-                            agenda.getDataAtendimento(), funcionario, idProcedimentoEspecifico, con);
+                if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                    cboCompativel = new FuncionarioDAO()
+                            .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());                    
                 } else {
-                    cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(funcionario.getId());
+                    cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
+                            agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
                 }
 
                 ps.setInt(3, cboCompativel.getCodCbo());
@@ -399,11 +401,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 CboBean cboCompativel = null;
 
                 if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                    cboCompativel = new FuncionarioDAO()
+                            .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());                    
+                } else {
                     cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda(
                             agenda.getDataAtendimento(), agenda.getProfissional(), idProcedimentoEspecifico, con);
-                } else {
-                    cboCompativel = new FuncionarioDAO()
-                            .retornaPrimeiroCboProfissional(agenda.getProfissional().getId());
                 }
 
                 ps = con.prepareStatement(sql);
