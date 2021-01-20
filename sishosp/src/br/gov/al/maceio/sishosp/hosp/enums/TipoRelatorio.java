@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum TipoRelatorio {
 
 	ANALITICO("A"),
-	SINTETICO("S");
+	SINTETICO("S"),
+	QUANTIDADE_ATENDIMENTOS("Q");
 
     private String sigla;
 
