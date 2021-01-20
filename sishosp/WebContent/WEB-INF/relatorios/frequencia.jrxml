@@ -64,6 +64,8 @@
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="chave" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="diassemanalista" class="java.util.ArrayList"/>
+	<parameter name="turnoslista" class="java.util.ArrayList"/>
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
@@ -89,6 +91,7 @@ left join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente =coalesce(l.codpaciente, pi.id_paciente) 
 join hosp.programa on programa.id_programa = pi.codprograma
 join hosp.grupo on grupo.id_grupo = pi.codgrupo
+left join hosp.profissional_dia_atendimento pf on pf.id_paciente_instituicao = pi.id
 LEFT JOIN hosp.proc prp ON prp.id =  coalesce(l.codprocedimento_primario, pi.codprocedimento_primario_laudo_anterior)
 LEFT JOIN hosp.proc prs1 ON prs1.id = coalesce(l.codprocedimento_secundario1, pi.codprocedimento_secundario1_laudo_anterior)
 LEFT JOIN hosp.proc prs2 ON prs2.id = coalesce(l.codprocedimento_secundario2, pi.codprocedimento_secundario2_laudo_anterior)
@@ -107,6 +110,8 @@ LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
 WHERE 1=1
 and pi.status='A'
+and $X{IN, pf.dia_semana, diassemanalista}
+and $X{IN, pi.turno, turnoslista}
 and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
