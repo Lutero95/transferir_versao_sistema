@@ -53,7 +53,7 @@
 	<parameter name="periodolaudovencer" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
-	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao,empresa.logomarca2, l.obs, f.descfuncionario AS nomemedico,
+	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao, empresa.logomarca, empresa.nome_fantasia, empresa.cnes, l.data_solicitacao,empresa.logomarca2, l.obs, f.descfuncionario AS nomemedico,
 p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
 p.logradouro|| ' '||COALESCE(p.numero,'')|| ' '||COALESCE(b.descbairro,'')   AS endereco,  m.uf, 
  m.nome descmunicipio, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
@@ -272,6 +272,7 @@ and l.id_laudo=  $P{cod_laudo}]]>
 	<field name="telefone_responsavel" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="telefone_responsavel"/>
 	</field>
+	<field name="logomarca" class="java.lang.Object"/>
 	<variable name="fem" class="java.lang.String">
 		<variableExpression><![CDATA[$F{sexo} == "F" ? "X" : ""]]></variableExpression>
 	</variable>
@@ -1542,7 +1543,7 @@ and l.id_laudo=  $P{cod_laudo}]]>
 				<reportElement x="-4" y="-36" width="173" height="60" uuid="023c8311-82c4-48f5-a77e-89373cfdf148">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA[$F{logomarca2}]]></imageExpression>
+				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
 			</image>
 		</band>
 	</detail>
