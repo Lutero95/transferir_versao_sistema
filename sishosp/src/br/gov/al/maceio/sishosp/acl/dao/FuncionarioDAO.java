@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.BancoUtil;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
@@ -52,7 +53,7 @@ public class FuncionarioDAO {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-			pstmt.setString(2, usuario.getSenha());
+			pstmt.setString(2, BancoUtil.obterSenhaCriptografada(usuario.getSenha()));
 
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
