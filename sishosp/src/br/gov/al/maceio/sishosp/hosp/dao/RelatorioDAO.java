@@ -19,8 +19,9 @@ public class RelatorioDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, chave);
-            for (int i = 0; i < qtdRegistrosInserir; i++) 
-            stmt.execute();
+            for (int i = 0; i < qtdRegistrosInserir; i++) {
+            	stmt.execute();
+            }
             conexao.commit();
             retorno = true;
         } catch (SQLException sqle) {
