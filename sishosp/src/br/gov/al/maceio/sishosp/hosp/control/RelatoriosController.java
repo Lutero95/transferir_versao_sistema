@@ -398,33 +398,32 @@ public class RelatoriosController implements Serializable {
 			} else {
 				String caminho = CAMINHO_PRINCIPAL;
 				String relatorio = "";
-				relatorio = caminho + "frequencia.jasper";
+				
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("chave", randomico);
 				map.put("codunidade", user_session.getUnidade().getId());
-				if (pacienteInstituicao.getPrograma() != null)
-					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
-
-				if (pacienteInstituicao.getGrupo() != null)
-					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
-
-				if (pacienteInstituicao.getId() != null)
-					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
 				
 				ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
 				setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 				map.put("diassemanalista", diasSemanaInteger);
-
+				
 				limparTurno();
 				atribuiTurnos();
 
 				map.put("turnoslista", turnos);
+				
+				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getId()))
+					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+				
+				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 
+				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
+					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 
 				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+				relatorio = caminho + "frequencia.jasper";
 				this.executeReport(relatorio, map, "relatorio.pdf");
-				// this.executeReportNewTab(relatorio, "frequencia.pdf",
-//                    map);
 				rDao.limparTabelaTemporariaFrequencia(randomico);
 
 			}
@@ -967,7 +966,7 @@ public class RelatoriosController implements Serializable {
 		}
 		else if(turnoSelecionado.equals(Turno.MANHA.getSigla()))
 			this.turnos.add(Turno.MANHA.getSigla());
-		else
+		else if(turnoSelecionado.equals(Turno.TARDE.getSigla()))
 			this.turnos.add(Turno.TARDE.getSigla());
 	}
 
