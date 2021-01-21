@@ -1293,19 +1293,6 @@ public class FuncionarioController implements Serializable {
 		listaCbos = new ArrayList<>();
 	}
 	
-	/*TODO APAGAR ESTE MÉTODO APÓS FAZER O UPDATE DE TODOS OS 
-	 * FUNCIONARIOS DO BANCO PARA INSERIR OS CBOS NA NOVA TABELA*/
-	public void atualizarCBOsDosFuncionariosDoBanco() throws ProjetoException, SQLException {
-		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
-		List<FuncionarioBean> listaFuncionarios = funcionarioDAO.listarTodosOsProfissionaisParaAtualizarCBO();
-		JSFUtil.adicionarMensagemSucesso("Funcionários listados para atualizar os CBOS na nova tabela", "");
-		
-		boolean cbosFuncionariosAtualizados = 
-				funcionarioDAO.gravarCbosProfissionalParaAtualizarBanco(listaFuncionarios);
-		if(cbosFuncionariosAtualizados)
-			JSFUtil.adicionarMensagemSucesso("CBO DOS FUNCIONÁRIOS GRAVADOS NA NOVA TABELA", "");
-	}
-	
 	public void listarCbosFuncionarios(Long idFuncionario) throws ProjetoException {
 		this.listaCbos = fDao.listaCbosProfissional(idFuncionario);
 	}

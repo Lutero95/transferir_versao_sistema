@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.*;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.BancoUtil;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
@@ -52,7 +53,7 @@ public class FuncionarioDAO {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-			pstmt.setString(2, usuario.getSenha());
+			pstmt.setString(2, BancoUtil.obterSenhaCriptografada(usuario.getSenha()));
 
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -533,7 +534,7 @@ public class FuncionarioDAO {
 			stmt.setString(1, usuario.getNome());
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
-			stmt.setString(4, usuario.getSenha());
+			stmt.setString(4, BancoUtil.obterSenhaCriptografada(usuario.getSenha()));
 			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
 			stmt.setInt(7, usuario.getUnidade().getId());
@@ -595,7 +596,7 @@ public class FuncionarioDAO {
 			stmt.setString(1, usuario.getNome());
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
-			stmt.setString(4, usuario.getSenha());
+			stmt.setString(4, BancoUtil.obterSenhaCriptografada(usuario.getSenha()));
 			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
 			stmt.setLong(7, usuario.getId());
@@ -968,7 +969,7 @@ public class FuncionarioDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, usuario.getNovaSenha());
+			stmt.setString(1, BancoUtil.obterSenhaCriptografada(usuario.getNovaSenha()));
 			stmt.setLong(2, user_session.getId());
 			stmt.executeUpdate();
 			con.commit();
@@ -1005,7 +1006,7 @@ public class FuncionarioDAO {
 		try {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, usuario.getNovaSenha());
+			stmt.setString(1, BancoUtil.obterSenhaCriptografada(usuario.getNovaSenha()));
 			stmt.setLong(2, user_session.getId());
 			stmt.setString(3, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 			stmt.executeUpdate();
@@ -1107,7 +1108,7 @@ public class FuncionarioDAO {
 
 			ps.setString(1, profissional.getNome().toUpperCase());
 			ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
-			ps.setString(3, profissional.getSenha());
+			ps.setString(3, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
 			ps.setLong(4, user_session.getId());
 
 			if (profissional.getEspecialidade() != null) {
@@ -1227,7 +1228,7 @@ public class FuncionarioDAO {
 
 			ps.setInt(1, idProfissional);
 			ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
-			ps.setString(3, profissional.getSenha());
+			ps.setString(3, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
 			ps.setString(4, "S");
 			ps.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 			ps.setString(6, profissional.getNome());
@@ -1247,80 +1248,6 @@ public class FuncionarioDAO {
 			}
 		}
 		return retorno;
-	}
-	
-	/*TODO APAGAR ESTE MÉTODO APÓS FAZER O UPDATE DE TODOS OS 
-	 * FUNCIONARIOS DO BANCO PARA INSERIR OS CBOS NA NOVA TABELA*/
-	public List<FuncionarioBean> listarTodosOsProfissionaisParaAtualizarCBO() throws ProjetoException {
-
-		List<FuncionarioBean> listaProfissional = new ArrayList<FuncionarioBean>();
-
-		String sql = "select f.codcbo, f.id_funcionario " + 
-				"from acl.funcionarios f where f.codcbo is not null " + 
-				"order by f.id_funcionario ;";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				FuncionarioBean profissioanl = new FuncionarioBean();
-				profissioanl.setId(rs.getLong("id_funcionario"));
-				
-				CboBean cbo = new CboBean();
-				cbo.setCodCbo(rs.getInt("codcbo"));
-				profissioanl.getListaCbos().add(cbo);
-
-				listaProfissional.add(profissioanl);
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return listaProfissional;
-	}
-
-	/*TODO APAGAR ESTE MÉTODO APÓS FAZER O UPDATE DE TODOS OS 
-	 * FUNCIONARIOS DO BANCO PARA INSERIR OS CBOS NA NOVA TABELA*/
-	public boolean gravarCbosProfissionalParaAtualizarBanco
-		(List<FuncionarioBean> listaFuncionarios)
-			throws ProjetoException, SQLException {
-
-		boolean bancoAtualizado = false;
-		String sql = "INSERT INTO hosp.cbo_funcionario (id_cbo, id_profissional) VALUES(?, ?);";
-		try {
-			Connection con = ConnectionFactory.getConnection();
-			PreparedStatement ps = con.prepareStatement(sql);
-			
-			for (FuncionarioBean funcionario : listaFuncionarios) {
-				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(funcionario.getListaCbos().get(0).getCodCbo())) {
-					ps.setInt(1, funcionario.getListaCbos().get(0).getCodCbo());
-					ps.setLong(2, funcionario.getId());
-					ps.executeUpdate();
-				}
-			}
-		bancoAtualizado = true;
-		con.commit();
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
-					sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return bancoAtualizado;
 	}
 	
 	public void gravarCbosProfissional (FuncionarioBean funcionario, Connection conexaoAuxiliar) 
@@ -1743,7 +1670,7 @@ public class FuncionarioDAO {
 			stmt.setBoolean(7, profissional.getRealizaLiberacoes());
 			stmt.setBoolean(8, profissional.getRealizaAtendimento());
 			stmt.setBoolean(9, profissional.getRealizaEncaixes());
-			stmt.setString(10, profissional.getSenha());
+			stmt.setString(10, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
 			stmt.setString(11, profissional.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setLong(12, profissional.getUnidade().getId());
 			stmt.setBoolean(13, profissional.getExcecaoBloqueioHorario());
@@ -1956,7 +1883,7 @@ public class FuncionarioDAO {
 			conexaoPublica = ConnectionFactoryPublico.getConnection();
 			PreparedStatement stmt = conexaoPublica.prepareStatement(sql);
 
-			stmt.setString(1, profissional.getSenha());
+			stmt.setString(1, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
 			stmt.setString(2, profissional.getAtivo().toUpperCase());
 			stmt.setString(3, profissional.getNome());
 			stmt.setString(4, profissional.getCpf().replaceAll("[^0-9]", ""));
@@ -2324,7 +2251,7 @@ public class FuncionarioDAO {
 			PreparedStatement stmt = con.prepareStatement(sql);
 
 			stmt.setString(1, cpf.replaceAll("[^0-9]", ""));
-			stmt.setString(2, senha);
+			stmt.setString(2, BancoUtil.obterSenhaCriptografada(senha));
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -2363,7 +2290,7 @@ public class FuncionarioDAO {
 			PreparedStatement stmt = con.prepareStatement(sql);
 
 			stmt.setLong(1, user_session.getId());
-			stmt.setString(2, senha);
+			stmt.setString(2, BancoUtil.obterSenhaCriptografada(senha));
 
 			ResultSet rs = stmt.executeQuery();
 

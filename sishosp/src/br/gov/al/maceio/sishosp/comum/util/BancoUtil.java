@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class BancoUtil {
+	
+	private static final String SALT = "mgJ*UMO@E7dZ8D4iqW";
 
     public static Integer recuperarInteiro(ResultSet resultSet, String nomeColuna) {
         try {
@@ -59,6 +61,16 @@ public class BancoUtil {
         try {
             return resultSet.getBytes(nomeColuna);
         } catch (SQLException e) {
+            return null;
+        }
+    }
+    
+    public static String obterSenhaCriptografada(String senha) {
+        try {
+            String var10000 = senha.toUpperCase();
+            return MD5Util.gerarHash(var10000 + SALT.toUpperCase());
+        } catch (Exception var2) {
+            System.out.println(var2);
             return null;
         }
     }
