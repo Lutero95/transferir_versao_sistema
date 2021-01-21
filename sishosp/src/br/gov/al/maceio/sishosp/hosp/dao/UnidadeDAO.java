@@ -118,8 +118,9 @@ public class UnidadeDAO {
                     "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, valida_dados_laudo_sigtap, minutos_tolerancia, "+
                     "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, "+
                     "acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
-                    "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade ) "+
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)";
+                    "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
+                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -248,14 +249,15 @@ public class UnidadeDAO {
             ps.setBoolean(38, unidade.getParametro().isAgendaAvulsaValidaPacienteAtivo());
             ps.setBoolean(39, unidade.getParametro().isAtribuirCorTabelaTelaEvolucaoProfissional());
             ps.setBoolean(40, unidade.getParametro().isCpfPacienteObrigatorio());
-            ps.setBoolean(41, unidade.getParametro().isVerificaPeriodoInicialEvolucaoPrograma());
+            ps.setInt(41, unidade.getParametro().getDiasPacienteAtivoSemEvolucao());
+            ps.setBoolean(42, unidade.getParametro().isVerificaPeriodoInicialEvolucaoPrograma());
 
             if(VerificadorUtil.verificarSeObjetoNulo(unidade.getParametro().getInicioEvolucaoUnidade()))
-                ps.setNull(42, Types.NULL);
+                ps.setNull(43, Types.NULL);
             else
-                ps.setDate(42, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
+                ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
-            ps.setInt(43, unidade.getParametro().getDiasPacienteAtivoSemEvolucao());
+            ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
             ps.execute();
 
 
@@ -422,7 +424,7 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
-                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ? "+
+                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -526,8 +528,8 @@ public class UnidadeDAO {
             else
                 ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
-
-            ps.setInt(44, unidade.getId());
+            ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
+            ps.setInt(45, unidade.getId());
 
             ps.executeUpdate();
 
@@ -668,7 +670,8 @@ public class UnidadeDAO {
                 "orgao_origem_responsavel_pela_informacao, sigla_orgao_origem_responsavel_pela_digitacao, cgcCpf_prestador_ou_orgao_publico, orgao_destino_informacao, "+
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
-                "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade   "+
+                "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
+                "inicio_evolucao_unidade, busca_automatica_cep_paciente "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -732,6 +735,7 @@ public class UnidadeDAO {
                 parametro.setDiasPacienteAtivoSemEvolucao(rs.getInt("dias_paciente_ativo_sem_evolucao"));
                 parametro.setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
                 parametro.setInicioEvolucaoUnidade(rs.getDate("inicio_evolucao_unidade"));
+                parametro.setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();
