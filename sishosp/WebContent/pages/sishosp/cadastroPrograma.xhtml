@@ -289,6 +289,44 @@
 						</p:dataTable>
 				</p:tab>
 				
+				<p:tab title="Procedimentos Específicos Profissional / Equipe">
+					<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulProcOcup" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							actionListener="#{ProgramaController.limparProcedimentoProfissionalIhEquipeSelecionado()}"
+							oncomplete="PF('dlgConsulProcOcup').show();" />
+							
+						<p:dataTable id="tabProcCbo" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoProfissionalEquipeEspecificaDTO}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true">
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
+							</p:column>
+							
+							<p:column headerText="Código Procedimento" width="250">
+								<h:outputText value="#{procEsp.procedimento.codProc}" />
+							</p:column>
+
+							<p:column headerText="CBO">
+								<h:outputText value="#{procEsp.profissional.nome}" />
+							</p:column>
+							
+							<p:column headerText="Equipe">
+								<h:outputText value="#{procEsp.equipe.descEquipe}" />
+							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerProcedimentoProfissionalEquipeEspecifico(procEsp)}"
+                                	title="Remover" update="frmPrincipal:tab:tabProcCbo"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
 				<p:tab title="Cids Permitidas">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"

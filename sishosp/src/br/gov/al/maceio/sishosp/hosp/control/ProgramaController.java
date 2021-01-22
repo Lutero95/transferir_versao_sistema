@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -21,6 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoPrograma;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -28,6 +30,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoProfissionalEquipeEspecificoDTO;
 
 @ManagedBean(name = "ProgramaController")
 @ViewScoped
@@ -55,6 +58,8 @@ public class ProgramaController implements Serializable {
 	private ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado;
 	private BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO;
 	private boolean editandoGrupo;
+	private FuncionarioBean profissionalSelecionado;
+	private EquipeBean equipeSelecionada;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -78,6 +83,8 @@ public class ProgramaController implements Serializable {
 		this.procedimentoSelecionado = new ProcedimentoBean();
 		this.cboSelecionado = new CboBean();
 		this.buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO();
+		this.profissionalSelecionado = new FuncionarioBean();
+		this.equipeSelecionada = new EquipeBean();
 	}
 
 	public String redirectEdit() {
@@ -256,6 +263,16 @@ public class ProgramaController implements Serializable {
 
 	public void removerProcedimentoCboEspecifico(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
 		this.prog.getListaProcedimentoCboEspecificoDTO().remove(procedimentoCboEspecifico);
+	}
+	
+	public void limparProcedimentoProfissionalIhEquipeSelecionado() {
+		this.procedimentoSelecionado = new ProcedimentoBean();
+		this.profissionalSelecionado = new FuncionarioBean();
+		this.equipeSelecionada = new EquipeBean();
+	}
+	
+	public void removerProcedimentoProfissionalEquipeEspecifico(ProcedimentoProfissionalEquipeEspecificoDTO procedimentoProfissionalEquipeEspecifico) {
+		this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO().remove(procedimentoProfissionalEquipeEspecifico);
 	}
 
 	public void validaFrequencia() {
@@ -650,4 +667,19 @@ public class ProgramaController implements Serializable {
 		this.editandoGrupo = editandoGrupo;
 	}
 
+	public FuncionarioBean getProfissionalSelecionado() {
+		return profissionalSelecionado;
+	}
+
+	public void setProfissionalSelecionado(FuncionarioBean profissionalSelecionado) {
+		this.profissionalSelecionado = profissionalSelecionado;
+	}
+
+	public EquipeBean getEquipeSelecionada() {
+		return equipeSelecionada;
+	}
+
+	public void setEquipeSelecionada(EquipeBean equipeSelecionada) {
+		this.equipeSelecionada = equipeSelecionada;
+	}
 }
