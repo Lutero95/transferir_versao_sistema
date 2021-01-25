@@ -251,7 +251,8 @@ public class AtendimentoController implements Serializable {
     }
 
     public String redirectGerenciarAtendimentos(String ehEquipe) {
-        setaIdEquipeNaSessao(ehEquipe);
+        //setaIdEquipeNaSessao(ehEquipe);
+    	setaIdEquipeNaSessao(SIM);
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_GERENCIAR_ATENDIMENTOS, ENDERECO_ID, this.atendimento.getId());
     }
 
