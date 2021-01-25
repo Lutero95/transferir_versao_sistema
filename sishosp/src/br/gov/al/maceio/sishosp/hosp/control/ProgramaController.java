@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -16,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
@@ -60,6 +62,8 @@ public class ProgramaController implements Serializable {
 	private boolean editandoGrupo;
 	private FuncionarioBean profissionalSelecionado;
 	private EquipeBean equipeSelecionada;
+	private List<FuncionarioBean> listaProfissional;
+	private List<EquipeBean> listaEquipe;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -68,6 +72,8 @@ public class ProgramaController implements Serializable {
 	private static final String CABECALHO_INCLUSAO = "Inclusão de Programa";
 	private static final String CABECALHO_ALTERACAO = "Alteração de Programa";
 	private static final Integer VALOR_MAXIMO_IDADE = 130;
+	private static final String MENSAGEM_AVISO_PROCEDIMENTO_PROFISSIONAL_EQUIPE = 
+			"Está opção só está disponível após o cadastro do programa";
 
 	public ProgramaController() {
 		this.prog = new ProgramaBean();
@@ -106,6 +112,7 @@ public class ProgramaController implements Serializable {
 			this.prog = pDao.listarProgramaPorId(id);
 		} else {
 			tipo = Integer.parseInt(params.get("tipo"));
+			JSFUtil.adicionarMensagemAdvertencia(MENSAGEM_AVISO_PROCEDIMENTO_PROFISSIONAL_EQUIPE, "");
 		}
 
 	}
@@ -219,9 +226,11 @@ public class ProgramaController implements Serializable {
 		return cabecalho;
 	}
 
-	public void listarProcedimentosIhCbos() throws ProjetoException {
+	public void listarDadosProcedimentosEspecificos() throws ProjetoException {
 		listarProcedimentos();
 		listarCbo();
+		listarProfissionais();
+		listarEquipeDosGrupos();
 	}
 
 	private void listarProcedimentos() throws ProjetoException {
@@ -230,6 +239,18 @@ public class ProgramaController implements Serializable {
 
 	private void listarCbo() throws ProjetoException {
 		this.listaCbos = this.cboDAO.listarCbo();
+	}
+	
+	private void listarProfissionais() throws ProjetoException {
+		this.listaProfissional = new FuncionarioDAO().listarTodosOsProfissional();
+	}
+	
+	private void listarEquipeDosGrupos() throws ProjetoException {
+		List<GrupoBean> listaGrupo = new ArrayList<>();
+		for (BuscaGrupoFrequenciaDTO grupo : prog.getListaGrupoFrequenciaDTO()) {
+			listaGrupo.add(grupo.getGrupo());
+		}
+		this.listaEquipe = new EquipeDAO().listarEquipePorGrupo(listaGrupo);
 	}
 
 	public void limparProcedimentoIhCboSelecionado() {
@@ -274,6 +295,15 @@ public class ProgramaController implements Serializable {
 	public void removerProcedimentoProfissionalEquipeEspecifico(ProcedimentoProfissionalEquipeEspecificoDTO procedimentoProfissionalEquipeEspecifico) {
 		this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO().remove(procedimentoProfissionalEquipeEspecifico);
 	}
+	
+	public void selecionarProfissional(FuncionarioBean funcionario) {
+		this.profissionalSelecionado = funcionario;
+	}
+	
+	public void selecionarEquipe(EquipeBean equipe) {
+		this.equipeSelecionada = equipe;
+	}
+	//TODO
 
 	public void validaFrequencia() {
 		if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.buscaGrupoFrequenciaDTO.getFrequencia()))
@@ -682,4 +712,21 @@ public class ProgramaController implements Serializable {
 	public void setEquipeSelecionada(EquipeBean equipeSelecionada) {
 		this.equipeSelecionada = equipeSelecionada;
 	}
+
+	public List<FuncionarioBean> getListaProfissional() {
+		return listaProfissional;
+	}
+
+	public void setListaProfissional(List<FuncionarioBean> listaProfissional) {
+		this.listaProfissional = listaProfissional;
+	}
+
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
+	
 }

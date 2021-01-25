@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 import javax.faces.context.FacesContext;
@@ -1205,6 +1206,46 @@ public class EquipeDAO {
 			conAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
+        return lista;
+    }
+    
+    public List<EquipeBean> listarEquipePorGrupo(List<GrupoBean> listaGrupo) throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno from hosp.equipe e "
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where e.ativo = true and eg.id_grupo = ? order by descequipe ";
+
+        List<Integer> idEquipes = new ArrayList<>();
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            
+            for (GrupoBean grupo : listaGrupo) {
+            	stm.setInt(1, grupo.getIdGrupo());
+            	ResultSet rs = stm.executeQuery();
+            	
+            	while (rs.next()) {
+            		if(!idEquipes.contains(rs.getInt("id_equipe"))) {
+						EquipeBean equipe = new EquipeBean();
+						equipe.setCodEquipe(rs.getInt("id_equipe"));
+						equipe.setDescEquipe(rs.getString("descequipe"));
+						equipe.setTurno(rs.getString("turno"));
+
+						lista.add(equipe);
+            		}
+            	}
+			}
+            
+        } catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         return lista;
     }
     
