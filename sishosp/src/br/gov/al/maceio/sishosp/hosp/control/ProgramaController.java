@@ -303,6 +303,32 @@ public class ProgramaController implements Serializable {
 	public void selecionarEquipe(EquipeBean equipe) {
 		this.equipeSelecionada = equipe;
 	}
+	
+	public void adicionarProcedimentoProfissionalEquipeEspecifico() {
+		ProcedimentoProfissionalEquipeEspecificoDTO procedimentoProfissionalEquipeEspecificoDTO
+			= new ProcedimentoProfissionalEquipeEspecificoDTO();
+		procedimentoProfissionalEquipeEspecificoDTO.setProcedimento(this.procedimentoSelecionado);
+		procedimentoProfissionalEquipeEspecificoDTO.setProfissional(this.profissionalSelecionado);
+		procedimentoProfissionalEquipeEspecificoDTO.setEquipe(this.equipeSelecionada);
+
+		if(!existeProcedimentoEspecificoParaProfissionalEquipe(procedimentoProfissionalEquipeEspecificoDTO)
+				&& !existeProcedimentoPadrao(procedimentoProfissionalEquipeEspecificoDTO.getProcedimento())
+				&& !existeProcedimentoPermitido(procedimentoProfissionalEquipeEspecificoDTO.getProcedimento())) {
+			this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO().add(procedimentoProfissionalEquipeEspecificoDTO);
+			JSFUtil.fecharDialog("dlgConsulProcProfEquipe");
+		}
+	}
+	
+	private boolean existeProcedimentoEspecificoParaProfissionalEquipe(ProcedimentoProfissionalEquipeEspecificoDTO profissionalEquipe) {
+		for (ProcedimentoProfissionalEquipeEspecificoDTO dto : this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO()) {
+			if(dto.getProfissional().getId().equals(profissionalEquipe.getProfissional().getId())
+					&& dto.getEquipe().getCodEquipe().equals(profissionalEquipe.getEquipe().getCodEquipe())) {
+				JSFUtil.adicionarMensagemErro("Já existe um procedimento especifico para o profissional e equipe", "Erro");
+				return true;
+			}
+		}
+		return false; 
+	}
 	//TODO
 
 	public void validaFrequencia() {

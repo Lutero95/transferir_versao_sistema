@@ -726,7 +726,7 @@
 										icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
 										title="Selecionar" update="formConsulProcProfEquipe"
 										style="margin-left:30%;"
-										class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'acao-editar' : ''}" />
+										class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.codProc == proc.codProc ? 'acao-editar' : ''}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
@@ -787,8 +787,9 @@
                 <div align="center">
                 	<p:commandButton value="Incluir" 
                 	update=":frmPrincipal:tab:tabProcCbo :msgPagina" immediate="true"
-                	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
-                	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
+                	action="#{ProgramaController.adicionarProcedimentoProfissionalEquipeEspecifico()}"
+                	disabled="#{ProgramaController.procedimentoSelecionado.idProc == null or 
+                	ProgramaController.profissionalSelecionado.id == null or ProgramaController.equipeSelecionada.codEquipe == null }"/>
                 </div>
             </h:form>
         </p:dialog>
