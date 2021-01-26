@@ -55,13 +55,17 @@
 						</b:row>
 
 						<b:row>
-
 							<b:column span="5" class="label-position">
 								<b:label value="Senha " severity="info" />
 
 								<b:inputSecret required="true"
 											   requiredMessage="Senha: Campo obrigatório!"
-											   value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
+											   value="#{MBFuncionarios.profissional.senha}"
+											   readonly="#{MBFuncionarios.tipo==2}"/>
+
+								<b:label value="Para alterar senha acessa a opção na tela 'Definir Nova Senha'"
+									rendered="#{MBFuncionarios.tipo==2}"
+									style="float: left !important;"/>
 							</b:column>
 
 							<b:column span="3" class="label-position">
@@ -72,7 +76,6 @@
 									<f:selectItem itemLabel="NÃO" itemValue="N" />
 								</b:selectOneMenu>
 							</b:column>
-
 						</b:row>
 
 						<b:row>

@@ -1628,7 +1628,7 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
+				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=? "
 				+ " where id_funcionario = ?";
 
@@ -1670,13 +1670,12 @@ public class FuncionarioDAO {
 			stmt.setBoolean(7, profissional.getRealizaLiberacoes());
 			stmt.setBoolean(8, profissional.getRealizaAtendimento());
 			stmt.setBoolean(9, profissional.getRealizaEncaixes());
-			stmt.setString(10, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
-			stmt.setString(11, profissional.getCpf().replaceAll("[^0-9]", ""));
-			stmt.setLong(12, profissional.getUnidade().getId());
-			stmt.setBoolean(13, profissional.getExcecaoBloqueioHorario());
-			stmt.setBoolean(14, profissional.getPermiteAutorizacaoLaudo());
-			stmt.setBoolean(15, profissional.getRealizaAuditoria());
-			stmt.setLong(16, profissional.getId());
+			stmt.setString(10, profissional.getCpf().replaceAll("[^0-9]", ""));
+			stmt.setLong(11, profissional.getUnidade().getId());
+			stmt.setBoolean(12, profissional.getExcecaoBloqueioHorario());
+			stmt.setBoolean(13, profissional.getPermiteAutorizacaoLaudo());
+			stmt.setBoolean(14, profissional.getRealizaAuditoria());
+			stmt.setLong(15, profissional.getId());
 
 			stmt.executeUpdate();
 
