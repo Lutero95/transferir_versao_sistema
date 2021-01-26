@@ -1431,14 +1431,14 @@ public class FuncionarioDAO {
 		String sql = " select distinct a.* from ( select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, funcionarios.ativo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" +
-				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade =? AND realiza_atendimento IS TRUE " +
+				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.ativo='S' and funcionarios.codunidade =? AND realiza_atendimento IS TRUE " +
 				"union all\n" +
 				" select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, funcionarios.ativo, \n" +
 				" codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
 				" from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade \n" +
 				"left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao \n" +
 				"join hosp.funcionario_unidades fu on fu.cod_funcionario = funcionarios.id_funcionario\n" +
-				"where  fu.cod_unidade=?  AND realiza_atendimento IS TRUE " +
+				"where  funcionarios.ativo='S' and fu.cod_unidade=?  AND realiza_atendimento IS TRUE " +
 				" ) a order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
