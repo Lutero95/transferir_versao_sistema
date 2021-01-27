@@ -1876,18 +1876,18 @@ public class FuncionarioDAO {
 		Connection conexaoPublica = null;
 
 		Boolean retorno = false;
-		String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? , cpf=? WHERE id_funcionario = ? and banco_acesso=?";
+		String sql = "UPDATE acl.funcionarios SET ativo = ? , descfuncionario=? , cpf=? WHERE id_funcionario = ? and banco_acesso=?";
 
 		try {
 			conexaoPublica = ConnectionFactoryPublico.getConnection();
 			PreparedStatement stmt = conexaoPublica.prepareStatement(sql);
 
-			stmt.setString(1, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
-			stmt.setString(2, profissional.getAtivo().toUpperCase());
-			stmt.setString(3, profissional.getNome());
-			stmt.setString(4, profissional.getCpf().replaceAll("[^0-9]", ""));
-			stmt.setLong(5, profissional.getId());
-			stmt.setString(6, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+			//stmt.setString(1, BancoUtil.obterSenhaCriptografada(profissional.getSenha()));
+			stmt.setString(1, profissional.getAtivo().toUpperCase());
+			stmt.setString(2, profissional.getNome());
+			stmt.setString(3, profissional.getCpf().replaceAll("[^0-9]", ""));
+			stmt.setLong(4, profissional.getId());
+			stmt.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 
 			stmt.executeUpdate();
 
