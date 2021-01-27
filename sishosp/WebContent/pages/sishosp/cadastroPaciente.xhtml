@@ -314,16 +314,29 @@
 					<p:tab title="Endereço">
 						<b:row>
 							<b:column span="2" class="label-position">
-								<b:label for="inputcep" value="CEP" severity="info" />
+								<b:label value="CEP" severity="info" />
 								<span style="color: red; font-size: 20px; font-weight: bold">*</span>
 
 								<p:inputMask mask="99999-999" id="inputcep"
 									value="#{PacienteController.paciente.endereco.cep}"
 									class="form-control select-agendaEquipe2" required="true"
-									requiredMessage="CEP: Campo obrigatório!">
+									requiredMessage="CEP: Campo obrigatório!"
+									rendered="#{PacienteController.buscaAutomaticaCep == true}">
 									<p:ajax listener="#{PacienteController.encontraCEP()}" 
 									update="inputcep inputrua estado outMunicipios outBairro :msgPagina"/>
 								</p:inputMask>
+
+								<p:outputPanel rendered="#{PacienteController.buscaAutomaticaCep == false}">
+									<p:inputMask mask="99999-999" id="inputcep2"
+										value="#{PacienteController.paciente.endereco.cep}"
+										class="select-agendaEquipe2" required="true"
+										requiredMessage="CEP: Campo obrigatório!"
+										style="width: 55%;"/>
+
+									<p:commandButton icon="ui-icon-search"
+										actionListener="#{PacienteController.encontraCEP()}"
+										update="inputcep2 inputrua estado outMunicipios outBairro :msgPagina"/>
+								</p:outputPanel>
 							</b:column>
 
 							<b:column span="2" class="label-position">

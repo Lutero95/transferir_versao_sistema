@@ -70,6 +70,7 @@ public class PacienteController implements Serializable {
 	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 	private boolean cpfObrigatorio;
+	private boolean buscaAutomaticaCep;
 
 	// LISTAS
 	private List<PacienteBean> listaPacientes;
@@ -109,6 +110,7 @@ public class PacienteController implements Serializable {
 		SessionUtil.removerDaSessao("paramIdPaciente");
 		enderecoController = new EnderecoController();
 		cpfObrigatorio = user_session.getUnidade().getParametro().isCpfPacienteObrigatorio();
+		buscaAutomaticaCep = user_session.getUnidade().getParametro().isBuscaAutomaticaCepPaciente();
 		listaTelefonesAdicionados = new ArrayList<>();
 		listaTelefonesExcluidos = new ArrayList<>();
 	}
@@ -739,5 +741,9 @@ public class PacienteController implements Serializable {
 
 	public void setCpfObrigatorio(boolean cpfObrigatorio) {
 		this.cpfObrigatorio = cpfObrigatorio;
+	}
+
+	public boolean isBuscaAutomaticaCep() {
+		return buscaAutomaticaCep;
 	}
 }

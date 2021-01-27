@@ -49,6 +49,7 @@ public class ParametroBean implements Serializable {
     private Integer diasPacienteAtivoSemEvolucao;
     private boolean verificaPeriodoInicialEvolucaoPrograma;
     private Date inicioEvolucaoUnidade;
+    private boolean buscaAutomaticaCepPaciente;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -397,4 +398,13 @@ public class ParametroBean implements Serializable {
     public void setInicioEvolucaoUnidade(Date inicioEvolucaoUnidade) {
         this.inicioEvolucaoUnidade = inicioEvolucaoUnidade;
     }
+
+	public boolean isBuscaAutomaticaCepPaciente() {
+		return buscaAutomaticaCepPaciente;
+	}
+
+	public void setBuscaAutomaticaCepPaciente(boolean buscaAutomaticaCepPaciente) {
+		this.buscaAutomaticaCepPaciente = buscaAutomaticaCepPaciente;
+	}
+    
 }
