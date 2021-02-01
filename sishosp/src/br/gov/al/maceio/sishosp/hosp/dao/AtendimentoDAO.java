@@ -1205,7 +1205,7 @@ public class AtendimentoDAO {
 				+ "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) "
 				+ "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) "
 				+ "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) "
-				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? and a1.codprofissionalatendimento = ?  "
+				+ "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ?    "
 				+ "and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' and p.ativo = 'S' "
 				+ "ORDER BY a.dtaatende DESC ";
 
@@ -1215,7 +1215,7 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
-			stm.setLong(2, user_session.getId());
+		//	stm.setLong(2, user_session.getId());
 
 			ResultSet rs = stm.executeQuery();
 
