@@ -101,20 +101,17 @@ public class ProgramaController implements Serializable {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
-
-	public void getEditProg() throws ProjetoException {
+	public void getEditaPrograma() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
+		tipo = Integer.parseInt(params.get("tipo"));
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
 			this.prog = pDao.listarProgramaPorId(id);
 		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
 			JSFUtil.adicionarMensagemAdvertencia(MENSAGEM_AVISO_PROCEDIMENTO_PROFISSIONAL_EQUIPE, "");
 		}
-
 	}
 
 	private void limparDados() throws ProjetoException {

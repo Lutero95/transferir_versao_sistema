@@ -3196,15 +3196,25 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return idCid;
     }
 
-    public Integer retornaIdProcedimentoEspecifico(Integer idPrograma, List<CboBean> listaCbo, Integer idPaciente, Integer idGrupo, Connection conAuxiliar) throws ProjetoException, SQLException {
+    public Integer retornaIdProcedimentoEspecifico
+    		(Integer idPrograma, List<CboBean> listaCbo, Integer idPaciente, 
+    		Integer idGrupo, Integer idEquipe, Long idFuncionario, Connection conAuxiliar) 
+    		throws ProjetoException, SQLException {
+    	
         Integer idProcedimentoEspecifico = null;
         try {
-            for (CboBean cbo : listaCbo) {
-                idProcedimentoEspecifico = retornaIdProcedimentoCboEspecifico(idPrograma, cbo.getCodCbo(), conAuxiliar);
-                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
-                    return idProcedimentoEspecifico;
-                }
-            }
+        	
+        	idProcedimentoEspecifico = retornaIdProcedimentoEspecificoProfissionalEquipe(idFuncionario, idPrograma, idEquipe, conAuxiliar);
+        	
+        	if (VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
+				for (CboBean cbo : listaCbo) {
+					idProcedimentoEspecifico = retornaIdProcedimentoCboEspecifico(idPrograma, cbo.getCodCbo(),
+							conAuxiliar);
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
+						return idProcedimentoEspecifico;
+					}
+				}
+        	}
 
             if (VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico)) {
                 idProcedimentoEspecifico = retornaIdProcedimentoIdadeEspecifica(idPrograma, idPaciente, conAuxiliar);
@@ -3219,10 +3229,44 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             conAuxiliar.rollback();
             throw new ProjetoException(ex, this.getClass().getName());
         }
-
         return idProcedimentoEspecifico;
     }
 
+    private Integer retornaIdProcedimentoEspecificoProfissionalEquipe 
+    	(Long idFuncionario, Integer idPrograma, Integer idEquipe, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+        Integer idProcedimento = null;
+
+        String sql = "select pppe.id_procedimento from hosp.programa_procedimento_profissional_equipe pppe " + 
+        			"	where pppe.id_funcionario = ? and pppe.id_programa = ?" + 
+        			"	and pppe.id_equipe = ?;";
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setLong(1, idFuncionario);
+            stm.setInt(2, idPrograma);
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(idEquipe))
+            	stm.setNull(3, Types.NULL);
+            else
+            	stm.setInt(3, idEquipe);
+
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                idProcedimento = rs.getInt("id_procedimento");
+            }
+
+        } catch (SQLException ex2) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return idProcedimento;
+    }
 
     private Integer retornaIdProcedimentoCboEspecifico(Integer idPrograma, Integer idCbo, Connection conAuxiliar)
             throws ProjetoException, SQLException {
@@ -3428,8 +3472,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                         .listaCbosProfissionalComMesmaConexao(funcionario.getId(), conexao);
 
                 idProcedimentoEspecifico = retornaIdProcedimentoEspecifico(agenda.getPrograma().getIdPrograma(),
-                        listaCbosProfissional, idPaciente, agenda.getGrupo().getIdGrupo(),
-                        conexao);
+                        listaCbosProfissional, idPaciente, agenda.getGrupo().getIdGrupo(), agenda.getEquipe().getCodEquipe(),
+                        funcionario.getId(), conexao);
             }
             else {
                 idProcedimentoEspecifico = agenda.getProcedimento().getIdProc();

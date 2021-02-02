@@ -303,7 +303,8 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
-												listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), conexao);
+												listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), 
+												insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
@@ -672,7 +673,8 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
-												insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+												insercao.getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(),
+												insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
@@ -957,7 +959,8 @@ public class AlteracaoPacienteDAO {
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
-												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+												insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(),
+												insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
@@ -1093,7 +1096,8 @@ public class AlteracaoPacienteDAO {
 				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
-								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+								insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), 
+								insercao.getEquipe().getCodEquipe(), insercao.getFuncionario().getId(), conexao);
 				
 				if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 					idProcedimentoEspecifico = insercao.getFuncionario().getProc1().getIdProc();

@@ -9,7 +9,7 @@
     <ui:define name="content">
 
         <f:metadata>
-            <f:viewAction action="#{ProgramaController.getEditProg()}"/>
+            <f:viewAction action="#{ProgramaController.getEditaPrograma()}"/>
             <f:viewAction action="#{ProgramaController.listarDadosProcedimentosEspecificos()}"/>
             <f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
         </f:metadata>
@@ -294,7 +294,7 @@
 					<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProcOcup" 
+							update=":msgPagina :formConsulProcProfEquipe" 
 							class="btn-acao-table acao-editar"
 							process="@this"
 							actionListener="#{ProgramaController.limparProcedimentoProfissionalIhEquipeSelecionado()}"
@@ -322,7 +322,7 @@
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoProfissionalEquipeEspecifico(procEsp)}"
-                                	title="Remover" update="frmPrincipal:tab:tabProcCbo"
+                                	title="Remover" update="frmPrincipal:tab:tabProcEqui"
                                 	style="margin-left:28%;" process="@this" immediate="true"
                                 	class="new-btn-acao-table acao-excluir"/>
 							</p:column>
@@ -726,7 +726,7 @@
 										icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
 										title="Selecionar" update="formConsulProcProfEquipe"
 										style="margin-left:30%;"
-										class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.codProc == proc.codProc ? 'acao-editar' : ''}" />
+										class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'acao-editar' : ''}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
@@ -740,10 +740,6 @@
 								rows="5" paginatorPosition="bottom">
 								<p:column filterBy="#{prof.nome}" footerText="contains"
 									filterMatchMode="contains" headerText="Profissional">
-									<h:outputText value="#{prof.nome}" />
-								</p:column>
-
-								<p:column headerText="Nome" width="100">
 									<h:outputText value="#{prof.nome}" />
 								</p:column>
 
@@ -786,7 +782,7 @@
                 <br />
                 <div align="center">
                 	<p:commandButton value="Incluir" 
-                	update=":frmPrincipal:tab:tabProcCbo :msgPagina" immediate="true"
+                	update=":frmPrincipal:tab:tabProcEqui :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoProfissionalEquipeEspecifico()}"
                 	disabled="#{ProgramaController.procedimentoSelecionado.idProc == null or 
                 	ProgramaController.profissionalSelecionado.id == null or ProgramaController.equipeSelecionada.codEquipe == null }"/>
