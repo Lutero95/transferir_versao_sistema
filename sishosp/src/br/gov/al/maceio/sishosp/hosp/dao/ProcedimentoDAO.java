@@ -1663,6 +1663,43 @@ public class ProcedimentoDAO {
         }
         return houveCargaDoSigtap;
     }
+    
+    public Boolean cargaSigtapEstaAtualizada(Integer mes, Integer ano, List<ProcedimentoBean> listaProcedimentos) throws ProjetoException {
+
+        String sql = "select exists (select p.codproc from hosp.proc p " + 
+        		" join sigtap.procedimento_mensal pm on p.id = pm.id_procedimento " + 
+        		" join sigtap.historico_consumo_sigtap hcs on pm.id_historico_consumo_sigtap = hcs.id " + 
+        		" where p.ativo = 'S' and hcs.ano = ? and hcs.mes = ? and p.codproc = ?) existe;";
+
+        Boolean existe = false;
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            for (ProcedimentoBean procedimento : listaProcedimentos) {
+            	stm.setInt(1, mes);
+            	stm.setInt(2, ano);
+            	stm.setString(3, procedimento.getCodProc());
+            	ResultSet rs = stm.executeQuery();
+            	if (rs.next()) {
+            		existe = rs.getBoolean("existe");
+            		if(!existe)
+            			break;
+            	}
+			}
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return existe;
+    }
 
     public List<HistoricoSigtapBean> listaHistoricoCargasDoSigtap() throws ProjetoException {
 

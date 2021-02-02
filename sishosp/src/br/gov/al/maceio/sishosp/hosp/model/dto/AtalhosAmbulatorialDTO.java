@@ -1,8 +1,11 @@
 package br.gov.al.maceio.sishosp.hosp.model.dto;
 
-public class AtalhosAmbulatorialDTO {
+import java.io.Serializable;
 
-    private Boolean atalhoCadastroPaciente;
+public class AtalhosAmbulatorialDTO implements Serializable{
+
+	private static final long serialVersionUID = -1989856517766313077L;
+	private Boolean atalhoCadastroPaciente;
     private Boolean atalhoInsercaoPaciente;
     private Boolean atalhoLaudo;
     private Boolean atalhoAgenda;

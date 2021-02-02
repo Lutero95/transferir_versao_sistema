@@ -1,7 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class InstrumentoRegistroBean {
+import java.io.Serializable;
+
+public class InstrumentoRegistroBean implements Serializable{
 	
+	private static final long serialVersionUID = -7805518124764340389L;
 	private Integer id;
 	private String codigo;
 	private String nome;

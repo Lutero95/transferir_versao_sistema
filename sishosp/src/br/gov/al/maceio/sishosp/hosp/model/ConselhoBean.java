@@ -1,10 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConselhoBean {
+public class ConselhoBean implements Serializable{
 	
+	
+	private static final long serialVersionUID = 5974309651809465220L;
 	private Integer id;
 	private String descricao;
 	private List<CboBean> listaCbos;
