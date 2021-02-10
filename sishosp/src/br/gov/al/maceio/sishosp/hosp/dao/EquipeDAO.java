@@ -16,6 +16,9 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.GrupoProgramaUnidadeDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 import javax.faces.context.FacesContext;
@@ -1205,6 +1208,72 @@ public class EquipeDAO {
 			conAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
+        return lista;
+    }
+    
+    
+    public ArrayList<EquipeGrupoProgramaUnidadeDTO> buscaEquipesPorProgramas
+    	(List<GrupoProgramaUnidadeDTO> listaGrupoProgramaDTO) throws ProjetoException {
+        
+    	PreparedStatement ps = null;
+        con = ConnectionFactory.getConnection();
+
+        String sql = "select e.id_equipe, e.descequipe, g.id_grupo, g.descgrupo, p.id_programa, p.descprograma, u.id id_unidade, u.nome unidade " + 
+        		"from hosp.equipe e " + 
+        		"join hosp.equipe_grupo eg on e.id_equipe = eg.codequipe " + 
+        		"join hosp.grupo g on eg.id_grupo = g.id_grupo " + 
+        		"join hosp.grupo_programa gp on g.id_grupo = gp.codgrupo " + 
+        		"join hosp.programa p on gp.codprograma = p.id_programa " + 
+        		"join hosp.unidade u on g.cod_unidade = u.id " + 
+        		"where (g.id_grupo = ? and p.id_programa = ?)   ";
+        
+        String filtroUnidade = " or (g.id_grupo = ? and p.id_programa = ?) ";
+        String ordenacao = " order by e.descequipe;";
+        
+        for (int i = 1; i < listaGrupoProgramaDTO.size(); i++) {
+			sql += filtroUnidade;
+		}
+        sql += ordenacao;
+        
+        ArrayList<EquipeGrupoProgramaUnidadeDTO> lista = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, listaGrupoProgramaDTO.get(0).getGrupo().getIdGrupo());
+            ps.setInt(2, listaGrupoProgramaDTO.get(0).getPrograma().getIdPrograma());
+            int contador = 3;
+            
+            for (int i = 1; i < listaGrupoProgramaDTO.size(); i++) {
+    			ps.setInt(contador, listaGrupoProgramaDTO.get(i).getGrupo().getIdGrupo());
+    			contador++;
+    			ps.setInt(contador, listaGrupoProgramaDTO.get(i).getPrograma().getIdPrograma());
+    			contador++;
+    		}
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	EquipeGrupoProgramaUnidadeDTO equipeGrupoProgramaUnidadeDTO = new EquipeGrupoProgramaUnidadeDTO();
+            	equipeGrupoProgramaUnidadeDTO.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
+            	equipeGrupoProgramaUnidadeDTO.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                equipeGrupoProgramaUnidadeDTO.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
+                equipeGrupoProgramaUnidadeDTO.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                equipeGrupoProgramaUnidadeDTO.getPrograma().setIdPrograma(rs.getInt("id_programa"));
+                equipeGrupoProgramaUnidadeDTO.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                equipeGrupoProgramaUnidadeDTO.getUnidade().setId(rs.getInt("id_unidade"));
+                equipeGrupoProgramaUnidadeDTO.getUnidade().setNomeUnidade(rs.getString("unidade"));
+                lista.add(equipeGrupoProgramaUnidadeDTO);
+            }
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         return lista;
     }
     

@@ -42,6 +42,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GrupoProgramaUnidadeDTO;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -74,6 +75,8 @@ public class RelatoriosController implements Serializable {
 	private List<ProgramaBean> listaProgramaSelecionados;
 	private List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTO;
 	private List<GrupoProgramaUnidadeDTO> listaGruposProgramaUnidadeDTOSelecionados;
+	private List<EquipeGrupoProgramaUnidadeDTO> listaEquipeGruposProgramaUnidadeDTO;
+	private List<EquipeGrupoProgramaUnidadeDTO> listaEquipeGruposProgramaUnidadeDTOSelecionados;
 	private List<EquipeBean> listaEquipe;
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
@@ -146,6 +149,8 @@ public class RelatoriosController implements Serializable {
 		this.listaProgramaSelecionados = new ArrayList<>();
 		this.listaGruposProgramaUnidadeDTO = new ArrayList<>();
 		this.listaGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
+		this.listaEquipeGruposProgramaUnidadeDTO = new ArrayList<>();
+		this.listaEquipeGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -575,7 +580,53 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void removerGrupoPorProgramaUnidadeAdicionado(GrupoProgramaUnidadeDTO grupoSelecionado) {
-		listaGruposProgramaUnidadeDTOSelecionados.remove(grupoSelecionado);
+		if(!existemEquipesAssociadasComEsseGrupo(grupoSelecionado.getGrupo().getIdGrupo()))
+			listaGruposProgramaUnidadeDTOSelecionados.remove(grupoSelecionado);
+	}
+	
+	private boolean existemEquipesAssociadasComEsseGrupo(Integer idGrupo) {
+
+		for (EquipeGrupoProgramaUnidadeDTO equipeGrupoProgramaUnidadeDTO : listaEquipeGruposProgramaUnidadeDTOSelecionados) {
+			if(equipeGrupoProgramaUnidadeDTO.getGrupo().getIdGrupo().equals(idGrupo)) {
+				JSFUtil.adicionarMensagemErro
+						("Existe(m) equipes associadas a este grupo por favor remove-a(s) primeiro", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void listarEquipeGruposPorProgramasUnidades() throws ProjetoException {
+		listaEquipeGruposProgramaUnidadeDTO = new EquipeDAO().buscaEquipesPorProgramas(listaGruposProgramaUnidadeDTOSelecionados);
+		JSFUtil.abrirDialog("dlgConsuEquipe");
+	}
+	
+	public void adicionarTodasEquipesGrupoPorProgramaUnidadeSelecionados() {
+		listaEquipeGruposProgramaUnidadeDTOSelecionados.clear();
+		listaEquipeGruposProgramaUnidadeDTOSelecionados.addAll(listaEquipeGruposProgramaUnidadeDTO);
+		JSFUtil.fecharDialog("dlgConsuEquipe");
+	}
+	
+	public void adicionarEquipeGrupoPorProgramaUnidadeSelecionada(EquipeGrupoProgramaUnidadeDTO equipeSelecionada) {
+		if(!equipeGrupoPorProgramaUnidadeJaFoiAdicionada(equipeSelecionada)) {
+			listaEquipeGruposProgramaUnidadeDTOSelecionados.add(equipeSelecionada);
+			JSFUtil.fecharDialog("dlgConsuEquipe");
+		}
+	}
+	
+	private boolean equipeGrupoPorProgramaUnidadeJaFoiAdicionada(EquipeGrupoProgramaUnidadeDTO equipeSelecionada) {
+		for (EquipeGrupoProgramaUnidadeDTO equipeDTO : listaEquipeGruposProgramaUnidadeDTOSelecionados) {
+			if(equipeDTO.getGrupo().getIdGrupo().equals(equipeSelecionada.getGrupo().getIdGrupo())
+					&& equipeDTO.getEquipe().getCodEquipe().equals(equipeSelecionada.getEquipe().getCodEquipe())) {
+				JSFUtil.adicionarMensagemErro("Esta Equipe Já foi Adicionada", "");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void removerEquipeGrupoPorProgramaUnidadeAdicionado(EquipeGrupoProgramaUnidadeDTO equipeSelecionada) {
+		listaEquipeGruposProgramaUnidadeDTOSelecionados.remove(equipeSelecionada);
 	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
@@ -2103,4 +2154,21 @@ public class RelatoriosController implements Serializable {
 		this.agruparPorUnidade = agruparPorUnidade;
 	}
 
+	public List<EquipeGrupoProgramaUnidadeDTO> getListaEquipeGruposProgramaUnidadeDTOSelecionados() {
+		return listaEquipeGruposProgramaUnidadeDTOSelecionados;
+	}
+
+	public void setListaEquipeGruposProgramaUnidadeDTOSelecionados(
+			List<EquipeGrupoProgramaUnidadeDTO> listaEquipeGruposProgramaUnidadeDTOSelecionados) {
+		this.listaEquipeGruposProgramaUnidadeDTOSelecionados = listaEquipeGruposProgramaUnidadeDTOSelecionados;
+	}
+
+	public List<EquipeGrupoProgramaUnidadeDTO> getListaEquipeGruposProgramaUnidadeDTO() {
+		return listaEquipeGruposProgramaUnidadeDTO;
+	}
+
+	public void setListaEquipeGruposProgramaUnidadeDTO(
+			List<EquipeGrupoProgramaUnidadeDTO> listaEquipeGruposProgramaUnidadeDTO) {
+		this.listaEquipeGruposProgramaUnidadeDTO = listaEquipeGruposProgramaUnidadeDTO;
+	}
 }
