@@ -611,7 +611,8 @@ public class BpaController implements Serializable {
 
 			}
 			
-			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
+			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0))
+			{
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
 				adicionarLinhasBpaIndividualizado();

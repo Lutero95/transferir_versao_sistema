@@ -1046,11 +1046,17 @@ public class LaudoDAO {
                 String unidadeIdadeMaxima = rs.getString("unidade_idade_maxima");
 
                 if(VerificadorUtil.verificarSeObjetoNuloOuVazio(unidadeIdadeMinima)) {
+                    if (rs.getInt("idade_minima")==9999)
+                        idadeMinima.setQuantidadeLimite(0);
+                                else
                     idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima")/12);
                     idadeMinima.setUnidadeLimite(UnidadeLimiteType.ANOS);
                 }
 
                 else if(unidadeIdadeMinima.equals(UnidadeLimiteType.MESES.name())) {
+                    if (rs.getInt("idade_minima")==9999)
+                        idadeMinima.setQuantidadeLimite(0);
+                    else
                     idadeMinima.setQuantidadeLimite(rs.getInt("idade_minima"));
                     idadeMinima.setUnidadeLimite(UnidadeLimiteType.MESES);
                 }

@@ -41,7 +41,7 @@ public class BpaConsolidadoDAO {
         		" cross join hosp.empresa emp " + 
         		" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N'" +
-        		" and a.dtaatende  between ? and ? " +  
+        		" and a.dtaatende  between ? and ?  and a.cod_unidade<>4 " +
         		" and ir.codigo = ? " + 
         		" and pm.competencia_atual = ? "+
         		"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  " ;
