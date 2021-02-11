@@ -463,16 +463,62 @@ public class AtendimentoController implements Serializable {
 			buscarDadosCidPorId();
 			validarCidSigtap();
 			validarProcedimentoCidsSecundariosSigtap();
-			boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento, palavrasChaveDivergentes);
-			if (alterou == true) {
-				JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
-				JSFUtil.fecharDialog("dlgPalavraChave");
-				return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
-			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
-				return null;
+			if(evolucaoAtendimentoEhPermitida(atendimento)) {
+				boolean alterou = atendimentoDAO.realizaAtendimentoProfissional(funcionario, atendimento,
+						palavrasChaveDivergentes);
+				if (alterou == true) {
+					JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
+					JSFUtil.fecharDialog("dlgPalavraChave");
+					return RedirecionarUtil.redirectPagina(ENDERECO_ATENDIMENTO_PROFISSIONAL);
+				} else {
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+					return null;
+				}
 			}
+			return null;
     	}
+    }
+    
+    private boolean evolucaoAtendimentoEhPermitida(AtendimentoBean atendimento) throws ProjetoException {
+    	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    			.getSessionMap().get("obj_usuario");
+    	
+    	if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
+    			&& !atendimentoDAO.verificaEvolucaoAtendimentoEhPermitida(atendimento)) {
+    		JSFUtil.adicionarMensagemAdvertencia
+    			("As configurações de evolução não permitem a evolução de atendimentos neste período", "");
+    		return false;
+    	}
+    	else if(!user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()
+    			&& atendimento.getDataAtendimento().before(user_session.getUnidade().getParametro().getInicioEvolucaoUnidade())) {
+    		JSFUtil.adicionarMensagemAdvertencia
+				("As configurações de evolução não permitem a evolução de atendimentos neste período", "");
+    		return false;    		
+    	}
+    	return true;
+    }
+    
+    private boolean evolucaoAtendimentoEhPermitida(List<AtendimentoBean> listaAtendimento) throws ProjetoException {
+    	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    			.getSessionMap().get("obj_usuario");
+    	
+    	for (AtendimentoBean atendimentoEquipe : listaAtendimento) {
+    		if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
+    				&& !atendimentoDAO.verificaEvolucaoAtendimentoEhPermitida(atendimentoEquipe)) {
+    			JSFUtil.adicionarMensagemAdvertencia
+    			("As configurações de evolução não permitem a evolução do atendimento do profissional "
+    			+atendimentoEquipe.getFuncionario().getNome()+" neste período", "");
+    			return false;
+    		}
+        	else if(!user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()
+        			&& atendimentoEquipe.getDataAtendimento().before(user_session.getUnidade().getParametro().getInicioEvolucaoUnidade())) {
+    			JSFUtil.adicionarMensagemAdvertencia
+    			("As configurações de evolução não permitem a evolução do atendimento do profissional "
+    			+atendimentoEquipe.getFuncionario().getNome()+" neste período", "");
+        		return false;    		
+        	}
+		}
+    	return true;
     }
 
 	private String retornaTextoEvolucaoSemVirgulaIhEspacoDuplo() {
@@ -500,11 +546,13 @@ public class AtendimentoController implements Serializable {
         try {
 
             if (VerificadorUtil.verificarSeObjetoNuloOuVazio(this.ehEquipe) || !this.ehEquipe.equalsIgnoreCase(SIM)) {
-                if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional
-                        (this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento)) {
-                    JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
-                    listarAtendimentosEquipe();
-                }
+            	if(evolucaoAtendimentoEhPermitida(atendimento)) {
+					if (atendimentoDAO.alteraSituacaoDeAtendimentoPorProfissional(
+							this.listAtendimentosEquipe.get(0).getSituacaoAtendimento().getId(), this.atendimento)) {
+						JSFUtil.adicionarMensagemSucesso("Situação de atendimento alterada com sucesso!", "Sucesso");
+						listarAtendimentosEquipe();
+					}
+            	}
             }
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
@@ -803,26 +851,27 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        //validarDadosSigtap();
+        
         validarDadosSigtapDeListaDeAtendimentos(listAtendimentosEquipe);
         
         if(!validarSeEhNecessarioInformarGrupo()) {
             if(!validarSeEhNecessarioInformarLaudo()) {
 
-				boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe,
-						atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-						atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir,
-						atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
-				if (alterou) {
-					getCarregaGerenciarAtendimentos();
-					JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
-				} else {
-					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+				if (evolucaoAtendimentoEhPermitida(listAtendimentosEquipe)) {
+					boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe,
+							atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+							atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir,
+							atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+					if (alterou) {
+						getCarregaGerenciarAtendimentos();
+						JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");
+					} else {
+						JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+					}
 				}
-            }
-            else{
-                JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
-            }
+            }  else {
+				JSFUtil.adicionarMensagemErro("Informe o Laudo da avaliação!", "Erro!");
+			}
         }
         else{
             JSFUtil.adicionarMensagemErro("Informe o grupo da avaliação!", "Erro!");

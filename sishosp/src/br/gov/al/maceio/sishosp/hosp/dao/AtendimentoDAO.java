@@ -1043,6 +1043,7 @@ public class AtendimentoDAO {
 			while (rs.next()) {
 				atendimento.setId(rs.getInt("id_atendimento"));
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
+				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimento.getPaciente().setNome(rs.getString("nome"));
@@ -2105,5 +2106,41 @@ public class AtendimentoDAO {
 			}
 		}
 		return possuiSituacaoAtendimento;
+	}
+	
+	public boolean verificaEvolucaoAtendimentoEhPermitida(AtendimentoBean atendimento) throws ProjetoException {
+
+		String sql = "select exists ( select conf.id from hosp.config_evolucao_unidade_programa_grupo conf " + 
+				"	where ? >= conf.inicio_evolucao " + 
+				"	and conf.codgrupo = ? and conf.codprograma = ? and conf.codunidade = ? ) ehPermitido";
+		
+		boolean ehPermitido = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setDate(1, new java.sql.Date(atendimento.getDataAtendimento().getTime()));
+			ps.setInt(2, atendimento.getGrupo().getIdGrupo());
+			ps.setInt(3, atendimento.getPrograma().getIdPrograma());
+			ps.setInt(4, user_session.getUnidade().getId());
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				ehPermitido = rs.getBoolean("ehPermitido");
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return ehPermitido;
 	}
 }
