@@ -40,54 +40,47 @@
 
 						<h:column>
 							<f:facet name="header">
-                            Nome
-                        </f:facet>
-
+    	                        Nome
+	                        </f:facet>
 							<h:outputText value="#{tab.nome}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                            Especialidade
-                        </f:facet>
-
+                            	Especialidade
+                        	</f:facet>
 							<h:outputText value="#{tab.especialidade.descEspecialidade}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-                            CNS
-                        </f:facet>
-
+                            	CNS
+                        	</f:facet>
 							<h:outputText value="#{tab.cns}" />
 						</h:column>
 
-
 						<h:column>
 							<f:facet name="header">
-                            Unidade
-                        </f:facet>
+                            	Unidade
+                        	</f:facet>
 							<h:outputText value="#{tab.unidade.nomeUnidade}" />
 						</h:column>
 
-
 						<h:column>
 							<f:facet name="header">
-                            Ativo
-                        </f:facet>
+                            	Ativo
+                        	</f:facet>
 
 							<h:outputText value="Sim" rendered="#{tab.ativo=='S'}" />
 							<h:outputText value="Não" rendered="#{tab.ativo=='N'}" />
 						</h:column>
 
-
-
 						<h:column>
 							<f:facet name="header">
-                            Ação
-                        </f:facet>
+                            	Ação
+                        	</f:facet>
 
-							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+							<p:commandButton title="Alterar" icon="ui-icon-pencil"
 								size="sm" class="btn-acao-table acao-editar"
 								action="#{MBFuncionarios.redirectEdit()}">
 								<f:setPropertyActionListener value="#{tab}"
@@ -97,11 +90,19 @@
 									target="#{MBFuncionarios.tipo}" />
 							</p:commandButton>
 
-							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+							<p:commandButton title="Excluir" icon="ui-icon-trash"
 								class="btn-acao-table acao-excluir" size="sm" ajax="true"
 								style="margin-left:10px"
 								oncomplete="PF('dialogExclusao').show()">
 
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{MBFuncionarios.profissional}" />
+							</p:commandButton>
+							
+							<p:commandButton title="Definir Nova Senha" icon="ui-icon-key"
+								size="sm" class="btn-acao-table acao-editar"
+								action="#{MBFuncionarios.limparNovaSenha()}"
+								style="margin-left:10px">
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{MBFuncionarios.profissional}" />
 							</p:commandButton>
@@ -119,7 +120,6 @@
 
 					<div class="alert alert-warning" role="alert">Deseja excluir
 						esse profissional?</div>
-
 				</h:panelGrid>
 
 				<div align="center">
@@ -131,9 +131,36 @@
 					<p:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="ui-icon-close" style="margin-left:5px;float:right;" />
-
 				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dialogAlteraSenha" modal="true" header="Definir Nova Senha"
+			resizable="false" width="300" showEffect="clip" hideEffect="clip">
 
+			<h:form id="formsenha">
+				<b:row>
+					<div style="width:90%; margin-left: 5%;">
+						<p:column rowspan="8" class="label-position">
+							<b:label value="Senha " severity="info" style="margin-left: 1%;"/>
+
+							<b:inputSecret required="true"
+								requiredMessage="Senha: Campo obrigatório!"
+								value="#{MBFuncionarios.novaSenha}" />
+						</p:column>
+					</div>
+				</b:row>
+
+				<div align="center">
+					<p:separator />
+					<p:commandButton look="success" value="Salvar" style="float:left;"
+						class="btn-sim" action="#{MBFuncionarios.gravarNovaSenha()}"
+						icon="ui-icon-check" update=":formsenha :msgPagina" />
+
+					<p:commandButton value="Cancelar" class="btn-nao"
+						oncomplete="PF('dialogAlteraSenha').hide();" look="info" ajax="true"
+						icon="ui-icon-close" style="margin-left:5px;float:right;" />
+				</div>
 			</h:form>
 		</p:dialog>
 

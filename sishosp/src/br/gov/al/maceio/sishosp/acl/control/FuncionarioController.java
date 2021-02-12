@@ -68,6 +68,7 @@ public class FuncionarioController implements Serializable {
 	private List<UnidadeBean> listaUnidadesDoUsuario;
 	private UnidadeBean unidadeParaProgramasIhGrupos;
 	private List<CboBean> listaCbos;
+	private String novaSenha;
 	
 
 	// SESSÃO
@@ -1199,6 +1200,22 @@ public class FuncionarioController implements Serializable {
 		return false;
 	}
 	
+	public void limparNovaSenha() {
+		this.novaSenha = new String();
+		JSFUtil.abrirDialog("dialogAlteraSenha");
+	}
+	
+	public void gravarNovaSenha() throws ProjetoException {
+		boolean gravou = fDao.gravarNovaSenhaProfissional(this.profissional.getId(), this.novaSenha);
+		if(gravou) {
+			JSFUtil.adicionarMensagemSucesso("Senha Alterada com Sucesso", "");
+			this.novaSenha = new String();
+			JSFUtil.fecharDialog("dialogAlteraSenha");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro na alteração da senha", "");
+		}
+	}
+	
 	public void removerCbo(CboBean cboSelecionado) {
 		this.profissional.getListaCbos().remove(cboSelecionado);
 	}
@@ -1731,5 +1748,13 @@ public class FuncionarioController implements Serializable {
 
 	public void setListaCbos(List<CboBean> listaCbos) {
 		this.listaCbos = listaCbos;
+	}
+
+	public String getNovaSenha() {
+		return novaSenha;
+	}
+
+	public void setNovaSenha(String novaSenha) {
+		this.novaSenha = novaSenha;
 	}
 }

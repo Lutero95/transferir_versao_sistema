@@ -2778,4 +2778,71 @@ public class FuncionarioDAO {
 		}
 		return profissional;
 	}
+	
+	public boolean gravarNovaSenhaProfissional(Long idProfissional, String novaSenha)
+			throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql = "UPDATE acl.funcionarios SET senha= ? WHERE id_funcionario = ?;";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+
+			ps.setString(1, BancoUtil.obterSenhaCriptografada(novaSenha));
+			ps.setLong(2, idProfissional);
+			ps.executeUpdate();
+
+			retorno = gravarNovaSenhaProfissionalBancoPublico(idProfissional, novaSenha);
+
+			if (retorno) {
+				con.commit();
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+	
+	private boolean gravarNovaSenhaProfissionalBancoPublico(Long idProfissional, String novaSenha) throws ProjetoException {
+
+		Boolean retorno = false;
+		Connection conexaoPublica = null;
+
+		String sql = "UPDATE acl.funcionarios SET senha= ? WHERE id_funcionario = ? and banco_acesso = ?;";
+		
+		try {
+			conexaoPublica = ConnectionFactoryPublico.getConnection();
+			PreparedStatement ps = conexaoPublica.prepareStatement(sql);
+
+			ps.setString(1, BancoUtil.obterSenhaCriptografada(novaSenha));
+			ps.setLong(2, idProfissional);
+			ps.setString(3, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+			ps.executeUpdate();
+
+			conexaoPublica.commit();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexaoPublica.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
 }
