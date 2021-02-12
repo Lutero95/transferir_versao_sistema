@@ -39,7 +39,7 @@
 	<parameter name="listaprogramas" class="java.util.ArrayList"/>
 	<parameter name="listagrupos" class="java.util.ArrayList"/>
 	<parameter name="agruparunidade" class="java.lang.Boolean"/>
-	<parameter name="codequipe" class="java.lang.Integer"/>
+	<parameter name="listaequipes" class="java.util.ArrayList"/>
 	<queryString>
 		<![CDATA[select distinct  
       CASE 
@@ -88,11 +88,11 @@ and coalesce(a11.excluido,'N' )='N'
 	and ((   $P{turno}  is not null and a2.turno =   $P{turno}  ) or  (   $P{turno}  is null ))
 	and ((   $P{codprofissional}   is not null and a11.codprofissionalatendimento =  $P{codprofissional}  ) or ((  $P{codprofissional}   = 0) or (  $P{codprofissional}   is null)))
 	and ((   $P{codespecialidade}  is not null and f2.codespecialidade =   $P{codespecialidade}  ) or ((  $P{codespecialidade}  = 0) or (  $P{codespecialidade}   is null)))
-		AND ((  $P{codequipe}  IS NOT NULL AND a2.codequipe = $P{codequipe}  ) OR (( $P{codequipe}   =0 ) OR ( $P{codequipe}   is null )))
 	and $X{IN, extract (dow from a2.dtaatende), diassemanalista}
 	and $X{IN, u2.id,  listaunidades}
 	and $X{IN, a2.codprograma, listaprogramas}
 	and $X{IN, g2.id_grupo, listagrupos}
+		and $X{IN, a2.codequipe, listaequipes}
 	AND (SELECT extract(year from age(pa2.dtanascimento))) >=  $P{idademinima} 
 	AND (SELECT extract(year from age(pa2.dtanascimento))) <=  $P{idademaxima} 
 	group by pa2.id_paciente, p2.id_programa, g2.id_grupo ) as qtd on 
@@ -106,11 +106,11 @@ and ((   $P{turno}  is not null and a.turno =  $P{turno}  ) or  (   $P{turno}   
 and ((    $P{id_paciente}  is not null and a.codpaciente =   $P{id_paciente}   ) or ((   $P{id_paciente}   = 0) or (  $P{id_paciente}   is null)))
 and ((    $P{codprofissional}  is not null and a1.codprofissionalatendimento =   $P{codprofissional}   ) or (( $P{codprofissional}  = 0) or ( $P{codprofissional}  is null)))
 and ((    $P{codespecialidade}  is not null and f.codespecialidade = $P{codespecialidade}   ) or (( $P{codespecialidade}   = 0) or (  $P{codespecialidade}   is null)))
-	AND ((  $P{codequipe}  IS NOT NULL AND a.codequipe = $P{codequipe}  ) OR (( $P{codequipe}   =0 ) OR ( $P{codequipe}   is null )))
 and $X{IN, extract (dow from a.dtaatende), diassemanalista}
 and $X{IN, u.id,  listaunidades}
 and $X{IN, a.codprograma, listaprogramas}
 and $X{IN, grupo.id_grupo, listagrupos}
+		and $X{IN, a.codequipe, listaequipes}
 AND (SELECT extract(year from age(pa.dtanascimento))) >=  $P{idademinima} 
 AND (SELECT extract(year from age(pa.dtanascimento))) <=  $P{idademaxima} 
 and ( ( ((   $P{qtdatendimentosmenorigual}   is not null and qtd.atendimentos <=  $P{qtdatendimentosmenorigual}   ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR (  $P{qtdatendimentosmenorigual}   is null )))
