@@ -713,6 +713,8 @@ public class RelatoriosController implements Serializable {
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
+		
+		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
 			relatorio = caminho + "atendimentosporprograma.jasper";
@@ -720,11 +722,15 @@ public class RelatoriosController implements Serializable {
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
+		
+		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
 				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
 			relatorio = caminho + "atendimentosporprogramasintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
+		
+		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
 				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
@@ -733,6 +739,18 @@ public class RelatoriosController implements Serializable {
 			relatorio = caminho + "atendimentosporprogramagruposintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
+		
+		
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
+				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.EQUIPE.getSigla())) {
+			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
+			}
+			relatorio = caminho + "atendimentosporprogramagrupoequipesintetico.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
+		}
+		
+		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.QUANTIDADE_ATENDIMENTOS.getSigla())) {
 			if (atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())
 					&& !listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
