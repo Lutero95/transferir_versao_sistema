@@ -113,7 +113,7 @@ where(  ((   $P{qtdatendimentosmenorigual}  is not null and a.qtd <=  $P{qtdaten
 and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=   $P{qtdatendimentosmaiorigual}    ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null ))) )
 or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}    is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
 		or (( $P{qtdatendimentosmenorigual}   = 0 and   $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and   $P{qtdatendimentosmaiorigual}  is null))
-)  order by 1;]]>
+)  order by 1, nome_paciente;]]>
 	</queryString>
 	<field name="nome_paciente" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
