@@ -714,27 +714,37 @@ public class AtendimentoDAO {
 
 	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
 
-		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1  " +
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " +
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente  " +
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento  " +
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade  " +
-				"	JOIN hosp.unidade u ON u.id = ?  " +
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa  " +
-				"	join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id  " +
-				"	join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa  " +
-				"	join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo  " +
-				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id " +
-				" 	where a.presenca='S' and a1.id_situacao_atendimento is null  " +
-				"	and a.codprograma = ceu.codprograma  " +
-				"	and a.codgrupo = ceu.codgrupo  " +
-				"	and a.dtaatende>= ceu.inicio_evolucao " +
-				"	and a.dtaatende<current_date  " +
-				"	and a1.codprofissionalatendimento = ? " +
-				"	and coalesce(a.situacao,'A')<>'C' " +
-				"	and coalesce(a1.excluido,'N' )='N' " +
-				"	group by p.descprograma, g.descgrupo";
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   " + 
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   " + 
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   " + 
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   " + 
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   " + 
+				"	JOIN hosp.unidade u ON u.id = ? " + 
+				"   join hosp.parametro pa on u.id = pa.codunidade "+
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   " + 
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   " + 
+				"	join hosp.programa p on p.id_programa = a.codprograma   " + 
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo   " + 
+				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  " + 
+				" 	where a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))   " + 
+				"	and a.dtaatende<current_date   " + 
+				"	and a1.codprofissionalatendimento = ?  " + 
+				"	and coalesce(a.situacao,'A')<>'C'  " + 
+				"	and coalesce(a1.excluido,'N' )='N' "; 
+				
+				String agrupamentoSemEvolucaoPorPrograma = " and a.dtaatende >= pa.inicio_evolucao_unidade "+
+															" group by p.descprograma, g.descgrupo";
+				
+				String agrupamentoComEvolucaoPorPrograma = " and a.codprograma = ceu.codprograma   " + 
+							" and a.codgrupo = ceu.codgrupo   " + 
+							" and a.dtaatende>= ceu.inicio_evolucao  " +
+							" group by p.descprograma, g.descgrupo";
 
+			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma())
+				sql += agrupamentoComEvolucaoPorPrograma;
+			else 
+				sql += agrupamentoSemEvolucaoPorPrograma;
+				
 		List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1301,7 +1311,7 @@ public class AtendimentoDAO {
 				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " +
 				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " +
 				" left join hosp.cbo c on c.id  = a1.cbo  " +
-				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo \r\n" +
+				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
 				" left join hosp.conselho con on cc.id_conselho = con.id "+
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
 				"and p.ativo = 'S' and a.cod_unidade=?";
