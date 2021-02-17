@@ -54,7 +54,7 @@
 											  unselectable="true">
 								<f:selectItem itemLabel="Programa" itemValue="P" />
 								<f:selectItem itemLabel="Grupo" itemValue="G" />
-								<f:selectItem itemLabel="Equipe" itemValue="E" />
+								<f:selectItem itemLabel="Equipe" itemValue="E" itemDisabled="#{RelatoriosController.atributoGenerico1 == 'Q'}"/>
 								
 								<p:ajax update="frm:outgrupo frm:outequipe"/>
 							</p:selectOneRadio> 

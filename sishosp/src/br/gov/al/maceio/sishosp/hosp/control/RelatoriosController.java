@@ -700,24 +700,36 @@ public class RelatoriosController implements Serializable {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 
 		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
+				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
+			relatorio = caminho + "atendimentosporprograma.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
+
+			rDao.limparTabelaTemporariaFrequencia(randomico);
+		}
+
+		
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
 			}
 
-			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
-				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
-			}
 			relatorio = caminho + "atendimentosporprogramagrupo.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
 		}
 		
-		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
-				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
-			relatorio = caminho + "atendimentosporprograma.jasper";
+				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.EQUIPE.getSigla())) {
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
+			}
+			
+			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
+			}
+			relatorio = caminho + "atendimentosporprogramagrupoequipe.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
 			rDao.limparTabelaTemporariaFrequencia(randomico);
@@ -743,6 +755,11 @@ public class RelatoriosController implements Serializable {
 		
 		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.SINTETICO.getSigla())
 				&&  atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.EQUIPE.getSigla())) {
+			
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
+			}
+			
 			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
 			}
@@ -788,7 +805,8 @@ public class RelatoriosController implements Serializable {
 	private List<Integer> retornaListaIdEquipes(List<EquipeGrupoProgramaUnidadeDTO> listaEquipes){
 		List<Integer> listaIds = new ArrayList<>();
 		for (EquipeGrupoProgramaUnidadeDTO equipe : listaEquipes) {
-			listaIds.add(equipe.getEquipe().getCodEquipe());
+			if(!listaIds.contains(equipe.getEquipe().getCodEquipe()))
+				listaIds.add(equipe.getEquipe().getCodEquipe());
 		}
 		return listaIds;
 	}

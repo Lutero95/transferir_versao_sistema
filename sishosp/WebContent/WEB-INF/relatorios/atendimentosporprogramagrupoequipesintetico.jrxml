@@ -249,7 +249,7 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 		<groupHeader>
 			<band height="30">
 				<textField>
-					<reportElement mode="Opaque" x="90" y="2" width="485" height="20" backcolor="#EDE8E8" uuid="a70ebf05-dfde-4ac5-b3bb-f59b4c07787f">
+					<reportElement mode="Opaque" x="91" y="2" width="485" height="20" backcolor="#EDE8E8" uuid="a70ebf05-dfde-4ac5-b3bb-f59b4c07787f">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle"/>
@@ -361,7 +361,7 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ATENDIMENTOS REALIZADOS POR PROGRAMA / GRUPO]]></text>
+				<text><![CDATA[ATENDIMENTOS REALIZADOS POR PROGRAMA / GRUPO / EQUIPE]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="1" y="14" width="571" height="16" uuid="d9d9191b-085d-488c-84b9-3adb8497b51f"/>
