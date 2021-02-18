@@ -1699,6 +1699,30 @@ public class RelatoriosController implements Serializable {
 		relatorio = caminho + "evolucaoatendimentos.jasper";
 		this.executeReport(relatorio, map, "relatorio_evolucao_atendimentos.pdf");
 	}
+	
+	public void gerarRelatorioDesligamento() throws IOException, ParseException, ProjetoException {
+
+
+		String caminho = CAMINHO_PRINCIPAL;
+		String relatorio = "";
+		relatorio = caminho + "desligamento.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("codunidade", user_session.getUnidade().getId());
+		map.put("dt_inicial", dataInicial);
+		map.put("dt_final", dataFinal);
+		map.put("idmotivodesligamento", valorGenerico1);
+		
+		if (programa != null)
+			map.put("codprograma", programa.getIdPrograma());
+
+		if (grupo != null)
+			map.put("codgrupo", grupo.getIdGrupo());
+
+		if (equipe != null)
+			map.put("codequipe", equipe.getCodEquipe());
+
+		this.executeReport(relatorio, map, "relatoriodesligamentopacientes.pdf");
+	}
 
 	private FacesContext getFacesContext() {
 		FacesContext context = FacesContext.getCurrentInstance();
