@@ -27,7 +27,7 @@ public class BpaConsolidadoDAO {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
-        		"  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo cbo " +
+        		"  proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, pm.competencia_atual, cbo.codigo cbo " +
         		" from hosp.atendimentos1 a1 " + 
         		" join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento " + 
         		" left join hosp.cbo on cbo.id = a1.cbo " + 
@@ -39,6 +39,8 @@ public class BpaConsolidadoDAO {
         		" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id " + 
         		" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro " + 
         		" cross join hosp.empresa emp " + 
+        		" left join hosp.unidade u on emp.cod_empresa = u.cod_empresa " + 
+        		" left join hosp.parametro pa on u.id = pa.codunidade "+
         		" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N'" +
         		" and a.dtaatende  between ? and ?  and a.cod_unidade<>4 " +
@@ -56,7 +58,7 @@ public class BpaConsolidadoDAO {
         else
 		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
-		sql+=" group by  proc.codproc, emp.cnes, pm.competencia_atual, cbo.codigo order by cbo.codigo ";
+		sql+=" group by  proc.codproc, 3, pm.competencia_atual, cbo.codigo order by cbo.codigo ";
         
         Connection con = ConnectionFactory.getConnection();
        

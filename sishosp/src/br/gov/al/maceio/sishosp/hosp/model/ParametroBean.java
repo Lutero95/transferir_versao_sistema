@@ -50,6 +50,7 @@ public class ParametroBean implements Serializable {
     private boolean verificaPeriodoInicialEvolucaoPrograma;
     private Date inicioEvolucaoUnidade;
     private boolean buscaAutomaticaCepPaciente;
+    private String cnesProducao;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -405,6 +406,14 @@ public class ParametroBean implements Serializable {
 
 	public void setBuscaAutomaticaCepPaciente(boolean buscaAutomaticaCepPaciente) {
 		this.buscaAutomaticaCepPaciente = buscaAutomaticaCepPaciente;
+	}
+
+	public String getCnesProducao() {
+		return cnesProducao;
+	}
+
+	public void setCnesProducao(String cnesProducao) {
+		this.cnesProducao = cnesProducao;
 	}
     
 }

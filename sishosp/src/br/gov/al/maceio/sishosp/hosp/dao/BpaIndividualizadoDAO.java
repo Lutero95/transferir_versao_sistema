@@ -36,7 +36,7 @@ public class BpaIndividualizadoDAO {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
         String sql = "select count(*) qtdproc ,\n" +
-				"  proc.codproc, emp.cnes,\n" +
+				"  proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \n" +
 				"  pm.competencia_atual, \n" +
 				"  func.cns cnsprofissional\n" +
 				"  , cbo.codigo cbo, proc.codproc, \n" +
@@ -69,6 +69,8 @@ public class BpaIndividualizadoDAO {
 				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
 				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
 				" cross join hosp.empresa emp\n" +
+				" left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
+				" left join hosp.parametro pa on u.id = pa.codunidade \r\n"+
 				"left join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"left   join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
 				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
@@ -90,7 +92,7 @@ public class BpaIndividualizadoDAO {
 
 		sql+=" group by \n" +
 				" proc.codproc, \n" +
-				" emp.cnes, pm.competencia_atual, \n" +
+				" 3, pm.competencia_atual, \n" +
 				" func.cns ,\n" +
 				" cbo.codigo, proc.codproc, \n" +
 				" p.cns,\n" +

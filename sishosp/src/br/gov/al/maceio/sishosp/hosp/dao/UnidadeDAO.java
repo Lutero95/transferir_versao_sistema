@@ -119,8 +119,8 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, "+
                     "acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
-                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente ) "+
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -258,6 +258,7 @@ public class UnidadeDAO {
                 ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
+            ps.setString(45, unidade.getParametro().getCnesProducao());
             ps.execute();
 
 
@@ -424,7 +425,7 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
-                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ? "+
+                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?, cnes_producao = ? "+
                     "WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
@@ -529,7 +530,8 @@ public class UnidadeDAO {
                 ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
-            ps.setInt(45, unidade.getId());
+            ps.setString(45, unidade.getParametro().getCnesProducao());
+            ps.setInt(46, unidade.getId());
 
             ps.executeUpdate();
 
@@ -671,7 +673,7 @@ public class UnidadeDAO {
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
-                "inicio_evolucao_unidade, busca_automatica_cep_paciente "+
+                "inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -736,6 +738,7 @@ public class UnidadeDAO {
                 parametro.setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
                 parametro.setInicioEvolucaoUnidade(rs.getDate("inicio_evolucao_unidade"));
                 parametro.setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
+                parametro.setCnesProducao(rs.getString("cnes_producao"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();

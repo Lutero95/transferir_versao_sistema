@@ -21,6 +21,8 @@ public class ProcedimentoBean implements Serializable {
     private String sexo;
     private Integer codUnidade;
     private InstrumentoRegistroBean instrumentoRegistroPadrao;
+    private ServicoBean servico;
+    private ClassificacaoBean classificacao;
 
     // HERDADOS
     private EquipamentoBean equipamento;
@@ -51,6 +53,8 @@ public class ProcedimentoBean implements Serializable {
         listaRecurso = new ArrayList<RecursoBean>();
         listaUnidadesVisualizam = new ArrayList<>();
         instrumentoRegistroPadrao = new InstrumentoRegistroBean();
+        servico = new ServicoBean();
+        classificacao = new ClassificacaoBean();
     }
 
     public Integer getIdProc() {
@@ -220,6 +224,22 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setInstrumentoRegistroPadrao(InstrumentoRegistroBean instrumentoRegistroPadrao) {
 		this.instrumentoRegistroPadrao = instrumentoRegistroPadrao;
+	}
+
+	public ServicoBean getServico() {
+		return servico;
+	}
+
+	public void setServico(ServicoBean servico) {
+		this.servico = servico;
+	}
+
+	public ClassificacaoBean getClassificacao() {
+		return classificacao;
+	}
+
+	public void setClassificacao(ClassificacaoBean classificacao) {
+		this.classificacao = classificacao;
 	}
 	
 }
