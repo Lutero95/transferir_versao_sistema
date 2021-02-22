@@ -768,12 +768,29 @@ public class RelatoriosController implements Serializable {
 		}
 		
 		
-		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.QUANTIDADE_ATENDIMENTOS.getSigla())) {
-			if (atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())
-					&& !listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.QUANTIDADE_ATENDIMENTOS.getSigla()) && 
+					(atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla()) 
+							|| atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla()))  ) {
+
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
 			}
+			
 			relatorio = caminho + "qtdatendimentosporprogramagrupo.jasper";
+			this.executeReport(relatorio, map, "relatorio_atendimento.pdf");
+		}
+		
+		else if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.QUANTIDADE_ATENDIMENTOS.getSigla()) 
+				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.EQUIPE.getSigla())) {
+			
+			if (!listaGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listagrupos", retornaListaIdGrupos(listaGruposProgramaUnidadeDTOSelecionados));
+			}
+			
+			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
+				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
+			}
+			relatorio = caminho + "qtdatendimentosporprogramagrupoequipe.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento.pdf");
 		}
 	}
