@@ -40,6 +40,7 @@
 	<parameter name="listagrupos" class="java.util.ArrayList"/>
 	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<parameter name="listaequipes" class="java.util.ArrayList"/>
+	<parameter name="agrupardia" class="java.lang.Boolean"/>
 	<queryString>
 		<![CDATA[select distinct  
       CASE 
@@ -203,6 +204,9 @@ order by 1]]>
 	<variable name="total_atend_equipe" class="java.lang.Integer" resetType="Group" resetGroup="grupoEquipe" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
+	<variable name="total_atend_data" class="java.lang.Integer" resetType="Group" resetGroup="grupoData" calculation="Count">
+		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
+	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
 		<groupHeader>
@@ -254,7 +258,7 @@ order by 1]]>
 					<text><![CDATA[Programa:]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Opaque" x="143" y="3" width="424" height="19" backcolor="#EDE8E8" uuid="ab8710d6-d999-4041-8686-180cb7f49406"/>
+					<reportElement mode="Opaque" x="143" y="3" width="429" height="19" backcolor="#EDE8E8" uuid="ab8710d6-d999-4041-8686-180cb7f49406"/>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{nome_programa}]]></textFieldExpression>
 				</textField>
@@ -308,7 +312,9 @@ order by 1]]>
 					<text><![CDATA[Paciente]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="216" y="24" width="45" height="20" uuid="653d8902-12f1-4bff-9f29-3838698ea240"/>
+					<reportElement x="216" y="24" width="45" height="20" uuid="653d8902-12f1-4bff-9f29-3838698ea240">
+						<printWhenExpression><![CDATA[$P{agrupardia} == false]]></printWhenExpression>
+					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
@@ -359,11 +365,48 @@ order by 1]]>
 		<groupFooter>
 			<band height="30">
 				<textField>
-					<reportElement x="0" y="10" width="572" height="19" uuid="a7869fd0-de21-4ea7-81b5-8444a9e04935"/>
+					<reportElement x="0" y="9" width="572" height="19" uuid="a7869fd0-de21-4ea7-81b5-8444a9e04935"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Total de Atendimentos na Equipe "+$F{descgrupo}+": "+$V{total_atend_equipe}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupoData">
+		<groupExpression><![CDATA[$F{data_agend}]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<printWhenExpression><![CDATA[$P{agrupardia} == true]]></printWhenExpression>
+				<textField>
+					<reportElement mode="Opaque" x="0" y="0" width="42" height="20" backcolor="#EDE8E8" uuid="54d10b8b-a24c-4dde-8ad7-449fcad0f62a"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Data: "]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement mode="Opaque" x="41" y="0" width="531" height="20" backcolor="#EDE8E8" uuid="72bded15-a398-40ac-832a-6d1f25fef7c0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<printWhenExpression><![CDATA[$P{agrupardia} == true]]></printWhenExpression>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="0" y="9" width="572" height="19" uuid="19295df0-0d45-40d3-90c3-0f0a1171a041"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos nesta data: " +$V{total_atend_data}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -414,6 +457,7 @@ order by 1]]>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="211" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{agrupardia} == false]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>

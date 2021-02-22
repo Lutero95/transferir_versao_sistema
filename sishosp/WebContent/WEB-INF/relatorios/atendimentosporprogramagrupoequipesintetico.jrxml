@@ -40,6 +40,7 @@
 	<parameter name="idademaxima" class="java.lang.Integer"/>
 	<parameter name="agruparunidade" class="java.lang.Boolean"/>
 	<parameter name="listaequipes" class="java.util.ArrayList"/>
+	<parameter name="agrupardia" class="java.lang.Boolean"/>
 	<queryString>
 		<![CDATA[select distinct 
 	CASE 
@@ -51,7 +52,8 @@
     WHEN  true  is true then nome_unidade
     ELSE 'TODAS'
     END nome_unidade,
-qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, id_equipe, descequipe, nome_principal, cod_unidade from ( 
+qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_grupo, 
+id_equipe, descequipe, nome_principal, cod_unidade, dtaatende as data_agend  from ( 
 	select count(*) qtd,  pa.nome as nome_paciente,  pa.id_paciente, 
 		CASE 
       	WHEN true is true THEN (u.id)
@@ -78,7 +80,7 @@ qtd, nome_paciente, id_paciente , cod_programa, nome_programa, codgrupo, nome_gr
       	ELSE (0) 
 	    END id_equipe,
 
-	 p.descprograma as nome_programa, nome_principal, g.descgrupo as nome_grupo, eq.descequipe 
+	 p.descprograma as nome_programa, nome_principal, g.descgrupo as nome_grupo, eq.descequipe, a.dtaatende 
 	from hosp.atendimentos a
 	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
 	join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento 
@@ -107,13 +109,13 @@ and coalesce(a1.excluido,'N' )='N'
     and $X{IN, eq.id_equipe, listaequipes}
 	AND (SELECT extract(year from age(pa.dtanascimento))) >=   $P{idademinima}  
 	AND (SELECT extract(year from age(pa.dtanascimento))) <=   $P{idademaxima} 
-	group by  4, 5, p.descprograma, 6, g.descgrupo, 7, eq.descequipe, 8, pa.nome,  pa.id_paciente, nome_principal
-	order by p.descprograma,pa.nome) a
+	group by  4, 5, p.descprograma, 6, g.descgrupo, 7, eq.descequipe, 8,  a.dtaatende, pa.nome,  pa.id_paciente, nome_principal
+	order by a.dtaatende, p.descprograma,pa.nome) a
 where(  ((   $P{qtdatendimentosmenorigual}  is not null and a.qtd <=  $P{qtdatendimentosmenorigual}    ) or ((  $P{qtdatendimentosmenorigual}   =0 ) OR ( $P{qtdatendimentosmenorigual}  is null )))
 and ((   $P{qtdatendimentosmaiorigual}   is not null and a.qtd >=   $P{qtdatendimentosmaiorigual}    ) or ((  $P{qtdatendimentosmaiorigual}  = 0 ) OR (   $P{qtdatendimentosmaiorigual}   is null ))) )
 or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaiorigual}    is not null and a.qtd between   $P{qtdatendimentosmenorigual}   and   $P{qtdatendimentosmaiorigual}   )
 		or (( $P{qtdatendimentosmenorigual}   = 0 and   $P{qtdatendimentosmaiorigual}  = 0 ) OR ( $P{qtdatendimentosmenorigual}   is null and   $P{qtdatendimentosmaiorigual}  is null))
-)  order by 1, nome_paciente;]]>
+)  order by 1, data_agend, nome_paciente;]]>
 	</queryString>
 	<field name="nome_paciente" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
@@ -130,6 +132,7 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 	<field name="nome_unidade" class="java.lang.String"/>
 	<field name="id_equipe" class="java.lang.Integer"/>
 	<field name="descequipe" class="java.lang.String"/>
+	<field name="data_agend" class="java.util.Date"/>
 	<variable name="nome_paciente_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
@@ -159,6 +162,9 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 	</variable>
 	<variable name="paciente_equipe" class="java.lang.Integer" resetType="Group" resetGroup="grupoEquipe" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id_paciente}]]></variableExpression>
+	</variable>
+	<variable name="nome_paciente_data" class="java.lang.Integer" resetType="Group" resetGroup="grupoData" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtd}]]></variableExpression>
 	</variable>
 	<group name="grupoUnidade" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{nome_unidade}]]></groupExpression>
@@ -344,6 +350,42 @@ or ((   $P{qtdatendimentosmenorigual}   is not null and   $P{qtdatendimentosmaio
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Total de Pacientes Equipe: "+$V{paciente_equipe}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="grupoData">
+		<groupExpression><![CDATA[$F{data_agend}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<printWhenExpression><![CDATA[$P{agrupardia} == true]]></printWhenExpression>
+				<textField>
+					<reportElement mode="Opaque" x="0" y="0" width="42" height="20" backcolor="#EDE8E8" uuid="d4b4b256-aee7-478b-9b69-e190f26bd55e"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Data: "]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement mode="Opaque" x="41" y="0" width="531" height="20" backcolor="#EDE8E8" uuid="c1e71b23-3d8d-4e9e-9e2e-e607d6ad37d7">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{data_agend}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24">
+				<printWhenExpression><![CDATA[$P{agrupardia} == true]]></printWhenExpression>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="0" y="5" width="572" height="19" uuid="c9ec09a5-42b4-44c0-adfc-3258507b7d12"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total de Atendimentos nesta data: " +$V{nome_paciente_data}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
