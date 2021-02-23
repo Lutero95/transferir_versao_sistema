@@ -131,6 +131,10 @@ public class GerenciarPacienteController implements Serializable {
 	public void carregarPacientesInstituicao() throws ProjetoException {
 		listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
 	}
+	
+	public void carregarTodosPacientesInstituicao() throws ProjetoException {
+		listaPacientes = gDao.carregarTodosPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
+	}
 
 	public void desligarPaciente() throws ProjetoException {
 		Boolean desligou = false;
