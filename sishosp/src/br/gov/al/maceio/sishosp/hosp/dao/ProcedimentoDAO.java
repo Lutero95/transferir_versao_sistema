@@ -26,6 +26,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ClassificacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.InstrumentoRegistroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ServicoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
@@ -199,15 +200,17 @@ public class ProcedimentoDAO {
             else
                 stmt.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
             
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getServico().getId()))
-                ps.setNull(9, Types.NULL);
-            else
-                ps.setInt(9, proc.getServico().getId());
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getServico().getId())) {
+            	stmt.setNull(9, Types.NULL);
+            } else {
+            	stmt.setInt(9, proc.getServico().getId());
+            }
             
-            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getClassificacao().getId()))
-                ps.setNull(10, Types.NULL);
-            else
-                ps.setInt(10, proc.getClassificacao().getId());
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getClassificacao().getId())) {
+            	stmt.setNull(10, Types.NULL);
+            } else {
+            	stmt.setInt(10, proc.getClassificacao().getId());
+            }
             
             stmt.setInt(11, proc.getIdProc());
 
@@ -2667,5 +2670,39 @@ public class ProcedimentoDAO {
             }
         }
         return listaClassificacao;
+    }
+    
+    public ProcedimentoBean retornarProcedimentoInconsistente() throws SQLException, ProjetoException {
+
+    	ProcedimentoBean procedimento = null;
+
+        String sql = "select p.id, p.nome, p.id_classificacao,  p.id_servico " +
+                "	from hosp.proc p where " +
+                "	(p.id_classificacao is null or p.id_servico is null);";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id"));
+                procedimento.setNomeProc(rs.getString("nome"));
+                procedimento.getClassificacao().setId(rs.getInt("id_classificacao"));
+                procedimento.getServico().setId(rs.getInt("id_servico"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return procedimento;
     }
 }

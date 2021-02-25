@@ -1305,39 +1305,6 @@ public class ProgramaDAO {
         return procedimento;
     }
 
-    public ProgramaBean retornarProgramaInconsistente() throws SQLException, ProjetoException {
-
-        ProgramaBean programa = null;
-
-        String sql = "select p.id_programa, p.descprograma, p.id_classificacao,  p.id_servico " +
-                "	from hosp.programa p where " +
-                "	(p.id_classificacao is null or p.id_servico is null);";
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
-
-            if (rs.next()) {
-                programa = new ProgramaBean();
-                programa.setIdPrograma(rs.getInt("id_programa"));
-                programa.setDescPrograma(rs.getString("descprograma"));
-                programa.setIdClassificacao(rs.getInt("id_classificacao"));
-                programa.setIdServico(rs.getInt("id_servico"));
-            }
-
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return programa;
-    }
 
     public ProcedimentoBean retornaProcedimentoPadraoDoProgramaPorIdade (Integer idPrograma, Integer idPaciente) throws ProjetoException, SQLException {
         ProcedimentoBean procedimento = new ProcedimentoBean();

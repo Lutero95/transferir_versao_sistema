@@ -60,7 +60,6 @@ public class BpaIndividualizadoDAO {
 				" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \n" +
 				" join hosp.proc on proc.id = a1.codprocedimento  \n" +
 				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
-				" left join hosp.programa  prog on prog.id_programa  = a.codprograma \n" +
 				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
 				" left join hosp.cid on cid.cod = a1.id_cidprimario  \n" +
 				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
@@ -71,8 +70,8 @@ public class BpaIndividualizadoDAO {
 				" cross join hosp.empresa emp\n" +
 				" left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
 				" left join hosp.parametro pa on u.id = pa.codunidade \r\n"+
-				"left join sigtap.servico sm on sm.id = prog.id_servico \n" +
-				"left   join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
+				"left join sigtap.servico sm on sm.id = proc.id_servico \n" +
+				"left   join sigtap.classificacao cm on cm.id = proc.id_classificacao \n" +
 				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
