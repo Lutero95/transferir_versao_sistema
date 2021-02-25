@@ -56,7 +56,8 @@
 								<f:selectItem itemLabel="Grupo" itemValue="G" />
 								<f:selectItem itemLabel="Equipe" itemValue="E"/>
 								
-								<p:ajax update="frm:outgrupo frm:outequipe"/>
+								<p:ajax update="frm:outgrupo frm:outequipe frm:outequipedia" 
+									listener="#{RelatoriosController.limparAgrupamentoDia()}"/>
 							</p:selectOneRadio> 
 						</b:column>
 						
@@ -65,7 +66,20 @@
 							<p:selectBooleanCheckbox required="true"
 											  value="#{RelatoriosController.agruparPorUnidade}">
 								<p:ajax update="frm:outgrupo"/>
-							</p:selectBooleanCheckbox> 
+							</p:selectBooleanCheckbox>
+
+							<br /> <br />							
+							<p:outputPanel id="outequipedia">
+								<b:label value="Agrupar relatório por equipe / dia:"
+									severity="info"
+									rendered="#{RelatoriosController.atributoGenerico3 == 'E'}" />
+								<p:selectBooleanCheckbox
+									rendered="#{RelatoriosController.atributoGenerico3 == 'E'}"
+									value="#{RelatoriosController.agruparEquipeDia}"
+									required="true">
+									<p:ajax update="frm:outgrupo" />
+								</p:selectBooleanCheckbox>
+							</p:outputPanel>  
 						</b:column>
 					</b:row>
 					<hr />
@@ -629,32 +643,15 @@
 								style="margin-left: 10px;width:300px" />
 
 							<p:commandButton
-								action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
+								action="#{GerenciarPacienteController.carregarTodosPacientesInstituicao()}"
 								update="dt msgPagina" icon="ui-icon-search"
 								style="margin-left: 10px;" />
-
 
 						</p:panelGrid>
 					</b:column>
 				</b:row>
-				<b:row>
-
-					<b:column span="1">
-						<p:outputLabel value="Situação:"
-							style="margin-top: 8px;color:#2e84ce;">
-						</p:outputLabel>
-					</b:column>
-
-					<b:column span="1"
-						style="width:140px;color: #4682B4;margin-top: -8px;">
-						<p:selectOneRadio required="true" style="margin-top: 10px"
-							requiredMessage="Escolha a situação!" layout="pageDirection"
-							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
-							<f:selectItem itemLabel="Ativos" itemValue="A" />
-						</p:selectOneRadio>
-					</b:column>
-				</b:row>
 				<br />
+				
 				<p:dataTable rows="8" paginator="true" paginatorPosition="bottom"
 					id="dt" var="pacie"
 					value="#{GerenciarPacienteController.listaPacientes}"

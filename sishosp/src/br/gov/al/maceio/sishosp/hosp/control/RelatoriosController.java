@@ -104,6 +104,7 @@ public class RelatoriosController implements Serializable {
 	private Integer ano;
 	private Boolean filtrarPorMunicipio;
 	private boolean agruparPorUnidade;
+	private boolean agruparEquipeDia;
 
 	private Integer idadeMinima;
 	private Integer idadeMaxima;
@@ -628,6 +629,10 @@ public class RelatoriosController implements Serializable {
 	public void removerEquipeGrupoPorProgramaUnidadeAdicionado(EquipeGrupoProgramaUnidadeDTO equipeSelecionada) {
 		listaEquipeGruposProgramaUnidadeDTOSelecionados.remove(equipeSelecionada);
 	}
+	
+	public void limparAgrupamentoDia() {
+		this.agruparEquipeDia = false;
+	}
 
 	public void gerarRelatorioAtendimento(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
@@ -729,6 +734,8 @@ public class RelatoriosController implements Serializable {
 			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
 			}
+			
+			map.put("agrupardia", agruparEquipeDia);
 			relatorio = caminho + "atendimentosporprogramagrupoequipe.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_analítico.pdf");
 
@@ -763,6 +770,7 @@ public class RelatoriosController implements Serializable {
 			if (!listaEquipeGruposProgramaUnidadeDTOSelecionados.isEmpty()) {
 				map.put("listaequipes", retornaListaIdEquipes(listaEquipeGruposProgramaUnidadeDTOSelecionados));
 			}
+			map.put("agrupardia", agruparEquipeDia);
 			relatorio = caminho + "atendimentosporprogramagrupoequipesintetico.jasper";
 			this.executeReport(relatorio, map, "relatorio_atendimento_sintético.pdf");
 		}
@@ -2260,5 +2268,13 @@ public class RelatoriosController implements Serializable {
 	public void setListaEquipeGruposProgramaUnidadeDTO(
 			List<EquipeGrupoProgramaUnidadeDTO> listaEquipeGruposProgramaUnidadeDTO) {
 		this.listaEquipeGruposProgramaUnidadeDTO = listaEquipeGruposProgramaUnidadeDTO;
+	}
+
+	public boolean isAgruparEquipeDia() {
+		return agruparEquipeDia;
+	}
+
+	public void setAgruparEquipeDia(boolean agruparEquipeDia) {
+		this.agruparEquipeDia = agruparEquipeDia;
 	}
 }
