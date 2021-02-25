@@ -35,74 +35,134 @@ public class BpaIndividualizadoDAO {
     public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
-        String sql = "select count(*) qtdproc ,\n" +
-				"  proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \n" +
-				"  pm.competencia_atual, \n" +
-				"  func.cns cnsprofissional\n" +
-				"  , cbo.codigo cbo, proc.codproc, \n" +
-				"  p.cns cnspaciente, lpad(coalesce(etnia.codetnia ,'    '),4,'0')  codetnia, \n" +
-				" p.sexo, substring(to_char(m.codigo,'9999999')\t,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \n" +
-				" p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \n" +
-				" p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,  "+
-				"  case when proc.exige_cnpj is true then  emp.cnpj else '              ' end  cnpj, \n" +
-				" bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\n" +
-				"  case when proc.exige_info_servico is true then  sm.codigo else '' end  codigo_servico, \n" +
-				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end  codigo_classificacao    \n" +
-				" from hosp.atendimentos1 a1  \n" +
-				"join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \n" +
-				"  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \n" +
-				" left join hosp.cbo on cbo.id = a1.cbo  \n" +
-				"  join hosp.pacientes p on p.id_paciente  = a.codpaciente  \n" +
-				" left join hosp.bairros on bairros.id_bairro = p.codbairro  \n" +
-				" left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \n" +
-				" left join hosp.raca on raca.id_raca = p.codraca  \n" +
-				" left join hosp.etnia on etnia.id_etnia = p.codetnia  \n" +
-				" left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \n" +
-				" join hosp.proc on proc.id = a1.codprocedimento  \n" +
-				" left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \n" +
-				" left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \n" +
-				" left join hosp.cid on cid.cod = a1.id_cidprimario  \n" +
-				" join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \n" +
-				" join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap "+
-				" join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \n" +
-				" join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \n" +
-				" left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento" +
-				" cross join hosp.empresa emp\n" +
-				" left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
-				" left join hosp.parametro pa on u.id = pa.codunidade \r\n"+
-				"left join sigtap.servico sm on sm.id = proc.id_servico \n" +
-				"left   join sigtap.classificacao cm on cm.id = proc.id_classificacao \n" +
-				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
-				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
-				" and a.dtaatende  between ?  and ? \n" +
-				" and ir.codigo = ? \n" +
-				" and pm.competencia_atual = ?   " +
-				"  and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  ";
+        String sql = "select * from (\r\n" + 
+        		"		\r\n" + 
+        		"		 select count(*) qtdproc ,\r\n" + 
+        		"		 proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \r\n" + 
+        		"		 pm.competencia_atual, \r\n" + 
+        		"		 func.cns cnsprofissional\r\n" + 
+        		"		 , cbo.codigo cbo, \r\n" + 
+        		"		 p.cns cnspaciente, lpad(coalesce(etnia.codetnia ,'    '),4,'0')  codetnia, \r\n" + 
+        		"		 p.sexo, substring(to_char(m.codigo,'9999999')	,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \r\n" + 
+        		"		 p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \r\n" + 
+        		"		 p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,    case when proc.exige_cnpj is true then  emp.cnpj else '              ' end  cnpj, \r\n" + 
+        		"		 bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\r\n" + 
+        		"		 case when proc.exige_info_servico is true then  sm.codigo else '' end  codigo_servico, \r\n" + 
+        		"		 case when proc.exige_info_classificacao is true then  cm.codigo else '' end  codigo_classificacao\r\n" + 
+        		"		 ,proc.id as codprocedimento, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, func.cns as cnsfunc, p.cns as cnspac\r\n" + 
+        		"		 from hosp.atendimentos1 a1  \r\n" + 
+        		"		 join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \r\n" + 
+        		"		 join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \r\n" + 
+        		"		 left join hosp.cbo on cbo.id = a1.cbo  \r\n" + 
+        		"		 join hosp.pacientes p on p.id_paciente  = a.codpaciente  \r\n" + 
+        		"		 left join hosp.bairros on bairros.id_bairro = p.codbairro  \r\n" + 
+        		"		 left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \r\n" + 
+        		"		 left join hosp.raca on raca.id_raca = p.codraca  \r\n" + 
+        		"		 left join hosp.etnia on etnia.id_etnia = p.codetnia  \r\n" + 
+        		"		 left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \r\n" + 
+        		"		 join hosp.proc on proc.id = a1.codprocedimento  \r\n" + 
+        		"		 left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" + 
+        		"		 left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \r\n" + 
+        		"		 left join hosp.cid on cid.cod = a1.id_cidprimario  \r\n" + 
+        		"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \r\n" + 
+        		"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
+        		"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
+        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" + 
+        		"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
+        		"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+        		"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" + 
+        		"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" + 
+        		"		 where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+        		"   		 and coalesce(a1.excluido, 'N')= 'N' \r\n" + 
+        		"		 and a.dtaatende  between ?  and ? \r\n" + 
+        		"		 and ir.codigo = ? \r\n" + 
+        		"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" + 
+        		"		 group by \r\n" + 
+        		"		 proc.codproc, \r\n" + 
+        		"		 3, pm.competencia_atual, \r\n" + 
+        		"		 func.cns ,\r\n" + 
+        		"		 cbo.codigo, proc.codproc, \r\n" + 
+        		"		 p.cns,\r\n" + 
+        		"		 p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , \r\n" + 
+        		"		 p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , \r\n" + 
+        		"		 p.logradouro, p.complemento , p.numero, \r\n" + 
+        		"		 bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \r\n" + 
+        		"		 case when proc.exige_info_servico is true then  sm.codigo else '' end  , \r\n" + 
+        		"		 case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \r\n" + 
+        		"		 case when proc.exige_cnpj is true then  emp.cnpj else '              ' end, etnia.codetnia\r\n" + 
+        		"		 , proc.id, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento   	\r\n" + 
+        		" \r\n" + 
+        		"UNION \r\n" + 
+        		" \r\n" + 
+        		"		 select count(*) qtdproc ,\r\n" + 
+        		"		 proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \r\n" + 
+        		"		 pm.competencia_atual, \r\n" + 
+        		"		 func.cns cnsprofissional\r\n" + 
+        		"		 , cbo.codigo cbo, \r\n" + 
+        		"		 p.cns cnspaciente, lpad(coalesce(etnia.codetnia ,'    '),4,'0')  codetnia, \r\n" + 
+        		"		 p.sexo, substring(to_char(m.codigo,'9999999')	,1,7) codibgemun, cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) idade, \r\n" + 
+        		"		 p.nome nomepaciente, p.dtanascimento , raca.codraca, p.cep, tl.codigo  codlogradouro, \r\n" + 
+        		"		 p.logradouro enderecopaciente, p.complemento complendpaciente, p.numero numendpaciente,    case when proc.exige_cnpj is true then  emp.cnpj else '              ' end  cnpj, \r\n" + 
+        		"		 bairros.descbairro bairropaciente, p.email, dtaatende, p.dtanascimento,\r\n" + 
+        		"		 case when proc.exige_info_servico is true then  sm.codigo else '' end  codigo_servico, \r\n" + 
+        		"		 case when proc.exige_info_classificacao is true then  cm.codigo else '' end  codigo_classificacao  \r\n" + 
+        		"		 , proc.id as codprocedimento, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, func.cns as cnsfunc, p.cns as cnspac\r\n" + 
+        		"		 from hosp.atendimentos1 a1  \r\n" + 
+        		"		 join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \r\n" + 
+        		"		 join hosp.atendimentos1_procedimento_secundario aps on a1.id_atendimentos1 = aps.id_atendimentos1 \r\n" + 
+        		"		 join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \r\n" + 
+        		"		 left join hosp.cbo on cbo.id = a1.cbo  \r\n" + 
+        		"		 join hosp.pacientes p on p.id_paciente  = a.codpaciente  \r\n" + 
+        		"		 left join hosp.bairros on bairros.id_bairro = p.codbairro  \r\n" + 
+        		"		 left join hosp.tipologradouro tl on tl.id = p.codtipologradouro  \r\n" + 
+        		"		 left join hosp.raca on raca.id_raca = p.codraca  \r\n" + 
+        		"		 left join hosp.etnia on etnia.id_etnia = p.codetnia  \r\n" + 
+        		"		 left  join hosp.municipio m on m.id_municipio  = p.codmunicipio  \r\n" + 
+        		"		 join hosp.proc on proc.id = aps.id_procedimento  \r\n" + 
+        		"		 left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" + 
+        		"		 left join hosp.laudo l on l.id_laudo  = pi.codlaudo  \r\n" + 
+        		"		 left join hosp.cid on cid.cod = a1.id_cidprimario  \r\n" + 
+        		"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = aps.id_procedimento  \r\n" + 
+        		"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
+        		"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
+        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" + 
+        		"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
+        		"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+        		"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" + 
+        		"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" + 
+        		"		 where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+        		"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" + 
+        		"		 and a.dtaatende  between ?  and ? \r\n" + 
+        		"		 and ir.codigo = ? \r\n" + 
+        		"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" + 
+        		"		 group by \r\n" + 
+        		"		 proc.codproc, \r\n" + 
+        		"		 3, pm.competencia_atual, \r\n" + 
+        		"		 func.cns ,\r\n" + 
+        		"		 cbo.codigo, proc.codproc, \r\n" + 
+        		"		 p.cns,\r\n" + 
+        		"		 p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , \r\n" + 
+        		"		 p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , \r\n" + 
+        		"		 p.logradouro, p.complemento , p.numero, \r\n" + 
+        		"		 bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \r\n" + 
+        		"		 case when proc.exige_info_servico is true then  sm.codigo else '' end  , \r\n" + 
+        		"		 case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \r\n" + 
+        		"		 case when proc.exige_cnpj is true then  emp.cnpj else '              ' end, etnia.codetnia\r\n" + 
+        		"		 , proc.id, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento\r\n" + 
+        		") a	where 1 = 1 ";
 
 		if (listaProcedimentosFiltro.size()>0)
-			sql+=" and a1.codprocedimento = any(?) ";
+			sql+=" and a.codprocedimento = any(?) ";
 
 
 		if (tipoGeracao.equals("A")){
-			sql+=" and sa.atendimento_realizado = true";
+			sql+=" and a.atendimento_realizado = true";
 		}
         else
-		sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+        	sql+=" and a.presenca='S' and ((a.atendimento_realizado is true) or (a.id_situacao_atendimento is null)) ";
 
-		sql+=" group by \n" +
-				" proc.codproc, \n" +
-				" 3, pm.competencia_atual, \n" +
-				" func.cns ,\n" +
-				" cbo.codigo, proc.codproc, \n" +
-				" p.cns,\n" +
-				" p.sexo, m.codigo , cid.cid, extract(year from age(CURRENT_DATE, p.dtanascimento)) , \n" +
-				" p.nome , p.dtanascimento , raca.codraca, p.cep, tl.codigo  , \n" +
-				" p.logradouro, p.complemento , p.numero, \n" +
-				" bairros.descbairro , p.email, a.dtaatende, p.dtanascimento, \n" +
-				" case when proc.exige_info_servico is true then  sm.codigo else '' end  , \n" +
-				" case when proc.exige_info_classificacao is true then  cm.codigo else '' end, \n" +
-				" case when proc.exige_cnpj is true then  emp.cnpj else '              ' end, etnia.codetnia \n" ;
-		sql+=" order by func.cns, p.cns  \t";
+		
+		sql+=" order by a.cnsfunc, a.cnspac	";
         
         Connection con = ConnectionFactory.getConnection();
        
@@ -112,13 +172,17 @@ public class BpaIndividualizadoDAO {
             ps.setDate(2, new java.sql.Date(dataFim.getTime()));
             ps.setString(3, CODIGO_BPA_INDIVIDUALIZADO);
             ps.setString(4, competencia);
+            ps.setDate(5, new java.sql.Date(dataInicio.getTime()));
+            ps.setDate(6, new java.sql.Date(dataFim.getTime()));
+            ps.setString(7, CODIGO_BPA_INDIVIDUALIZADO);
+            ps.setString(8, competencia);
 			ArrayList<Integer> lista = new ArrayList<>();
 			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
 				if (listaProcedimentosFiltro.size()>0)
-				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+				ps.setObject(9, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 
 			LaudoController validacaoSigtap = new LaudoController();
             ResultSet rs = ps.executeQuery();
