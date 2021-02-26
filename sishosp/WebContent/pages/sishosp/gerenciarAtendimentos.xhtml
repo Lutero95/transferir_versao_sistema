@@ -162,7 +162,7 @@
 
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="fa fa-fw fa-search"
-								disabled="#{atendimento.situacaoAtendimento.id > 0}"
+									disabled="#{atendimento.situacaoAtendimento.id > 0}"
 									class="btn-acao-table btn-icon-lupa"
 									action="#{AtendimentoController.listarProcedimentos()}"
 									oncomplete="PF('dlgConsulProc1').show()"
@@ -348,7 +348,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1" dynamic="true"
-			draggable="false" resizable="false" closable="true" modal="true"
+			draggable="true" resizable="false" closable="true" modal="true"
 			styleClass="sm-size-dlg topDialog2" showEffect="fade"
 			hideEffect="clip" responsive="true">
 
@@ -361,7 +361,7 @@
 						<f:facet name="header">
                             Descrição
                         </f:facet>
-						<p:outputLabel value="#{proc.nomeProc}" />
+						<p:outputLabel value="#{proc.codProc} - #{proc.nomeProc}" />
 					</h:column>
 
 					<h:column>

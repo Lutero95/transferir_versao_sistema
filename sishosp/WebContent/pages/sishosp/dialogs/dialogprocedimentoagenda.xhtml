@@ -10,7 +10,7 @@
 <h:body>
 	<p:dialog header="Consultar Procedimento" styleClass="topDialog"
 		widgetVar="dlgConsulProc" modal="true" resizable="false"
-		draggable="false" responsive="true" width="40%">
+		draggable="true" responsive="true" width="50%">
 		<h:form id="formConsulProc">
 			<p:outputPanel>
 				<p:autoUpdate />
@@ -21,7 +21,7 @@
 						<f:facet name="header">
                                 Descrição
                             </f:facet>
-						<p:outputLabel value="#{proc.nomeProc}" />
+						<p:outputLabel value="#{proc.codProc} - #{proc.nomeProc}" />
 					</h:column>
 
 					<h:column>
