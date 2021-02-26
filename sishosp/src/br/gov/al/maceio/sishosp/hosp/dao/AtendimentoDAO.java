@@ -1300,7 +1300,7 @@ public class AtendimentoDAO {
 				"LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)  " +
 				"LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)  " +
 				" left join hosp.cbo c on c.id  = a1.cbo  " +
-				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo \r\n" +
+				" left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
 				" left join hosp.conselho con on cc.id_conselho = con.id "+
 				"WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' "+
 				"and p.ativo = 'S' and a.cod_unidade=?";
@@ -1849,7 +1849,7 @@ public class AtendimentoDAO {
 
 		Integer totalAtendimentos = null;
 
-		String sql = "select count(*) total " +
+		String sqlProcedimentoPrimario = "select count(*) total " +
 				"from hosp.atendimentos a " +
 				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " +
 				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " +
@@ -1861,34 +1861,44 @@ public class AtendimentoDAO {
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
 				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
+		
+		String sqlProcedimentoSecundario = "	select count(*) total " + 
+				"	from hosp.atendimentos a  " + 
+				"	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  " + 
+				"	join hosp.atendimentos1_procedimento_secundario aps on (a1.id_atendimentos1 = aps.id_atendimentos1) " + 
+				"	left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " + 
+				"	join hosp.programa p on (a.codprograma = p.id_programa)  " + 
+				"	join hosp.grupo on (a.codgrupo = grupo.id_grupo)  " + 
+				"	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)  " + 
+				"	join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)  " + 
+				"	join hosp.proc pr on (aps.id_procedimento = pr.id)	 " + 
+				"	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade  " + 
+				"	where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  " + 
+				"	and a.dtaatende between ?  and ? ";
 
-		if (listaProcedimentosFiltro.size()>0)
-			sql+=" and a1.codprocedimento = any(?) ";
+		if (listaProcedimentosFiltro.size()>0) {
+			sqlProcedimentoPrimario+=" and a1.codprocedimento = any(?) ";
+			sqlProcedimentoSecundario+=" and a1.codprocedimento = any(?) ";
+		}
 
 		if (tipoGeracao.equals("A")){
-			sql+=" and sa.atendimento_realizado = true";
+			sqlProcedimentoPrimario+=" and sa.atendimento_realizado = true";
+			sqlProcedimentoSecundario+=" and sa.atendimento_realizado = true";
 		}
-		else
-			sql+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
-
+		else {
+			sqlProcedimentoPrimario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+			sqlProcedimentoSecundario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+		}
 
 		try {
 			con = ConnectionFactory.getConnection();
-			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
-			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
-			ArrayList<Integer> lista = new ArrayList<>();
-			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
-				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
-			}
-
-			if (listaProcedimentosFiltro.size()>0)
-				ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
-
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				totalAtendimentos = rs.getInt("total");
-			}
+			PreparedStatement ps = con.prepareStatement(sqlProcedimentoPrimario);
+			totalAtendimentos = mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
+					totalAtendimentos, ps);
+			
+			ps = con.prepareStatement(sqlProcedimentoSecundario);
+			totalAtendimentos += mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
+					totalAtendimentos, ps);
 
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1900,6 +1910,26 @@ public class AtendimentoDAO {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
+		}
+		return totalAtendimentos;
+	}
+
+	private Integer mapearPreparedStatmentTotal(Date dataInicio, Date dataFim,
+			List<ProcedimentoBean> listaProcedimentosFiltro, Integer totalAtendimentos, PreparedStatement ps)
+			throws SQLException {
+		ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
+		ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+		ArrayList<Integer> lista = new ArrayList<>();
+		for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+			lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+		}
+
+		if (listaProcedimentosFiltro.size()>0)
+			ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			totalAtendimentos = rs.getInt("total");
 		}
 		return totalAtendimentos;
 	}
