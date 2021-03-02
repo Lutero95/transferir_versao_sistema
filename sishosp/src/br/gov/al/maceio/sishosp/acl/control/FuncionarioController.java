@@ -887,34 +887,34 @@ public class FuncionarioController implements Serializable {
 				listaFuncoesAux = (tipo == 1) ? listaFuncoesDual.getTarget() : listaFuncoesDualEdit.getTarget();
 
 				MenuDAO mdao = new MenuDAO();
-				List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+				List<Menu> listaMenusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
 
 				MenuMB mmb = new MenuMB();
 				List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
 
 				List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 
-				for (Menu mp : menusPerfil) {
-					for (Menu mf : listaFiltradaaux) {
-						if (mp.getCodigo().equals(mf.getCodigo())) {
-							listaFiltrada.remove(mf);
+				for (Menu menuPerfil : listaMenusPerfil) {
+					for (Menu menuFiltrado : listaFiltradaaux) {
+						if (menuPerfil.getCodigo().equals(menuFiltrado.getCodigo())) {
+							listaFiltrada.remove(menuFiltrado);
 						}
 					}
 				}
 
 				PermissaoDAO pmdao = new PermissaoDAO();
-				for (Menu m : listaFiltrada) {
-					if (!permissoes.contains(pmdao.recIdPermissoesMenu(m.getId()))) {
-						permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+				for (Menu menu : listaFiltrada) {
+					if (!permissoes.contains(pmdao.recIdPermissoesMenu(menu.getId()))) {
+						permissoes.add(pmdao.recIdPermissoesMenu(menu.getId()));
 					}
 				}
 
-				for (Sistema s : listaSistemasDual.getTarget()) {
-					listaSis.add(s.getId());
+				for (Sistema sistema : listaSistemasDual.getTarget()) {
+					listaSis.add(sistema.getId());
 				}
 
-				for (Funcao f : listaFuncoesAux) {
-					permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+				for (Funcao funcao : listaFuncoesAux) {
+					permissoes.add(pmdao.recIdPermissoesFuncao(funcao.getId()));
 				}
 
 				profissional.setListaIdPermissoes(permissoes);
@@ -1389,14 +1389,14 @@ public class FuncionarioController implements Serializable {
 
 	public DualListModel<Menu> getListaMenusDualEdit()
 			throws NumberFormatException, ProjetoException {
-		//if (listaMenusDualEdit == null) {
-		listaMenusSourceEdit = null;
-		listaMenusTargetEdit = null;
-		getListaMenusSourceEdit();
-		getListaMenusTargetEdit();
-		listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit,
-				listaMenusTargetEdit);
-		//}
+		if (listaMenusDualEdit == null || 
+				(listaMenusDualEdit.getSource().isEmpty() && listaMenusDualEdit.getTarget().isEmpty())) {
+			listaMenusSourceEdit = null;
+			listaMenusTargetEdit = null;
+			getListaMenusSourceEdit();
+			getListaMenusTargetEdit();
+			listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit, listaMenusTargetEdit);
+		}
 		return listaMenusDualEdit;
 	}
 
