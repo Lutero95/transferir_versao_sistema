@@ -542,7 +542,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento"
+		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
 				  widgetVar="dlgConsulProc" modal="true" resizable="false"
 				  draggable="false" responsive="true">
 			<h:form id="formConsulProc">
@@ -555,7 +555,7 @@
 							<f:facet name="header">
 								Descrição
 							</f:facet>
-							<p:outputLabel value="#{proc.nomeProc}"/>
+							<p:outputLabel value="#{proc.codProc} - #{proc.nomeProc}"/>
 						</h:column>
 
 						<h:column>
