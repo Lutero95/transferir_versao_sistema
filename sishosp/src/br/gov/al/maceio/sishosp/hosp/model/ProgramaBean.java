@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoProfissionalEquipeEspecificoDTO;
 
 public class ProgramaBean implements Serializable {
 
@@ -34,6 +35,7 @@ public class ProgramaBean implements Serializable {
 	private List<ProcedimentoIdadeEspecificaDTO> listaProcedimentoIdadeEspecificaDTO;
     private List<EspecialidadeBean> listaEspecialidadesEspecificas;
     private List<ProcedimentoBean> listaProcedimentosPermitidos;
+    private List<ProcedimentoProfissionalEquipeEspecificoDTO> listaProcedimentoProfissionalEquipeEspecificaDTO;
     private List<CidBean> listaCidsPermitidos;
     private boolean permitePacienteSemLaudo;
     private Integer diasPacienteSemLaudoAtivo;
@@ -56,6 +58,7 @@ public class ProgramaBean implements Serializable {
 		this.listaEspecialidadesEspecificas = new ArrayList<>();
 		this.listaProcedimentosPermitidos = new ArrayList<>();
 		this.listaCidsPermitidos = new ArrayList<>();
+		this.listaProcedimentoProfissionalEquipeEspecificaDTO = new ArrayList<>();
 	}
 
 	public Integer getIdPrograma() {
@@ -212,6 +215,15 @@ public class ProgramaBean implements Serializable {
 		this.listaCidsPermitidos = listaCidsPermitidos;
 	}
 	
+	public List<ProcedimentoProfissionalEquipeEspecificoDTO> getListaProcedimentoProfissionalEquipeEspecificaDTO() {
+		return listaProcedimentoProfissionalEquipeEspecificaDTO;
+	}
+
+	public void setListaProcedimentoProfissionalEquipeEspecificaDTO(
+			List<ProcedimentoProfissionalEquipeEspecificoDTO> listaProcedimentoProfissionalEquipeEspecificaDTO) {
+		this.listaProcedimentoProfissionalEquipeEspecificaDTO = listaProcedimentoProfissionalEquipeEspecificaDTO;
+	}
+
 	public boolean isPermitePacienteSemLaudo() {
 		return permitePacienteSemLaudo;
 	}

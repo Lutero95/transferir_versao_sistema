@@ -25,6 +25,7 @@ import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoProfissionalEquipeEspecificoDTO;
 
 public class ProgramaDAO {
 
@@ -66,6 +67,7 @@ public class ProgramaDAO {
             inserirEspecialidadesPrograma(prog, con);
             inserirProcedimentosPermitidos(prog, con);
             inserirCidsPermitidos(prog, con);
+            inserirProcedimentoProfissionalEquipeEspecifico(prog, con);
 
             con.commit();
 
@@ -119,6 +121,9 @@ public class ProgramaDAO {
 
             excluirCidsPermitidos(prog.getIdPrograma(), con);
             inserirCidsPermitidos(prog, con);
+            
+            excluirProcedimentoProfissionalEquipeEspecifico(prog.getIdPrograma(), con);
+            inserirProcedimentoProfissionalEquipeEspecifico(prog, con);
 
             con.commit();
             retorno = true;
@@ -480,6 +485,7 @@ public class ProgramaDAO {
                 programa.setListaEspecialidadesEspecificas(listarEspecialidadePrograma(idPrograma, con));
                 programa.setListaProcedimentosPermitidos(listarProcedimentosPermitidos(idPrograma, con));
                 programa.setListaCidsPermitidos(listarCidsPermitidos(idPrograma, con));
+                programa.setListaProcedimentoProfissionalEquipeEspecificaDTO(listarProcedimentoProfissionalEquipeEspecifico(idPrograma, con));
             }
 
         } catch (SQLException sqle) {
@@ -1459,5 +1465,93 @@ public class ProgramaDAO {
             }
         }
         return procedimento;
+    }
+    
+    private ArrayList<ProcedimentoProfissionalEquipeEspecificoDTO>
+    	listarProcedimentoProfissionalEquipeEspecifico(Integer idPrograma, Connection conexaoAuxiliar)
+    			throws ProjetoException, SQLException {
+        PreparedStatement ps = null;
+
+        String sql = "select f.id_funcionario, f.descfuncionario, p.nome, p.id id_procedimento, p.codproc, e.id_equipe, e.descequipe \r\n" + 
+        		"	from hosp.programa_procedimento_profissional_equipe pppe \r\n" + 
+        		"	join hosp.programa prog on pppe.id_programa = prog.id_programa \r\n" + 
+        		"	join hosp.proc p on pppe.id_procedimento = p.id \r\n" + 
+        		"	join acl.funcionarios f on pppe.id_funcionario = f.id_funcionario \r\n" + 
+        		"	join hosp.equipe e on pppe.id_equipe = e.id_equipe \r\n" + 
+        		"	where pppe.id_programa = ?  order by f.descfuncionario;";
+
+        ArrayList<ProcedimentoProfissionalEquipeEspecificoDTO> lista = new ArrayList<>();
+        try {
+            ps = conexaoAuxiliar.prepareStatement(sql);
+            ps.setInt(1, idPrograma);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	ProcedimentoProfissionalEquipeEspecificoDTO dto 
+            		= new ProcedimentoProfissionalEquipeEspecificoDTO();
+            	dto.getProfissional().setId(rs.getLong("id_funcionario"));
+            	dto.getProfissional().setNome(rs.getString("descfuncionario"));
+            	dto.getProcedimento().setNomeProc(rs.getString("nome"));
+            	dto.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+            	dto.getProcedimento().setCodProc(rs.getString("codproc"));
+            	dto.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
+            	dto.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                lista.add(dto);
+            }
+        } catch (SQLException sqle) {
+        	conexaoAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+        	conexaoAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
+        return lista;
+    }
+    
+	private void inserirProcedimentoProfissionalEquipeEspecifico(
+			ProgramaBean programa, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
+		PreparedStatement ps = null;
+
+		String sql = "INSERT INTO hosp.programa_procedimento_profissional_equipe " + 
+				"(id_programa, id_procedimento, id_funcionario, id_equipe) " + 
+				"VALUES(?, ?, ?, ?); ";
+
+		try {
+			ps = conexaoAuxiliar.prepareStatement(sql);
+			for (ProcedimentoProfissionalEquipeEspecificoDTO dto : programa.getListaProcedimentoProfissionalEquipeEspecificaDTO()) {
+				ps.setInt(1, programa.getIdPrograma());
+				ps.setInt(2, dto.getProcedimento().getIdProc());
+				ps.setLong(3, dto.getProfissional().getId());
+				ps.setInt(4, dto.getEquipe().getCodEquipe());
+				ps.executeUpdate();
+			}
+
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+	
+    private void excluirProcedimentoProfissionalEquipeEspecifico (Integer idPrograma, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
+
+        try {
+            String sql = "delete from hosp.programa_procedimento_profissional_equipe where id_programa = ?;";
+
+            PreparedStatement stmt = conAuxiliar.prepareStatement(sql);
+            stmt.setInt(1, idPrograma);
+            stmt.executeUpdate();
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
     }
 }

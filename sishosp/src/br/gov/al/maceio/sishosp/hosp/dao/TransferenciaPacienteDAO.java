@@ -349,7 +349,8 @@ public class TransferenciaPacienteDAO {
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
-											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(),
+											insercao.getEquipe().getCodEquipe(), listaProfissionais.get(h).getId(), conexao);
 
 							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
@@ -599,7 +600,8 @@ public class TransferenciaPacienteDAO {
 							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
-											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(), conexao);
+											insercaoParaLaudo.getLaudo().getPaciente().getId_paciente(), insercao.getGrupo().getIdGrupo(),
+											insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 
 							if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 								idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();

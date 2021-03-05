@@ -9,18 +9,22 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoPrograma;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -28,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaGrupoFrequenciaDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCboEspecificoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoIdadeEspecificaDTO;
+import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoProfissionalEquipeEspecificoDTO;
 
 @ManagedBean(name = "ProgramaController")
 @ViewScoped
@@ -55,6 +60,10 @@ public class ProgramaController implements Serializable {
 	private ProcedimentoIdadeEspecificaDTO procedimentoIdadeEspecificaSelecionado;
 	private BuscaGrupoFrequenciaDTO buscaGrupoFrequenciaDTO;
 	private boolean editandoGrupo;
+	private FuncionarioBean profissionalSelecionado;
+	private EquipeBean equipeSelecionada;
+	private List<FuncionarioBean> listaProfissional;
+	private List<EquipeBean> listaEquipe;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroPrograma?faces-redirect=true";
@@ -63,6 +72,8 @@ public class ProgramaController implements Serializable {
 	private static final String CABECALHO_INCLUSAO = "Inclusão de Programa";
 	private static final String CABECALHO_ALTERACAO = "Alteração de Programa";
 	private static final Integer VALOR_MAXIMO_IDADE = 130;
+	private static final String MENSAGEM_AVISO_PROCEDIMENTO_PROFISSIONAL_EQUIPE = 
+			"Está opção só está disponível após o cadastro do programa";
 
 	public ProgramaController() {
 		this.prog = new ProgramaBean();
@@ -78,6 +89,8 @@ public class ProgramaController implements Serializable {
 		this.procedimentoSelecionado = new ProcedimentoBean();
 		this.cboSelecionado = new CboBean();
 		this.buscaGrupoFrequenciaDTO = new BuscaGrupoFrequenciaDTO();
+		this.profissionalSelecionado = new FuncionarioBean();
+		this.equipeSelecionada = new EquipeBean();
 	}
 
 	public String redirectEdit() {
@@ -88,19 +101,17 @@ public class ProgramaController implements Serializable {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
-
-	public void getEditProg() throws ProjetoException {
+	public void getEditaPrograma() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
+		tipo = Integer.parseInt(params.get("tipo"));
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
 			this.prog = pDao.listarProgramaPorId(id);
 		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
+			JSFUtil.adicionarMensagemAdvertencia(MENSAGEM_AVISO_PROCEDIMENTO_PROFISSIONAL_EQUIPE, "");
 		}
-
 	}
 
 	private void limparDados() throws ProjetoException {
@@ -212,9 +223,11 @@ public class ProgramaController implements Serializable {
 		return cabecalho;
 	}
 
-	public void listarProcedimentosIhCbos() throws ProjetoException {
+	public void listarDadosProcedimentosEspecificos() throws ProjetoException {
 		listarProcedimentos();
 		listarCbo();
+		listarProfissionais();
+		listarEquipeDosGrupos();
 	}
 
 	private void listarProcedimentos() throws ProjetoException {
@@ -223,6 +236,18 @@ public class ProgramaController implements Serializable {
 
 	private void listarCbo() throws ProjetoException {
 		this.listaCbos = this.cboDAO.listarCbo();
+	}
+	
+	private void listarProfissionais() throws ProjetoException {
+		this.listaProfissional = new FuncionarioDAO().listarTodosOsProfissional();
+	}
+	
+	private void listarEquipeDosGrupos() throws ProjetoException {
+		List<GrupoBean> listaGrupo = new ArrayList<>();
+		for (BuscaGrupoFrequenciaDTO grupo : prog.getListaGrupoFrequenciaDTO()) {
+			listaGrupo.add(grupo.getGrupo());
+		}
+		this.listaEquipe = new EquipeDAO().listarEquipePorGrupo(listaGrupo);
 	}
 
 	public void limparProcedimentoIhCboSelecionado() {
@@ -257,6 +282,51 @@ public class ProgramaController implements Serializable {
 	public void removerProcedimentoCboEspecifico(ProcedimentoCboEspecificoDTO procedimentoCboEspecifico) {
 		this.prog.getListaProcedimentoCboEspecificoDTO().remove(procedimentoCboEspecifico);
 	}
+	
+	public void limparProcedimentoProfissionalIhEquipeSelecionado() {
+		this.procedimentoSelecionado = new ProcedimentoBean();
+		this.profissionalSelecionado = new FuncionarioBean();
+		this.equipeSelecionada = new EquipeBean();
+	}
+	
+	public void removerProcedimentoProfissionalEquipeEspecifico(ProcedimentoProfissionalEquipeEspecificoDTO procedimentoProfissionalEquipeEspecifico) {
+		this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO().remove(procedimentoProfissionalEquipeEspecifico);
+	}
+	
+	public void selecionarProfissional(FuncionarioBean funcionario) {
+		this.profissionalSelecionado = funcionario;
+	}
+	
+	public void selecionarEquipe(EquipeBean equipe) {
+		this.equipeSelecionada = equipe;
+	}
+	
+	public void adicionarProcedimentoProfissionalEquipeEspecifico() {
+		ProcedimentoProfissionalEquipeEspecificoDTO procedimentoProfissionalEquipeEspecificoDTO
+			= new ProcedimentoProfissionalEquipeEspecificoDTO();
+		procedimentoProfissionalEquipeEspecificoDTO.setProcedimento(this.procedimentoSelecionado);
+		procedimentoProfissionalEquipeEspecificoDTO.setProfissional(this.profissionalSelecionado);
+		procedimentoProfissionalEquipeEspecificoDTO.setEquipe(this.equipeSelecionada);
+
+		if(!existeProcedimentoEspecificoParaProfissionalEquipe(procedimentoProfissionalEquipeEspecificoDTO)
+				&& !existeProcedimentoPadrao(procedimentoProfissionalEquipeEspecificoDTO.getProcedimento())
+				&& !existeProcedimentoPermitido(procedimentoProfissionalEquipeEspecificoDTO.getProcedimento())) {
+			this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO().add(procedimentoProfissionalEquipeEspecificoDTO);
+			JSFUtil.fecharDialog("dlgConsulProcProfEquipe");
+		}
+	}
+	
+	private boolean existeProcedimentoEspecificoParaProfissionalEquipe(ProcedimentoProfissionalEquipeEspecificoDTO profissionalEquipe) {
+		for (ProcedimentoProfissionalEquipeEspecificoDTO dto : this.prog.getListaProcedimentoProfissionalEquipeEspecificaDTO()) {
+			if(dto.getProfissional().getId().equals(profissionalEquipe.getProfissional().getId())
+					&& dto.getEquipe().getCodEquipe().equals(profissionalEquipe.getEquipe().getCodEquipe())) {
+				JSFUtil.adicionarMensagemErro("Já existe um procedimento especifico para o profissional e equipe", "Erro");
+				return true;
+			}
+		}
+		return false; 
+	}
+	//TODO
 
 	public void validaFrequencia() {
 		if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.buscaGrupoFrequenciaDTO.getFrequencia()))
@@ -650,4 +720,36 @@ public class ProgramaController implements Serializable {
 		this.editandoGrupo = editandoGrupo;
 	}
 
+	public FuncionarioBean getProfissionalSelecionado() {
+		return profissionalSelecionado;
+	}
+
+	public void setProfissionalSelecionado(FuncionarioBean profissionalSelecionado) {
+		this.profissionalSelecionado = profissionalSelecionado;
+	}
+
+	public EquipeBean getEquipeSelecionada() {
+		return equipeSelecionada;
+	}
+
+	public void setEquipeSelecionada(EquipeBean equipeSelecionada) {
+		this.equipeSelecionada = equipeSelecionada;
+	}
+
+	public List<FuncionarioBean> getListaProfissional() {
+		return listaProfissional;
+	}
+
+	public void setListaProfissional(List<FuncionarioBean> listaProfissional) {
+		this.listaProfissional = listaProfissional;
+	}
+
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
+	
 }

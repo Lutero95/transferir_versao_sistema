@@ -9,8 +9,8 @@
     <ui:define name="content">
 
         <f:metadata>
-            <f:viewAction action="#{ProgramaController.getEditProg()}"/>
-            <f:viewAction action="#{ProgramaController.listarProcedimentosIhCbos()}"/>
+            <f:viewAction action="#{ProgramaController.getEditaPrograma()}"/>
+            <f:viewAction action="#{ProgramaController.listarDadosProcedimentosEspecificos()}"/>
             <f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
         </f:metadata>
 
@@ -24,10 +24,7 @@
             <p:tabView id="tab">
             	<p:tab title="Dados Gerais">
 					<div class="panel-body table-body sub-table-body">
-
-
 							<b:row>
-
 								<b:column span="12" class="label-position">
 									<b:label for="inputname" value="Descrição" severity="info" />
 
@@ -40,9 +37,8 @@
 								</b:column>
 							</b:row>
 
-							<br></br>
-
-							<br></br>
+							<br />
+							<br />
 
 							<b:row>
 								<b:column span="2" class="label-position">
@@ -283,6 +279,50 @@
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoPermitido(proc)}"
                                 	title="Remover" update="frmPrincipal:tab:tabProcedimento"
+                                	style="margin-left:28%;" process="@this" immediate="true"
+                                	class="new-btn-acao-table acao-excluir"/>
+							</p:column>
+						</p:dataTable>
+				</p:tab>
+				
+				<p:tab title="Procedimentos Específicos Profissional / Equipe">
+					<p:row rendered="#{ProgramaController.tipo == 1}">
+						<p:message/>
+						<br/>
+					</p:row>	
+				
+					<p:commandButton
+							icon="ui-icon-plus" size="sm"
+							title="Adicionar Registro"
+							update=":msgPagina :formConsulProcProfEquipe" 
+							class="btn-acao-table acao-editar"
+							process="@this"
+							actionListener="#{ProgramaController.limparProcedimentoProfissionalIhEquipeSelecionado()}"
+							oncomplete="PF('dlgConsulProcProfEquipe').show();"
+							disabled="#{ProgramaController.tipo == 1}" />
+							
+						<p:dataTable id="tabProcEqui" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoProfissionalEquipeEspecificaDTO}"
+							emptyMessage="Nenhum registro foi adicionado" reflow="true" disabled="#{ProgramaController.tipo == 1}">
+							<p:column headerText="Procedimento">
+								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
+							</p:column>
+							
+							<p:column headerText="Código Procedimento" width="250">
+								<h:outputText value="#{procEsp.procedimento.codProc}" />
+							</p:column>
+
+							<p:column headerText="Profissional">
+								<h:outputText value="#{procEsp.profissional.nome}" />
+							</p:column>
+							
+							<p:column headerText="Equipe">
+								<h:outputText value="#{procEsp.equipe.descEquipe}" />
+							</p:column>
+							
+							<p:column headerText="Remover" width="80">
+								<p:commandButton icon="fa fa-fw fa-times"
+									actionListener="#{ProgramaController.removerProcedimentoProfissionalEquipeEspecifico(procEsp)}"
+                                	title="Remover" update="frmPrincipal:tab:tabProcEqui"
                                 	style="margin-left:28%;" process="@this" immediate="true"
                                 	class="new-btn-acao-table acao-excluir"/>
 							</p:column>
@@ -658,6 +698,98 @@
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Consultar Procedimento, Profissional e Equipe" styleClass="topDialog"
+                  widgetVar="dlgConsulProcProfEquipe" modal="true" resizable="false" height="400" width="70%" 
+                  draggable="true" responsive="true" dynamic="true" minHeight="200">
+            <h:form id="formConsulProcProfEquipe">
+            	
+            	<p:tabView>
+					<p:tab title="Procedimento">
+						<p:outputPanel id="outproc">
+							<p:dataTable var="proc"
+								value="#{ProgramaController.listaProcedimentos}"
+								emptyMessage="Nenhum procedimento encontrado" paginator="true"
+								rows="5" paginatorPosition="bottom">
+								<p:column filterBy="#{proc.nomeProc}" footerText="contains"
+									filterMatchMode="contains" headerText="Procedimento">
+									<h:outputText value="#{proc.nomeProc}" />
+								</p:column>
+
+								<p:column headerText="Código" width="100">
+									<h:outputText value="#{proc.codProc}" />
+								</p:column>
+
+								<p:column headerText="Selecionar" width="100">
+									<p:commandButton
+										actionListener="#{ProgramaController.selecionarProcedimento(proc)}"
+										icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
+										title="Selecionar" update="formConsulProcProfEquipe"
+										style="margin-left:30%;"
+										class="new-btn-acao-table ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'acao-editar' : ''}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</p:tab>
+					
+					<p:tab title="Profissional">
+						<p:outputPanel id="outprof">
+							<p:dataTable var="prof"
+								value="#{ProgramaController.listaProfissional}"
+								emptyMessage="Nenhum profissional encontrado" paginator="true"
+								rows="5" paginatorPosition="bottom">
+								<p:column filterBy="#{prof.nome}" footerText="contains"
+									filterMatchMode="contains" headerText="Profissional">
+									<h:outputText value="#{prof.nome}" />
+								</p:column>
+
+								<p:column headerText="Selecionar" width="100">
+									<p:commandButton
+										actionListener="#{ProgramaController.selecionarProfissional(prof)}"
+										icon="fa fa-fw ${ProgramaController.profissionalSelecionado.id == prof.id ? 'fa-check' : 'fa-square-o'}"
+										title="Selecionar" update="formConsulProcProfEquipe"
+										style="margin-left:30%;"
+										class="new-btn-acao-table ${ProgramaController.profissionalSelecionado.id == prof.id ? 'acao-editar' : ''}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</p:tab>
+					
+					<p:tab title="Equipe">
+						<p:outputPanel id="outequipe">
+							<p:dataTable var="equipe"
+								value="#{ProgramaController.listaEquipe}"
+								emptyMessage="Nenhuma equipe encontrada" paginator="true"
+								rows="5" paginatorPosition="bottom">
+								<p:column filterBy="#{equipe.descEquipe}" footerText="contains"
+									filterMatchMode="contains" headerText="Equipe">
+									<h:outputText value="#{equipe.descEquipe}" />
+								</p:column>
+
+								<p:column headerText="Selecionar" width="100">
+									<p:commandButton
+										actionListener="#{ProgramaController.selecionarEquipe(equipe)}" 
+										icon="fa fa-fw ${ProgramaController.equipeSelecionada.codEquipe == equipe.codEquipe ? 'fa-check' : 'fa-square-o'}"
+										title="Selecionar" update="formConsulProcProfEquipe"
+										style="margin-left:30%;"
+										class="new-btn-acao-table ${ProgramaController.equipeSelecionada.codEquipe == equipe.codEquipe ? 'acao-editar' : ''}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</p:tab>
+				</p:tabView>
+                                
+                <br />
+                <div align="center">
+                	<p:commandButton value="Incluir" 
+                	update=":frmPrincipal:tab:tabProcEqui :msgPagina" immediate="true"
+                	action="#{ProgramaController.adicionarProcedimentoProfissionalEquipeEspecifico()}"
+                	disabled="#{ProgramaController.procedimentoSelecionado.idProc == null or 
+                	ProgramaController.profissionalSelecionado.id == null or ProgramaController.equipeSelecionada.codEquipe == null }"/>
+                </div>
+            </h:form>
+        </p:dialog>
+		
 
     </ui:define>
 </ui:composition>

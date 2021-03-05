@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GrupoProgramaUnidadeDTO;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
 
 import javax.faces.context.FacesContext;
@@ -58,10 +59,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -85,12 +86,12 @@ public class EquipeDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	con.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			con.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -115,10 +116,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -149,10 +150,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -183,10 +184,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -220,10 +221,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -256,10 +257,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -289,10 +290,10 @@ public class EquipeDAO {
                 lista.add(equipe);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -327,10 +328,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -350,12 +351,12 @@ public class EquipeDAO {
             ps.execute();
             retorno = true;
         }  catch (SQLException sqle) {
-        	con.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			con.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            con.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            con.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
@@ -375,10 +376,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -411,10 +412,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -445,12 +446,12 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return equipe;
     }
 
@@ -476,10 +477,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -512,10 +513,10 @@ public class EquipeDAO {
                 lista.add(func);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -566,10 +567,10 @@ public class EquipeDAO {
                 lista.add(funcionario);
             }
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -578,7 +579,7 @@ public class EquipeDAO {
         }
         return lista;
     }
-    
+
     public Boolean removerProfissionalEquipe(int codigoEquipe, Long codigoProfissional, Date dataSaida) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -610,10 +611,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -624,8 +625,8 @@ public class EquipeDAO {
     }
 
     private Boolean excluirProfissionalDeEquipe
-    	(int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            (int codigoEquipe, Long codigoProfissional, Date dataSaida, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -637,21 +638,21 @@ public class EquipeDAO {
             ps.setLong(2, codigoProfissional);
             ps.execute();
 
-            retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con), 
+            retorno = gravarLogRemocaoProfissionalEquipeAtendimentos1(listarAtendimentosAhSeremExcluidos(codigoProfissional, dataSaida, codigoEquipe, con),
                     codigoProfissional, idRemocaoProfissionalEquipe, codigoEquipe, con);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     private ArrayList<Integer> listarAtendimentosAhSeremExcluidos(Long codigoProfissional, Date dataSaida, int codigoEquipe, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -672,18 +673,18 @@ public class EquipeDAO {
                 lista.add(idAtendimento1);
             }
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
 
     private Boolean gravarLogRemocaoProfissionalEquipeAtendimentos1(
             List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Integer codigoEquipe, Connection conAuxiliar)
-            		throws SQLException, ProjetoException {
+            throws SQLException, ProjetoException {
 
         Boolean retorno = false;
         String sql = "insert into logs.remocao_profissional_equipe_atendimentos1 " +
@@ -703,18 +704,18 @@ public class EquipeDAO {
                     listaAtendimentos1, codigoProfissional, idRemocaoProfissionalEquipe, codigoEquipe, con);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     private Boolean excluirAtendimentosProfissionalRemovidoEquipe(
             List<Integer> listaAtendimentos1, Long codigoProfissional, int idRemocaoProfissionalEquipe, Integer codigoEquipe, Connection conAuxiliar)
-            		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -733,48 +734,48 @@ public class EquipeDAO {
                             codigoProfissional, codigoEquipe, conAuxiliar), codigoProfissional, idRemocaoProfissionalEquipe, conAuxiliar);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
-    private ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, Integer idEquipe, Connection conAuxiliar) 
-    		throws ProjetoException, SQLException {
+    private ArrayList<Integer> listarIdPacienteInstituicaoAhSeremApagados(Long codigoProfissional, Integer idEquipe, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
-        String sql = "select distinct pda.id_paciente_instituicao from hosp.profissional_dia_atendimento pda " + 
-        		"join hosp.paciente_instituicao pi on pda.id_paciente_instituicao = pi.id " + 
-        		"where pi.status = 'A' and pi.codequipe = ? and pda.id_profissional = ?;";
+        String sql = "select distinct pda.id_paciente_instituicao from hosp.profissional_dia_atendimento pda " +
+                "join hosp.paciente_instituicao pi on pda.id_paciente_instituicao = pi.id " +
+                "where pi.status = 'A' and pi.codequipe = ? and pda.id_profissional = ?;";
 
         try {
-			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
-			stm.setInt(1, idEquipe);
-			stm.setLong(2, codigoProfissional);
-			ResultSet rs = stm.executeQuery();
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idEquipe);
+            stm.setLong(2, codigoProfissional);
+            ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				Integer idPacienteInstituicao = null;
-				idPacienteInstituicao = rs.getInt("id_paciente_instituicao");
-				lista.add(idPacienteInstituicao);
-			}
+            while (rs.next()) {
+                Integer idPacienteInstituicao = null;
+                idPacienteInstituicao = rs.getInt("id_paciente_instituicao");
+                lista.add(idPacienteInstituicao);
+            }
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
 
     private Boolean gravarLogRemocaoProfissionalEquipePacienteInstituicao(
-            List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar) 
-            		throws ProjetoException, SQLException {
+            List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, int idRemocaoProfissionalEquipe, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
         String sql = "insert into logs.remocao_profissional_equipe_profissional_dia_atendimento " +
@@ -799,17 +800,17 @@ public class EquipeDAO {
             retorno = excluirProfissionalDiaAtendimento(listaIdPacienteInstituicao, codigoProfissional, conAuxiliar);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     public Boolean excluirProfissionalDiaAtendimento(List<Integer> listaIdPacienteInstituicao, Long codigoProfissional, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -827,17 +828,17 @@ public class EquipeDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
-    public List<Integer> listarDiasDaSemanaAtendimentoProfissional(Long idProfissional, int idPacienteInstituicao, Connection conAuxiliar) 
-    		throws ProjetoException, SQLException {
+    public List<Integer> listarDiasDaSemanaAtendimentoProfissional(Long idProfissional, int idPacienteInstituicao, Connection conAuxiliar)
+            throws ProjetoException, SQLException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -855,12 +856,12 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
 
@@ -893,10 +894,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -931,10 +932,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -973,10 +974,10 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -991,21 +992,21 @@ public class EquipeDAO {
         Boolean retorno = false;
 
         try {
-        	List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
+            List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
                     substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(), substituicao.getDataDeSubstituicao());
 
             substituicao.setListaAtendimentos1(listaAtendimentos1);
-            
+
             con = ConnectionFactory.getConnection();
-            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos  " + 
-            		"join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento " + 
-            		"where atendimentos.id_atendimento=( " + 
-            		"select a1.id_atendimento from hosp.atendimentos1 a1  " + 
-            		"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " + 
-            		"where a1.id_atendimentos1=? ) " + 
-            		"and coalesce(atendimentos.situacao,'A')<>'C' " + 
-            		"and coalesce(atendimentos1.excluido,'N' )='N' " + 
-            		"and atendimentos1.codprofissionalatendimento=? )";
+            String sql = "UPDATE hosp.atendimentos1  SET excluido  = 'N', codprofissionalatendimento = ? WHERE id_atendimentos1  = ? and not exists (select atendimentos.id_atendimento from hosp.atendimentos  " +
+                    "join hosp.atendimentos1 on atendimentos1.id_atendimento = atendimentos.id_atendimento " +
+                    "where atendimentos.id_atendimento=( " +
+                    "select a1.id_atendimento from hosp.atendimentos1 a1  " +
+                    "join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
+                    "where a1.id_atendimentos1=? ) " +
+                    "and coalesce(atendimentos.situacao,'A')<>'C' " +
+                    "and coalesce(atendimentos1.excluido,'N' )='N' " +
+                    "and atendimentos1.codprofissionalatendimento=? )";
             for (int i = 0; i < listaAtendimentos1.size(); i++) {
                 ps = null;
                 ps = con.prepareStatement(sql);
@@ -1016,18 +1017,18 @@ public class EquipeDAO {
                 ps.setLong(4, substituicao.getFuncionarioAssumir().getId());
                 ps.execute();
             }
-            
+
             retorno = gravarLogSubstituicaoProfissionalEquipe(substituicao, con);
             if (retorno)
-            	con.commit();
+                con.commit();
             else
-            	con.rollback();
+                con.rollback();
 
         } catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
             try {
                 con.close();
             } catch (Exception ex) {
@@ -1038,7 +1039,7 @@ public class EquipeDAO {
     }
 
     public Boolean gravarLogSubstituicaoProfissionalEquipe(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1057,13 +1058,13 @@ public class EquipeDAO {
             ps.setLong(4, user_session.getId());
 
             ResultSet rs = ps.executeQuery();
-            
+
             sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
 
-                ps = con.prepareStatement(sql);
-                    ps.setInt(1, substituicao.getEquipe().getCodEquipe());
-                    ps.setLong(2, substituicao.getFuncionarioAssumir().getId());
-                    ps.execute();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, substituicao.getEquipe().getCodEquipe());
+            ps.setLong(2, substituicao.getFuncionarioAssumir().getId());
+            ps.execute();
 
 
             if (rs.next()) {
@@ -1073,17 +1074,17 @@ public class EquipeDAO {
             retorno = gravarLogSubstituicaoProfissionalEquipeAtendimentos1(substituicao, conAuxiliar);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     public Boolean gravarLogSubstituicaoProfissionalEquipeAtendimentos1(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1101,17 +1102,17 @@ public class EquipeDAO {
             retorno = gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(substituicao, conAuxiliar);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     public Boolean gravarLogSubstituicaoProfissionalEquipeProfissionalDiaAtendimentos(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1133,17 +1134,17 @@ public class EquipeDAO {
             retorno = gravarProfissionalProfissionalDiaAtendimento(substituicao, conAuxiliar);
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     public Boolean gravarProfissionalProfissionalDiaAtendimento(SubstituicaoProfissionalEquipeDTO substituicao, Connection conAuxiliar)
-    		throws ProjetoException, SQLException {
+            throws ProjetoException, SQLException {
 
         Boolean retorno = false;
 
@@ -1165,18 +1166,18 @@ public class EquipeDAO {
             retorno = true;
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return retorno;
     }
 
     public ArrayList<RemocaoProfissionalEquipe> listarIdPacienteSubstituicaoSubstituicaoProfissionalEquipe(
-            SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO, Connection conAuxiliar) 
-            		throws SQLException, ProjetoException {
+            SubstituicaoProfissionalEquipeDTO substituicaoProfissionalEquipeDTO, Connection conAuxiliar)
+            throws SQLException, ProjetoException {
 
         ArrayList<RemocaoProfissionalEquipe> lista = new ArrayList<>();
 
@@ -1202,59 +1203,59 @@ public class EquipeDAO {
             }
 
         } catch (SQLException sqle) {
-        	conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			conAuxiliar.rollback();
-			throw new ProjetoException(ex, this.getClass().getName());
-		}
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
         return lista;
     }
-    
-    
+
+
     public ArrayList<EquipeGrupoProgramaUnidadeDTO> buscaEquipesPorProgramas
-    	(List<GrupoProgramaUnidadeDTO> listaGrupoProgramaDTO) throws ProjetoException {
-        
-    	PreparedStatement ps = null;
+            (List<GrupoProgramaUnidadeDTO> listaGrupoProgramaDTO) throws ProjetoException {
+
+        PreparedStatement ps = null;
         con = ConnectionFactory.getConnection();
 
-        String sql = "select e.id_equipe, e.descequipe, g.id_grupo, g.descgrupo, p.id_programa, p.descprograma, u.id id_unidade, u.nome unidade " + 
-        		"from hosp.equipe e " + 
-        		"join hosp.equipe_grupo eg on e.id_equipe = eg.codequipe " + 
-        		"join hosp.grupo g on eg.id_grupo = g.id_grupo " + 
-        		"join hosp.grupo_programa gp on g.id_grupo = gp.codgrupo " + 
-        		"join hosp.programa p on gp.codprograma = p.id_programa " + 
-        		"join hosp.unidade u on g.cod_unidade = u.id " + 
-        		"where (g.id_grupo = ? and p.id_programa = ?)   ";
-        
+        String sql = "select e.id_equipe, e.descequipe, g.id_grupo, g.descgrupo, p.id_programa, p.descprograma, u.id id_unidade, u.nome unidade " +
+                "from hosp.equipe e " +
+                "join hosp.equipe_grupo eg on e.id_equipe = eg.codequipe " +
+                "join hosp.grupo g on eg.id_grupo = g.id_grupo " +
+                "join hosp.grupo_programa gp on g.id_grupo = gp.codgrupo " +
+                "join hosp.programa p on gp.codprograma = p.id_programa " +
+                "join hosp.unidade u on g.cod_unidade = u.id " +
+                "where (g.id_grupo = ? and p.id_programa = ?)   ";
+
         String filtroUnidade = " or (g.id_grupo = ? and p.id_programa = ?) ";
         String ordenacao = " order by e.descequipe;";
-        
+
         for (int i = 1; i < listaGrupoProgramaDTO.size(); i++) {
-			sql += filtroUnidade;
-		}
+            sql += filtroUnidade;
+        }
         sql += ordenacao;
-        
+
         ArrayList<EquipeGrupoProgramaUnidadeDTO> lista = new ArrayList<>();
         try {
             ps = con.prepareStatement(sql);
             ps.setInt(1, listaGrupoProgramaDTO.get(0).getGrupo().getIdGrupo());
             ps.setInt(2, listaGrupoProgramaDTO.get(0).getPrograma().getIdPrograma());
             int contador = 3;
-            
+
             for (int i = 1; i < listaGrupoProgramaDTO.size(); i++) {
-    			ps.setInt(contador, listaGrupoProgramaDTO.get(i).getGrupo().getIdGrupo());
-    			contador++;
-    			ps.setInt(contador, listaGrupoProgramaDTO.get(i).getPrograma().getIdPrograma());
-    			contador++;
-    		}
+                ps.setInt(contador, listaGrupoProgramaDTO.get(i).getGrupo().getIdGrupo());
+                contador++;
+                ps.setInt(contador, listaGrupoProgramaDTO.get(i).getPrograma().getIdPrograma());
+                contador++;
+            }
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-            	EquipeGrupoProgramaUnidadeDTO equipeGrupoProgramaUnidadeDTO = new EquipeGrupoProgramaUnidadeDTO();
-            	equipeGrupoProgramaUnidadeDTO.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
-            	equipeGrupoProgramaUnidadeDTO.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                EquipeGrupoProgramaUnidadeDTO equipeGrupoProgramaUnidadeDTO = new EquipeGrupoProgramaUnidadeDTO();
+                equipeGrupoProgramaUnidadeDTO.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
+                equipeGrupoProgramaUnidadeDTO.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 equipeGrupoProgramaUnidadeDTO.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
                 equipeGrupoProgramaUnidadeDTO.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 equipeGrupoProgramaUnidadeDTO.getPrograma().setIdPrograma(rs.getInt("id_programa"));
@@ -1276,5 +1277,46 @@ public class EquipeDAO {
         }
         return lista;
     }
-    
+
+    public List<EquipeBean> listarEquipePorGrupo(List<GrupoBean> listaGrupo) throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe, e.turno from hosp.equipe e "
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where e.ativo = true and eg.id_grupo = ? order by descequipe ";
+
+        List<Integer> idEquipes = new ArrayList<>();
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            for (GrupoBean grupo : listaGrupo) {
+                stm.setInt(1, grupo.getIdGrupo());
+                ResultSet rs = stm.executeQuery();
+
+                while (rs.next()) {
+                    if(!idEquipes.contains(rs.getInt("id_equipe"))) {
+                        EquipeBean equipe = new EquipeBean();
+                        equipe.setCodEquipe(rs.getInt("id_equipe"));
+                        equipe.setDescEquipe(rs.getString("descequipe"));
+                        equipe.setTurno(rs.getString("turno"));
+
+                        lista.add(equipe);
+                    }
+                }
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+
 }
