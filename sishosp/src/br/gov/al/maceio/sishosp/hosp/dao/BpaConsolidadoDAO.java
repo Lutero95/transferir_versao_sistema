@@ -23,7 +23,9 @@ public class BpaConsolidadoDAO {
 	/* ESTA CONSTANTE SERÁ SUBSTITUÍDA DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_IDADE = "000";
 
-	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
+	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado
+		(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades) 
+				throws ProjetoException {
 
     	List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
         String sql = "select count(*) qtdproc, " + 
@@ -49,6 +51,8 @@ public class BpaConsolidadoDAO {
 		if (listaProcedimentosFiltro.size()>0)
 			sql+=" and a1.codprocedimento = any(?) ";
 
+		if(!idUnidades.isEmpty())
+			sql += " and a.cod_unidade = any(?) ";
 
         if (tipoGeracao.equals("A")){
         	sql+=" and sa.atendimento_realizado = true";
@@ -71,8 +75,14 @@ public class BpaConsolidadoDAO {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-			if (listaProcedimentosFiltro.size()>0)
+			int parametro = 5;
+			if (listaProcedimentosFiltro.size()>0) {
 				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+				parametro++;
+			}
+			
+			if(!idUnidades.isEmpty())
+				ps.setObject(parametro, ps.getConnection().createArrayOf(  "INTEGER", idUnidades.toArray()));
 
             ResultSet rs = ps.executeQuery();
 			LaudoController validacaoSigtap = new LaudoController();

@@ -32,7 +32,9 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_DDTEL_PCNT = "           ";
 	private static final String PRD_INE = "          ";
 	
-    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
+    public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado
+    	(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades) 
+    			throws ProjetoException {
 
     	List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
         String sql = "select count(*) qtdproc ,\n" +
@@ -71,7 +73,7 @@ public class BpaIndividualizadoDAO {
 				" cross join hosp.empresa emp\n" +
 				"left join sigtap.servico sm on sm.id = prog.id_servico \n" +
 				"left   join sigtap.classificacao cm on cm.id = prog.id_classificacao \n" +
-				" where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
+				" where hc.status='A' and coalesce(a.situacao, '')<> 'C'\n" +
 				"\tand coalesce(a1.excluido, 'N')= 'N' \n" +
 				" and a.dtaatende  between ?  and ? \n" +
 				" and ir.codigo = ? \n" +
@@ -81,6 +83,8 @@ public class BpaIndividualizadoDAO {
 		if (listaProcedimentosFiltro.size()>0)
 			sql+=" and a1.codprocedimento = any(?) ";
 
+		if(!idUnidades.isEmpty())
+			sql += " and a.cod_unidade = any(?) ";
 
 		if (tipoGeracao.equals("A")){
 			sql+=" and sa.atendimento_realizado = true";
@@ -116,8 +120,14 @@ public class BpaIndividualizadoDAO {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-				if (listaProcedimentosFiltro.size()>0)
-				ps.setObject(5, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+			int parametro = 5;
+			if (listaProcedimentosFiltro.size() > 0) {
+				ps.setObject(5, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+				parametro++;
+			}
+			
+			if (!idUnidades.isEmpty())
+				ps.setObject(parametro, ps.getConnection().createArrayOf("INTEGER", idUnidades.toArray()));
 
 			LaudoController validacaoSigtap = new LaudoController();
             ResultSet rs = ps.executeQuery();
@@ -137,7 +147,7 @@ public class BpaIndividualizadoDAO {
 				paciente.setDtanascimento(rs.getDate("dtanascimento"));
 				CidBean cid = new CidBean();
 				cid.setCid(rs.getString("cid"));
-				retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
+			/*	retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
 				if (retornoCbo!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCbo);
 				retornoIdade = validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc, false);
@@ -151,7 +161,7 @@ public class BpaIndividualizadoDAO {
 					if (retornoCid!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCid);
 				}
-
+*/
             	bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
             	bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));
             	bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));

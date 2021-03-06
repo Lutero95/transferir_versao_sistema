@@ -1856,7 +1856,9 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 
-	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
+	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo
+		(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+				throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 
@@ -1870,11 +1872,14 @@ public class AtendimentoDAO {
 				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
 				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" +
 				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
-				"where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"where coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
 				"and a.dtaatende between ? and ? ";
 
 		if (listaProcedimentosFiltro.size()>0)
 			sql+=" and a1.codprocedimento = any(?) ";
+		
+		if(!idUnidades.isEmpty())
+			sql += " and a.cod_unidade = any(?) ";
 
 		if (tipoGeracao.equals("A")){
 			sql+=" and sa.atendimento_realizado = true";
@@ -1893,8 +1898,14 @@ public class AtendimentoDAO {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-			if (listaProcedimentosFiltro.size()>0)
+			int parametro = 3;
+			if (listaProcedimentosFiltro.size()>0) {
 				ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+				parametro++;
+			}
+			
+			if(!idUnidades.isEmpty())
+				ps.setObject(parametro, ps.getConnection().createArrayOf(  "INTEGER", idUnidades.toArray()));
 
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
