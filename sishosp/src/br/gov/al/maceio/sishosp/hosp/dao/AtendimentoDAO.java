@@ -527,15 +527,15 @@ public class AtendimentoDAO {
 				" left join hosp.equipe e on (e.id_equipe = a.codequipe) " +
 				" where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ? and coalesce(a.situacao, '')<> 'C' and coalesce(a1.excluido,'N' )='N'";
 
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 			sql = sql + " and  a.codprograma = ?";
 		}
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 			sql = sql + " and  a.codgrupo = ?";
 		}
-		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
+		if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe())
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
 			sql = sql + " and  a.codequipe = ?";
 		}
@@ -564,21 +564,21 @@ public class AtendimentoDAO {
 			stm.setDate(2, new java.sql.Date(atendimento.getDataAtendimentoFinal().getTime()));
 			stm.setInt(3, user_session.getUnidade().getId());
 
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma()) 
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getPrograma())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getPrograma().getIdPrograma())) {
 				stm.setInt(i, atendimento.getPrograma().getIdPrograma());
 				i = i + 1;
 			}
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo()) 
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getGrupo())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getGrupo().getIdGrupo())) {
 				stm.setInt(i, atendimento.getGrupo().getIdGrupo());
 				i = i + 1;
 			}
-			
-			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe()) 
+
+			if (!VerificadorUtil.verificarSeObjetoNulo(atendimento.getEquipe())
 					&& !VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getEquipe().getCodEquipe())) {
 				stm.setInt(i, atendimento.getEquipe().getCodEquipe());
-				i = i + 1;				
+				i = i + 1;
 			}
 
 			if (!campoBusca.equals(null)) {
@@ -714,37 +714,37 @@ public class AtendimentoDAO {
 
 	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
 
-		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   " + 
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   " + 
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   " + 
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   " + 
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   " + 
-				"	JOIN hosp.unidade u ON u.id = ? " + 
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   " +
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   " +
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   " +
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   " +
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   " +
+				"	JOIN hosp.unidade u ON u.id = ? " +
 				"   join hosp.parametro pa on u.id = pa.codunidade "+
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   " + 
-				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   " + 
-				"	join hosp.programa p on p.id_programa = a.codprograma   " + 
-				"	join hosp.grupo g on g.id_grupo = a.codgrupo   " + 
-				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  " + 
-				" 	where a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))   " + 
-				"	and a.dtaatende<current_date   " + 
-				"	and a1.codprofissionalatendimento = ?  " + 
-				"	and coalesce(a.situacao,'A')<>'C'  " + 
-				"	and coalesce(a1.excluido,'N' )='N' "; 
-				
-				String agrupamentoSemEvolucaoPorPrograma = " and a.dtaatende >= pa.inicio_evolucao_unidade "+
-															" group by p.descprograma, g.descgrupo";
-				
-				String agrupamentoComEvolucaoPorPrograma = " and a.codprograma = ceu.codprograma   " + 
-							" and a.codgrupo = ceu.codgrupo   " + 
-							" and a.dtaatende>= ceu.inicio_evolucao  " +
-							" group by p.descprograma, g.descgrupo";
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   " +
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   " +
+				"	join hosp.programa p on p.id_programa = a.codprograma   " +
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo   " +
+				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  " +
+				" 	where a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))   " +
+				"	and a.dtaatende<current_date   " +
+				"	and a1.codprofissionalatendimento = ?  " +
+				"	and coalesce(a.situacao,'A')<>'C'  " +
+				"	and coalesce(a1.excluido,'N' )='N' ";
 
-			if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma())
-				sql += agrupamentoComEvolucaoPorPrograma;
-			else 
-				sql += agrupamentoSemEvolucaoPorPrograma;
-				
+		String agrupamentoSemEvolucaoPorPrograma = " and a.dtaatende >= pa.inicio_evolucao_unidade "+
+				" group by p.descprograma, g.descgrupo";
+
+		String agrupamentoComEvolucaoPorPrograma = " and a.codprograma = ceu.codprograma   " +
+				" and a.codgrupo = ceu.codgrupo   " +
+				" and a.dtaatende>= ceu.inicio_evolucao  " +
+				" group by p.descprograma, g.descgrupo";
+
+		if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma())
+			sql += agrupamentoComEvolucaoPorPrograma;
+		else
+			sql += agrupamentoSemEvolucaoPorPrograma;
+
 		List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucao = new ArrayList<>();
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1040,7 +1040,7 @@ public class AtendimentoDAO {
 				+ "left join acl.funcionarios f on (f.id_funcionario =a1.codprofissionalatendimento) "
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
 				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "+
-		"left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
+				"left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
 				"left join hosp.conselho con on cc.id_conselho = con.id  "
 				+ " left join hosp.cbo  on cbo.id  = a1.cbo "
 				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
@@ -1226,7 +1226,7 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPaciente);
-		//	stm.setLong(2, user_session.getId());
+			//	stm.setLong(2, user_session.getId());
 
 			ResultSet rs = stm.executeQuery();
 
@@ -1857,8 +1857,8 @@ public class AtendimentoDAO {
 	}
 
 	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo
-		(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
-				throws ProjetoException {
+			(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+			throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 
@@ -1877,7 +1877,7 @@ public class AtendimentoDAO {
 
 		if (listaProcedimentosFiltro.size()>0)
 			sql+=" and a1.codprocedimento = any(?) ";
-		
+
 		if(!idUnidades.isEmpty())
 			sql += " and a.cod_unidade = any(?) ";
 
@@ -1903,7 +1903,7 @@ public class AtendimentoDAO {
 				ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 				parametro++;
 			}
-			
+
 			if(!idUnidades.isEmpty())
 				ps.setObject(parametro, ps.getConnection().createArrayOf(  "INTEGER", idUnidades.toArray()));
 
@@ -2096,12 +2096,12 @@ public class AtendimentoDAO {
 		}
 		return cbo;
 	}
-	
+
 	public boolean atendimentoPossuiSituacaoAtendimento(Integer idAtendimento1) throws ProjetoException {
 
-		String sql = "select exists (select a1.id_atendimentos1 from hosp.atendimentos1 a1 " + 
+		String sql = "select exists (select a1.id_atendimentos1 from hosp.atendimentos1 a1 " +
 				"	where a1.id_atendimentos1 = ? and a1.id_situacao_atendimento is not null) possui_situacao_atendimento";
-		
+
 		boolean possuiSituacaoAtendimento = true;
 
 		try {
@@ -2128,13 +2128,13 @@ public class AtendimentoDAO {
 		}
 		return possuiSituacaoAtendimento;
 	}
-	
+
 	public boolean verificaEvolucaoAtendimentoEhPermitida(AtendimentoBean atendimento) throws ProjetoException {
 
-		String sql = "select exists ( select conf.id from hosp.config_evolucao_unidade_programa_grupo conf " + 
-				"	where ? >= conf.inicio_evolucao " + 
+		String sql = "select exists ( select conf.id from hosp.config_evolucao_unidade_programa_grupo conf " +
+				"	where ? >= conf.inicio_evolucao " +
 				"	and conf.codgrupo = ? and conf.codprograma = ? and conf.codunidade = ? ) ehPermitido";
-		
+
 		boolean ehPermitido = false;
 
 		try {
@@ -2163,5 +2163,74 @@ public class AtendimentoDAO {
 			}
 		}
 		return ehPermitido;
+	}
+
+	public List<String> retornaCodigoProcedimentoDeAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim,
+																						 String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+			throws ProjetoException {
+
+		List<String> listaCodigosProcedimentos = new ArrayList<>();
+
+		String sql = "select distinct pr.codproc  " +
+				"from hosp.atendimentos a  " +
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  " +
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " +
+				"inner join hosp.programa p on (a.codprograma = p.id_programa)  " +
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)  " +
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " +
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id) " +
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
+				"where coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
+				"and a.dtaatende between ? and ? ";
+
+		if (listaProcedimentosFiltro.size() > 0)
+			sql += " and a1.codprocedimento = any(?) ";
+
+		if (!idUnidades.isEmpty())
+			sql += " and a.cod_unidade = any(?) ";
+
+		if (tipoGeracao.equals("A")) {
+			sql += " and sa.atendimento_realizado = true";
+		} else
+			sql += " and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+
+			ArrayList<Integer> lista = new ArrayList<>();
+			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
+				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
+			}
+
+			int parametro = 3;
+			if (listaProcedimentosFiltro.size() > 0) {
+				ps.setObject(3, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+				parametro++;
+			}
+
+			if (!idUnidades.isEmpty())
+				ps.setObject(parametro, ps.getConnection().createArrayOf("INTEGER", idUnidades.toArray()));
+
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				listaCodigosProcedimentos.add(rs.getString("codproc"));
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaCodigosProcedimentos;
 	}
 }
