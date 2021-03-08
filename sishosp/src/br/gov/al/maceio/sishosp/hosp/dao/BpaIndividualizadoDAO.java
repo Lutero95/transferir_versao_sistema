@@ -5,14 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.sun.org.apache.xpath.internal.functions.FuncUnparsedEntityURI;
+
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.control.LaudoController;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -67,8 +72,9 @@ public class BpaIndividualizadoDAO {
         		"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento  \r\n" + 
         		"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
         		"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
-        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" + 
-        		"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
+        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "+
+        		"		 left join hosp.unidade u on a.cod_unidade = u.id \r\n" + 
+        		"		 cross join hosp.empresa emp \r\n" + 
         		"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
         		"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" + 
         		"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" + 
@@ -125,8 +131,9 @@ public class BpaIndividualizadoDAO {
         		"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = aps.id_procedimento  \r\n" + 
         		"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
         		"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
-        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" + 
-        		"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" + 
+        		"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento \r\n"+
+        		"		 left join hosp.unidade u on a.cod_unidade = u.id \r\n" + 
+        		"		 cross join hosp.empresa emp \r\n" + 
         		"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
         		"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" + 
         		"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" + 
@@ -297,5 +304,153 @@ public class BpaIndividualizadoDAO {
             }
         }
         return listaCompetencias;
+	}
+	
+	public List<AtendimentoBean> listaPossiveisDuplicidades(BpaIndividualizadoBean bpa) throws ProjetoException {
+		
+		String sql = "select a.* from (\r\n" + 
+				"	select a.id_atendimento, a1.id_atendimentos1, p.id_paciente, p.nome paciente, func.id_funcionario, func.descfuncionario, \r\n" + 
+				"		 a.dtaatende, pro.id_programa, pro.descprograma, g.id_grupo, g.descgrupo, proc.id id_procedimento, proc.nome procedimento " + 
+				"		 from hosp.atendimentos1 a1  \r\n" + 
+				"		 join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \r\n" + 
+				"		 left join hosp.programa pro on a.codprograma = pro.id_programa \r\n" + 
+				"		 left join hosp.grupo g on a.codgrupo = g.id_grupo \r\n" + 
+				"		 join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \r\n" + 
+				"		 join hosp.pacientes p on p.id_paciente  = a.codpaciente  \r\n" + 
+				"		 join hosp.proc on proc.id = a1.codprocedimento  \r\n" + 
+				"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = a1.codprocedimento \r\n" + 
+				"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  \r\n" + 
+				"		 left join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
+				"		 left join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
+				"		 left join hosp.unidade u on a.cod_unidade = u.id\r\n" + 
+				"		 cross join hosp.empresa emp \r\n" + 
+				"		 join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+				"		 where a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" + 
+				"	 	 and func.cns = ? and p.cns = ? \r\n" + 
+				"	 	 and proc.codproc = ? and a.dtaatende = ? and hc.status = 'A'\r\n" + 
+				"		 and coalesce(pa.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" + 
+				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" + 
+				"\r\n" + 
+				"union		 \r\n" + 
+				"		 \r\n" + 
+				"	select a.id_atendimento, a1.id_atendimentos1, p.id_paciente, p.nome paciente, func.id_funcionario, func.descfuncionario, \r\n" + 
+				"  		 a.dtaatende, pro.id_programa, pro.descprograma, g.id_grupo, g.descgrupo, proc.id id_procedimento, proc.nome procedimento " + 
+				"		 from hosp.atendimentos1 a1  \r\n" + 
+				"		 join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \r\n" + 
+				"		 left join hosp.programa pro on a.codprograma = pro.id_programa\r\n" + 
+				"		 left join hosp.grupo g on a.codgrupo = g.id_grupo \r\n" + 
+				"		 join hosp.atendimentos1_procedimento_secundario aps on a1.id_atendimentos1 = aps.id_atendimentos1 \r\n" + 
+				"		 join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \r\n" + 
+				"		 join hosp.pacientes p on p.id_paciente  = a.codpaciente  \r\n" + 
+				"		 join hosp.proc on proc.id = aps.id_procedimento  \r\n" + 
+				"		 join sigtap.procedimento_mensal pm on pm.id_procedimento  = aps.id_procedimento\r\n" + 
+				"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  \r\n" + 
+				"		 left join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
+				"		 left join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" + 
+				"		 left join hosp.unidade u on a.cod_unidade = u.id\r\n" + 
+				"		 cross join hosp.empresa emp \r\n" + 
+				"		 join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+				"		 where a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" + 
+				"	 	 and func.cns = ? and p.cns = ? \r\n" + 
+				"	 	 and proc.codproc = ? and a.dtaatende = ? and hc.status = 'A'\r\n" + 
+				"		 and coalesce(pa.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" + 
+				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" + 
+				"	) a	 where not exists (select id_atendimentos1 from hosp.atendimentos_para_ignorar_duplicidade apid where id_atendimentos1 = a.id_atendimentos1);";
+		List<AtendimentoBean> listaAtendimento = new ArrayList<>();
+		Connection con = null;
+        try {
+        	con = ConnectionFactory.getConnection();	
+        	PreparedStatement ps = con.prepareStatement(sql);          
+            
+            ps.setString(1, bpa.getPrdCnsmed());
+            ps.setString(2, bpa.getPrdCnspac());
+            ps.setString(3, bpa.getPrdPa());
+            
+            Calendar calendar = Calendar.getInstance();
+            
+            int ano = Integer.valueOf(bpa.getPrdDtaten().substring(0, 4));
+            int mes = Integer.valueOf(bpa.getPrdDtaten().substring(4, 6)) - 1;
+            int data = Integer.valueOf(bpa.getPrdDtaten().substring(6, 8));
+            calendar.set(ano, mes, data);
+            
+            ps.setDate(4, new java.sql.Date(calendar.getTime().getTime()));
+            ps.setString(5, bpa.getPrdCnes());
+            ps.setString(6, bpa.getPrdCmp());
+            
+            ps.setString(7, bpa.getPrdCnsmed());
+            ps.setString(8, bpa.getPrdCnspac());
+            ps.setString(9, bpa.getPrdPa());
+            ps.setDate(10, new java.sql.Date(calendar.getTime().getTime()));
+            ps.setString(11, bpa.getPrdCnes());
+            ps.setString(12, bpa.getPrdCmp());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+            	AtendimentoBean atendimento = new AtendimentoBean();
+            	atendimento.setId(rs.getInt("id_atendimento"));
+            	atendimento.setId1(rs.getInt("id_atendimentos1"));
+            	atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
+            	atendimento.getPaciente().setNome(rs.getString("paciente"));
+            	atendimento.getFuncionario().setId(rs.getLong("id_funcionario"));
+            	atendimento.getFuncionario().setNome(rs.getString("descfuncionario"));
+            	atendimento.setDataAtendimento(rs.getDate("dtaatende"));
+            	atendimento.getPrograma().setIdPrograma(rs.getInt("id_programa"));
+            	atendimento.getPrograma().setDescPrograma(rs.getString("descprograma"));
+            	atendimento.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
+            	atendimento.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+            	atendimento.getProcedimento().setIdProc(rs.getInt("id_procedimento"));
+            	atendimento.getProcedimento().setNomeProc(rs.getString("procedimento"));
+            	listaAtendimento.add(atendimento);
+            }
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaAtendimento;
+	}
+	
+	public Boolean inserirAtendimentoParaIgnorarDuplicidades
+		(AtendimentoBean atendimento, FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws ProjetoException {
+		
+		String sql = "INSERT INTO hosp.atendimentos_para_ignorar_duplicidade \r\n" + 
+				"(id_atendimentos1, id_usuario_gravacao, datahora) VALUES(?, ?, current_timestamp);";
+		
+		Boolean gravou = false;
+		Connection con = null;
+		
+        try {
+        	con = ConnectionFactory.getConnection();	
+        	PreparedStatement ps = con.prepareStatement(sql);          
+            
+            ps.setInt(1, atendimento.getId1());
+            ps.setLong(2, usuarioLiberacao.getId());
+            
+            ps.executeUpdate();
+            
+            new AgendaDAO().gravarLiberacaoAtendimento1(con, atendimento, usuarioLiberacao, motivoLiberacao);
+            gravou = true;
+            con.commit();
+        } catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+            try {
+            	con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return gravou;
 	}
 }

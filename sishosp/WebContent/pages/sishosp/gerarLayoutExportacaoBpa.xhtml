@@ -256,5 +256,121 @@
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Duplicidades" dynamic="true"  widgetVar="dlgDuplicidade"
+			modal="true" width="800" responsive="true" resizable="false">
+			<h:form id="frmDuplicidade">
+				<div class="alert alert-warning" role="alert">
+					<h:outputLabel value="Existem atendimentos duplicados na produção"/>
+				</div>
+				<br />
+
+				<p:dataTable emptyMessage="Nenhum Grupo" id="tabela"
+					value="#{bpaController.listaDuplicidades}"
+					var="tab" paginator="true" paginatorPosition="bottom" rows="12"
+					reflow="true" resizableColumns="true">
+
+					<p:column width="15%" headerText="Paciente" style="font-weight:bold;">
+						<h:outputText value="#{tab.paciente.nome}" />
+					</p:column>
+					
+					<p:column width="15%" headerText="Profissional" style="font-weight:bold;">
+						<h:outputText value="#{tab.funcionario.nome}" />
+					</p:column>
+					
+					<p:column headerText="Programa" style="font-weight:bold;">
+						<h:outputText value="#{tab.programa.descPrograma}" />
+					</p:column>
+
+					<p:column headerText="Grupo" style="font-weight:bold;">
+						<h:outputText value="#{tab.grupo.descGrupo}" />
+					</p:column>
+
+					<p:column headerText="Procedimento"
+						style="font-weight:bold;">
+						<h:outputText value="#{tab.procedimento.nomeProc}" />
+					</p:column>
+					
+					<p:column headerText="Data"
+						style="font-weight:bold;" width="10%">
+						<h:outputText value="#{tab.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>					
+
+					<p:column width="10%" headerText="Ação">
+						<div align="center">
+							<p:commandButton process="@this" update=":frmLiberacao"
+								class="new-btn-acao-table acao-editar" title="Salvar Atendimento com sem duplicidade"
+								icon="ui-icon-check" action="#{bpaController.limparDialogLiberacao()}">
+								<f:setPropertyActionListener value="#{tab}"
+                                                         target="#{bpaController.atendimentoSelecionado}"/>
+                                <f:setPropertyActionListener value="MASD"
+                                                         target="#{bpaController.tipoLiberacao}"/>                         
+							</p:commandButton>
+							
+							<p:commandButton process="@this"
+								class="new-btn-acao-table acao-excluir" update=":frmLiberacao"
+								icon="ui-icon-trash" action="#{bpaController.limparDialogLiberacao()}">
+								<f:setPropertyActionListener value="#{tab}"
+                                                         target="#{bpaController.atendimentoSelecionado}"/>
+                                <f:setPropertyActionListener value="EAD"
+                                                         target="#{bpaController.tipoLiberacao}"/>                         
+							</p:commandButton>
+						</div>
+					</p:column>
+				</p:dataTable>
+
+				<div align="center">
+					<p:commandButton value="Fechar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times" 
+						onclick="PF('dlgDuplicidade').hide();"/>	
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Confirmar Liberação" dynamic="true"  widgetVar="dlgLiberacao"
+			modal="true" width="400" responsive="true" resizable="false">
+			<h:form id="frmLiberacao">
+				<div class="alert alert-warning" role="alert">
+					<h:outputLabel value="Confirmar a exclusão deste atendimentos!?"
+						rendered="#{bpaController.tipoLiberacao == 'EAD'}"/>
+					<h:outputLabel value="Confirmar que este atendimento não possui duplicidade!?"
+						rendered="#{bpaController.tipoLiberacao == 'MASD'}"/>
+				</div>
+				<br />
+				<div align="center">
+					<b:inputText mask="999-999-999-99" style="padding:10px;"
+						required="true"
+						value="#{bpaController.funcionario.cpf}"
+						placeholder="Digite o CPF" render-label="true"
+						requiredMessage="CPF obrigatório" />
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+						value="#{bpaController.funcionario.senha}" />
+					<b:message for="@previous" />
+				</div>
+
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{bpaController.validarSenhaLiberacaoExclusaoDuplicidade()}" 
+						rendered="#{bpaController.tipoLiberacao == 'EAD'}"
+						update="frmLiberacao msgPagina :frmDuplicidade"/>
+				
+					<p:commandButton value="LiberarT" look="success" size="sm"
+						style="margin-top:10px; margin-right:2%;" icon="fa fa-fw fa-check"
+						action="#{bpaController.validarSenhaLiberacaoParaIgnorarDuplicidades()}" 
+						rendered="#{bpaController.tipoLiberacao == 'MASD'}"
+						update="frmLiberacao msgPagina :frmDuplicidade"/>
+						
+					<p:commandButton value="Cancelar" look="cancel" size="sm"
+						style="margin-top:10px; margin-left:2%;" icon="fa fa-fw fa-times"
+						onclick="PF('dlgLiberacao').hide();"/>	
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

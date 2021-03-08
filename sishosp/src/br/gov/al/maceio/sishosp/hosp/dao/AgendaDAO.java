@@ -3362,7 +3362,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return existe;
     }
 
-    public boolean excluirAgendamentoPaciente(AtendimentoBean atendimento, FuncionarioBean funcionario) throws ProjetoException {
+    public boolean excluirAgendamentoPaciente(AtendimentoBean atendimento, FuncionarioBean funcionario, String motivoLiberacao) throws ProjetoException {
 
         Boolean retorno = false;
 
@@ -3372,12 +3372,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                    .getSessionMap().get("obj_funcionario");
-            stmt.setLong(1, user_session.getId());
+            stmt.setLong(1, funcionario.getId());
             stmt.setInt(2, atendimento.getId1());
             stmt.execute();
-            gravarLiberacaoAtendimento1(con, atendimento, funcionario, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getTitulo());
+            gravarLiberacaoAtendimento1(con, atendimento, funcionario, motivoLiberacao);
             con.commit();
             retorno = true;
         } catch (SQLException ex2) {
@@ -3394,7 +3392,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return retorno;
     }
 
-    private void gravarLiberacaoAtendimento1(Connection conexao, AtendimentoBean atendimento,
+    public void gravarLiberacaoAtendimento1(Connection conexao, AtendimentoBean atendimento,
                                              FuncionarioBean usuarioLiberacao, String motivoLiberacao) throws SQLException, ProjetoException {
 
         String sql = "INSERT INTO hosp.liberacoes " +

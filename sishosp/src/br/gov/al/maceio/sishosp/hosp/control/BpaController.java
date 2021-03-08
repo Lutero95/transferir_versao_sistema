@@ -35,6 +35,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
@@ -44,7 +45,9 @@ import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaIndividualizados;
 import br.gov.al.maceio.sishosp.hosp.enums.MesExtensaoArquivoBPA;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoExportacao;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 
 @ManagedBean
 @ViewScoped
@@ -81,6 +84,13 @@ public class BpaController implements Serializable {
 	private List<String> listaInconsistencias;
 	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
+	private List<AtendimentoBean> listaDuplicidades;
+	private FuncionarioBean funcionario;
+	private FuncionarioBean usuarioLiberacao;
+	private AtendimentoBean atendimentoSelecionado;
+	private String tipoLiberacao;
+	
+	private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
 	
 	public BpaController() {
 		this.bpaCabecalho = new BpaCabecalhoBean();
@@ -90,7 +100,8 @@ public class BpaController implements Serializable {
 		this.listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
 		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 		limparDadosLayoutGerado();
-
+		this.listaDuplicidades = new ArrayList<>();
+		this.funcionario = new FuncionarioBean();
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -169,20 +180,20 @@ public class BpaController implements Serializable {
 	
 	public void gerarLayoutBpaExcel() throws ProjetoException, ParseException, SQLException {
 		limparDadosLayoutGerado();
-		this.competencia = formataCompetenciaParaBanco();
-		setaDataInicioIhFimAtendimento(this.competencia);
+		String competencia = formataCompetenciaParaBanco();
+		setaDataInicioIhFimAtendimento(competencia);
 		
 		if(tipoExportacao.equals(TipoExportacao.INDIVIDUALIZADO.getSigla())) {
-			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, sAtributoGenerico1, listaProcedimentos);
 			gerarLayoutBpaIndividualizadoExcel();
 		}
 		else if(tipoExportacao.equals(TipoExportacao.CONSOLIDADO.getSigla())) {
-			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, sAtributoGenerico1, listaProcedimentos);
 			gerarLayoutBpaConsolidadoExcel();
 		}
 		else {
-			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
-			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
+			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, sAtributoGenerico1, listaProcedimentos);
+			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, sAtributoGenerico1, listaProcedimentos);
 			gerarLayoutBpaCompletoExcel();
 		}
 	}
@@ -596,37 +607,46 @@ public class BpaController implements Serializable {
 	
 	public void gerarLayoutBpaImportacao() throws ProjetoException, ParseException, SQLException {
 		try {
+			listaDuplicidades.clear();
 			limparDadosLayoutGerado();
-			this.competencia = formataCompetenciaParaBanco();
-			setaDataInicioIhFimAtendimento(this.competencia);
-			executaMetodosParaGerarBpaConsolidado(sAtributoGenerico1);
-			executaMetodosParaGerarBpaIndividualizado(sAtributoGenerico1);
-			executaMetodosParaGerarBpaCabecalho();
-			listaInconsistencias = new ArrayList<>();
-			for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
-				if (bpaIndividualizado.getListaInconsistencias().size()>0){
-					for (String inconsistencia : bpaIndividualizado.getListaInconsistencias()) {
-						listaInconsistencias.add(inconsistencia);
+			String competencia = formataCompetenciaParaBanco();
+			setaDataInicioIhFimAtendimento(competencia);
+			executaMetodosParaGerarBpaConsolidado(sAtributoGenerico1, competencia);
+			executaMetodosParaGerarBpaIndividualizado(sAtributoGenerico1, competencia);
+			
+			listarPossiveisDuplicidades();
+			
+			if(listaDuplicidades.size() <= 1) {
+				executaMetodosParaGerarBpaCabecalho(competencia);
+				listaInconsistencias = new ArrayList<>();
+				for (BpaIndividualizadoBean bpaIndividualizado : listaDeBpaIndividualizado) {
+					if (bpaIndividualizado.getListaInconsistencias().size() > 0) {
+						for (String inconsistencia : bpaIndividualizado.getListaInconsistencias()) {
+							listaInconsistencias.add(inconsistencia);
+						}
 					}
+
 				}
 
-			}
-			
-			if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0))
-			{
-				adicionarCabecalho();
-				adicionarLinhasBpaConsolidado();
-				adicionarLinhasBpaIndividualizado();
-				this.extensao = gerarExtensaoArquivo(this.competencia);
-				this.descricaoArquivo = NOME_ARQUIVO + extensao;
-				String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + extensao;
+				if ((!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size() == 0)) {
+					adicionarCabecalho();
+					adicionarLinhasBpaConsolidado();
+					adicionarLinhasBpaIndividualizado();
+					this.extensao = gerarExtensaoArquivo(competencia);
+					this.descricaoArquivo = NOME_ARQUIVO + extensao;
+					String caminhoIhArquivo = PASTA_RAIZ + NOME_ARQUIVO + extensao;
 
-				Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
-				Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
+					Path file = Paths.get(this.getServleContext().getRealPath(caminhoIhArquivo) + File.separator);
+					Files.write(file, this.linhasLayoutImportacao, StandardCharsets.UTF_8).getFileSystem();
+				}
+				if (listaInconsistencias.size() > 0)
+					JSFUtil.adicionarMensagemErro(
+							listaInconsistencias.size()
+									+ " Inconsistência(s) encontrada(s). Resolva para poder gerar o arquivo BPA", "ERRO");
+				JSFUtil.atualizarComponente("frmPrincipal:tabelainconsistencia");
+			} else {
+				JSFUtil.abrirDialog("dlgDuplicidade");
 			}
-			if (listaInconsistencias.size()>0)
-				JSFUtil.adicionarMensagemErro(listaInconsistencias.size()+ " Inconsistência(s) encontrada(s). Resolva para poder gerar o arquivo BPA", "ERRO");
-			JSFUtil.atualizarComponente("frmPrincipal:tabelainconsistencia");
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
 			ioe.printStackTrace();
@@ -712,8 +732,8 @@ public class BpaController implements Serializable {
         return file;
     }
 
-	private void executaMetodosParaGerarBpaCabecalho() throws ProjetoException {
-		gerarCabecalho();
+	private void executaMetodosParaGerarBpaCabecalho(String competencia) throws ProjetoException {
+		gerarCabecalho(competencia);
 		adicionaCaracteresEmCamposBpaCabecalhoOndeTamanhoNaoEhValido();
 	}
 
@@ -721,8 +741,8 @@ public class BpaController implements Serializable {
 		this.linhasLayoutImportacao.add(bpaCabecalho.toString());
 	}
 
-	private void gerarCabecalho() throws ProjetoException {
-		this.bpaCabecalho.setCbcMvm(this.competencia);
+	private void gerarCabecalho(String competencia) throws ProjetoException {
+		this.bpaCabecalho.setCbcMvm(competencia);
 		
 		Integer cbcLin = (this.listaDeBpaConsolidado.size() + this.listaDeBpaIndividualizado.size() + 1);
 		this.bpaCabecalho.setCbcLin(cbcLin.toString());
@@ -802,8 +822,8 @@ public class BpaController implements Serializable {
 		return competenciaFormatada; 
 	}
 
-	private void executaMetodosParaGerarBpaConsolidado(String tipoGeracao) throws ProjetoException {
-		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao, listaProcedimentos);
+	private void executaMetodosParaGerarBpaConsolidado(String tipoGeracao, String competencia) throws ProjetoException {
+		buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, tipoGeracao, listaProcedimentos);
 		geraNumeroDaFolhaConsolidado();
 		geraNumeroDaLinhaDaFolhaConsolidado();
 		adicionaCaracteresEmCamposBpaConsolidadoOndeTamanhoNaoEhValido();
@@ -895,8 +915,8 @@ public class BpaController implements Serializable {
 		}
 	}
 
-	private void executaMetodosParaGerarBpaIndividualizado(String tipoGeracao) throws ProjetoException {
-		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, tipoGeracao, listaProcedimentos);
+	private void executaMetodosParaGerarBpaIndividualizado(String tipoGeracao, String competencia) throws ProjetoException {
+		buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, competencia, tipoGeracao, listaProcedimentos);
 		geraNumeroDaFolhaIndividualizado();
 		geraNumeroDaLinhaDaFolhaIndividualizado();
 		adicionaCaracteresEmCamposBpaIndividualizadoOndeTamanhoNaoEhValido();
@@ -904,6 +924,14 @@ public class BpaController implements Serializable {
 	
 	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
 		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro);
+	}
+	
+	public void listarPossiveisDuplicidades() throws ProjetoException {
+		for (BpaIndividualizadoBean bpa : listaDeBpaIndividualizado) {
+			if(Integer.valueOf(bpa.getPrdQt()) > 1) {
+				listaDuplicidades = bpaIndividualizadoDAO.listaPossiveisDuplicidades(bpa);
+			}
+		}
 	}
 	
 	public void geraNumeroDaFolhaIndividualizado() {
@@ -1096,6 +1124,51 @@ public class BpaController implements Serializable {
 		return extensao;
 	}
 	
+	public void limparDialogLiberacao() {
+		funcionario = new FuncionarioBean();
+		JSFUtil.abrirDialog("dlgLiberacao");
+	}
+	
+	public void validarSenhaLiberacaoExclusaoDuplicidade() throws ProjetoException, ParseException, SQLException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			new AgendaDAO().excluirAgendamentoPaciente
+				(atendimentoSelecionado, usuarioLiberacao, MotivoLiberacao.EXCLUSAO_ATENDIMENTO_DUPLICIDADE.getTitulo());
+			listaDuplicidades.remove(atendimentoSelecionado);
+			JSFUtil.adicionarMensagemSucesso("Exclusão de duplicidade feita com sucesso", "");
+			JSFUtil.fecharDialog("dlgLiberacao");
+			if(listaDuplicidades.size() <= 1) {
+				JSFUtil.fecharDialog("dlgDuplicidade");
+			}
+		} else {
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, "Erro!");
+		}
+	}
+	
+	public void validarSenhaLiberacaoParaIgnorarDuplicidades() throws ProjetoException, ParseException, SQLException {
+		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+		usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
+				ValidacaoSenha.LIBERACAO.getSigla());
+
+		if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
+			bpaIndividualizadoDAO.inserirAtendimentoParaIgnorarDuplicidades
+				(atendimentoSelecionado, usuarioLiberacao, MotivoLiberacao.MARCACAO_ATENDIMENTO_COMO_SEM_DUPLICIDADE.getTitulo());
+			listaDuplicidades.remove(atendimentoSelecionado);
+			JSFUtil.adicionarMensagemSucesso("Marcado como sem duplicidade com sucesso", "");
+			JSFUtil.fecharDialog("dlgLiberacao");
+			if(listaDuplicidades.size() <= 1) {
+				JSFUtil.fecharDialog("dlgDuplicidade");
+			}
+		} else {
+			JSFUtil.adicionarMensagemErro(SENHA_ERRADA_OU_SEM_LIBERAÇÃO, "Erro!");
+		}
+	}
+	
 	public String getCompetencia() {
 		return competencia;
 	}
@@ -1175,5 +1248,37 @@ public class BpaController implements Serializable {
 
 	public void setTipoExportacao(String tipoExportacao) {
 		this.tipoExportacao = tipoExportacao;
+	}
+
+	public List<AtendimentoBean> getListaDuplicidades() {
+		return listaDuplicidades;
+	}
+
+	public void setListaDuplicidades(List<AtendimentoBean> listaDuplicidades) {
+		this.listaDuplicidades = listaDuplicidades;
+	}
+
+	public FuncionarioBean getFuncionario() {
+		return funcionario;
+	}
+
+	public void setFuncionario(FuncionarioBean funcionario) {
+		this.funcionario = funcionario;
+	}
+
+	public AtendimentoBean getAtendimentoSelecionado() {
+		return atendimentoSelecionado;
+	}
+
+	public void setAtendimentoSelecionado(AtendimentoBean atendimentoSelecionado) {
+		this.atendimentoSelecionado = atendimentoSelecionado;
+	}
+
+	public String getTipoLiberacao() {
+		return tipoLiberacao;
+	}
+
+	public void setTipoLiberacao(String tipoLiberacao) {
+		this.tipoLiberacao = tipoLiberacao;
 	}
 }
