@@ -173,10 +173,9 @@
 			</div>
 		</div>
 
-		<p:dialog header="Ajustar Atendimentos em Massa" height="500" width="1000"
-			widgetVar="dlgAjustes" responsive="true" modal="true" resizable="true">
+		<p:dialog header="Ajustar Atendimentos em Massa" resizable="false"
+			widgetVar="dlgAjustes" responsive="true" modal="true" draggable="false">
 			<h:form id="formAjustes">
-
 				<b:row>
 					<b:column span="6">
 						<b:label value="Dia de Atendimento:" severity="info"
@@ -290,14 +289,25 @@
 					</p:outputPanel>
 				</b:row>
 
-				<p:selectBooleanCheckbox value="#{AtendimentoController.selecionarTodos}"
-					itemLabel="Selecionar todos" id="selecionarTudo">
-					<p:ajax update="formAjustes:dtAtendimentosMassa" 
-						listener="#{AtendimentoController.selecionarOuRemoverTodosAtendimentos(AtendimentoController.listaAtendimentosFiltro)}" />
-				</p:selectBooleanCheckbox>
+				<p:row>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{AtendimentoController.selecionarTodos}"
+							itemLabel="Selecionar todos" id="selecionarTudo">
+							<p:ajax update="formAjustes:dtAtendimentosMassa"
+								listener="#{AtendimentoController.selecionarOuRemoverTodosAtendimentos(AtendimentoController.listaAtendimentosFiltro)}" />
+						</p:selectBooleanCheckbox>
+					</p:column>
+
+					<br />
+					<p:column colspan="8">
+						<p:selectBooleanCheckbox value="#{AtendimentoController.semCids}"
+							itemLabel="Listar Apenas Atendimentos sem Cid" />
+					</p:column>
+				</p:row>
 				
-				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
-					paginator="true" paginatorPosition="bottom" scrollable="true" scrollHeight="300" style="margin-top: 10px"
+				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa" 
+					paginator="true" paginatorPosition="bottom" style="margin-top: 10px"
 					value="#{AtendimentoController.listaAtendimentosFiltro}" rows="10"
 					 emptyMessage="Nenhum procedimento listado" reflow="true">
 
