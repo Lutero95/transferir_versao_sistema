@@ -39,6 +39,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaConsolidadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BpaIndividualizadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfiguracaoProducaoBpaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaCabecalho;
 import br.gov.al.maceio.sishosp.hosp.enums.CamposBpaConsolidado;
@@ -700,24 +701,24 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean existeInconsistencias(String tipoGeracao) throws SQLException, ProjetoException {
-		if (verificarInconsistenciaPrograma() || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
+		if (verificarInconsistenciaProcedimento() || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
 			return true;
 		return false;
 	}
 
-	private boolean verificarInconsistenciaPrograma() throws SQLException, ProjetoException {
-		ProgramaBean programa = new ProgramaDAO().retornarProgramaInconsistente();
-		if(!VerificadorUtil.verificarSeObjetoNulo(programa)) {
-			if(VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdServico())
-					&& VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdClassificacao()) ) {
+	private boolean verificarInconsistenciaProcedimento() throws SQLException, ProjetoException {
+		ProcedimentoBean procedimento = new ProcedimentoDAO().retornarProcedimentoInconsistente();
+		if(!VerificadorUtil.verificarSeObjetoNulo(procedimento)) {
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getServico().getId())
+					&& VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getClassificacao().getId()) ) {
 				JSFUtil.adicionarMensagemErro
-						( "O programa " +programa.getDescPrograma()+" não possui serviço e classificação corrija essa inconsistência", "Erro");
+						( "O procedimento " +procedimento.getNomeProc()+" não possui serviço e classificação corrija essa inconsistência", "Erro");
 			}
-			else if (VerificadorUtil.verificarSeObjetoNuloOuZero(programa.getIdServico())) {
-				JSFUtil.adicionarMensagemErro ( "O programa " +programa.getDescPrograma()+" não possui serviço corrija essa inconsistência", "Erro");
+			else if (VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getServico().getId())) {
+				JSFUtil.adicionarMensagemErro ( "O procedimento " +procedimento.getNomeProc()+" não possui serviço corrija essa inconsistência", "Erro");
 			}
 			else {
-				JSFUtil.adicionarMensagemErro ( "O programa " +programa.getDescPrograma()+" não possui classificação corrija essa inconsistência", "Erro");
+				JSFUtil.adicionarMensagemErro ( "O procedimento " +procedimento.getNomeProc()+" não possui classificação corrija essa inconsistência", "Erro");
 			}
 			return true;
 		}

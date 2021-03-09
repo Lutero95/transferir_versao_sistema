@@ -22,9 +22,12 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.ClassificacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.InstrumentoRegistroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ServicoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PropriedadeDeProcedimentoMensalExistenteDTO;
@@ -65,8 +68,8 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, "
-                + "gera_laudo_digita, validade_laudo, id_instrumento_registro_padrao) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?) returning id;";
+                + "gera_laudo_digita, validade_laudo, id_instrumento_registro_padrao, id_servico, id_classificacao) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -90,6 +93,16 @@ public class ProcedimentoDAO {
                 ps.setNull(8, Types.NULL);
             else
                 ps.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getServico().getId()))
+                ps.setNull(9, Types.NULL);
+            else
+                ps.setInt(9, proc.getServico().getId());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getClassificacao().getId()))
+                ps.setNull(10, Types.NULL);
+            else
+                ps.setInt(10, proc.getClassificacao().getId());
 
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
@@ -158,7 +171,8 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "update hosp.proc set nome = ?, auditivo = ?, tipo_exame_auditivo = ?, utiliza_equipamento = ?, "
-                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, id_instrumento_registro_padrao = ? "
+                + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, id_instrumento_registro_padrao = ?, "
+        		+ "id_servico = ?, id_classificacao = ? "
                 + "where id = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -185,7 +199,20 @@ public class ProcedimentoDAO {
                 stmt.setNull(8, Types.NULL);
             else
                 stmt.setInt(8, proc.getInstrumentoRegistroPadrao().getId());
-            stmt.setInt(9, proc.getIdProc());
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getServico().getId())) {
+            	stmt.setNull(9, Types.NULL);
+            } else {
+            	stmt.setInt(9, proc.getServico().getId());
+            }
+            
+            if(VerificadorUtil.verificarSeObjetoNuloOuZero(proc.getClassificacao().getId())) {
+            	stmt.setNull(10, Types.NULL);
+            } else {
+            	stmt.setInt(10, proc.getClassificacao().getId());
+            }
+            
+            stmt.setInt(11, proc.getIdProc());
 
             excluirProcedimentoUnidade(proc.getIdProc(), con);
             gravarProcedimentoUnidade(proc, con);
@@ -475,7 +502,7 @@ public class ProcedimentoDAO {
     public ProcedimentoBean listarProcedimentoPorId(int id) throws ProjetoException {
         ProcedimentoBean procedimento = new ProcedimentoBean();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, id_instrumento_registro_padrao "
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, id_instrumento_registro_padrao, id_servico, id_classificacao "
                 + "from hosp.proc where id = ? and ativo = 'S' order by nome";
         try {
             con = ConnectionFactory.getConnection();
@@ -498,6 +525,8 @@ public class ProcedimentoDAO {
                 procedimento.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 procedimento.setSexo(rs.getString("sexo"));
                 procedimento.getInstrumentoRegistroPadrao().setId(rs.getInt("id_instrumento_registro_padrao"));
+                procedimento.getServico().setId(rs.getInt("id_servico"));
+                procedimento.getClassificacao().setId(rs.getInt("id_classificacao"));
                 procedimento.setListaUnidadesVisualizam(listarProcedimentoUnidade(procedimento.getIdProc(), con));
             }
         } catch (SQLException sqle) {
@@ -2575,5 +2604,105 @@ public class ProcedimentoDAO {
             }
         }
         return listaInstrumentoRegistro;
+    }
+    
+    public List<ServicoBean> listaServicoDoBanco() {
+
+        PreparedStatement ps = null;
+        List<ServicoBean> listaServico = new ArrayList<>();
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "SELECT id, codigo, nome FROM sigtap.servico; ";
+
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ServicoBean servico = new ServicoBean();
+                servico.setId(rs.getInt("id"));
+                servico.setCodigo(rs.getString("codigo"));
+                servico.setNome(rs.getString("nome"));
+                listaServico.add(servico);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaServico;
+    }
+    
+    public List<ClassificacaoBean> listaClassificacaoDoBanco() {
+
+        PreparedStatement ps = null;
+        List<ClassificacaoBean> listaClassificacao = new ArrayList<>();
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "SELECT id, codigo, nome FROM sigtap.classificacao; ";
+
+            ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	ClassificacaoBean classificacao = new ClassificacaoBean();
+                classificacao.setId(rs.getInt("id"));
+                classificacao.setCodigo(rs.getString("codigo"));
+                classificacao.setNome(rs.getString("nome"));
+                listaClassificacao.add(classificacao);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaClassificacao;
+    }
+    
+    public ProcedimentoBean retornarProcedimentoInconsistente() throws SQLException, ProjetoException {
+
+    	ProcedimentoBean procedimento = null;
+
+        String sql = "select p.id, p.nome, p.id_classificacao,  p.id_servico " +
+                "	from hosp.proc p where " +
+                "	(p.id_classificacao is null or p.id_servico is null);";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                procedimento = new ProcedimentoBean();
+                procedimento.setIdProc(rs.getInt("id"));
+                procedimento.setNomeProc(rs.getString("nome"));
+                procedimento.getClassificacao().setId(rs.getInt("id_classificacao"));
+                procedimento.getServico().setId(rs.getInt("id_servico"));
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return procedimento;
     }
 }

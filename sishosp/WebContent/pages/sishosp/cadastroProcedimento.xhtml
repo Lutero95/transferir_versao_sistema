@@ -60,6 +60,36 @@
 									</b:selectOneMenu>
 								</b:column>
 							</b:row>
+							
+							<b:row>
+								<b:column span="11" class="label-position">
+									<b:label value="Serviço Padrão" class="label-position"
+										severity="info" />
+									<b:selectOneMenu
+										value="#{ProcedimentoController.proc.servico.id}"
+										required="#{ProcedimentoController.unidadeValidaSigtap}">
+										<f:selectItem itemLabel="Selecione" itemValue=""/>
+										<f:selectItems var="servico"
+											value="#{ProcedimentoController.listaServicosDoBanco}"
+											itemLabel="#{servico.nome}" itemValue="#{servico.id}" />
+									</b:selectOneMenu>
+								</b:column>
+							</b:row>
+							
+							<b:row>
+								<b:column span="11" class="label-position">
+									<b:label value="Classificação Padrão" class="label-position"
+										severity="info" />
+									<b:selectOneMenu
+										value="#{ProcedimentoController.proc.classificacao.id}"
+										required="#{ProcedimentoController.unidadeValidaSigtap}">
+										<f:selectItem itemLabel="Selecione" itemValue=""/>
+										<f:selectItems var="classi"
+											value="#{ProcedimentoController.listaClassificacaoDoBanco}"
+											itemLabel="#{classi.nome}" itemValue="#{classi.id}" />
+									</b:selectOneMenu>
+								</b:column>
+							</b:row>
 							<br></br>
 
 							<b:row>
@@ -135,7 +165,7 @@
 									</b:column>
 								</p:outputPanel>
 							</b:row>
-
+							
 							<h1 class="texto-titulo">Filtre os Dados do Procedimento por
 								Mês e Ano</h1>
 							<b:row>

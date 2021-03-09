@@ -38,10 +38,12 @@ import br.gov.al.maceio.sishosp.hosp.enums.DocumentosRLImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.enums.DocumentosTBImportacaoSigtap;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.ClassificacaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.HistoricoSigtapBean;
 import br.gov.al.maceio.sishosp.hosp.model.InstrumentoRegistroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ServicoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.DescricaoProcedimentoDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GravarProcedimentoMensalDTO;
@@ -97,6 +99,7 @@ public class ProcedimentoController implements Serializable {
     private ProcedimentoType procedimentoMensal;
     private UnidadeBean unidadeSelecionada;
     private List<InstrumentoRegistroBean> listaInstrumentoRegistro;
+    private boolean unidadeValidaSigtap;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -139,6 +142,8 @@ public class ProcedimentoController implements Serializable {
     private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoInstrumentoRegistro;
     private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoRenases;
     private List<RelacaoObjetoComProcedimentoDTO> listaRelacoesProcedimetoServico;
+    private List<ServicoBean> listaServicosDoBanco;
+    private List<ClassificacaoBean> listaClassificacaoDoBanco;
 
     public ProcedimentoController() {
         this.proc = new ProcedimentoBean();
@@ -173,9 +178,12 @@ public class ProcedimentoController implements Serializable {
 
     public void getEditProcedimento() throws ProjetoException, SQLException {
     	listarInstrumentosRegistro();
+    	listarServicos();
+    	listarClassificacao();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        unidadeValidaSigtap = obterUsuarioDaSessao().getUnidade().getParametro().isValidaDadosLaudoSigtap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
@@ -190,6 +198,14 @@ public class ProcedimentoController implements Serializable {
     
     private void listarInstrumentosRegistro() throws ProjetoException {
     	listaInstrumentoRegistro = procedimentoDao.listaInstrumentosRegistro();
+    }
+    
+    private void listarServicos() {
+    	listaServicosDoBanco = procedimentoDao.listaServicoDoBanco();
+    }
+    
+    private void listarClassificacao() {
+    	listaClassificacaoDoBanco = procedimentoDao.listaClassificacaoDoBanco();
     }
 
     public void limparDados() throws ProjetoException {
@@ -1247,5 +1263,29 @@ public class ProcedimentoController implements Serializable {
 	public void setListaInstrumentoRegistro(List<InstrumentoRegistroBean> listaInstrumentoRegistro) {
 		this.listaInstrumentoRegistro = listaInstrumentoRegistro;
 	}
-    
+
+	public boolean isUnidadeValidaSigtap() {
+		return unidadeValidaSigtap;
+	}
+
+	public void setUnidadeValidaSigtap(boolean unidadeValidaSigtap) {
+		this.unidadeValidaSigtap = unidadeValidaSigtap;
+	}
+
+	public List<ServicoBean> getListaServicosDoBanco() {
+		return listaServicosDoBanco;
+	}
+
+	public void setListaServicosDoBanco(List<ServicoBean> listaServicosDoBanco) {
+		this.listaServicosDoBanco = listaServicosDoBanco;
+	}
+
+	public List<ClassificacaoBean> getListaClassificacaoDoBanco() {
+		return listaClassificacaoDoBanco;
+	}
+
+	public void setListaClassificacaoDoBanco(List<ClassificacaoBean> listaClassificacaoDoBanco) {
+		this.listaClassificacaoDoBanco = listaClassificacaoDoBanco;
+	}
+	
 }
