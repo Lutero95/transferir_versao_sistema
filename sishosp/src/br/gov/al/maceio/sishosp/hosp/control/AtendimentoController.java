@@ -1208,6 +1208,7 @@ public class AtendimentoController implements Serializable {
     }
     
     public void preparaAbrirDialogAjustesEmMassa() {
+    	this.semCids = false;
     	this.atendimento = new AtendimentoBean();
     	this.listaAtendimentosFiltro.clear();
     	this.listaAtendimentosSelecionados.clear();

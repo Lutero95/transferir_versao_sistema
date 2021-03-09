@@ -173,8 +173,8 @@
 			</div>
 		</div>
 
-		<p:dialog header="Ajustar Atendimentos em Massa" resizable="false"
-			widgetVar="dlgAjustes" responsive="true" modal="true" draggable="false">
+		<p:dialog header="Ajustar Atendimentos em Massa" resizable="false" 
+			widgetVar="dlgAjustes" responsive="true" modal="true" draggable="false" height="500" width="1300">
 			<h:form id="formAjustes">
 				<b:row>
 					<b:column span="6">
@@ -306,9 +306,9 @@
 					</p:column>
 				</p:row>
 				
-				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa" 
-					paginator="true" paginatorPosition="bottom" style="margin-top: 10px"
-					value="#{AtendimentoController.listaAtendimentosFiltro}" rows="10"
+				<p:dataTable var="tab" responsive="true" id="dtAtendimentosMassa"
+					paginator="true" paginatorPosition="bottom" scrollable="true" scrollHeight="300" style="margin-top: 10px"
+					value="#{AtendimentoController.listaAtendimentosFiltro}" rows="5"
 					 emptyMessage="Nenhum procedimento listado" reflow="true">
 
 					<p:column headerText="Selecionar" width="100">
