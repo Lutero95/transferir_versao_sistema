@@ -312,7 +312,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 CboBean cboCompativel = null;
 
-                if (VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
                     cboCompativel = new FuncionarioDAO()
                             .retornaPrimeiroCboProfissional(funcionario.getId());                    
                 } else {
