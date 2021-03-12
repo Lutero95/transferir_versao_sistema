@@ -642,7 +642,7 @@ public class LaudoDAO {
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
                 + " l.codprocedimento_secundario4, ps4.nome as nome4, "
                 + " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,  c1.desccidabrev desccidabrev1, l.cid2, c2.desccid as desccid2,  c2.desccidabrev desccidabrev2, "
-                + " l.cid3, c3.desccid as desccid3,  c3.desccidabrev desccidabrev3, l.obs, data_autorizacao, situacao, func.id_funcionario, func.descfuncionario  "
+                + " l.cid3, c3.desccid as desccid3,  c3.desccidabrev desccidabrev3, l.obs, func.id_funcionario, func.descfuncionario  "
                 + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -665,7 +665,6 @@ public class LaudoDAO {
                 laudo.getPaciente().setNome(rs.getString("nome"));
                 laudo.getPaciente().setCpf(rs.getString("cpf"));
                 laudo.getPaciente().setCns(rs.getString("cns"));
-                laudo.setDataAutorizacao(rs.getDate("data_autorizacao"));
                 laudo.setMesInicio(rs.getInt("mes_final"));
                 laudo.setAnoInicio(rs.getInt("ano_final"));
                 laudo.setPeriodo(rs.getInt("periodo"));
@@ -692,7 +691,7 @@ public class LaudoDAO {
                 laudo.getCid3().setDescCid(rs.getString("desccid3"));
                 laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev3"));
                 laudo.setObs(rs.getString("obs"));
-                laudo.setSituacao(rs.getString("situacao"));
+                laudo.setSituacao("P");
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));

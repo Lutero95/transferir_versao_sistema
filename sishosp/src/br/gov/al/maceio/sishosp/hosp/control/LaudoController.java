@@ -152,8 +152,7 @@ public class LaudoController implements Serializable {
             if (tipo == 2)
                 this.laudo = lDao.buscarLaudosPorId(id);
             if (tipo == 3) {
-                this.laudo = lDao.carregaLaudoParaRenovacao(id);
-                calcularPeriodoLaudo();
+                carregaLaudoParaRenovacao(id);
             }
 
             renderizarDadosDeAutorizacao();
@@ -222,6 +221,7 @@ public class LaudoController implements Serializable {
     public void gravarLaudo() throws ProjetoException {
         try {
             verificaSeCid1FoiInserido(this.laudo.getCid1());
+            
             if (!existeLaudoComMesmosDados(this.laudo.getPaciente())) {
                 validarDadosSigtap(this.laudo.getPaciente(), this.laudo.getCid1());
                 idLaudoGerado = null;
