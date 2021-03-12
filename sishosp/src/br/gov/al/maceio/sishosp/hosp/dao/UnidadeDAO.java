@@ -119,8 +119,10 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, "+
                     "acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
-                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao ) "+
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao, "+
+                    "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "+
+                    "?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -259,6 +261,8 @@ public class UnidadeDAO {
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
             ps.setString(45, unidade.getParametro().getCnesProducao());
+            ps.setBoolean(46, unidade.getParametro().isCapacidadesFuncionaisPTSObrigatorio());
+            ps.setBoolean(47, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
             ps.execute();
 
 
@@ -425,8 +429,8 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
-                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?, cnes_producao = ? "+
-                    "WHERE codunidade = ?";
+                    "verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?, cnes_producao = ?, "+
+                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ? WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -531,7 +535,9 @@ public class UnidadeDAO {
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
             ps.setString(45, unidade.getParametro().getCnesProducao());
-            ps.setInt(46, unidade.getId());
+            ps.setBoolean(46, unidade.getParametro().isCapacidadesFuncionaisPTSObrigatorio());
+            ps.setBoolean(47, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
+            ps.setInt(48, unidade.getId());
 
             ps.executeUpdate();
 
@@ -673,7 +679,7 @@ public class UnidadeDAO {
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
-                "inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao "+
+                "inicio_evolucao_unidade, busca_automatica_cep_paciente, cnes_producao, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -739,6 +745,8 @@ public class UnidadeDAO {
                 parametro.setInicioEvolucaoUnidade(rs.getDate("inicio_evolucao_unidade"));
                 parametro.setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
                 parametro.setCnesProducao(rs.getString("cnes_producao"));
+                parametro.setCapacidadesFuncionaisPTSObrigatorio(rs.getBoolean("capacidades_funcionais_pts_obrigatorio"));
+                parametro.setObjetivosGeraisPTSObrigatorio(rs.getBoolean("objetivos_gerais_pts_obrigatorio"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();

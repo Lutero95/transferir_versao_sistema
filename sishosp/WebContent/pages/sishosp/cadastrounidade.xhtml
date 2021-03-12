@@ -852,7 +852,17 @@
 								<p:selectBooleanCheckbox
 									value="#{UnidadeController.unidade.parametro.cpfPacienteObrigatorio}"
 									itemLabel="CPF"/>
-							</p:fieldset>						
+							</p:fieldset>
+							
+							<p:fieldset legend="PTS">
+								<p:selectBooleanCheckbox 
+									value="#{UnidadeController.unidade.parametro.capacidadesFuncionaisPTSObrigatorio}"
+									itemLabel="Capacidades Funcionais"/>
+								
+								<p:selectBooleanCheckbox
+									value="#{UnidadeController.unidade.parametro.objetivosGeraisPTSObrigatorio}"
+									itemLabel="Objetivos Gerais/Multidisciplinar"/>	
+							</p:fieldset>							
 						</p:tab>
 						
 						<p:tab title="Cores em Tabelas">
