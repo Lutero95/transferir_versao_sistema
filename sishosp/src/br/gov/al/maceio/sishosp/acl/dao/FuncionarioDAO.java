@@ -266,7 +266,7 @@ public class FuncionarioDAO {
 				sistema.setId(rs.getInt("id"));
 				sistema.setDescricao(rs.getString("descricao"));
 				sistema.setSigla(rs.getString("sigla"));
-				sistema.setUrl(rs.getString("url") + "?faces-redirect=true");
+				sistema.setUrl(rs.getString("url"));
 				sistema.setImagem(rs.getString("imagem"));
 				sistema.setVersao(rs.getString("versao"));
 				sistema.setAtivo(rs.getBoolean("ativo"));

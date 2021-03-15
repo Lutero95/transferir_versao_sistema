@@ -194,7 +194,7 @@ public class FuncionarioController implements Serializable {
 		}
 	}
 
-	public String login() throws ProjetoException {
+	public void login() throws ProjetoException, IOException {
 
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("expired", "N");
 
@@ -204,8 +204,6 @@ public class FuncionarioController implements Serializable {
 
 		if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
 			JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
-			return null;
-
 		} else {
 
 			Integer quantidadeEmpresas = fDao.verificarSeTrabalhaEmMaisDeUmaEmpresa(usuario.getCpf());
@@ -217,10 +215,8 @@ public class FuncionarioController implements Serializable {
 
 			else{
 				retorno = autenticarUsuario();
-
+				FacesContext.getCurrentInstance().getExternalContext().redirect(retorno);
 			}
-
-			return retorno;
 		}
 	}
 
@@ -417,12 +413,12 @@ public class FuncionarioController implements Serializable {
 
 
 		if (sistemas.size() > 1) {
-			url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+			url = "/pages/comum/selecaoSistema.faces";
 		}
 		else {
 			recSistemaLogado(sistemas.get(0));
 			gerarMenus(sistemaLogado);
-			url = root+sistemas.get(0).getUrl() + "?faces-redirect=true";
+			url = root+sistemas.get(0).getUrl();
 		}
 
 		return url;
