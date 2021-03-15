@@ -413,7 +413,7 @@ public class FuncionarioController implements Serializable {
 
 
 		if (sistemas.size() > 1) {
-			url = "/pages/comum/selecaoSistema.faces";
+			url = getServleContext().getContextPath()+"/pages/comum/selecaoSistema.faces";
 		}
 		else {
 			recSistemaLogado(sistemas.get(0));
