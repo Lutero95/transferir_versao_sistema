@@ -82,7 +82,7 @@ public class BpaController implements Serializable {
 	private List<String> listaInconsistencias;
 	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
-	private Integer idConfiguracaoProducaoBpa;
+	private Integer idConfiguracaoProducaoBpa = null;
 	private List<Integer> listaIdUnidades;
 
 	public BpaController() {
@@ -178,14 +178,14 @@ public class BpaController implements Serializable {
 		if(tipoExportacao.equals(TipoExportacao.INDIVIDUALIZADO.getSigla())) {
 			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
 			atualizaListaInconsistenciasIndividualizado();
-			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado)
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado,  this.competencia)
 					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				gerarLayoutBpaIndividualizadoExcel();
 			}
 		}
 		else if(tipoExportacao.equals(TipoExportacao.CONSOLIDADO.getSigla())) {
 			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
-			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado)
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado,  this.competencia)
 					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				gerarLayoutBpaConsolidadoExcel();
 			}
@@ -194,7 +194,7 @@ public class BpaController implements Serializable {
 			buscaBpasIndividualizadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
 			buscaBpasConsolidadosDoProcedimento(this.dataInicioAtendimento, this.dataFimAtendimento, this.competencia, sAtributoGenerico1, listaProcedimentos);
 			atualizaListaInconsistenciasIndividualizado();
-			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado)
+			if(!existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado,  this.competencia)
 					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				gerarLayoutBpaCompletoExcel();
 			}
@@ -630,7 +630,7 @@ public class BpaController implements Serializable {
 			executaMetodosParaGerarBpaCabecalho();
 			atualizaListaInconsistenciasIndividualizado();
 
-			if ( !existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado)
+			if ( !existeProcedimentosForaDaCarga(listaDeBpaIndividualizado, listaDeBpaConsolidado,  this.competencia)
 					&& (!existeInconsistencias(sAtributoGenerico1)) && (listaInconsistencias.size()==0)) {
 				adicionarCabecalho();
 				adicionarLinhasBpaConsolidado();
@@ -654,7 +654,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean existeProcedimentosForaDaCarga
-			(List<BpaIndividualizadoBean> listaBpaIndividualizado, List<BpaConsolidadoBean> listaBpaConsolidado)
+			(List<BpaIndividualizadoBean> listaBpaIndividualizado, List<BpaConsolidadoBean> listaBpaConsolidado, String competencia)
 			throws ProjetoException {
 
 		boolean existeProcedimentoSemCarga = false;
@@ -662,7 +662,7 @@ public class BpaController implements Serializable {
 		List<String> listaCodigoProcedimentosBpa = new ArrayList<>();
 
 		List<String> listaCodigoProcedimentos = new AtendimentoDAO().retornaCodigoProcedimentoDeAtendimentosOuAgendamentosDeUmPeriodo
-				(this.dataInicioAtendimento, this.dataFimAtendimento, sAtributoGenerico1, listaProcedimentos, listaIdUnidades);
+				(this.dataInicioAtendimento, this.dataFimAtendimento, sAtributoGenerico1, listaProcedimentos, listaIdUnidades, competencia);
 
 		for (BpaIndividualizadoBean individual : listaBpaIndividualizado) {
 			if(!listaCodigoProcedimentosBpa.contains(individual.getPrdPa())) {
@@ -701,7 +701,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean existeInconsistencias(String tipoGeracao) throws SQLException, ProjetoException {
-		if (verificarInconsistenciaProcedimento() || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
+		if (verificarInconsistenciaProcedimento())// || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
 			return true;
 		return false;
 	}
@@ -726,7 +726,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
-		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos, listaIdUnidades);
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos, listaIdUnidades, this.competencia);
 		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
 		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
 			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
@@ -874,7 +874,7 @@ public class BpaController implements Serializable {
 	}
 
 	private void buscaBpasConsolidadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
-		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, listaIdUnidades);
+		this.listaDeBpaConsolidado = bpaConsolidadoDAO.carregaDadosBpaConsolidado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, listaIdUnidades, this.idConfiguracaoProducaoBpa);
 	}
 
 	public void geraNumeroDaFolhaConsolidado() {
@@ -967,7 +967,7 @@ public class BpaController implements Serializable {
 	}
 
 	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, listaIdUnidades);
+		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, listaIdUnidades, this.idConfiguracaoProducaoBpa);
 	}
 
 	public void geraNumeroDaFolhaIndividualizado() {

@@ -1856,36 +1856,53 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 
-	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades) throws ProjetoException {
+	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades, String competencia) throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 
-		String sqlProcedimentoPrimario = "select count(*) total " +
-				"from hosp.atendimentos a " +
-				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) " +
-				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento " +
-				"inner join hosp.programa p on (a.codprograma = p.id_programa) " +
-				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) " +
-				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " +
-				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
-				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)	" +
-				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
-				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
-				"and a.dtaatende between ? and ? ";
+		String sqlProcedimentoPrimario = "select count(*) total \n" +
+				"from hosp.atendimentos a \n" +
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) \n" +
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento \n" +
+				"inner join hosp.programa p on (a.codprograma = p.id_programa) \n" +
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) \n" +
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) \n" +
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) \n" +
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id)\t\n" +
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade \n" +
+				"join sigtap.procedimento_mensal pm on\n" +
+				"\tpm.id_procedimento = a1.codprocedimento\n" +
+				"join sigtap.historico_consumo_sigtap hc on\n" +
+				"\thc.id = pm.id_historico_consumo_sigtap\n" +
+				"join sigtap.instrumento_registro_procedimento_mensal irpm on\n" +
+				"\tirpm.id_procedimento_mensal = pm.id\n" +
+				"join sigtap.instrumento_registro ir on\n" +
+				"\tir.id = irpm.id_instrumento_registro\n" +
+				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' \n" +
+				"and a.dtaatende between ? and ?  and ir.nome like '%BPA%'\n" +
+				"and pm.competencia_atual = ? ";
 
-		String sqlProcedimentoSecundario = "	select count(*) total " +
-				"	from hosp.atendimentos a  " +
-				"	join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  " +
-				"	join hosp.atendimentos1_procedimento_secundario aps on (a1.id_atendimentos1 = aps.id_atendimentos1) " +
-				"	left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " +
-				"	join hosp.programa p on (a.codprograma = p.id_programa)  " +
-				"	join hosp.grupo on (a.codgrupo = grupo.id_grupo)  " +
-				"	join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)  " +
-				"	join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)  " +
-				"	join hosp.proc pr on (aps.id_procedimento = pr.id)	 " +
-				"	left join hosp.especialidade es on es.id_especialidade = f.codespecialidade  " +
-				"	where    a.cod_unidade<>4 and coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  " +
-				"	and a.dtaatende between ?  and ? ";
+		String sqlProcedimentoSecundario = " select count(*) total \n" +
+				"\tfrom hosp.atendimentos a  \n" +
+				"\tjoin hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  \n" +
+				"\tjoin hosp.atendimentos1_procedimento_secundario aps on (a1.id_atendimentos1 = aps.id_atendimentos1) \n" +
+				"\tleft join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  \n" +
+				"\tjoin hosp.programa p on (a.codprograma = p.id_programa)  \n" +
+				"\tjoin hosp.grupo on (a.codgrupo = grupo.id_grupo)  \n" +
+				"\tjoin hosp.pacientes pa on (a.codpaciente = pa.id_paciente)  \n" +
+				"\tjoin acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario)  \n" +
+				"\tjoin hosp.proc pr on (aps.id_procedimento = pr.id)\t \n" +
+				"\tleft join hosp.especialidade es on es.id_especialidade = f.codespecialidade \n" +
+				"join sigtap.procedimento_mensal pm on\n" +
+				"\tpm.id_procedimento = a1.codprocedimento\n" +
+				"join sigtap.historico_consumo_sigtap hc on\n" +
+				"\thc.id = pm.id_historico_consumo_sigtap\n" +
+				"join sigtap.instrumento_registro_procedimento_mensal irpm on\n" +
+				"\tirpm.id_procedimento_mensal = pm.id\n" +
+				"join sigtap.instrumento_registro ir on\n" +
+				"\tir.id = irpm.id_instrumento_registro\t\n" +
+				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  \n" +
+				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
 		if (listaProcedimentosFiltro.size()>0) {
 			sqlProcedimentoPrimario+=" and a1.codprocedimento = any(?) ";
@@ -1905,11 +1922,11 @@ public class AtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sqlProcedimentoPrimario);
 			totalAtendimentos = mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
-					totalAtendimentos, ps);
+					totalAtendimentos, competencia,  ps);
 
 			ps = con.prepareStatement(sqlProcedimentoSecundario);
 			totalAtendimentos += mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
-					totalAtendimentos, ps);
+					totalAtendimentos, competencia,  ps);
 
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1926,17 +1943,18 @@ public class AtendimentoDAO {
 	}
 
 	private Integer mapearPreparedStatmentTotal(Date dataInicio, Date dataFim,
-												List<ProcedimentoBean> listaProcedimentosFiltro, Integer totalAtendimentos, PreparedStatement ps)
+												List<ProcedimentoBean> listaProcedimentosFiltro, Integer totalAtendimentos, String competencia,  PreparedStatement ps)
 			throws SQLException {
 		ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
 		ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+		ps.setString(3, competencia);
 		ArrayList<Integer> lista = new ArrayList<>();
 		for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 			lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 		}
 
 		if (listaProcedimentosFiltro.size()>0)
-			ps.setObject(3, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+			ps.setObject(4, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -2185,23 +2203,32 @@ public class AtendimentoDAO {
 	}
 
 	public List<String> retornaCodigoProcedimentoDeAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim,
-																						 String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+																						 String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades, String competencia)
 			throws ProjetoException {
 
 		List<String> listaCodigosProcedimentos = new ArrayList<>();
 
-		String sql = "select distinct pr.codproc  " +
-				"from hosp.atendimentos a  " +
-				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  " +
-				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  " +
-				"inner join hosp.programa p on (a.codprograma = p.id_programa)  " +
-				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)  " +
-				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) " +
-				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) " +
-				"inner join hosp.proc pr on (a1.codprocedimento = pr.id) " +
-				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade " +
-				"where coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' " +
-				"and a.dtaatende between ? and ? ";
+		String sql = "select distinct pr.codproc  \n" +
+				"from hosp.atendimentos a  \n" +
+				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  \n" +
+				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  \n" +
+				"inner join hosp.programa p on (a.codprograma = p.id_programa)  \n" +
+				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo)  \n" +
+				"inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente) \n" +
+				"inner join acl.funcionarios f  on (a1.codprofissionalatendimento = f.id_funcionario) \n" +
+				"inner join hosp.proc pr on (a1.codprocedimento = pr.id) \n" +
+				"left join hosp.especialidade es on es.id_especialidade = f.codespecialidade\n" +
+				"join sigtap.procedimento_mensal pm on\n" +
+				"\tpm.id_procedimento = a1.codprocedimento\n" +
+				"join sigtap.historico_consumo_sigtap hc on\n" +
+				"\thc.id = pm.id_historico_consumo_sigtap\n" +
+				"join sigtap.instrumento_registro_procedimento_mensal irpm on\n" +
+				"\tirpm.id_procedimento_mensal = pm.id\n" +
+				"join sigtap.instrumento_registro ir on\n" +
+				"\tir.id = irpm.id_instrumento_registro\n" +
+				"where coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' \n" +
+				"and a.dtaatende between ? and ? \n" +
+				"and pm.competencia_atual = ?  and ir.nome like '%BPA%'";
 
 		if (listaProcedimentosFiltro.size() > 0)
 			sql += " and a1.codprocedimento = any(?) ";
@@ -2219,13 +2246,14 @@ public class AtendimentoDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
 			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
+			ps.setString(3, competencia);
 
 			ArrayList<Integer> lista = new ArrayList<>();
 			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-			int parametro = 3;
+			int parametro = 4;
 			if (listaProcedimentosFiltro.size() > 0) {
 				ps.setObject(3, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
 				parametro++;

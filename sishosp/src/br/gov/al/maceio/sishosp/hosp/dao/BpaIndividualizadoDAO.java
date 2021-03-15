@@ -33,14 +33,16 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_INE = "          ";
 
 	public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado
-			(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades)
+			(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades,
+			 Integer codigoConfiguracaoProducao)
 			throws ProjetoException {
 
 		List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
 		String sql = "select * from (\r\n" +
 				"		\r\n" +
 				"		 select count(*) qtdproc , a.cod_unidade, \r\n" +
-				"		 proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \r\n" +
+				"		 proc.codproc,  \r\n" +
+				" coalesce(cpb.cnes_producao, emp.cnes) cnes, " +
 				"		 pm.competencia_atual, \r\n" +
 				"		 func.cns cnsprofissional\r\n" +
 				"		 , cbo.codigo cbo, \r\n" +
@@ -70,18 +72,18 @@ public class BpaIndividualizadoDAO {
 				"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" +
 				"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" +
 				"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" +
-				"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" +
-				"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" +
+				" left join hosp.configuracao_producao_bpa cpb on cpb.id =? " +
 				"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" +
 				"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" +
-				"		 where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"   		 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"		 and a.dtaatende  between ?  and ? \r\n" +
-				"		 and ir.codigo = ? \r\n" +
+				"		 and ir.codigo = ? and ir.nome like '%BPA%' \r\n" +
 				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" +
 				"		 group by \r\n" +
 				"		 proc.codproc, a.cod_unidade, \r\n" +
-				"		 coalesce(pa.cnes_producao, emp.cnes), pm.competencia_atual, \r\n" +
+				"		  coalesce(cpb.cnes_producao, emp.cnes) , " +
+				"pm.competencia_atual, \r\n" +
 				"		 func.cns ,\r\n" +
 				"		 cbo.codigo, proc.codproc, \r\n" +
 				"		 p.cns,\r\n" +
@@ -97,7 +99,8 @@ public class BpaIndividualizadoDAO {
 				"UNION \r\n" +
 				" \r\n" +
 				"		 select count(*) qtdproc , a.cod_unidade, \r\n" +
-				"		 proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, \r\n" +
+				"		 proc.codproc,  \r\n" +
+				" coalesce(cpb.cnes_producao, emp.cnes) cnes, " +
 				"		 pm.competencia_atual, \r\n" +
 				"		 func.cns cnsprofissional\r\n" +
 				"		 , cbo.codigo cbo, \r\n" +
@@ -128,18 +131,17 @@ public class BpaIndividualizadoDAO {
 				"		 join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" +
 				"		 join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" +
 				"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" +
-				"		 left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" +
-				"		 left join hosp.parametro pa on u.id = pa.codunidade \r\n" +
 				"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" +
 				"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" +
-				"		 where  a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				" left join hosp.configuracao_producao_bpa cpb on cpb.id =? " +
+				"		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"		 and a.dtaatende  between ?  and ? \r\n" +
-				"		 and ir.codigo = ? \r\n" +
+				"		 and ir.codigo = ? and ir.nome like '%BPA%'  \r\n" +
 				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" +
 				"		 group by \r\n" +
 				"		 proc.codproc, a.cod_unidade, \r\n" +
-				"		 coalesce(pa.cnes_producao, emp.cnes), pm.competencia_atual, \r\n" +
+				"		  coalesce(cpb.cnes_producao, emp.cnes), pm.competencia_atual, \r\n" +
 				"		 func.cns ,\r\n" +
 				"		 cbo.codigo, proc.codproc, \r\n" +
 				"		 p.cns,\r\n" +
@@ -172,22 +174,24 @@ public class BpaIndividualizadoDAO {
 
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
-			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
-			ps.setString(3, CODIGO_BPA_INDIVIDUALIZADO);
-			ps.setString(4, competencia);
-			ps.setDate(5, new java.sql.Date(dataInicio.getTime()));
-			ps.setDate(6, new java.sql.Date(dataFim.getTime()));
-			ps.setString(7, CODIGO_BPA_INDIVIDUALIZADO);
-			ps.setString(8, competencia);
+			ps.setInt(1, codigoConfiguracaoProducao);
+			ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(3, new java.sql.Date(dataFim.getTime()));
+			ps.setString(4, CODIGO_BPA_INDIVIDUALIZADO);
+			ps.setString(5, competencia);
+			ps.setInt(6, codigoConfiguracaoProducao);
+			ps.setDate(7, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(8, new java.sql.Date(dataFim.getTime()));
+			ps.setString(9, CODIGO_BPA_INDIVIDUALIZADO);
+			ps.setString(10, competencia);
 			ArrayList<Integer> lista = new ArrayList<>();
 			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-			int parametro = 9;
+			int parametro = 11;
 			if (listaProcedimentosFiltro.size() > 0) {
-				ps.setObject(5, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+				ps.setObject(11, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
 				parametro++;
 			}
 

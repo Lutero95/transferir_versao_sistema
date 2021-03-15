@@ -23,13 +23,13 @@ public class BpaConsolidadoDAO {
 	/* ESTA CONSTANTE SERÁ SUBSTITUÍDA DEPOIS POR DADOS DO BANCO */
 	private static final String PRD_IDADE = "000";
 
-	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro,List<Integer> idUnidades) throws ProjetoException {
+	public List<BpaConsolidadoBean> carregaDadosBpaConsolidado(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro,List<Integer> idUnidades, Integer codigoConfiguracaoProducao) throws ProjetoException {
 
 		List<BpaConsolidadoBean> listaDeBpaConsolidado = new ArrayList<BpaConsolidadoBean>();
 
 		String sql = "select qtdproc, codproc, cnes, competencia_atual, cbo, atendimento_realizado, presenca, id_situacao_atendimento, id_procedimento  from (\r\n" +
 				"\r\n" +
-				"	select count(*) qtdproc,a.cod_unidade,   proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, pm.competencia_atual, cbo.codigo cbo \r\n" +
+				"	select count(*) qtdproc,a.cod_unidade,   proc.codproc, coalesce(cpb.cnes_producao, emp.cnes)  cnes, pm.competencia_atual, cbo.codigo cbo \r\n" +
 				"		,sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, a1.codprocedimento as id_procedimento \r\n" +
 				"		from hosp.atendimentos1 a1  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento \r\n" +
 				"		left join hosp.cbo on cbo.id = a1.cbo  \r\n" +
@@ -40,15 +40,15 @@ public class BpaConsolidadoDAO {
 				"		join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  \r\n" +
 				"		join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" +
 				"		join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro \r\n" +
-				"		cross join hosp.empresa emp  left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" +
-				"		left join hosp.parametro pa on u.id = pa.codunidade  where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		cross join hosp.empresa emp  left join hosp.configuracao_producao_bpa cpb on cpb.id =? "+
+				" where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"		and coalesce(a1.excluido, 'N')= 'N' and \r\n" +
-				"		a.dtaatende  between ? and ? \r\n" +
-				"		and a.cod_unidade<>4  and ir.codigo = ?  and pm.competencia_atual = ?  \r\n" +
+				"		a.dtaatende  between ? and ? and ir.nome like '%BPA%' \r\n" +
+				"		and ir.codigo = ?  and pm.competencia_atual = ?  \r\n" +
 				"		and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id\r\n" +
-				"		group by  proc.codproc,a.cod_unidade,   coalesce(pa.cnes_producao, emp.cnes), pm.competencia_atual, cbo.codigo, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, a1.codprocedimento\r\n" +
+				"		group by  proc.codproc,a.cod_unidade,   coalesce(cpb.cnes_producao, emp.cnes) , pm.competencia_atual, cbo.codigo, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, a1.codprocedimento\r\n" +
 				"union \r\n" +
-				"		select count(*) qtdproc, a.cod_unidade,   proc.codproc, coalesce(pa.cnes_producao, emp.cnes) cnes, pm.competencia_atual, cbo.codigo cbo\r\n" +
+				"		select count(*) qtdproc, a.cod_unidade,   proc.codproc, coalesce(cpb.cnes_producao, emp.cnes) cnes, pm.competencia_atual, cbo.codigo cbo\r\n" +
 				"		,sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, aps.id_procedimento \r\n" +
 				"		from hosp.atendimentos1 a1  join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento \r\n" +
 				"		left join hosp.cbo on cbo.id = a1.cbo  \r\n" +
@@ -60,13 +60,13 @@ public class BpaConsolidadoDAO {
 				"		join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  \r\n" +
 				"		join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" +
 				"		join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro \r\n" +
-				"		cross join hosp.empresa emp  left join hosp.unidade u on emp.cod_empresa = u.cod_empresa \r\n" +
-				"		left join hosp.parametro pa on u.id = pa.codunidade  where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		cross join hosp.empresa emp   \r\n" +
+				"		left join hosp.configuracao_producao_bpa cpb on cpb.id =?   where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"		and coalesce(a1.excluido, 'N')= 'N' and \r\n" +
 				"		a.dtaatende  between ? and ? \r\n" +
-				"		and a.cod_unidade<>4  and ir.codigo = ?  and pm.competencia_atual = ?  \r\n" +
+				"		and ir.codigo = ? and ir.nome like '%BPA%'  and pm.competencia_atual = ?  \r\n" +
 				"		and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id  \r\n" +
-				"		group by  proc.codproc,a.cod_unidade,   coalesce(pa.cnes_producao, emp.cnes), pm.competencia_atual, cbo.codigo, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, aps.id_procedimento \r\n" +
+				"		group by  proc.codproc,a.cod_unidade,   coalesce(cpb.cnes_producao, emp.cnes), pm.competencia_atual, cbo.codigo, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, aps.id_procedimento \r\n" +
 				") a \r\n" +
 				"where 1= 1 ";
 
@@ -88,22 +88,24 @@ public class BpaConsolidadoDAO {
 
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
-			ps.setDate(2, new java.sql.Date(dataFim.getTime()));
-			ps.setString(3, CODIGO_BPA_CONSOLIDADO);
-			ps.setString(4, competencia);
-			ps.setDate(5, new java.sql.Date(dataInicio.getTime()));
-			ps.setDate(6, new java.sql.Date(dataFim.getTime()));
-			ps.setString(7, CODIGO_BPA_CONSOLIDADO);
-			ps.setString(8, competencia);
+			ps.setInt(1, codigoConfiguracaoProducao);
+			ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(3, new java.sql.Date(dataFim.getTime()));
+			ps.setString(4, CODIGO_BPA_CONSOLIDADO);
+			ps.setString(5, competencia);
+			ps.setInt(6, codigoConfiguracaoProducao);
+			ps.setDate(7, new java.sql.Date(dataInicio.getTime()));
+			ps.setDate(8, new java.sql.Date(dataFim.getTime()));
+			ps.setString(9	, CODIGO_BPA_CONSOLIDADO);
+			ps.setString(10, competencia);
 			ArrayList<Integer> lista = new ArrayList<>();
 			for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 				lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 			}
 
-			int parametro = 9;
+			int parametro = 11;
 			if (listaProcedimentosFiltro.size()>0) {
-				ps.setObject(9, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
+				ps.setObject(11, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
 				parametro++;
 			}
 
