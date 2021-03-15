@@ -835,14 +835,7 @@
 										</b:inputText>
 									</b:column>
 									
-									<b:column span="3"
-										class="label-position new-data-size new-comple1">
-										<b:label value="CNES para Produção"
-											severity="info" />
-										<b:inputText value="#{UnidadeController.unidade.parametro.cnesProducao}"
-										    type="number"
-											class="form-control" />
-									</b:column>
+
 								</b:row>
 							</p:outputPanel>
 						</p:tab>
@@ -852,7 +845,17 @@
 								<p:selectBooleanCheckbox
 									value="#{UnidadeController.unidade.parametro.cpfPacienteObrigatorio}"
 									itemLabel="CPF"/>
-							</p:fieldset>						
+							</p:fieldset>
+							
+							<p:fieldset legend="PTS">
+								<p:selectBooleanCheckbox 
+									value="#{UnidadeController.unidade.parametro.capacidadesFuncionaisPTSObrigatorio}"
+									itemLabel="Capacidades Funcionais"/>
+								
+								<p:selectBooleanCheckbox
+									value="#{UnidadeController.unidade.parametro.objetivosGeraisPTSObrigatorio}"
+									itemLabel="Objetivos Gerais/Multidisciplinar"/>	
+							</p:fieldset>							
 						</p:tab>
 						
 						<p:tab title="Cores em Tabelas">

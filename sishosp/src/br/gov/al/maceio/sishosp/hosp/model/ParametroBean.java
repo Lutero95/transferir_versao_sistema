@@ -46,6 +46,8 @@ public class ParametroBean implements Serializable {
     private boolean agendaAvulsaValidaPacienteAtivo;
     private boolean atribuirCorTabelaTelaEvolucaoProfissional;
     private boolean cpfPacienteObrigatorio;
+    private boolean capacidadesFuncionaisPTSObrigatorio;
+    private boolean objetivosGeraisPTSObrigatorio;
     private Integer diasPacienteAtivoSemEvolucao;
     private boolean verificaPeriodoInicialEvolucaoPrograma;
     private Date inicioEvolucaoUnidade;
@@ -375,7 +377,23 @@ public class ParametroBean implements Serializable {
         this.cpfPacienteObrigatorio = cpfPacienteObrigatorio;
     }
 
-    public Integer getDiasPacienteAtivoSemEvolucao() {
+	public boolean isCapacidadesFuncionaisPTSObrigatorio() {
+		return capacidadesFuncionaisPTSObrigatorio;
+	}
+
+	public void setCapacidadesFuncionaisPTSObrigatorio(boolean capacidadesFuncionaisPTSObrigatorio) {
+		this.capacidadesFuncionaisPTSObrigatorio = capacidadesFuncionaisPTSObrigatorio;
+	}
+
+	public boolean isObjetivosGeraisPTSObrigatorio() {
+		return objetivosGeraisPTSObrigatorio;
+	}
+
+	public void setObjetivosGeraisPTSObrigatorio(boolean objetivosGeraisPTSObrigatorio) {
+		this.objetivosGeraisPTSObrigatorio = objetivosGeraisPTSObrigatorio;
+	}
+
+	public Integer getDiasPacienteAtivoSemEvolucao() {
         return diasPacienteAtivoSemEvolucao;
     }
 

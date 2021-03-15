@@ -119,8 +119,10 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, acesso_permitido_quarta, acesso_permitido_quinta, "+
                     "acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
-                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente ) "+
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente,  "+
+                    "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio ) "+
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "+
+                    "?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -258,6 +260,8 @@ public class UnidadeDAO {
                 ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
+            ps.setBoolean(45, unidade.getParametro().isCapacidadesFuncionaisPTSObrigatorio());
+            ps.setBoolean(46, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
             ps.execute();
 
 
@@ -424,8 +428,8 @@ public class UnidadeDAO {
                     "acesso_permitido_domingo = ?, acesso_permitido_segunda = ?, acesso_permitido_terca = ?, acesso_permitido_quarta = ?, "+
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
-                    " verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?  "+
-                    "WHERE codunidade = ?";
+                    "verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?,  "+
+                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ? WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -529,7 +533,9 @@ public class UnidadeDAO {
                 ps.setDate(43, new java.sql.Date(unidade.getParametro().getInicioEvolucaoUnidade().getTime()));
 
             ps.setBoolean(44, unidade.getParametro().isBuscaAutomaticaCepPaciente());
-            ps.setInt(45, unidade.getId());
+            ps.setBoolean(45, unidade.getParametro().isCapacidadesFuncionaisPTSObrigatorio());
+            ps.setBoolean(46, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
+            ps.setInt(47, unidade.getId());
 
             ps.executeUpdate();
 
@@ -671,7 +677,7 @@ public class UnidadeDAO {
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
-                "inicio_evolucao_unidade, busca_automatica_cep_paciente "+
+                "inicio_evolucao_unidade, busca_automatica_cep_paciente, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -736,6 +742,8 @@ public class UnidadeDAO {
                 parametro.setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
                 parametro.setInicioEvolucaoUnidade(rs.getDate("inicio_evolucao_unidade"));
                 parametro.setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
+                parametro.setCapacidadesFuncionaisPTSObrigatorio(rs.getBoolean("capacidades_funcionais_pts_obrigatorio"));
+                parametro.setObjetivosGeraisPTSObrigatorio(rs.getBoolean("objetivos_gerais_pts_obrigatorio"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();
@@ -1004,7 +1012,7 @@ public class UnidadeDAO {
         }
         return resultado;
     }
-    
+
     public Integer retornaValidadePadraoLaudo() throws ProjetoException {
 
         Integer validade = null;

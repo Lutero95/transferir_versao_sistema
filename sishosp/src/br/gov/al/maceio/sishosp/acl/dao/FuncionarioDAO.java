@@ -152,7 +152,8 @@ public class FuncionarioDAO {
 				+ " p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
-				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente  "
+				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, "
+				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -211,6 +212,8 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setVerificaPeriodoInicialEvolucaoPrograma(rs.getBoolean("verifica_periodo_inicial_evolucao_programa"));
 				funcionario.getUnidade().getParametro().setInicioEvolucaoUnidade(rs.getDate("inicio_evolucao_unidade"));
 				funcionario.getUnidade().getParametro().setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
+				funcionario.getUnidade().getParametro().setCapacidadesFuncionaisPTSObrigatorio(rs.getBoolean("capacidades_funcionais_pts_obrigatorio"));
+				funcionario.getUnidade().getParametro().setObjetivosGeraisPTSObrigatorio(rs.getBoolean("objetivos_gerais_pts_obrigatorio"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				// ACL

@@ -112,7 +112,8 @@
 
 							<h:inputTextarea
 								style="margin-top: 10px;height:200px;width:410px"
-								scrollHeight="100" required="true" rows="20" cols="89"
+								scrollHeight="100" required="#{MBFuncionarios.usuarioLogado.unidade.parametro.capacidadesFuncionaisPTSObrigatorio}"
+								rows="20" cols="89"
 								requiredMessage="Capacidades Funcionais: Campo obrigatório!"
 								value="#{PtsController.pts.capacidadesFuncionais}"></h:inputTextarea>
 						</b:column>
@@ -142,7 +143,8 @@
 
 							<h:inputTextarea
 								style="margin-top: 10px;height:200px;width:410px"
-								scrollHeight="100" required="true" rows="20" cols="89"
+								scrollHeight="100" required="#{MBFuncionarios.usuarioLogado.unidade.parametro.objetivosGeraisPTSObrigatorio}"
+								rows="20" cols="89"
 								requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
 						</b:column>
