@@ -152,8 +152,7 @@ public class FuncionarioDAO {
 				+ " p.cgcCpf_prestador_ou_orgao_publico, p.orgao_destino_informacao, p.indicador_orgao_destino_informacao, "
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
-				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, "
-				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio "
+				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, p.valida_dados_laudo_sigtap, p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio     "
 				+ " from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -214,6 +213,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setBuscaAutomaticaCepPaciente(rs.getBoolean("busca_automatica_cep_paciente"));
 				funcionario.getUnidade().getParametro().setCapacidadesFuncionaisPTSObrigatorio(rs.getBoolean("capacidades_funcionais_pts_obrigatorio"));
 				funcionario.getUnidade().getParametro().setObjetivosGeraisPTSObrigatorio(rs.getBoolean("objetivos_gerais_pts_obrigatorio"));
+				funcionario.getUnidade().getParametro().setValidaDadosLaudoSigtap(rs.getBoolean("valida_dados_laudo_sigtap"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				// ACL
@@ -1254,18 +1254,18 @@ public class FuncionarioDAO {
 		}
 		return retorno;
 	}
-	
-	public void gravarCbosProfissional (FuncionarioBean funcionario, Connection conexaoAuxiliar) 
-				throws ProjetoException, SQLException {
+
+	public void gravarCbosProfissional (FuncionarioBean funcionario, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
 
 		String sql = "INSERT INTO hosp.cbo_funcionario (id_cbo, id_profissional) VALUES(?, ?);";
 		try {
-			
+
 			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
 			for (CboBean cbo : funcionario.getListaCbos()) {
 				ps.setInt(1, cbo.getCodCbo());
 				ps.setLong(2, funcionario.getId());
-				ps.executeUpdate();				
+				ps.executeUpdate();
 			}
 		} catch (SQLException sqle) {
 			conexaoAuxiliar.rollback();
@@ -1275,7 +1275,7 @@ public class FuncionarioDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 	}
-	
+
 	public void removerCbosProfissional(Long idProfissional, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
@@ -1293,7 +1293,7 @@ public class FuncionarioDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 	}
-	
+
 	private void removerProfissionalPermissaoSistema(Long idProfissional, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
@@ -1604,14 +1604,14 @@ public class FuncionarioDAO {
 			ps = con.prepareStatement(sql3);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
-			
+
 			removerCbosProfissional(profissional.getId(), con);
 			removerProfissionalPermissaoSistema(profissional.getId(), con);
 
 			ps = con.prepareStatement(sql4);
 			ps.setLong(1, profissional.getId());
 			ps.execute();
-			
+
 			con.commit();
 			retorno = true;
 		} catch (SQLException sqle) {
@@ -1629,7 +1629,7 @@ public class FuncionarioDAO {
 	}
 
 	public boolean alterarProfissional
-		(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) throws ProjetoException {
+			(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) throws ProjetoException {
 
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
@@ -1742,12 +1742,12 @@ public class FuncionarioDAO {
 			}
 
 			retorno = alterarProfissionalBancoPublico(profissional);
-			
+
 			removerCbosProfissional(profissional.getId(), con);
 			if(profissional.getRealizaAtendimento()) {
 				gravarCbosProfissional(profissional, con);
 			}
-			
+
 			if (retorno) {
 				con.commit();
 			}
@@ -1961,12 +1961,12 @@ public class FuncionarioDAO {
 		}
 		return profissional;
 	}
-	
+
 	public List<CboBean> buscarCbosFuncionario(Integer idFuncionario) throws ProjetoException {
 		List<CboBean> listaCbos = new ArrayList<>();
 
-		String sql = "select c.id, c.descricao, c.codigo " + 
-				"from hosp.cbo_funcionario cf join hosp.cbo c on cf.id_cbo = c.id " + 
+		String sql = "select c.id, c.descricao, c.codigo " +
+				"from hosp.cbo_funcionario cf join hosp.cbo c on cf.id_cbo = c.id " +
 				"where cf.id_profissional = ?;";
 
 		try {
@@ -2508,14 +2508,14 @@ public class FuncionarioDAO {
 		}
 		return acessoPermitido;
 	}
-	
+
 	public List<CboBean> listarCbosProfissional(Long idFuncionario, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
-		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
-				" join hosp.cbo c on cf.id_cbo = c.id " + 
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " +
+				" join hosp.cbo c on cf.id_cbo = c.id " +
 				" where cf.id_profissional = ?;";
-		
+
 		List<CboBean> listaCbos = new ArrayList<>();
 
 		try {
@@ -2537,26 +2537,26 @@ public class FuncionarioDAO {
 		}
 		return listaCbos;
 	}
-	
-	public CboBean buscaCboCompativelComProcedimento 
-		(Date data, Integer idProcedimento, Long idFuncionario, Connection conexaoAuxiliar)
+
+	public CboBean buscaCboCompativelComProcedimento
+			(Date data, Integer idProcedimento, Long idFuncionario, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
-		String sql = "select cbo.id, cbo.descricao, cbo.codigo from hosp.cbo_funcionario cf " + 
-				"	join hosp.cbo cbo on cf.id_cbo = cbo.id " + 
-				"	join sigtap.cbo_procedimento_mensal cpm on cf.id_cbo = cpm.id_cbo " + 
-				"	join sigtap.procedimento_mensal pm on cpm.id_procedimento_mensal = pm.id " + 
-				"	join hosp.proc p on pm.id_procedimento = p.id " + 
-				"	join sigtap.historico_consumo_sigtap hcs on pm.id_historico_consumo_sigtap = hcs.id " + 
-				"	join acl.funcionarios f on cf.id_profissional = f.id_funcionario " + 
+		String sql = "select cbo.id, cbo.descricao, cbo.codigo from hosp.cbo_funcionario cf " +
+				"	join hosp.cbo cbo on cf.id_cbo = cbo.id " +
+				"	join sigtap.cbo_procedimento_mensal cpm on cf.id_cbo = cpm.id_cbo " +
+				"	join sigtap.procedimento_mensal pm on cpm.id_procedimento_mensal = pm.id " +
+				"	join hosp.proc p on pm.id_procedimento = p.id " +
+				"	join sigtap.historico_consumo_sigtap hcs on pm.id_historico_consumo_sigtap = hcs.id " +
+				"	join acl.funcionarios f on cf.id_profissional = f.id_funcionario " +
 				"	where p.ativo = 'S' and hcs.status = 'A' and hcs.mes = ? and hcs.ano = ? and p.id = ? and f.id_funcionario = ? "+
 				"   order by id limit 1;";
 
 		CboBean cbo = new CboBean();
-		try {			
+		try {
 			PreparedStatement ps = null;
 			ps = conexaoAuxiliar.prepareStatement(sql);
-			
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(data);
 			int mes = calendar.get(Calendar.MONDAY) + 1;
@@ -2575,10 +2575,10 @@ public class FuncionarioDAO {
 		} catch (Exception ex) {
 			conexaoAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+		}
 		return cbo;
 	}
-	
+
 	public boolean funcionarioPossuiCboCompativelComProcedimento(Date data, Integer idProcedimento, Long idFuncionario)
 			throws ProjetoException {
 
@@ -2617,7 +2617,7 @@ public class FuncionarioDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
 			try {
-				con.close();				
+				con.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -2625,13 +2625,13 @@ public class FuncionarioDAO {
 		return existe;
 	}
 
-	
+
 	public CboBean retornaPrimeiroCboProfissional(Long idFuncionario) throws ProjetoException {
 
-		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
-				" join hosp.cbo c on cf.id_cbo = c.id " + 
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " +
+				" join hosp.cbo c on cf.id_cbo = c.id " +
 				" where cf.id_profissional = ? order by c.id limit 1;";
-		
+
 		CboBean cbo = new CboBean();
 
 		try {
@@ -2655,11 +2655,11 @@ public class FuncionarioDAO {
 		}
 		return cbo;
 	}
-	
+
 	public List<CboBean> listaCbosProfissional(Long idFuncionario) throws ProjetoException {
 
-		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
-				" join hosp.cbo c on cf.id_cbo = c.id " + 
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " +
+				" join hosp.cbo c on cf.id_cbo = c.id " +
 				" where cf.id_profissional = ? order by c.descricao;";
 		List<CboBean> listaCbos = new ArrayList<>();
 
@@ -2686,11 +2686,11 @@ public class FuncionarioDAO {
 		}
 		return listaCbos;
 	}
-	
+
 	public List<CboBean> listaCbosProfissionalComMesmaConexao(Long idFuncionario, Connection conexaoAuxiliar) throws ProjetoException, SQLException {
 
-		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " + 
-				" join hosp.cbo c on cf.id_cbo = c.id " + 
+		String sql = "select c.id, c.descricao, c.codigo from hosp.cbo_funcionario cf " +
+				" join hosp.cbo c on cf.id_cbo = c.id " +
 				" where cf.id_profissional = ? order by c.descricao;";
 		List<CboBean> listaCbos = new ArrayList<>();
 
@@ -2709,7 +2709,7 @@ public class FuncionarioDAO {
 		} catch (Exception ex) {
 			conexaoAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
-		} 
+		}
 		return listaCbos;
 	}
 
@@ -2718,12 +2718,12 @@ public class FuncionarioDAO {
 		cbo.setDescCbo(rs.getString("descricao"));
 		cbo.setCodigo(rs.getString("codigo"));
 	}
-	
+
 	public boolean cboCompativelComProfissional (Integer idCbo, Long idFuncionario) throws ProjetoException {
 
-		String sql = "select exists (select cf.id from hosp.cbo_funcionario cf " + 
+		String sql = "select exists (select cf.id from hosp.cbo_funcionario cf " +
 				"	where cf.id_cbo = ? and cf.id_profissional = ?) cbo_compativel_profissional ";
-				
+
 		boolean cboCompativel = false;
 
 		try {
@@ -2748,7 +2748,7 @@ public class FuncionarioDAO {
 		}
 		return cboCompativel;
 	}
-	
+
 	public FuncionarioBean buscarProfissionalPorCns(String cns) throws ProjetoException {
 		FuncionarioBean profissional = null;
 
@@ -2782,7 +2782,7 @@ public class FuncionarioDAO {
 		}
 		return profissional;
 	}
-	
+
 	public boolean gravarNovaSenhaProfissional(Long idProfissional, String novaSenha)
 			throws ProjetoException {
 
@@ -2816,14 +2816,14 @@ public class FuncionarioDAO {
 		}
 		return retorno;
 	}
-	
+
 	private boolean gravarNovaSenhaProfissionalBancoPublico(Long idProfissional, String novaSenha) throws ProjetoException {
 
 		Boolean retorno = false;
 		Connection conexaoPublica = null;
 
 		String sql = "UPDATE acl.funcionarios SET senha= ? WHERE id_funcionario = ? and banco_acesso = ?;";
-		
+
 		try {
 			conexaoPublica = ConnectionFactoryPublico.getConnection();
 			PreparedStatement ps = conexaoPublica.prepareStatement(sql);
