@@ -11,6 +11,7 @@
 		<f:metadata>
 			<f:event type="preRenderView" listener="#{AgendaController.carregarHorarioOuTurno()}"/>
 			<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
+			<f:viewAction action="#{AgendaController.naoEhPaginaAgendaAvulsa()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -916,37 +917,6 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
-			dynamic="true" modal="true" responsive="true">
-			<h:form id="formConsuEquipe">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{AgendaController.listaEquipePorTipoAtendimento}"
-					id="dtEquipe" var="equipe" display="Nenhuma Equipe">
-
-					<h:column>
-						<f:facet name="header">
-                            Equipe
-                        </f:facet>
-						<p:outputLabel value="#{equipe.descEquipe}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton
-							action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
-							update=":formAgendaMedica" icon="fa fa-fw fa-check"
-							title="Selecionar" class="new-btn-acao-table acao-editar"
-							oncomplete="PF('dlgConsuEquipe').hide();">
-							<f:setPropertyActionListener value="#{equipe}"
-								target="#{AgendaController.agenda.equipe}" />
-						</p:commandButton>
-					</h:column>
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
 			dynamic="true" modal="true" responsive="true">
 			<h:form id="formConsuProf">
@@ -1132,5 +1102,6 @@
 			</h:form>
 		</p:dialog>
 		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
+		<ui:include src="dialogs/dialogequipeagenda.xhtml"/>
 	</ui:define>
 </ui:composition>

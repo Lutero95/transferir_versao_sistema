@@ -132,6 +132,7 @@ public class AgendaController implements Serializable {
     private boolean incluirProcedimentos;
     private String tipoProcedimento;
     private boolean confirmaAgendamentoComProcedimentos;
+    private boolean ehAgendaAvulsa;
     
     private static final String ERRO = "Erro!";
 	private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
@@ -206,10 +207,20 @@ public class AgendaController implements Serializable {
         confirmaAgendamentoComProcedimentos = false;
         incluirProcedimentos = false;
     }
+    
+    public void ehPaginaAgendaAvulsa() {
+    	ehAgendaAvulsa = true;
+    }
+    
+    public void naoEhPaginaAgendaAvulsa() {
+    	ehAgendaAvulsa = false;
+    }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
-        preparaVerificarDisponibilidadeData();
-        listaDiasDeAtendimentoAtuais();
+    	if(!ehAgendaAvulsa) {
+    		preparaVerificarDisponibilidadeData();
+        	listaDiasDeAtendimentoAtuais();
+    	}
     }
 
     public void carregaListaFuncionariosDual() throws ProjetoException {
@@ -1112,6 +1123,7 @@ public class AgendaController implements Serializable {
 
 		return retorno;
 	}
+	
 
 	public void gravarAgenda(FuncionarioBean funcionarioLiberacao) throws ProjetoException {
 		// verificar se existe algum campo nao preenchido

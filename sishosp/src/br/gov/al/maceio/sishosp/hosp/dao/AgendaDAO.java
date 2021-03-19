@@ -246,10 +246,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         int idAtendimento = 0;
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente,  codprograma,"
-                + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno,  observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario,  avulso, codatendente)"
+                + " dtaatende, situacao, dtamarcacao, codtipoatendimento, turno, "
+                + " observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario,  avulso, codatendente, codequipe)"
                 + " VALUES " + "(?, ?, ?, ?, current_timestamp ," + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?,  true, ?) RETURNING id_atendimento;";
+                + " ?, ?, ?, ?,  true, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -288,9 +288,17 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             } else {
                 ps.setNull(13, Types.NULL);
             }
+            
             FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().get("obj_funcionario");
+            
             ps.setLong(14, user_session.getId());
+            if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getEquipe())
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe())) {
+            	ps.setInt(15, agenda.getEquipe().getCodEquipe());
+            } else {
+            	ps.setNull(15, Types.NULL);
+            }
 
             ResultSet rs = ps.executeQuery();
 
