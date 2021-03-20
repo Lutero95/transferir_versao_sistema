@@ -27,11 +27,11 @@ import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
-import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
     private static final String NAO = "N";
@@ -298,6 +298,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             	ps.setInt(15, agenda.getEquipe().getCodEquipe());
             } else {
             	ps.setNull(15, Types.NULL);
+            	agenda.setEquipe(new EquipeBean());
             }
 
             ResultSet rs = ps.executeQuery();
