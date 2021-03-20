@@ -3472,7 +3472,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     private Integer retornaIdProcedimentoDaAgendaOuEspecifico(Connection conexao, AgendaBean agenda,
                                                               FuncionarioBean funcionario, Integer idPaciente) throws SQLException, ProjetoException {
 
-        Integer idProcedimentoEspecifico = null;
+        Integer idProcedimentoEspecifico = 0;
         try {
             if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getProcedimento().getIdProc())) {
 

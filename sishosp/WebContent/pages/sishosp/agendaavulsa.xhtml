@@ -143,7 +143,7 @@
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.selectGrupo}"
-											update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi" />
+											update="outTipoAt, outGrupo, outEquipe :formConsuTipoAt:dtTipoAt, btBusTi" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusGr" immediate="true"
@@ -186,15 +186,14 @@
 							<p:outputPanel id="outEquipeRow">
 								<b:column span="3"
 									class="label-position new-data-size new-comple1">
-									<b:label value="Equipe" severity="info"
-										rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+									<b:label value="Equipe" severity="info" />
 
-									<p:outputPanel id="outEquipe"
-										rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+									<p:outputPanel id="outEquipe">
 										<p:autoComplete value="#{AgendaController.agenda.equipe}"
 											size="31" converter="conEquipe"
 											class="select-agendaEquipe4"
 											completeMethod="#{AgendaController.listaEquipeAutoComplete}"
+											disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 											effect="fade" var="theme" forceSelection="true"
 											minQueryLength="1" itemValue="#{theme}"
 											itemLabel="#{theme.descEquipe}">
@@ -204,12 +203,11 @@
 										</p:autoComplete>
 
 										<p:commandButton id="btBusEqui" immediate="true"
-											disabled="#{AgendaController.agenda.tipoAt==null}"
+											disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 											icon="ui-icon-search"
 											oncomplete="PF('dlgConsuEquipe').show();"
-											action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
-											update=":formConsuEquipe"
-											rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+											action="#{AgendaController.carregaListaEquipe()}"
+											update=":formConsuEquipe" />
 									</p:outputPanel>
 								</b:column>
 							</p:outputPanel>
@@ -604,7 +602,7 @@
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
-							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt :formAgendaMedica:outEquipe"
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();"
