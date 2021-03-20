@@ -1585,6 +1585,12 @@ public class AgendaController implements Serializable {
                     agenda.getProgramaAvaliacao().getIdPrograma());
             return result;
         }
+        
+        public void carregaListaEquipe() throws ProjetoException {            
+			if (agenda.getGrupo().getIdGrupo() != null) {
+				listaEquipePorTipoAtendimento = eDao.listarEquipePorGrupo(agenda.getGrupo().getIdGrupo());
+			}
+        }
 
         public void carregaListaEquipePorTipoAtendimento() throws ProjetoException {
             if (agenda.getTipoAt() != null) {
