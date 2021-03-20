@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +9,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.control.LaudoController;
 import br.gov.al.maceio.sishosp.hosp.model.BpaIndividualizadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -114,7 +112,7 @@ public class BpaIndividualizadoDAO {
 				"		 , proc.id as codprocedimento, sa.atendimento_realizado, a.presenca, a1.id_situacao_atendimento, func.cns as cnsfunc, p.cns as cnspac\r\n" +
 				"		 from hosp.atendimentos1 a1  \r\n" +
 				"		 join hosp.atendimentos a on a.id_atendimento  = a1.id_atendimento  \r\n" +
-				"		 join hosp.atendimentos1_procedimento_secundario aps on a1.id_atendimentos1 = aps.id_atendimentos1 \r\n" +
+				"		  join hosp.atendimentos1_procedimento_secundario aps on a1.id_atendimentos1 = aps.id_atendimentos1 \r\n" +
 				"		 join acl.funcionarios func on func.id_funcionario  = a1.codprofissionalatendimento  \r\n" +
 				"		 left join hosp.cbo on cbo.id = a1.cbo  \r\n" +
 				"		 join hosp.pacientes p on p.id_paciente  = a.codpaciente  \r\n" +
@@ -136,7 +134,7 @@ public class BpaIndividualizadoDAO {
 				" left join hosp.configuracao_producao_bpa cpb on cpb.id =? " +
 				"		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
-				"		 and a.dtaatende  between ?  and ? \r\n" +
+				"		 and a.dtaatende  between ?  and ?  and  coalesce(aps.excluido,'N') ='N' \r\n" +
 				"		 and ir.codigo = ? and ir.nome like '%BPA%'  \r\n" +
 				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" +
 				"		 group by \r\n" +
@@ -174,12 +172,18 @@ public class BpaIndividualizadoDAO {
 
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(codigoConfiguracaoProducao))
+				ps.setNull(1, Types.NULL);
+			else
 			ps.setInt(1, codigoConfiguracaoProducao);
 			ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
 			ps.setDate(3, new java.sql.Date(dataFim.getTime()));
 			ps.setString(4, CODIGO_BPA_INDIVIDUALIZADO);
 			ps.setString(5, competencia);
-			ps.setInt(6, codigoConfiguracaoProducao);
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(codigoConfiguracaoProducao))
+				ps.setNull(6, Types.NULL);
+			else
+				ps.setInt(6, codigoConfiguracaoProducao);
 			ps.setDate(7, new java.sql.Date(dataInicio.getTime()));
 			ps.setDate(8, new java.sql.Date(dataFim.getTime()));
 			ps.setString(9, CODIGO_BPA_INDIVIDUALIZADO);

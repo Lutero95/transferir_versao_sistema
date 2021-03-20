@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+<h:body>
+	<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+			dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsuEquipe">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{AgendaController.listaEquipePorTipoAtendimento}"
+					id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+					<h:column>
+						<f:facet name="header">
+                            Equipe
+                        </f:facet>
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
+							update=":formAgendaMedica" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							oncomplete="PF('dlgConsuEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{AgendaController.agenda.equipe}" />
+						</p:commandButton>
+					</h:column>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+</h:body>
+</html>

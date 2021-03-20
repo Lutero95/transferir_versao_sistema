@@ -12,6 +12,7 @@
 			<f:viewAction action="#{AgendaController.agendaAvulsaInit()}" />
 			<f:viewAction action="#{AgendaController.limparTurno()}" />
 			<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
+			<f:viewAction action="#{AgendaController.ehPaginaAgendaAvulsa()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -170,7 +171,7 @@
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-											update=":msgPagina, outTipoAt" />
+											update=":msgPagina, outTipoAt outEquipeRow" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" immediate="true"
@@ -181,6 +182,37 @@
 										onclick="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
+							
+							<p:outputPanel id="outEquipeRow">
+								<b:column span="3"
+									class="label-position new-data-size new-comple1">
+									<b:label value="Equipe" severity="info"
+										rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+
+									<p:outputPanel id="outEquipe"
+										rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+										<p:autoComplete value="#{AgendaController.agenda.equipe}"
+											size="31" converter="conEquipe"
+											class="select-agendaEquipe4"
+											completeMethod="#{AgendaController.listaEquipeAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.descEquipe}">
+											<p:ajax event="itemSelect"
+												listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
+												update=":formAgendaMedica, msgPagina"></p:ajax>
+										</p:autoComplete>
+
+										<p:commandButton id="btBusEqui" immediate="true"
+											disabled="#{AgendaController.agenda.tipoAt==null}"
+											icon="ui-icon-search"
+											oncomplete="PF('dlgConsuEquipe').show();"
+											action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
+											update=":formConsuEquipe"
+											rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+									</p:outputPanel>
+								</b:column>
+							</p:outputPanel>
 						</b:row>
 					</p:outputPanel>
 
@@ -604,7 +636,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outTipoAt, :msgPagina" 
+							update=":formAgendaMedica:outTipoAt, :msgPagina :formAgendaMedica:outEquipeRow" 
 							icon="fa fa-fw fa-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuTipoAt').hide();">
@@ -663,6 +695,7 @@
 		</p:dialog>
 
 		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
+		<ui:include src="dialogs/dialogequipeagenda.xhtml"/>
 	</ui:define>
 
 </ui:composition>
