@@ -726,7 +726,7 @@ public class AtendimentoDAO {
 				"	join hosp.programa p on p.id_programa = a.codprograma   " +
 				"	join hosp.grupo g on g.id_grupo = a.codgrupo   " +
 				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  " +
-				" 	where a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null))   " +
+				" 	where coalesce(a.presenca,'N')='S' and  (a1.id_situacao_atendimento is null)   " +
 				"	and a.dtaatende<current_date   " +
 				"	and a1.codprofissionalatendimento = ?  " +
 				"	and coalesce(a.situacao,'A')<>'C'  " +
