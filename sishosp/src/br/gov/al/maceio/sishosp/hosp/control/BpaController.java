@@ -707,7 +707,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean verificarInconsistenciaProcedimento() throws SQLException, ProjetoException {
-		ProcedimentoBean procedimento = new ProcedimentoDAO().retornarProcedimentoInconsistente();
+		ProcedimentoBean procedimento = new ProcedimentoDAO().retornarProcedimentoInconsistente(this.competencia);
 		if(!VerificadorUtil.verificarSeObjetoNulo(procedimento)) {
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getServico().getId())
 					&& VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getClassificacao().getId()) ) {
@@ -860,9 +860,9 @@ public class BpaController implements Serializable {
 	}
 
 	private String formataCompetenciaParaBanco() {
-		String diaCompetencia = competencia.substring(0, 2);
+		String mesCompetencia = competencia.substring(0, 2);
 		String anoCompetencia = competencia.substring(3, 7);
-		String competenciaFormatada = anoCompetencia+diaCompetencia;
+		String competenciaFormatada = anoCompetencia+mesCompetencia;
 		return competenciaFormatada;
 	}
 

@@ -2672,16 +2672,23 @@ public class ProcedimentoDAO {
         return listaClassificacao;
     }
     
-    public ProcedimentoBean retornarProcedimentoInconsistente() throws SQLException, ProjetoException {
+    public ProcedimentoBean retornarProcedimentoInconsistente(String competencia) throws SQLException, ProjetoException {
 
     	ProcedimentoBean procedimento = null;
 
-        String sql = "select p.id, p.nome, p.id_classificacao,  p.id_servico " +
-                "	from hosp.proc p where " +
-                "	(p.id_classificacao is null or p.id_servico is null);";
+        String sql = "select p.id, p.nome, p.id_classificacao,  p.id_servico " + 
+        		"	from hosp.proc p " + 
+        		"	join sigtap.procedimento_mensal pm on (p.id = pm.id_procedimento) " + 
+        		"	join sigtap.servico_classificacao_mensal scm on (pm.id = scm.id_procedimento_mensal) " + 
+        		"	join sigtap.historico_consumo_sigtap hcs on (pm.id_historico_consumo_sigtap = hcs.id) " + 
+        		"	where hcs.ano = ? and hcs.mes = ? and (p.id_classificacao is null or p.id_servico is null); ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            Integer ano = Integer.valueOf(competencia.substring(0, 4));
+    		Integer mes = Integer.valueOf(competencia.substring(4, 6));
+            stm.setInt(1, ano);
+            stm.setInt(2, mes);
             ResultSet rs = stm.executeQuery();
 
             if (rs.next()) {
