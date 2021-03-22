@@ -701,7 +701,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean existeInconsistencias(String tipoGeracao) throws SQLException, ProjetoException {
-		if (verificarInconsistenciaProcedimento())// || verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao))
+		if ((verificarInconsistenciaProcedimento()) || (verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(tipoGeracao)))
 			return true;
 		return false;
 	}

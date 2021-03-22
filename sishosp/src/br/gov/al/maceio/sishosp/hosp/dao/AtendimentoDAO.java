@@ -1878,7 +1878,7 @@ public class AtendimentoDAO {
 				"\tirpm.id_procedimento_mensal = pm.id\n" +
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\n" +
-				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' \n" +
+				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
 				"and a.dtaatende between ? and ?  and ir.nome like '%BPA%'\n" +
 				"and pm.competencia_atual = ? ";
 
@@ -1901,7 +1901,7 @@ public class AtendimentoDAO {
 				"\tirpm.id_procedimento_mensal = pm.id\n" +
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\t\n" +
-				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N'  \n" +
+				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
 		if (listaProcedimentosFiltro.size()>0) {
