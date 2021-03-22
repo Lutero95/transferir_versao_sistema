@@ -979,7 +979,7 @@ public class GerenciarPacienteDAO {
 		String sql2;
 		PreparedStatement ps2;
 		sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? "+
-				"where id_atendimentos1 = " + 
+				"where id_atendimentos1 in " +
 				"	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 " + 
 				"                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento " + 
 				"                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 " + 
