@@ -717,6 +717,8 @@ public class AtendimentoController implements Serializable {
         aux.setPaciente(atendimento.getPaciente());
         aux.setCbo(cbo);
         aux.setDataAtendimento(atendimentoAux.getDataAtendimento());
+        aux.setGrupo((atendimentoAux.getGrupo()));
+        aux.setPrograma((atendimentoAux.getPrograma()));
         aux.setProcedimento(atendimento.getProcedimento());
         aux.setFuncionario(funcionarioAux);
         listAtendimentosEquipe.add(aux);
