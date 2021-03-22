@@ -164,6 +164,9 @@ public class AtendimentoDAO {
 
 				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);
+				
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1()))
+					excluirAtendimentoInconsistenciaLog(lista.get(i).getId1(), con);
 			}
 
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
@@ -370,6 +373,23 @@ public class AtendimentoDAO {
 			}
 		}
 		return alterou;
+	}
+	
+	private void excluirAtendimentoInconsistenciaLog(Integer idAtendimento1, Connection conAuxiliar)
+			throws SQLException {
+		String sql2;
+		PreparedStatement ps2;
+		sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? "+
+				"where id_atendimentos1 = " + 
+				"	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 " + 
+				"                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento " + 
+				"                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 " + 
+				"                    	where il.id_atendimento1 = ? ) ";
+		ps2 = null;
+		ps2 = conAuxiliar.prepareStatement(sql2);
+		ps2.setLong(1, user_session.getId());
+		ps2.setLong(2, idAtendimento1);
+		ps2.executeUpdate();
 	}
 
 	private void verificarInconsistenciaEvolucaoProgramaGrupo
