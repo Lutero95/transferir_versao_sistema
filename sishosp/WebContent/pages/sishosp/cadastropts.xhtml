@@ -273,12 +273,12 @@
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
 										 rendered="#{PtsController.existePts==false}"
-							icon="ui-icon-check" update=":msgPagina, formPts"
+							icon="ui-icon-check" update=":msgPagina"
 							class="btn-incluir" action="#{PtsController.gravarPts()}" />
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
 										 rendered="#{PtsController.existePts}"
-										 icon="ui-icon-check" update=":msgPagina, formPts"
+										 icon="ui-icon-check" update=":msgPagina"
 										 class="btn-incluir" action="#{PtsController.gravarAlteracaoPts()}" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
