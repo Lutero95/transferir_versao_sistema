@@ -215,7 +215,9 @@ public class FuncionarioController implements Serializable {
 
 			else{
 				retorno = autenticarUsuario();
-				FacesContext.getCurrentInstance().getExternalContext().redirect(retorno);
+				if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(retorno)) {
+					FacesContext.getCurrentInstance().getExternalContext().redirect(retorno);
+				}
 			}
 		}
 	}
