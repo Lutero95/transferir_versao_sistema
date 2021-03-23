@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.shared.DadosSessao;
 import br.gov.al.maceio.sishosp.comum.shared.TelasBuscaSessao;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaPaciente;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
@@ -1203,7 +1204,8 @@ public class AtendimentoController implements Serializable {
     }
     
     private void excluirAgendamentoPaciente(FuncionarioBean funcionarioLiberacao, AtendimentoBean atendimento) throws ProjetoException {
-    	boolean agendamentoExcluido = new AgendaDAO().excluirAgendamentoPaciente(atendimento, funcionarioLiberacao);
+    	boolean agendamentoExcluido = new AgendaDAO().excluirAgendamentoPaciente
+    				(atendimento, funcionarioLiberacao, MotivoLiberacao.EXCLUSAO_AGENDAMENTO_PACIENTE.getTitulo());
     	if(agendamentoExcluido) {
     		JSFUtil.adicionarMensagemSucesso("Agendamento Excluído com Sucesso", "");
     	}
