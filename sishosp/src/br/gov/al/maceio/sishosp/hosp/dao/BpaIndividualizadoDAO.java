@@ -322,7 +322,7 @@ public class BpaIndividualizadoDAO {
 		return listaCompetencias;
 	}
 
-	public List<AtendimentoBean> listaPossiveisDuplicidades(BpaIndividualizadoBean bpa) throws ProjetoException {
+	public List<AtendimentoBean> listaPossiveisDuplicidades(BpaIndividualizadoBean bpa, Integer codigoConfiguracaoProducao) throws ProjetoException {
 
 		String sql = "select a.* from (\r\n" +
 				"	select a.id_atendimento, a1.id_atendimentos1, p.id_paciente, p.nome paciente, func.id_funcionario, func.descfuncionario, \r\n" +
@@ -340,12 +340,12 @@ public class BpaIndividualizadoDAO {
 				"		 left join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" +
 				"		 left join hosp.unidade u on a.cod_unidade = u.id\r\n" +
 				"		 cross join hosp.empresa emp \r\n" +
-				"		 join hosp.parametro pa on u.id = pa.codunidade \r\n" +
-				"		 where a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		left join hosp.configuracao_producao_bpa cpb on cpb.id =? " +
+				"		 where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"	 	 and func.cns = ? and p.cns = ? \r\n" +
 				"	 	 and proc.codproc = ? and a.dtaatende = ? and hc.status = 'A'\r\n" +
-				"		 and coalesce(pa.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" +
+				"		 and coalesce(cpb.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" +
 				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" +
 				"\r\n" +
 				"union		 \r\n" +
@@ -366,12 +366,12 @@ public class BpaIndividualizadoDAO {
 				"		 left join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro  \r\n" +
 				"		 left join hosp.unidade u on a.cod_unidade = u.id\r\n" +
 				"		 cross join hosp.empresa emp \r\n" +
-				"		 join hosp.parametro pa on u.id = pa.codunidade \r\n" +
-				"		 where a.cod_unidade<>4 and hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		 left join hosp.configuracao_producao_bpa cpb on cpb.id =? " +
+				"		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"	 	 and func.cns = ? and p.cns = ? \r\n" +
 				"	 	 and proc.codproc = ? and a.dtaatende = ? and hc.status = 'A'\r\n" +
-				"		 and coalesce(pa.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" +
+				"		 and coalesce(cpb.cnes_producao, emp.cnes) = ? and ir.codigo = '02' \r\n" +
 				"		 and pm.competencia_atual = ? and coalesce(proc.id_instrumento_registro_padrao, ir.id) = ir.id \r\n" +
 				"	) a	 where not exists (select id_atendimentos1 from hosp.atendimentos_para_ignorar_duplicidade apid where id_atendimentos1 = a.id_atendimentos1);";
 		List<AtendimentoBean> listaAtendimento = new ArrayList<>();
@@ -379,10 +379,13 @@ public class BpaIndividualizadoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
-
-			ps.setString(1, bpa.getPrdCnsmed());
-			ps.setString(2, bpa.getPrdCnspac());
-			ps.setString(3, bpa.getPrdPa());
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(codigoConfiguracaoProducao))
+				ps.setNull(1, Types.NULL);
+			else
+				ps.setInt(1, codigoConfiguracaoProducao);
+			ps.setString(2, bpa.getPrdCnsmed());
+			ps.setString(3, bpa.getPrdCnspac());
+			ps.setString(4, bpa.getPrdPa());
 
 			Calendar calendar = Calendar.getInstance();
 
@@ -391,16 +394,19 @@ public class BpaIndividualizadoDAO {
 			int data = Integer.valueOf(bpa.getPrdDtaten().substring(6, 8));
 			calendar.set(ano, mes, data);
 
-			ps.setDate(4, new java.sql.Date(calendar.getTime().getTime()));
-			ps.setString(5, bpa.getPrdCnes());
-			ps.setString(6, bpa.getPrdCmp());
-
-			ps.setString(7, bpa.getPrdCnsmed());
-			ps.setString(8, bpa.getPrdCnspac());
-			ps.setString(9, bpa.getPrdPa());
-			ps.setDate(10, new java.sql.Date(calendar.getTime().getTime()));
-			ps.setString(11, bpa.getPrdCnes());
-			ps.setString(12, bpa.getPrdCmp());
+			ps.setDate(5, new java.sql.Date(calendar.getTime().getTime()));
+			ps.setString(6, bpa.getPrdCnes());
+			ps.setString(7, bpa.getPrdCmp());
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(codigoConfiguracaoProducao))
+				ps.setNull(8, Types.NULL);
+			else
+				ps.setInt(8, codigoConfiguracaoProducao);
+			ps.setString(9, bpa.getPrdCnsmed());
+			ps.setString(10, bpa.getPrdCnspac());
+			ps.setString(11, bpa.getPrdPa());
+			ps.setDate(12, new java.sql.Date(calendar.getTime().getTime()));
+			ps.setString(13, bpa.getPrdCnes());
+			ps.setString(14, bpa.getPrdCmp());
 
 			ResultSet rs = ps.executeQuery();
 

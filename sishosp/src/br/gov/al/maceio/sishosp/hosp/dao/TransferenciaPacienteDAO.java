@@ -455,23 +455,9 @@ public class TransferenciaPacienteDAO {
                 ps2.execute();
             }
 			
-			for (int i = 0; i < lista.size(); i++) {
-				String sql3 = "delete from hosp.atendimentos1 where id_atendimento = ?";
-
-				PreparedStatement ps3 = null;
-				ps3 = conexao.prepareStatement(sql3);
-				ps3.setLong(1, lista.get(i));
-				ps3.execute();
-			}
+			excluirAtendimentos1(lista, conexao);
 			
-			for (int i = 0; i < lista.size(); i++) {
-				String sql4 = "delete from hosp.atendimentos where id_atendimento = ?";
-
-				PreparedStatement ps4 = null;
-				ps4 = conexao.prepareStatement(sql4);
-				ps4.setLong(1, lista.get(i));
-				ps4.execute();
-			}
+			excluirAtendimentos(lista, conexao);
 
 			String sql5 = "update hosp.paciente_instituicao set status='CT' where id = ?";
 
@@ -691,6 +677,70 @@ public class TransferenciaPacienteDAO {
 			}
 		}
 		return retorno;
+	}
+
+	private void excluirAtendimentos1(ArrayList<Integer> lista, Connection conexaoAuxiliar) 
+			throws SQLException, ProjetoException {
+		
+		try {
+			for (int i = 0; i < lista.size(); i++) {
+				String sql3 = "delete from hosp.atendimentos1 a1 where a1.id_atendimento = ? and "
+						+ "	a1.id_atendimentos1 not in (select rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa "
+						+ "		where rpa.id_atendimentos1 = a1.id_atendimentos1); ";
+
+				PreparedStatement ps3 = null;
+				ps3 = conexaoAuxiliar.prepareStatement(sql3);
+				ps3.setLong(1, lista.get(i));
+				ps3.executeUpdate();
+
+				sql3 = "update hosp.atendimentos1 a1 set excluido = 'S', data_hora_exclusao = current_timestamp, \r\n"
+						+ "	usuario_exclusao = ? where a1.id_atendimento = ? \r\n"
+						+ "	and id_atendimentos1 = (select rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n"
+						+ "		where rpa.id_atendimentos1 = a1.id_atendimentos1); ";
+
+				ps3 = conexaoAuxiliar.prepareStatement(sql3);
+				ps3.setLong(1, user_session.getId());
+				ps3.setLong(2, lista.get(i));
+				ps3.executeUpdate();
+			}
+		}  catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+	}
+	
+	private void excluirAtendimentos(ArrayList<Integer> lista, Connection conexaoAuxiliar)
+			throws SQLException, ProjetoException {
+		
+		try {
+			for (int i = 0; i < lista.size(); i++) {
+				String sql4 = "delete from hosp.atendimentos a where a.id_atendimento = ? \r\n"
+						+ "	and a.id_atendimento not in \r\n"
+						+ "	(select a1.id_atendimento from hosp.atendimentos1 a1 \r\n"
+						+ "	join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n"
+						+ "	where a1.id_atendimento = ?);";
+
+				PreparedStatement ps4 = null;
+				ps4 = conexaoAuxiliar.prepareStatement(sql4);
+				ps4.setLong(1, lista.get(i));
+				ps4.setLong(2, lista.get(i));
+				ps4.executeUpdate();
+
+				sql4 = "update hosp.atendimentos a set situacao = 'C' where a.id_atendimento = ? \r\n"
+						+ "	and a.id_atendimento in \r\n"
+						+ "	(select a1.id_atendimento from hosp.atendimentos1 a1 \r\n"
+						+ "	join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n"
+						+ "	where a1.id_atendimento = ?);";
+
+				ps4 = conexaoAuxiliar.prepareStatement(sql4);
+				ps4.setLong(1, lista.get(i));
+				ps4.setLong(2, lista.get(i));
+				ps4.executeUpdate();
+			}
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 	
 	public Boolean verificarSePacienteAtivoEstaNoMesmoProgramaGrupo(InsercaoPacienteBean insercao) throws ProjetoException {

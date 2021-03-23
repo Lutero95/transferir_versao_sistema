@@ -1899,7 +1899,7 @@ public class AtendimentoDAO {
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\n" +
 				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
-				"and a.dtaatende between ? and ?  and ir.nome like '%BPA%'\n" +
+				"and a.dtaatende between ? and ? and coalesce(pr.id_instrumento_registro_padrao, ir.id) = ir.id  and ir.nome like '%BPA%'\n" +
 				"and pm.competencia_atual = ? ";
 
 		String sqlProcedimentoSecundario = " select count(*) total \n" +
