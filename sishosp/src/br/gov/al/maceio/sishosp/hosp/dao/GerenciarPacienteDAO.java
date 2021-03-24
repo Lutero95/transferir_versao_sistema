@@ -951,7 +951,6 @@ public class GerenciarPacienteDAO {
             ps2.setLong(7, idAtendimentos);
             ps2.execute();
 
-            excluirAtendimentoInconsistenciaLog(idAtendimentos, conAuxiliar);
             
             for (int i = 0; i < listaExcluir.size(); i++) {
                 sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao = ? " + 
@@ -973,23 +972,6 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
-
-	private void excluirAtendimentoInconsistenciaLog(Integer idAtendimentos, Connection conAuxiliar)
-			throws SQLException {
-		String sql2;
-		PreparedStatement ps2;
-		sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? "+
-				"where id_atendimentos1 in " +
-				"	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 " + 
-				"                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento " + 
-				"                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 " + 
-				"                    	where ate.id_atendimento = ? ) ";
-		ps2 = null;
-		ps2 = conAuxiliar.prepareStatement(sql2);
-		ps2.setLong(1, user_session.getId());
-		ps2.setLong(2, idAtendimentos);
-		ps2.execute();
-	}
 
     public List<Integer> retornaListaAtendimento01QueNaoPodemTerRegistroExcluidos
             (Integer idAtendimento, Connection conAuxiliar) throws ProjetoException, SQLException {
