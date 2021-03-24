@@ -166,7 +166,7 @@ public class AtendimentoDAO {
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);
 				
 				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1()))
-					excluirAtendimentoInconsistenciaLog(lista.get(i).getId1(), con);
+					alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
 			}
 
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
@@ -375,21 +375,28 @@ public class AtendimentoDAO {
 		return alterou;
 	}
 	
-	private void excluirAtendimentoInconsistenciaLog(Integer idAtendimento1, Connection conAuxiliar)
+	private void alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
 			throws SQLException {
 		String sql2;
-		PreparedStatement ps2;
-		sql2 = "update hosp.atendimentos1 set excluido='S', data_hora_exclusao=current_timestamp, usuario_exclusao=? "+
-				"where id_atendimentos1 = " + 
-				"	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 " + 
-				"                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento " + 
-				"                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 " + 
-				"                    	where il.id_atendimento1 = ? )  ";
-		ps2 = null;
-		ps2 = conAuxiliar.prepareStatement(sql2);
-		ps2.setLong(1, user_session.getId());
-		ps2.setLong(2, idAtendimento1);
-		ps2.executeUpdate();
+		try {
+			PreparedStatement ps2;
+			sql2 = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
+					+ "	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 "
+					+ "                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento "
+					+ "                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 "
+					+ "                    	where il.id_atendimento1 = ? )  ";
+			ps2 = null;
+			ps2 = conAuxiliar.prepareStatement(sql2);
+			ps2.setLong(1, user_session.getId());
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId()))
+				ps2.setNull(2,Types.NULL);
+			else
+				ps2.setInt(2, atendimento.getSituacaoAtendimento().getId());
+			ps2.setLong(3, atendimento.getId1());
+			ps2.executeUpdate();
+		} catch (Exception e) {
+			conAuxiliar.rollback();
+		}
 	}
 
 	private void verificarInconsistenciaEvolucaoProgramaGrupo
