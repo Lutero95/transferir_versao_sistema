@@ -4,10 +4,10 @@
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="302"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="687"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -79,7 +79,7 @@
 	<queryString>
 		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
 p.dtanascimento as dtnascimento, p.sexo, p.codraca as codraca,
-l.codprocedimento_primario  codproc, pr.nome as nome_proc,
+pr.codproc, pr.nome as nome_proc,
 pr.auditivo as eh_auditivo, pr.tipo_exame_auditivo,
 c.cid  as cid10, EXTRACT(year from l.data_autorizacao) as ano,
 case when extract(month from l.data_autorizacao) = 1 then 'JANEIRO'
@@ -94,7 +94,7 @@ case when extract(month from l.data_autorizacao) = 1 then 'JANEIRO'
 	when extract(month from l.data_autorizacao) = 10 then 'OUTUBRO'
 	when extract(month from l.data_autorizacao) = 11 then 'NOVEMBRO'
 	when extract(month from l.data_autorizacao) = 12 then 'DEZEMBRO'
-	end as mes, empresa.logomarca, empresa.nome_principal, empresa.cnes,
+	end as mes, empresa.logomarca2 logomarca, empresa.nome_principal, empresa.cnes,
 	m.codigo codmunicipio, pro.descprograma
 from hosp.laudo l
 inner join hosp.pacientes as p on (p.id_paciente = l.codpaciente)
@@ -130,9 +130,9 @@ and ((  $P{id_programa}  is not null and pro.id_programa =   $P{id_programa} ) o
 		<property name="com.jaspersoft.studio.field.label" value="codraca"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="codproc" class="java.lang.Integer">
+	<field name="codproc" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="codproc"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nome_proc" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nome_proc"/>
@@ -172,7 +172,10 @@ and ((  $P{id_programa}  is not null and pro.id_programa =   $P{id_programa} ) o
 		<property name="com.jaspersoft.studio.field.label" value="codmunicipio"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="municipio"/>
 	</field>
-	<field name="descprograma" class="java.lang.String"/>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="programa"/>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
