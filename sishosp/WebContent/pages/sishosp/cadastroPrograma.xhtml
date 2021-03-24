@@ -19,7 +19,7 @@
                 <h:outputText value="#{ProgramaController.cabecalho}"
                               class="panel-title"></h:outputText>
             </div>
-            
+
 		<h:form class="form-horizontal" id="frmPrincipal">
             <p:tabView id="tab">
             	<p:tab title="Dados Gerais">
@@ -29,7 +29,7 @@
 									<b:label for="inputname" value="Descrição" severity="info" />
 
 									<b:inputText value="#{ProgramaController.prog.descPrograma}"
-										class="form-control" id="inputname" required="true" ajax="true" 
+										class="form-control" id="inputname" required="true" ajax="true"
 										requiredMessage="Descrição: Campo obrigatório!"
 										validatorMessage="Descrição: deve conter entre 2 e 50 caracteres.">
 										<f:validateLength minimum="2" maximum="50" />
@@ -72,11 +72,11 @@
 										<p:column headerText="Grupo" style="font-weight:bold;">
 											<h:outputText value="#{tab.grupo.descGrupo}" />
 										</p:column>
-										
+
 										<p:column headerText="Procedimento Padrão" style="font-weight:bold;">
 											<h:outputText value="#{tab.procedimentoPadao.nomeProc}" />
 										</p:column>
-										
+
 										<p:column headerText="Frequência para o Programa" style="font-weight:bold;">
 											<h:outputText value="#{tab.frequencia}" />
 										</p:column>
@@ -88,7 +88,7 @@
 													icon="ui-icon-pencil" update=":formFreq"
 													actionListener="#{ProgramaController.selecionaGrupo(tab)}"
 													action="#{ProgramaController.setaEditandoGrupoTrue()}"/>
-													 
+
 												<p:commandButton process="@this"
 													class="new-btn-acao-table acao-excluir"
 													action="#{ProgramaController.removerGrupoFrequenciaDTO(tab)}"
@@ -124,21 +124,21 @@
 											action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPadrao()}"/>
 									</p:outputPanel>
 								</b:column>
-								
+
 								<b:column span="3">
 									<p:selectBooleanCheckbox value="#{ProgramaController.prog.permitePacienteSemLaudo}"
 									 itemLabel="Permite Paciente sem Laudo">
-									 	<p:ajax update="diasPaciente" 
+									 	<p:ajax update="diasPaciente"
 									 	listener="#{ProgramaController.corrigeDiasAtivoPacienteSemLaudo(ProgramaController.prog.permitePacienteSemLaudo)}"/>
 									 </p:selectBooleanCheckbox>
-									 
+
 									 <p:selectBooleanCheckbox value="#{ProgramaController.prog.permiteAlteracaoCidNaEvolucao}"
 									 	itemLabel="Permitir alteração de Cid na evolução"/>
 								</b:column>
-								
+
 								<b:column span="3" class="label-position new-data-size new-comple1">
 									<b:label value="Dias Ativo Paciente sem Laudo:" severity="info" />
-									
+
 									<p:spinner id="diasPaciente" value="#{ProgramaController.prog.diasPacienteSemLaudoAtivo}"
 									style="margin-left: -5%;"
 									disabled="#{ProgramaController.prog.permitePacienteSemLaudo == false}"
@@ -151,18 +151,18 @@
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProcOcup" 
+							update=":msgPagina :formConsulProcOcup"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							actionListener="#{ProgramaController.limparProcedimentoIhCboSelecionado()}"
 							oncomplete="PF('dlgConsulProcOcup').show();" />
-							
+
 						<p:dataTable id="tabProcCbo" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoCboEspecificoDTO}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true">
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Código Procedimento" width="250">
 								<h:outputText value="#{procEsp.procedimento.codProc}" />
 							</p:column>
@@ -170,11 +170,11 @@
 							<p:column headerText="CBO">
 								<h:outputText value="#{procEsp.cbo.descCbo}" />
 							</p:column>
-							
+
 							<p:column headerText="Código CBO" width="100">
 								<h:outputText value="#{procEsp.cbo.codigo}" />
 							</p:column>
-							
+
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoCboEspecifico(procEsp)}"
@@ -184,25 +184,25 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
 				<p:tab title="Procedimentos para Idades Específicas">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProc" 
+							update=":msgPagina :formConsulProc"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoIdade()}"
 							oncomplete="PF('dlgConsulProc').show();" />
-							
-						<p:dataTable id="tabProcIdade" var="procIdade" 
+
+						<p:dataTable id="tabProcIdade" var="procIdade"
 							value="#{ProgramaController.prog.listaProcedimentoIdadeEspecificaDTO}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true">
-							
+
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{procIdade.procedimento.nomeProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Código Procedimento" width="250">
 								<h:outputText value="#{procIdade.procedimento.codProc}" />
 							</p:column>
@@ -210,7 +210,7 @@
 							<p:column headerText="Idade Mínima" width="100">
 									<h:outputText value="#{procIdade.idadeMinima}" />
 							</p:column>
-							
+
 							<p:column headerText="Idade Máxima" width="100">
 									<h:outputText value="#{procIdade.idadeMaxima}" />
 							</p:column>
@@ -224,25 +224,25 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
 				<p:tab title="Especialidades Permitidas">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProc" 
+							update=":msgPagina :formConsulProc"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							action="#{EspecialidadeController.listarTodasEspecialidades()}"
 							oncomplete="PF('dlgConsulEspecialidade').show();" />
-							
-						<p:dataTable id="tabEspecialidade" var="espec" 
+
+						<p:dataTable id="tabEspecialidade" var="espec"
 							value="#{ProgramaController.prog.listaEspecialidadesEspecificas}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true">
-							
+
 							<p:column headerText="Especialidade">
 								<h:outputText value="#{espec.descEspecialidade}" />
 							</p:column>
-							
+
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerEspecialidade(espec)}"
@@ -252,29 +252,29 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
 				<p:tab title="Procedimentos Permitidos">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProc" 
+							update=":msgPagina :formConsulProc"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							action="#{ProgramaController.configuraDialogProcedimentosParaProcedimentoPermitido()}"
 							oncomplete="PF('dlgConsulProc').show();" />
-							
-						<p:dataTable id="tabProcedimento" var="proc" 
+
+						<p:dataTable id="tabProcedimento" var="proc"
 							value="#{ProgramaController.prog.listaProcedimentosPermitidos}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true">
-							
+
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{proc.nomeProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Código Procedimento">
 								<h:outputText value="#{proc.codProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoPermitido(proc)}"
@@ -284,29 +284,29 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
 				<p:tab title="Procedimentos Específicos Profissional / Equipe">
 					<p:row rendered="#{ProgramaController.tipo == 1}">
 						<p:message/>
 						<br/>
-					</p:row>	
-				
+					</p:row>
+
 					<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulProcProfEquipe" 
+							update=":msgPagina :formConsulProcProfEquipe"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							actionListener="#{ProgramaController.limparProcedimentoProfissionalIhEquipeSelecionado()}"
 							oncomplete="PF('dlgConsulProcProfEquipe').show();"
 							disabled="#{ProgramaController.tipo == 1}" />
-							
+
 						<p:dataTable id="tabProcEqui" var="procEsp" value="#{ProgramaController.prog.listaProcedimentoProfissionalEquipeEspecificaDTO}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true" disabled="#{ProgramaController.tipo == 1}">
 							<p:column headerText="Procedimento">
 								<h:outputText value="#{procEsp.procedimento.nomeProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Código Procedimento" width="250">
 								<h:outputText value="#{procEsp.procedimento.codProc}" />
 							</p:column>
@@ -314,11 +314,11 @@
 							<p:column headerText="Profissional">
 								<h:outputText value="#{procEsp.profissional.nome}" />
 							</p:column>
-							
+
 							<p:column headerText="Equipe">
 								<h:outputText value="#{procEsp.equipe.descEquipe}" />
 							</p:column>
-							
+
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerProcedimentoProfissionalEquipeEspecifico(procEsp)}"
@@ -328,28 +328,28 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
 				<p:tab title="Cids Permitidas">
 						<p:commandButton
 							icon="ui-icon-plus" size="sm"
 							title="Adicionar Registro"
-							update=":msgPagina :formConsulCid" 
+							update=":msgPagina :formConsulCid"
 							class="btn-acao-table acao-editar"
 							process="@this"
 							oncomplete="PF('dlgConsulCid').show();" />
-							
-						<p:dataTable id="tabCids" var="cid" 
+
+						<p:dataTable id="tabCids" var="cid"
 							value="#{ProgramaController.prog.listaCidsPermitidos}"
 							emptyMessage="Nenhum registro foi adicionado" reflow="true">
-							
+
 							<p:column headerText="CID">
 								<h:outputText value="#{cid.descCidAbrev}" />
 							</p:column>
-							
+
 							<p:column headerText="Código CID">
 								<h:outputText value="#{cid.cid}" />
 							</p:column>
-							
+
 							<p:column headerText="Remover" width="80">
 								<p:commandButton icon="fa fa-fw fa-times"
 									actionListener="#{ProgramaController.removerCidPermitido(cid)}"
@@ -359,7 +359,7 @@
 							</p:column>
 						</p:dataTable>
 				</p:tab>
-				
+
             </p:tabView>
 				<div align="center">
 					<br />
@@ -382,9 +382,9 @@
 				</div>
 			</h:form>
 		</div>
-		
+
 		<p:dialog header="Consultar Procedimento e Ocupações" styleClass="topDialog"
-                  widgetVar="dlgConsulProcOcup" modal="true" resizable="false" height="400" width="70%" 
+                  widgetVar="dlgConsulProcOcup" modal="true" resizable="false" height="400" width="70%"
                   draggable="true" responsive="true" dynamic="true" minHeight="200">
             <h:form id="formConsulProcOcup">
                 <p:outputPanel id="outproc">
@@ -398,7 +398,7 @@
 							<p:column headerText="Código" width="100">
 								<h:outputText value="#{proc.codProc}" />
 							</p:column>
-							
+
 							<p:column headerText="Selecionar" width="100">
 							<p:commandButton actionListener="#{ProgramaController.selecionarProcedimento(proc)}"
                                 	icon="fa fa-fw ${ProgramaController.procedimentoSelecionado.idProc == proc.idProc ? 'fa-check' : 'fa-square-o'}"
@@ -408,7 +408,7 @@
 							</p:column>
 						</p:dataTable>
                 </p:outputPanel>
-                
+
                 <br /><br />
                 <p:outputPanel id="outcbo">
                 		<p:dataTable var="cbo" value="#{ProgramaController.listaCbos}"
@@ -421,7 +421,7 @@
 							<p:column headerText="Código" width="100">
 								<h:outputText value="#{cbo.codigo}" />
 							</p:column>
-							
+
 							<p:column headerText="Selecionar" width="100">
 								<p:commandButton actionListener="#{ProgramaController.selecionarCbo(cbo)}"
                                 	icon="fa fa-fw ${ProgramaController.cboSelecionado.codCbo == cbo.codCbo ? 'fa-check' : 'fa-square-o'}"
@@ -431,10 +431,10 @@
 							</p:column>
 						</p:dataTable>
                 </p:outputPanel>
-                
+
                 <br />
                 <div align="center">
-                	<p:commandButton value="Incluir" 
+                	<p:commandButton value="Incluir"
                 	update=":frmPrincipal:tab:tabProcCbo :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoCboEspecifico()}"
                 	disabled="#{ProgramaController.cboSelecionado.codCbo == null or ProgramaController.procedimentoSelecionado.idProc == null }"/>
@@ -443,7 +443,7 @@
         </p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
-                  modal="true" styleClass="topDialog" resizable="false" 
+                  modal="true" styleClass="topDialog" resizable="false"
                   draggable="false" responsive="true">
             <h:form id="formConsuGrop">
                 <p:outputPanel>
@@ -463,7 +463,7 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            
+
                             <div align="center">
 								<p:commandButton update=":formFreq, :msgPagina"
 									icon="fa fa-fw fa-check" title="Selecionar"
@@ -480,8 +480,8 @@
                 </p:outputPanel>
             </h:form>
         </p:dialog>
-        
-        
+
+
         <p:dialog header="Grupo: #{ProgramaController.grupo.descGrupo}" width="350"
         		  widgetVar="dlgFreq" draggable="true" responsive="true"
                   modal="true" styleClass="topDialog" resizable="false">
@@ -500,7 +500,7 @@
 					<p:outputPanel id="outProc">
 						<p:autoComplete value="#{ProgramaController.buscaGrupoFrequenciaDTO.procedimentoPadao}"
 							size="31" converter="conProcedimento"
-							class="select-agendaEquipe4" 
+							class="select-agendaEquipe4"
 							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -521,19 +521,19 @@
 							value="Confirmar" title="Confirmar" process="@form"
 							action="#{ProgramaController.validaFrequencia()}"
 							rendered="#{ProgramaController.editandoGrupo == false}"/>
-							
+
 						<p:commandButton update=":frmPrincipal:tab:tabela, :msgPagina"
 							value="Confirmar" title="Confirmar" process="@form"
 							action="#{ProgramaController.editarGrupoLista()}"
-							rendered="#{ProgramaController.editandoGrupo == true}"/>	
+							rendered="#{ProgramaController.editandoGrupo == true}"/>
 					</div>
 				</div>
 			</h:form>
         </p:dialog>
-        
+
 
         <p:dialog header="Consultar Procedimento" styleClass="topDialog"
-                  widgetVar="dlgConsulProc" modal="true" resizable="false" 
+                  widgetVar="dlgConsulProc" modal="true" resizable="false"
                   draggable="true" responsive="true" width="50%">
             <h:form id="formConsulProc">
                 <p:outputPanel >
@@ -558,7 +558,7 @@
 									icon="fa fa-fw fa-check" title="Selecionar"
 									class="new-btn-acao-table acao-editar" update=":frmPrincipal :msgPagina"
 									action="#{ProgramaController.adicionarProcedimentoPadrao(proc)}"/>
-								
+
 								<p:commandButton
 									rendered="#{ProgramaController.tipoProcedimento == 'I'}"
 									icon="fa fa-fw fa-check" title="Selecionar"
@@ -568,18 +568,18 @@
 									<f:setPropertyActionListener value="#{proc}"
 										target="#{ProgramaController.procedimentoSelecionado}" />
 								</p:commandButton>
-								
+
 								<p:commandButton
 									rendered="#{ProgramaController.tipoProcedimento == 'PP'}"
 									icon="fa fa-fw fa-check" title="Selecionar"
-									class="new-btn-acao-table acao-editar" 
+									class="new-btn-acao-table acao-editar"
 									update=":frmPrincipal:tab:tabProcedimento :msgPagina"
 									action="#{ProgramaController.adicionarProcedimentoPermitido(proc)}"/>
-									
+
 								<p:commandButton
 									rendered="#{ProgramaController.tipoProcedimento == 'PG'}"
 									icon="fa fa-fw fa-check" title="Selecionar"
-									class="new-btn-acao-table acao-editar" 
+									class="new-btn-acao-table acao-editar"
 									update=":formFreq:outProc :msgPagina"
 									oncomplete="PF('dlgConsulProc').hide();"
 									process="@this">
@@ -592,19 +592,19 @@
                 </p:outputPanel>
             </h:form>
         </p:dialog>
-        
+
         <p:dialog header="Selecione o Intervalo de Idade"
         		  widgetVar="dlgIdade" draggable="true" responsive="true"
                   modal="true" styleClass="topDialog" resizable="false">
             <h:form id="formIdade">
             	<h:outputLabel value="Procedimento: #{ProgramaController.procedimentoIdadeEspecificaSelecionado.procedimento.nomeProc} "/>
-				
+
 				<div align="center">
 					<p:panelGrid columns="2">
 						<b:label value="Idade Mínima" for="idadeMinima" severity="info"/>
 						<p:spinner id="idadeMinima" value="#{ProgramaController.procedimentoIdadeEspecificaSelecionado.idadeMinima}"
 							required="true" requiredMessage="Idade Mínima: Campo obrigatório" />
-					
+
 						<b:label value="Idade Máxima" for="idadeMaxima" severity="info"/>
 						<p:spinner value="#{ProgramaController.procedimentoIdadeEspecificaSelecionado.idadeMaxima}"
 							required="true" requiredMessage="Idade Máxima: Campo obrigatório" />
@@ -618,7 +618,7 @@
 				</div>
 			</h:form>
         </p:dialog>
-        
+
         <p:dialog header="Consultar Especialidade" modal="true" dynamic="true"
 				  widgetVar="dlgConsulEspecialidade" styleClass="topDialog2">
 			<h:form id="formConsulEspec">
@@ -649,7 +649,7 @@
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="Consultar CID" widgetVar="dlgConsulCid"
 			responsive="true" height="350" modal="true" dynamic="true">
 			<h:form id="formConsulCid">
@@ -673,7 +673,7 @@
 								style="margin-left: 10px;" />
 						</p:panelGrid>
 					</p:row>
-					
+
 					<p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
 						paginator="true" id="tabelacid1" style="width:500px"
 						value="#{LaudoController.listaCids}" var="cid" reflow="true">
@@ -698,12 +698,12 @@
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="Consultar Procedimento, Profissional e Equipe" styleClass="topDialog"
-                  widgetVar="dlgConsulProcProfEquipe" modal="true" resizable="false" height="400" width="70%" 
+                  widgetVar="dlgConsulProcProfEquipe" modal="true" resizable="false" height="400" width="70%"
                   draggable="true" responsive="true" dynamic="true" minHeight="200">
             <h:form id="formConsulProcProfEquipe">
-            	
+
             	<p:tabView>
 					<p:tab title="Procedimento">
 						<p:outputPanel id="outproc">
@@ -731,7 +731,7 @@
 							</p:dataTable>
 						</p:outputPanel>
 					</p:tab>
-					
+
 					<p:tab title="Profissional">
 						<p:outputPanel id="outprof">
 							<p:dataTable var="prof"
@@ -754,7 +754,7 @@
 							</p:dataTable>
 						</p:outputPanel>
 					</p:tab>
-					
+
 					<p:tab title="Equipe">
 						<p:outputPanel id="outequipe">
 							<p:dataTable var="equipe"
@@ -768,7 +768,7 @@
 
 								<p:column headerText="Selecionar" width="100">
 									<p:commandButton
-										actionListener="#{ProgramaController.selecionarEquipe(equipe)}" 
+										actionListener="#{ProgramaController.selecionarEquipe(equipe)}"
 										icon="fa fa-fw ${ProgramaController.equipeSelecionada.codEquipe == equipe.codEquipe ? 'fa-check' : 'fa-square-o'}"
 										title="Selecionar" update="formConsulProcProfEquipe"
 										style="margin-left:30%;"
@@ -778,18 +778,18 @@
 						</p:outputPanel>
 					</p:tab>
 				</p:tabView>
-                                
+
                 <br />
                 <div align="center">
-                	<p:commandButton value="Incluir" 
+                	<p:commandButton value="Incluir"
                 	update=":frmPrincipal:tab:tabProcEqui :msgPagina" immediate="true"
                 	action="#{ProgramaController.adicionarProcedimentoProfissionalEquipeEspecifico()}"
-                	disabled="#{ProgramaController.procedimentoSelecionado.idProc == null or 
+                	disabled="#{ProgramaController.procedimentoSelecionado.idProc == null or
                 	ProgramaController.profissionalSelecionado.id == null or ProgramaController.equipeSelecionada.codEquipe == null }"/>
                 </div>
             </h:form>
         </p:dialog>
-		
+
 
     </ui:define>
 </ui:composition>
