@@ -1068,7 +1068,7 @@ public class AtendimentoController implements Serializable {
                 dataSolicitacaoPeloSigtap= DataUtil.retornaDataComMesAnterior(atendimento.getDataAtendimento());
             }
             LaudoController laudoController = new LaudoController();
-            laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, this.atendimento.getProcedimento().getCodProc(),
+            laudoController.validaCboDoProfissionalLaudo(dataSolicitacaoPeloSigtap, procedimento.getCodProc(),
             		this.atendimento.getCbo(), true);
         }
         boolean alterou = atendimentoDAO.atualizaProcedimentoDoAtendimento(atendimento, procedimento);

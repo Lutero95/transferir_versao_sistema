@@ -499,13 +499,13 @@
 			</h:form>
         </p:dialog>
 
-		<p:dialog header="Confirmar Edição de Procedimento" widgetVar="dlgConfirmacaoProc"
+		<p:dialog header="Confirmar Edição de Procedimento" widgetVar="dlgConfirmacaoProc" 
 				  responsive="true" height="130" width="400" modal="true" resizable="false">
 			<h:form id="formConfirmacaoproc">
 				<p>
 					Deseja mesmo atribuir o Procedimento
 					<STRONG>
-						<h:outputText value="#{AtendimentoController.atendimento.procedimento.nomeProc}"/>
+						<h:outputText value="#{AtendimentoController.procedimento.nomeProc}"/>
 					</STRONG>
 					ao atendimento do(a) paciente
 					<STRONG>
@@ -552,7 +552,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
+		<p:dialog header="Consultar Procedimento" style="margin-top: 5%"
 				  widgetVar="dlgConsulProc" modal="true" resizable="false"
 				  draggable="false" responsive="true">
 			<h:form id="formConsulProc">
