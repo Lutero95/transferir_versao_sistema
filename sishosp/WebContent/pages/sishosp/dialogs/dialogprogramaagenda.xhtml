@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+<h:body>
+			<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsuProg">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+					display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                            Programa
+                        </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt "
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar"
+							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AA'}"
+							oncomplete="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AgendaController.agenda.programa}" />
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar"
+							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AG'}"
+							oncomplete="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AgendaController.agenda.programa}" />
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formConsAge:outProg, :formConsuGrop:dtGrupo, :formConsAge:outGrupo"
+							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
+							title="Selecionar"
+							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'CO'}"
+							oncomplete="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AgendaController.agenda.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+</h:body>
+</html>

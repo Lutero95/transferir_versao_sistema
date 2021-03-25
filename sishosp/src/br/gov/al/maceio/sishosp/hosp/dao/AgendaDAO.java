@@ -1998,7 +1998,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return lista;
     }
 
-    public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, Integer codUnidade, String situacao,
+    public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, AgendaBean agenda, String situacao,
                                             String campoBusca, String tipo) throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
@@ -2038,6 +2038,21 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         } else if (tipo.equals("matricula")) {
             sql = sql + " and p.matricula like ?";
         }
+        
+        if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getPrograma())
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getPrograma().getIdPrograma()) ) {
+        	sql += " and prog.id_programa = ? ";
+        }
+        
+        if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo())
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getGrupo().getIdGrupo()) ) {
+        	sql += " and gr.id_grupo = ? ";
+        }
+        
+        if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getEquipe())
+        		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()) ) {
+        	sql += " and a.codequipe = ? ";
+        }
 
         sql = sql + " order by a.dtaatende , p.nome";
 
@@ -2046,18 +2061,18 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             PreparedStatement stm = null;
             stm = con.prepareStatement(sql);
 
-            stm.setInt(1, codUnidade);
+            stm.setInt(1, agenda.getUnidade().getId());
             int i = 2;
             if (dataAgenda != null) {
                 stm.setDate(i, new java.sql.Date(dataAgenda.getTime()));
-                i = i + 1;
+                i++;
                 stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
-                i = i + 1;
+                i++;
             }
 
             if (!situacao.equals("T")) {
                 stm.setString(i, situacao);
-                i = i + 1;
+                i++;
             }
 
             if (!campoBusca.equals(null)) {
@@ -2065,39 +2080,57 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
                 else
                     stm.setInt(i, Integer.valueOf(campoBusca));
-                i = i + 1;
+                i++;
+            }
+            
+            if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getPrograma())
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getPrograma().getIdPrograma()) ) {
+            	stm.setInt(i, agenda.getPrograma().getIdPrograma());
+            	i++;
+            }
+            
+            if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo())
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getGrupo().getIdGrupo()) ) {
+            	stm.setInt(i, agenda.getGrupo().getIdGrupo());
+            	i++;
+            }
+            
+            if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getEquipe())
+            		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()) ) {
+            	stm.setInt(i, agenda.getEquipe().getCodEquipe());
+            	i++;
             }
 
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                AgendaBean agenda = new AgendaBean();
-                agenda.setIdAgenda(rs.getInt("id_atendimento"));
-                agenda.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                agenda.getPaciente().setMatricula(rs.getString("matricula"));
-                agenda.getPaciente().setNome(rs.getString("nome"));
-                agenda.getPaciente().setCns(rs.getString("cns"));
-                agenda.getProfissional().setId(rs.getLong("codmedico"));
-                agenda.getProfissional().setNome(rs.getString("descfuncionario"));
-                agenda.setDataAtendimento(rs.getDate("dtaatende"));
-                agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
-                agenda.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
-                agenda.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
-                agenda.setTurno(rs.getString("turno"));
-                agenda.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-                agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
-                agenda.setPresenca(rs.getString("presenca"));
-                agenda.setSituacao(rs.getString("situacao"));
-                agenda.setAvulso(rs.getBoolean("avulso"));
-                agenda.setSituacaoAtendimentoInformado(rs.getString("situacao_atendimento_informado"));
-                agenda.getPrograma().setIdPrograma(rs.getInt("id_programa"));
-                agenda.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                agenda.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
-                agenda.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                if(agenda.getAvulso() || !VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getEquipe().getCodEquipe()))
-                    agenda.setListaNomeProfissionais(new AtendimentoDAO().retornaNomeProfissionaisAtendimento(agenda.getIdAgenda(), con));
+                AgendaBean agendaDoBanco = new AgendaBean();
+                agendaDoBanco.setIdAgenda(rs.getInt("id_atendimento"));
+                agendaDoBanco.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                agendaDoBanco.getPaciente().setMatricula(rs.getString("matricula"));
+                agendaDoBanco.getPaciente().setNome(rs.getString("nome"));
+                agendaDoBanco.getPaciente().setCns(rs.getString("cns"));
+                agendaDoBanco.getProfissional().setId(rs.getLong("codmedico"));
+                agendaDoBanco.getProfissional().setNome(rs.getString("descfuncionario"));
+                agendaDoBanco.setDataAtendimento(rs.getDate("dtaatende"));
+                agendaDoBanco.setDataMarcacao(rs.getDate("dtamarcacao"));
+                agendaDoBanco.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
+                agendaDoBanco.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
+                agendaDoBanco.setTurno(rs.getString("turno"));
+                agendaDoBanco.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+                agendaDoBanco.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                agendaDoBanco.setPresenca(rs.getString("presenca"));
+                agendaDoBanco.setSituacao(rs.getString("situacao"));
+                agendaDoBanco.setAvulso(rs.getBoolean("avulso"));
+                agendaDoBanco.setSituacaoAtendimentoInformado(rs.getString("situacao_atendimento_informado"));
+                agendaDoBanco.getPrograma().setIdPrograma(rs.getInt("id_programa"));
+                agendaDoBanco.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                agendaDoBanco.getGrupo().setIdGrupo(rs.getInt("id_grupo"));
+                agendaDoBanco.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                if(agendaDoBanco.getAvulso() || !VerificadorUtil.verificarSeObjetoNuloOuZero(agendaDoBanco.getEquipe().getCodEquipe()))
+                	agendaDoBanco.setListaNomeProfissionais(new AtendimentoDAO().retornaNomeProfissionaisAtendimento(agendaDoBanco.getIdAgenda(), con));
 
-                lista.add(agenda);
+                lista.add(agendaDoBanco);
             }
         } catch (SQLException ex2) {
             throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);

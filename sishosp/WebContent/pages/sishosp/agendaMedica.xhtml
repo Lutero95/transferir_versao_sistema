@@ -11,7 +11,7 @@
 		<f:metadata>
 			<f:event type="preRenderView" listener="#{AgendaController.carregarHorarioOuTurno()}"/>
 			<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
-			<f:viewAction action="#{AgendaController.naoEhPaginaAgendaAvulsa()}"/>
+			<f:viewAction action="#{AgendaController.configuraDialogsParaAgendaMedica()}"/>
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -786,39 +786,6 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			dynamic="true" modal="true" responsive="true">
-			<h:form id="formConsuProg">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
-					display="Nenhum Programa">
-
-					<h:column>
-						<f:facet name="header">
-                            Programa
-                        </f:facet>
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton
-							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
-							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-							title="Selecionar"
-							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
-							actionListener="#{AgendaController.limparNaBuscaPrograma()}"
-							oncomplete="PF('dlgConsuProg').hide();">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{AgendaController.agenda.programa}" />
-						</p:commandButton>
-					</h:column>
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg2"
 			dynamic="true" modal="true" responsive="true">
 			<h:form id="formConsuProg2">
@@ -848,40 +815,6 @@
 						</p:commandButton>
 					</h:column>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true" responsive="true" dynamic="true">
-			<h:form id="formConsuGrop">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
-					responsive="true" save-state="false" saveState="false"
-					value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
-					var="grupo" display="Nenhum Grupo">
-
-					<h:column>
-						<f:facet name="header">
-                            Grupo
-                        </f:facet>
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton
-							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
-							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();"
-							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{AgendaController.agenda.grupo}" />
-						</p:commandButton>
-					</h:column>
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -1103,5 +1036,7 @@
 		</p:dialog>
 		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
 		<ui:include src="dialogs/dialogequipeagenda.xhtml"/>
+		<ui:include src="dialogs/dialogprogramaagenda.xhtml"/>
+		<ui:include src="dialogs/dialoggrupoagenda.xhtml"/>
 	</ui:define>
 </ui:composition>

@@ -30,6 +30,25 @@
 							action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
 							update=":formAgendaMedica" icon="fa fa-fw fa-check"
 							title="Selecionar" class="new-btn-acao-table acao-editar"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AG'}"
+							oncomplete="PF('dlgConsuEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{AgendaController.agenda.equipe}" />
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formAgendaMedica" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AA'}"
+							oncomplete="PF('dlgConsuEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{AgendaController.agenda.equipe}" />
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formConsAge" icon="fa fa-fw fa-check"
+							title="Selecionar" class="new-btn-acao-table acao-editar"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'CO'}"
 							oncomplete="PF('dlgConsuEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{AgendaController.agenda.equipe}" />
