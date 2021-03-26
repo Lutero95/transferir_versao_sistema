@@ -738,7 +738,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean verificarInconsistenciaProcedimento() throws SQLException, ProjetoException {
-		ProcedimentoBean procedimento = new ProcedimentoDAO().retornarProcedimentoInconsistente(this.competencia);
+		ProcedimentoBean procedimento = new ProcedimentoDAO().retornarProcedimentoInconsistente(this.competencia, this.dataInicioAtendimento, this.dataFimAtendimento);
 		if(!VerificadorUtil.verificarSeObjetoNulo(procedimento)) {
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getServico().getId())
 					&& VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getClassificacao().getId()) ) {

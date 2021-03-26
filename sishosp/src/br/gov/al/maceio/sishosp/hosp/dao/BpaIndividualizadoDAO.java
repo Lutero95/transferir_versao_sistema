@@ -225,7 +225,7 @@ public class BpaIndividualizadoDAO {
 				paciente.setDtanascimento(rs.getDate("dtanascimento"));
 				CidBean cid = new CidBean();
 				cid.setCid(rs.getString("cid"));
-			/*	retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
+				retornoCbo =  validacaoSigtap.validaCboPermitidoProcedimento(dataSolicitacaoRefSigtap, cbo, codProc, paciente, false);
 				if (retornoCbo!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCbo);
 				retornoIdade = validacaoSigtap.idadeValida(dataSolicitacaoRefSigtap, paciente, codProc, false);
@@ -239,7 +239,7 @@ public class BpaIndividualizadoDAO {
 					if (retornoCid!=null)
 					bpaIndividualizado.getListaInconsistencias().add(retornoCid);
 				}
-*/
+
 				bpaIndividualizado.setPrdCnes(rs.getString("cnes"));
 				bpaIndividualizado.setPrdCmp(rs.getString("competencia_atual"));
 				bpaIndividualizado.setPrdCnsmed(rs.getString("cnsprofissional"));

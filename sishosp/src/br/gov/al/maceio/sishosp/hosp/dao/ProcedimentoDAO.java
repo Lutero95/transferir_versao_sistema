@@ -2672,16 +2672,27 @@ public class ProcedimentoDAO {
         return listaClassificacao;
     }
     
-    public ProcedimentoBean retornarProcedimentoInconsistente(String competencia) throws SQLException, ProjetoException {
+    public ProcedimentoBean retornarProcedimentoInconsistente(String competencia, Date dataInicio, Date dataFim) throws SQLException, ProjetoException {
 
     	ProcedimentoBean procedimento = null;
 
-        String sql = "select p.id, p.nome, p.id_classificacao,  p.id_servico " + 
-        		"	from hosp.proc p " + 
-        		"	join sigtap.procedimento_mensal pm on (p.id = pm.id_procedimento) " + 
-        		"	join sigtap.servico_classificacao_mensal scm on (pm.id = scm.id_procedimento_mensal) " + 
-        		"	join sigtap.historico_consumo_sigtap hcs on (pm.id_historico_consumo_sigtap = hcs.id) " + 
-        		"	where hcs.ano = ? and hcs.mes = ? and (p.id_classificacao is null or p.id_servico is null); ";
+        String sql = "select\n" +
+                "\tdistinct p.id,\n" +
+                "\tp.nome,\n" +
+                "\tp.id_classificacao,\n" +
+                "\tp.id_servico\n" +
+                "from\n" +
+                "hosp.atendimentos a\n" +
+                "join hosp.atendimentos1 a1 on a1.id_atendimento  = a.id_atendimento \n" +
+                "left join hosp.atendimentos1_procedimento_secundario aps on a1.id_atendimentos1 = aps.id_atendimentos1 \n" +
+                "join \thosp.proc p on p.id  = a1.codprocedimento \n" +
+                "join sigtap.procedimento_mensal pm on\n" +
+                "\t(p.id = pm.id_procedimento)\n" +
+                "join sigtap.servico_classificacao_mensal scm on\n" +
+                "\t(pm.id = scm.id_procedimento_mensal)\n" +
+                "join sigtap.historico_consumo_sigtap hcs on\n" +
+                "\t(pm.id_historico_consumo_sigtap = hcs.id) " +
+        		"	where  hcs.status='A' and hcs.ano = ? and hcs.mes = ? and a.dtaatende  between ?  and ? and (p.id_classificacao is null or p.id_servico is null); ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -2689,6 +2700,8 @@ public class ProcedimentoDAO {
     		Integer mes = Integer.valueOf(competencia.substring(4, 6));
             stm.setInt(1, ano);
             stm.setInt(2, mes);
+            stm.setDate(3, new java.sql.Date(dataInicio.getTime()));
+            stm.setDate(4, new java.sql.Date(dataFim.getTime()));
             ResultSet rs = stm.executeQuery();
 
             if (rs.next()) {

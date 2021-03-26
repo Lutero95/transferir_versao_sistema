@@ -493,7 +493,7 @@ public class AtendimentoController implements Serializable {
     	else if(!user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma()
     			&& atendimento.getDataAtendimento().before(user_session.getUnidade().getParametro().getInicioEvolucaoUnidade())) {
     		JSFUtil.adicionarMensagemAdvertencia
-				("As configurações de evolução não permitem a evolução de atendimentos neste período", "");
+    				("As configurações de evolução não permitem a evolução de atendimentos neste período", "");
     		return false;    		
     	}
     	return true;
