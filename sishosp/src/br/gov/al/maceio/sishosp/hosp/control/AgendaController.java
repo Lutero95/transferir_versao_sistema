@@ -132,7 +132,7 @@ public class AgendaController implements Serializable {
     private boolean incluirProcedimentos;
     private String tipoProcedimento;
     private boolean confirmaAgendamentoComProcedimentos;
-    private boolean ehAgendaAvulsa;
+    private String tipoConfiguracaoDialog;
     
     private static final String ERRO = "Erro!";
 	private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
@@ -140,6 +140,10 @@ public class AgendaController implements Serializable {
 	private static final String PAGINA_AGENDA_AVULSA_PROFISSIONAL = "agendaavulsacominfoatendimento.faces";
 	private static final String PAGINA_AGENDA_AVULSA = "agendaavulsa.faces";
 	private static final String PAGINA_AGENDA_MEDICA = "agendaMedica.faces";
+	
+	private static final String CONFIGURACAO_AGENDA_MEDICA = "AG";
+	private static final String CONFIGURACAO_AGENDA_AVULSA = "AA";
+	private static final String CONFIGURACAO_CONSULTAR_AGENDAMENTOS = "CO";
 	
 
     public AgendaController() {
@@ -208,19 +212,21 @@ public class AgendaController implements Serializable {
         incluirProcedimentos = false;
     }
     
-    public void ehPaginaAgendaAvulsa() {
-    	ehAgendaAvulsa = true;
+    public void configuraDialogsParaAgendaAvulsa() {
+    	tipoConfiguracaoDialog = CONFIGURACAO_AGENDA_AVULSA;
     }
     
-    public void naoEhPaginaAgendaAvulsa() {
-    	ehAgendaAvulsa = false;
+    public void configuraDialogsParaAgendaMedica() {
+    	tipoConfiguracaoDialog = CONFIGURACAO_AGENDA_MEDICA;
+    }
+    
+    public void configuraDialogsParaConsultaAtendimentos() {
+    	tipoConfiguracaoDialog = CONFIGURACAO_CONSULTAR_AGENDAMENTOS;
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException, ParseException {
-    	if(!ehAgendaAvulsa) {
-    		preparaVerificarDisponibilidadeData();
-        	listaDiasDeAtendimentoAtuais();
-    	}
+    	preparaVerificarDisponibilidadeData();
+        listaDiasDeAtendimentoAtuais();
     }
 
     public void carregaListaFuncionariosDual() throws ProjetoException {
@@ -1394,7 +1400,8 @@ public class AgendaController implements Serializable {
 	}
 
 	public void consultarAgenda(String situacao) throws ProjetoException {
-		SessionUtil.adicionarBuscaPtsNaSessao(null, null, dataAtendimentoC, dataAtendimentoFinalC,
+		SessionUtil.adicionarBuscaPtsNaSessao
+			(agenda.getPrograma(), agenda.getGrupo(), agenda.getEquipe(), dataAtendimentoC, dataAtendimentoFinalC,
 				TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla());
 		/*
 		 * if (this.dataAtendimentoC == null) {
@@ -1402,7 +1409,7 @@ public class AgendaController implements Serializable {
 		 * return; }
 		 */
 		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC, dataAtendimentoFinalC,
-				agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
+				agenda, situacao, campoBusca, tipoBusca);
 	}
 
 	public void carregarBuscaConsultaAgendamento() {
@@ -1411,11 +1418,16 @@ public class AgendaController implements Serializable {
 			if (buscaSessaoDTO.getTela().equals(TelasBuscaSessao.CONSULTAR_AGENDAMENTO.getSigla())) {
 				dataAtendimentoC = buscaSessaoDTO.getPeriodoInicial();
 				dataAtendimentoFinalC = buscaSessaoDTO.getPeriodoFinal();
+				agenda.setPrograma(buscaSessaoDTO.getProgramaBean());
+				agenda.setGrupo(buscaSessaoDTO.getGrupoBean());
+				agenda.setEquipe(buscaSessaoDTO.getEquipeBean());
 			}
 		} else {
 			dataAtendimentoC = new Date();
 			dataAtendimentoFinalC = new Date();
-
+			agenda.setPrograma(new ProgramaBean());
+			agenda.setGrupo(new GrupoBean());
+			agenda.setEquipe(new EquipeBean());
 		}
 
 	}
@@ -2241,4 +2253,13 @@ public class AgendaController implements Serializable {
 		public void setMotivoLiberacao(String motivoLiberacao) {
 			this.motivoLiberacao = motivoLiberacao;
 		}
+
+		public String getTipoConfiguracaoDialog() {
+			return tipoConfiguracaoDialog;
+		}
+
+		public void setTipoConfiguracaoDialog(String tipoConfiguracaoDialog) {
+			this.tipoConfiguracaoDialog = tipoConfiguracaoDialog;
+		}
+		
     }

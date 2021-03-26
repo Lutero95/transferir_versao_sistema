@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+<h:body>
+			<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			modal="true" responsive="true" dynamic="true">
+			<h:form id="formConsuGrop">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+					responsive="true" save-state="false" saveState="false"
+					value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
+                            Grupo
+                        </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton
+							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt :formAgendaMedica:outEquipe"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AA'}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AgendaController.agenda.grupo}" />	
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'AG'}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AgendaController.agenda.grupo}" />
+						</p:commandButton>
+						
+						<p:commandButton
+							update=":formConsAge:outGrupo :formConsAge:outEquipe"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}"
+							rendered="#{AgendaController.tipoConfiguracaoDialog == 'CO'}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AgendaController.agenda.grupo}" />
+						</p:commandButton>
+					</h:column>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>		
+</h:body>
+</html>
