@@ -695,25 +695,30 @@ public class AtendimentoDAO {
 			(Integer idUnidade, Long codigoProfissionalAtendimento, Date dataAtende) throws ProjetoException {
 
 		Integer quantidadeDePendenciasAnterioresDeEvolucao = 0;
-		String sql = "select count(*) qtd from hosp.atendimentos1 a1 " +
-				"join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
-				"join hosp.pacientes pac on pac.id_paciente = a.codpaciente " +
-				"join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento " +
-				"join hosp.especialidade e on e.id_especialidade = f.codespecialidade " +
-				"JOIN hosp.unidade u ON u.id = ? " +
-				"JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa " +
-				"join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id " +
-				"join hosp.programa p on p.id_programa = a.codprograma and ceu.codprograma = p.id_programa " +
-				"join hosp.grupo g on g.id_grupo = a.codgrupo and ceu.codgrupo = g.id_grupo " +
-				" left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id" +
-				" where a.presenca='S' and a1.id_situacao_atendimento is null " +
-				"and a.codprograma = ceu.codprograma " +
-				"and a.codgrupo = ceu.codgrupo " +
-				"and a.dtaatende>=ceu.inicio_evolucao " +
-				"and a.dtaatende<? " +
-				"and a1.codprofissionalatendimento = ?" +
-				"and coalesce(a.situacao,'A')<>'C'" +
-				"and coalesce(a1.excluido,'N' )='N'";
+		String sql = "select count(*) qtd from hosp.atendimentos1 a1 \r\n" + 
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \r\n" + 
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente \r\n" + 
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento \r\n" + 
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade \r\n" + 
+				"	JOIN hosp.unidade u ON u.id = ? \r\n" + 
+				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa \r\n" + 
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id \r\n" + 
+				"	left join hosp.programa p on p.id_programa = a.codprograma \r\n" + 
+				"	left join hosp.grupo g on g.id_grupo = a.codgrupo  \r\n" + 
+				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id \r\n" + 
+				"	\r\n" + 
+				"	where coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null \r\n" + 
+				"	and \r\n" + 
+				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then \r\n" + 
+				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" + 
+				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" + 
+				"		a.dtaatende >= ceu.inicio_evolucao \r\n" + 
+				"		and a.codprograma = ceu.codprograma \r\n" + 
+				"		and a.codgrupo = ceu.codgrupo		\r\n" + 
+				"	end	\r\n" + 
+				"	and a.dtaatende < ? \r\n" + 
+				"	and a1.codprofissionalatendimento = ? and coalesce(a.situacao,'A')<>'C'and coalesce(a1.excluido,'N' )='N'";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -741,36 +746,32 @@ public class AtendimentoDAO {
 
 	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
 
-		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   " +
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   " +
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   " +
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   " +
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   " +
-				"	JOIN hosp.unidade u ON u.id = ? " +
-				"   join hosp.parametro pa on u.id = pa.codunidade "+
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   " +
-				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   " +
-				"	join hosp.programa p on p.id_programa = a.codprograma   " +
-				"	join hosp.grupo g on g.id_grupo = a.codgrupo   " +
-				" 	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  " +
-				" 	where coalesce(a.presenca,'N')='S' and  (a1.id_situacao_atendimento is null)   " +
-				"	and a.dtaatende<current_date   " +
-				"	and a1.codprofissionalatendimento = ?  " +
-				"	and coalesce(a.situacao,'A')<>'C'  " +
-				"	and coalesce(a1.excluido,'N' )='N' ";
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   	\r\n" + 
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   	\r\n" + 
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   	\r\n" + 
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   \r\n" + 
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   \r\n" + 
+				"	JOIN hosp.unidade u ON u.id = ?    \r\n" + 
+				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   	\r\n" + 
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   \r\n" + 
+				"	join hosp.programa p on p.id_programa = a.codprograma   	\r\n" + 
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo    \r\n" + 
+				"	\r\n" + 
+				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  \r\n" + 
+				"	where coalesce(a.presenca,'N')='S' and  (a1.id_situacao_atendimento is null)   	\r\n" + 
+				"	and\r\n" + 
+				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then\r\n" + 
+				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" + 
+				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" + 
+				"		a.dtaatende >= ceu.inicio_evolucao \r\n" + 
+				"		and a.codprograma = ceu.codprograma \r\n" + 
+				"		and a.codgrupo = ceu.codgrupo		\r\n" + 
+				"	end	\r\n" + 
+				"	and a.dtaatende<current_date   	and a1.codprofissionalatendimento = ? \r\n" + 
+				"	and coalesce(a.situacao,'A')<>'C'  	and coalesce(a1.excluido,'N' )='N' \r\n" + 
+				"	group by p.descprograma, g.descgrupo ";
 
-		String agrupamentoSemEvolucaoPorPrograma = " and a.dtaatende >= pa.inicio_evolucao_unidade "+
-				" group by p.descprograma, g.descgrupo";
-
-		String agrupamentoComEvolucaoPorPrograma = " and a.codprograma = ceu.codprograma   " +
-				" and a.codgrupo = ceu.codgrupo   " +
-				" and a.dtaatende>= ceu.inicio_evolucao  " +
-				" group by p.descprograma, g.descgrupo";
-
-		if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma())
-			sql += agrupamentoComEvolucaoPorPrograma;
-		else
-			sql += agrupamentoSemEvolucaoPorPrograma;
 
 		List<PendenciaEvolucaoProgramaGrupoDTO> listaPendenciasEvolucao = new ArrayList<>();
 		try {
@@ -2282,7 +2283,7 @@ public class AtendimentoDAO {
 
 			int parametro = 4;
 			if (listaProcedimentosFiltro.size() > 0) {
-				ps.setObject(3, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+				ps.setObject(parametro, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
 				parametro++;
 			}
 
