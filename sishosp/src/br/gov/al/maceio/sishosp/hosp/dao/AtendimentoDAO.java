@@ -167,10 +167,12 @@ public class AtendimentoDAO {
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);
 				
 				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1())) {
-					List<Integer> idAtendimento1Inconsistente = alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
-						listaIdAtendimentosComIncosistenciaLog.addAll(idAtendimento1Inconsistente);
+					alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
 				}
+				
 			}
+			
+			listaIdAtendimentosComIncosistenciaLog.addAll(retornaAtendimentosComInconsistenciaLog(lista.get(0).getId(), con));
 
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
 				con.close();
@@ -379,27 +381,43 @@ public class AtendimentoDAO {
 		return alterou;
 	}
 	
-	private List<Integer> alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
+	private void alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
 			throws SQLException {
-
-		String sql;
-		List<Integer> listaIdAtendimento1 = new ArrayList<>(); 
+		
 		try {
 			PreparedStatement ps2;
-			sql = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
+			String sql = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
 					+ "	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 "
 					+ "                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento "
 					+ "                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 "
-					+ "                    	where il.id_atendimento1 = ? ) returning id_atendimentos1 ";
-			ps2 = null;
+					+ "                    	where il.id_atendimento1 = ? );";
+
 			ps2 = conAuxiliar.prepareStatement(sql);
-			ps2.setLong(1, user_session.getId());
+
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId()))
-				ps2.setNull(2,Types.NULL);
+				ps2.setNull(1,Types.NULL);
 			else
-				ps2.setInt(2, atendimento.getSituacaoAtendimento().getId());
-			ps2.setLong(3, atendimento.getId1());
-			
+				ps2.setInt(1, atendimento.getSituacaoAtendimento().getId());
+			ps2.setLong(2, atendimento.getId1());
+			ps2.executeUpdate();
+		} catch (Exception e) {
+			conAuxiliar.rollback();
+		}
+	}
+	
+	private List<Integer> retornaAtendimentosComInconsistenciaLog(Integer idAtendimento, Connection conAuxiliar)
+			throws SQLException {
+		
+		List<Integer> listaIdAtendimento1 = new ArrayList<>();
+		try {
+			PreparedStatement ps2;
+			String sql = "	select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 "
+					+ "                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento "
+					+ "                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 "
+					+ "						where ate.id_atendimento = ?;";
+
+			ps2 = conAuxiliar.prepareStatement(sql);
+			ps2.setLong(1, idAtendimento);
 			ResultSet rs = ps2.executeQuery();
 			while(rs.next())
 				listaIdAtendimento1.add(rs.getInt("id_atendimentos1"));
