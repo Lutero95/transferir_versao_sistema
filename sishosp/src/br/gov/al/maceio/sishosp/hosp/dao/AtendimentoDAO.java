@@ -157,6 +157,7 @@ public class AtendimentoDAO {
 
 			ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipe = new ArrayList<>();
 
+			ArrayList<Integer> listaIdAtendimentosComIncosistenciaLog = new ArrayList<>();
 
 			for (int i = 0; i < lista.size(); i++) {
 				ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
@@ -165,8 +166,10 @@ public class AtendimentoDAO {
 				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);
 				
-				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1()))
-					alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1())) {
+					List<Integer> idAtendimento1Inconsistente = alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
+						listaIdAtendimentosComIncosistenciaLog.addAll(idAtendimento1Inconsistente);
+				}
 			}
 
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
@@ -178,46 +181,47 @@ public class AtendimentoDAO {
 			List<AtendimentoBean> listaAtendimentosParaUpdate = removeAtendimentosNaoExcluidos(lista,
 					listaIdAtendimento01QueNaoPodemTerRegistroExcluidos);
 
-			for (int i = 0; i < lista.size(); i++) {
+			for (AtendimentoBean atendimento  : lista) {
 				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
 						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento) "
 						+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?) returning id_atendimentos1;";
 
-				if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())) {
+				if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimentoAnterior().getId())
+						&& !listaIdAtendimentosComIncosistenciaLog.contains(atendimento.getId1())) {
 					PreparedStatement stmt2 = con.prepareStatement(sql2);
-					stmt2.setLong(1, lista.get(i).getFuncionario().getId());
+					stmt2.setLong(1, atendimento.getFuncionario().getId());
 					stmt2.setInt(2, idAtendimento);
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getCbo().getCodCbo())) {
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCbo().getCodCbo())) {
 						stmt2.setNull(3, Types.NULL);
 					} else {
-						stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
+						stmt2.setInt(3, atendimento.getCbo().getCodCbo());
 					}
 
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getProcedimento().getIdProc())) {
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getProcedimento().getIdProc())) {
 						stmt2.setNull(4, Types.NULL);
 					} else {
-						stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+						stmt2.setInt(4, atendimento.getProcedimento().getIdProc());
 					}
 
-					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimento().getId()))
-						stmt2.setInt(5, lista.get(i).getSituacaoAtendimento().getId());
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId()))
+						stmt2.setInt(5, atendimento.getSituacaoAtendimento().getId());
 					else
 						stmt2.setNull(5, Types.NULL);
-					stmt2.setString(6, lista.get(i).getEvolucao());
-					stmt2.setString(7, lista.get(i).getPerfil());
-					if (lista.get(i).getHorarioAtendimento() != null)
-						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(lista.get(i).getHorarioAtendimento()));
+					stmt2.setString(6, atendimento.getEvolucao());
+					stmt2.setString(7, atendimento.getPerfil());
+					if (atendimento.getHorarioAtendimento() != null)
+						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(atendimento.getHorarioAtendimento()));
 					else
 						stmt2.setNull(8, Types.NULL);
 
 					ResultSet rs = stmt2.executeQuery();
 					if(rs.next()) {
-						lista.get(i).setId1(rs.getInt("id_atendimentos1"));
+						atendimento.setId1(rs.getInt("id_atendimentos1"));
 					}
 				}
-				else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getSituacaoAtendimentoAnterior().getId())
-						&& !lista.get(i).getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
-					listaAtendimentosParaUpdate.add(lista.get(i));
+				else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimentoAnterior().getId())
+						&& !atendimento.getSituacaoAtendimentoAnterior().getAtendimentoRealizado()) {
+					listaAtendimentosParaUpdate.add(atendimento);
 				}
 			}
 
@@ -375,28 +379,34 @@ public class AtendimentoDAO {
 		return alterou;
 	}
 	
-	private void alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
+	private List<Integer> alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
 			throws SQLException {
-		String sql2;
+
+		String sql;
+		List<Integer> listaIdAtendimento1 = new ArrayList<>(); 
 		try {
 			PreparedStatement ps2;
-			sql2 = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
+			sql = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
 					+ "	( select distinct a3.id_atendimentos1 from hosp.atendimentos1 a3 "
 					+ "                    	join hosp.atendimentos ate on ate.id_atendimento = a3.id_atendimento "
 					+ "                    	join hosp.inconsistencias_log il on a3.id_atendimentos1 = il.id_atendimento1 "
-					+ "                    	where il.id_atendimento1 = ? )  ";
+					+ "                    	where il.id_atendimento1 = ? ) returning id_atendimentos1 ";
 			ps2 = null;
-			ps2 = conAuxiliar.prepareStatement(sql2);
+			ps2 = conAuxiliar.prepareStatement(sql);
 			ps2.setLong(1, user_session.getId());
 			if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimento().getId()))
 				ps2.setNull(2,Types.NULL);
 			else
 				ps2.setInt(2, atendimento.getSituacaoAtendimento().getId());
 			ps2.setLong(3, atendimento.getId1());
-			ps2.executeUpdate();
+			
+			ResultSet rs = ps2.executeQuery();
+			while(rs.next())
+				listaIdAtendimento1.add(rs.getInt("id_atendimentos1"));
 		} catch (Exception e) {
 			conAuxiliar.rollback();
 		}
+		return listaIdAtendimento1;
 	}
 
 	private void verificarInconsistenciaEvolucaoProgramaGrupo
