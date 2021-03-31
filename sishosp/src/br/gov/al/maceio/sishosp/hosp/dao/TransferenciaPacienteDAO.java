@@ -695,7 +695,7 @@ public class TransferenciaPacienteDAO {
 
 				sql3 = "update hosp.atendimentos1 a1 set excluido = 'S', data_hora_exclusao = current_timestamp, \r\n"
 						+ "	usuario_exclusao = ? where a1.id_atendimento = ? \r\n"
-						+ "	and id_atendimentos1 = (select rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n"
+						+ "	and id_atendimentos1 = (select distinct rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n"
 						+ "		where rpa.id_atendimentos1 = a1.id_atendimentos1); ";
 
 				ps3 = conexaoAuxiliar.prepareStatement(sql3);
