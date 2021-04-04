@@ -804,6 +804,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 			JSFUtil.adicionarMensagemErro("Turno do Atendimento é obrigatório", "Erro");
 		} 
 		else if (!VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getPrograma().getIdPrograma())
+                &&  (tipo.equals(TipoAtendimento.EQUIPE.getSigla()))
 				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getGrupo().getIdGrupo())) {
 			if (iDao.verificarSeExisteLaudoAtivoParaProgramaIhGrupo(insercao.getPrograma().getIdPrograma(),
 					insercao.getGrupo().getIdGrupo(), insercao.getPaciente().getId_paciente())) {

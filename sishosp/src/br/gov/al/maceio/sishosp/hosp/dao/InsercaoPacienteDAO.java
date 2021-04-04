@@ -505,17 +505,23 @@ public class InsercaoPacienteDAO {
 
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao, cod_unidade) "
-				+ " values (?, ?, ?, ?, ?, ?) RETURNING id;";
+		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao, cod_unidade, data_cadastro, inclusao_sem_laudo, id_paciente, turno) "
+				+ " values (?, ?, ?, ?, ?, ?, current_timestamp, ?, ?, ?) RETURNING id;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setLong(1, insercao.getFuncionario().getId());
 			ps.setString(2, "A");
-			ps.setInt(3, insercao.getLaudo().getId());
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getId()))
+				ps.setNull(3, Types.NULL);
+			else
+				ps.setInt(3, insercao.getLaudo().getId());
 			ps.setString(4, insercao.getObservacao());
 			ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			ps.setInt(6, user_session.getUnidade().getId());
+			ps.setBoolean(7,insercao.isInsercaoPacienteSemLaudo());
+			ps.setInt(8, insercao.getPaciente().getId_paciente());
+			ps.setString(9, insercao.getTurno());
 
 			ResultSet rs = ps.executeQuery();
 			int id = 0;
