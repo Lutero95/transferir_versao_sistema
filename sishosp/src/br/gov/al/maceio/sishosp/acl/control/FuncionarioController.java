@@ -1049,6 +1049,7 @@ public class FuncionarioController implements Serializable {
 		Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
 		profissional.getListaCbos().clear();
 		if (params.get("id") != null) {
+			listaMenusDualEdit = null;
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 			this.profissional = fDao.buscarProfissionalPorId(id);
@@ -1393,8 +1394,8 @@ public class FuncionarioController implements Serializable {
 
 	public DualListModel<Menu> getListaMenusDualEdit()
 			throws NumberFormatException, ProjetoException {
-		if (listaMenusDualEdit == null || 
-				(listaMenusDualEdit.getSource().isEmpty() && listaMenusDualEdit.getTarget().isEmpty())) {
+		if (listaMenusDualEdit == null){// ||
+				//(listaMenusDualEdit.getSource().isEmpty() && listaMenusDualEdit.getTarget().isEmpty())) {
 			listaMenusSourceEdit = null;
 			listaMenusTargetEdit = null;
 			getListaMenusSourceEdit();
@@ -1459,7 +1460,7 @@ public class FuncionarioController implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getId().intValue());
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEditUser(profissional.getId());
 		}
 		return listaMenusTargetEdit;
 	}
