@@ -1180,10 +1180,6 @@ public class AgendaController implements Serializable {
 	}
 
 	private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-	
-		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
-				|| !incluirProcedimentos) {
-
 			boolean cadastrou = false;
 
 			List<String> listaLiberacoesFiltradas = retornaLiberacoesNaoRepetidas();
@@ -1199,10 +1195,6 @@ public class AgendaController implements Serializable {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
 			}
 			limparDados();
-		} 			
-		else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
-			configuraDialogLiberacaoParaAgendaComProcedimento();
-		}
 	}
 
 	private List<String> retornaLiberacoesNaoRepetidas() {
