@@ -345,10 +345,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     ps.setTime(5, horario);
                 }
 
-                if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getIdCidPrimario()))
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getCid().getIdCid()))
                     ps.setNull(6, Types.NULL);
                 else
-                    ps.setInt(6, agenda.getIdCidPrimario());
+                    ps.setInt(6, agenda.getCid().getIdCid());
 
                 rs = ps.executeQuery();
 

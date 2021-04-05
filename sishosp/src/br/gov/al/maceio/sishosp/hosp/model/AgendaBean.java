@@ -31,7 +31,6 @@ public class AgendaBean implements Serializable {
     private Boolean avulso;
     private String situacaoAtendimentoInformado;
     private List<String> listaNomeProfissionais;
-    private Integer idCidPrimario;
     
     // HERDADOS
     private PacienteBean paciente;
@@ -44,6 +43,7 @@ public class AgendaBean implements Serializable {
     private EquipeBean equipe;
     private UnidadeBean unidade;
     private List<ProcedimentoBean> listaProcedimentosSecundarios;
+    private CidBean cid;
 
     public AgendaBean() {
         this.paciente = new PacienteBean();
@@ -72,6 +72,7 @@ public class AgendaBean implements Serializable {
         avulso = false;
         this.listaNomeProfissionais = new ArrayList<String>();
         this.listaProcedimentosSecundarios = new ArrayList<>();
+        this.cid = new CidBean();
     }
 
     public Integer getIdAgenda() {
@@ -309,14 +310,6 @@ public class AgendaBean implements Serializable {
 		this.listaNomeProfissionais = listaNomeProfissionais;
 	}
 
-	public Integer getIdCidPrimario() {
-		return idCidPrimario;
-	}
-
-	public void setIdCidPrimario(Integer idCidPrimario) {
-		this.idCidPrimario = idCidPrimario;
-	}
-
 	public List<ProcedimentoBean> getListaProcedimentosSecundarios() {
 		return listaProcedimentosSecundarios;
 	}
@@ -324,5 +317,12 @@ public class AgendaBean implements Serializable {
 	public void setListaProcedimentosSecundarios(List<ProcedimentoBean> listaProcedimentosSecundarios) {
 		this.listaProcedimentosSecundarios = listaProcedimentosSecundarios;
 	}
-	
+
+	public CidBean getCid() {
+		return cid;
+	}
+
+	public void setCid(CidBean cid) {
+		this.cid = cid;
+	}
 }

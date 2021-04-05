@@ -33,13 +33,17 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
@@ -48,6 +52,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -132,7 +137,11 @@ public class AgendaController implements Serializable {
     private boolean incluirProcedimentos;
     private String tipoProcedimento;
     private boolean confirmaAgendamentoComProcedimentos;
+    private boolean cidObrigatorio;
     private String tipoConfiguracaoDialog;
+    private List<CidBean> listaCids;
+	private UnidadeDAO unidadeDAO;
+	private boolean unidadeValidaDadosSigtap;
     
     private static final String ERRO = "Erro!";
 	private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
@@ -146,7 +155,7 @@ public class AgendaController implements Serializable {
 	private static final String CONFIGURACAO_CONSULTAR_AGENDAMENTOS = "CO";
 	
 
-    public AgendaController() {
+    public AgendaController() throws ProjetoException {
         this.agenda = new AgendaBean();
         grupoSelecionado = new GrupoBean();
         listaGruposProgramas = new ArrayList<GrupoBean>();
@@ -189,6 +198,10 @@ public class AgendaController implements Serializable {
         this.listaLiberacoes = new ArrayList<>();
         this.usuarioLiberacao = new FuncionarioBean();
         this.listaIdFuncionariosComDuplicidadeEspecialidade = new ArrayList<>();
+        this.listaCids = new ArrayList<>();
+        this.unidadeDAO = new UnidadeDAO();
+        verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        this.cidObrigatorio = user_session.getUnidade().getParametro().isCidAgendaObrigatorio();
     }
 
     public void limparDados() {
@@ -320,7 +333,7 @@ public class AgendaController implements Serializable {
     }
 
     public void agendaAvulsaInit() throws ProjetoException, ParseException {
-        carregarHorarioOuTurno();
+        carregarHorarioOuTurno(); 
         carregaListaFuncionariosDual();
     }
 
@@ -934,7 +947,9 @@ public class AgendaController implements Serializable {
 				zerarValoresAgendaMaximoIhQuantidade();
 			}
 
-			insereIdCidPrimarioEmAgendaAvulsa();
+			if(!cidObrigatorio) {
+				insereAutomaticamenteIdCidPrimarioEmAgendaAvulsa();
+			}
 
 			limpaDadosDialogLiberacao();
 			boolean existeDuplicidadeAgendaAvulsa = existeDuplicidadeAgendaAvulsa();
@@ -960,10 +975,10 @@ public class AgendaController implements Serializable {
 		return true;
 	}
 
-	private void insereIdCidPrimarioEmAgendaAvulsa() throws ProjetoException {
+	private void insereAutomaticamenteIdCidPrimarioEmAgendaAvulsa() throws ProjetoException {
 		Integer idCid = aDao.retornaIdCidDoLaudo(this.agenda, user_session.getUnidade().getId(),
 				agenda.getPaciente().getId_paciente());
-		this.agenda.setIdCidPrimario(idCid);
+		this.agenda.getCid().setIdCid(idCid);
 	}
 
 	private boolean pacienteValido(PacienteBean paciente) throws ProjetoException {
@@ -1181,8 +1196,8 @@ public class AgendaController implements Serializable {
 
 	private void gravarAgendaAvulsa(FuncionarioBean usuarioLiberacao) throws ProjetoException {
 	
-		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
-				|| !incluirProcedimentos) {
+		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos && cidValido(agenda.getCid()))
+				|| (!incluirProcedimentos && cidValido(agenda.getCid())) ) {
 
 			boolean cadastrou = false;
 
@@ -1232,8 +1247,8 @@ public class AgendaController implements Serializable {
 	}
 
 	private void gravarAgendaAvulsaPorProfissional(FuncionarioBean usuarioLiberacao) throws ProjetoException {
-		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos)
-				|| !incluirProcedimentos) {
+		if( (incluirProcedimentos && confirmaAgendamentoComProcedimentos && cidValido(agenda.getCid()))
+				|| (!incluirProcedimentos && cidValido(agenda.getCid())) ) {
 			
 			boolean cadastrou = false;
 
@@ -1878,6 +1893,65 @@ public class AgendaController implements Serializable {
 					this.agenda.getListaProcedimentosSecundarios().remove(procedimento);
 			}
         }
+        
+        private void verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {
+            this.unidadeValidaDadosSigtap = unidadeDAO.verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        }
+        
+        private boolean cidValido(CidBean cid) throws ProjetoException {
+        	        	
+        	LaudoDAO laudoDAO = new LaudoDAO();
+        	
+        	if(!unidadeValidaDadosSigtap || !cidObrigatorio)
+        		return true;
+        	
+        	else if(cidObrigatorio && (VerificadorUtil.verificarSeObjetoNulo(agenda.getCid())
+        			|| VerificadorUtil.verificarSeObjetoNuloOuMenorQueZero(agenda.getCid().getIdCid())) ) {
+        		JSFUtil.adicionarMensagemErro("CID: Campo Obrigatório ", "");
+        		return false;
+        	}
+        	
+        	else {
+        		List<ProcedimentoBean> listaProcedimentosCompativeisPrograma 
+        			= new ProgramaDAO().listarProcedimentosPermitidosIhPadrao(agenda.getPrograma().getIdPrograma());
+        		
+        		Date dataAtendimento = agenda.getDataAtendimento();
+                if (!existeCargaSigtapParaDataAgenda(dataAtendimento)) {
+                    dataAtendimento = DataUtil.retornaDataComMesAnterior(dataAtendimento);
+                }
+        		
+        		for (ProcedimentoBean procedimento : listaProcedimentosCompativeisPrograma) {
+        			boolean cidValido = 
+        					laudoDAO.validaCodigoCidEmLaudo(cid.getCid(), dataAtendimento, procedimento.getCodProc());
+        			if(cidValido)
+        				return true;
+				}
+        		JSFUtil.adicionarMensagemAdvertencia("CID inválido com procedimentos do programa", "");
+        	}
+        	return false;
+        }
+        
+        public boolean existeCargaSigtapParaDataAgenda(Date dataAgenda) {
+            boolean existeCargaSigtapParaDataSolicitacao = true;
+            if(this.unidadeValidaDadosSigtap) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dataAgenda);
+                int mesAtendimento = calendar.get(Calendar.MONTH);
+                mesAtendimento++;
+                int anoAtendimento = calendar.get(Calendar.YEAR);
+                existeCargaSigtapParaDataSolicitacao 
+                = new ProcedimentoDAO().verificaExisteCargaSigtapParaData(mesAtendimento, anoAtendimento);
+            }
+            return existeCargaSigtapParaDataSolicitacao;
+        }
+        
+        public List<CidBean> listaCidAutoComplete(String query) throws ProjetoException {
+        	return new CidDAO().listarCidsAutoComplete(query);
+        } 
+        
+        public void listarCids(String campoBusca) throws ProjetoException {
+        	listaCids = new CidDAO().listarCidsBusca(campoBusca);
+        }
 
         public ProgramaBean getProgramaSelecionado() {
             return programaSelecionado;
@@ -2260,6 +2334,22 @@ public class AgendaController implements Serializable {
 
 		public void setTipoConfiguracaoDialog(String tipoConfiguracaoDialog) {
 			this.tipoConfiguracaoDialog = tipoConfiguracaoDialog;
+		}
+
+		public boolean isCidObrigatorio() {
+			return cidObrigatorio;
+		}
+
+		public void setCidObrigatorio(boolean cidObrigatorio) {
+			this.cidObrigatorio = cidObrigatorio;
+		}
+
+		public List<CidBean> getListaCids() {
+			return listaCids;
+		}
+
+		public void setListaCids(List<CidBean> listaCids) {
+			this.listaCids = listaCids;
 		}
 		
     }

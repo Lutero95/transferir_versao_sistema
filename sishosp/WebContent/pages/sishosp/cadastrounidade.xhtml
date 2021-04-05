@@ -52,17 +52,10 @@
 											value="#{EmpresaController.listarTodasAsEmpresa()}" var="emp"
 											itemLabel="#{emp.nomeEmpresa}" itemValue="#{emp.codEmpresa}" />
 									</b:selectOneMenu>
-
 								</b:column>
-
-
-
-
 							</b:row>
 
-
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Rua" severity="info" />
 
@@ -123,15 +116,8 @@
 										style="margin-left:-15px; width:150px"
 										value="#{UnidadeController.unidade.cep}" class="form-control">
 									</p:inputMask>
-
-
 								</b:column>
 							</b:row>
-
-
-
-
-
 
 							<b:row>
 								<b:column span="2" class="label-position new-col2">
@@ -170,7 +156,6 @@
 							</b:row>
 
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Email" severity="info" />
 
@@ -186,12 +171,10 @@
 										class="form-control">
 									</b:inputText>
 								</b:column>
-
 							</b:row>
 
 
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Motivo padrão de Desligamento" severity="info" />
 
@@ -203,7 +186,6 @@
 											var="sis" itemLabel="#{sis.motivo_desligamento}"
 											itemValue="#{sis.id_motivo}" />
 									</b:selectOneMenu>
-
 								</b:column>
 
 								<b:column span="5" class="label-position new-col5">
@@ -217,13 +199,10 @@
 										<f:selectItem itemLabel="Somente Horário" itemValue="H"></f:selectItem>
 										<f:selectItem itemLabel="Ambos" itemValue="A"></f:selectItem>
 									</b:selectOneMenu>
-
 								</b:column>
-
 							</b:row>
 
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Quantidade Simultânea Profissional"
 										severity="info" />
@@ -246,11 +225,9 @@
 										class="form-control">
 									</b:inputText>
 								</b:column>
-
 							</b:row>
 
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Horário Inicial" severity="info" />
 
@@ -276,11 +253,9 @@
 											timeZone="GMT-3" />
 									</p:inputMask>
 								</b:column>
-
 							</b:row>
 
 							<b:row>
-
 								<b:column span="5" class="label-position new-col5">
 									<b:label value="Almoço Início" severity="info" />
 
@@ -351,7 +326,6 @@
 										<f:selectItem itemLabel="Sim" itemValue="S"></f:selectItem>
 										<f:selectItem itemLabel="Não" itemValue="N"></f:selectItem>
 									</b:selectOneMenu>
-
 								</b:column>
 								
 								<b:column span="5" class="label-position new-col5">
@@ -397,7 +371,6 @@
 								<p:fieldset legend="Restrição de Acesso ao Sistema por Horário">
 
 									<b:row>
-
 										<b:column span="12" class="label-position new-col6">
 											<p:selectBooleanCheckbox
 												value="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
@@ -499,7 +472,6 @@
 							<p:outputPanel id="oulaudo">
 
 								<p:fieldset legend="Laudo">
-
 									<b:row>
 										<b:column span="12" class="label-position new-col6">
 											<b:selectOneMenu id="validadepadraolaudo"
@@ -527,12 +499,9 @@
 								</p:fieldset>
 
 							</p:outputPanel>
-
-							<br></br>
-
+							<br />
 
 							<b:row>
-
 								<p:fieldset legend="Órtese e Prótese">
 
 									<p:outputPanel id="idOrteseProtese">
@@ -579,16 +548,11 @@
 															 style="margin-left: 5px" icon="ui-icon-search"
 															 action="#{UnidadeController.listaGrupoPorProgramaOPM(UnidadeController.unidade.parametro.orteseProtese.programa.idPrograma)}"
 															 update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
-
 										</b:column>
-
 									</p:outputPanel>
-
 								</p:fieldset>
-
 							</b:row>
-
-							<br></br>
+							<br />
 
 							<b:row>
 								<p:fieldset legend="PTS">
@@ -605,7 +569,7 @@
 									</b:column>
 								</p:fieldset>
 							</b:row>
-							<br></br>
+							<br />
 
 							<b:row>
 								<b:column span="5">
@@ -714,7 +678,6 @@
 											id="inicioevolucao" required="false" pattern="dd/MM/yyyy"
 											requiredMessage="Informe o início da evolução"/>
 									</b:column>
-
 								</b:row>
 							</p:outputPanel>
 
@@ -834,8 +797,6 @@
 											<f:validateLength minimum="0" maximum="10" />
 										</b:inputText>
 									</b:column>
-									
-
 								</b:row>
 							</p:outputPanel>
 						</p:tab>
@@ -855,6 +816,12 @@
 								<p:selectBooleanCheckbox
 									value="#{UnidadeController.unidade.parametro.objetivosGeraisPTSObrigatorio}"
 									itemLabel="Objetivos Gerais/Multidisciplinar"/>	
+							</p:fieldset>
+							
+							<p:fieldset legend="Agenda">
+								<p:selectBooleanCheckbox
+									value="#{UnidadeController.unidade.parametro.cidAgendaObrigatorio}"
+									itemLabel="CID"/>
 							</p:fieldset>							
 						</p:tab>
 						

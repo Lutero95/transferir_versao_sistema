@@ -211,6 +211,27 @@
 									</p:outputPanel>
 								</b:column>
 							</p:outputPanel>
+
+							<b:column span="3" rendered="#{AgendaController.cidObrigatorio}"
+								class="label-position new-data-size new-comple1">
+								<b:label value="CID:" severity="info" />
+
+								<p:outputPanel id="outCid1">
+									<p:autoComplete
+										value="#{AgendaController.agenda.cid}"
+										size="25" required="true"
+										requiredMessage="CID: Campo Obrigatório" converter="conCid"
+										id="descCid1" class="select-agendaEquipe4"
+										completeMethod="#{AgendaController.listaCidAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}" title="CID"
+										itemLabel="#{theme.descCidAbrev}"/>
+
+									<p:commandButton id="btBusCid1" icon="ui-icon-search"
+										update=":formConsulCid1" process="@this"
+										oncomplete="PF('dlgConsulCid1').show();" />
+								</p:outputPanel>
+							</b:column>
 						</b:row>
 					</p:outputPanel>
 
@@ -624,11 +645,11 @@
 				</div>
 			</h:form>
 		</p:dialog>
-
+		
 		<ui:include src="dialogs/dialogprocedimentoagenda.xhtml"/>
 		<ui:include src="dialogs/dialogequipeagenda.xhtml"/>
 		<ui:include src="dialogs/dialogprogramaagenda.xhtml"/>
 		<ui:include src="dialogs/dialoggrupoagenda.xhtml"/>
+		<ui:include src="dialogs/dialogcidagenda.xhtml"/>
 	</ui:define>
-
 </ui:composition>

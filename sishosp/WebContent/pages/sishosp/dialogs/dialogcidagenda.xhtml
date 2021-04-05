@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+<h:body>
+	<p:dialog header="Consultar CID 1" widgetVar="dlgConsulCid1"
+		responsive="true" height="350" modal="true" dynamic="true">
+		<h:form id="formConsulCid1">
+			<p:outputPanel id="outcid1">
+				<p:row>
+					<p:panelGrid columns="4">
+
+						<p:selectOneMenu value="#{AgendaController.tipoBusca}" style="margin-top: -13px">
+							<f:selectItem itemLabel="Descrição ou CID" itemValue="desccid" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{AgendaController.campoBusca}" required="true"
+							requiredMessage="Informe a descrição da doença ou o Código do CID"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+						<p:commandButton
+							action="#{AgendaController.listarCids(AgendaController.campoBusca)}"
+							update="tabelacid1 msgPagina" icon="ui-icon-search"
+							style="margin-left: 10px;">
+						</p:commandButton>
+					</p:panelGrid>
+				</p:row>
+
+				<p:dataTable emptyMessage="Nenhum CID listado" rows="10"
+					paginator="true" id="tabelacid1" style="width:500px"
+					value="#{AgendaController.listaCids}" var="tab">
+
+					<p:column headerText="Descrição">
+						<h:outputText value="#{tab.descCidAbrev}" />
+					</p:column>
+
+					<p:column headerText="CID">
+						<h:outputText value="#{tab.cid}" />
+					</p:column>
+
+					<p:column headerText="Ação">
+						<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+							size="sm" onclick="PF('dlgConsulCid1').hide();"
+							class="new-btn-acao-table acao-editar"
+							update=":formAgendaMedica:outCid1">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{AgendaController.agenda.cid}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>
