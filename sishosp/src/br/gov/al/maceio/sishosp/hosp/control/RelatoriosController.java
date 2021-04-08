@@ -119,7 +119,7 @@ public class RelatoriosController implements Serializable {
 	private List<Integer> listaAnos;
 	private boolean filtrarPorQuantidade;
 
-	public RelatoriosController() {
+	public RelatoriosController() throws ProjetoException {
 		this.programa = new ProgramaBean();
 		agendaController = new AgendaController();
 		this.grupo = new GrupoBean();

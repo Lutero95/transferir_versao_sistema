@@ -1102,9 +1102,7 @@ public class ProgramaDAO {
 
             while (rs.next()) {
                 ProcedimentoBean procedimento = new ProcedimentoBean();
-                procedimento.setIdProc(rs.getInt("id"));
-                procedimento.setNomeProc(rs.getString("nome"));
-                procedimento.setCodProc(rs.getString("codproc"));
+                mapearResultSetProcedimento(rs, procedimento);
                 lista.add(procedimento);
             }
 
@@ -1219,9 +1217,7 @@ public class ProgramaDAO {
 
             while (rs.next()) {
                 ProcedimentoBean procedimento = new ProcedimentoBean();
-                procedimento.setIdProc(rs.getInt("id"));
-                procedimento.setNomeProc(rs.getString("nome"));
-                procedimento.setCodProc(rs.getString("codproc"));
+                mapearResultSetProcedimento(rs, procedimento);
                 lista.add(procedimento);
             }
 
@@ -1521,4 +1517,58 @@ public class ProgramaDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
     }
+    
+    public List<ProcedimentoBean> listarProcedimentosPermitidosIhPadrao (Integer idPrograma)
+            throws ProjetoException {
+
+        List<ProcedimentoBean> lista = new ArrayList<>();
+
+        String sql = "\r\n" + 
+        		"select id, nome, codproc from (\r\n" + 
+        		"	select proc.id, proc.nome, proc.codproc \r\n" + 
+        		"	from hosp.programa_procedimento_permitido ppp \r\n" + 
+        		"	join hosp.programa p on ppp.id_programa = p.id_programa \r\n" + 
+        		"	join hosp.proc on ppp.id_procedimento = proc.id \r\n" + 
+        		"	where ppp.id_programa = ? and p.cod_unidade = ? and proc.ativo = 'S' \r\n" + 
+        		"\r\n" + 
+        		"	union \r\n" + 
+        		"	select proc.id, proc.nome, proc.codproc \r\n" + 
+        		"	from hosp.programa p \r\n" + 
+        		"	join hosp.proc on p.cod_procedimento = proc.id \r\n" + 
+        		"	where p.id_programa = ? and p.cod_unidade = ? and proc.ativo = 'S'\r\n" + 
+        		") as a";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPrograma);
+            stm.setInt(2, user_session.getUnidade().getId());
+            stm.setInt(3, idPrograma);
+            stm.setInt(4, user_session.getUnidade().getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean procedimento = new ProcedimentoBean();
+                mapearResultSetProcedimento(rs, procedimento);
+                lista.add(procedimento);
+            }
+
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        }finally {
+            try {
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+	private void mapearResultSetProcedimento(ResultSet rs, ProcedimentoBean procedimento) throws SQLException {
+		procedimento.setIdProc(rs.getInt("id"));
+		procedimento.setNomeProc(rs.getString("nome"));
+		procedimento.setCodProc(rs.getString("codproc"));
+	}
 }
