@@ -1912,7 +1912,7 @@ public class AtendimentoDAO {
 		return listaAnos;
 	}
 
-	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades, String competencia) throws ProjetoException {
+	public Integer retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(Date dataInicio, Date dataFim, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, Integer idConfiguracaoProducaoBpa, String competencia) throws ProjetoException {
 
 		Integer totalAtendimentos = null;
 
@@ -1938,6 +1938,7 @@ public class AtendimentoDAO {
 				"and a.dtaatende between ? and ? and coalesce(pr.id_instrumento_registro_padrao, ir.id) = ir.id  and ir.nome like '%BPA%'\n" +
 				"and pm.competencia_atual = ? ";
 
+
 		String sqlProcedimentoSecundario = " select count(*) total \n" +
 				"\tfrom hosp.atendimentos a  \n" +
 				"\tjoin hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  \n" +
@@ -1960,6 +1961,8 @@ public class AtendimentoDAO {
 				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
+
+
 		if (listaProcedimentosFiltro.size()>0) {
 			sqlProcedimentoPrimario+=" and a1.codprocedimento = any(?) ";
 			sqlProcedimentoSecundario+=" and a1.codprocedimento = any(?) ";
@@ -1974,15 +1977,25 @@ public class AtendimentoDAO {
 			sqlProcedimentoSecundario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 		}
 
+		if (idConfiguracaoProducaoBpa!=null){
+			sqlProcedimentoPrimario = sqlProcedimentoPrimario+ " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
+					"where cpb .id =?)";
+
+			sqlProcedimentoSecundario = sqlProcedimentoSecundario+  " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
+					"where cpb .id =?)";
+		}
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement ps = con.prepareStatement(sqlProcedimentoPrimario);
 			totalAtendimentos = mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
-					totalAtendimentos, competencia,  ps);
+					totalAtendimentos, competencia, idConfiguracaoProducaoBpa,  ps);
 
 			ps = con.prepareStatement(sqlProcedimentoSecundario);
 			totalAtendimentos += mapearPreparedStatmentTotal(dataInicio, dataFim, listaProcedimentosFiltro,
-					totalAtendimentos, competencia,  ps);
+					totalAtendimentos, competencia, idConfiguracaoProducaoBpa, ps);
 
 		}catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1999,19 +2012,25 @@ public class AtendimentoDAO {
 	}
 
 	private Integer mapearPreparedStatmentTotal(Date dataInicio, Date dataFim,
-												List<ProcedimentoBean> listaProcedimentosFiltro, Integer totalAtendimentos, String competencia,  PreparedStatement ps)
+												List<ProcedimentoBean> listaProcedimentosFiltro, Integer totalAtendimentos, String competencia, Integer codConfiguracaoProducao, PreparedStatement ps)
 			throws SQLException {
 		ps.setDate(1, new java.sql.Date(dataInicio.getTime()));
 		ps.setDate(2, new java.sql.Date(dataFim.getTime()));
 		ps.setString(3, competencia);
+		int j = 4;
 		ArrayList<Integer> lista = new ArrayList<>();
 		for (int i = 0; i < listaProcedimentosFiltro.size(); i++) {
 			lista.add(listaProcedimentosFiltro.get(i).getIdProc());
 		}
 
-		if (listaProcedimentosFiltro.size()>0)
-			ps.setObject(4, ps.getConnection().createArrayOf(  "INTEGER", lista.toArray()));
-
+		if (listaProcedimentosFiltro.size()>0) {
+			ps.setObject(j, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
+			j = j++;
+		}
+		if (codConfiguracaoProducao!=null){
+			ps.setInt(j, codConfiguracaoProducao);
+			j = j++;
+		}
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			totalAtendimentos = rs.getInt("total");

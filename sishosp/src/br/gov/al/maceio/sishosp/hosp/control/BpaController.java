@@ -757,7 +757,7 @@ public class BpaController implements Serializable {
 	}
 
 	private boolean verificarInconsistenciaQuantidadeAtendimentosOuAgendamentos(String tipoGeracao) throws ProjetoException {
-		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos, listaIdUnidades, this.competencia);
+		Integer totalAtendimentos = new AtendimentoDAO().retornaTotalAtendimentosOuAgendamentosDeUmPeriodo(this.dataInicioAtendimento, this.dataFimAtendimento, tipoGeracao, listaProcedimentos,  this.idConfiguracaoProducaoBpa, this.competencia);
 		Integer totalAtendimentoGeradoBPA = calculaTotalAtendimentoBPA();
 		if(totalAtendimentoGeradoBPA < totalAtendimentos) {
 			JSFUtil.adicionarMensagemErro("O total de atendimentos no arquivo do BPA é  menor do que o total de atendimentos do sistema", "Erro");
