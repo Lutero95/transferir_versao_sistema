@@ -89,8 +89,9 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao, usuario_cadastro ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?,?) returning id_laudo";
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional, validado_pelo_sigtap_anterior, data_autorizacao, usuario_cadastro, "
+                + " profissional_externo, nome_profissional_externo, conselho_numero) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?,?, ?, ?,? ) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -191,6 +192,9 @@ public class LaudoDAO {
 
             stmt.setInt(18, user_session.getUnidade().getId());
             stmt.setString(19, laudo.getSituacao());
+            if (laudo.isProfissionalExternoLaudo())
+                stmt.setNull(20, Types.NULL);
+            else
             stmt.setLong(20, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(21, laudo.isValidadoPeloSigtapAnterior());
             if (laudo.getDataAutorizacao() == null) {
@@ -200,6 +204,16 @@ public class LaudoDAO {
             }
 
             stmt.setLong(23, user_session.getId());
+            stmt.setBoolean(24, laudo.isProfissionalExternoLaudo());
+            if (!laudo.isProfissionalExternoLaudo())
+                stmt.setNull(25, Types.NULL);
+            else
+                stmt.setString(25, laudo.getNomeProfissionalExternoLaudo().toUpperCase());
+
+            if (!laudo.isProfissionalExternoLaudo())
+                stmt.setNull(26, Types.NULL);
+            else
+                stmt.setString(26, laudo.getConselhoProfissionalExternoLaudo().toUpperCase());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -396,7 +410,7 @@ public class LaudoDAO {
                 .getSessionMap().get("obj_funcionario");
         String sql = "select id_laudo,p.id_paciente,p.matricula, p.nome, "
                 + "pr.codproc , pr.nome as procedimento, c.desccidabrev,  l.mes_final, l.ano_final, "
-                + "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "
+                + "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, coalesce(func.descfuncionario, l.nome_profissional_externo ) descfuncionario " + "from hosp.laudo l "
                 + "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "

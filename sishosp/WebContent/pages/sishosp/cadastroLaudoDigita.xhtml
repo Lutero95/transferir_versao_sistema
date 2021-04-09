@@ -72,10 +72,11 @@
                     </b:row>
 
                     <b:row>
-                        <b:column span="3"
+                        <p:outputPanel id="outProf">
+                        <b:column span="3"  rendered="#{!LaudoController.laudo.profissionalExternoLaudo}"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Profissional" severity="info"/>
-                            <p:outputPanel id="outProf">
+
                                 <p:autoComplete value="#{LaudoController.laudo.profissionalLaudo}"
                                                 id="autoCompleteProfissional" size="31"
                                                 converter="conFuncionario" required="true"
@@ -91,7 +92,56 @@
                                                  immediate="true"
                                                  action="#{MBFuncionarios.listarProfissionais()}"
                                                  update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
+
+                        </b:column>
+                        </p:outputPanel>
+                        <b:column span="7   ">
+                            <p:outputPanel id="horarioDeAcesso">
+
+                                <p:fieldset legend="Profissional externo responsável pelo laudo">
+
+                                    <b:row>
+                                        <b:column >
+                                            <p:selectBooleanCheckbox
+                                                    value="#{LaudoController.laudo.profissionalExternoLaudo}"
+                                                    itemLabel="Profissional Externo">
+                                                <p:ajax update="horarioDeAcesso outProf"></p:ajax>
+                                            </p:selectBooleanCheckbox>
+                                        </b:column>
+
+
+                                        <b:column span="7" style="margin-top: 10px">
+                                            <b:label value="Nome" severity="info"
+                                                     rendered="#{LaudoController.laudo.profissionalExternoLaudo}" />
+
+                                            <p:inputText
+                                                         class="form-control select-agendaEquipe2"
+                                                         rendered="#{LaudoController.laudo.profissionalExternoLaudo}"
+                                                         value="#{LaudoController.laudo.nomeProfissionalExternoLaudo}"
+                                                          required="true"
+                                                         requiredMessage="Nome do Profissional externo a instituição, responsável pelo Laudo!">
+
+                                            </p:inputText>
+                                        </b:column>
+
+                                        <b:column span="3" style="margin-top: 10px">
+                                            <b:label value="Conselho/Número" severity="info"
+                                                     rendered="#{LaudoController.laudo.profissionalExternoLaudo}" />
+
+                                            <p:inputText
+                                                         class="form-control select-agendaEquipe2"
+                                                         rendered="#{LaudoController.laudo.profissionalExternoLaudo}"
+                                                         value="#{LaudoController.laudo.conselhoProfissionalExternoLaudo}"
+                                                         size="6" required="true"
+                                                         requiredMessage="Conselho/Número do Profissional externo a instituição, responsável pelo Laudo!">
+                                            </p:inputText>
+                                        </b:column>
+                                    </b:row>
+
+
+                                </p:fieldset>
                             </p:outputPanel>
+
                         </b:column>
                     </b:row>
 

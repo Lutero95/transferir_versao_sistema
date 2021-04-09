@@ -23,6 +23,9 @@ public class LaudoBean implements Serializable {
     private String vencimento;
     private Integer codUnidade;
     private boolean validadoPeloSigtapAnterior;
+    private boolean profissionalExternoLaudo;
+    private String nomeProfissionalExternoLaudo;
+    private String conselhoProfissionalExternoLaudo;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -283,5 +286,27 @@ public class LaudoBean implements Serializable {
 		this.descProfissional = descProfissional;
 	}
 
-	
+    public boolean isProfissionalExternoLaudo() {
+        return profissionalExternoLaudo;
+    }
+
+    public void setProfissionalExternoLaudo(boolean profissionalExternoLaudo) {
+        this.profissionalExternoLaudo = profissionalExternoLaudo;
+    }
+
+    public String getNomeProfissionalExternoLaudo() {
+        return nomeProfissionalExternoLaudo;
+    }
+
+    public void setNomeProfissionalExternoLaudo(String nomeProfissionalExternoLaudo) {
+        this.nomeProfissionalExternoLaudo = nomeProfissionalExternoLaudo;
+    }
+
+    public String getConselhoProfissionalExternoLaudo() {
+        return conselhoProfissionalExternoLaudo;
+    }
+
+    public void setConselhoProfissionalExternoLaudo(String conselhoProfissionalExternoLaudo) {
+        this.conselhoProfissionalExternoLaudo = conselhoProfissionalExternoLaudo;
+    }
 }

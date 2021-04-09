@@ -237,6 +237,8 @@ public class LaudoController implements Serializable {
 
             }
         } catch (Exception e) {
+            JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
+            e.printStackTrace();
         }
     }
 
@@ -266,7 +268,7 @@ public class LaudoController implements Serializable {
             if(procedimentoPossuiCidsAssociados(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getCodProc()))
                 validaCidsDoLaudo(dataSolicitacaoPeloSigtap, cid1, this.laudo.getProcedimentoPrimario().getCodProc(), paciente, true);
             
-            if(!new FuncionarioDAO().funcionarioPossuiCboCompativelComProcedimento(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getIdProc(), this.laudo.getProfissionalLaudo().getId())) {
+            if ((!laudo.isProfissionalExternoLaudo()) && (!new FuncionarioDAO().funcionarioPossuiCboCompativelComProcedimento(dataSolicitacaoPeloSigtap, this.laudo.getProcedimentoPrimario().getIdProc(), this.laudo.getProfissionalLaudo().getId()))) {
                 throw new ProjetoException
                 ("Cbo do profissional selecionado é incompatível com o permitido no SIGTAP para o procedimento "+this.laudo.getProcedimentoPrimario().getCodProc());
             }
@@ -424,7 +426,7 @@ public class LaudoController implements Serializable {
 
     public boolean existeLaudoComMesmosDados(PacienteBean paciente) {
         try {
-            if(lDao.existeLaudoComMesmosDados(laudo, paciente)) {
+            if ((!laudo.isProfissionalExternoLaudo()) && (lDao.existeLaudoComMesmosDados(laudo, paciente))) {
                 JSFUtil.adicionarMensagemErro
                         ("Já existe laudo para o paciente "+paciente.getNome()+ " com o mesmo profissional, data de vencimento e procedimento!", "Erro");
                 return true;

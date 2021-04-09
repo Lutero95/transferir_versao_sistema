@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.BuscaSessaoDTO;
@@ -65,7 +66,7 @@ public class PtsController implements Serializable {
         renderizarBotaoNovo = false;
         usuarioLiberacao = new FuncionarioBean();
         liberacaoAlterarDataPts = false;
-        filtroTurno = "A";
+        filtroTurno = Turno.AMBOS.getSigla();
         liberacaoIncluirPtsVencimentoAnteriorAtualPts = false;
     }
 

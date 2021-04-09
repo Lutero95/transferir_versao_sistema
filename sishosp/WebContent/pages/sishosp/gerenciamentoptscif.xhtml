@@ -7,7 +7,7 @@
 	template="../../template/template.xhtml">
 
 	<f:metadata>
-		<f:viewAction action="#{PtsController.carregarBuscaPts()}" />
+		<f:viewAction action="#{ptsCifController.buscarPtsCif()}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -20,66 +20,7 @@
 			<div class="panel-body table-body">
 
 				<h:form id="formGerenPaci">
-
 					<b:row>
-
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Programa" severity="info" />
-
-							<p:outputPanel id="outProg">
-								<p:autoComplete required="true"
-									requiredMessage="Escolha um programa!"
-									value="#{PtsController.pts.programa}" size="31"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
-							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBusPr" icon="ui-icon-search"
-									process="@this"
-									action="#{ProgramaController.carregaListaProgramas()}"
-									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
-							</p:outputPanel>
-						</b:column>
-
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Grupo" severity="info" />
-
-							<p:outputPanel id="outGrupo">
-								<p:autoComplete required="true"
-									requiredMessage="Escolha um grupo!"
-									value="#{PtsController.pts.grupo}" size="31"
-									converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{PtsController.pts.programa.idPrograma==null}"
-									completeMethod="#{PtsController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										update=":formGerenPaci:outGrupo, btnBusca" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBusGr" icon="ui-icon-search"
-									process="@this"
-									action="#{PtsController.carregaGruposDoPrograma()}"
-									disabled="#{PtsController.pts.programa.idPrograma==null}"
-									update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
-							</p:outputPanel>
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-
 						<b:column span="1" class="new-data-size3"
 							style="width:100px !important">
 
@@ -99,67 +40,56 @@
 							</p:selectOneRadio>
 						</b:column>
 
-
 						<b:column span="1" class="new-data-size3">
-
 							<p:outputLabel value="Validade:"
-								style="margin-top: 8px;color:#2e84ce;">
-							</p:outputLabel>
-
+								style="margin-top: 8px;color:#2e84ce;" />
 						</b:column>
 
 						<b:column span="1" style="width: 63px;margin-top: 6px;">
-							<p:outputLabel value="Mês" style="margin-top: 8px;color:#2e84ce;">
-							</p:outputLabel>
+							<p:outputLabel value="Mês" style="margin-top: 8px;color:#2e84ce;" />
 						</b:column>
-
+						
 						<b:column span="1" style="width: 83px;margin-top: 6px;">
 							<b:inputText style="padding:10px;" required="false"
-								value="#{PtsController.filtroMesVencimento}" render-label="true" />
+								value="#{ptsCifController.filtroMesVencimento}" render-label="true" />
 						</b:column>
 
 						<b:column span="1" style="width: 61px;margin-top: 6px;">
-							<p:outputLabel value="Ano" style="margin-top: 8px;color:#2e84ce;">
-							</p:outputLabel>
+							<p:outputLabel value="Ano" style="margin-top: 8px;color:#2e84ce;" />
 						</b:column>
 						
 						<b:column span="1" style="width: 83px;margin-top: 6px;">
 							<b:inputText style="padding:10px;" required="false"
-								value="#{PtsController.filtroAnoVencimento}" render-label="true" />
+								value="#{ptsCifController.filtroAnoVencimento}" render-label="true" />
 						</b:column>
+					</b:row>
 
-						
-						</b:row>
-						<b:row>
+					<b:row>
 						<b:column span="3">
 							<p:selectBooleanCheckbox
-								value="#{PtsController.filtroApenasPacientesSemPTS}"
+								value="#{ptsCifController.filtrarSemPts}"
 								itemLabel="Apenas Pacientes Sem PTS" />
 						</b:column>
 						
 						<b:column span="2" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
-						<p:outputLabel value="Turno"
+							<p:outputLabel value="Turno"
 								style="margin-top: 8px;color:#2e84ce;">
 							</p:outputLabel>
-
-								<b:selectOneMenu  style="    margin-top: -20px;    margin-left: 35px;"
-									value="#{PtsController.filtroTurno}">
-									<f:selectItem itemLabel="Ambos" itemValue="A" />
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-									
-								</b:selectOneMenu>
+							<b:selectOneMenu style="margin-top: -20px; margin-left: 35px;"
+								value="#{ptsCifController.filtroTurno}">
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</b:selectOneMenu>
 						</b:column>
 					</b:row>
 
-					<br></br>
 					<br />
+					<br />
+					
 					<b:row>
-
-
-
 						<b:column span="1" style="width: 155px;">
-							<p:selectOneMenu value="#{PtsController.tipoBusca}"
+							<p:selectOneMenu value="#{ptsCifController.tipoBusca}"
 								style="margin-top: -13px">
 								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
 								<f:selectItem itemLabel="Protuário Paciente"
@@ -169,52 +99,43 @@
 							</p:selectOneMenu>
 						</b:column>
 						<b:column span="4" style="margin-top:-17px !important">
-							<p:inputText value="#{PtsController.campoBusca}"
+							<p:inputText value="#{ptsCifController.campoBusca}"
 								placeholder="Digite aqui o que deseja buscar"
 								style="width:300px" />
 						</b:column>
 
 
 						<b:column span="1">
-
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 								style="margin-top:-11px" class="btn-acao-table acao-buscar"
-								id="btnBusca" action="#{PtsController.buscarPtsPacientesAtivos}"
-								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg, btnInserir"></p:commandButton>
-
+								id="btnBusca" action="#{ptsCifController.buscarPtsCif()}"
+								update=":msgPagina, :frmTabela:dtNovosAg, btnInserir"/>
 						</b:column>
 
 						<b:column span="1">
-
 							<p:commandButton value="Limpar" icon="ui-icon-trash"
 								style="margin-top:-11px" class="btn-acao-table acao-limpar2"
-								action="#{PtsController.limparBusca()}"
-								update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg"></p:commandButton>
+								action="#{ptsCifController.limparBusca()}"
+								update=":msgPagina, :frmTabela:dtNovosAg"/>
 						</b:column>
-
 					</b:row>
-
-					<br></br>
-					<br></br>
+					<br />
+					<br />
 
 					<b:row class="table-border">
-
 						<div align="center">
-
 							<b:column span="2" class="new-span2"></b:column>
 
 							<b:column span="2" class="new-span2">
 								<p:commandButton value="Novo" style="margin-top:5px;"
 									id="btnInserir" immediate="true" 
-									disabled="#{PtsController.renderizarBotaoNovo == false}"
+									disabled="#{ptsCifController.renderizarBotaoNovo == false}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
-									action="#{PtsController.redirectInsert}" />
-									
+									action="#{ptsCifController.redirecionaInsercao}" />
 							</b:column>
 
 							<b:column span="2" class="new-span2">
-							
 								<p:commandButton  value="Alterar" style="margin-top:5px;"
 									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
 									id="btnAlterar" immediate="true"
@@ -253,161 +174,61 @@
 									icon="ui-icon-close"
 									action="#{PtsController.abrirDialogCancelarPts()}" />
 							</b:column>
-
 						</div>
-
 					</b:row>
-
 				</h:form>
 
 				<h:form id="frmTabela">
-
 					<b:column span="12" class="label-position1">
-
 						<p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
 							styleClass="table cz" id="dtNovosAg"
-							value="#{PtsController.listaPts}" var="pts" paginator="true"
+							value="#{ptsCifController.listaPtsCif}" var="pts" paginator="true"
 							paginatorPosition="bottom" rows="12" selectionMode="single"
-							selection="#{PtsController.rowBean}"
+							selection="#{ptsCifController.ptsCifSelecionado}"
 							rowKey="#{pts.gerenciarPaciente.id}">
 
 							<p:ajax event="rowSelect"
-								listener="#{PtsController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
+								listener="#{ptsCifController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
 								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar, :formGerenPaci:btnDesligar" />
 
-
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Paciente" />
-								</f:facet>
-								<h:outputText value="#{pts.paciente.nome}"></h:outputText>
+							<p:column headerText="Paciente">
+								<h:outputText value="#{pts.paciente.nome}"/>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Prontuário" />
-								</f:facet>
-								<h:outputText value="#{pts.paciente.id_paciente}"></h:outputText>
+							<p:column headerText="Prontuário">
+								<h:outputText value="#{pts.paciente.id_paciente}"/>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Matrícula" />
-								</f:facet>
-								<h:outputText value="#{pts.paciente.matricula}"></h:outputText>
+							<p:column headerText="Matrícula">
+								<h:outputText value="#{pts.paciente.matricula}"/>
+							</p:column>
+							
+							<p:column headerText="Programa">
+								<h:outputText value="#{pts.gerenciarPaciente.programa.descPrograma}"/>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Programa" />
-								</f:facet>
-								<h:outputText value="#{pts.programa.descPrograma}"></h:outputText>
+							<p:column headerText="Grupo">
+								<h:outputText value="#{pts.gerenciarPaciente.grupo.descGrupo}"/>
 							</p:column>
-
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Grupo" />
-								</f:facet>
-								<h:outputText value="#{pts.grupo.descGrupo}"></h:outputText>
-							</p:column>
-
-							<p:column width="15%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Status PTS" />
-								</f:facet>
-								<h:outputText value="#{pts.statusPorExtenso}"></h:outputText>
-							</p:column>
-
-							<p:column width="10%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Data PTS" />
-								</f:facet>
-								<h:outputText value="#{pts.data}">
+							
+							<p:column headerText="Data de Avaliação">
+								<h:outputText value="#{pts.dataAvaliacao}">
 									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
 							</p:column>
-
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Vencimento PTS" />
-								</f:facet>
+							
+							<p:column headerText="Data de Vencimento">
 								<h:outputText value="#{pts.dataVencimento}">
 									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
-							</p:column>
-
+							</p:column>							
 						</p:dataTable>
 					</b:column>
-
-					<br></br>
-
+					<br />
 				</h:form>
-
 			</div>
 		</div>
-
-		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			modal="true">
-			<h:form id="formConsuProg">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ProgramaController.listaProgramas}" var="prog"
-					display="Nenhum Programa">
-
-					<h:column>
-						<f:facet name="header">
-                            Programa
-                        </f:facet>
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton
-							update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
-							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"
-							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{PtsController.pts.programa}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true">
-			<h:form id="formConsuGrop">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{PtsController.listaGrupos}" id="dtGrupo" var="grupo"
-					display="Nenhum Grupo">
-
-					<h:column>
-						<f:facet name="header">
-                            Grupo
-                        </f:facet>
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton update=":formGerenPaci:outGrupo"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{PtsController.pts.grupo}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+		
 
 		<p:dialog header="Cancelar Pts" widgetVar="dlgCancelarPts" width="400"
 			height="auto" modal="true" responsive="true">
