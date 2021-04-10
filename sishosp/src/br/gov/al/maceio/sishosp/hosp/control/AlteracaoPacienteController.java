@@ -1206,6 +1206,13 @@ public class AlteracaoPacienteController implements Serializable {
                     }
                 }
 
+                if (listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getDiaSemana()==Integer.valueOf(DiasDaSemana.DIAINDEFINIDO.getSigla())) {
+                    dias = dias + "Dia Indefinido"+" "+(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(j).getHorario()!=null  ? listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().get(0).getHorario() : "" );;
+                    if(listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size()  > 1 && listaFuncionarioAuxiliar.get(i).getListaDiasAtendimentoSemana().size()!=i+1){
+                        dias = dias + ", ";
+                    }
+                }
+
 
             }
             listaFuncionarioAuxiliar.get(i).setDiasSemana(dias);

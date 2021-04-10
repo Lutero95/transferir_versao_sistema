@@ -8,7 +8,8 @@ public enum DiasDaSemana {
     QUARTA("4"),
     QUINTA("5"),
     SEXTA("6"),
-    SABADO("7");
+    SABADO("7"),
+    DIAINDEFINIDO("8");
 
     private String sigla;
 

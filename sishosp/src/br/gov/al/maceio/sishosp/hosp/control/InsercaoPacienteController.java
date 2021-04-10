@@ -577,6 +577,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             		&& !dias.contains("Sábado")) {
                 dias += "Sábado: ";
             }
+
+            if (funcionario.getListaDiasAtendimentoSemana().get(i).getDiaSemana().toString().equals(DiasDaSemana.DIAINDEFINIDO.getSigla())
+                    && !dias.contains("Dia Indefinido")) {
+                dias += "Dia Indefinido: ";
+            }
             
             if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(funcionario.getListaDiasAtendimentoSemana().get(i).getTurno())) {
 				if (funcionario.getListaDiasAtendimentoSemana().get(i).getTurno().equals(Turno.MANHA.getSigla()))

@@ -241,7 +241,7 @@ public class LaudoDAO {
                 + "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
                 + "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, "
                 + "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional = ?, validado_pelo_sigtap_anterior = ?, "
-                + "usuario_ultima_alteracao = ?, data_hora_ultima_alteracao = CURRENT_TIMESTAMP "
+                + "usuario_ultima_alteracao = ?, data_hora_ultima_alteracao = CURRENT_TIMESTAMP, profissional_externo=?, nome_profissional_externo=?, conselho_numero=? "
                 + " where id_laudo = ?";
 
         try {
@@ -353,7 +353,19 @@ public class LaudoDAO {
             stmt.setLong(21, laudo.getProfissionalLaudo().getId());
             stmt.setBoolean(22, laudo.isValidadoPeloSigtapAnterior());
             stmt.setLong(23, user_session.getId());
-            stmt.setInt(24, laudo.getId());
+
+            stmt.setBoolean(24, laudo.isProfissionalExternoLaudo());
+            if (!laudo.isProfissionalExternoLaudo())
+                stmt.setNull(25, Types.NULL);
+            else
+                stmt.setString(25, laudo.getNomeProfissionalExternoLaudo().toUpperCase());
+
+            if (!laudo.isProfissionalExternoLaudo())
+                stmt.setNull(26, Types.NULL);
+            else
+                stmt.setString(26, laudo.getConselhoProfissionalExternoLaudo().toUpperCase());
+
+            stmt.setInt(27, laudo.getId());
             stmt.executeUpdate();
             LaudoLog laudoLog = new LaudoLog();
             LogBean log = laudoLog.compararLaudos(laudo);
@@ -563,7 +575,7 @@ public class LaudoDAO {
                 + " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,c1.desccidabrev as desccidabrev1,  l.cid2, c2.desccid as desccid2, c2.desccidabrev as desccidabrev2, "
                 + " l.cid3, c3.desccid as desccid3, c3.desccidabrev as desccidabrev3, l.obs, data_autorizacao, situacao , func.id_funcionario, func.descfuncionario,  "
                 + " data_solicitacao as datainicio, " +
-                "	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal"
+                "	(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal, coalesce(profissional_externo,false) profissional_externo, nome_profissional_externo, conselho_numero "
                 + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -625,6 +637,9 @@ public class LaudoDAO {
                 }
                 laudo.setObs(rs.getString("obs"));
                 laudo.setSituacao(rs.getString("situacao"));
+                laudo.setProfissionalExternoLaudo(rs.getBoolean("profissional_externo"));
+                laudo.setNomeProfissionalExternoLaudo(rs.getString("nome_profissional_externo"));
+                laudo.setConselhoProfissionalExternoLaudo(rs.getString("conselho_numero"));
                 FuncionarioBean func = new FuncionarioBean();
                 func.setId(rs.getLong("id_funcionario"));
                 func.setNome(rs.getString("descfuncionario"));
