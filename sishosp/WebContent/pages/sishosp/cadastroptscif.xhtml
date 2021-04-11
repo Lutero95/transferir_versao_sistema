@@ -15,7 +15,7 @@
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Inclusão PTS CIF</h4>
+				<h:outputText value="#{ptsCifController.cabecalho}" class="panel-title"/>
 			</div>
 
 			<div class="panel-body table-body sub-table-body">
@@ -234,14 +234,14 @@
 
 					<div align="center">
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
-										 rendered="#{PtsController.existePts==false}"
+										 rendered="#{ptsCifController.existePts==false}"
 							icon="ui-icon-check" update=":msgPagina"
-							class="btn-incluir" action="#{PtsController.gravarPts()}" />
+							class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}" />
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
-										 rendered="#{ptsCifController.existePts==false}"
+										 rendered="#{ptsCifController.existePts==true}"
 										 icon="ui-icon-check" update="formPts :msgPagina"
-										 class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}" />
+										 class="btn-incluir" action="#{ptsCifController.alterarPtsCif()}" />
 
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							size="sm" immediate="true" look="info" class="btn-voltar"

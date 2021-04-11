@@ -29,6 +29,7 @@ public class PtsCifBean implements Serializable {
 	private Integer idadePaciente;
 	private Date dataAvaliacao;
 	private Date dataVencimento;
+	private boolean ptsVencido;
 	
 	public PtsCifBean() {
 		this.paciente = new PacienteBean();
@@ -157,4 +158,13 @@ public class PtsCifBean implements Serializable {
 	public void setDataVencimento(Date dataVencimento) {
 		this.dataVencimento = dataVencimento;
 	}
+
+	public boolean isPtsVencido() {
+		return ptsVencido;
+	}
+
+	public void setPtsVencido(boolean ptsVencido) {
+		this.ptsVencido = ptsVencido;
+	}
+	
 }
