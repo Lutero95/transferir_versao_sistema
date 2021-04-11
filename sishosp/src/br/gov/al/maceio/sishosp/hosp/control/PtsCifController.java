@@ -37,10 +37,15 @@ public class PtsCifController {
     private boolean filtrarSemPts;
     private Integer filtroMesVencimento;
     private Integer filtroAnoVencimento;
+    private Integer tipo;
+    private String cabecalho;
 	
 	private static final String PTSCIF_ = "ptscif";
 	private static final String ENDERECO_PTS = "cadastroptscif?faces-redirect=true";
 	private static final String ENDERECO_ID = "&amp;id=";
+	private static final String ENDERECO_TIPO = "&amp;tipo=";
+	private static final String CABECALHO_INCLUSAO = "Inclusão de PTS CIF";
+    private static final String CABECALHO_ALTERACAO = "Alteração de PTS CIF";
 	
 	public PtsCifController() {
 		this.listaPtsCif = new ArrayList<>();
@@ -55,7 +60,7 @@ public class PtsCifController {
 		listaPtsCif = ptsCifDAO.buscarPtsPacientesAtivos("", filtroMesVencimento, filtroAnoVencimento, campoBusca, tipoBusca, filtroTurno, filtrarSemPts);
 	}
 	
-    public void verificarSeExistePtsParaProgramaGrupoPaciente() throws ProjetoException {
+    public void verificarSeExistePtsParaPaciente() throws ProjetoException {
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(ptsCifSelecionado.getGerenciarPaciente().getId())) {
             if (!ptsCifDAO.verificarSeExistePtsPaciente(ptsCifSelecionado))
@@ -68,16 +73,25 @@ public class PtsCifController {
     
     public String redirecionaInsercao() {
         SessionUtil.adicionarNaSessao(ptsCifSelecionado, PTSCIF_);
-        return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_PTS);
+        return RedirecionarUtil.redirectInsert(ENDERECO_PTS, ENDERECO_TIPO, this.tipo);
     }
+    
+	public String redirecionaEdicao() {
+		SessionUtil.adicionarNaSessao(ptsCifSelecionado, PTSCIF_);
+		return RedirecionarUtil.redirectEdit(ENDERECO_PTS, ENDERECO_ID, this.ptsCifSelecionado.getId(), ENDERECO_TIPO, tipo);
+	}
     
     public void carregarPts() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
         if (params.get("id") != null) {
+        	this.ptsCif.setId(Integer.valueOf(params.get("id")));
+        	this.ptsCif = ptsCifDAO.buscarPtsCifPorId(this.ptsCif.getId());
         	this.existePts = true;
+        	cabecalho = CABECALHO_ALTERACAO;
         } else {
+        	cabecalho = CABECALHO_INCLUSAO;
         	this.existePts = false;
         	ptsCif = (PtsCifBean) SessionUtil.resgatarDaSessao(PTSCIF_);
         }
@@ -126,6 +140,17 @@ public class PtsCifController {
 				JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso", "");
 			} else {
 				JSFUtil.adicionarMensagemErro("Erro ao cadastrar PTS", "");
+			}
+    	}
+    }
+    
+    public void alterarPtsCif() throws ProjetoException {
+    	if(existeAvaliadores() && existeObjetivos()) {
+			boolean alterou = ptsCifDAO.alterarPtsCif(ptsCif);
+			if (alterou) {
+				JSFUtil.adicionarMensagemSucesso("PTS alterado com sucesso", "");
+			} else {
+				JSFUtil.adicionarMensagemErro("Erro ao alterar PTS", "");
 			}
     	}
     }
@@ -250,6 +275,22 @@ public class PtsCifController {
 
 	public void setFiltroAnoVencimento(Integer filtroAnoVencimento) {
 		this.filtroAnoVencimento = filtroAnoVencimento;
+	}
+
+	public Integer getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getCabecalho() {
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 	
 }

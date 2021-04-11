@@ -132,16 +132,24 @@
 									disabled="#{ptsCifController.renderizarBotaoNovo == false}"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
-									action="#{ptsCifController.redirecionaInsercao}" />
+									action="#{ptsCifController.redirecionaInsercao}">
+									<f:setPropertyActionListener value="1"
+										target="#{ptsCifController.tipo}" />
+								</p:commandButton>
 							</b:column>
 
 							<b:column span="2" class="new-span2">
 								<p:commandButton  value="Alterar" style="margin-top:5px;"
-									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
+									disabled="#{ptsCifController.ptsCifSelecionado.id == null
+									or ptsCifController.ptsCifSelecionado.id == 0 
+									or ptsCifController.ptsCifSelecionado.ptsVencido == true}"
 									id="btnAlterar" immediate="true"
 									class="btn-acao-table acao-altera2 btn-new-padding2"
 									update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil"
-									action="#{PtsController.redirectEdit()}" />
+									action="#{ptsCifController.redirecionaEdicao}">
+									<f:setPropertyActionListener value="2"
+										target="#{ptsCifController.tipo}" />
+								</p:commandButton>
 							</b:column>
 
 							<b:column span="2" class="new-span2">
@@ -188,7 +196,7 @@
 							rowKey="#{pts.gerenciarPaciente.id}">
 
 							<p:ajax event="rowSelect"
-								listener="#{ptsCifController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
+								listener="#{ptsCifController.verificarSeExistePtsParaPaciente()}"
 								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar, :formGerenPaci:btnDesligar" />
 
 							<p:column headerText="Paciente">
