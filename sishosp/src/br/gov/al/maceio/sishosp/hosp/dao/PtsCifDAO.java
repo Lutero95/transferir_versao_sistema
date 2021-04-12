@@ -130,21 +130,7 @@ public class PtsCifDAO {
 
 			while (rs.next()) {
 				PtsCifBean pts = new PtsCifBean();
-				pts.setId(rs.getInt("id"));
-				pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
-				pts.getGerenciarPaciente().getPrograma().setIdPrograma(rs.getInt("id_programa"));
-				pts.getGerenciarPaciente().getPrograma().setDescPrograma(rs.getString("descprograma"));
-				pts.getGerenciarPaciente().getGrupo().setIdGrupo(rs.getInt("id_grupo"));
-				pts.getGerenciarPaciente().getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-				pts.getPaciente().setNome(rs.getString("nome"));
-				pts.getPaciente().setCns(rs.getString("cns"));
-				pts.getPaciente().setCpf(rs.getString("cpf"));
-				pts.getPaciente().setMatricula(rs.getString("matricula"));
-				pts.setIdadePaciente(rs.getInt("idade"));
-				pts.setDataAvaliacao(rs.getDate("data_avaliacao"));
-				pts.setDataVencimento(rs.getDate("data_vencimento"));
-				pts.setPtsVencido(rs.getBoolean("pts_vencido"));
+				mapearResultSetPtsCif(rs, pts);
 				lista.add(pts);
 			}
 
@@ -546,5 +532,112 @@ public class PtsCifDAO {
             throw new ProjetoException(ex, this.getClass().getName());
         }
         return listaObjetivos;
+    }
+    
+	public List<PtsCifBean> buscarPtsAvaliador(Long idAvaliador) throws ProjetoException {
+
+		String sql = "SELECT p.id, pi.id as id_paciente_instituicao, pa.nome, extract (year from age(pa.dtanascimento)) idade, \r\n" + 
+				"pa.id_paciente codpaciente, pa.cpf, pa.cns, pa.matricula, pr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo, \r\n" + 
+				"p.data_vencimento, p.data_avaliacao, \r\n" + 
+				"case when p.data_vencimento is null \r\n" + 
+				"		then false \r\n" + 
+				"	when p.data_vencimento < current_date \r\n" + 
+				"		then true \r\n" + 
+				"	else \r\n" + 
+				"		false \r\n" + 
+				"	end pts_vencido \r\n" + 
+				"FROM hosp.paciente_instituicao pi  \r\n" + 
+				"LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo)   \r\n" + 
+				"LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) \r\n" + 
+				"LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma)  \r\n" + 
+				"LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo)  \r\n" + 
+				"JOIN hosp.pts_cif p ON (p.id_paciente_instituicao = pi.id)  \r\n" + 
+				"JOIN hosp.avaliador_pts_cif apc on (p.id = apc.id_pts_cif)\r\n" + 
+				" left join (select p2.id, p2.id_paciente_instituicao from hosp.pts_cif p2 where p2.id = (select max(id) from hosp.pts_cif p3  \r\n" + 
+				" where (p3.id_paciente_instituicao = p2.id_paciente_instituicao)) ) ptsmax on  \r\n" + 
+				"  ptsmax.id_paciente_instituicao = p.id_paciente_instituicao \r\n" + 
+				"WHERE pi.status = 'A' and (case when p.id is not null then p.id=ptsmax.id else 1=1 end) \r\n" + 
+				"and apc.id_avaliador = ? and apc.validado is false";
+
+
+		List<PtsCifBean> lista = new ArrayList<>();
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setLong(1, idAvaliador);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				PtsCifBean pts = new PtsCifBean();
+				mapearResultSetPtsCif(rs, pts);
+				lista.add(pts);
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	private void mapearResultSetPtsCif(ResultSet rs, PtsCifBean pts) throws SQLException {
+		pts.setId(rs.getInt("id"));
+		pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
+		pts.getGerenciarPaciente().getPrograma().setIdPrograma(rs.getInt("id_programa"));
+		pts.getGerenciarPaciente().getPrograma().setDescPrograma(rs.getString("descprograma"));
+		pts.getGerenciarPaciente().getGrupo().setIdGrupo(rs.getInt("id_grupo"));
+		pts.getGerenciarPaciente().getGrupo().setDescGrupo(rs.getString("descgrupo"));
+		pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+		pts.getPaciente().setNome(rs.getString("nome"));
+		pts.getPaciente().setCns(rs.getString("cns"));
+		pts.getPaciente().setCpf(rs.getString("cpf"));
+		pts.getPaciente().setMatricula(rs.getString("matricula"));
+		pts.setIdadePaciente(rs.getInt("idade"));
+		pts.setDataAvaliacao(rs.getDate("data_avaliacao"));
+		pts.setDataVencimento(rs.getDate("data_vencimento"));
+		pts.setPtsVencido(rs.getBoolean("pts_vencido"));
+	}
+	
+    public Boolean gravarValidacaoAvaliador(Long idAvaliador, Integer idPts) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "UPDATE hosp.avaliador_pts_cif " + 
+        		"SET data_validacao = CURRENT_TIMESTAMP, validado = TRUE " + 
+        		"WHERE id_avaliador = ? AND id_pts_cif = ?; ";
+        
+        Connection conexao = null;
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+            
+            ps.setLong(1, idAvaliador);
+            ps.setInt(2, idPts);
+            ps.executeUpdate();
+
+            retorno = true;
+            conexao.commit();
+        } catch (SQLException sqle) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 }

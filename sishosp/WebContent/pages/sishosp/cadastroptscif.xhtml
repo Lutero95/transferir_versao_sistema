@@ -49,7 +49,7 @@
 
 							<h:inputTextarea style="height:200px;width:410px"
 								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89"
+								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								requiredMessage="Queixa principal: Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.queixaPrincipal}" />
 						</b:column>
@@ -61,7 +61,8 @@
 							<h:inputTextarea style="height:200px;width:410px" required="true"
 								class="campo-laudoDig3" scrollHeight="100" rows="20" cols="89"
 								requiredMessage="Condição (ões) de saúde: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.condicoesSaude}" />
+								value="#{ptsCifController.ptsCif.condicoesSaude}" 
+								disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"/>
 						</b:column>
 						<br />
 						<br />
@@ -72,7 +73,7 @@
 
 							<h:inputTextarea style="height:200px;width:410px"
 								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89"
+								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								requiredMessage="Função e Estrutura do Corpo: Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.funcaoIhEstruturaCorpo}" />
 						</b:column>
@@ -84,7 +85,8 @@
 							<h:inputTextarea style="height:200px;width:410px"
 								class="campo-laudoDig3" scrollHeight="100" rows="20" cols="89"
 								requiredMessage="Atividade e Participação: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.atividadeIhParticipacao}" />
+								value="#{ptsCifController.ptsCif.atividadeIhParticipacao}" 
+								disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"/>
 						</b:column>
 						<br />
 						<br />
@@ -95,7 +97,7 @@
 
 							<h:inputTextarea style="height:200px;width:410px"
 								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89"
+								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								requiredMessage="Fatores Contextuais: Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.fatoresContextuais}" />
 						</b:column>
@@ -106,7 +108,7 @@
 
 							<h:inputTextarea style="height:200px;width:410px"
 								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89"
+								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								requiredMessage="Fatores Pessoais: Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.fatoresPessoais}" />
 						</b:column>
@@ -122,7 +124,7 @@
 
 							<h:inputTextarea
 								style="height:200px;width:410px"
-								class="campo-laudoDig3"
+								class="campo-laudoDig3" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Facilitador(es): Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.fatoresAmbientais.facilitador}" />
@@ -133,7 +135,7 @@
 
 							<h:inputTextarea
 								style="height:200px;width:410px"
-								class="campo-laudoDig3"
+								class="campo-laudoDig3" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Barreira(s): Campo obrigatório!"
 								value="#{ptsCifController.ptsCif.fatoresAmbientais.barreira}" />
@@ -147,7 +149,7 @@
 							title="Adicionar Registro"
 							update=":msgPagina"
 							class="btn-acao-table acao-editar"
-							process="@this" 
+							process="@this" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 							oncomplete="PF('dlgConsuProf').show();"/>
 					
 						<p:dataTable id="dtavaliadores"
@@ -167,6 +169,7 @@
 							<p:column headerText="Ação" width="10%">
 								<div align="center">
 									<p:commandButton process="@this"
+										disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 										class="new-btn-acao-table acao-excluir"
 										action="#{ptsCifController.removerAvaliador(ava)}"
 										icon="ui-icon-trash" update="dtavaliadores"/>
@@ -181,7 +184,7 @@
 
 								<p:calendar style="margin-left: -4%; margin-top: 2%;"
 									value="#{ptsCifController.ptsCif.dataAvaliacao}" locale="pt"
-									mask="true" required="true"
+									mask="true" required="true" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 									requiredMessage="Data de Avaliação: Campo obrigatório!"
 									showOn="button" pattern="dd/MM/yyyy" size="10" />
 							</b:column>
@@ -195,7 +198,7 @@
 							title="Adicionar Registro"
 							update=":formObjetivo :msgPagina"
 							class="btn-acao-table acao-editar"
-							process="@this"
+							process="@this" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 							action="#{ptsCifController.limparObjetivoSelecionado()}"/>
 							
 						<p:dataTable id="dtobjetivos"
@@ -221,6 +224,7 @@
 							<p:column headerText="Ação" width="10%">
 								<div align="center">
 									<p:commandButton process="@this"
+										disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
 										class="new-btn-acao-table acao-excluir"
 										action="#{ptsCifController.removerObjetivo(obj)}"
 										icon="ui-icon-trash" update="dtobjetivos"/>
@@ -230,23 +234,42 @@
 					</p:fieldset>
 					
 					<br />
+					<p:fieldset legend="Validar PTS CIF" rendered="#{ptsCifController.tipo == 5}">
+						<p:selectBooleanCheckbox itemLabel="Confirmar dados" 
+							value="#{ptsCifController.ptsValidadoAvaliador}">
+							<p:ajax update=":formPts:b3"/>
+						</p:selectBooleanCheckbox>
+					</p:fieldset>
+					
+					<br />
 					<br />
 
 					<div align="center">
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
-										 rendered="#{ptsCifController.existePts==false}"
+										 rendered="#{ptsCifController.tipo == 1}"
 							icon="ui-icon-check" update=":msgPagina"
 							class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}" />
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
-										 rendered="#{ptsCifController.existePts==true}"
+										 rendered="#{ptsCifController.tipo == 2}"
 										 icon="ui-icon-check" update="formPts :msgPagina"
 										 class="btn-incluir" action="#{ptsCifController.alterarPtsCif()}" />
 
+						<p:commandButton value="Gravar" look="success" size="sm" id="b3"
+							rendered="#{ptsCifController.tipo == 5}" icon="ui-icon-check"
+							disabled="#{ptsCifController.ptsValidadoAvaliador == false}"
+							update="formPts :msgPagina" class="btn-incluir"
+							action="#{ptsCifController.gravarValidacaoAvaliador()}" />
+
 						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
 							size="sm" immediate="true" look="info" class="btn-voltar"
-							action="/pages/sishosp/gerenciamentoptscif.xhtml?faces-redirect=true">
-						</p:commandButton>
+							rendered="#{ptsCifController.tipo == 1 or ptsCifController.tipo == 2}"
+							action="/pages/sishosp/gerenciamentoptscif.xhtml?faces-redirect=true"/>
+							
+						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							rendered="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+							action="/pages/sishosp/gerenciamentoavaliacaoptscif.xhtml?faces-redirect=true"/>						
 					</div>
 				</h:form>
 			</div>
