@@ -60,30 +60,26 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Detalhes">
+							<p:column headerText="Ação">
 								<div align="center">
 									<p:commandButton title="Visualizar PTS CIF"
-										icon="fa fa-eye"
+										icon="fa fa-eye" style="margin-right:4px;"
 										action="#{ptsCifController.redirecionaEdicaoOuVisualizacao}">
 										<f:setPropertyActionListener value="#{pts}"
 											target="#{ptsCifController.ptsCifSelecionado}" />
 										<f:setPropertyActionListener value="4"
 											target="#{ptsCifController.tipo}" />
 									</p:commandButton>
-								</div>										
-							</p:column>
-							
-							<p:column headerText="Avaliar">
-								<div align="center">
+									
 									<p:commandButton title="Visualizar PTS CIF"
-										icon="ui-icon-check"
+										icon="ui-icon-check" style="margin-left:4px;"
 										action="#{ptsCifController.redirecionaEdicaoOuVisualizacao}">
 										<f:setPropertyActionListener value="#{pts}"
 											target="#{ptsCifController.ptsCifSelecionado}" />
 										<f:setPropertyActionListener value="5"
 											target="#{ptsCifController.tipo}" />
 									</p:commandButton>
-								</div>				
+								</div>	
 							</p:column>							
 						</p:dataTable>
 					</b:column>

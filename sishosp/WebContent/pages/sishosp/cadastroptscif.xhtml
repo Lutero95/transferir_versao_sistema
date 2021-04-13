@@ -157,12 +157,26 @@
 							emptyMessage="Sem registros.">
 
 							<p:column headerText="Profissional">
-								<h:outputLabel value="#{ava.nome}"/>
+								<h:outputLabel value="#{ava.avaliador.nome}"/>
 							</p:column>
 							
 							<p:column headerText="CNS" width="20%">
 								<div align="center">
-									<h:outputLabel value="#{ava.cns}"/>
+									<h:outputLabel value="#{ava.avaliador.cns}"/>
+								</div>
+							</p:column>
+							
+							<p:column headerText="Status" rendered="#{ptsCifController.tipo != 1}">
+								<div align="center">
+									<h:outputLabel value="${ava.validado == true ? 'Validado' : 'Pendente'}"/>
+								</div>
+							</p:column>
+							
+							<p:column headerText="Data Avaliação" rendered="#{ptsCifController.tipo != 1}">
+								<div align="center">
+									<h:outputLabel value="#{ava.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputLabel>
 								</div>
 							</p:column>
 							
@@ -236,9 +250,7 @@
 					<br />
 					<p:fieldset legend="Validar PTS CIF" rendered="#{ptsCifController.tipo == 5}">
 						<p:selectBooleanCheckbox itemLabel="Confirmar dados" 
-							value="#{ptsCifController.ptsValidadoAvaliador}">
-							<p:ajax update=":formPts:b3"/>
-						</p:selectBooleanCheckbox>
+							value="#{ptsCifController.ptsValidadoAvaliador}"/>
 					</p:fieldset>
 					
 					<br />
@@ -257,7 +269,6 @@
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b3"
 							rendered="#{ptsCifController.tipo == 5}" icon="ui-icon-check"
-							disabled="#{ptsCifController.ptsValidadoAvaliador == false}"
 							update="formPts :msgPagina" class="btn-incluir"
 							action="#{ptsCifController.gravarValidacaoAvaliador()}" />
 
