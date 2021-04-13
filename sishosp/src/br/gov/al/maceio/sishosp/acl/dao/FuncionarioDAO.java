@@ -1633,11 +1633,14 @@ public class FuncionarioDAO {
 	public boolean alterarProfissional
 			(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) throws ProjetoException {
 
+		user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
+		
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
-				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=? "
-				+ " where id_funcionario = ?";
+				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
+				+ " datahora_alteracao = CURRENT_TIMESTAMP where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1682,7 +1685,8 @@ public class FuncionarioDAO {
 			stmt.setBoolean(12, profissional.getExcecaoBloqueioHorario());
 			stmt.setBoolean(13, profissional.getPermiteAutorizacaoLaudo());
 			stmt.setBoolean(14, profissional.getRealizaAuditoria());
-			stmt.setLong(15, profissional.getId());
+			stmt.setLong(15, user_session.getId());
+			stmt.setLong(16, profissional.getId());
 
 			stmt.executeUpdate();
 
