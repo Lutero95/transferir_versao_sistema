@@ -31,7 +31,8 @@ public class SubstituicaoDAO {
 
         Boolean retorno = false;
 
-        String sql = "UPDATE hosp.atendimentos1 SET codprofissionalatendimento = ? WHERE id_atendimentos1 = ? and codprofissionalatendimento=?";
+        String sql = "UPDATE hosp.atendimentos1 SET codprofissionalatendimento = ?, id_situacao_atendimento = null "
+        		+ " WHERE id_atendimentos1 = ? and codprofissionalatendimento=?";
 
         try {
             con = ConnectionFactory.getConnection();
