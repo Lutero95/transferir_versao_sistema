@@ -4,7 +4,9 @@ public enum TipoCabecalho {
 
     INCLUSAO(1),
     ALTERACAO(2),
-    RENOVACAO(3);
+    RENOVACAO(3),
+    VISUALIZACAO(4),
+    AVALIACAO_PTS(5);
 
     private Integer sigla;
 

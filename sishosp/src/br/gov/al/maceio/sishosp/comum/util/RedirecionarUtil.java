@@ -1,5 +1,8 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
 public final class RedirecionarUtil {
 
 	public static String redirectEdit(String ENDERECO_CADASTRO, String ENDERECO_ID, Integer idObjeto, String ENDERECO_TIPO, Integer tipo) {
@@ -26,6 +29,13 @@ public final class RedirecionarUtil {
 		return PAGINA;
 	}
 	
+	public static ServletContext getServleContext() {
+		ServletContext scontext = (ServletContext) getFacesContext().getExternalContext().getContext();
+		return scontext;
+	}
 	
-
+	private static FacesContext getFacesContext() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return context;
+	}
 }

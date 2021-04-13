@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliadorPtsCifDTO;
 
 
 public class PtsCifBean implements Serializable {
@@ -16,7 +17,7 @@ public class PtsCifBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private PacienteBean paciente;
-	private List<FuncionarioBean> listaAvaliadores;
+	private List<AvaliadorPtsCifDTO> listaAvaliadores;
 	private String queixaPrincipal;
 	private String condicoesSaude;
 	private String funcaoIhEstruturaCorpo;
@@ -55,11 +56,11 @@ public class PtsCifBean implements Serializable {
 		this.paciente = paciente;
 	}
 
-	public List<FuncionarioBean> getListaAvaliadores() {
+	public List<AvaliadorPtsCifDTO> getListaAvaliadores() {
 		return listaAvaliadores;
 	}
 
-	public void setListaAvaliadores(List<FuncionarioBean> listaAvaliadores) {
+	public void setListaAvaliadores(List<AvaliadorPtsCifDTO> listaAvaliadores) {
 		this.listaAvaliadores = listaAvaliadores;
 	}
 

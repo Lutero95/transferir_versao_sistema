@@ -145,8 +145,8 @@
 									or ptsCifController.ptsCifSelecionado.ptsVencido == true}"
 									id="btnAlterar" immediate="true"
 									class="btn-acao-table acao-altera2 btn-new-padding2"
-									update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil"
-									action="#{ptsCifController.redirecionaEdicao}">
+									update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil" 
+									action="#{ptsCifController.redirecionaEdicaoOuVisualizacao}">
 									<f:setPropertyActionListener value="2"
 										target="#{ptsCifController.tipo}" />
 								</p:commandButton>

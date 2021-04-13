@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,8 +9,10 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -19,11 +22,13 @@ import br.gov.al.maceio.sishosp.hosp.dao.PtsCifDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.ObjetivoPtsCifBean;
 import br.gov.al.maceio.sishosp.hosp.model.PtsCifBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliadorPtsCifDTO;
 
 @ManagedBean
 @ViewScoped
 public class PtsCifController {
 		
+	private static final String GERENCIAMENTOAVALIACAOPTSCIF_FACES = "/pages/sishosp/gerenciamentoavaliacaoptscif.faces";
 	private List<PtsCifBean> listaPtsCif;
 	private PtsCifBean ptsCif;
 	private PtsCifDAO ptsCifDAO;
@@ -39,6 +44,9 @@ public class PtsCifController {
     private Integer filtroAnoVencimento;
     private Integer tipo;
     private String cabecalho;
+    private FuncionarioBean user_session;
+    private boolean ptsValidadoAvaliador;
+    private List<AvaliadorPtsCifDTO> listaAvaliadoresExcluidos;
 	
 	private static final String PTSCIF_ = "ptscif";
 	private static final String ENDERECO_PTS = "cadastroptscif?faces-redirect=true";
@@ -54,6 +62,9 @@ public class PtsCifController {
 		this.renderizarBotaoNovo = false;
 		this.filtroTurno = Turno.AMBOS.getSigla();
 		this.objetivoPtsCif = new ObjetivoPtsCifBean();
+		this.user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_usuario");
+		this.listaAvaliadoresExcluidos = new ArrayList<>();
 	}
 
 	public void buscarPtsCif() throws ProjetoException {
@@ -76,7 +87,7 @@ public class PtsCifController {
         return RedirecionarUtil.redirectInsert(ENDERECO_PTS, ENDERECO_TIPO, this.tipo);
     }
     
-	public String redirecionaEdicao() {
+	public String redirecionaEdicaoOuVisualizacao() {
 		SessionUtil.adicionarNaSessao(ptsCifSelecionado, PTSCIF_);
 		return RedirecionarUtil.redirectEdit(ENDERECO_PTS, ENDERECO_ID, this.ptsCifSelecionado.getId(), ENDERECO_TIPO, tipo);
 	}
@@ -85,11 +96,13 @@ public class PtsCifController {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
+        this.tipo = TipoCabecalho.INCLUSAO.getSigla();
         if (params.get("id") != null) {
         	this.ptsCif.setId(Integer.valueOf(params.get("id")));
         	this.ptsCif = ptsCifDAO.buscarPtsCifPorId(this.ptsCif.getId());
         	this.existePts = true;
         	cabecalho = CABECALHO_ALTERACAO;
+        	this.tipo = Integer.valueOf(params.get("tipo"));
         } else {
         	cabecalho = CABECALHO_INCLUSAO;
         	this.existePts = false;
@@ -97,16 +110,19 @@ public class PtsCifController {
         }
     }
     
-    public void adicionarAvaliador(FuncionarioBean avaliadorSelecionado) {
+    public void adicionarAvaliador(FuncionarioBean funcionario) {
+    	AvaliadorPtsCifDTO avaliadorSelecionado = new AvaliadorPtsCifDTO();
+    	avaliadorSelecionado.setAvaliador(funcionario);
+    	
     	if(!avaliadorJaFoiAdicionado(avaliadorSelecionado)) {
     		ptsCif.getListaAvaliadores().add(avaliadorSelecionado);
     		JSFUtil.fecharDialog("dlgConsuProf");
     	}
     } 
     
-    private boolean avaliadorJaFoiAdicionado(FuncionarioBean avaliadorSelecionado) {
-    	for (FuncionarioBean avaliador : ptsCif.getListaAvaliadores()) {
-			if(avaliador.getId().equals(avaliadorSelecionado.getId())) {
+    private boolean avaliadorJaFoiAdicionado(AvaliadorPtsCifDTO avaliadorSelecionado) {
+    	for (AvaliadorPtsCifDTO avaliador : ptsCif.getListaAvaliadores()) {
+			if(avaliador.getAvaliador().getId().equals(avaliadorSelecionado.getAvaliador().getId())) {
 				JSFUtil.adicionarMensagemAdvertencia("Este avaliador já foi adicionado", "");
 				return true;
 			}
@@ -114,8 +130,9 @@ public class PtsCifController {
     	return false;
     }
     
-    public void removerAvaliador(FuncionarioBean avaliadorSelecionado) {
+    public void removerAvaliador(AvaliadorPtsCifDTO avaliadorSelecionado) {
     	ptsCif.getListaAvaliadores().remove(avaliadorSelecionado);
+    	listaAvaliadoresExcluidos.add(avaliadorSelecionado);
     }
     
     public void limparObjetivoSelecionado() {
@@ -134,7 +151,7 @@ public class PtsCifController {
     
     public void cadastrarPtsCif() throws ProjetoException {
     	if(existeAvaliadores() && existeObjetivos()) {
-			boolean cadastrou = ptsCifDAO.cadastrarPtsCif(ptsCif);
+			boolean cadastrou = ptsCifDAO.cadastrarPtsCif(ptsCif, tipo);
 			if (cadastrou) {
 				ptsCif = new PtsCifBean();
 				JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso", "");
@@ -146,7 +163,7 @@ public class PtsCifController {
     
     public void alterarPtsCif() throws ProjetoException {
     	if(existeAvaliadores() && existeObjetivos()) {
-			boolean alterou = ptsCifDAO.alterarPtsCif(ptsCif);
+			boolean alterou = ptsCifDAO.alterarPtsCif(ptsCif, listaAvaliadoresExcluidos, user_session.getId(), tipo);
 			if (alterou) {
 				JSFUtil.adicionarMensagemSucesso("PTS alterado com sucesso", "");
 			} else {
@@ -180,7 +197,33 @@ public class PtsCifController {
     	filtrarSemPts = false;
     	buscarPtsCif();
     }
+    
+	public void buscarPtsCifAvaliador() throws ProjetoException {
+		listaPtsCif = ptsCifDAO.buscarPtsAvaliador(user_session.getId());
+	}
 	
+    public void gravarValidacaoAvaliador() throws ProjetoException, IOException {
+    	
+    	if(usuarioConfirmouAvaliacao()) {    	
+			boolean alterou = ptsCifDAO.gravarValidacaoAvaliador(user_session.getId(), ptsCif.getId());
+			if (alterou) {
+				String path = RedirecionarUtil.getServleContext().getContextPath();
+				FacesContext.getCurrentInstance().getExternalContext()
+						.redirect(path + GERENCIAMENTOAVALIACAOPTSCIF_FACES);
+				JSFUtil.adicionarMensagemSucesso("PTS validado com sucesso", "");
+			} else {
+				JSFUtil.adicionarMensagemErro("Erro ao validado PTS", "");
+			}
+    	}
+    }
+    
+    private boolean usuarioConfirmouAvaliacao() {
+    	if(!ptsValidadoAvaliador) 
+    		JSFUtil.adicionarMensagemAdvertencia("Confirme os dados da avaliação para gravar", "");
+    	
+    	return ptsValidadoAvaliador;
+    }
+
 	public List<PtsCifBean> getListaPtsCif() {
 		return listaPtsCif;
 	}
@@ -292,5 +335,20 @@ public class PtsCifController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	
+
+	public boolean isPtsValidadoAvaliador() {
+		return ptsValidadoAvaliador;
+	}
+
+	public void setPtsValidadoAvaliador(boolean ptsValidadoAvaliador) {
+		this.ptsValidadoAvaliador = ptsValidadoAvaliador;
+	}
+
+	public List<AvaliadorPtsCifDTO> getListaAvaliadoresExcluidos() {
+		return listaAvaliadoresExcluidos;
+	}
+
+	public void setListaAvaliadoresExcluidos(List<AvaliadorPtsCifDTO> listaAvaliadoresExcluidos) {
+		this.listaAvaliadoresExcluidos = listaAvaliadoresExcluidos;
+	}
 }
