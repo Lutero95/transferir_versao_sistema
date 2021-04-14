@@ -439,7 +439,6 @@ public class TransferenciaPacienteDAO {
 			ps2 = conexao.prepareStatement(sql2);
 			ps2.setLong(1, id_paciente);
 			ps2.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
-			ps2.execute();
 			rs = ps2.executeQuery();
 
 			while (rs.next()) {
@@ -684,19 +683,23 @@ public class TransferenciaPacienteDAO {
 		
 		try {
 			for (int i = 0; i < lista.size(); i++) {
-				String sql3 = "delete from hosp.atendimentos1 a1 where a1.id_atendimento = ? and "
-						+ "	a1.id_atendimentos1 not in (select rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa "
-						+ "		where rpa.id_atendimentos1 = a1.id_atendimentos1); ";
+				String sql3 = "delete from hosp.atendimentos1 a1 where a1.id_atendimento = ? and \r\n" + 
+						"	(a1.id_atendimentos1 not in (select rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n" + 
+						"		where rpa.id_atendimentos1 = a1.id_atendimentos1) and \r\n" + 
+						"	a1.id_atendimentos1 not in (select ipe.id_atendimentos1 from adm.insercao_profissional_equipe_atendimento_1 ipe \r\n" + 
+						"		where ipe.id_atendimentos1 = a1.id_atendimentos1) ); ";
 
 				PreparedStatement ps3 = null;
 				ps3 = conexaoAuxiliar.prepareStatement(sql3);
 				ps3.setLong(1, lista.get(i));
 				ps3.executeUpdate();
 
-				sql3 = "update hosp.atendimentos1 a1 set excluido = 'S', data_hora_exclusao = current_timestamp, \r\n"
-						+ "	usuario_exclusao = ? where a1.id_atendimento = ? \r\n"
-						+ "	and id_atendimentos1 = (select distinct rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n"
-						+ "		where rpa.id_atendimentos1 = a1.id_atendimentos1); ";
+				sql3 = "update hosp.atendimentos1 a1 set excluido = 'S', data_hora_exclusao = current_timestamp, \r\n" + 
+						"	usuario_exclusao = ? where a1.id_atendimento = ? \r\n" + 
+						"	and (a1.id_atendimentos1 = (select distinct rpa.id_atendimentos1 from logs.remocao_profissional_equipe_atendimentos1 rpa \r\n" + 
+						"		where rpa.id_atendimentos1 = a1.id_atendimentos1) or\r\n" + 
+						"	 a1.id_atendimentos1 = (select ipe.id_atendimentos1 from adm.insercao_profissional_equipe_atendimento_1 ipe \r\n" + 
+						"		where ipe.id_atendimentos1 = a1.id_atendimentos1) ); ";
 
 				ps3 = conexaoAuxiliar.prepareStatement(sql3);
 				ps3.setLong(1, user_session.getId());
@@ -714,27 +717,33 @@ public class TransferenciaPacienteDAO {
 		
 		try {
 			for (int i = 0; i < lista.size(); i++) {
-				String sql4 = "delete from hosp.atendimentos a where a.id_atendimento = ? \r\n"
-						+ "	and a.id_atendimento not in \r\n"
-						+ "	(select a1.id_atendimento from hosp.atendimentos1 a1 \r\n"
-						+ "	join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n"
-						+ "	where a1.id_atendimento = ?);";
+				String sql4 = "delete from hosp.atendimentos a where a.id_atendimento = ? 	and \r\n" + 
+						"	(a.id_atendimento not in (select a1.id_atendimento from hosp.atendimentos1 a1 \r\n" + 
+						"		join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n" + 
+						"		where a1.id_atendimento = ?) and \r\n" + 
+						"	a.id_atendimento not in (select a1.id_atendimento from hosp.atendimentos1 a1 \r\n" + 
+						"		join adm.insercao_profissional_equipe_atendimento_1 ipe on a1.id_atendimentos1 = ipe.id_atendimentos1 \r\n" + 
+						"		where a1.id_atendimento = ?) );	";
 
 				PreparedStatement ps4 = null;
 				ps4 = conexaoAuxiliar.prepareStatement(sql4);
 				ps4.setLong(1, lista.get(i));
 				ps4.setLong(2, lista.get(i));
+				ps4.setLong(3, lista.get(i));
 				ps4.executeUpdate();
 
-				sql4 = "update hosp.atendimentos a set situacao = 'C' where a.id_atendimento = ? \r\n"
-						+ "	and a.id_atendimento in \r\n"
-						+ "	(select a1.id_atendimento from hosp.atendimentos1 a1 \r\n"
-						+ "	join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n"
-						+ "	where a1.id_atendimento = ?);";
+				sql4 = "update hosp.atendimentos a set situacao = 'C' where a.id_atendimento = ? and \r\n" + 
+						"	(a.id_atendimento in (select a1.id_atendimento from hosp.atendimentos1 a1 \r\n" + 
+						"	join logs.remocao_profissional_equipe_atendimentos1 rpa on a1.id_atendimentos1 = rpa.id_atendimentos1 \r\n" + 
+						"	where a1.id_atendimento = ?) or\r\n" + 
+						"	a.id_atendimento in (select a1.id_atendimento from hosp.atendimentos1 a1 \r\n" + 
+						"	join adm.insercao_profissional_equipe_atendimento_1 ipe on a1.id_atendimentos1 = ipe.id_atendimentos1 \r\n" + 
+						"	where a1.id_atendimento = ?));	";
 
 				ps4 = conexaoAuxiliar.prepareStatement(sql4);
 				ps4.setLong(1, lista.get(i));
 				ps4.setLong(2, lista.get(i));
+				ps4.setLong(3, lista.get(i));
 				ps4.executeUpdate();
 			}
 		} catch (Exception ex) {
