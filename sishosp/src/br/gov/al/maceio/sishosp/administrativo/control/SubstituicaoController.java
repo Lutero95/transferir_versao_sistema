@@ -62,25 +62,18 @@ public class SubstituicaoController implements Serializable {
 
     public void gravarAfastamentoProfissional() throws ProjetoException {
 
-        if (validarSeAgendamentosForamSelecionados()) {
-        	if (substituicaoFuncionario.getFuncionario().getId() != substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())
-        	{
-        		
-            boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada,substituicaoFuncionario);
+		if (validarSeAgendamentosForamSelecionados() && !profissionaisSaoIguais()) {
+			
+			boolean cadastrou = sDao.substituirFuncionario(listaAtendimentosSelecionada, substituicaoFuncionario);
 
-            if (cadastrou == true) {
-                limparDados();
-                JSFUtil.adicionarMensagemSucesso("Substituição cadastrada com sucesso!", "Sucesso");
-                limparDados();
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
-            }
-        	}
-        	else
-        	{
-        		JSFUtil.adicionarMensagemErro("Para realizar substituição de atendimento, os Profissionais devem ser diferentes!", "Erro");
-        	}
-        }
+			if (cadastrou == true) {
+				limparDados();
+				JSFUtil.adicionarMensagemSucesso("Substituição cadastrada com sucesso!", "Sucesso");
+				limparDados();
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
+			}
+		}
     }
 
     private Boolean validarSeAgendamentosForamSelecionados() {
@@ -88,8 +81,16 @@ public class SubstituicaoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Realize uma busca e selecione agendamentos para alterar o profissional!", "Erro!");
             return false;
         }
-
         return true;
+    }
+    
+    private boolean profissionaisSaoIguais() {
+    	if (substituicaoFuncionario.getFuncionario().getId()
+    			.equals(substituicaoFuncionario.getAfastamentoProfissional().getFuncionario().getId())) {
+    		JSFUtil.adicionarMensagemErro("Para realizar substituição de atendimento, os Profissionais devem ser diferentes!", "Erro");
+    		return true;
+    	}
+    	return false;
     }
 
     public void carregarFuncionarioAfastamento() throws ProjetoException {
