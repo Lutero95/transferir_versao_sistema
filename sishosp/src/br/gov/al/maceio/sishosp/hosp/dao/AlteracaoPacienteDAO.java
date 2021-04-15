@@ -326,10 +326,13 @@ public class AlteracaoPacienteDAO {
 									ps8.setNull(4, Types.NULL);
 								}
 
-								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())) {
-									ps8.setNull(5, Types.NULL);
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())
+										&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
+									ps.setNull(5, Types.NULL);
+								} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
+									ps.setInt(5, insercao.getLaudo().getCid1().getIdCid());
 								} else {
-									ps8.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+									ps.setInt(5, insercao.getCid().getIdCid());
 								}
 								ps8.executeUpdate();
 							}
@@ -669,7 +672,7 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
-								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento) VALUES  (?, ?, ?, ?, ?)";
+								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
 										retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
@@ -703,6 +706,15 @@ public class AlteracaoPacienteDAO {
 									ps8.setTime(5,
 											DataUtil.retornarHorarioEmTime(listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getHorario()));
 								}
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getCid1().getIdCid())
+										&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
+									ps.setNull(6, Types.NULL);
+								} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
+									ps.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+								} else {
+									ps.setInt(6, insercao.getCid().getIdCid());
+								}
+								
 
 								ps8.executeUpdate();
 							}

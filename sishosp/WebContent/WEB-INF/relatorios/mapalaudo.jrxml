@@ -7,7 +7,7 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="302"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="687"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ADefal_producao"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -479,48 +479,49 @@ NASCIMENTO]]></text>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="266" splitType="Stretch">
+		<band height="139" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="77" y="247" width="185" height="19" uuid="7da270e6-8277-440a-bbd4-84945c30df73"/>
+				<reportElement x="77" y="36" width="185" height="19" uuid="7da270e6-8277-440a-bbd4-84945c30df73"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Responsável da Unidade Executante]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="435" y="247" width="156" height="19" uuid="beff37c4-7e7f-44d5-a7ff-afdfc0a91c4d"/>
+				<reportElement x="435" y="36" width="156" height="19" uuid="beff37c4-7e7f-44d5-a7ff-afdfc0a91c4d"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
 				<text><![CDATA[Responsável SMS (Recebimento)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="286" y="238" width="100" height="28" uuid="d3e73dc7-362c-4ee7-8ecd-4c9fe8d9d2e5"/>
+				<reportElement x="286" y="27" width="100" height="28" uuid="d3e73dc7-362c-4ee7-8ecd-4c9fe8d9d2e5"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[____/____/______]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="620" y="246" width="100" height="20" uuid="acda7dea-0764-4102-8620-bc1fabdc9b82"/>
+				<reportElement x="620" y="35" width="100" height="20" uuid="acda7dea-0764-4102-8620-bc1fabdc9b82"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
 				<text><![CDATA[Data]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="274" y="246" width="94" height="20" uuid="ed05a8f7-5b13-4b62-976f-2dba983d9125"/>
+				<reportElement x="274" y="35" width="94" height="20" uuid="ed05a8f7-5b13-4b62-976f-2dba983d9125"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
 				<text><![CDATA[Data]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="237" width="212" height="14" uuid="97aa9743-c590-40b1-9ee0-36ecbc8389a0"/>
+				<reportElement x="70" y="26" width="212" height="14" uuid="97aa9743-c590-40b1-9ee0-36ecbc8389a0"/>
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[______________________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="416" y="237" width="212" height="14" uuid="4c9b4f4f-83d8-4794-a20e-080556ab073c"/>
+				<reportElement x="416" y="26" width="212" height="14" uuid="4c9b4f4f-83d8-4794-a20e-080556ab073c"/>
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[______________________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="633" y="238" width="100" height="28" uuid="ae2a3965-3229-45dc-85c4-0cb3c006e19e"/>
+				<reportElement x="633" y="27" width="100" height="28" uuid="ae2a3965-3229-45dc-85c4-0cb3c006e19e"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>

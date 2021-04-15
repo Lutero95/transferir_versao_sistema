@@ -934,6 +934,10 @@ public class AlteracaoPacienteController implements Serializable {
         if(validarDataLaudoPacienteSemLaudo())
             validaDataLaudoComDataAnteriorPacienteSemLaudo();
     }
+    
+    public void limparCidInserido() {
+    	insercao.setCid(new CidBean());
+    }
 
     private boolean validarDataLaudoPacienteSemLaudo() throws ProjetoException {
         boolean resultado = false;
