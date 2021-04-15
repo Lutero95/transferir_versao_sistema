@@ -821,6 +821,7 @@ public class AlteracaoPacienteController implements Serializable {
         if(dataInclusaoPacienteEstaEntreDataInicialIhFinalDoLaudo()) {
             if(!ehAlteracaoSemLaudo()) {
             	dataSolicitacaoCorreta = executaMetodoCorretoParaAjustarDataDeSolicitacao(gerenciarPacienteController);
+            	
                 if(!insercaoPacienteController.procedimentoValido
                 		(insercaoParaLaudo.getLaudo().getProcedimentoPrimario(), insercao.getPrograma(), 
                 		insercao.getGrupo(), insercao.getPaciente(), listaProfissionaisAdicionados))
