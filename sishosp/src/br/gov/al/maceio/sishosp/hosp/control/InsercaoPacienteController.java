@@ -129,7 +129,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaCids = new ArrayList<>();
         procedimentoCidDTO = new ProcedimentoCidDTO();
         verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
-        this.cidEmInsercaoSemLaudo = user_session.getUnidade().getParametro().isCidAgendaObrigatorio();
+        this.cidEmInsercaoSemLaudo = user_session.getUnidade().getParametro().isCidPacienteTerapiaObrigatorio();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {

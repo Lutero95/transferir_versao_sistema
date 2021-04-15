@@ -53,6 +53,7 @@ public class ParametroBean implements Serializable {
     private Date inicioEvolucaoUnidade;
     private boolean buscaAutomaticaCepPaciente;
     private boolean cidAgendaObrigatorio;
+    private boolean cidPacienteTerapiaObrigatorio;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -434,4 +435,12 @@ public class ParametroBean implements Serializable {
 		this.cidAgendaObrigatorio = cidAgendaObrigatorio;
 	}
 
+
+    public boolean isCidPacienteTerapiaObrigatorio() {
+        return cidPacienteTerapiaObrigatorio;
+    }
+
+    public void setCidPacienteTerapiaObrigatorio(boolean cidPacienteTerapiaObrigatorio) {
+        this.cidPacienteTerapiaObrigatorio = cidPacienteTerapiaObrigatorio;
+    }
 }
