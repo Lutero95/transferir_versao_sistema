@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.SelectEvent;
 
@@ -97,6 +98,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 	private ProcedimentoCidDTO procedimentoCidDTO;
 	private boolean existeCargaSigtapParaDataSolicitacao;
 	private Boolean unidadeValidaDadosSigtap;
+	private boolean cidEmInsercaoSemLaudo;
+	private FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+    .getSessionMap().get("obj_funcionario");
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -125,6 +129,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaCids = new ArrayList<>();
         procedimentoCidDTO = new ProcedimentoCidDTO();
         verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
+        this.cidEmInsercaoSemLaudo = user_session.getUnidade().getParametro().isCidAgendaObrigatorio();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -1348,6 +1353,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     
     public void limparLaudo() {
     	insercao.setLaudo(new LaudoBean());
+    	insercao.setCid(new CidBean());
     }
 
     public InsercaoPacienteBean getInsercao() {
@@ -1525,6 +1531,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 	public ProcedimentoCidDTO getProcedimentoCidDTO() {
 		return procedimentoCidDTO;
+	}
+
+	public boolean isCidEmInsercaoSemLaudo() {
+		return cidEmInsercaoSemLaudo;
+	}
+
+	public void setCidEmInsercaoSemLaudo(boolean cidEmInsercaoSemLaudo) {
+		this.cidEmInsercaoSemLaudo = cidEmInsercaoSemLaudo;
 	}
 	
 }

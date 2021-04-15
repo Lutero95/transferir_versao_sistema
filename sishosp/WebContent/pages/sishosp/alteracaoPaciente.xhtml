@@ -19,7 +19,7 @@
             </div>
 
             <div class="panel-body table-body sub-table-body">
-
+ 
                 <h:form id="formInsercao">
 					<p:fieldset legend="Dados do Laudo">
 						<b:row
@@ -110,9 +110,7 @@
 				</h:form>
 
                 <h:form id="formInsercao2">
-
                     <b:row>
-
                         <b:column span="2" class="label-position data-size">
 
                             <b:label value="Data de Inclusão:" id="datasoli"
@@ -128,14 +126,11 @@
                                     <p:ajax event="dateSelect" 
                                     	listener="#{AlteracaoPacienteController.atualizaarDataSolicitacao(AlteracaoPacienteController.insercao.dataSolicitacao)}" />
                             </p:calendar>
-
                         </b:column>
-
                     </b:row>
 
                     <b:row>
                         <p:outputPanel id="outProg">
-
                             <b:column span="5"
                                       class="label-position new-data-size new-comple1">
                                 <b:label for="prog" value="Programa:" id="prog" class="fire-label"
@@ -153,17 +148,13 @@
                                         itemLabel="#{theme.descPrograma}">
                                     <p:ajax event="itemSelect"
                                             listener="#{AgendaController.selectPrograma}" update=""/>
-
                                 </p:autoComplete>
-
                             </b:column>
                         </p:outputPanel>
-
                     </b:row>
-
+                    
                     <b:row>
-                        <p:outputPanel id="outGrupo">
-
+                    	<p:outputPanel id="outGrupo">
                             <b:column span="5"
                                       class="label-position new-data-size4 new-comple1">
                                 <b:label for="prog" value="Grupo:" id="grupo" class="fire-label"
@@ -182,18 +173,13 @@
                                         itemLabel="#{theme.descGrupo}">
                                     <p:ajax event="itemSelect"
                                             listener="#{AgendaController.selectGrupo}" update=""/>
-
                                 </p:autoComplete>
-
                             </b:column>
-
                         </p:outputPanel>
-
                     </b:row>
 
                     <b:row>
                         <p:outputPanel id="outEquipe">
-
                             <b:column span="5"
                                       class="label-position new-data-size new-comple1">
                                 <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
@@ -238,12 +224,35 @@
                                                  action="#{AlteracaoPacienteController.visualizarHorariosEquipe()}"
                                                  immediate="true" oncomplete="PF('dlgQtdAgendamentos').show();"/>
                             </b:column>
-
                         </p:outputPanel>
-
                     </b:row>
+                    
+                    <b:row>
+						<p:outputPanel id="outCid">
+							<b:column span="3"
+								rendered="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.id==null 
+								and AlteracaoPacienteController.insercao.laudo.id == null}"
+								class="label-position new-data-size new-comple1">
+								<b:label value="CID:" severity="info" />
 
-                    <br></br>
+								<p:outputPanel>
+									<p:autoComplete
+										value="#{AlteracaoPacienteController.insercao.cid}" size="25"
+										required="true" requiredMessage="CID: Campo Obrigatório"
+										converter="conCid" id="descCid1" class="select-agendaEquipe4"
+										completeMethod="#{AgendaController.listaCidAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}" title="CID"
+										itemLabel="#{theme.descCidAbrev}" />
+
+									<p:commandButton id="btBusCid1" icon="ui-icon-search"
+										update=":formConsulCid1" process="@this"
+										oncomplete="PF('dlgConsulCid1').show();" />
+								</p:outputPanel>
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+                    <br />
 
                     <b:row>
                         <p:outputPanel id="outProf">
@@ -721,16 +730,16 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo"
+						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo :formInsercao2:outCid"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar" 
-							action="#{AlteracaoPacienteController.validaSelecaoLaudoPacienteSemLaudo()}">
+							action="#{AlteracaoPacienteController.validaSelecaoLaudoPacienteSemLaudo()}"
+							actionListener="#{AlteracaoPacienteController.limparCidInserido()}">
 							<f:setPropertyActionListener value="#{insercao.laudo}"
 								target="#{AlteracaoPacienteController.insercao.laudo}" />
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -740,7 +749,6 @@
             <h:form id="formAlteraDiaAtendimento">
 		<p:autoUpdate/>
                 <b:row>
-
                     <b:column span="3" class="label-position">
                         <b:label value="Dia:" severity="info" class="fire-label"/>
                         <b:selectOneMenu required="true" class="select-agendaEquipe2" style="width:200px"
@@ -756,13 +764,9 @@
                             <f:selectItem itemLabel="Sábado" itemValue="7"/>
                         </b:selectOneMenu>
                     </b:column>
-
                 </b:row>
-
-                
-
-                <br></br>
-                <br></br>
+                <br />
+                <br />
 
                 <div align="center">
                     <p:commandButton value="Confirmar" 
@@ -776,9 +780,58 @@
                                      icon="ui-icon-close" style="margin-left:5px;float:right;"/>
                 </div>
             </h:form>
-        </p:dialog>		
-        
-    
-    </ui:define>
+        </p:dialog>
+
+		<p:dialog header="Consultar CID 1" widgetVar="dlgConsulCid1"
+			responsive="true" height="350" modal="true" dynamic="true">
+			<h:form id="formConsulCid1">
+				<p:outputPanel id="outcid1">
+					<p:row>
+						<p:panelGrid columns="4">
+
+							<p:selectOneMenu value="#{AgendaController.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Descrição ou CID" itemValue="desccid" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{AgendaController.campoBusca}"
+								required="true"
+								requiredMessage="Informe a descrição da doença ou o Código do CID"
+								placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+							<p:commandButton
+								action="#{AgendaController.listarCids(AgendaController.campoBusca)}"
+								update="tabelacid1 msgPagina" icon="ui-icon-search"
+								style="margin-left: 10px;">
+							</p:commandButton>
+						</p:panelGrid>
+					</p:row>
+
+					<p:dataTable emptyMessage="Nenhum CID listado" rows="10"
+						paginator="true" id="tabelacid1" style="width:500px"
+						value="#{AgendaController.listaCids}" var="tab">
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{tab.descCidAbrev}" />
+						</p:column>
+
+						<p:column headerText="CID">
+							<h:outputText value="#{tab.cid}" />
+						</p:column>
+
+						<p:column headerText="Ação">
+							<p:commandButton tooltip="Selecionar" icon="fa fa-fw fa-check"
+								size="sm" onclick="PF('dlgConsulCid1').hide();"
+								class="new-btn-acao-table acao-editar"
+								update=":formInsercao2:outCid">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{AlteracaoPacienteController.insercao.cid}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 
 </ui:composition>

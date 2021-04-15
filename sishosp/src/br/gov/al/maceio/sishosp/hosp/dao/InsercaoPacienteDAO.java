@@ -1078,10 +1078,13 @@ public class InsercaoPacienteDAO {
 						ps.setNull(4, Types.NULL);
 					}
 					
-					if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())) {
+					if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())
+							&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
 						ps.setNull(5, Types.NULL);
-					} else {
+					} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
 						ps.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+					} else {
+						ps.setInt(5, insercao.getCid().getIdCid());
 					}
 					ps.executeUpdate();
 				}

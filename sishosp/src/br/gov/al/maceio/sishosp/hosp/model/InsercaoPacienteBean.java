@@ -39,6 +39,7 @@ public class InsercaoPacienteBean implements Serializable {
     private ProcedimentoBean procedimentoSecundario5SemLaudo;
     private List<ProcedimentoCidDTO> listaProcedimentoCid;
     private Integer sessoes;
+    private CidBean cid;
 
 
     public InsercaoPacienteBean() {
@@ -60,6 +61,7 @@ public class InsercaoPacienteBean implements Serializable {
         procedimentoSecundario4SemLaudo = new ProcedimentoBean();
         procedimentoSecundario5SemLaudo = new ProcedimentoBean();
         listaProcedimentoCid = new ArrayList<>();
+        cid = new CidBean();
     }
 
     public LaudoBean getLaudo() {
@@ -277,6 +279,14 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setSessoes(Integer sessoes) {
 		this.sessoes = sessoes;
+	}
+
+	public CidBean getCid() {
+		return cid;
+	}
+
+	public void setCid(CidBean cid) {
+		this.cid = cid;
 	}
 	
 }
