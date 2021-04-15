@@ -521,7 +521,7 @@
                             <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                              icon="ui-icon-check"
                                              update=":grw :msgPagina :formInsercao2 :formInsercao"
-                                             class="btn-incluir"
+                                             class="btn-incluir" process="formInsercao:descCid1"
                                              action="#{InsercaoController.validarInsercaoPaciente()}"
                                              rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == false}"/>
 

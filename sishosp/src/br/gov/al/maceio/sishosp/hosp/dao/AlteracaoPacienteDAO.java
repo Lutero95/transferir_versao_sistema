@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -87,8 +88,7 @@ public class AlteracaoPacienteDAO {
 					insercaoPaciente.getLaudo().getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
 					insercaoPaciente.getLaudo().getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
 					insercaoPaciente.getLaudo().getCid1().setIdCid(rs.getInt("id_cidprimario"));
-				} else
-				{
+				} else {
 					insercaoPaciente.getPaciente().setId_paciente(rs.getInt("codpaciente_instituicao"));
 					insercaoPaciente.getPaciente().setNome(rs.getString("nome"));
 				}
@@ -109,6 +109,9 @@ public class AlteracaoPacienteDAO {
 				insercaoPaciente.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 				insercaoPaciente.setSessoes(rs.getInt("sessoes"));
 			}
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoPaciente.getLaudo().getId()))
+				insercaoPaciente.setCid((buscaIdCidInsercaoSemLaudo(insercaoPaciente.getId(), conexao)));
 
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -122,6 +125,35 @@ public class AlteracaoPacienteDAO {
 			}
 		}
 		return insercaoPaciente;
+	}
+	
+	public CidBean buscaIdCidInsercaoSemLaudo(Integer idPacienteInstituicao, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
+
+
+		String sql = "select distinct a1.id_cidprimario, c.desccidabrev from hosp.atendimentos1 a1\r\n" + 
+				"	join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento \r\n" + 
+				"	join hosp.cid c on a1.id_cidprimario = c.cod \r\n" + 
+				"	where a.id_paciente_instituicao = ?";
+		
+		CidBean cid = new CidBean();
+		try {
+			PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
+			stm.setInt(1, idPacienteInstituicao);
+			ResultSet rs = stm.executeQuery();
+
+			if (rs.next()) {
+				cid.setDescCidAbrev(rs.getString("desccidabrev"));
+				cid.setIdCid(rs.getInt("id_cidprimario"));
+			}
+		} catch (SQLException ex2) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return cid;
 	}
 
 
@@ -326,13 +358,13 @@ public class AlteracaoPacienteDAO {
 									ps8.setNull(4, Types.NULL);
 								}
 
-								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getLaudo().getCid1().getIdCid())
+								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getCid1().getIdCid())
 										&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
-									ps.setNull(5, Types.NULL);
+									ps8.setNull(5, Types.NULL);
 								} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
-									ps.setInt(5, insercao.getLaudo().getCid1().getIdCid());
+									ps8.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 								} else {
-									ps.setInt(5, insercao.getCid().getIdCid());
+									ps8.setInt(5, insercao.getCid().getIdCid());
 								}
 								ps8.executeUpdate();
 							}
@@ -708,11 +740,11 @@ public class AlteracaoPacienteDAO {
 								}
 								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getCid1().getIdCid())
 										&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
-									ps.setNull(6, Types.NULL);
+									ps8.setNull(6, Types.NULL);
 								} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
-									ps.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
+									ps8.setInt(6, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
 								} else {
-									ps.setInt(6, insercao.getCid().getIdCid());
+									ps8.setInt(6, insercao.getCid().getIdCid());
 								}
 								
 

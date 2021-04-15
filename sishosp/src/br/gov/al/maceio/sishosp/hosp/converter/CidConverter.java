@@ -18,7 +18,7 @@ public class CidConverter implements Converter {
                               String value) {
         //if (value.equals("null") || value.equals("") || value == null)
         if (value == null || value.equals("null")) {
-            value = "0";
+            return null;
         }
         try {
             int id = Integer.parseInt(value);
