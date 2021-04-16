@@ -185,8 +185,8 @@ public class AtendimentoDAO {
 
 			for (AtendimentoBean atendimento  : lista) {
 				String sql2 = "INSERT INTO hosp.atendimentos1(codprofissionalatendimento, id_atendimento, "
-						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento) "
-						+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?) returning id_atendimentos1;";
+						+ " cbo, codprocedimento, id_situacao_atendimento, evolucao, perfil_avaliacao, horario_atendimento, id_cidprimario) "
+						+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_atendimentos1;";
 
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimentoAnterior().getId())
 						&& !listaIdAtendimentosComIncosistenciaLog.contains(atendimento.getId1())) {
@@ -215,6 +215,11 @@ public class AtendimentoDAO {
 						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(atendimento.getHorarioAtendimento()));
 					else
 						stmt2.setNull(8, Types.NULL);
+					
+					if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
+						stmt2.setNull(9, Types.NULL);
+					else
+						stmt2.setInt(9, atendimento.getCidPrimario().getIdCid());
 
 					ResultSet rs = stmt2.executeQuery();
 					if(rs.next()) {
@@ -1023,7 +1028,8 @@ public class AtendimentoDAO {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome,a1.codprofissionalatendimento , f.descfuncionario, a1.codprocedimento, pr.codproc, p.dtanascimento, p.sexo, "
-				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma,a1.cbo codcbo, cbo.codigo codigocbo "
+				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, "
+				+ "a.codprograma,a1.cbo codcbo, cbo.codigo codigocbo, a1.id_cidprimario "
 				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
@@ -1065,6 +1071,7 @@ public class AtendimentoDAO {
 				atendimento.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
 				atendimento.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
 				atendimento.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
+				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
 			}
 
 		} catch (SQLException ex2) {
@@ -1197,7 +1204,7 @@ public class AtendimentoDAO {
 
 		String sql = "select a.dtaatende, a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns, " +
 				" a1.cbo codcbo, c.descricao,c.codigo codigocbo,  a1.id_situacao_atendimento, sa.descricao situacao_descricao, sa.atendimento_realizado, pr.id, "+
-				" a1.codprocedimento, pr.nome as procedimento, pr.codproc, a1.evolucao, a1.perfil_avaliacao,  " +
+				" a1.codprocedimento, pr.nome as procedimento, pr.codproc, a1.evolucao, a1.perfil_avaliacao, a1.id_cidprimario, " +
 				" to_char(a1.horario_atendimento,'HH24:MI') horario_atendimento, a.codprograma, a.codgrupo, p.id_paciente, p.dtanascimento, p.sexo  " +
 				" from hosp.atendimentos1 a1 " +
 				" join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento  " +
@@ -1249,6 +1256,7 @@ public class AtendimentoDAO {
 				atendimento.getPaciente().setId_paciente(rs.getInt("id_paciente"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
 				atendimento.getPaciente().setSexo(rs.getString("sexo"));
+				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
 				lista.add(atendimento);
 			}
 
