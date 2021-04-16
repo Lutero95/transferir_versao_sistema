@@ -274,25 +274,30 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="24" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="68" height="20" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055"/>
+				<reportElement x="0" y="0" width="68" height="12" uuid="ee8f7fba-3a03-4390-b4a9-9f3993b0b055">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="72" y="0" width="241" height="20" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6"/>
+				<reportElement x="72" y="0" width="241" height="12" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_paciente}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="527" y="0" width="45" height="20" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
+				<reportElement x="527" y="0" width="45" height="12" uuid="dd41af0a-16d5-4ec6-a9e9-8fe5083d56bf">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -300,9 +305,11 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 				<textFieldExpression><![CDATA[$F{data_desligamento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="318" y="0" width="209" height="20" uuid="e843965f-4c94-4708-9fbd-57099546226e"/>
+				<reportElement x="318" y="0" width="209" height="12" uuid="e843965f-4c94-4708-9fbd-57099546226e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{motivo_desligamento}]]></textFieldExpression>
 			</textField>
