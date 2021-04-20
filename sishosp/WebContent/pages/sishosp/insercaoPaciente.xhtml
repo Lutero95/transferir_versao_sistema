@@ -521,7 +521,7 @@
                             <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                              icon="ui-icon-check"
                                              update=":grw :msgPagina :formInsercao2 :formInsercao"
-                                             class="btn-incluir" process="formInsercao:descCid1"
+                                             class="btn-incluir"
                                              action="#{InsercaoController.validarInsercaoPaciente()}"
                                              rendered="#{InsercaoController.insercao.insercaoPacienteSemLaudo == false}"/>
 
@@ -1074,7 +1074,7 @@
                 </div>
 
                 <div align="center">
-                    <p:commandButton value="Liberar" look="success" size="sm" id="b1"
+                    <p:commandButton value="Liberar" look="success" size="sm" id="b11"
                                      style="margin-top:10px" icon="fa fa-fw fa-check"
                                      update=":formInsercao, :formInsercao2, grow"
                                      action="#{InsercaoController.validarSenhaIhRealizarLiberacao()}"/>
