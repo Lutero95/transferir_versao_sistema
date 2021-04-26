@@ -215,6 +215,7 @@ public class RelatoriosController implements Serializable {
 		agendaController.getAgenda().setPrograma(null);
 		agendaController.getAgenda().setGrupo(null);
 		agendaController.getAgenda().setPaciente(null);
+		equipe = null;
 	}
 
 	public void preparaRelPacientesPorPrograma() {
@@ -292,8 +293,12 @@ public class RelatoriosController implements Serializable {
 		List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query, grupo.getIdGrupo());
 		return result;
 	}
+	
+	public void selecionarGrupoLaudoAhVencer(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
 
-	public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente)
+	public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente, EquipeBean equipe)
 			throws IOException, ParseException, ProjetoException {
 
 		if (atributoGenerico1.equals(null)) {
@@ -319,6 +324,10 @@ public class RelatoriosController implements Serializable {
 
 			if (paciente != null)
 				map.put("codpaciente", paciente.getId_paciente());
+			
+			if(equipe != null)
+				map.put("codequipe", equipe.getCodEquipe());
+			
 			map.put("cod_laudo", null);
 
 			if ((atributoGenerico3 != null) && (atributoGenerico3.equals("true")))
