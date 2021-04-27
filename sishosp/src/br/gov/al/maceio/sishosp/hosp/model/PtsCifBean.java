@@ -22,7 +22,6 @@ public class PtsCifBean implements Serializable {
 	private String condicoesSaude;
 	private String funcaoIhEstruturaCorpo;
 	private String atividadeIhParticipacao;
-	private String fatoresContextuais;
 	private FatoresAmbientaisPtcCifBean fatoresAmbientais;
 	private String fatoresPessoais;
 	private List<ObjetivoPtsCifBean> listaObjetivos;
@@ -96,13 +95,6 @@ public class PtsCifBean implements Serializable {
 		this.atividadeIhParticipacao = atividadeIhParticipacao;
 	}
 
-	public String getFatoresContextuais() {
-		return fatoresContextuais;
-	}
-
-	public void setFatoresContextuais(String fatoresContextuais) {
-		this.fatoresContextuais = fatoresContextuais;
-	}
 
 	public FatoresAmbientaisPtcCifBean getFatoresAmbientais() {
 		return fatoresAmbientais;

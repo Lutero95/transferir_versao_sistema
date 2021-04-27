@@ -42,6 +42,7 @@
 	<parameter name="codempresa" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="codequipe" class="java.lang.Integer"/>
 	<parameter name="periodolaudovencer" class="java.lang.String"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="mostrarlaudosvencidos" class="java.lang.String"/>
@@ -63,11 +64,12 @@ p.logradouro|| ' '||COALESCE(p.numero,'')|| ''||COALESCE(p.complemento,'')  AS e
 prp.codproc codproc1, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2, prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
 prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5,
-programa.descprograma, grupo.descgrupo
+programa.descprograma, grupo.descgrupo, equipe.descequipe
 FROM hosp.paciente_instituicao pi 
 join hosp.laudo l on pi.codlaudo = l.id_laudo
 join hosp.programa on programa.id_programa = pi.codprograma
 join hosp.grupo on grupo.id_grupo = pi.codgrupo
+left join hosp.equipe on equipe.id_equipe = pi.codequipe
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
 LEFT JOIN hosp.proc prs1 ON prs1.id = l.codprocedimento_secundario1
@@ -89,6 +91,7 @@ and pi.status ='A'
 and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_laudo} =0 ) OR ($P{cod_laudo} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{codequipe}   is not null and pi.codequipe=  $P{codequipe}) or (( $P{codequipe} =0 ) OR ( $P{codequipe} is null )))
 and ((   $P{codpaciente}   is not null and l.codpaciente=  $P{codpaciente}) or (( $P{codpaciente} =0 ) OR ( $P{codpaciente} is null )))
 and ((   $P{mostrarlaudosvencidos}  is not null  and hosp.fn_getlastdayofmonth(to_date('01/'||lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0'),'dd/mm/yyyy'))<current_date ) or ( ( $P{mostrarlaudosvencidos} ='' ) OR ($P{mostrarlaudosvencidos} is null) ))
 and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer} ) or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
@@ -285,6 +288,7 @@ order by nome]]>
 		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="grupo"/>
 	</field>
+	<field name="descequipe" class="java.lang.String"/>
 	<field name="tel_id2" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id2"/>
 	</field>
@@ -320,13 +324,13 @@ order by nome]]>
 				<text><![CDATA[LAUDO PARA SOLICITAÇÃO/AUTORIZAÇÃO DE PROCEDIMENTO AMBULATORIAL]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="32" width="400" height="16" uuid="e0fb34ec-3a8f-4473-9228-6abc98db091f">
+				<reportElement x="60" y="32" width="462" height="16" uuid="e0fb34ec-3a8f-4473-9228-6abc98db091f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}+" - "+$F{descequipe}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="82" y="48" width="400" height="16" uuid="055259d9-29a3-4fde-a5ef-903018cc4b7e">
@@ -822,6 +826,7 @@ order by nome]]>
 			<textField isBlankWhenNull="true">
 				<reportElement x="465" y="126" width="101" height="14" uuid="6f6178a6-ffff-4082-8649-774eeb5cad64">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[!$F{cep}.isEmpty()]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Sans" size="12"/>
@@ -968,11 +973,14 @@ order by nome]]>
 				<text><![CDATA[CPF]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="330" y="53" width="123" height="14" uuid="d33a50fd-0ab4-4d89-a2c6-b97f9bfd7d48"/>
+				<reportElement x="330" y="53" width="123" height="14" uuid="d33a50fd-0ab4-4d89-a2c6-b97f9bfd7d48">
+					<printWhenExpression><![CDATA[!$F{cpf}.isEmpty()]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cpf}.substring(0, 3) + "." + $F{cpf}.substring(3, 6) + "." + $F{cpf}.substring(6, 9) + "-" + $F{cpf}.substring(9, 11)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cpf}.substring(0, 3) + "." + $F{cpf}.substring(3, 6) + "." + $F{cpf}.substring(6, 9) + "-" + $F{cpf}.substring
+(9, 11)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="385" y="126" width="77" height="14" uuid="373c5f98-cdad-4cd5-9594-a8f9cee9d08a"/>

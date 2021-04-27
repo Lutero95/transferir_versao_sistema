@@ -16,6 +16,7 @@
 	</parameter>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="codequipe" class="java.lang.Integer"/>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="mostrarlaudosvencidos" class="java.lang.String"/>
 	<queryString>
@@ -30,6 +31,7 @@ l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
     where pl.cod_unidade=$P{codunidade} 
     and ((   $P{codprograma}   is not null and pl.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pl.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{codequipe}   is not null and pl.codequipe=  $P{codequipe}) or (( $P{codequipe} =0 ) OR ( $P{codequipe} is null )))
 and ((   $P{mostrarlaudosvencidos}  is not null  and hosp.fn_getlastdayofmonth(to_date('01/'||lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0'),'dd/mm/yyyy'))<current_date ) or ( ( $P{mostrarlaudosvencidos} ='' ) OR ($P{mostrarlaudosvencidos} is null) ))
 and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer} ) or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
 and pl.status='A'

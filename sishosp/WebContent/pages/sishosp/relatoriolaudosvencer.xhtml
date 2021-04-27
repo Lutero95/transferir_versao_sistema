@@ -102,8 +102,6 @@
 										<p:ajax event="itemSelect"
 											listener="#{RelatoriosController.agendaController.selectPrograma}"
 											update="outProg,  outGrupo" />
-
-
 									</p:autoComplete>
 
 									<p:commandButton id="btBusPr" immediate="true"
@@ -114,11 +112,9 @@
 										oncomplete="PF('dlgConsuProg').show();" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
 
 						<b:row rendered="#{RelatoriosController.atributoGenerico2=='P'}">
-
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Grupo" severity="info" />
@@ -132,7 +128,10 @@
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
-											listener="#{RelatoriosController.agendaController.selectGrupo}" update=" outGrupo" />
+											listener="#{RelatoriosController.selecionarGrupoLaudoAhVencer(RelatoriosController.agendaController.agenda.grupo)}" update="outEquipe outGrupo" />
+										
+										<p:ajax event="itemSelect"
+											listener="#{RelatoriosController.agendaController.selectGrupo}" update="outEquipe outGrupo" />
 
 									</p:autoComplete>
 
@@ -140,9 +139,39 @@
 										icon="ui-icon-search"
 										disabled="#{RelatoriosController.agendaController.agenda.programa.idPrograma == null}"
 										actionListener="#{RelatoriosController.agendaController.limparNaBuscaGrupo()}"
-										action="#{RelatoriosController.agendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 										update=":frm formConsuGrop"
-										oncomplete="PF('dlgConsuGrop').show();" />
+										oncomplete="PF('dlgConsuGrop').show();">
+										<f:setPropertyActionListener value="#{RelatoriosController.agendaController.agenda.grupo}"
+											target="#{RelatoriosController.grupo}" />
+									</p:commandButton>
+								</p:outputPanel>
+							</b:column>
+						</b:row>
+						
+						<b:row>
+							<b:column span="2"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Equipe" severity="info" />
+
+								<p:outputPanel id="outEquipe">
+									<p:autoComplete value="#{RelatoriosController.equipe}"
+										size="31" converter="conEquipe" required="false"
+										disabled="#{RelatoriosController.agendaController.agenda.grupo.idGrupo == null}"
+										requiredMessage="Equipe: Campo obrigatório!"
+										class="select-agendaEquipe4"
+										completeMethod="#{RelatoriosController.listaEquipeAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descEquipe}">
+										<p:ajax event="itemSelect" update=""/>
+									</p:autoComplete>
+
+									<p:commandButton id="btBusEqui" immediate="true"
+										disabled="#{RelatoriosController.agendaController.agenda.grupo.idGrupo == null}"
+										icon="ui-icon-search"
+										oncomplete="PF('dlgConsuEquipe').show();"
+										action="#{RelatoriosController.listaEquipePorGrupo()}"
+										update=":frm:outEquipe"/>
 								</p:outputPanel>
 							</b:column>
 						</b:row>
@@ -172,26 +201,15 @@
 										oncomplete="PF('dlgConsuPac').show();" />
 								</p:outputPanel>
 							</b:column>
-
 						</b:row>
 					</p:outputPanel>
 
-
-
-
-
-
-
-
-
 					<br />
-
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						style="font-size: 12px;  text-align: right;" update="grw"
-						actionListener="#{RelatoriosController.geraLaudoVencer(RelatoriosController.agendaController.agenda.programa, RelatoriosController.agendaController.agenda.grupo, RelatoriosController.agendaController.agenda.paciente)}"
+						actionListener="#{RelatoriosController.geraLaudoVencer(RelatoriosController.agendaController.agenda.programa, 
+						RelatoriosController.agendaController.agenda.grupo, RelatoriosController.agendaController.agenda.paciente, RelatoriosController.equipe)}"
 						ajax="false" />
-
-
 				</h:form>
 			</div>
 		</div>
@@ -248,15 +266,15 @@
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":frm:outGrupo" icon="fa fa-fw fa-check"
+						<p:commandButton update=":frm:outGrupo :frm:outEquipe" icon="fa fa-fw fa-check"
 							title="Selecionar" class="new-btn-acao-table acao-editar"
-							onclick="PF('dlgConsuGrop').hide();"
-							>
+							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{RelatoriosController.agendaController.agenda.grupo}" />
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{RelatoriosController.grupo}" />	
 						</p:commandButton>
 					</h:column>
-
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
@@ -346,9 +364,37 @@
 						</p:commandButton>
 
 					</p:column>
-
-
 				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+			dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsuEquipe">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{RelatoriosController.listaEquipe}"
+					id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+					<h:column>
+						<f:facet name="header">
+                            Equipe
+                        </f:facet>
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton update=":frm:outEquipe"
+							icon="fa fa-fw fa-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							oncomplete="PF('dlgConsuEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{RelatoriosController.equipe}" />
+						</p:commandButton>
+					</h:column>
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

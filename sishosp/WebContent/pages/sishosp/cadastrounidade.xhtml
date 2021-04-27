@@ -473,7 +473,7 @@
 
 								<p:fieldset legend="Laudo">
 									<b:row>
-										<b:column span="12" class="label-position new-col6">
+										<b:column span="6" class="label-position new-col6">
 											<b:selectOneMenu id="validadepadraolaudo"
 												value="#{UnidadeController.unidade.parametro.validadePadraoLaudo}"
 												style="width:200px;" required="true"
@@ -483,6 +483,13 @@
 												<f:selectItem itemLabel="90 dias" itemValue="90" />
 												<f:selectItem itemLabel="180 dias" itemValue="180" />
 											</b:selectOneMenu>
+										</b:column>
+
+										<b:column span="6" class="label-position new-col6">
+											<p:selectBooleanCheckbox
+													value="#{UnidadeController.unidade.parametro.validaDadosLaudoSigtap}"
+													itemLabel="Mostrar Procedimento no laudo">
+											</p:selectBooleanCheckbox>
 										</b:column>
 									</b:row>
 								</p:fieldset>

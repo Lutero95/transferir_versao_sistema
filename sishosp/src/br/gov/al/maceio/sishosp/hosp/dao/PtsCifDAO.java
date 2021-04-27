@@ -187,7 +187,7 @@ public class PtsCifDAO {
 
         String sql = "INSERT INTO hosp.pts_cif " + 
         		"(id_paciente_instituicao, queixa_principal, condicoes_saude, funcao_estrutura_corpo, " +
-        		"atividade_participacao, fatores_contextuais, id_fator_ambiental, fatores_pessoais, "+
+        		"atividade_participacao,  id_fator_ambiental, fatores_pessoais, "+
         		" data_avaliacao, data_vencimento) " + 
         		"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
         
@@ -230,7 +230,7 @@ public class PtsCifDAO {
 
         String sql = "UPDATE hosp.pts_cif " + 
         		"SET id_paciente_instituicao = ?, queixa_principal = ?, condicoes_saude = ?, "
-        		+ "funcao_estrutura_corpo = ?, atividade_participacao = ?, fatores_contextuais = ?, "
+        		+ "funcao_estrutura_corpo = ?, atividade_participacao = ?,  "
         		+ "id_fator_ambiental = ?, fatores_pessoais = ?, data_avaliacao = ?, data_vencimento = ? " + 
         		"WHERE id = ?";
         
@@ -271,11 +271,10 @@ public class PtsCifDAO {
 		ps.setString(3, pts.getCondicoesSaude());
 		ps.setString(4, pts.getFuncaoIhEstruturaCorpo());
 		ps.setString(5, pts.getAtividadeIhParticipacao());
-		ps.setString(6, pts.getFatoresContextuais());
-		ps.setInt(7, pts.getFatoresAmbientais().getId());
-		ps.setString(8, pts.getFatoresPessoais());
-		ps.setDate(9, new Date(pts.getDataAvaliacao().getTime()));
-		ps.setDate(10, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getDataAvaliacao(), SEIS_MESES_VENCIMENTO)));
+		ps.setInt(6, pts.getFatoresAmbientais().getId());
+		ps.setString(7, pts.getFatoresPessoais());
+		ps.setDate(8, new Date(pts.getDataAvaliacao().getTime()));
+		ps.setDate(9, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getDataAvaliacao(), SEIS_MESES_VENCIMENTO)));
 	}
     
     private void cadastrarObjetivoPtsCif(PtsCifBean pts, Connection conexaoAux) 
@@ -478,7 +477,7 @@ public class PtsCifDAO {
 
 		String sql = "SELECT p.id, pi.id as id_paciente_instituicao, pa.nome, extract (year from age(pa.dtanascimento)) idade, \r\n" + 
 				"pa.id_paciente codpaciente, p.queixa_principal, p.condicoes_saude, p.funcao_estrutura_corpo, p.atividade_participacao,\r\n" + 
-				"p.fatores_contextuais, p.fatores_pessoais, fa.id id_fator_ambiental, fa.facilitador, fa.barreira, \r\n" + 
+				" p.fatores_pessoais, fa.id id_fator_ambiental, fa.facilitador, fa.barreira, \r\n" +
 				"p.data_vencimento, p.data_avaliacao, \r\n" + 
 				"case when p.data_vencimento is null \r\n" + 
 				"		then false \r\n" + 
@@ -515,7 +514,6 @@ public class PtsCifDAO {
 				pts.setCondicoesSaude(rs.getString("condicoes_saude"));
 				pts.setFuncaoIhEstruturaCorpo(rs.getString("funcao_estrutura_corpo"));
 				pts.setAtividadeIhParticipacao(rs.getString("atividade_participacao"));
-				pts.setFatoresContextuais(rs.getString("fatores_contextuais"));
 				pts.setFatoresPessoais(rs.getString("fatores_pessoais"));
 				pts.getFatoresAmbientais().setId(rs.getInt("id_fator_ambiental"));
 				pts.getFatoresAmbientais().setFacilitador(rs.getString("facilitador"));
