@@ -30,7 +30,8 @@
 								value="#{RelatoriosController.atributoGenerico1}"
 								unselectable="true">
 								<f:selectItem itemLabel="Por Programa" itemValue="P" />
-								<f:selectItem itemLabel="Individual" itemValue="I" />
+								<f:selectItem itemLabel="Paciente Ativo" itemValue="I" />
+								<f:selectItem itemLabel="Paciente Avulso" itemValue="A" />
 								<p:ajax update="frm" event="valueChange" />
 							</p:selectOneRadio>
 							<hr />
@@ -131,7 +132,7 @@
 						</b:column>
 					</b:row>
 					
-					<b:row>
+					<b:row rendered="#{RelatoriosController.atributoGenerico1!='A'}">
 						<b:column span="6" class="label-position new-data-size new-comple1">>
 							<b:label value="Dia da Semana:" severity="info" />
 							<p:selectManyCheckbox id="diasSemana" layout="responsive" columns="2"
@@ -154,6 +155,32 @@
 								<f:selectItem itemLabel="Manhã" itemValue="M" />
 								<f:selectItem itemLabel="Tarde" itemValue="T" />
 							</p:selectOneRadio>
+						</b:column>
+					</b:row>
+
+					<b:row rendered="#{RelatoriosController.atributoGenerico1=='A'}">
+						<b:column span="3"
+								  class="label-position new-data-size new-comple1">
+							<b:label value="Paciente" severity="info" />
+
+							<p:outputPanel id="outPavv">
+								<p:autoComplete value="#{RelatoriosController.paciente}"
+												size="31" converter="conPaciente" required="true"
+												requiredMessage="Paciente: Campo obrigatório!"
+												class="select-agendaEquipe4"
+												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect"
+											update="msgPagina :frm:outPavv"
+											global="false" listener="#{AgendaController.carregaListaFuncionariosDual()}"/>
+								</p:autoComplete>
+
+								<p:commandButton id="btBPaa" immediate="true"
+												 icon="ui-icon-search" update=":formConsuPac"
+												 oncomplete="PF('dlgConsuPacAv').show();" />
+							</p:outputPanel>
 						</b:column>
 					</b:row>
 					
@@ -339,6 +366,74 @@
 					</p:column>
 
 
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPacAv"
+				  dynamic="true" modal="true" width="750px" height="400px"
+				  responsive="true">
+			<h:form id="formConsuPacAt">
+				<p:growl id="msgC2" />
+
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+				<p:row>
+					<p:panelGrid columns="4">
+						<p:selectOneMenu value="#{PacienteController.tipoBusca}"
+										 style="margin-top: -13px">
+							<f:selectItem itemLabel="Nome" itemValue="nome" />
+							<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+							<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+							<f:selectItem itemLabel="CPF" itemValue="cpf" />
+							<f:selectItem itemLabel="CNS" itemValue="cns" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{PacienteController.campoBusca}"
+									 placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+						<p:commandButton
+								action="#{PacienteController.buscarPacientesPorTipo()}"
+								update="formConsuPacAt:tabelapacientes" icon="ui-icon-search"
+								style="margin-left: 10px;" />
+
+						<p:commandButton action="#{PacienteController.listarPacientes()}"
+										 update="tabelapacientes" icon="limpar" style="margin-left: 10px;" />
+					</p:panelGrid>
+				</p:row>
+				<p:dataTable paginator="true" rows="10" id="tabelapacientes"
+							 var="pacie" value="#{PacienteController.listaPacientes}"
+							 emptyMessage="Nenhum Paciente">
+
+					<p:column headerText="Prontuário" width="100">
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
+
+					<p:column headerText="Nome">
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
+
+					<p:column headerText="Matrícula">
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
+
+					<p:column headerText="CNS">
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column headerText="Selecionar">
+						<p:commandButton
+								update=":frm:outPavv"
+								icon="fa fa-fw fa-check" title="Selecionar"
+									class="new-btn-acao-table acao-editar"
+								action="#{AgendaController.carregaListaFuncionariosDual()}"
+								onclick="PF('dlgConsuPacAv').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+														 target="#{RelatoriosController.paciente}" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 			</h:form>
 		</p:dialog>

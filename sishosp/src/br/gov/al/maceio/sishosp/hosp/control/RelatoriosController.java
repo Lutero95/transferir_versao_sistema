@@ -398,50 +398,71 @@ public class RelatoriosController implements Serializable {
 
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
+		if (!atributoGenerico1.equals("A")) {
+			if (camposvalidos(programa, grupo)) {
 
-		if(camposvalidos(programa, grupo)) {
+				Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
+				pacienteInstituicao.setPrograma(programa);
+				pacienteInstituicao.setGrupo(grupo);
+				int randomico = JSFUtil.geraNumeroRandomico();
+				RelatorioDAO rDao = new RelatorioDAO();
+				rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
 
-			Integer frequencia = grupoDao.buscarFrequencia(programa.getIdPrograma(), grupo.getIdGrupo());
-			pacienteInstituicao.setPrograma(programa);
-			pacienteInstituicao.setGrupo(grupo);
-			int randomico = JSFUtil.geraNumeroRandomico();
-			RelatorioDAO rDao = new RelatorioDAO();
-			rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+				if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
+					JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
+				} else {
+					String caminho = CAMINHO_PRINCIPAL;
+					String relatorio = "";
 
-			if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
-				JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
-			} else {
-				String caminho = CAMINHO_PRINCIPAL;
-				String relatorio = "";
-				
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("chave", randomico);
-				map.put("codunidade", user_session.getUnidade().getId());
-				
-				ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
-				setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
-				map.put("diassemanalista", diasSemanaInteger);
-				
-				limparTurno();
-				atribuiTurnos();
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("chave", randomico);
+					map.put("codunidade", user_session.getUnidade().getId());
 
-				map.put("turnoslista", turnos);
-				
-				if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getId()))
-					map.put("codpacienteinstituicao", pacienteInstituicao.getId());
-				
-				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
-					map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+					ArrayList<Integer> diasSemanaInteger = new ArrayList<Integer>();
+					setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
+					map.put("diassemanalista", diasSemanaInteger);
 
-				if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
-					map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+					limparTurno();
+					atribuiTurnos();
 
-				map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
-				relatorio = caminho + "frequencia.jasper";
-				this.executeReport(relatorio, map, "relatorio.pdf");
-				rDao.limparTabelaTemporariaFrequencia(randomico);
+					map.put("turnoslista", turnos);
 
+					if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getId()))
+						map.put("codpacienteinstituicao", pacienteInstituicao.getId());
+
+					if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
+						map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
+
+					if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
+						map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
+
+					map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+					relatorio = caminho + "frequencia.jasper";
+					this.executeReport(relatorio, map, "relatorio.pdf");
+					rDao.limparTabelaTemporariaFrequencia(randomico);
+
+				}
 			}
+		}
+		else
+		{
+				Integer frequencia = 20;
+				int randomico = JSFUtil.geraNumeroRandomico();
+				RelatorioDAO rDao = new RelatorioDAO();
+				rDao.popularTabelaTemporariaFrequencia(randomico, frequencia);
+					String caminho = CAMINHO_PRINCIPAL;
+					String relatorio = "";
+
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("chave", randomico);
+					map.put("codunidade", user_session.getUnidade().getId());
+
+					map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+					relatorio = caminho + "frequencia_avulsa.jasper";
+					this.executeReport(relatorio, map, "frequencia_avulsa.pdf");
+					rDao.limparTabelaTemporariaFrequencia(randomico);
+
+
 		}
 	}
 
