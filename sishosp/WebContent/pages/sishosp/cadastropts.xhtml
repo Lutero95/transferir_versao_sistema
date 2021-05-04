@@ -93,7 +93,7 @@
 					<br />
 
 					<b:row>
-						<b:column span="5">
+						<b:column span="5" rendered="#{PtsController.pts.status != 'R'}">
 
 							<b:label value="Incapacidades Funcionais:"
 								id="incapacidadesFuncionais" severity="info" class="fire-label" />
@@ -106,7 +106,7 @@
 						</b:column>
 
 
-						<b:column span="5">
+						<b:column span="5" rendered="#{PtsController.pts.status != 'R'}">
 							<b:label value="Capacidades Funcionais:"
 								id="capacidadesFuncionais" severity="info" class="fire-label" />
 

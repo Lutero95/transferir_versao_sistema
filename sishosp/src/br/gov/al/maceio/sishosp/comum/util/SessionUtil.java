@@ -41,8 +41,8 @@ public class SessionUtil {
         return objeto;
     }
     
-    public static void adicionarBuscaPtsNaSessao(ProgramaBean programa, GrupoBean grupo, Date periodoInicial, Date periodoFinal, String tela){
-        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(programa, grupo, periodoInicial, periodoFinal, tela);
+    public static void adicionarBuscaPtsNaSessao(Date periodoInicial, Date periodoFinal, String tela){
+        BuscaSessaoDTO buscaSessaoDTO = new BuscaSessaoDTO(periodoInicial, periodoFinal, tela);
         SessionUtil.adicionarNaSessao(buscaSessaoDTO, BUSCA_SESSAO);
     }
 
