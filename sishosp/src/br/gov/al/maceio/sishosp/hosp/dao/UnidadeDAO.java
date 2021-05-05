@@ -120,9 +120,10 @@ public class UnidadeDAO {
                     "acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
                     "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente,  "+
-                    "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, cid_paciente_terapia_obrigatorio ) "+
+                    "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, cid_paciente_terapia_obrigatorio, "+
+                    "bpa_com_laudo_autorizado ) "+
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "+
-                    "?, ?, ?,?)";
+                    "?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -264,6 +265,7 @@ public class UnidadeDAO {
             ps.setBoolean(46, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
             ps.setBoolean(47, unidade.getParametro().isCidAgendaObrigatorio());
             ps.setBoolean(48, unidade.getParametro().isCidPacienteTerapiaObrigatorio());
+            ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
             ps.execute();
 
 
@@ -431,7 +433,8 @@ public class UnidadeDAO {
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
                     "verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?,  "+
-                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ?, cid_agenda_obrigatorio = ?, cid_paciente_terapia_obrigatorio=?  WHERE codunidade = ?";
+                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ?, cid_agenda_obrigatorio = ?, cid_paciente_terapia_obrigatorio=?, bpa_com_laudo_autorizado = ? "+ 
+                    "  WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -539,7 +542,8 @@ public class UnidadeDAO {
             ps.setBoolean(46, unidade.getParametro().isObjetivosGeraisPTSObrigatorio());
             ps.setBoolean(47, unidade.getParametro().isCidAgendaObrigatorio());
             ps.setBoolean(48, unidade.getParametro().isCidPacienteTerapiaObrigatorio());
-            ps.setInt(49, unidade.getId());
+            ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
+            ps.setInt(50, unidade.getId());
 
             ps.executeUpdate();
 
@@ -681,7 +685,8 @@ public class UnidadeDAO {
                 "indicador_orgao_destino_informacao, versao_sistema, validade_padrao_laudo, minutos_tolerancia, acesso_permitido_domingo, acesso_permitido_segunda, acesso_permitido_terca, "+
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
-                "inicio_evolucao_unidade, busca_automatica_cep_paciente, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, cid_paciente_terapia_obrigatorio  "+
+                "inicio_evolucao_unidade, busca_automatica_cep_paciente, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, "+
+                "cid_paciente_terapia_obrigatorio, bpa_com_laudo_autorizado "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -750,6 +755,7 @@ public class UnidadeDAO {
                 parametro.setObjetivosGeraisPTSObrigatorio(rs.getBoolean("objetivos_gerais_pts_obrigatorio"));
                 parametro.setCidAgendaObrigatorio(rs.getBoolean("cid_agenda_obrigatorio"));
                 parametro.setCidPacienteTerapiaObrigatorio(rs.getBoolean("cid_paciente_terapia_obrigatorio"));
+                parametro.setBpaComLaudoAutorizado(rs.getBoolean("bpa_com_laudo_autorizado"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();
