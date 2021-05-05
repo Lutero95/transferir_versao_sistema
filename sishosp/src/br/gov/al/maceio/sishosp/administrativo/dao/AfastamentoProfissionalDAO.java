@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.administrativo.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.enums.MotivoAfastamento;
 import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -51,14 +52,18 @@ public class AfastamentoProfissionalDAO {
 			if (afastamentoProfissional.getTurno() != null) {
 				ps.setString(7, afastamentoProfissional.getTurno());
 			} else {
-				ps.setString(7, "A"); // quando nao informar o turno subentende que sera os dois turnos (Ambos)
+				ps.setString(7, Turno.AMBOS.getSigla()); // quando nao informar o turno subentende que sera os dois turnos (Ambos)
 			}
 			
 			List<Integer> listaIdsAtendimentos1 = listaAtendimentos1DoProfissionalNoPeriodo(con, afastamentoProfissional);
 			Integer idSituacao = buscaIdSituacaoPadraoDoAfastamento(con, afastamentoProfissional.getMotivoAfastamento());
 			atualizaSituacaoAtendimentosDoProfissionalAfastado(con, listaIdsAtendimentos1, idSituacao);
 			
-			ps.execute();
+			if(afastamentoProfissional.getMotivoAfastamento().equals(MotivoAfastamento.DESLIGAMENTO.getSigla())) {
+				desativarFuncionario(afastamentoProfissional.getFuncionario().getId(), con);
+			}
+			
+			ps.executeUpdate();
 			con.commit();
 			retorno = true;
 		} catch (SQLException sqle) {
@@ -81,25 +86,43 @@ public class AfastamentoProfissionalDAO {
 
 		String sql = "select a1.id_atendimentos1 from hosp.atendimentos1 a1 " + 
 				"join hosp.atendimentos a on a1.id_atendimento = a.id_atendimento " + 
-				"where a.dtaatende between ? and ? " + 
-				"and a1.codprofissionalatendimento = ? ";
+				"where a1.codprofissionalatendimento = ? ";		
+		
 		String filtroTurno = " and a.turno = ? ";
+		
+		String sqlFiltroPeriodoSemDesligamento = " and a.dtaatende between ? and ? ";
+		String sqlFiltroPeriodoComDesligamento = " and a.dtaatende >= ? ";		
+		
+		if(afastamentoProfissional.getMotivoAfastamento().equals(MotivoAfastamento.DESLIGAMENTO.getSigla()))
+			sql += sqlFiltroPeriodoComDesligamento;
+		else
+			sql += sqlFiltroPeriodoSemDesligamento;
 		
 		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
 				&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
 			sql += filtroTurno;
 		}
+		
 		List<Integer> listaIdsAtendimentos1 = new ArrayList<>();
 		
 		try {
 			PreparedStatement stm = conexaoAuxiliar.prepareStatement(sql);
-			stm.setDate(1, new Date(afastamentoProfissional.getPeriodoInicio().getTime()));
-			stm.setDate(2, new Date(afastamentoProfissional.getPeriodoFinal().getTime()));
-			stm.setLong(3, afastamentoProfissional.getFuncionario().getId());
+			stm.setLong(1, afastamentoProfissional.getFuncionario().getId());
+			
+			int parametro = 3; 
+			if(afastamentoProfissional.getMotivoAfastamento().equals(MotivoAfastamento.DESLIGAMENTO.getSigla())) 
+				stm.setDate(2, new Date(afastamentoProfissional.getPeriodoInicio().getTime()));
+			else {
+				stm.setDate(2, new Date(afastamentoProfissional.getPeriodoInicio().getTime()));
+				stm.setDate(3, new Date(afastamentoProfissional.getPeriodoFinal().getTime()));
+				parametro++;
+			}
+			
 			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(afastamentoProfissional.getTurno())
 					&& !afastamentoProfissional.getTurno().equals(Turno.AMBOS.getSigla())) {
-				stm.setString(4, afastamentoProfissional.getTurno());
+				stm.setString(parametro, afastamentoProfissional.getTurno());
 			}
+			
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -114,6 +137,25 @@ public class AfastamentoProfissionalDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 		return listaIdsAtendimentos1;
+	}
+	
+	private void desativarFuncionario(Long idProfissional, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
+
+		String sql = "UPDATE acl.funcionarios SET ativo = 'N' where id_funcionario = ?";
+
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+
+			ps.setLong(1, idProfissional);
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		} 
 	}
 	
 	private Integer buscaIdSituacaoPadraoDoAfastamento(Connection conexaoAuxiliar,
