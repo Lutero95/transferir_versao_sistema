@@ -138,7 +138,7 @@ public class PtsDAO {
         String sql = "SELECT p.id AS id_pts, pi.id, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
                 "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, conduta_alta " +
+                "novas_estrategias_tratamento, conduta_alta, p.status " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
@@ -181,6 +181,7 @@ public class PtsDAO {
                 pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
                 pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
                 pts.setCondutaAlta(rs.getString("conduta_alta"));
+                pts.setStatus(rs.getString("status"));
                 pts.setListaPtsArea(carregarAreasPts(id, conexao, false));
 
             }
@@ -606,7 +607,7 @@ public class PtsDAO {
         return retorno;
     }
 
-    public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
+    public List<Pts> buscarPtsPacientesAtivos(String tipoFiltroVencimento,
                                               Integer filtroMesVencimento, Integer filtroAnoVencimento, Boolean filtroApenasPacientesSemPTS, String campoBusca, String tipoBusca, String filtroTurno)
             throws ProjetoException {
 
@@ -628,9 +629,9 @@ public class PtsDAO {
                 " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " +
                 " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I'  ) ) ptsmax on " +
                 " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " +
-                "WHERE pi.status = 'A'  AND pi.codgrupo = ? AND pi.codprograma = ? and (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
+                "WHERE pi.status = 'A'  AND (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
         if (filtroApenasPacientesSemPTS)
-            sql = sql + " and not exists (select id from hosp.pts where ((pts.status='A') or (pts.status='R')) and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente=laudo.codpaciente)";
+            sql = sql + " and not exists (select id from hosp.pts where ((pts.status='A') or (pts.status='R')) and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))";
 
 
         if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
@@ -673,8 +674,6 @@ public class PtsDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, codGrupo);
-            stmt.setInt(2, codPrograma);
             int i = 3;
 
 

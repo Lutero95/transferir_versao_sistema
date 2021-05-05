@@ -456,7 +456,7 @@ public class RelatoriosController implements Serializable {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("chave", randomico);
 					map.put("codunidade", user_session.getUnidade().getId());
-
+					map.put("codpaciente", paciente.getId_paciente());
 					map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 					relatorio = caminho + "frequencia_avulsa.jasper";
 					this.executeReport(relatorio, map, "frequencia_avulsa.pdf");
