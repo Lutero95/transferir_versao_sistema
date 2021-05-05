@@ -1356,8 +1356,58 @@ public class FuncionarioDAO {
 				funcionario.setAtivo(rs.getString("ativo"));
 				funcionario.getProc1().setNomeProc(rs.getString("nome"));
 				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-				//prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
-				//prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+				lista.add(funcionario);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+	
+	public List<FuncionarioBean> listarProfissionalAtivoBusca(String descricaoBusca, Integer tipoBuscar)
+			throws ProjetoException {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
+		List<FuncionarioBean> lista = new ArrayList<>();
+		String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, "
+				+ "f.cns, f.ativo, f.codprocedimentopadrao, f.permite_liberacao, permite_encaixe "
+				+ " FROM acl.funcionarios f where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and ativo = 'S' ";
+
+		if (tipoBuscar == 1) {
+			sql += " and f.realiza_atendimento is true and f.codunidade = ? order by f.descfuncionario";
+		}
+
+
+		if (tipoBuscar == 2) {
+			sql += " and f.codunidade = ? order by f.descfuncionario";
+		}
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+			stm.setInt(2, user_session.getUnidade().getId());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean funcionario = new FuncionarioBean();
+				funcionario.setId(rs.getLong("id_funcionario"));
+				funcionario.setNome(rs.getString("descfuncionario"));
+				funcionario.setCns(rs.getString("cns"));
+				funcionario.setAtivo(rs.getString("ativo"));
+				funcionario.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				funcionario.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				funcionario.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 				lista.add(funcionario);
@@ -1546,6 +1596,49 @@ public class FuncionarioDAO {
 		}
 		return listaProfissional;
 	}
+	
+	public List<FuncionarioBean> listarTodosOsProfissionaisAtivos() throws ProjetoException {
+
+		List<FuncionarioBean> listaProfissional = new ArrayList<FuncionarioBean>();
+
+		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade,  cns, funcionarios.ativo, \n" +
+				" cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe \n" +
+				" from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade \n" +
+				" where funcionarios.ativo = 'S' order by descfuncionario";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean profissioanl = new FuncionarioBean();
+				profissioanl.setId(rs.getLong("id_funcionario"));
+				profissioanl.setCpf(rs.getString("cpf"));
+				profissioanl.setSenha(rs.getString("senha"));
+				profissioanl.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				profissioanl.setNome(rs.getString("descfuncionario"));
+				profissioanl.setCns(rs.getString("cns"));
+				profissioanl.setAtivo(rs.getString("ativo"));
+				profissioanl.getPerfil().setId(rs.getLong("id_perfil"));
+				profissioanl.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+				profissioanl.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+
+				listaProfissional.add(profissioanl);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return listaProfissional;
+	}
+
 
 	public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo) throws ProjetoException {
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();

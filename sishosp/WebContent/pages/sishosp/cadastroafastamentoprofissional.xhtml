@@ -41,7 +41,7 @@
                                             converter="conFuncionario" required="true"
                                             requiredMessage="Profissional: Campo obrigatório!"
                                             class="select-agendaEquipe4"
-                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                            completeMethod="#{MBFuncionarios.listaProfissionalAtivoAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.nome}">
@@ -49,7 +49,7 @@
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
                                                      immediate="true"
-                                                     action="#{MBFuncionarios.listarProfissionais()}"
+                                                     action="#{MBFuncionarios.listarProfissionaisAtivos()}"
                                                      update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
                                 </p:outputPanel>
                             </b:column>
