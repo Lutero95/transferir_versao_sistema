@@ -957,6 +957,10 @@ public class FuncionarioController implements Serializable {
 		listaProfissional = fDao.listarTodosOsProfissional();
 	}
 	
+	public void listarProfissionaisAtivos() throws ProjetoException {
+		listaProfissional = fDao.listarTodosOsProfissionaisAtivos();
+	}
+	
 	public void listarProfissionaisConfigAgenda() throws ProjetoException {
 		listaProfissional = fDao.listarProfissionalAtendimento();
 	}
@@ -1016,6 +1020,11 @@ public class FuncionarioController implements Serializable {
 
 	public List<FuncionarioBean> listaProfissionalAutoComplete(String query) throws ProjetoException {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
+		return result;
+	}
+	
+	public List<FuncionarioBean> listaProfissionalAtivoAutoComplete(String query) throws ProjetoException {
+		List<FuncionarioBean> result = fDao.listarProfissionalAtivoBusca(query, 1);
 		return result;
 	}
 
