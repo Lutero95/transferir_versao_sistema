@@ -236,7 +236,6 @@
 					<p:outputPanel id="outgerarbpa">
 						<p:commandButton value="Gerar Produção" ajax="false"
 							rendered="#{bpaController.formatoExportacao != 'E'}"
-
 							actionListener="#{bpaController.gerarLayoutBpaImportacao()}">
 							<p:fileDownload value="#{bpaController.download()}" />
 						</p:commandButton>

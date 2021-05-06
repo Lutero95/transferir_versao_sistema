@@ -1004,8 +1004,9 @@ public class BpaController implements Serializable {
 	public void listarPossiveisDuplicidades() throws ProjetoException {
 		List<AtendimentoBean> listaDuplicidadesAux = new ArrayList<>();
 		for (BpaIndividualizadoBean bpa : listaDeBpaIndividualizado) {
+			
 			if(Integer.valueOf(bpa.getPrdQt()) > 1) {
-				listaDuplicidadesAux = bpaIndividualizadoDAO.listaPossiveisDuplicidades(bpa, this.idConfiguracaoProducaoBpa);
+				listaDuplicidadesAux = bpaIndividualizadoDAO.listaPossiveisDuplicidades(bpa, this.idConfiguracaoProducaoBpa, this.dataInicioAtendimento, this.dataFimAtendimento);
 				listaDuplicidades.addAll(listaDuplicidadesAux);
 			}
 		}

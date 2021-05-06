@@ -1927,6 +1927,8 @@ public class AtendimentoDAO {
 		String sqlProcedimentoPrimario = "select count(*) total \n" +
 				"from hosp.atendimentos a \n" +
 				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) \n" +
+				"left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" + 
+				"left join hosp.laudo l on l.id_laudo  = pi.codlaudo " + 
 				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento \n" +
 				"inner join hosp.programa p on (a.codprograma = p.id_programa) \n" +
 				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) \n" +
@@ -1951,6 +1953,8 @@ public class AtendimentoDAO {
 				"\tfrom hosp.atendimentos a  \n" +
 				"\tjoin hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  \n" +
 				"\tjoin hosp.atendimentos1_procedimento_secundario aps on (a1.id_atendimentos1 = aps.id_atendimentos1) \n" +
+				"left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" + 
+				"left join hosp.laudo l on l.id_laudo  = pi.codlaudo " +
 				"\tleft join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  \n" +
 				"\tjoin hosp.programa p on (a.codprograma = p.id_programa)  \n" +
 				"\tjoin hosp.grupo on (a.codgrupo = grupo.id_grupo)  \n" +
@@ -1969,30 +1973,39 @@ public class AtendimentoDAO {
 				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
-
+		String filtroProcedimento = " and a1.codprocedimento = any(?) ";
+		String filtroAtendimentoRealizado = " and sa.atendimento_realizado = true";
+		String filtroPresencaAtendimentoRealizado = " and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+		
+		String filtroConfiguracaoProducao = " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+				"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
+				"where cpb .id =?)";
+		
+		String filtroLaudoAutorizado = " and l.situacao = 'A' and ((l.data_solicitacao between ? and ?) \r\n" + 
+				"	or hosp.fn_GetLastDayOfMonth(to_date(l.ano_final||'-'||'0'||''||l.mes_final||'-'||'01', 'YYYY-MM-DD'))  between ? and ?) ";
 
 		if (listaProcedimentosFiltro.size()>0) {
-			sqlProcedimentoPrimario+=" and a1.codprocedimento = any(?) ";
-			sqlProcedimentoSecundario+=" and a1.codprocedimento = any(?) ";
+			sqlProcedimentoPrimario += filtroProcedimento;
+			sqlProcedimentoSecundario += filtroProcedimento;
 		}
 
 		if (tipoGeracao.equals("A")){
-			sqlProcedimentoPrimario+=" and sa.atendimento_realizado = true";
-			sqlProcedimentoSecundario+=" and sa.atendimento_realizado = true";
+			sqlProcedimentoPrimario += filtroAtendimentoRealizado;
+			sqlProcedimentoSecundario+= filtroAtendimentoRealizado;
 		}
 		else {
-			sqlProcedimentoPrimario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
-			sqlProcedimentoSecundario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+			sqlProcedimentoPrimario += filtroPresencaAtendimentoRealizado;
+			sqlProcedimentoSecundario += filtroPresencaAtendimentoRealizado;
 		}
 
 		if (idConfiguracaoProducaoBpa!=null){
-			sqlProcedimentoPrimario = sqlProcedimentoPrimario+ " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
-					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
-					"where cpb .id =?)";
-
-			sqlProcedimentoSecundario = sqlProcedimentoSecundario+  " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
-					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
-					"where cpb .id =?)";
+			sqlProcedimentoPrimario += filtroConfiguracaoProducao;
+			sqlProcedimentoSecundario +=  filtroConfiguracaoProducao;
+		}
+		
+		if(user_session.getUnidade().getParametro().isBpaComLaudoAutorizado()) {
+			sqlProcedimentoPrimario += filtroLaudoAutorizado;			
+			sqlProcedimentoSecundario += filtroLaudoAutorizado;
 		}
 
 		try {
@@ -2033,12 +2046,22 @@ public class AtendimentoDAO {
 
 		if (listaProcedimentosFiltro.size()>0) {
 			ps.setObject(j, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
-			j = j++;
+			j++;
 		}
 		if (codConfiguracaoProducao!=null){
 			ps.setInt(j, codConfiguracaoProducao);
-			j = j++;
+			j++;
 		}
+		if(user_session.getUnidade().getParametro().isBpaComLaudoAutorizado()) {
+			ps.setDate(j, new java.sql.Date(dataInicio.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataFim.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataInicio.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataFim.getTime()));			
+		}
+		
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			totalAtendimentos = rs.getInt("total");
