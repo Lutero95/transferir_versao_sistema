@@ -998,7 +998,7 @@ public class BpaController implements Serializable {
 	}
 
 	public void buscaBpasIndividualizadosDoProcedimento(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro) throws ProjetoException {
-		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, listaIdUnidades, this.idConfiguracaoProducaoBpa);
+		this.listaDeBpaIndividualizado = bpaIndividualizadoDAO.carregaDadosBpaIndividualizado(dataInicio, dataFim, competencia, tipoGeracao, listaProcedimentosFiltro, this.idConfiguracaoProducaoBpa);
 	}
 
 	public void listarPossiveisDuplicidades() throws ProjetoException {

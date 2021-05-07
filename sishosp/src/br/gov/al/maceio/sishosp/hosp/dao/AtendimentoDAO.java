@@ -1966,7 +1966,7 @@ public class AtendimentoDAO {
 				"\tirpm.id_procedimento_mensal = pm.id\n" +
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\t\n" +
-				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
+				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' and  coalesce(aps.excluido,'N') ='N' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
 
@@ -1986,11 +1986,11 @@ public class AtendimentoDAO {
 		}
 
 		if (idConfiguracaoProducaoBpa!=null){
-			sqlProcedimentoPrimario = sqlProcedimentoPrimario+ " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+			sqlProcedimentoPrimario += " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
 					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
 					"where cpb .id =?)";
 
-			sqlProcedimentoSecundario = sqlProcedimentoSecundario+  " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+			sqlProcedimentoSecundario +=  " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
 					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
 					"where cpb .id =?)";
 		}

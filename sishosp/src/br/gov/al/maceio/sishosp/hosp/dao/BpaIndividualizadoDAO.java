@@ -36,8 +36,7 @@ public class BpaIndividualizadoDAO {
 	private static final String PRD_INE = "          ";
 
 	public List<BpaIndividualizadoBean> carregaDadosBpaIndividualizado
-			(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro, List<Integer> idUnidades,
-			 Integer codigoConfiguracaoProducao)
+			(Date dataInicio, Date dataFim, String competencia, String tipoGeracao, List<ProcedimentoBean> listaProcedimentosFiltro,Integer codigoConfiguracaoProducao)
 			throws ProjetoException {
 
 		List<BpaIndividualizadoBean> listaDeBpaIndividualizado = new ArrayList<BpaIndividualizadoBean>();
@@ -161,8 +160,11 @@ public class BpaIndividualizadoDAO {
 		if (listaProcedimentosFiltro.size()>0)
 			sql+=" and a.codprocedimento = any(?) ";
 
-		if(!idUnidades.isEmpty())
-			sql += " and a.cod_unidade = any(?) ";
+		if (codigoConfiguracaoProducao!=null){
+			sql += " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
+					"where cpb .id =?) ";
+		}
 
 		if (tipoGeracao.equals("A")){
 			sql+=" and a.atendimento_realizado = true";
@@ -204,8 +206,8 @@ public class BpaIndividualizadoDAO {
 				parametro++;
 			}
 
-			if (!idUnidades.isEmpty())
-				ps.setObject(parametro, ps.getConnection().createArrayOf("INTEGER", idUnidades.toArray()));
+			if (codigoConfiguracaoProducao!=null)
+				ps.setInt(parametro, codigoConfiguracaoProducao);
 
 			LaudoController validacaoSigtap = new LaudoController();
 			ResultSet rs = ps.executeQuery();
