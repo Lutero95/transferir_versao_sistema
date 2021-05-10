@@ -76,6 +76,7 @@
 	</parameter>
 	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="id_programa" class="java.lang.Integer"/>
+	<parameter name="id_procedimento" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
 p.dtanascimento as dtnascimento, p.sexo, p.codraca as codraca,
@@ -97,15 +98,16 @@ case when extract(month from l.data_autorizacao) = 1 then 'JANEIRO'
 	end as mes, empresa.logomarca2 logomarca, empresa.nome_principal, empresa.cnes,
 	m.codigo codmunicipio, pro.descprograma
 from hosp.laudo l
-inner join hosp.pacientes as p on (p.id_paciente = l.codpaciente)
+join hosp.pacientes as p on (p.id_paciente = l.codpaciente)
 left join hosp.municipio m on m.id_municipio = p.codmunicipio
-inner join hosp.proc as pr on (pr.id = l.codprocedimento_primario)
+join hosp.proc as pr on (pr.id = l.codprocedimento_primario)
 join hosp.cid c on c.cod = l.cid1
 join hosp.unidade u on u.id =  $P{codunidade} 
 join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 join hosp.programa pro on pro.cod_procedimento = pr.id 
 where l.data_autorizacao between $P{dt_inicial} and $P{dt_final}
-and ((  $P{id_programa}  is not null and pro.id_programa =   $P{id_programa} ) or ((  $P{id_programa}  = 0 ) OR (  $P{id_programa}  is null )))]]>
+and ((  $P{id_programa}  is not null and pro.id_programa =   $P{id_programa} ) or ((  $P{id_programa}  = 0 ) OR (  $P{id_programa}  is null )))
+and ((  $P{id_procedimento}   is not null and pr.id =  $P{id_procedimento} ) or ((  $P{id_procedimento}   = 0 ) OR (  $P{id_procedimento}   is null )))]]>
 	</queryString>
 	<field name="seq" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="seq"/>
