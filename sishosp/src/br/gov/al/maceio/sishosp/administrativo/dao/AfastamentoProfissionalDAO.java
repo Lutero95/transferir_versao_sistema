@@ -161,7 +161,7 @@ public class AfastamentoProfissionalDAO {
 	private Integer buscaIdSituacaoPadraoDoAfastamento(Connection conexaoAuxiliar,
 			String motivoAfastamento) throws ProjetoException, SQLException {
 
-		String sql = "select pe.situacao_padrao_falta_profissional, pe.situacao_padrao_licenca_medica, pe.situacao_padrao_ferias "
+		String sql = "select pe.situacao_padrao_falta_profissional, pe.situacao_padrao_licenca_medica, pe.situacao_padrao_ferias, situacao_padrao_desligamento_profissional  "
 				+ " from hosp.parametro_empresa pe where pe.id_empresa = ?;";
 		
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -181,6 +181,8 @@ public class AfastamentoProfissionalDAO {
 					idSituacao = rs.getInt("situacao_padrao_licenca_medica");
 				else if (motivoAfastamento.equals("FA"))
 					idSituacao = rs.getInt("situacao_padrao_falta_profissional");
+				else if (motivoAfastamento.equals("DE"))
+					idSituacao = rs.getInt("situacao_padrao_desligamento_profissional");
 			}
 
 		} catch (SQLException sqle) {
