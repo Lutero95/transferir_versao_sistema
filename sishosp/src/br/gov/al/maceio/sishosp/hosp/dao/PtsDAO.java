@@ -674,13 +674,12 @@ public class PtsDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            int i = 3;
+            int i = 1;
 
 
             if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
                 stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
                 i++;
-                ;
             }
 
 
