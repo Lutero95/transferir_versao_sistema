@@ -1042,9 +1042,10 @@ public class AgendaController implements Serializable {
         usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
 
-        adicionarLiberacaoEspecialidade();
-        listaIdFuncionariosComDuplicidadeEspecialidade.add(this.funcionarioSelecionado.getId());
-        adicionarFuncionario(this.funcionarioSelecionado);
+        if(adicionarLiberacaoEspecialidade()) {
+        	listaIdFuncionariosComDuplicidadeEspecialidade.add(this.funcionarioSelecionado.getId());
+        	adicionarFuncionario(this.funcionarioSelecionado);
+        }
     }
 
     public void validarSenhaLiberacaoAgendaComProcedimento() throws ProjetoException {
@@ -1075,11 +1076,13 @@ public class AgendaController implements Serializable {
         return request.getRequestURL().toString();
     }
 
-    private void adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
+    private boolean adicionarLiberacaoEspecialidade() throws ProjetoException, SQLException {
         if (!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao)) {
             listaLiberacoes.add(MotivoLiberacao.DUPLICIDADE_ESPECIALIDADE.getTitulo());
             JSFUtil.fecharDialog(DIALOG_LIBERACAO);
+            return true;
         }
+        return false;
     }
 
     public void validarSenhaLiberacaoEspecialidadeAgendaAvulsaProfissional() throws ProjetoException, SQLException {
@@ -1087,8 +1090,8 @@ public class AgendaController implements Serializable {
 
         usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(),
                 ValidacaoSenha.LIBERACAO.getSigla());
-        adicionarLiberacaoEspecialidade();
-        adicionarPacienteSelecionado(pacienteSelecionado);
+        if(adicionarLiberacaoEspecialidade())
+        	adicionarPacienteSelecionado(pacienteSelecionado);
     }
 
     private void limpaDadosDialogLiberacao() {
