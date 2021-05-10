@@ -189,7 +189,7 @@ public class PtsCifDAO {
         		"(id_paciente_instituicao, queixa_principal, condicoes_saude, funcao_estrutura_corpo, " +
         		"atividade_participacao,  id_fator_ambiental, fatores_pessoais, "+
         		" data_avaliacao, data_vencimento) " + 
-        		"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
+        		"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
         
         Connection conexao = null;
         try {
@@ -242,7 +242,7 @@ public class PtsCifDAO {
             alterarFatoresAmbientais(pts, conexao);
             
             mapearPreparedStatementPtsCif(pts, ps);
-            ps.setInt(11, pts.getId());
+            ps.setInt(10, pts.getId());
             ps.executeUpdate();
 
             excluirObjetivoPtsCif(pts, conexao);
