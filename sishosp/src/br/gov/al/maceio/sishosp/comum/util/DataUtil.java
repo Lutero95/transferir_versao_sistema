@@ -296,5 +296,9 @@ public final class DataUtil {
 		data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		return data;
 	}
+	
+	public static boolean dataEstaEntrePeriodoInformado(Date data, Date dataInicio, Date dataFim) {
+		return data.compareTo(dataInicio) >= 0 && data.compareTo(dataFim) <= 0;
+	}
 
 }

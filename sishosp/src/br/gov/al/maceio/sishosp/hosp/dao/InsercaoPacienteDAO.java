@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
@@ -1243,7 +1244,8 @@ public class InsercaoPacienteDAO {
 				}
 				
 				for (FuncionarioBean profissional : lista) {
-					limiteSessoes = inserirAtendimentos1SemLaudo(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar, limiteSessoes);
+					listaAgendamento.get(i).getPaciente().setId_paciente(insercao.getPaciente().getId_paciente());
+					limiteSessoes = inserirAtendimentos1SemLaudo(insercao, idAtendimento, profissional, listaAgendamento.get(i), conAuxiliar, limiteSessoes, idPacienteInstituicao);
 				 if(limiteSessoes.equals(insercao.getSessoes()))
 					 break;
 				}
@@ -1261,7 +1263,7 @@ public class InsercaoPacienteDAO {
 	}	
 		
 	private Integer inserirAtendimentos1SemLaudo(InsercaoPacienteBean insercao, Integer idAtendimento, FuncionarioBean profissional,
-			AgendaBean agendamento, Connection conAuxiliar, Integer limiteSessao) throws ProjetoException, SQLException {
+			AgendaBean agendamento, Connection conAuxiliar, Integer limiteSessao, Integer idPacienteInstituicao) throws ProjetoException, SQLException {
 
 		try {
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
@@ -1276,7 +1278,9 @@ public class InsercaoPacienteDAO {
 					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 					ps = conAuxiliar.prepareStatement(sql);
 
-					ps.setLong(1, profissional.getId());
+					ArrayList<SubstituicaoProfissional> listaSubstituicao =  new GerenciarPacienteDAO().listaAtendimentosQueTiveramSubstituicaoProfissional(idPacienteInstituicao, conAuxiliar);
+					Long idFuncionario = retornaIdFuncionarioCorretoEmSubstituicao(listaSubstituicao, agendamento, profissional);
+					ps.setLong(1, idFuncionario);
 					ps.setInt(2, idAtendimento);
 					
 					CboBean cboCompativel = new FuncionarioDAO().retornaPrimeiroCboProfissional(profissional.getId());
@@ -1299,6 +1303,23 @@ public class InsercaoPacienteDAO {
 			throw new ProjetoException(ex, this.getClass().getName());
 		}
 		return limiteSessao;
+	}
+	
+	public Long retornaIdFuncionarioCorretoEmSubstituicao(List<SubstituicaoProfissional> listaAtendimentoSubstituicao,
+			AgendaBean agenda, FuncionarioBean funcionario) {
+
+		for (SubstituicaoProfissional substituicao : listaAtendimentoSubstituicao) {
+			if (funcionario.getId().equals(substituicao.getAfastamentoProfissional().getFuncionario().getId())
+					&& agenda.getPaciente().getId_paciente()
+							.equals(substituicao.getAtendimento().getPaciente().getId_paciente())
+					&& DataUtil.dataEstaEntrePeriodoInformado(agenda.getDataAtendimento(),
+							substituicao.getAfastamentoProfissional().getPeriodoInicio(),
+							substituicao.getAfastamentoProfissional().getPeriodoFinal())) {
+				return substituicao.getFuncionario().getId();
+			}
+		}
+
+		return funcionario.getId();
 	}
 	
 	

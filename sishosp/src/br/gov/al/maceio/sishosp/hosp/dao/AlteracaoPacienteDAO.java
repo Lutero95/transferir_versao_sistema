@@ -208,7 +208,7 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 
-			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
@@ -344,7 +344,9 @@ public class AlteracaoPacienteDAO {
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
-								ps8.setLong(1, listaProfissionais.get(j).getId());
+								listAgendamentoProfissional.get(i).getPaciente().setId_paciente(codPaciente);
+								Long idFuncionario = new InsercaoPacienteDAO().retornaIdFuncionarioCorretoEmSubstituicao(listaSubstituicao, listAgendamentoProfissional.get(i), listaProfissionais.get(j));
+								ps8.setLong(1, idFuncionario);
 								ps8.setInt(2, idAgend);
 								
 								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
@@ -572,6 +574,7 @@ public class AlteracaoPacienteDAO {
 		}
 		return retorno;
 	}
+	
 
 	public boolean gravarAlteracaoEquipeDiaHorario(InsercaoPacienteBean insercao,
 												   InsercaoPacienteBean insercaoParaLaudo, List<AgendaBean> listAgendamentoProfissional,
@@ -717,7 +720,9 @@ public class AlteracaoPacienteDAO {
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
-								ps8.setLong(1, listaProfissionais.get(j).getId());
+								listAgendamentoProfissional.get(i).getPaciente().setId_paciente(insercao.getPaciente().getId_paciente());
+								Long idFuncionario = new InsercaoPacienteDAO().retornaIdFuncionarioCorretoEmSubstituicao(listaSubstituicao, listAgendamentoProfissional.get(i), listaProfissionais.get(j));
+								ps8.setLong(1, idFuncionario);
 								ps8.setInt(2, idAgend);
 								
 								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda

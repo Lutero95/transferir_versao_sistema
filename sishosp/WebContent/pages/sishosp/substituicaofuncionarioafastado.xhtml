@@ -177,15 +177,11 @@
                                                  onclick="PF('dlgConsuGrop').show();"/>
                             </p:outputPanel>
                         </b:column>
-
                     </b:row>
-
                     <br/>
                     
 
-
                     <b:row>
-
                         <b:column span="2" class="col-md-2-new new-span1"
                                   style="margin-bottom:10px;">
 
@@ -193,7 +189,6 @@
                                              class="btn-acao-table acao-buscar"
                                              action="#{SubstituicaoController.buscarAgendamentoDoFuncionarioAfastado}"
                                              update="msgPagina, dtAtendimentos"></p:commandButton>
-
                         </b:column>
 
                         <b:column span="2" class="new-span1">
@@ -203,13 +198,10 @@
                                              action="#{SubstituicaoController.limparFiltroBuscaAtendimentos()}"
                                              update=":formSubstituicao"></p:commandButton>
                         </b:column>
-
                     </b:row>
-
                     <br/>
 
                     <b:row>
-
                         <p:dataTable value="#{SubstituicaoController.listaAtendimentos}" var="tab" id="dtAtendimentos"
                         emptyMessage="Nenhum Registro" scrollable="true" scrollHeight="200"
                                      selection="#{SubstituicaoController.listaAtendimentosSelecionada}"
@@ -220,9 +212,10 @@
                             </f:facet>
 
                             <p:column selectionMode="multiple"  style="width:16px;text-align:center"/>
- <p:column headerText="Turno" width="15%">
+ 							<p:column headerText="Turno" width="15%">
                                 <h:outputText value="#{tab.id1}"/>
                             </p:column>
+                            
                             <p:column headerText="Turno" width="15%">
                                 <h:outputText value="#{tab.turno}"/>
                             </p:column>
@@ -240,11 +233,8 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </p:column>
-
                         </p:dataTable>
-
                     </b:row>
-
                     <br/>
 
                     <p:outputPanel id="outProfissional">

@@ -1064,16 +1064,18 @@ public class GerenciarPacienteDAO {
 
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
         try {
-            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.* from adm.substituicao_funcionario sf " +
+            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.*, af.inicio_afastamento, af.fim_afastamento "+
+            		" from adm.substituicao_funcionario sf " +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
+                    "   join adm.afastamento_funcionario af on sf.id_afastamento_funcionario = af.id "+
                     "	where sf.id_atendimentos1 in ( " +
                     "	SELECT DISTINCT a1.id_atendimentos1 FROM hosp.atendimentos1 a1  " +
                     "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)  " +
                     "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date  " +
                     "AND  (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) =  " +
-                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL)  " +
-                    ")";
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND coalesce(situacao, 'A') = 'A')  " +
+                    ") 	AND coalesce(a1.excluido, 'N') = 'N'";
 
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
@@ -1086,6 +1088,8 @@ public class GerenciarPacienteDAO {
                 substituicao.getAtendimento().getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 substituicao.getAtendimento().getCbo().setCodCbo(rs.getInt("cbo"));
                 substituicao.getAfastamentoProfissional().setId(rs.getInt("id_afastamento_funcionario"));
+                substituicao.getAfastamentoProfissional().setPeriodoInicio(rs.getDate("inicio_afastamento"));
+                substituicao.getAfastamentoProfissional().setPeriodoFinal(rs.getDate("fim_afastamento"));
                 substituicao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
                 substituicao.getAfastamentoProfissional().getFuncionario().setId(rs.getLong("id_funcionario_substituido"));
                 substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
