@@ -191,6 +191,7 @@
 										action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"
 										immediate="true" style="margin-top: 5px;">
 										<p:menuitem value="Inserir Paciente na Fisioterapia" 
+											rendered="#{GerenciarPacienteController.opcaoAtendimento == 'T'}"
 											action="/pages/sishosp/insercaopacientesemlaudo.xhtml?faces-redirect=true"
 											icon="pi pi-refresh" styleClass="split-item"/>
 									</p:splitButton>

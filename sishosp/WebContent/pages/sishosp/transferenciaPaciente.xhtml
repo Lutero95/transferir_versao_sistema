@@ -23,7 +23,6 @@
                 <h:form id="formInsercao">
 
                     <b:row>
-
                         <b:column span="2" class="label-position inserPacient">
                             <b:label value="Paciente:" severity="info"/>
 
@@ -39,11 +38,9 @@
                                     value="#{TransferenciaPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
                                     class="campo-laudoDig3"/>
                         </b:column>
-
                     </b:row>
 
                     <b:row>
-
                         <b:column span="2" class="label-position inserPacient">
                             <b:label value="CID:" severity="info"/>
 
@@ -71,15 +68,11 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </b:column>
-
                     </b:row>
-
                 </h:form>
 
                 <h:form id="formInsercao2">
-
                     <b:row>
-
                         <b:column span="2" class="label-position data-size">
 
                             <b:label value="Data de Transferência" id="datasoli"
@@ -92,14 +85,11 @@
                                     class="select-agendaEquipe2" showOn="button"
                                     pattern="dd/MM/yyyy" size="15">
                             </p:calendar>
-
                         </b:column>
-
                     </b:row>
 
                     <p:fieldset legend="Dados Atuais" style="margin-bottom:20px">
                         <b:row>
-
                             <p:outputPanel id="outProgAtual">
 
                                 <b:column span="5"
@@ -112,14 +102,12 @@
 
                                 </b:column>
                             </p:outputPanel>
-
                         </b:row>
 
-                        <br></br>
+                        <br />
 
                         <b:row>
                             <p:outputPanel id="outGrupoAtual">
-
                                 <b:column span="5"
                                           class="label-position new-data-size4 new-comple1">
                                     <b:label for="prog" value="Grupo Atual:" id="grupoAtual" class="fire-label"
@@ -129,16 +117,12 @@
                                                    value="#{TransferenciaPacienteController.insercao.grupoAtual.descGrupo}"></p:outputLabel>
 
                                 </b:column>
-
                             </p:outputPanel>
-
                         </b:row>
-
-                        <br></br>
+                        <br />
 
                         <b:row>
                             <p:outputPanel id="outEquipeAtual">
-
                                 <b:column span="5"
                                           class="label-position new-data-size new-comple1">
                                     <b:label for="equipe" value="Equipe Atual:" id="equipeAtual" class="fire-label"
@@ -148,19 +132,14 @@
                                                    value="#{TransferenciaPacienteController.insercao.equipeAtual.descEquipe}"></p:outputLabel>
 
                                 </b:column>
-
                             </p:outputPanel>
-
                         </b:row>
-
                     </p:fieldset>
-
-                    <br></br>
+                    <br />
 
                     <p:fieldset legend="Novos dados" style="margin-bottom:20px">
 
                         <b:row>
-
                             <p:outputPanel id="outProg">
 
                                 <b:column span="5"

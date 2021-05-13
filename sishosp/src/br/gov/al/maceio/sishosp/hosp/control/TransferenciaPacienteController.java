@@ -284,11 +284,8 @@ public class TransferenciaPacienteController implements Serializable {
     }
 
     public void carregarLaudoPaciente() throws ProjetoException {
-        insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
-                .getId());
-        insercao = aDao
-                .carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
-
+        insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+        insercao = aDao.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
     }
 
     public void abrirDialog() {

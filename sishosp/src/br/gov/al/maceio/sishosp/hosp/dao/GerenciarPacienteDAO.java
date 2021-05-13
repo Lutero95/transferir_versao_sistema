@@ -16,18 +16,16 @@ import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoGravacaoHistoricoPaciente;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.SubstituicaoProfissionalEquipeDTO;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class GerenciarPacienteDAO {
 
@@ -1565,4 +1563,38 @@ public class GerenciarPacienteDAO {
         }
         return retorno;
     }
+    
+	public boolean funcionarioEstaAfastadoDurantePeriodo(
+			FuncionarioBean funcionario, Date dataAtendimento, Connection conAuxiliar) throws ProjetoException, SQLException {
+
+		boolean existeAfastamento = false;
+		try {
+			String sql = "select exists (select af.id_funcionario_afastado \r\n" + 
+					"	from adm.afastamento_funcionario af \r\n" + 
+					"	where af.id_funcionario_afastado = ? and ? between af.inicio_afastamento and af.fim_afastamento) ";
+
+			ps = null;
+			ps = conAuxiliar.prepareStatement(sql);
+			ps.setLong(1, funcionario.getId());
+			ps.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				existeAfastamento = rs.getBoolean("exists");
+			}
+			if(existeAfastamento) {
+				JSFUtil.adicionarMensagemAdvertencia("Não é possível completar o Agendamento pois o funcionário "
+						+funcionario.getNome()+" está afastado durante este período", "");
+				conAuxiliar.rollback();
+			}	
+		} catch (SQLException sqle) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
+					sqle);
+		} catch (Exception ex) {
+			conAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return existeAfastamento;
+	}
 }

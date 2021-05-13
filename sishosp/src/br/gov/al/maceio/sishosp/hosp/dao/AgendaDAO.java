@@ -56,8 +56,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
+            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
             for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
+            	
+                if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), listaNovosAgendamentos.get(i).getDataAtendimento(), con))
+                	return false;
+            	
                 ps = con.prepareStatement(sql);
 
                 ps.setInt(1, agenda.getPaciente().getId_paciente());
@@ -252,7 +257,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " ?, ?, ?, ?,  true, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
-
+            
+            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+            for (FuncionarioBean funcionario : listaProfissionais) {
+            	
+            	if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(funcionario, agenda.getDataAtendimento(), con))
+            		return false;
+            }
+            
             ps = con.prepareStatement(sql);
 
             ps.setInt(1, agenda.getPaciente().getId_paciente());
@@ -399,6 +411,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " ?, ?, ?, ?,  true, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
+            
+            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+            	
+			if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), agenda.getDataAtendimento(), con))
+				return false;
+            
             for (PacientesComInformacaoAtendimentoDTO pacienteComInformacaoAtendimentoDTO : listaPacientesComInformacaoAtendimentoDTO) {
 
                 Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda,

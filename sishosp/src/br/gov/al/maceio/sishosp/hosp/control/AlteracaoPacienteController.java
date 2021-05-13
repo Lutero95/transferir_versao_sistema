@@ -1509,6 +1509,7 @@ public class AlteracaoPacienteController implements Serializable {
 
             List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasIhHorariosAtendimetoParaPacienteInstituicao(id);
             adicionarFuncionarioParaEdicao(listaFuncionarioAuxiliar);
+            
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
         }

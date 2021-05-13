@@ -231,8 +231,7 @@ public class RenovacaoPacienteDAO {
 
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 				ps3.setInt(1, codPaciente);
-				ps3.setDate(2,
-						new java.sql.Date(listAgendamentoProfissional.get(i).getDataAtendimento().getTime()));
+				ps3.setDate(2, new java.sql.Date(listAgendamentoProfissional.get(i).getDataAtendimento().getTime()));
 				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getTurno() != null) {
@@ -290,6 +289,9 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
+			            		return false;
+							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
 											codPaciente, insercao.getGrupo().getIdGrupo(), insercao.getEquipe().getCodEquipe(),
@@ -530,6 +532,9 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(h), listaAgendamento.get(i).getDataAtendimento(), conexao))
+			            		return false;
+							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
 											listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), 
@@ -687,6 +692,9 @@ public class RenovacaoPacienteDAO {
 				
 				List<CboBean> listaCbosProfissional = 
 						funcionarioDAO.listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
+				
+				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), conexao))
+            		return false;
 				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 

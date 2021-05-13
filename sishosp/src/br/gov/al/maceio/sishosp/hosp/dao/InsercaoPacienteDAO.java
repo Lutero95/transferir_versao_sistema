@@ -223,7 +223,7 @@ public class InsercaoPacienteDAO {
 			ps3 = con.prepareStatement(sql3);
 
 			for (int i = 0; i < listaAgendamento.size(); i++) {
-
+				
 				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
 				ps3.setLong(2, insercao.getEquipe().getCodEquipe());
 				ps3.setDate(3,
@@ -266,6 +266,9 @@ public class InsercaoPacienteDAO {
 
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataAtendimento()) == lista.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(lista.get(j), listaAgendamento.get(i).getDataAtendimento(), con))
+			            		return false;
+							
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							Integer idProcedimentoEspecifico = new AgendaDAO().
@@ -433,6 +436,9 @@ public class InsercaoPacienteDAO {
 
 						if (DataUtil.extrairDiaDeData(
 								listaAgendamento.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+							
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listaAgendamento.get(i).getDataAtendimento(), con))
+			            		return false;
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
@@ -575,6 +581,9 @@ public class InsercaoPacienteDAO {
 				if (rs.next()) {
 					idAgend = rs.getInt("id_atendimento");
 				}
+				
+				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), con))
+            		return false;
 
 				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
@@ -1047,11 +1056,15 @@ public class InsercaoPacienteDAO {
 		try {
 			List<CboBean> listaCbosProfissional = 
 					new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(profissional.getId(), con);
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
 
 				if (DataUtil.extrairDiaDeData(agendamento.getDataAtendimento()) == 
 						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
+					
+					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(profissional, agendamento.getDataAtendimento(), conAuxiliar))
+	            		conAuxiliar.close();
 					
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
@@ -1266,13 +1279,17 @@ public class InsercaoPacienteDAO {
 			AgendaBean agendamento, Connection conAuxiliar, Integer limiteSessao, Integer idPacienteInstituicao) throws ProjetoException, SQLException {
 
 		try {
+			GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 			for (int h = 0; h < profissional.getListaDiasAtendimentoSemana().size(); h++) {
 
 				if (DataUtil.extrairDiaDeData(agendamento.getDataAtendimento()) == 
 						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana() &&
 						agendamento.getTurno().equals(profissional.getListaDiasAtendimentoSemana().get(h).getTurno()) ) {
 
-					
+		            	
+					if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(profissional, agendamento.getDataAtendimento(), conAuxiliar))
+						conAuxiliar.close();
+		            
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 					PreparedStatement ps = conAuxiliar.prepareStatement(sql);
