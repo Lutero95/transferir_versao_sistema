@@ -2957,16 +2957,19 @@ public class FuncionarioDAO {
 	public void bloqueiaAcessoSeProfissionalEstaAfastadoOuDesligado(String cpf, Connection conexaoAuxiliar)
 			throws ProjetoException, SQLException {
 
-		String sql = "select f.ativo, \r\n" + 
-				"	case when current_date between af.inicio_afastamento and af.fim_afastamento \r\n" + 
-				"		then 'S' \r\n" + 
-				"		else 'N' \r\n" + 
-				"		end as afastado \r\n" + 
+		String sql = "select f.ativo,\r\n" + 
+				"	case when current_date between af.inicio_afastamento and af.fim_afastamento\r\n" + 
+				"		then 'S'\r\n" + 
+				"		else 'N'\r\n" + 
+				"		end as afastado\r\n" + 
 				"	from acl.funcionarios f \r\n" + 
 				"	left join adm.afastamento_funcionario af on af.id_funcionario_afastado = f.id_funcionario \r\n" + 
+				"	left join hosp.unidade u on f.codunidade = u.id \r\n" + 
+				"	left join hosp.parametro p on p.codunidade = u.id \r\n" + 
 				"	where af.motivo_afastamento != 'FA' and f.cpf = ? and \r\n" + 
-				"		( (current_date between af.inicio_afastamento and af.fim_afastamento) \r\n" + 
-				"		or f.ativo = 'N') order by af.fim_afastamento desc	limit 1;";
+				"		( (current_date between af.inicio_afastamento and af.fim_afastamento)\r\n" + 
+				"		or f.ativo = 'N') and p.bloquear_acesso_em_afastamento = true \r\n" + 
+				"		order by af.fim_afastamento desc	limit 1;";
 
 		try {
 			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
