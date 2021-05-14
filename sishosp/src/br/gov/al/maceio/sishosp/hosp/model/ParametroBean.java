@@ -54,6 +54,7 @@ public class ParametroBean implements Serializable {
     private boolean buscaAutomaticaCepPaciente;
     private boolean cidAgendaObrigatorio;
     private boolean cidPacienteTerapiaObrigatorio;
+    private boolean bloquearAcessoEmAfastamento;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
@@ -443,4 +444,13 @@ public class ParametroBean implements Serializable {
     public void setCidPacienteTerapiaObrigatorio(boolean cidPacienteTerapiaObrigatorio) {
         this.cidPacienteTerapiaObrigatorio = cidPacienteTerapiaObrigatorio;
     }
+
+	public boolean isBloquearAcessoEmAfastamento() {
+		return bloquearAcessoEmAfastamento;
+	}
+
+	public void setBloquearAcessoEmAfastamento(boolean bloquearAcessoEmAfastamento) {
+		this.bloquearAcessoEmAfastamento = bloquearAcessoEmAfastamento;
+	}
+    
 }
