@@ -190,6 +190,10 @@ public class AtendimentoDAO {
 
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimentoAnterior().getId())
 						&& !listaIdAtendimentosComIncosistenciaLog.contains(atendimento.getId1())) {
+					
+					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(atendimento.getFuncionario(), atendimento.getDataAtendimento(), con))
+	            		return false;
+					
 					PreparedStatement stmt2 = con.prepareStatement(sql2);
 					stmt2.setLong(1, atendimento.getFuncionario().getId());
 					stmt2.setInt(2, idAtendimento);
