@@ -26,7 +26,6 @@
 						<p:tab title="Dados Gerais">
 
 							<b:row>
-
 								<b:column span="12" class="label-position new-col12">
 									<b:label value="Nome Unidade" severity="info" />
 
@@ -803,6 +802,12 @@
 											validatorMessage="Versão do Sistema deve conter entre 0 e 10 caracteres.">
 											<f:validateLength minimum="0" maximum="10" />
 										</b:inputText>
+									</b:column>
+									
+									<b:column span="5" class="label-position">
+										<p:selectBooleanCheckbox
+											value="#{UnidadeController.unidade.parametro.bpaComLaudoAutorizado}"
+											itemLabel="Exportar BPA Apenas com Laudos Autorizados"/>
 									</b:column>
 								</b:row>
 							</p:outputPanel>

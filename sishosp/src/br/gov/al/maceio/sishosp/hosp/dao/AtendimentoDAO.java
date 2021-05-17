@@ -165,13 +165,13 @@ public class AtendimentoDAO {
 
 				ArrayList<RemocaoProfissionalEquipe> listaProfissionaisRemovidosAtendimentoEquipeAux = gerenciarPacienteDAO.listaAtendimentosQueTiveramRemocaoProfissionalAtendimentoEquipePeloIdAtendimentoCodProfissionalAtendimento(idAtendimento, lista.get(i).getFuncionario().getId(), con) ;
 				listaProfissionaisRemovidosAtendimentoEquipe.addAll(listaProfissionaisRemovidosAtendimentoEquipeAux);
-				
+
 				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getId1())) {
 					alteraAtendimentoComInconsistenciaLog(lista.get(i), con);
 				}
-				
+
 			}
-			
+
 			listaIdAtendimentosComIncosistenciaLog.addAll(retornaAtendimentosComInconsistenciaLog(lista.get(0).getId(), con));
 
 			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
@@ -215,7 +215,7 @@ public class AtendimentoDAO {
 						stmt2.setTime(8, DataUtil.retornarHorarioEmTime(atendimento.getHorarioAtendimento()));
 					else
 						stmt2.setNull(8, Types.NULL);
-					
+
 					if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getCidPrimario().getIdCid()))
 						stmt2.setNull(9, Types.NULL);
 					else
@@ -385,10 +385,10 @@ public class AtendimentoDAO {
 		}
 		return alterou;
 	}
-	
+
 	private void alteraAtendimentoComInconsistenciaLog(AtendimentoBean atendimento, Connection conAuxiliar)
 			throws SQLException {
-		
+
 		try {
 			PreparedStatement ps2;
 			String sql = " UPDATE hosp.atendimentos1 SET id_situacao_atendimento = ? " + " where id_atendimentos1 = "
@@ -409,10 +409,10 @@ public class AtendimentoDAO {
 			conAuxiliar.rollback();
 		}
 	}
-	
+
 	private List<Integer> retornaAtendimentosComInconsistenciaLog(Integer idAtendimento, Connection conAuxiliar)
 			throws SQLException {
-		
+
 		List<Integer> listaIdAtendimento1 = new ArrayList<>();
 		try {
 			PreparedStatement ps2;
@@ -728,29 +728,29 @@ public class AtendimentoDAO {
 			(Integer idUnidade, Long codigoProfissionalAtendimento, Date dataAtende) throws ProjetoException {
 
 		Integer quantidadeDePendenciasAnterioresDeEvolucao = 0;
-		String sql = "select count(*) qtd from hosp.atendimentos1 a1 \r\n" + 
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \r\n" + 
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente \r\n" + 
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento \r\n" + 
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade \r\n" + 
-				"	JOIN hosp.unidade u ON u.id = ? \r\n" + 
-				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa \r\n" + 
-				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id \r\n" + 
-				"	left join hosp.programa p on p.id_programa = a.codprograma \r\n" + 
-				"	left join hosp.grupo g on g.id_grupo = a.codgrupo  \r\n" + 
-				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id \r\n" + 
-				"	\r\n" + 
-				"	where coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null \r\n" + 
-				"	and \r\n" + 
-				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then \r\n" + 
-				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" + 
-				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" + 
-				"		a.dtaatende >= ceu.inicio_evolucao \r\n" + 
-				"		and a.codprograma = ceu.codprograma \r\n" + 
-				"		and a.codgrupo = ceu.codgrupo		\r\n" + 
-				"	end	\r\n" + 
-				"	and a.dtaatende < ? \r\n" + 
+		String sql = "select count(*) qtd from hosp.atendimentos1 a1 \r\n" +
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento \r\n" +
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente \r\n" +
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento \r\n" +
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade \r\n" +
+				"	JOIN hosp.unidade u ON u.id = ? \r\n" +
+				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" +
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa \r\n" +
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id \r\n" +
+				"	left join hosp.programa p on p.id_programa = a.codprograma \r\n" +
+				"	left join hosp.grupo g on g.id_grupo = a.codgrupo  \r\n" +
+				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id \r\n" +
+				"	\r\n" +
+				"	where coalesce(a.presenca,'N')='S' and a1.id_situacao_atendimento is null \r\n" +
+				"	and \r\n" +
+				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then \r\n" +
+				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" +
+				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" +
+				"		a.dtaatende >= ceu.inicio_evolucao \r\n" +
+				"		and a.codprograma = ceu.codprograma \r\n" +
+				"		and a.codgrupo = ceu.codgrupo		\r\n" +
+				"	end	\r\n" +
+				"	and a.dtaatende < ? \r\n" +
 				"	and a1.codprofissionalatendimento = ? and coalesce(a.situacao,'A')<>'C'and coalesce(a1.excluido,'N' )='N'";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -779,30 +779,30 @@ public class AtendimentoDAO {
 
 	public List<PendenciaEvolucaoProgramaGrupoDTO> retornaTotalDePendenciasDeEvolucaoDoUsuarioLogado() throws ProjetoException {
 
-		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   	\r\n" + 
-				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   	\r\n" + 
-				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   	\r\n" + 
-				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   \r\n" + 
-				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   \r\n" + 
-				"	JOIN hosp.unidade u ON u.id = ?    \r\n" + 
-				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" + 
-				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   	\r\n" + 
-				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   \r\n" + 
-				"	join hosp.programa p on p.id_programa = a.codprograma   	\r\n" + 
-				"	join hosp.grupo g on g.id_grupo = a.codgrupo    \r\n" + 
-				"	\r\n" + 
-				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  \r\n" + 
-				"	where coalesce(a.presenca,'N')='S' and  (a1.id_situacao_atendimento is null)   	\r\n" + 
-				"	and\r\n" + 
-				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then\r\n" + 
-				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" + 
-				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" + 
-				"		a.dtaatende >= ceu.inicio_evolucao \r\n" + 
-				"		and a.codprograma = ceu.codprograma \r\n" + 
-				"		and a.codgrupo = ceu.codgrupo		\r\n" + 
-				"	end	\r\n" + 
-				"	and a.dtaatende<current_date   	and a1.codprofissionalatendimento = ? \r\n" + 
-				"	and coalesce(a.situacao,'A')<>'C'  	and coalesce(a1.excluido,'N' )='N' \r\n" + 
+		String sql = "	select count(*) total, p.descprograma, g.descgrupo from hosp.atendimentos1 a1   	\r\n" +
+				"	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento   	\r\n" +
+				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente   	\r\n" +
+				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento   \r\n" +
+				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade   \r\n" +
+				"	JOIN hosp.unidade u ON u.id = ?    \r\n" +
+				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" +
+				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa   	\r\n" +
+				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id   \r\n" +
+				"	join hosp.programa p on p.id_programa = a.codprograma   	\r\n" +
+				"	join hosp.grupo g on g.id_grupo = a.codgrupo    \r\n" +
+				"	\r\n" +
+				"	left join hosp.situacao_atendimento sa on a1.id_situacao_atendimento = sa.id  \r\n" +
+				"	where coalesce(a.presenca,'N')='S' and  (a1.id_situacao_atendimento is null)   	\r\n" +
+				"	and\r\n" +
+				"	case when pa.verifica_periodo_inicial_evolucao_programa = false then\r\n" +
+				"		a.dtaatende >= pa.inicio_evolucao_unidade \r\n" +
+				"	when pa.verifica_periodo_inicial_evolucao_programa = true then \r\n" +
+				"		a.dtaatende >= ceu.inicio_evolucao \r\n" +
+				"		and a.codprograma = ceu.codprograma \r\n" +
+				"		and a.codgrupo = ceu.codgrupo		\r\n" +
+				"	end	\r\n" +
+				"	and a.dtaatende<current_date   	and a1.codprofissionalatendimento = ? \r\n" +
+				"	and coalesce(a.situacao,'A')<>'C'  	and coalesce(a1.excluido,'N' )='N' \r\n" +
 				"	group by p.descprograma, g.descgrupo ";
 
 
@@ -1927,6 +1927,8 @@ public class AtendimentoDAO {
 		String sqlProcedimentoPrimario = "select count(*) total \n" +
 				"from hosp.atendimentos a \n" +
 				"inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) \n" +
+				"left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" +
+				"left join hosp.laudo l on l.id_laudo  = pi.codlaudo " +
 				"left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento \n" +
 				"inner join hosp.programa p on (a.codprograma = p.id_programa) \n" +
 				"inner join hosp.grupo on (a.codgrupo = grupo.id_grupo) \n" +
@@ -1951,6 +1953,8 @@ public class AtendimentoDAO {
 				"\tfrom hosp.atendimentos a  \n" +
 				"\tjoin hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)  \n" +
 				"\tjoin hosp.atendimentos1_procedimento_secundario aps on (a1.id_atendimentos1 = aps.id_atendimentos1) \n" +
+				"left join hosp.paciente_instituicao pi on pi.id  = a.id_paciente_instituicao  \r\n" +
+				"left join hosp.laudo l on l.id_laudo  = pi.codlaudo " +
 				"\tleft join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento  \n" +
 				"\tjoin hosp.programa p on (a.codprograma = p.id_programa)  \n" +
 				"\tjoin hosp.grupo on (a.codgrupo = grupo.id_grupo)  \n" +
@@ -1969,30 +1973,39 @@ public class AtendimentoDAO {
 				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' and  coalesce(aps.excluido,'N') ='N' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
+		String filtroProcedimento = " and a1.codprocedimento = any(?) ";
+		String filtroAtendimentoRealizado = " and sa.atendimento_realizado = true";
+		String filtroPresencaAtendimentoRealizado = " and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
 
+		String filtroConfiguracaoProducao = " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
+				"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
+				"where cpb .id =?)";
+
+		String filtroLaudoAutorizado = " and l.situacao = 'A' and ((l.data_solicitacao between ? and ?) \r\n" +
+				"	or hosp.fn_GetLastDayOfMonth(to_date(l.ano_final||'-'||'0'||''||l.mes_final||'-'||'01', 'YYYY-MM-DD'))  between ? and ?) ";
 
 		if (listaProcedimentosFiltro.size()>0) {
-			sqlProcedimentoPrimario+=" and a1.codprocedimento = any(?) ";
-			sqlProcedimentoSecundario+=" and a1.codprocedimento = any(?) ";
+			sqlProcedimentoPrimario += filtroProcedimento;
+			sqlProcedimentoSecundario += filtroProcedimento;
 		}
 
 		if (tipoGeracao.equals("A")){
-			sqlProcedimentoPrimario+=" and sa.atendimento_realizado = true";
-			sqlProcedimentoSecundario+=" and sa.atendimento_realizado = true";
+			sqlProcedimentoPrimario += filtroAtendimentoRealizado;
+			sqlProcedimentoSecundario+= filtroAtendimentoRealizado;
 		}
 		else {
-			sqlProcedimentoPrimario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
-			sqlProcedimentoSecundario+=" and a.presenca='S' and ((sa.atendimento_realizado is true) or (a1.id_situacao_atendimento is null)) ";
+			sqlProcedimentoPrimario += filtroPresencaAtendimentoRealizado;
+			sqlProcedimentoSecundario += filtroPresencaAtendimentoRealizado;
 		}
 
 		if (idConfiguracaoProducaoBpa!=null){
-			sqlProcedimentoPrimario += " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
-					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
-					"where cpb .id =?)";
+			sqlProcedimentoPrimario += filtroConfiguracaoProducao;
+			sqlProcedimentoSecundario +=  filtroConfiguracaoProducao;
+		}
 
-			sqlProcedimentoSecundario +=  " and a.cod_unidade in( select cpbu.id_unidade from hosp.configuracao_producao_bpa cpb \n" +
-					"join hosp.configuracao_producao_bpa_unidade cpbu on  cpb.id  = cpbu.id_configuracao_producao_bpa\n" +
-					"where cpb .id =?)";
+		if(user_session.getUnidade().getParametro().isBpaComLaudoAutorizado()) {
+			sqlProcedimentoPrimario += filtroLaudoAutorizado;
+			sqlProcedimentoSecundario += filtroLaudoAutorizado;
 		}
 
 		try {
@@ -2033,12 +2046,22 @@ public class AtendimentoDAO {
 
 		if (listaProcedimentosFiltro.size()>0) {
 			ps.setObject(j, ps.getConnection().createArrayOf("INTEGER", lista.toArray()));
-			j = j++;
+			j++;
 		}
 		if (codConfiguracaoProducao!=null){
 			ps.setInt(j, codConfiguracaoProducao);
-			j = j++;
+			j++;
 		}
+		if(user_session.getUnidade().getParametro().isBpaComLaudoAutorizado()) {
+			ps.setDate(j, new java.sql.Date(dataInicio.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataFim.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataInicio.getTime()));
+			j++;
+			ps.setDate(j, new java.sql.Date(dataFim.getTime()));
+		}
+
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			totalAtendimentos = rs.getInt("total");
