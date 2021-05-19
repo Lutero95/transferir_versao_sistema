@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts_sub_report" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8a161563-8502-4e50-834f-c0527b32ce8c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="478"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="522"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="idPts" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT pa.id, pa.id_area, e.descespecialidade, f.descfuncionario, pa.objetivo_curto, pa.objetivo_medio, pa.objetivo_longo, 
+pa.plano_curto, pa.plano_medio, pa.plano_longo, pa.id_funcionario 
+FROM hosp.pts_area pa 
+LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) 
+ left join acl.funcionarios f on f.id_funcionario = pa.id_funcionario 
+ LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) 
+WHERE p.id =  $P{idPts} ]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="id_area" class="java.lang.Integer"/>
+	<field name="descespecialidade" class="java.lang.String"/>
+	<field name="descfuncionario" class="java.lang.String"/>
+	<field name="objetivo_curto" class="java.lang.String"/>
+	<field name="objetivo_medio" class="java.lang.String"/>
+	<field name="objetivo_longo" class="java.lang.String"/>
+	<field name="plano_curto" class="java.lang.String"/>
+	<field name="plano_medio" class="java.lang.String"/>
+	<field name="plano_longo" class="java.lang.String"/>
+	<field name="id_funcionario" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="6" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement x="5" y="1" width="70" height="12" uuid="cf49c26e-b637-4efa-a5c6-e7f6d48c3754"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESPECIALIDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="1" width="82" height="12" uuid="1c5e99c6-cb69-420d-a9b8-66ea26b74b67"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROFISSIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="163" y="1" width="70" height="12" uuid="a7ea2c22-4f1e-4399-ba33-ac47742a9fb7"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBJETIVO CURTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="1" width="70" height="12" uuid="2b39f294-a957-4adb-96b0-d3a54362884d"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBJETIVO MÉDIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="307" y="1" width="80" height="12" uuid="74ec6393-acfd-4a14-920e-f9dbd4d903a5"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBJETIVO LONGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="1" width="67" height="12" uuid="194dfcf9-fe64-4cc1-9129-1eedf44716fa"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLANO CURTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="1" width="70" height="12" uuid="70eb7586-3f8c-4d28-9f1a-57b81050f9bc"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLANO MÉDIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="520" y="1" width="70" height="12" uuid="a44823d6-a5cb-4ff1-bb45-8c1d400370c1"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLANO LONGO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="5" y="12" width="585" height="1" uuid="8199eae4-706b-4d7b-adbe-e6446d99525a"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="49" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="4" y="4" width="70" height="40" uuid="1f1d2663-1d71-407d-8431-3e0918e3cb2d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descespecialidade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="76" y="4" width="84" height="40" uuid="243d7377-65dd-4adc-a521-8cf6fa1836e9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descfuncionario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="163" y="4" width="70" height="40" uuid="e08658ac-604b-4e2d-bcec-c95655527fc5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{objetivo_curto}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="236" y="4" width="70" height="40" uuid="7e8fe6b6-9143-4a71-ba75-8dc63b537447">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{objetivo_medio}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="379" y="4" width="70" height="40" uuid="823a23e0-bb5e-4e7f-820c-46449206fb89">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{plano_curto}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="308" y="4" width="70" height="40" uuid="59d0167f-7ee6-4973-ae28-e0f07040aebc">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{objetivo_longo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="449" y="4" width="70" height="40" uuid="ade2778e-4f94-4379-93da-b6b1d3e4616b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{plano_medio}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="521" y="4" width="70" height="40" uuid="cf36b9f4-722d-4bdc-ba3e-0f30f144b599">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{plano_longo}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="75" y="-1" width="1" height="50" uuid="b66047da-869d-4114-b94c-0c702ae30d14"/>
+			</line>
+			<line>
+				<reportElement x="161" y="-1" width="1" height="50" uuid="39c1aa4e-5c2b-46d6-b653-f0ab93f74121"/>
+			</line>
+			<line>
+				<reportElement x="234" y="-1" width="1" height="50" uuid="e7408679-b1fa-4661-bc1b-6bae84da4662"/>
+			</line>
+			<line>
+				<reportElement x="306" y="-1" width="1" height="50" uuid="8fa972b1-d521-4f44-9ec1-b582ae7911f6"/>
+			</line>
+			<line>
+				<reportElement x="377" y="-1" width="1" height="50" uuid="bcc91e03-ce4f-46a9-898a-8046bdb86873"/>
+			</line>
+			<line>
+				<reportElement x="447" y="-1" width="1" height="50" uuid="20b86aa5-0f52-4a55-9aa8-0bbaead4167b"/>
+			</line>
+			<line>
+				<reportElement x="519" y="-1" width="1" height="50" uuid="75c2f6af-0aa0-4704-ade7-17b9453ccc28"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
