@@ -204,66 +204,51 @@
 								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar, :formGerenPaci:btnDesligar" />
 
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Paciente" />
-								</f:facet>
+							<p:column headerText="Paciente">
 								<h:outputText value="#{pts.paciente.nome}"></h:outputText>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Prontuário" />
-								</f:facet>
+							<p:column headerText="Prontuário">
 								<h:outputText value="#{pts.paciente.id_paciente}"></h:outputText>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Matrícula" />
-								</f:facet>
+							<p:column headerText="Matrícula">
 								<h:outputText value="#{pts.paciente.matricula}"></h:outputText>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Programa" />
-								</f:facet>
+							<p:column headerText="Programa">
 								<h:outputText value="#{pts.programa.descPrograma}"></h:outputText>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Grupo" />
-								</f:facet>
+							<p:column headerText="Grupo">
 								<h:outputText value="#{pts.grupo.descGrupo}"></h:outputText>
 							</p:column>
 
-							<p:column width="15%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Status PTS" />
-								</f:facet>
+							<p:column headerText="Status PTS">
 								<h:outputText value="#{pts.statusPorExtenso}"></h:outputText>
 							</p:column>
 
-							<p:column width="10%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Data PTS" />
-								</f:facet>
+							<p:column headerText="Data PTS">
 								<h:outputText value="#{pts.data}">
 									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
 							</p:column>
 
-							<p:column width="20%">
-								<f:facet name="header">
-									<h:outputText style="font-size: 14px;" value="Vencimento PTS" />
-								</f:facet>
+							<p:column headerText="Vencimento PTS">
 								<h:outputText value="#{pts.dataVencimento}">
 									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
 							</p:column>
-
+							
+							<p:column headerText="Ação" width="5%">
+								<div align="center">
+									<p:commandButton title="Imprimir PTS" icon="ui-icon-print"
+										size="sm" class="btn-acao-table acao-editar"
+										style="margin-left:10px" onclick="this.form.target='_blank'"
+										action="#{RelatoriosController.imprimirPts(pts.id)}"
+										ajax="false" rendered="#{pts.id > 0}"/>
+								</div>	
+							</p:column>
 						</p:dataTable>
 					</b:column>
 					<br />

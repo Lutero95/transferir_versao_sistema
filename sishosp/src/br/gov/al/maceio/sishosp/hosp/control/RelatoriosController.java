@@ -57,6 +57,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 public class RelatoriosController implements Serializable {
 
+	private static final String SUBREPORT_DIR = "SUBREPORT_DIR";
 	private static final String CAMINHO_PRINCIPAL = "/WEB-INF/relatorios/";
 	private static final long serialVersionUID = 1L;
 	private ProgramaBean programa;
@@ -391,7 +392,7 @@ public class RelatoriosController implements Serializable {
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
 			map.put("codpaciente", paciente.getId_paciente());
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
 
 	}
@@ -436,7 +437,7 @@ public class RelatoriosController implements Serializable {
 					if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getGrupo()))
 						map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 
-					map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+					map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 					relatorio = caminho + "frequencia.jasper";
 					this.executeReport(relatorio, map, "relatorio.pdf");
 					rDao.limparTabelaTemporariaFrequencia(randomico);
@@ -457,7 +458,7 @@ public class RelatoriosController implements Serializable {
 					map.put("chave", randomico);
 					map.put("codunidade", user_session.getUnidade().getId());
 					map.put("codpaciente", paciente.getId_paciente());
-					map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+					map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 					relatorio = caminho + "frequencia_avulsa.jasper";
 					this.executeReport(relatorio, map, "frequencia_avulsa.pdf");
 					rDao.limparTabelaTemporariaFrequencia(randomico);
@@ -732,7 +733,7 @@ public class RelatoriosController implements Serializable {
 			}
 		}
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.PROGRAMA.getSigla())) {
@@ -928,7 +929,7 @@ public class RelatoriosController implements Serializable {
 		setaDiasSemanaComoListaDeInteiro(diasSemanaInteger);
 		map.put("diassemanalista", diasSemanaInteger);
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio_presenca.pdf");
 
 	}
@@ -994,7 +995,7 @@ public class RelatoriosController implements Serializable {
 			map.put("qtdatendimentosmenorigual", valorGenerico1);
 		}
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 //		if (atributoGenerico1.equalsIgnoreCase(TipoRelatorio.ANALITICO.getSigla())
 //				&& atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
@@ -1222,7 +1223,7 @@ public class RelatoriosController implements Serializable {
 			if (grupo != null)
 				map.put("codgrupo", grupo.getIdGrupo());
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 			this.executeReport(relatorio, map, "Pts.pdf");
 
 		}
@@ -1265,6 +1266,16 @@ public class RelatoriosController implements Serializable {
 
 		}
 	}
+	
+	public void imprimirPts(Integer idPts) throws IOException, ParseException, ProjetoException {
+
+		String relatorio = "";
+		relatorio = CAMINHO_PRINCIPAL + "pts.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id_pts", idPts);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(CAMINHO_PRINCIPAL) + File.separator);
+		this.executeReportNewTab(relatorio, "pts.pdf", map);
+	}
 
 	public void gerarRelatorioEncaminhamentoOrteseProtese(OrteseProtese orteseProtese)
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException{
@@ -1273,7 +1284,7 @@ public class RelatoriosController implements Serializable {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("id_encaminhamento", orteseProtese.getIdEncaminhamento());
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "encaminhamento_ortese_protese.pdf");
 	}
 
@@ -1323,7 +1334,7 @@ public class RelatoriosController implements Serializable {
 			map.put("recurso", this.recurso);
 		}
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
 // limparDados();
 	}
@@ -1392,7 +1403,7 @@ public class RelatoriosController implements Serializable {
 			map.put("recurso", this.recurso);
 		}
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		// limparDados();
 	}
@@ -1446,7 +1457,7 @@ public class RelatoriosController implements Serializable {
 		} else {
 			map.put("cod_medico", this.prof.getId());
 		}
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		// limparDados();
@@ -1477,7 +1488,7 @@ public class RelatoriosController implements Serializable {
 		} else {
 			map.put("situacao", this.situacao);
 		}
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		// limparDados();
@@ -1502,7 +1513,7 @@ public class RelatoriosController implements Serializable {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		// limparDados();
@@ -1533,7 +1544,7 @@ public class RelatoriosController implements Serializable {
 				map.put("cod_grupo", strIdGrupos());
 			}
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 			this.executeReport(relatorio, map, "relatorio.pdf");
 			// limparDados();
@@ -1566,7 +1577,7 @@ public class RelatoriosController implements Serializable {
 				map.put("cod_tipoatendimento", strIdTipos());
 			}
 
-			map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+			map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 			this.executeReport(relatorio, map, "relatorio.pdf");
 			// limparDados();
@@ -1617,7 +1628,7 @@ public class RelatoriosController implements Serializable {
 		else
 			map.put("cod_medico", this.prof.getId());
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		limparDados();
 	}
@@ -1843,7 +1854,7 @@ public class RelatoriosController implements Serializable {
 		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
 			map.put("id_paciente", paciente.getId_paciente());
 
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
+		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
 		if (atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
 			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
