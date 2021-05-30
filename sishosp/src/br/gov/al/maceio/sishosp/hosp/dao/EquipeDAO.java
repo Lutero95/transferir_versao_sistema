@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
@@ -945,7 +946,9 @@ public class EquipeDAO {
         return substituicao;
     }
 
-    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido(long codigoProfissional, int codigoEquipe, Date dataDeSubstituicao) throws ProjetoException {
+    public ArrayList<Integer> listarAtendimentosParaProfissionalAhSerSubstituido
+    (long codigoProfissional, int codigoEquipe, Date dataDeSubstituicao, String turno, List<String> diasSemana) 
+    		throws ProjetoException {
 
         ArrayList<Integer> lista = new ArrayList<>();
 
@@ -957,7 +960,16 @@ public class EquipeDAO {
                 "join hosp.programa p on p.id_programa = a.codprograma " +
                 "join hosp.grupo g on g.id_grupo = a.codgrupo " +
                 "join hosp.pacientes on pacientes.id_paciente = a.codpaciente " +
-                "where rpe.cod_equipe = ? and rpe.cod_profissional = ? and a.dtaatende>=?";
+                "where rpe.cod_equipe = ? and rpe.cod_profissional = ? and a.dtaatende>=? ";
+        		
+        String filtroTurno = " and a.turno = ? ";
+        String filtroDiaSemana = " and extract(dow from a.dtaatende) = any(?) ";
+        
+        if(!turno.equals(Turno.AMBOS.getSigla()))
+        	sql += filtroTurno;
+        
+        if(!diasSemana.isEmpty())
+        	sql += filtroDiaSemana;
 
         try {
             con = ConnectionFactory.getConnection();
@@ -965,6 +977,15 @@ public class EquipeDAO {
             stm.setInt(1, codigoEquipe);
             stm.setLong(2, codigoProfissional);
             stm.setDate(3, new java.sql.Date(dataDeSubstituicao.getTime()));
+            
+            int parametro = 4;
+            if(!turno.equals(Turno.AMBOS.getSigla())) {
+            	stm.setString(parametro, turno);
+            	parametro++;
+            }
+            	
+            if(!diasSemana.isEmpty())
+            	stm.setObject(parametro, stm.getConnection().createArrayOf(  "INTEGER", diasSemana.toArray()));
 
             ResultSet rs = stm.executeQuery();
 
@@ -993,7 +1014,8 @@ public class EquipeDAO {
 
         try {
             List<Integer> listaAtendimentos1 = listarAtendimentosParaProfissionalAhSerSubstituido(
-                    substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(), substituicao.getDataDeSubstituicao());
+                    substituicao.getFuncionarioRemovido().getId(), substituicao.getEquipe().getCodEquipe(),
+                    substituicao.getDataDeSubstituicao(), substituicao.getTurnoSelecionado(), substituicao.getDiasSemana());
 
             substituicao.setListaAtendimentos1(listaAtendimentos1);
 
