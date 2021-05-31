@@ -1301,16 +1301,12 @@ public class RelatoriosController implements Serializable {
 	public void gerarMapaLaudoOrteseProtese() throws IOException, ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null || this.programa == null || this.grupo == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Todos os campos devem ser preenchidos.",
-					"Campos inválidos!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.adicionarMensagemErro("Todos os campos devem ser preenchidos.", "Campos inválidos!");
 			return;
 		}
 
 		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "As datas devem possuir o mesmo mÃªs.",
-					"Datas InvÃ¡lidas!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.adicionarMensagemErro("As datas devem possuir o mesmo mês.", "Datas Inválidas!");
 			return;
 		}
 
@@ -1360,6 +1356,11 @@ public class RelatoriosController implements Serializable {
 		map.put("dt_final", this.dataFinal);
 		map.put("codunidade", user_session.getUnidade().getId());
 		map.put("id_programa", idPrograma);
+		if(!VerificadorUtil.verificarSeObjetoNulo(procedimento)
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(procedimento.getIdProc())) {
+			map.put("id_procedimento", procedimento.getIdProc());
+		}
+		
 		this.executeReport(relatorio, map, "mapalaudo.pdf");
 // limparDados();
 	}

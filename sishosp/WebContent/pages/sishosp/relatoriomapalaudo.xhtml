@@ -10,6 +10,7 @@
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{RelatoriosController.preparaRelFrequencia()}" />
+		<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
 	</f:metadata>
 	<ui:define name="content">
 		<br />
@@ -73,7 +74,6 @@
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descPrograma}">
-
 								</p:autoComplete>
 
 								<p:commandButton id="btBusPr" immediate="true"
@@ -87,6 +87,28 @@
 
 							</b:column>
 						</p:outputPanel>
+						
+						<b:column span="3"
+									class="label-position new-data-size new-comple1">
+									<b:label value="Procedimento Padrão" severity="info" />
+
+									<p:outputPanel id="outProc">
+										<p:autoComplete
+											value="#{RelatoriosController.procedimento}" size="31"
+											converter="conProcedimento" id="descProcP1"
+											class="select-agendaEquipe4"
+											completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1" itemValue="#{theme}"
+											itemLabel="#{theme.nomeProc}">
+											<p:ajax event="itemSelect"/>
+										</p:autoComplete>
+
+										<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+											update=":formConsulProc"
+											oncomplete="PF('dlgConsulProc').show();" immediate="true"/>
+									</p:outputPanel>
+						</b:column>
 					</b:row>
 					
 					<br />
@@ -130,6 +152,39 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
+                  widgetVar="dlgConsulProc" modal="true" resizable="false"
+                  draggable="true" responsive="true" width="50%">
+            <h:form id="formConsulProc">
+                <p:outputPanel >
+                <p:autoUpdate/>
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+                            <p:outputLabel value="#{proc.codProc} - #{proc.nomeProc}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <div align="center">
+								<p:commandButton
+									icon="fa fa-fw fa-check" title="Selecionar" oncomplete="PF('dlgConsulProc').hide();"
+									class="new-btn-acao-table acao-editar" update=":frm:outProc :msgPagina">
+									<f:setPropertyActionListener value="#{proc}"
+										target="#{RelatoriosController.procedimento}" />
+								</p:commandButton>
+							</div>
+                        </h:column>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
 
 	</ui:define>
 
