@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.model.dto;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.model.RemocaoProfissionalEquipe;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -25,7 +26,9 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
     private ProgramaBean programa;
     private GrupoBean grupo;
     private Date dataDeSubstituicao;
-
+    private String turnoSelecionado;
+	private List<String> diasSemana;
+    
     public SubstituicaoProfissionalEquipeDTO() {
         funcionarioRemovido = new FuncionarioBean();
         funcionarioAssumir = new FuncionarioBean();
@@ -35,6 +38,8 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
         grupo = new GrupoBean();
         remocaoProfissionalEquipe = new RemocaoProfissionalEquipe();
         listaRemocoes = new ArrayList<>();
+        diasSemana = new ArrayList<>();
+        turnoSelecionado = Turno.AMBOS.getSigla();
     }
 
     public Integer getId() {
@@ -132,4 +137,21 @@ public class SubstituicaoProfissionalEquipeDTO implements Serializable {
 	public void setDataDeSubstituicao(Date dataDeSubstituicao) {
 		this.dataDeSubstituicao = dataDeSubstituicao;
 	}
+
+	public String getTurnoSelecionado() {
+		return turnoSelecionado;
+	}
+
+	public void setTurnoSelecionado(String turnoSelecionado) {
+		this.turnoSelecionado = turnoSelecionado;
+	}
+
+	public List<String> getDiasSemana() {
+		return diasSemana;
+	}
+
+	public void setDiasSemana(List<String> diasSemana) {
+		this.diasSemana = diasSemana;
+	}
+	
 }
