@@ -58,35 +58,6 @@
 								requiredMessage="Ano: Campo obrigatório!"/>
 						</b:column>
 
-						<p:outputPanel id="outProg">
-							<b:column span="3"
-								class="label-position new-data-size new-comple1">
-
-								<b:label for="prog" value="Programa:" id="prog"
-									class="fire-label" rendered="#{InsercaoController.tipo == 'E'}"
-									severity="info" />
-
-								<p:autoComplete value="#{InsercaoController.insercao.programa}"
-									readonly="#{InsercaoController.ehAvaliacao == true}"
-									rendered="#{InsercaoController.tipo == 'E'}" size="31"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-								</p:autoComplete>
-
-								<p:commandButton id="btBusPr" immediate="true"
-									style="margin-left: 5px"
-									disabled="#{InsercaoController.ehAvaliacao == true}"
-									icon="ui-icon-search"
-									rendered="#{InsercaoController.tipo == 'E'}"
-									actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-									action="#{InsercaoController.limparNaBuscaPrograma()}"
-									update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
-
-							</b:column>
-						</p:outputPanel>
 						
 						<b:column span="3"
 									class="label-position new-data-size new-comple1">
@@ -120,38 +91,6 @@
 				</h:form>
 			</div>
 		</div>
-
-		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
-			<h:form id="formConsuProg">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
-					display="Nenhum Programa">
-
-					<h:column>
-						<f:facet name="header">
-                            Programa
-                        </f:facet>
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                            Adicionar
-                        </f:facet>
-						<p:commandButton update=":frm:outProg"
-							class="new-btn-acao-table acao-editar" icon="fa fa-fw fa-check"
-							title="Selecionar"
-							action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
-							onclick="PF('dlgConsuProg').hide();">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{InsercaoController.insercao.programa}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
 		
 		<p:dialog header="Consultar Procedimento" styleClass="topDialog"
                   widgetVar="dlgConsulProc" modal="true" resizable="false"
