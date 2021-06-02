@@ -733,7 +733,7 @@ public class AtendimentoDAO {
 				"	join hosp.pacientes pac on pac.id_paciente = a.codpaciente \r\n" +
 				"	join acl.funcionarios f on f.id_funcionario = a1.codprofissionalatendimento \r\n" +
 				"	join hosp.especialidade e on e.id_especialidade = f.codespecialidade \r\n" +
-				"	JOIN hosp.unidade u ON u.id = ? \r\n" +
+				"	JOIN hosp.unidade u ON u.id = a.cod_unidade \r\n" +
 				"	join hosp.parametro pa on u.id = pa.codunidade \r\n" +
 				"	JOIN hosp.empresa emp ON emp.cod_empresa = u.cod_empresa \r\n" +
 				"	left join hosp.config_evolucao_unidade_programa_grupo ceu on ceu.codunidade = u.id \r\n" +
@@ -751,13 +751,14 @@ public class AtendimentoDAO {
 				"		and a.codgrupo = ceu.codgrupo		\r\n" +
 				"	end	\r\n" +
 				"	and a.dtaatende < ? \r\n" +
-				"	and a1.codprofissionalatendimento = ? and coalesce(a.situacao,'A')<>'C'and coalesce(a1.excluido,'N' )='N'";
+				"	and a1.codprofissionalatendimento = ? and coalesce(a.situacao,'A')<>'C'and coalesce(a1.excluido,'N' )='N'"
+				+ " and a.cod_unidade = ? ";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
-			preparedStatement.setInt(1, idUnidade);
-			preparedStatement.setDate(2, new java.sql.Date(dataAtende.getTime()));
-			preparedStatement.setLong(3, codigoProfissionalAtendimento);
+			preparedStatement.setDate(1, new java.sql.Date(dataAtende.getTime()));
+			preparedStatement.setLong(2, codigoProfissionalAtendimento);
+			preparedStatement.setInt(3, idUnidade);
 			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				quantidadeDePendenciasAnterioresDeEvolucao = rs.getInt("qtd");

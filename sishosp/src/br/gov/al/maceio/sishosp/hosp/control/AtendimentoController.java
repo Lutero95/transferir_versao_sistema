@@ -297,8 +297,10 @@ public class AtendimentoController implements Serializable {
 
             if (quantidadePendenciaEvolucaoAnterior == 0)
                 return true;
-            else
+            else {
                 JSFUtil.abrirDialog("dlgErroBloqueioPorPendenciaAnterior");
+                carregarGerenciamentoAtendimentoProfissionalNaEquipe();
+            }
 
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
