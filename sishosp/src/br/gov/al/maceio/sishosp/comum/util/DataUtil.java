@@ -16,6 +16,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.joda.time.Interval;
+
 public final class DataUtil {
 
     public static Calendar retornarDataCalendar(Date data) {
@@ -136,36 +138,10 @@ public final class DataUtil {
     
     
     public static int calculaQuantidadeDiasEntreDuasDatas(long timestamp1, long timestamp2) {
-        final int SECONDS = 60;
-        final int MINUTES = 60;
-        final int HOURS = 24;
-        final int MILLIES = 1000;
-        long temp;
-        if (timestamp1 < timestamp2) {
-            temp = timestamp1;
-            timestamp1 = timestamp2;
-            timestamp2 = temp;
-        }
-        Calendar startDate = Calendar.getInstance(TimeZone.getDefault());
-        Calendar endDate = Calendar.getInstance(TimeZone.getDefault());
-        endDate.setTimeInMillis(timestamp1);
-        startDate.setTimeInMillis(timestamp2);
-        if ((timestamp1 - timestamp2) < 1 * HOURS * MINUTES * SECONDS * MILLIES) {
-            int day1 = endDate.get(Calendar.DAY_OF_MONTH);
-            int day2 = startDate.get(Calendar.DAY_OF_MONTH);
-            if (day1 == day2) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-        int diffDays = 0;
-        startDate.add(Calendar.DAY_OF_MONTH, diffDays);
-        while (startDate.before(endDate)) {
-            startDate.add(Calendar.DAY_OF_MONTH, 1);
-            diffDays++;
-        }
-        return diffDays;
+        Interval interval = new Interval(timestamp1, timestamp2);
+        Long quantidadeDias = interval.toDurationMillis();
+        quantidadeDias = (quantidadeDias / 86400000L)+1;
+        return quantidadeDias.intValue();
     }
     
 

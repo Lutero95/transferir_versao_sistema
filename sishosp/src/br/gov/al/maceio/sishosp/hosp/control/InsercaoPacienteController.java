@@ -630,9 +630,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         }
         
-        Long dt = (dataFinal.getTime() - dataInicial.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataInicial.getTime() , dataFinal.getTime());
 
         calendar.setTime(insercao.getDataSolicitacao());
 
@@ -691,7 +689,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         }
         
-        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataFinal.getTime() , dataInicial.getTime());
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataInicial.getTime() , dataFinal.getTime());
       
         calendar.setTime(dataInicial);
         
@@ -751,9 +749,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         	dataFinal = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         }
         
-        Long dt = (dataFinal.getTime() - dataInicial.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataInicial.getTime() , dataFinal.getTime());
 
         calendar.setTime(dataInicial);
 
@@ -1175,7 +1171,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         
         Date dataFinal = calendar.getTime();
         
-        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataFinal.getTime() , dataInicial.getTime());
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(dataInicial.getTime() , dataFinal.getTime());
 
         calendar = Calendar.getInstance();
         calendar.setTime(dataInicial);
