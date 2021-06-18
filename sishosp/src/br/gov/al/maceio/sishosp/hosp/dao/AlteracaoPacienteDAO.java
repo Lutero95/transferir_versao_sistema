@@ -208,7 +208,7 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 
-			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;//
+			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
@@ -338,13 +338,18 @@ public class AlteracaoPacienteDAO {
 												listaCbosProfissional, codPaciente, insercao.getGrupo().getIdGrupo(), 
 												insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 								
+								if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
+				            		return false;
+								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();
 
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
-								ps8.setLong(1, listaProfissionais.get(j).getId());
+								listAgendamentoProfissional.get(i).getPaciente().setId_paciente(codPaciente);
+								Long idFuncionario = new InsercaoPacienteDAO().retornaIdFuncionarioCorretoEmSubstituicao(listaSubstituicao, listAgendamentoProfissional.get(i), listaProfissionais.get(j));
+								ps8.setLong(1, idFuncionario);
 								ps8.setInt(2, idAgend);
 								
 								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
@@ -572,6 +577,7 @@ public class AlteracaoPacienteDAO {
 		}
 		return retorno;
 	}
+	
 
 	public boolean gravarAlteracaoEquipeDiaHorario(InsercaoPacienteBean insercao,
 												   InsercaoPacienteBean insercaoParaLaudo, List<AgendaBean> listAgendamentoProfissional,
@@ -704,6 +710,9 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
+								if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
+				            		return false;
+								
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
@@ -717,7 +726,9 @@ public class AlteracaoPacienteDAO {
 								PreparedStatement ps8 = null;
 								ps8 = conexao.prepareStatement(sql8);
 
-								ps8.setLong(1, listaProfissionais.get(j).getId());
+								listAgendamentoProfissional.get(i).getPaciente().setId_paciente(insercao.getPaciente().getId_paciente());
+								Long idFuncionario = new InsercaoPacienteDAO().retornaIdFuncionarioCorretoEmSubstituicao(listaSubstituicao, listAgendamentoProfissional.get(i), listaProfissionais.get(j));
+								ps8.setLong(1, idFuncionario);
 								ps8.setInt(2, idAgend);
 								
 								CboBean cboCompativel = new InsercaoPacienteDAO().retornaCboCompativelParaAgenda
@@ -999,6 +1010,9 @@ public class AlteracaoPacienteDAO {
 							if (DataUtil.extrairDiaDeData(
 									listAgendamentoProfissional.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
+								if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
+				            		return false;
+								
 								String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
 								Integer idProcedimentoEspecifico = new AgendaDAO().
@@ -1135,6 +1149,10 @@ public class AlteracaoPacienteDAO {
 				}
 
 				String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+				
+				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), conexao))
+            		return false;
+				
 				List<CboBean> listaCbosProfissional = 
 						new FuncionarioDAO().listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
 				

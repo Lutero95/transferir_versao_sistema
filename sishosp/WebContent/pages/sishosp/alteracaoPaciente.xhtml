@@ -323,55 +323,53 @@
 
                     </b:row>
 
-                    <b:row>
-                   
-                    <b:column span="12">
- 
-                                                 </b:column>
-                                                 </b:row>
-                    <b:row>
-                        
-                            <b:column span="5" >
-                                <p:dataTable id="dtEquipe" resizableColumns="true"
-                                             rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-                                             responsive="true"
-                                             value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
-                                             var="func" emptyMessage="Sem registros.">
+					<b:row>
+						<b:column span="12">
 
-                                    <p:column headerText="Profissional" width="70">
-                                        <h:outputLabel value="#{func.nome}"/>
-                                    </p:column>
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						<b:column span="5">
+							<p:dataTable id="dtEquipe" resizableColumns="true"
+								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+								responsive="true"
+								value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
+								var="func" emptyMessage="Sem registros.">
 
-                                    <p:column headerText="Especialidade" width="25">
-                                        <h:outputLabel value="#{func.especialidade.descEspecialidade}"/>
-                                    </p:column>
+								<p:column headerText="Profissional" width="70">
+									<h:outputLabel value="#{func.nome}" />
+								</p:column>
 
-                                    <p:column headerText="Adicionar" width="5">
-                                        <div align="center">
-                                            <p:commandButton icon="fa fa-fw fa-check" immediate="true"
-                                                             title="Selecionar" class="new-btn-acao-table acao-editar"
-                                                             actionListener="#{AlteracaoPacienteController.abrirDialog}"
-                                                             update=":formDiasAtendimentoTurno">
-                                                <f:setPropertyActionListener value="#{func}"
-                                                                             target="#{AlteracaoPacienteController.funcionario}"/>
-                                            </p:commandButton>
-                                        </div>
-                                    </p:column>
+								<p:column headerText="Especialidade" width="25">
+									<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+								</p:column>
 
-                                </p:dataTable>
-                            </b:column>
+								<p:column headerText="Adicionar" width="5">
+									<div align="center">
+										<p:commandButton icon="fa fa-fw fa-check" immediate="true"
+											title="Selecionar" class="new-btn-acao-table acao-editar"
+											actionListener="#{AlteracaoPacienteController.abrirDialog}"
+											update=":formDiasAtendimentoTurno">
+											<f:setPropertyActionListener value="#{func}"
+												target="#{AlteracaoPacienteController.funcionario}" />
+										</p:commandButton>
+									</div>
+								</p:column>
+							</p:dataTable>
+						</b:column>
 
-                     <b:column span="1" style="float:right">
-                      <p:tooltip id="toolTipFade" for="altdia" value="Permite alterar o dia de atendimento de todos os Profissionais, de uma única vez" position="top"/>
-                     <p:commandButton value="Alterar Dia" look="success" style="float:right;" 
-                                                icon="ui-icon-pencil"
-                                                 rendered="true"
-                                                id="altdia"
-                                                 update=":formQtdAgendamentos"
-                                                 action="#{AlteracaoPacienteController.abreDialogAlteraDiasAtendimentoProfissionais()}"/>
-                     </b:column>
+						<b:column span="1" style="float:right">
+							<p:tooltip id="toolTipFade" for="altdia"
+								value="Permite alterar o dia de atendimento de todos os Profissionais, de uma única vez"
+								position="top" />
+							<p:commandButton value="Alterar Dia" look="success"
+								style="float:right;" icon="ui-icon-pencil" rendered="true"
+								id="altdia" update=":formQtdAgendamentos"
+								action="#{AlteracaoPacienteController.abreDialogAlteraDiasAtendimentoProfissionais()}" />
+						</b:column>
 
-                            <b:column span="6" >
+						<b:column span="6" >
                             
                                 <p:dataTable id="dtAdicionados" resizableColumns="true"
                                              rendered="#{AlteracaoPacienteController.tipo == 'E'}"

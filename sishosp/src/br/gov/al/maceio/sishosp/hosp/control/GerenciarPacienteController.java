@@ -46,6 +46,7 @@ public class GerenciarPacienteController implements Serializable {
 	private EquipeDAO equipeDAO;
 	private boolean confirmouDesligamento;
 	private Integer quantidadeAtendimentosComPresenca;
+	private String opcaoAtendimento;
 
 	// CONSTANTES
 	private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
@@ -55,7 +56,7 @@ public class GerenciarPacienteController implements Serializable {
 	private static final String ENDERECO_GERENCIAMENTO = "gerenciamentoPacientes?faces-redirect=true";
 	private static final String ENDERECO_ID = "&amp;id=";
 
-	public GerenciarPacienteController() {
+	public GerenciarPacienteController() throws ProjetoException {
 		gerenciarpaciente = new GerenciarPacienteBean();
 		gerenciarpaciente.setPrograma(null);
 		listaGrupos = new ArrayList<>();
@@ -66,6 +67,7 @@ public class GerenciarPacienteController implements Serializable {
 		tipo = "";
 		grupoDAO = new GrupoDAO();
 		equipeDAO = new EquipeDAO();
+		opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 	}
 
 	public void carregarBuscaGerenciamentoPaciente() {
@@ -314,6 +316,10 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setConfirmouDesligamento(boolean confirmouDesligamento) {
 		this.confirmouDesligamento = confirmouDesligamento;
+	}
+
+	public String getOpcaoAtendimento() {
+		return opcaoAtendimento;
 	}
 	
 }

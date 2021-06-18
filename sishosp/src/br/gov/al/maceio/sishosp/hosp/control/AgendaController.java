@@ -1189,10 +1189,9 @@ public class AgendaController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
-            limparDados();
             this.agenda.setTurno(Turno.MANHA.getSigla());
-
-        } else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
+        }
+        else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
             configuraDialogLiberacaoParaAgendaComProcedimento();
         }
     }
@@ -1212,7 +1211,6 @@ public class AgendaController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
-        limparDados();
     }
 
     private List<String> retornaLiberacoesNaoRepetidas() {
@@ -1259,7 +1257,6 @@ public class AgendaController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
-            limparDados();
         } else if (incluirProcedimentos && !confirmaAgendamentoComProcedimentos) {
             configuraDialogLiberacaoParaAgendaComProcedimento();
         }
