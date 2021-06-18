@@ -28,6 +28,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
@@ -37,6 +38,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
@@ -119,6 +121,7 @@ public class RelatoriosController implements Serializable {
 	private GrupoDAO grupoDao;
 	private List<Integer> listaAnos;
 	private boolean filtrarPorQuantidade;
+	private String opcaoAtendimento;
 
 	public RelatoriosController() throws ProjetoException {
 		this.programa = new ProgramaBean();
@@ -153,6 +156,7 @@ public class RelatoriosController implements Serializable {
 		this.listaGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
 		this.listaEquipeGruposProgramaUnidadeDTO = new ArrayList<>();
 		this.listaEquipeGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
+		this.opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 	}
 
 	public void limparDados() {
@@ -1092,7 +1096,9 @@ public class RelatoriosController implements Serializable {
 		limparTurno();
 		atribuiTurnos();
 
-		map.put("turnoslista", turnos);
+		if(this.opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+			map.put("turnoslista", turnos);
+		}
 		this.executeReport(relatorio, map, "relatoriopacientesativos.pdf");
 
 	}
@@ -2319,4 +2325,13 @@ public class RelatoriosController implements Serializable {
 	public void setAgruparEquipeDia(boolean agruparEquipeDia) {
 		this.agruparEquipeDia = agruparEquipeDia;
 	}
+
+	public String getOpcaoAtendimento() {
+		return opcaoAtendimento;
+	}
+
+	public void setOpcaoAtendimento(String opcaoAtendimento) {
+		this.opcaoAtendimento = opcaoAtendimento;
+	}
+	
 }

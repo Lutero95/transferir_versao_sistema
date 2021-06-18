@@ -260,7 +260,7 @@
 						</b:column>
 					</b:row>
 
-					<b:row>
+					<b:row rendered="#{RelatoriosController.opcaoAtendimento == 'T'}">
 						<b:column class="label-position new-data-size new-comple1">
 							<b:label value="Turno:" severity="info" />
 							<p:selectOneRadio id="turnos" layout="responsive" columns="3"
