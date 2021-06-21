@@ -89,12 +89,10 @@
 					<b:row>
 						<h1>VISÃO GERAL DO PACIENTE</h1>
 					</b:row>
-
 					<br />
 
 					<b:row>
 						<b:column span="5" rendered="#{PtsController.pts.status != 'R'}">
-
 							<b:label value="Incapacidades Funcionais:"
 								id="incapacidadesFuncionais" severity="info" class="fire-label" />
 
@@ -118,7 +116,21 @@
 								value="#{PtsController.pts.capacidadesFuncionais}"></h:inputTextarea>
 						</b:column>
 					</b:row>
+					<br />
+					
+					<b:row rendered="#{PtsController.pts.status == 'R'}">
+						<b:column span="12">
 
+							<b:label value="Análise Dos Resultados dos Objetivos Gerais:"
+								id="analiseDosResultadosDosObjetivosGerias" severity="info"
+								class="fire-label" />
+
+							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+								scrollHeight="100" required="true" rows="20" cols="89"
+								requiredMessage="Análise Dos Resultados dos Objetivos Gerais: Campo obrigatório!"
+								value="#{PtsController.pts.analiseDosResultadosDosObjetivosGerias}"></h:inputTextarea>
+						</b:column>
+					</b:row>
 					<br />
 
 					<b:row>
