@@ -5,7 +5,10 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +19,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -513,9 +517,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
         }
 
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime() , d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -591,7 +593,7 @@ public class AlteracaoPacienteController implements Serializable {
         }
     }
 
-    public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
+    public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException, ParseException {
         Integer codPaciente = retornaIdPacienteCorreto();
         listAgendamentoProfissional.clear();
     	
@@ -618,9 +620,7 @@ public class AlteracaoPacienteController implements Serializable {
             
         }
 
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime() , d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -647,7 +647,7 @@ public class AlteracaoPacienteController implements Serializable {
 
                             listAgendamentoProfissional.add(agenda);
                             listaDatasDeAtendimento.add(c.getTime());
-
+                            System.out.println(c.get(Calendar.DAY_OF_MONTH));
                         }
                     }
                 }
@@ -677,9 +677,8 @@ public class AlteracaoPacienteController implements Serializable {
         Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercaoDuplicado.getDataSolicitacao(), insercaoDuplicado.getLaudo().getId(), insercaoDuplicado.getPaciente().getId_paciente(), insercaoDuplicado.getPrograma().getIdPrograma(), insercaoDuplicado.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
         Date d2 = iDaoDuplicado.dataFinalLaudo(insercaoDuplicado.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
 
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime() , d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -746,9 +745,7 @@ public class AlteracaoPacienteController implements Serializable {
 
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
 
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime() , d2.getTime());
 
         Calendar c = Calendar.getInstance();
 
@@ -812,7 +809,7 @@ public class AlteracaoPacienteController implements Serializable {
         return VerificadorUtil.verificarSeObjetoNuloOuZero(this.laudo.getId());
     }
 
-    public void gravarAlteracaoPaciente() throws ProjetoException, SQLException {
+    public void gravarAlteracaoPaciente() throws ProjetoException, SQLException, ParseException {
         InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
         Date dataSolicitacaoCorreta = insercao.getDataSolicitacao();

@@ -372,9 +372,8 @@ public class RenovacaoPacienteController implements Serializable {
              cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
              d2 = cal.getTime();
         }
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime(), d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -485,9 +484,7 @@ public class RenovacaoPacienteController implements Serializable {
             d2 = cal.getTime();
         }
 
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime(), d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -534,9 +531,7 @@ public class RenovacaoPacienteController implements Serializable {
         df.setLenient(false);
         Date d1 = insercao.getDataSolicitacao();
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime(), d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(insercao.getDataSolicitacao());

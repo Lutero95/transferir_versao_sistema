@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -126,9 +127,8 @@ public class TransferenciaPacienteController implements Serializable {
          d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         else
              d2 = iDao.dataFinalPacienteSemLaudo(insercao, codPaciente);
-        Long dt = (d2.getTime() - d1.getTime());
 
-        dt = (dt / 86400000L);
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime(), d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
@@ -178,9 +178,8 @@ public class TransferenciaPacienteController implements Serializable {
         Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId(), insercao.getPaciente().getId_paciente(), insercao.getPrograma().getIdPrograma(), insercao.getGrupo().getIdGrupo());
         Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-        Long dt = (d2.getTime() - d1.getTime());
-
-        dt = (dt / 86400000L);
+        
+        int dt = DataUtil.calculaQuantidadeDiasEntreDuasDatas(d1.getTime(), d2.getTime());
 
         Calendar c = Calendar.getInstance();
         c.setTime(periodoInicial);
