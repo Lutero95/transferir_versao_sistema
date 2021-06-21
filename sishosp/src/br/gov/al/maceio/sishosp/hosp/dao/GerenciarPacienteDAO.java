@@ -1571,12 +1571,15 @@ public class GerenciarPacienteDAO {
 		try {
 			String sql = "select exists (select af.id_funcionario_afastado \r\n" + 
 					"	from adm.afastamento_funcionario af \r\n" + 
-					"	where af.id_funcionario_afastado = ? and ? between af.inicio_afastamento and af.fim_afastamento) ";
+					"	where af.id_funcionario_afastado = ? and ( \r\n" + 
+					"		(af.motivo_afastamento = 'DE' and inicio_afastamento < ?) \r\n" + 
+					"		or (? between af.inicio_afastamento and af.fim_afastamento) ) ) ";
 
 			ps = null;
 			ps = conAuxiliar.prepareStatement(sql);
 			ps.setLong(1, funcionario.getId());
 			ps.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
+			ps.setDate(3, new java.sql.Date(dataAtendimento.getTime()));
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -1584,7 +1587,7 @@ public class GerenciarPacienteDAO {
 			}
 			if(existeAfastamento) {
 				JSFUtil.adicionarMensagemAdvertencia("Não é possível completar o Agendamento pois o funcionário "
-						+funcionario.getNome()+" está afastado durante este período", "");
+						+funcionario.getNome()+" está afastado durante este período ou foi desligado da instituição", "");
 				conAuxiliar.rollback();
 			}	
 		} catch (SQLException sqle) {
