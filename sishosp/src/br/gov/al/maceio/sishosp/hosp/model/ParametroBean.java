@@ -55,7 +55,7 @@ public class ParametroBean implements Serializable {
     private boolean cidAgendaObrigatorio;
     private boolean cidPacienteTerapiaObrigatorio;
     private boolean bpaComLaudoAutorizado;
-
+    private boolean bloquearAcessoEmAfastamento;
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
         orteseProtese = new OrteseProtese();
@@ -380,23 +380,23 @@ public class ParametroBean implements Serializable {
         this.cpfPacienteObrigatorio = cpfPacienteObrigatorio;
     }
 
-	public boolean isCapacidadesFuncionaisPTSObrigatorio() {
-		return capacidadesFuncionaisPTSObrigatorio;
-	}
+    public boolean isCapacidadesFuncionaisPTSObrigatorio() {
+        return capacidadesFuncionaisPTSObrigatorio;
+    }
 
-	public void setCapacidadesFuncionaisPTSObrigatorio(boolean capacidadesFuncionaisPTSObrigatorio) {
-		this.capacidadesFuncionaisPTSObrigatorio = capacidadesFuncionaisPTSObrigatorio;
-	}
+    public void setCapacidadesFuncionaisPTSObrigatorio(boolean capacidadesFuncionaisPTSObrigatorio) {
+        this.capacidadesFuncionaisPTSObrigatorio = capacidadesFuncionaisPTSObrigatorio;
+    }
 
-	public boolean isObjetivosGeraisPTSObrigatorio() {
-		return objetivosGeraisPTSObrigatorio;
-	}
+    public boolean isObjetivosGeraisPTSObrigatorio() {
+        return objetivosGeraisPTSObrigatorio;
+    }
 
-	public void setObjetivosGeraisPTSObrigatorio(boolean objetivosGeraisPTSObrigatorio) {
-		this.objetivosGeraisPTSObrigatorio = objetivosGeraisPTSObrigatorio;
-	}
+    public void setObjetivosGeraisPTSObrigatorio(boolean objetivosGeraisPTSObrigatorio) {
+        this.objetivosGeraisPTSObrigatorio = objetivosGeraisPTSObrigatorio;
+    }
 
-	public Integer getDiasPacienteAtivoSemEvolucao() {
+    public Integer getDiasPacienteAtivoSemEvolucao() {
         return diasPacienteAtivoSemEvolucao;
     }
 
@@ -420,21 +420,21 @@ public class ParametroBean implements Serializable {
         this.inicioEvolucaoUnidade = inicioEvolucaoUnidade;
     }
 
-	public boolean isBuscaAutomaticaCepPaciente() {
-		return buscaAutomaticaCepPaciente;
-	}
+    public boolean isBuscaAutomaticaCepPaciente() {
+        return buscaAutomaticaCepPaciente;
+    }
 
-	public void setBuscaAutomaticaCepPaciente(boolean buscaAutomaticaCepPaciente) {
-		this.buscaAutomaticaCepPaciente = buscaAutomaticaCepPaciente;
-	}
+    public void setBuscaAutomaticaCepPaciente(boolean buscaAutomaticaCepPaciente) {
+        this.buscaAutomaticaCepPaciente = buscaAutomaticaCepPaciente;
+    }
 
-	public boolean isCidAgendaObrigatorio() {
-		return cidAgendaObrigatorio;
-	}
+    public boolean isCidAgendaObrigatorio() {
+        return cidAgendaObrigatorio;
+    }
 
-	public void setCidAgendaObrigatorio(boolean cidAgendaObrigatorio) {
-		this.cidAgendaObrigatorio = cidAgendaObrigatorio;
-	}
+    public void setCidAgendaObrigatorio(boolean cidAgendaObrigatorio) {
+        this.cidAgendaObrigatorio = cidAgendaObrigatorio;
+    }
 
 
     public boolean isCidPacienteTerapiaObrigatorio() {
@@ -445,12 +445,20 @@ public class ParametroBean implements Serializable {
         this.cidPacienteTerapiaObrigatorio = cidPacienteTerapiaObrigatorio;
     }
 
-	public boolean isBpaComLaudoAutorizado() {
-		return bpaComLaudoAutorizado;
-	}
+    public boolean isBpaComLaudoAutorizado() {
+        return bpaComLaudoAutorizado;
+    }
 
-	public void setBpaComLaudoAutorizado(boolean bpaComLaudoAutorizado) {
-		this.bpaComLaudoAutorizado = bpaComLaudoAutorizado;
-	}
+    public void setBpaComLaudoAutorizado(boolean bpaComLaudoAutorizado) {
+        this.bpaComLaudoAutorizado = bpaComLaudoAutorizado;
+    }
+
+    public boolean isBloquearAcessoEmAfastamento() {
+        return bloquearAcessoEmAfastamento;
+    }
+
+    public void setBloquearAcessoEmAfastamento(boolean bloquearAcessoEmAfastamento) {
+        this.bloquearAcessoEmAfastamento = bloquearAcessoEmAfastamento;
+    }
 
 }

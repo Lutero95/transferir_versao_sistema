@@ -121,7 +121,7 @@ public class UnidadeDAO {
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
                     "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente,  "+
                     "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, cid_paciente_terapia_obrigatorio, "+
-                    "bpa_com_laudo_autorizado ) "+
+                    "bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento ) "+
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "+
                     "?, ?, ?, ?, ?)";
 
@@ -266,6 +266,7 @@ public class UnidadeDAO {
             ps.setBoolean(47, unidade.getParametro().isCidAgendaObrigatorio());
             ps.setBoolean(48, unidade.getParametro().isCidPacienteTerapiaObrigatorio());
             ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
+            ps.setBoolean(50, unidade.getParametro().isBloquearAcessoEmAfastamento());
             ps.execute();
 
 
@@ -433,8 +434,8 @@ public class UnidadeDAO {
                     "acesso_permitido_quinta = ?, acesso_permitido_sexta = ?, acesso_permitido_sabado = ?, permite_agendamento_duplicidade = ?,  "+
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
                     "verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?,  "+
-                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ?, cid_agenda_obrigatorio = ?, cid_paciente_terapia_obrigatorio=?, bpa_com_laudo_autorizado = ? "+ 
-                    "  WHERE codunidade = ?";
+                    "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ?, cid_agenda_obrigatorio = ?, cid_paciente_terapia_obrigatorio=?, "+
+                    "bloquear_acesso_em_afastamento = ? WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -543,6 +544,7 @@ public class UnidadeDAO {
             ps.setBoolean(47, unidade.getParametro().isCidAgendaObrigatorio());
             ps.setBoolean(48, unidade.getParametro().isCidPacienteTerapiaObrigatorio());
             ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
+            ps.setBoolean(50, unidade.getParametro().isBloquearAcessoEmAfastamento());
             ps.setInt(50, unidade.getId());
 
             ps.executeUpdate();
@@ -686,7 +688,7 @@ public class UnidadeDAO {
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
                 "inicio_evolucao_unidade, busca_automatica_cep_paciente, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, "+
-                "cid_paciente_terapia_obrigatorio, bpa_com_laudo_autorizado "+
+                "cid_paciente_terapia_obrigatorio, bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento  "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -756,6 +758,7 @@ public class UnidadeDAO {
                 parametro.setCidAgendaObrigatorio(rs.getBoolean("cid_agenda_obrigatorio"));
                 parametro.setCidPacienteTerapiaObrigatorio(rs.getBoolean("cid_paciente_terapia_obrigatorio"));
                 parametro.setBpaComLaudoAutorizado(rs.getBoolean("bpa_com_laudo_autorizado"));
+                parametro.setBloquearAcessoEmAfastamento(rs.getBoolean("bloquear_acesso_em_afastamento"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();

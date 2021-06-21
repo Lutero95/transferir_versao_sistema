@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.BancoUtil;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -169,8 +170,12 @@ public class FuncionarioDAO {
 
 		try {
 			con = ConnectionFactory.getConnection();
+			
+			String cpfFormatado = usuario.getCpf().replaceAll("[^0-9]", "");
+			bloqueiaAcessoSeProfissionalEstaAfastadoOuDesligado(cpfFormatado, con);
+			
 			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
+			pstmt.setString(1, cpfFormatado);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				funcionario = new FuncionarioBean();
@@ -2948,6 +2953,50 @@ public class FuncionarioDAO {
 			}
 		}
 		return retorno;
+	}
+	
+	public void bloqueiaAcessoSeProfissionalEstaAfastadoOuDesligado(String cpf, Connection conexaoAuxiliar)
+			throws ProjetoException, SQLException {
+
+		String sql = "select f.ativo,\r\n" + 
+				"	case when current_date between af.inicio_afastamento and af.fim_afastamento\r\n" + 
+				"		then 'S'\r\n" + 
+				"		else 'N'\r\n" + 
+				"		end as afastado\r\n" + 
+				"	from acl.funcionarios f \r\n" + 
+				"	left join adm.afastamento_funcionario af on af.id_funcionario_afastado = f.id_funcionario \r\n" + 
+				"	left join hosp.unidade u on f.codunidade = u.id \r\n" + 
+				"	left join hosp.parametro p on p.codunidade = u.id \r\n" + 
+				"	where af.motivo_afastamento != 'FA' and f.cpf = ? and \r\n" + 
+				"		( (current_date between af.inicio_afastamento and af.fim_afastamento)\r\n" + 
+				"		or f.ativo = 'N') and p.bloquear_acesso_em_afastamento = true \r\n" + 
+				"		order by af.fim_afastamento desc	limit 1;";
+
+		try {
+			PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+			ps.setString(1, cpf);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				if (rs.getString("ativo").equals("N")) {
+					JSFUtil.adicionarMensagemAdvertencia
+						("Não é possível entrar com este usuário pois ele está desligado", "");
+					conexaoAuxiliar.close();
+				}
+				else if (rs.getString("afastado").equals("S")) {
+					JSFUtil.adicionarMensagemAdvertencia
+						("Não é possível entrar com este usuário pois ele está afastado", "");
+					conexaoAuxiliar.close();
+				}
+			}
+
+		} catch (SQLException sqle) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAuxiliar.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
 	}
 
 }

@@ -15,7 +15,7 @@
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h:outputText value="#{UnidadeController.cabecalho}"
-					class="panel-title"></h:outputText>
+					class="panel-title"/>
 			</div>
 
 			<div class="panel-body table-body sub-table-body">
@@ -38,6 +38,7 @@
 									</b:inputText>
 								</b:column>
 							</b:row>
+							
 							<b:row>
 								<b:column span="4" class="label-position new-col4">
 									<b:label value="Empresa" severity="info" />
@@ -374,10 +375,9 @@
 											<p:selectBooleanCheckbox
 												value="#{UnidadeController.unidade.parametro.usaHorarioLimiteParaAcesso}"
 												itemLabel="Unidade irá restringir o acesso ao sistema apenas durante horário de funcionamento">
-												<p:ajax update="horarioDeAcesso"></p:ajax>
+												<p:ajax update="horarioDeAcesso"/>
 											</p:selectBooleanCheckbox>
 										</b:column>
-
 									</b:row>
 
 									<b:row>
@@ -444,7 +444,7 @@
 								<p:fieldset legend="Restrição de Acesso ao Sistema">
 									<p:row>
 										<p:column class="label-position new-data-size new-comple1">
-										<p:outputLabel value="Marque os dias em que o acesso ao sistema será permitido aos usuários sem permissões especiais"/>
+											<p:outputLabel value="Marque os dias em que o acesso ao sistema será permitido aos usuários sem permissões especiais"/>
 										
 											<h:panelGrid columns="2" style="margin-top:1%;" cellpadding="5">
         										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoDomingo}"
@@ -462,6 +462,17 @@
         										<p:selectBooleanCheckbox value="#{UnidadeController.unidade.parametro.acessoPermitidoSabado}"
         											itemLabel="Sábado"/>
         									</h:panelGrid>	
+										</p:column>
+									</p:row>
+
+									<br />
+									<br />
+									<p:row>
+										<p:column class="label-position new-data-size new-comple1">
+											<p:selectBooleanCheckbox
+												value="#{UnidadeController.unidade.parametro.bloquearAcessoEmAfastamento}"
+												itemLabel="Bloquear Acesso em Caso de Afastamento">
+											</p:selectBooleanCheckbox>
 										</p:column>
 									</p:row>
 								</p:fieldset>
