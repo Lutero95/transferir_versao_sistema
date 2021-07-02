@@ -32,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
 import br.gov.al.maceio.sishosp.hosp.log.model.LogBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
@@ -75,6 +76,7 @@ public class LaudoController implements Serializable {
     private List<PacienteBean> listaPacientesFiltro;
     private PacienteLaudoEmLoteDTO pacienteLaudoEmLoteSelecionado;
     private PacienteDAO pacienteDAO;
+    private FuncionarioBean usuarioLiberacao;
 
     // CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -106,6 +108,7 @@ public class LaudoController implements Serializable {
         listaPacientes = new ArrayList<>();
         listaPacientesFiltro = new ArrayList<>();
         pacienteDAO = new PacienteDAO();
+        usuarioLiberacao = new FuncionarioBean();
     }
 
     public String redirectEdit() {
@@ -502,19 +505,46 @@ public class LaudoController implements Serializable {
         }
         return true;
     }
+    
+    public void abrirDialogLiberacao() {
+    	usuarioLiberacao = new FuncionarioBean();
+    	JSFUtil.abrirDialog("dlgSenhaLiberacao");    
+    }
+    
+    public void validarSenhaLiberacao() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean funcionario = funcionarioDAO.validarCpfIhSenha(usuarioLiberacao.getCpf(),
+                usuarioLiberacao.getSenha(), ValidacaoSenha.LIBERACAO.getSigla());
+
+
+
+        if (funcionario!=null) {
+            usuarioLiberacao.setId(funcionario.getId());
+            usuarioLiberacao.getUnidade().setId(funcionario.getUnidade().getId());
+            JSFUtil.fecharDialog("dlgSenhaLiberacao");
+            JSFUtil.abrirDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou Sem Permissão para liberação!", "Erro!");
+        }
+    }
 
     public void excluirLaudo() throws ProjetoException {
-        boolean excluiu = lDao.excluirLaudo(laudo);
+    	
+    	if(!VerificadorUtil.verificarSeObjetoNulo(usuarioLiberacao) 
+    			&& !VerificadorUtil.verificarSeObjetoNuloOuZero(usuarioLiberacao.getId())) {
+			boolean excluiu = lDao.excluirLaudo(laudo, usuarioLiberacao);
 
-        if (excluiu == true) {
-            JSFUtil.adicionarMensagemSucesso("Laudo excluído com sucesso!", "Sucesso");
-            JSFUtil.fecharDialog("dialogExclusao");
-            listarLaudo(buscaLaudoDTO);
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
-            JSFUtil.fecharDialog("dialogExclusao");
-        }
-
+			if (excluiu == true) {
+				JSFUtil.adicionarMensagemSucesso("Laudo excluído com sucesso!", "Sucesso");
+				JSFUtil.fecharDialog("dialogExclusao");
+				listarLaudo(buscaLaudoDTO);
+			} else {
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+				JSFUtil.fecharDialog("dialogExclusao");
+			}
+    	} else
+    		JSFUtil.abrirDialog("dlgSenhaLiberacao");
     }
 
     public void alterarCheckboxPeriodoData(BuscaLaudoDTO buscaLaudoDTO) {
@@ -868,4 +898,12 @@ public class LaudoController implements Serializable {
     public void setPacienteLaudoEmLoteSelecionado(PacienteLaudoEmLoteDTO pacienteLaudoEmLoteSelecionado) {
         this.pacienteLaudoEmLoteSelecionado = pacienteLaudoEmLoteSelecionado;
     }
+
+	public FuncionarioBean getUsuarioLiberacao() {
+		return usuarioLiberacao;
+	}
+
+	public void setUsuarioLiberacao(FuncionarioBean usuarioLiberacao) {
+		this.usuarioLiberacao = usuarioLiberacao;
+	}
 }
