@@ -1096,7 +1096,7 @@ public class AtendimentoDAO {
 	public AtendimentoBean listarAtendimentoProfissionalPaciente(int id) throws ProjetoException {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
+		String sql = "select a.id_atendimento, a1.dtaatendido, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
 				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo,cbo.codigo codigocbo,  pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev, con.id id_conselho, con.descricao conselho from hosp.atendimentos a "
@@ -1123,6 +1123,7 @@ public class AtendimentoDAO {
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
 				atendimento.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				atendimento.setDataAtendido(rs.getDate("dtaatendido"));
 				atendimento.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimento.getPaciente().setNome(rs.getString("nome"));
 				atendimento.getPaciente().setDtanascimento(rs.getDate("dtanascimento"));
@@ -2390,5 +2391,41 @@ public class AtendimentoDAO {
 			}
 		}
 		return listaCodigosProcedimentos;
+	}
+	
+	public boolean verificaSePodeEditarEvolucao(AtendimentoBean atendimento) throws ProjetoException {
+
+		String sql = "select exists (	\r\n" + 
+				"	select a1.id_atendimentos1 from hosp.atendimentos1 a1 \r\n" + 
+				"		where current_date = \r\n" + 
+				"		(extract (year from a1.dtaatendido) ||'-' ||extract (month from a1.dtaatendido) "+
+				"||'-' ||extract (day from a1.dtaatendido))::date \r\n" + 
+				"		and a1.id_atendimentos1 = ?) as pode_editar  ";
+
+		boolean ehPermitido = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, atendimento.getId1());
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				ehPermitido = rs.getBoolean("pode_editar");
+			}
+
+		} catch (SQLException ex2) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				//comentado walter erro log ex.printStackTrace();
+			}
+		}
+		return ehPermitido;
 	}
 }
