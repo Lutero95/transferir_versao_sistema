@@ -208,7 +208,7 @@ public class AlteracaoPacienteDAO {
 
 			ArrayList<AtendimentoBean> listaAtendimento1ComLiberacao = gerenciarPacienteDAO.listaAtendimentos1QueTiveramLiberacoes(id_paciente, conexao);
 
-			ArrayList<SubstituicaoProfissional> listaSubstituicao =  gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
+			ArrayList<SubstituicaoProfissional> listaSubstituicao = gerenciarPacienteDAO.listaAtendimentosQueTiveramSubstituicaoProfissional(id_paciente, conexao) ;
 
 			ArrayList<InsercaoProfissionalEquipe> listaProfissionaisInseridosAtendimentoEquipe =  gerenciarPacienteDAO.listaAtendimentosQueTiveramInsercaoProfissionalAtendimentoEquipe(id_paciente, conexao) ;
 
