@@ -214,8 +214,8 @@
 
 							<p:commandButton title="Excluir" icon="ui-icon-trash"
 											 class="btn-acao-table acao-excluir" size="sm" ajax="true"
-											 style="margin-left:10px"
-											 oncomplete="PF('dialogExclusao').show()">
+											 style="margin-left:10px" update=":frmSenhaLiberacao"
+											 action="#{LaudoController.abrirDialogLiberacao()}">
 
 								<f:setPropertyActionListener value="#{tab}"
 															 target="#{LaudoController.laudo}" />
@@ -233,16 +233,11 @@
 
 			<h:form id="dlgexcluir">
 				<h:panelGrid columns="1">
-
-
 					<div class="alert alert-warning" role="alert">Deseja excluir
 						este Laudo?</div>
-
 				</h:panelGrid>
 
-
 				<div align="center">
-
 					<p:separator />
 
 					<p:commandButton look="success" value="Sim" style="float:left;"
@@ -254,9 +249,40 @@
 					<p:commandButton value="Não" class="btn-nao"
 									 oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 									 icon="ui-icon-close" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Digite a senha para a liberação" widgetVar="dlgSenhaLiberacao"
+				  modal="true" styleClass="topDialog" draggable="false" resizable="false"
+				  position="center">
+			<h:form id="frmSenhaLiberacao">
 
+				<p:growl id="grwSenhaLiberacao" />
+				<div align="center">
+					<h:panelGrid columns="1" cellpadding="2">
+
+						<b:inputText mask="999-999-999-99" style="padding:10px;"
+							required="true" value="#{LaudoController.usuarioLiberacao.cpf}"
+							placeholder="Digite o CPF" render-label="true"
+							requiredMessage="CPF obrigatório" />
+						<b:message for="@previous" />
+
+						<b:inputSecret style="padding:10px;margin-top:10px"
+							required="true" placeholder="Digite a Senha"
+							requiredMessage="Senha obrigatório"
+							value="#{LaudoController.usuarioLiberacao.senha}"></b:inputSecret>
+						<b:message for="@previous" />
+
+					</h:panelGrid>
 				</div>
 
+				<div align="center">
+					<p:commandButton value="Liberar" look="success" size="sm"
+									 style="margin-top:10px" icon="fa fa-fw fa-check"
+									 update=":dlgexcluir, :msgPagina"
+									 action="#{LaudoController.validarSenhaLiberacao()}" />
+				</div>
 
 			</h:form>
 		</p:dialog>

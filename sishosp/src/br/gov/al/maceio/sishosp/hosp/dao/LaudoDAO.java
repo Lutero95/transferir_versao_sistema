@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoBuscaLaudo;
 import br.gov.al.maceio.sishosp.hosp.log.control.LaudoLog;
@@ -388,7 +389,7 @@ public class LaudoDAO {
         return retorno;
     }
 
-    public Boolean excluirLaudo(LaudoBean laudo) throws ProjetoException {
+    public Boolean excluirLaudo(LaudoBean laudo, FuncionarioBean usuarioLiberacao) throws ProjetoException {
         boolean retorno = false;
         String sql = "update hosp.laudo set ativo = false, data_hora_exclusao = current_timestamp, "
                 + "usuario_exclusao = ? where id_laudo = ?";
@@ -400,6 +401,7 @@ public class LaudoDAO {
             stmt.setLong(1, user_session.getId());
             stmt.setInt(2, laudo.getId());
             stmt.executeUpdate();
+            inserirLiberacaoLaudo(MotivoLiberacao.EXCLUSAO_LAUDO.getTitulo(), laudo.getId(), usuarioLiberacao, conexao);
             conexao.commit();
             retorno = true;
         } catch (SQLException sqle) {
@@ -414,6 +416,29 @@ public class LaudoDAO {
             }
         }
         return retorno;
+    }
+    
+    public void inserirLiberacaoLaudo(String motivo, Integer idLaudo, FuncionarioBean usuarioLiberacao, Connection conAuxiliar) throws SQLException, ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, id_laudo, cod_unidade) " +
+                "values (?, ?, CURRENT_TIMESTAMP, ?, ?);";
+
+        try {
+            PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
+            ps2.setString(1, motivo);
+            ps2.setLong(2, usuarioLiberacao.getId());
+            ps2.setInt(3, idLaudo);
+            ps2.setLong(4, usuarioLiberacao.getUnidade().getId());
+            ps2.executeUpdate();
+        } catch (SQLException sqle) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+        } catch (Exception ex) {
+            conAuxiliar.rollback();
+            throw new ProjetoException(ex, this.getClass().getName());
+        }
     }
 
     public ArrayList<LaudoBean> listaLaudos(BuscaLaudoDTO buscaLaudoDTO)
