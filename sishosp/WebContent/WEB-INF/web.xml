@@ -9,7 +9,7 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
+
   <context-param>
         <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -25,6 +25,12 @@
         <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name> 
         <param-value>false</param-value> 
 </context-param>
+
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/pages/comum/expired.xhtml</location>
+    </error-page>
+
 
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>

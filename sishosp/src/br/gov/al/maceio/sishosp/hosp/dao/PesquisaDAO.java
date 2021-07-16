@@ -60,7 +60,7 @@ public class PesquisaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -146,7 +146,7 @@ public class PesquisaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaPesquisas;
@@ -218,7 +218,7 @@ public class PesquisaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaPacientes;
@@ -252,7 +252,7 @@ public class PesquisaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaPerguntas;
@@ -289,7 +289,7 @@ public class PesquisaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return respostasInseridas;

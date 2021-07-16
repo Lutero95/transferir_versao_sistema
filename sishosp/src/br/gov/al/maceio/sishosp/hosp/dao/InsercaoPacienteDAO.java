@@ -108,7 +108,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -170,7 +170,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return insercao;
@@ -326,7 +326,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -499,7 +499,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -627,7 +627,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -656,7 +656,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return data;
@@ -704,7 +704,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return data;
@@ -734,7 +734,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno; 
@@ -764,7 +764,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -795,7 +795,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -840,7 +840,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return avaliacaoInsercaoDTO;
@@ -911,7 +911,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		
@@ -947,7 +947,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return dataValida;
@@ -995,7 +995,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return inseriu;
@@ -1213,7 +1213,7 @@ public class InsercaoPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return inseriu;

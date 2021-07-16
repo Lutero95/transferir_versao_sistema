@@ -110,7 +110,7 @@ public class EmpresaDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -159,7 +159,7 @@ public class EmpresaDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -296,7 +296,7 @@ public class EmpresaDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return empresa;

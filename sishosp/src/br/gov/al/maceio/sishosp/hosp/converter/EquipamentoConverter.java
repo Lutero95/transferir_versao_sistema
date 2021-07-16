@@ -24,7 +24,7 @@ public class EquipamentoConverter implements Converter {
 			int id = Integer.parseInt(value);
 			return eDao.buscaEquipamentoPorId(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Equipamento inválido!", ""));
 		}

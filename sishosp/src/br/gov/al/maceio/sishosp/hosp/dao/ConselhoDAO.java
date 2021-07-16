@@ -40,7 +40,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -69,7 +69,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return conselho;
@@ -99,7 +99,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -166,7 +166,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return cadastrado;
@@ -197,7 +197,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return cadastrado;
@@ -267,7 +267,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return removido;
@@ -303,7 +303,7 @@ public class ConselhoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;

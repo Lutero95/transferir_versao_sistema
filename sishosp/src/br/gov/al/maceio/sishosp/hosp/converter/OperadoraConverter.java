@@ -25,7 +25,7 @@ public class OperadoraConverter implements Converter {
             int id = Integer.parseInt(value);
             return o.buscarOperadoraPorId(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
             throw new ConverterException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR, "Operadora não válida", ""));
         }

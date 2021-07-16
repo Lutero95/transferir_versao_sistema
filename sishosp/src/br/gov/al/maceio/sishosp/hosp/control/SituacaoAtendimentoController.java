@@ -130,7 +130,7 @@ public class SituacaoAtendimentoController  implements Serializable {
 			listarSituacoes();
 		} catch (Exception e) {
 			JSFUtil.adicionarMensagemErro("Erro ao tentar excluir Situação do Atendimento "+e.getMessage(), "Erro");
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}			
 	}
 	

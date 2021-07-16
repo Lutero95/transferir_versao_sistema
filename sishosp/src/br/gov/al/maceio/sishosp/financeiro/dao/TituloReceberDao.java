@@ -144,7 +144,7 @@ public class TituloReceberDao {
 				if (comitar)
 					conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retornoid;
@@ -241,7 +241,7 @@ public class TituloReceberDao {
 				ps.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -283,7 +283,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -317,7 +317,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return valorTotal;
@@ -352,7 +352,7 @@ public class TituloReceberDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 	}
@@ -468,7 +468,7 @@ public class TituloReceberDao {
 				if (commit == true)
 					con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return baixou;
@@ -569,7 +569,7 @@ public class TituloReceberDao {
 				if (commit)
 					con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 
 		}
@@ -589,8 +589,8 @@ public class TituloReceberDao {
 	 * 
 	 * conexao.commit();
 	 * 
-	 * return true; } catch (Exception ex) { ex.printStackTrace(); } finally {
-	 * try { conexao.close(); } catch (Exception ex) { ex.printStackTrace(); } }
+	 * return true; } catch (Exception ex) { //comentado walter erro log ex.printStackTrace(); } finally {
+	 * try { conexao.close(); } catch (Exception ex) { //comentado walter erro log ex.printStackTrace(); } }
 	 * return false; }
 	 */
 
@@ -613,7 +613,7 @@ public class TituloReceberDao {
 			try {
 				ps.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -650,7 +650,7 @@ public class TituloReceberDao {
 				pstm.close();
 				rs.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -684,7 +684,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return cod;
@@ -718,7 +718,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return valor;
@@ -752,7 +752,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return valor;
@@ -786,7 +786,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return valor;
@@ -820,7 +820,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return valor;
@@ -884,7 +884,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -949,7 +949,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista2;
@@ -1033,7 +1033,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1219,7 +1219,7 @@ public class TituloReceberDao {
 				stmt.close();
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1270,7 +1270,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 	}
@@ -1337,7 +1337,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1480,7 +1480,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1526,7 +1526,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1565,7 +1565,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1615,7 +1615,7 @@ public class TituloReceberDao {
 				rs.close();
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1673,7 +1673,7 @@ public class TituloReceberDao {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 	}
@@ -1872,7 +1872,7 @@ public class TituloReceberDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		

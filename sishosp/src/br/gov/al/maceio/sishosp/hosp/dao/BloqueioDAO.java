@@ -53,7 +53,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -124,7 +124,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -150,7 +150,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -185,7 +185,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -218,7 +218,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return bloqueio;
@@ -259,7 +259,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -299,7 +299,7 @@ public class BloqueioDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -331,7 +331,7 @@ public class BloqueioDAO {
 		} finally {
             try {
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return dataSemBloqueio;

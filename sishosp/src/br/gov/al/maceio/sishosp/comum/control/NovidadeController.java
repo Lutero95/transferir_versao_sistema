@@ -70,7 +70,7 @@ public class NovidadeController implements Serializable {
             response.getOutputStream().close();
             fc.responseComplete();
         } catch (IOException e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
     }
 

@@ -74,7 +74,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -256,7 +256,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -300,7 +300,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return existeAfastamentoProfissionalNoPeriodo;
@@ -337,7 +337,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return afastamentoProfissional;
@@ -402,7 +402,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return afastamento;
@@ -438,7 +438,7 @@ public class AfastamentoProfissionalDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return possui;

@@ -17,7 +17,7 @@ public class MD5Util {
             byte[] digest = messageDigest.digest();
             return retornarHashDeArquivo(digest);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
             return null;
         }
     }
@@ -29,7 +29,7 @@ public class MD5Util {
             messageDigest.update(arquivo);
             bytesArquivoHashMD5 = messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         return retornarHashDeArquivo(bytesArquivoHashMD5);
     }

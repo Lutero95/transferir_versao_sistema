@@ -121,7 +121,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return insercaoPaciente;
@@ -187,7 +187,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -572,7 +572,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -910,7 +910,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1060,7 +1060,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1196,7 +1196,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1286,7 +1286,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1386,7 +1386,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return dataValida;
@@ -1451,7 +1451,7 @@ public class AlteracaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return alterado;

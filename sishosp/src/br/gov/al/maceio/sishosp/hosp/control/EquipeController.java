@@ -190,7 +190,7 @@ public class EquipeController implements Serializable {
 				}
 			}
 		} catch (ProjetoException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		} 
     }
 	

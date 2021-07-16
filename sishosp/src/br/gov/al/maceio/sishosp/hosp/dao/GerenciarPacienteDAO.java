@@ -176,7 +176,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -253,7 +253,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -299,7 +299,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -331,7 +331,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -381,7 +381,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -419,7 +419,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return quantidade;
@@ -459,7 +459,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -495,7 +495,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1529,7 +1529,7 @@ public class GerenciarPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
         return lista;
@@ -1558,7 +1558,7 @@ public class GerenciarPacienteDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;

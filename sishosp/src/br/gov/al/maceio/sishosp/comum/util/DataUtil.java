@@ -57,7 +57,7 @@ public final class DataUtil {
         try {
             data = formatador.parse(tempo);
         } catch (ParseException e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         Time time = new Time(data.getTime());
 

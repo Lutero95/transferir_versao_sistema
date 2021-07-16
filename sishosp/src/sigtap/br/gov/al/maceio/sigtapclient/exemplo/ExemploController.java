@@ -54,7 +54,7 @@ public class ExemploController {
 			}
 			System.out.println("QUANTIDADE DE REGISTROS: "+resultadosPesquisaProcedimentosType.getPaginacao().getQuantidadeRegistros());
 		} catch (SIGTAPFault e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class ExemploController {
 			}
 			System.out.println(resultadosDetalhaProcedimentosType.getDetalheAdicional().get(0).getPaginacao().getQuantidadeRegistros());
 		} catch (SIGTAPFault e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 

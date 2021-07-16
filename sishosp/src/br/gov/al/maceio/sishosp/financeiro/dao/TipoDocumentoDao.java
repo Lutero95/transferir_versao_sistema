@@ -39,7 +39,7 @@ public class TipoDocumentoDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -76,7 +76,7 @@ public class TipoDocumentoDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return rst;
@@ -120,7 +120,7 @@ public class TipoDocumentoDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return rst;
@@ -163,7 +163,7 @@ public class TipoDocumentoDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;

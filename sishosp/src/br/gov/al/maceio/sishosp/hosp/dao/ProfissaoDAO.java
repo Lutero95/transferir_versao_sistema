@@ -37,7 +37,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -64,7 +64,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -89,7 +89,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -121,7 +121,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -151,7 +151,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return profissao;
@@ -184,7 +184,7 @@ public class ProfissaoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return colecao;

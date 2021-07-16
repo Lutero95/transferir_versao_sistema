@@ -67,7 +67,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -124,7 +124,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -158,7 +158,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -192,7 +192,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -229,7 +229,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -265,7 +265,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -298,7 +298,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -336,7 +336,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -384,7 +384,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -420,7 +420,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return equipe;
@@ -485,7 +485,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return equipe;
@@ -521,7 +521,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -575,7 +575,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -619,7 +619,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -902,7 +902,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -940,7 +940,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return substituicao;
@@ -1002,7 +1002,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -1054,7 +1054,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1294,7 +1294,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -1334,7 +1334,7 @@ public class EquipeDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;

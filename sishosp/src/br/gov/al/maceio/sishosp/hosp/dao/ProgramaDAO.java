@@ -1229,7 +1229,7 @@ public class ProgramaDAO {
             try {
                 con.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -1560,7 +1560,7 @@ public class ProgramaDAO {
             try {
                 con.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;

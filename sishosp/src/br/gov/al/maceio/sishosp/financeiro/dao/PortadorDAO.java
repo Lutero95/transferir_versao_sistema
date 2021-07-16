@@ -186,7 +186,7 @@ public class PortadorDAO {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;

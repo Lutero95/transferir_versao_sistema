@@ -22,7 +22,7 @@ public class EquipeConverter implements Converter {
 			int id = Integer.parseInt(value);
 			return eDao.buscarEquipePorIDParaConverter(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Equipe inválida!", ""));
 		}

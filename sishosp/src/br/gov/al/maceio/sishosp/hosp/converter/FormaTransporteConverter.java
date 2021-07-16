@@ -22,7 +22,7 @@ public class FormaTransporteConverter implements Converter {
 			int id = Integer.parseInt(value);
 			return transporteDAO.buscatransportecodigo(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Transporte não válido", ""));
 		}

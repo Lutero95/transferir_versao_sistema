@@ -182,7 +182,7 @@ public class TituloPagarDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return boo;
@@ -311,7 +311,7 @@ public class TituloPagarDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return rst;
@@ -471,7 +471,7 @@ public class TituloPagarDao {
 				pst.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -620,7 +620,7 @@ public class TituloPagarDao {
 				pst.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -799,7 +799,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -912,7 +912,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return bean;
@@ -1086,7 +1086,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1189,7 +1189,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1220,7 +1220,7 @@ public class TituloPagarDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1298,7 +1298,7 @@ public class TituloPagarDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -1333,7 +1333,7 @@ public class TituloPagarDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 	}
@@ -1414,7 +1414,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1525,7 +1525,7 @@ public class TituloPagarDao {
 				set.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1598,7 +1598,7 @@ public class TituloPagarDao {
 				rs.close();
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;

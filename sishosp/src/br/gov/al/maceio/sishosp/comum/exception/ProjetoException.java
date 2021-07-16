@@ -19,7 +19,7 @@ public class ProjetoException extends Exception{
     }
 	
      public ProjetoException(String mensagemUsuario, String nomeDaClasse, Throwable arg) {
-    	 arg.printStackTrace();
+    	 //arg.printStackTrace();
     	 ErroSistema erroSistema = ErrosUtil.retornaErroSistema(arg.getStackTrace(), nomeDaClasse, arg.getMessage());
     	 exceptionDAO.gravaExcecao(erroSistema);
          JSFUtil.adicionarMensagemErro(mensagemUsuario, "Erro");
@@ -27,7 +27,7 @@ public class ProjetoException extends Exception{
     }
 
     public ProjetoException(Throwable arg, String nomeDaClasse) {
-    	arg.printStackTrace();
+    	//arg.printStackTrace();
     	
     	String exception = arg.getMessage();
     	

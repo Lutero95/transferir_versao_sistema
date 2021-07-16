@@ -22,7 +22,7 @@ public class BairroConverter implements Converter {
 			int id = Integer.parseInt(value);
 			return eDao.listarBairroPorId(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "Bairro não válido", ""));
 		}

@@ -65,7 +65,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();	
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -327,7 +327,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -622,7 +622,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -713,7 +713,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -757,7 +757,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -803,7 +803,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -833,7 +833,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return codgrupo;
@@ -883,7 +883,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return conf;
@@ -930,7 +930,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return conf;
@@ -966,7 +966,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return conf;
@@ -1010,7 +1010,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1212,7 +1212,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1306,7 +1306,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1384,7 +1384,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1411,7 +1411,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1463,7 +1463,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1515,7 +1515,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1557,7 +1557,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1607,7 +1607,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1703,7 +1703,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1740,7 +1740,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -1776,7 +1776,7 @@ public class ConfigAgendaDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;

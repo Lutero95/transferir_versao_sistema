@@ -36,7 +36,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -67,7 +67,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -95,7 +95,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -121,7 +121,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -148,7 +148,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return equip;
@@ -179,7 +179,7 @@ public class EquipamentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;

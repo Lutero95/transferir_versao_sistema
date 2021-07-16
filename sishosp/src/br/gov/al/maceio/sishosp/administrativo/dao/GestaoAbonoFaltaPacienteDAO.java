@@ -63,13 +63,13 @@ public class GestaoAbonoFaltaPacienteDAO {
 				listaAbonosFaltaPaciente.add(abonoFaltaPaciente);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaAbonosFaltaPaciente;
@@ -162,13 +162,13 @@ public class GestaoAbonoFaltaPacienteDAO {
 				listaAtendimentosParaAbono.add(atendimentoParaAbono);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaAtendimentosParaAbono;
@@ -220,14 +220,14 @@ public class GestaoAbonoFaltaPacienteDAO {
         }
         catch (Exception ex) {
         	con.rollback();
-            ex.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
             JSFUtil.adicionarMensagemErro(ex.getMessage(), "Aten��o");
             throw new RuntimeException(ex);
         } finally {
             try {
             	con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         
@@ -247,7 +247,7 @@ public class GestaoAbonoFaltaPacienteDAO {
 			ps.execute();
 		} catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Atenção");
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw e;
 		}
     }
@@ -262,7 +262,7 @@ public class GestaoAbonoFaltaPacienteDAO {
 			ps.execute();
 		} catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Atenção");
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw e;
 		}
     }

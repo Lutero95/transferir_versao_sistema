@@ -43,7 +43,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -75,7 +75,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -104,7 +104,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -134,7 +134,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return palavraChaveEvolucao;
@@ -161,7 +161,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -190,7 +190,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -233,7 +233,7 @@ public class PalavraChaveEvolucaoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return palavrasEncontradas;

@@ -45,7 +45,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -85,7 +85,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -117,7 +117,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -162,7 +162,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -211,7 +211,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -256,7 +256,7 @@ public class BancoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -335,7 +335,7 @@ public class BancoDAO {
             try {
                 con.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaBanco;

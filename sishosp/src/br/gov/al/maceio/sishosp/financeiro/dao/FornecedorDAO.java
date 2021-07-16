@@ -59,7 +59,7 @@ public class FornecedorDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 	}
@@ -101,7 +101,7 @@ public class FornecedorDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return result;
@@ -130,7 +130,7 @@ public class FornecedorDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return sucesso;
@@ -206,7 +206,7 @@ public class FornecedorDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -244,7 +244,7 @@ public class FornecedorDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;

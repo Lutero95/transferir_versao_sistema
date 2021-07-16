@@ -238,7 +238,7 @@ public class LaudoController implements Serializable {
             }
         } catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
     }
 
@@ -433,7 +433,7 @@ public class LaudoController implements Serializable {
             }
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         return false;
     }

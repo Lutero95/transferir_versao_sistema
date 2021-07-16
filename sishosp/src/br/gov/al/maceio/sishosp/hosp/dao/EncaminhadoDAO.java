@@ -36,7 +36,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -64,7 +64,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -91,7 +91,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -126,7 +126,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -158,7 +158,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return encaminhado;
@@ -191,7 +191,7 @@ public class EncaminhadoDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return colecao;

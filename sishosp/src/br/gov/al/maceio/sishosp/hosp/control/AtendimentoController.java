@@ -304,7 +304,7 @@ public class AtendimentoController implements Serializable {
 
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro!");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         return false;
     }
@@ -559,7 +559,7 @@ public class AtendimentoController implements Serializable {
             }
         } catch (ProjetoException e) {
             JSFUtil.adicionarMensagemErro("Não foi possível atualizar o atendimento, erro: "+e.getMessage(), "");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
     }
 

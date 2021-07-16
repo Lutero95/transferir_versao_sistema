@@ -237,7 +237,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -387,7 +387,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -543,7 +543,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -591,7 +591,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -619,7 +619,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -641,7 +641,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
     }
@@ -704,7 +704,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtdMax;
@@ -774,7 +774,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtdMax;
@@ -844,7 +844,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -922,7 +922,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -996,7 +996,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -1073,7 +1073,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -1132,7 +1132,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -1203,7 +1203,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -1254,7 +1254,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -1324,7 +1324,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1375,7 +1375,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1426,7 +1426,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1479,7 +1479,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1551,7 +1551,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1588,7 +1588,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1625,7 +1625,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1671,7 +1671,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1717,7 +1717,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1770,7 +1770,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1804,7 +1804,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1864,7 +1864,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -1917,7 +1917,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -2010,7 +2010,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2158,7 +2158,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2208,7 +2208,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtdMax;
@@ -2253,7 +2253,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtdMax;
@@ -2303,7 +2303,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -2337,7 +2337,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return resultado;
@@ -2421,7 +2421,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2545,7 +2545,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2590,8 +2590,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
      * configAgendaParte1Bean.setDiaSemana(rs.getString("dia"));
      *
      * lista.add(configAgendaParte1Bean); } } catch (Exception ex) {
-     * ex.printStackTrace(); throw new RuntimeException(ex); } finally { try {
-     * con.close(); } catch (Exception ex) { ex.printStackTrace(); } } return lista;
+     * //comentado walter erro log ex.printStackTrace(); throw new RuntimeException(ex); } finally { try {
+     * con.close(); } catch (Exception ex) { //comentado walter erro log ex.printStackTrace(); } } return lista;
      * }
      *
      *
@@ -2630,7 +2630,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return resultado;
@@ -2689,7 +2689,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return resultado;
@@ -2834,7 +2834,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2873,7 +2873,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -2912,7 +2912,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return qtd;
@@ -2947,7 +2947,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -2988,7 +2988,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -3032,7 +3032,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -3099,7 +3099,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return resultado;
@@ -3134,7 +3134,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;
@@ -3163,7 +3163,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -3206,7 +3206,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return existeAgendaAvulsa;
@@ -3250,7 +3250,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return idCid;
@@ -3460,7 +3460,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;
@@ -3490,7 +3490,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;

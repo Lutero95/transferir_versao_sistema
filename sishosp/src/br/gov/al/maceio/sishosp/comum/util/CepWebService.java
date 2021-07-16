@@ -30,7 +30,7 @@ public class CepWebService {
 		catch (SigepClienteException se) {
 			setResultado(0);
 			JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
-			se.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

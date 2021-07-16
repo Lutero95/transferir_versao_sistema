@@ -37,7 +37,7 @@ public class ExceptionDAO {
 			ps.executeUpdate();
 			con.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {

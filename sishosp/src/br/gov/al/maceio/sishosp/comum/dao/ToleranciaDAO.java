@@ -43,7 +43,7 @@ public class ToleranciaDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return horarioFuncionamento;
@@ -79,7 +79,7 @@ public class ToleranciaDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return minutosTolerancia;

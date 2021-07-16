@@ -78,13 +78,13 @@ public final class CEPUtil {
             endereco.setCepValido(false);
         } catch (InterruptedException e) {
            JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-           e.printStackTrace();
+           //comentado walter erro log ex.printStackTrace();
         } catch (ExecutionException e) {
 			JSFUtil.adicionarMensagemAdvertencia("Não foi possível consultar o CEP informado", "");
-        	e.printStackTrace();
+        	//comentado walter erro log ex.printStackTrace();
         } catch (Exception e) {
 			JSFUtil.adicionarMensagemAdvertencia("Não foi possível consultar o CEP informado", "");
-        	e.printStackTrace();
+        	//comentado walter erro log ex.printStackTrace();
         }finally {
            future.cancel(true);
         }

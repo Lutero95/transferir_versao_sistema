@@ -121,7 +121,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -229,7 +229,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -258,7 +258,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return retorno;
@@ -304,7 +304,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -349,7 +349,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -392,7 +392,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -446,7 +446,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -493,7 +493,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -537,7 +537,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return procedimento;
@@ -616,7 +616,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -665,7 +665,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -699,7 +699,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -732,7 +732,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return lista;
@@ -788,7 +788,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaModaliadesAtendimentoExistente;
@@ -808,7 +808,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaInstrumentoRegistroExistente;
@@ -829,7 +829,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaCidExistente;
@@ -851,7 +851,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaRenasesExistentes;
@@ -871,7 +871,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaCodigoTipoFinanciamento;
@@ -928,7 +928,7 @@ public class ProcedimentoDAO {
                     + " verifique se o código do procedimento está correto"
                     + " e execute a alteração do procedimento para que seja possível realizar uma nova"
                     + " carga do SIGTAP este mês", "");
-            soape.printStackTrace();
+            //comentado walter erro log //comentado walter erro log //comentado walter erro log ex.printStackTrace();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -1462,7 +1462,7 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return listaCboExistente;
@@ -1640,7 +1640,7 @@ public class ProcedimentoDAO {
                 idHistorico = rs.getInt("id");
         } catch (Exception ex) {
             conexao.rollback();
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
         return idHistorico;
@@ -1657,7 +1657,7 @@ public class ProcedimentoDAO {
             stm.executeUpdate();
         } catch (Exception ex) {
             conexao.rollback();
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         }
     }
@@ -1687,7 +1687,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return houveCargaDoSigtap;
@@ -1724,7 +1724,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;
@@ -1758,7 +1758,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaHistoricosSigtap;
@@ -1809,7 +1809,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //comentado walter erro log //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return procedimento;
@@ -2216,7 +2216,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //comentado walter erro log //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaMesIhAno;
@@ -2246,7 +2246,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //comentado walter erro log //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return ano;
@@ -2278,7 +2278,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //comentado walter erro log //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return mes;
@@ -2320,13 +2320,13 @@ public class ProcedimentoDAO {
             if(rs.next())
                 ehValido = rs.getBoolean("ehvalido");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return ehValido;
@@ -2358,13 +2358,13 @@ public class ProcedimentoDAO {
             if(rs.next())
                 ehValido = rs.getBoolean("ehvalido");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return ehValido;
@@ -2399,13 +2399,13 @@ public class ProcedimentoDAO {
             if(rs.next())
                 ehValido = rs.getBoolean("ehvalido");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return ehValido;
@@ -2431,13 +2431,13 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;
@@ -2462,13 +2462,13 @@ public class ProcedimentoDAO {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return existe;
@@ -2507,7 +2507,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaProcedimento;
@@ -2561,7 +2561,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaProcedimento;
@@ -2600,7 +2600,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaInstrumentoRegistro;
@@ -2627,13 +2627,13 @@ public class ProcedimentoDAO {
                 listaServico.add(servico);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaServico;
@@ -2660,13 +2660,13 @@ public class ProcedimentoDAO {
                 listaClassificacao.add(classificacao);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return listaClassificacao;
@@ -2720,7 +2720,7 @@ public class ProcedimentoDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log //comentado walter erro log ex.printStackTrace();
             }
         }
         return procedimento;

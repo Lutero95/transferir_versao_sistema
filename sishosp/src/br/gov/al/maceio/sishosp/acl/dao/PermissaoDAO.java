@@ -43,7 +43,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -75,7 +75,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -124,7 +124,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -161,7 +161,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -198,7 +198,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -232,7 +232,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -262,7 +262,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -291,7 +291,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -322,7 +322,7 @@ public class PermissaoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}

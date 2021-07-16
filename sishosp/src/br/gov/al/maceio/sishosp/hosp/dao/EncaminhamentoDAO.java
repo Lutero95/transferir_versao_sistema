@@ -53,7 +53,7 @@ public class EncaminhamentoDAO {
 			try {
 				conexao.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return cadastrou;

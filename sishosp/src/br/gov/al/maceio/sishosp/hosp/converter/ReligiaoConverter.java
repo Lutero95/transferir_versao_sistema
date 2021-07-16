@@ -25,7 +25,7 @@ public class ReligiaoConverter implements Converter {
             int id = Integer.parseInt(value);
             return r.buscarReligiaoPorId(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
             throw new ConverterException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR, "Religião não válida", ""));
         }

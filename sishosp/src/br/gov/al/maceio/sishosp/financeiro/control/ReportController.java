@@ -742,13 +742,13 @@ public class ReportController implements Serializable {
 			}
 			
 		} catch (JRException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		} catch (ProjetoException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 		
 		this.getFacesContext().responseComplete();

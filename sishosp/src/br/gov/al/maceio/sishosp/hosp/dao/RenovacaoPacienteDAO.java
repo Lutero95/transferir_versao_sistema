@@ -74,7 +74,7 @@ public class RenovacaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return ip;
@@ -104,7 +104,7 @@ public class RenovacaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -345,7 +345,7 @@ public class RenovacaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -598,7 +598,7 @@ public class RenovacaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -738,7 +738,7 @@ public class RenovacaoPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;

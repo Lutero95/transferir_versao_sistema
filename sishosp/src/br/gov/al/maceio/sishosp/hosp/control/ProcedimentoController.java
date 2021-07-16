@@ -227,7 +227,7 @@ public class ProcedimentoController implements Serializable {
             exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
         } catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
     }
 
@@ -428,7 +428,7 @@ public class ProcedimentoController implements Serializable {
                     }
                     catch(Exception sqle) {
                         JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
-                        sqle.printStackTrace();
+                        //comentado walter erro log ex.printStackTrace();
                     }
                 }
 
@@ -438,7 +438,7 @@ public class ProcedimentoController implements Serializable {
                     JSFUtil.adicionarMensagemSucesso("Dados atualizados com sucesso!", "");
                 }catch(Exception sqle) {
                     JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
-                    sqle.printStackTrace();
+                    //comentado walter erro log ex.printStackTrace();
                 }
 
                 listaHistoricoSigtap();
@@ -458,7 +458,7 @@ public class ProcedimentoController implements Serializable {
             }
         } catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
 
         return false;
@@ -504,7 +504,7 @@ public class ProcedimentoController implements Serializable {
             }
             detalheAdicional++;
         } catch (SIGTAPFault e) {
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         return detalheAdicional;
     }
@@ -619,9 +619,9 @@ public class ProcedimentoController implements Serializable {
             leArquivosDescompactados(arquivosTxtDescompactados);
         } catch (IOException ioe) {
             JSFUtil.adicionarMensagemErro("Um erro inexperada ocorreu: " + ioe.getMessage(), "");
-            ioe.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         } catch (ProjetoException pe) {
-            pe.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
 
     }
@@ -712,7 +712,7 @@ public class ProcedimentoController implements Serializable {
             zisInputStream.closeEntry();
             zisInputStream.close();
         }catch(IOException ex){
-            ex.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
         return arquivosDescompactados;
     }
@@ -768,7 +768,7 @@ public class ProcedimentoController implements Serializable {
                     }
                 }catch(Exception sqle) {
                     JSFUtil.adicionarMensagemErro(sqle.getMessage(), "Erro");
-                    sqle.printStackTrace();
+                    //comentado walter erro log ex.printStackTrace();
                 }
             }
         }
@@ -1079,7 +1079,7 @@ public class ProcedimentoController implements Serializable {
             exibeMensagemSeProcedimentoNaoPossuiDadosNoPeriodoSelecionado();
         } catch (Exception e) {
             JSFUtil.adicionarMensagemErro(e.getLocalizedMessage(), "Erro!");
-            e.printStackTrace();
+            //comentado walter erro log ex.printStackTrace();
         }
     }
 

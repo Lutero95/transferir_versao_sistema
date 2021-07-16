@@ -42,7 +42,7 @@ public class CPFPacienteValidator implements Validator {
 							throw new ValidatorException(message);
 						}
 					} catch (ProjetoException e) {
-						e.printStackTrace();
+						//comentado walter erro log ex.printStackTrace();
 					} // se tiver retorno
 			}
 		}

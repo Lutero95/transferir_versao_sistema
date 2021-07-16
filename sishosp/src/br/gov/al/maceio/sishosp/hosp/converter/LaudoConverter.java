@@ -22,7 +22,7 @@
 //			int id = Integer.parseInt(value);
 //			return l.buscaLaudoPorId(id);
 //		} catch (Exception e) {
-//			e.printStackTrace();
+//			//comentado walter erro log ex.printStackTrace();
 //			throw new ConverterException(new FacesMessage(
 //					FacesMessage.SEVERITY_ERROR, "Laudo não válido", ""));
 //		}

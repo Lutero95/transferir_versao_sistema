@@ -51,7 +51,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return funcionarioBean;
@@ -86,7 +86,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return fornecedorBean;
@@ -122,7 +122,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return portadorBean;
@@ -155,7 +155,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -194,7 +194,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -238,7 +238,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -274,7 +274,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -309,7 +309,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -344,7 +344,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -377,7 +377,7 @@ public class BuscaDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;

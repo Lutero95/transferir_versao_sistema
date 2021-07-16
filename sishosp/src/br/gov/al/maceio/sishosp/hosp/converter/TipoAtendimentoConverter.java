@@ -22,7 +22,7 @@ public class TipoAtendimentoConverter implements Converter {
 			int id = Integer.parseInt(value);
 			return tDAO.listarTipoPorIdParaConverter(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					"Tipo de atendimento inválido!", ""));

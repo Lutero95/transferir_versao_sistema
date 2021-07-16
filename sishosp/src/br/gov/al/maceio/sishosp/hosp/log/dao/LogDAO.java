@@ -51,7 +51,7 @@ public class LogDAO {
         	try {
         		conexao.close();				
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
     }

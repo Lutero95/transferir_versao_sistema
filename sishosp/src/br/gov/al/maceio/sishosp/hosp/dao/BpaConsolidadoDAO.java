@@ -172,7 +172,7 @@ public class BpaConsolidadoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaDeBpaConsolidado;

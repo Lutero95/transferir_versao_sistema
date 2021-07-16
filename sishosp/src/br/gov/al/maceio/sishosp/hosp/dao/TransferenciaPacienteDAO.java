@@ -84,7 +84,7 @@ public class TransferenciaPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return ip;
@@ -411,7 +411,7 @@ public class TransferenciaPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -678,7 +678,7 @@ public class TransferenciaPacienteDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -788,7 +788,7 @@ public class TransferenciaPacienteDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;

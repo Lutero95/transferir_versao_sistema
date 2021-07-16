@@ -35,7 +35,7 @@ public class RacaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log   ex.printStackTrace();
             }
         }
         return retorno;
@@ -63,7 +63,7 @@ public class RacaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+//comentado walter erro log                ex.printStackTrace();
             }
         }
         return retorno;
@@ -89,7 +89,7 @@ public class RacaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+//comentado walter erro log                ex.printStackTrace();
             }
         }
         return retorno;
@@ -122,7 +122,7 @@ public class RacaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+//comentado walter erro log                ex.printStackTrace();
             }
         }
         return lista;
@@ -151,7 +151,7 @@ public class RacaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+//comentado walter erro log                ex.printStackTrace();
             }
         }
         return raca;

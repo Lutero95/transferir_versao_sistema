@@ -245,7 +245,7 @@ public class BpaController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 
@@ -494,7 +494,7 @@ public class BpaController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 
@@ -601,7 +601,7 @@ public class BpaController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 
@@ -678,7 +678,7 @@ public class BpaController implements Serializable {
 			}
 		} catch (IOException ioe) {
 			JSFUtil.adicionarMensagemErro(ioe.getMessage(), "Erro");
-			ioe.printStackTrace();
+			//comentado walter erro log ioe.printStackTrace();
 		} catch (ProjetoException pe) {
 			JSFUtil.adicionarMensagemErro(pe.getMessage(), "");
 		}
@@ -886,7 +886,7 @@ public class BpaController implements Serializable {
 			this.dataFimAtendimento = new SimpleDateFormat("yyyy/MM/dd").parse(dataFinal);
 		} catch (ParseException e) {
 			JSFUtil.adicionarMensagemErro(e.getMessage(), "Erro");
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 	}
 

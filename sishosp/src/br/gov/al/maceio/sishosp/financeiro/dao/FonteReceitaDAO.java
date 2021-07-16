@@ -40,7 +40,7 @@ public class FonteReceitaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -72,7 +72,7 @@ public class FonteReceitaDAO {
             try {
                 conexao.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }
@@ -103,7 +103,7 @@ public class FonteReceitaDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -141,7 +141,7 @@ public class FonteReceitaDAO {
             try {
                 con.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
                 System.exit(1);
             }
         }

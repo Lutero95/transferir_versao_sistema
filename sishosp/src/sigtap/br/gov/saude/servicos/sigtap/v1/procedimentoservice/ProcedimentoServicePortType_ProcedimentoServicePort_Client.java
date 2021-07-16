@@ -41,7 +41,7 @@ public final class ProcedimentoServicePortType_ProcedimentoServicePort_Client {
                     wsdlURL = new URL(args[0]);
                 }
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                //comentado walter erro log ex.printStackTrace();
             }
         }
 

@@ -747,7 +747,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -806,7 +806,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -2725,7 +2725,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return existe;
@@ -2756,7 +2756,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return cbo;
@@ -2787,7 +2787,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaCbos;
@@ -2849,7 +2849,7 @@ public class FuncionarioDAO {
 			try {
 				con.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return cboCompativel;

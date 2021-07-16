@@ -24,7 +24,7 @@ public class ConverterFornecedor implements Converter{
 	           int id = Integer.parseInt(value);
 	           return bdao.buscarFornecedorCod(id);
 	       }catch (Exception e) {
-	           e.printStackTrace();
+	           //comentado walter erro log e.printStackTrace();
 	           throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "ErroC", ""));
 	       }
 	   }

@@ -36,7 +36,7 @@ public class Utilites {
 	        }  
 	  
 	        catch (Exception ex) {  
-	            ex.printStackTrace();  
+	            //comentado walter erro log ex.printStackTrace();  
 	        }  
 	          
 	  

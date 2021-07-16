@@ -68,7 +68,7 @@ public class InconsistenciaDAO {
 				conexaoPublico.close();
 				conexaoEhosp.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -144,7 +144,7 @@ public class InconsistenciaDAO {
 			try {
 				conexaoPublico.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaInconsistencia;
@@ -181,7 +181,7 @@ public class InconsistenciaDAO {
 				conexaoPublico.close();
 				conexaoEhosp.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return inconsistencia;
@@ -262,7 +262,7 @@ public class InconsistenciaDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}
@@ -308,7 +308,7 @@ public class InconsistenciaDAO {
 				conexaoPublico.close();
 				conexaoEhosp.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -346,7 +346,7 @@ public class InconsistenciaDAO {
 				conexaoPublico.close();
 				conexaoEhosp.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -386,7 +386,7 @@ public class InconsistenciaDAO {
 			try {
 				conexaoPublica.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaInconsistencia;
@@ -416,7 +416,7 @@ public class InconsistenciaDAO {
 				conexaoPublico.close();
 				conexaoEhosp.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaInconsistenciasDTO;
@@ -559,7 +559,7 @@ public class InconsistenciaDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 				System.exit(1);
 			}
 		}

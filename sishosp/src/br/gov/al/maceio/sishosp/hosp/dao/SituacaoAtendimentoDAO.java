@@ -43,7 +43,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -74,7 +74,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -99,7 +99,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;
@@ -135,7 +135,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaSituacoes;
@@ -165,7 +165,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaSituacoes;
@@ -194,7 +194,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaSituacoes;
@@ -233,7 +233,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaSituacoes;
@@ -267,7 +267,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return situacaoAtendimento;
@@ -305,7 +305,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return existeSituacaoComAbonoFalta;
@@ -333,7 +333,7 @@ public class SituacaoAtendimentoDAO {
 			try {
 				conexao.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return existeSituacaoComAbonoFalta;

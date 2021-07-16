@@ -111,7 +111,7 @@ public class TipoPagDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -214,7 +214,7 @@ public class TipoPagDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return result;
@@ -259,7 +259,7 @@ public class TipoPagDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -305,7 +305,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lst;
@@ -348,7 +348,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -385,7 +385,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -429,7 +429,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -473,7 +473,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lista;
@@ -538,7 +538,7 @@ public class TipoPagDao {
 				rs.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return lst;
@@ -569,7 +569,7 @@ public class TipoPagDao {
 				ps.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log //comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return retorno;

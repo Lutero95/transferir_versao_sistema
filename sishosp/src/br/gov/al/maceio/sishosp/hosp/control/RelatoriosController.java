@@ -1676,7 +1676,7 @@ public class RelatoriosController implements Serializable {
 				conexao.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 
@@ -1701,9 +1701,9 @@ public class RelatoriosController implements Serializable {
 			if (connection != null)
 				connection.close();
 		} catch (JRException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//comentado walter erro log ex.printStackTrace();
 		}
 		this.getFacesContext().responseComplete();
 		servletOutputStream.flush();

@@ -38,7 +38,7 @@ public class CentroCustoDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return result;
@@ -69,7 +69,7 @@ public class CentroCustoDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return result;
@@ -98,7 +98,7 @@ public class CentroCustoDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return result;
@@ -132,7 +132,7 @@ public class CentroCustoDAO {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//comentado walter erro log ex.printStackTrace();
 			}
 		}
 		return listaCentroCusto;
