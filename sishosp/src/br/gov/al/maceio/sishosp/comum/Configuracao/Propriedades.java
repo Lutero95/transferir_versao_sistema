@@ -2,7 +2,7 @@ package br.gov.al.maceio.sishosp.comum.Configuracao;
 
 public class Propriedades {
 
-    public static Conexoes Conexao = Conexoes.DEPLOY ;
+    public static Conexoes Conexao = Conexoes.LOCALHOST;
 
 
     public enum Conexoes {
