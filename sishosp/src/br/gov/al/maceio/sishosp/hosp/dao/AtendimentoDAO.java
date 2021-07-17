@@ -1118,7 +1118,7 @@ public class AtendimentoDAO {
 			stm.setInt(1, id);
 			stm.setLong(2, user_session.getId());
 			ResultSet rs = stm.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				atendimento.setId(rs.getInt("id_atendimento"));
 				atendimento.setId1(rs.getInt("id_atendimentos1"));
 				atendimento.setDataAtendimento(rs.getDate("dtaatende"));
@@ -1156,6 +1156,11 @@ public class AtendimentoDAO {
 			}
 
 			atendimento.setListaProcedimentoCid(listarProcedimentosCids(con, atendimento.getId1()));
+			
+			String textoConselho = retornaTextoConselho(con, atendimento.getFuncionario().getId());
+			if(VerificadorUtil.verificarSeObjetoNuloOuVazio(atendimento.getEvolucao())) {
+				atendimento.setEvolucao(textoConselho);
+			}
 
 		} catch (SQLException ex2) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
@@ -1169,6 +1174,32 @@ public class AtendimentoDAO {
 			}
 		}
 		return atendimento;
+	}
+	
+	private String retornaTextoConselho (Connection conexao, Long idProfissional) throws SQLException, ProjetoException {
+
+		String textoConselho = "";
+		String quebrasDeLinha = "<br /><br /><br /><br /><br />";
+
+		String sql = "select '<strong>' || f.descfuncionario || ' ' || c.descricao || ' ' || c.numero || '</strong>' as texto "+
+				"   from hosp.conselho c \r\n" + 
+				"	join acl.funcionarios f on c.id = f.id_conselho \r\n" + 
+				"	and f.id_funcionario = ?;";
+		try {
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setLong(1, idProfissional);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				textoConselho += quebrasDeLinha+rs.getString("texto");
+			}
+		} catch (SQLException ex2) {
+			conexao.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+		} catch (Exception ex) {
+			conexao.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return textoConselho;
 	}
 
 	private List<ProcedimentoCidDTO> listarProcedimentosCids (Connection conexao, Integer idAtendimentos1) throws SQLException, ProjetoException {

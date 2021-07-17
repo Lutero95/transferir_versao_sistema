@@ -294,7 +294,7 @@
 										rendered="#{MBFuncionarios.profissional.realizaAtendimento == false}" />
 							</div>
 
-							<b:row
+							<b:row 
 									rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
 								<b:column span="3"
 										  class="label-position new-data-size new-comple1">
@@ -355,6 +355,31 @@
 													global="false" event="blur" immediate="true"
 													update=":msgPagina" />
 										</b:inputText>
+									</p:outputPanel>
+								</b:column>
+							</b:row>
+							
+							<b:row>
+								<b:column span="3"
+										  class="label-position new-data-size new-comple1">
+									<b:label value="Conselho" severity="info" />
+
+									<p:outputPanel id="outConselho">
+										<p:autoComplete
+												value="#{MBFuncionarios.profissional.conselho}"
+												size="31" converter="conConselho" id="conselho"
+												completeMethod="#{conselhoController.listaConselhoAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												required="false" class="select-agendaEquipe4"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.descricao}">
+										</p:autoComplete>
+
+										<p:commandButton id="btBuscaConselho" icon="ui-icon-search"
+														 style="margin-top: 5px;" update=":formConsulConselho"
+														 onclick="PF('dlgConsulConselho').show();"
+														 immediate="true"
+														 actionListener="#{conselhoController.listarConselhos()}" />
 									</p:outputPanel>
 								</b:column>
 							</b:row>
@@ -784,9 +809,47 @@
 						</div>
 					</p:column>
 				</p:dataTable>
-
 			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Consultar Conselho" modal="true" dynamic="true"
+				  widgetVar="dlgConsulConselho" styleClass="topDialog2">
+			<h:form id="formConsulConselho">
+				<p:outputPanel>
+					<p:autoUpdate/>
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 value="#{conselhoController.listaConselhos}"
+								 page-length="5" page-length-menu="5,10,20" var="conselho"
+								 display="Nenhuma conselho encontrado">
 
+						<h:column>
+							<f:facet name="header">
+								Descrição
+							</f:facet>
+							<p:outputLabel value="#{conselho.descricao}" />
+						</h:column>
+						
+						<h:column>
+							<f:facet name="header">
+								Número
+							</f:facet>
+							<p:outputLabel value="#{conselho.numero}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Adicionar
+							</f:facet>
+							<p:commandButton update=":frmPrincipal:tbv:outConselho" icon="fa fa-fw fa-check"
+											 title="Selecionar" class="new-btn-acao-table acao-editar"
+											 onclick="PF('dlgConsulConselho').hide();">
+								<f:setPropertyActionListener value="#{conselho}"
+															 target="#{MBFuncionarios.profissional.conselho}" />
+							</p:commandButton>
+						</h:column>
+					</b:dataTable>
+				</p:outputPanel>
+			</h:form>
 		</p:dialog>
 
 	</ui:define>

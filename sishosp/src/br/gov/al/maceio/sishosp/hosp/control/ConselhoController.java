@@ -11,11 +11,9 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ConselhoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConselhoBean;
+
 
 @ManagedBean
 @ViewScoped
@@ -34,22 +32,22 @@ public class ConselhoController {
 	private String campoBusca;
 	private String tipoBusca;
 	private String cabecalho;
-	private List<CboBean> listaCbos;
-	private List<CboBean> listaCbosSelecionados;
-	private CboDAO cboDAO;
 	
 	public ConselhoController() {
 		listaConselhos = new ArrayList<>();
 		conselho = new ConselhoBean();
 		conselhoDAO = new ConselhoDAO();
-		listaCbos = new ArrayList<>();
-		cboDAO = new CboDAO();
-		listaCbosSelecionados = new ArrayList<>();
 	}
 	
 	public void listarConselhos() throws ProjetoException {
 		listaConselhos = conselhoDAO.listaConselho();
 	}
+	
+    public List<ConselhoBean> listaConselhoAutoComplete(String query)
+            throws ProjetoException {
+        List<ConselhoBean> result = conselhoDAO.listarConselhoAutoComplete(query);
+        return result;
+    }
 	
 	public void buscarConselhosFiltro() throws ProjetoException {
 		listaConselhos = conselhoDAO.buscaConselhoFiltro(campoBusca);
@@ -80,95 +78,32 @@ public class ConselhoController {
 		}
 	}
 	
-    public void adicionarOuRemoverCboSelecionado(CboBean cbo) throws ProjetoException {
-    	if(cboFoiAdicionado(cbo))
-    		this.listaCbosSelecionados.remove(cbo);
-    	else
-    		this.listaCbosSelecionados.add(cbo);
-    }
-
-	private boolean cboExisteEmOutroConselho(CboBean cbo) throws ProjetoException {
-		boolean existe = conselhoDAO.existeCboEmConselho(conselho.getId(), cbo.getCodCbo());
-		if(existe)
-			JSFUtil.adicionarMensagemErro("CBO "+ cbo.getDescCbo()+" já foi adicionado em outro conselho", "");
-		return existe;
-	}
-    
-    public boolean cboFoiAdicionado(CboBean cbo) {
-    	return this.listaCbosSelecionados.contains(cbo);
-    }
-    
-    public void adicionarCbos() throws ProjetoException {
-    	
-    	for (CboBean cbo : listaCbosSelecionados) {
-			if(cboExisteEmOutroConselho(cbo))
-				return;
-		}
-    	
-    	if(!existeAlgumCboAdicionado(listaCbosSelecionados)) {
-    		this.conselho.getListaCbos().addAll(listaCbosSelecionados);
-    		JSFUtil.fecharDialog("dlgCBO");
-    	}
-    }
-    
-    private boolean existeAlgumCboAdicionado(List<CboBean> Cbos) {
-    	
-    	List<Integer> listaIdCbosAdicionados = new ArrayList<>();
-    	for (CboBean cboAdicionado : this.conselho.getListaCbos()) {
-    		listaIdCbosAdicionados.add(cboAdicionado.getCodCbo());
-		}
-    	
-    	for (CboBean cbo : Cbos) {
-			if(listaIdCbosAdicionados.contains(cbo.getCodCbo())) {
-				JSFUtil.adicionarMensagemAdvertencia("CBO "+cbo.getDescCbo()+" já foi adicionado", "");
-				return true;
-			}
-		}
-    	return false;
-    }
-    
-    public void removerCbo(CboBean cbo) {
-    	this.conselho.getListaCbos().remove(cbo);
-    }
-    
-    public void limparDialogCbo() {
-    	this.listaCbosSelecionados = new ArrayList<>();
-    }
-    
+   
     public void cadastrarConselho() throws ProjetoException {
-    	if(existeCbosInseridos(this.conselho.getListaCbos())) {
-			boolean cadastrado = conselhoDAO.gravarConselho(conselho);
-			if (cadastrado) {
-				limparDados();
-				JSFUtil.adicionarMensagemSucesso("Conselho cadastrado com sucesso", "");
-			} else {
-				JSFUtil.adicionarMensagemErro("Erro ao cadastrar conselho", "");
-			}
-    	}
+    	
+		boolean cadastrado = conselhoDAO.gravarConselho(conselho);
+		if (cadastrado) {
+			limparDados();
+			JSFUtil.adicionarMensagemSucesso("Conselho cadastrado com sucesso", "");
+		} else {
+			JSFUtil.adicionarMensagemErro("Erro ao cadastrar conselho", "");
+		}    	
     }
     
     public void alterarConselho() throws ProjetoException {
-    	if(existeCbosInseridos(this.conselho.getListaCbos())) {
-			boolean alterado = conselhoDAO.alterarConselho(conselho);
-			if (alterado) {
-				JSFUtil.adicionarMensagemSucesso("Conselho alterado com sucesso", "");
-			} else {
-				JSFUtil.adicionarMensagemErro("Erro ao alterar conselho", "");
-			}
-    	}
+    	
+		boolean alterado = conselhoDAO.alterarConselho(conselho);
+		if (alterado) {
+			JSFUtil.adicionarMensagemSucesso("Conselho alterado com sucesso", "");
+		} else {
+			JSFUtil.adicionarMensagemErro("Erro ao alterar conselho", "");
+		}    	
     }
     
     private void limparDados() {
     	conselho = new ConselhoBean();
     }
-    
-    private boolean existeCbosInseridos(List<CboBean> cbos) {
-    	if(cbos.isEmpty()) {
-    		JSFUtil.adicionarMensagemAdvertencia("Insira pelo menos um CBO", "");
-    		return false;
-    	}
-    	return true;
-    }
+   
 	
 	public void excluirConselho() throws ProjetoException {
 		boolean excluido = conselhoDAO.excluiConselho(conselho);
@@ -179,9 +114,6 @@ public class ConselhoController {
 		}
 	}
 	
-	public void listarCbos() throws ProjetoException {
-		this.listaCbos = cboDAO.listarCbo();
-	}
 
 	public List<ConselhoBean> getListaConselhos() {
 		return listaConselhos;
@@ -230,21 +162,4 @@ public class ConselhoController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-
-	public List<CboBean> getListaCbos() {
-		return listaCbos;
-	}
-
-	public void setListaCbos(List<CboBean> listaCbos) {
-		this.listaCbos = listaCbos;
-	}
-
-	public List<CboBean> getListaCbosSelecionados() {
-		return listaCbosSelecionados;
-	}
-
-	public void setListaCbosSelecionados(List<CboBean> listaCbosSelecionados) {
-		this.listaCbosSelecionados = listaCbosSelecionados;
-	}
-	
 }

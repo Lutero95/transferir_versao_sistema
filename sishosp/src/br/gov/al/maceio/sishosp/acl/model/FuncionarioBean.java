@@ -35,6 +35,7 @@ public class FuncionarioBean implements Serializable {
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
     private String horarioAtendimento;
+    private ConselhoBean conselho;
     
     /* TODO Remover essa propriedade depois que o ajuste de turno por dia da semana for implementado na agenda normal*/
     private ArrayList<String> listDiasSemana;
@@ -96,6 +97,7 @@ public class FuncionarioBean implements Serializable {
         confirmacaoNovaSenha = "";
         listDiasSemana = new ArrayList<String>();
         this.listaCbos = new ArrayList<CboBean>();
+        this.conselho = new ConselhoBean();
     }
 
 
@@ -532,6 +534,15 @@ public class FuncionarioBean implements Serializable {
 		this.listaCbos = listaCbos;
 	}
 
+	public ConselhoBean getConselho() {
+		return conselho;
+	}
+
+	public void setConselho(ConselhoBean conselho) {
+		this.conselho = conselho;
+	}
+
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -581,12 +592,17 @@ public class FuncionarioBean implements Serializable {
                 Objects.equals(getExcecaoBloqueioHorario(), that.getExcecaoBloqueioHorario()) &&
                 Objects.equals(getListaSecreFolha(), that.getListaSecreFolha()) &&
                 Objects.equals(getPermiteAutorizacaoLaudo(), that.getPermiteAutorizacaoLaudo()) &&
-                Objects.equals(getListaCbos(), that.getListaCbos());
+                Objects.equals(getListaCbos(), that.getListaCbos()) && 
+                Objects.equals(getConselho(), that.getConselho());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos());
+        return Objects.hash(getNome(), getSenha(), getNovaSenha(), getConfirmacaoNovaSenha(), getDatacriacao(), getAtivo(), getEmail(), getCpf(), isPrimeiroAcesso(), getRealizaAtendimento(), 
+        		getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), 
+        		getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), 
+        		getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), 
+        		getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos(), getConselho());
     }
 }
 

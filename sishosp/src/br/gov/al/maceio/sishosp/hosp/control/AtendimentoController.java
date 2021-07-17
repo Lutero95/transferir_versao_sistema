@@ -488,7 +488,6 @@ public class AtendimentoController implements Serializable {
     	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
     			.getSessionMap().get("obj_usuario");
     	
-    	//TODO REMOVER COMENTÁRIO
     	
     	if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
     			&& !atendimentoDAO.verificaEvolucaoAtendimentoEhPermitida(atendimento)) {
