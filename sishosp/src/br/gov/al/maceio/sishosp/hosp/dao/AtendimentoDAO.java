@@ -847,7 +847,7 @@ public class AtendimentoDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento,  a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno,a1.codprofissionalatendimento, f.descfuncionario,"
-				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
+				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, a.avulso, "
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, sa.abono_falta, sa.descricao descsitatendimento,  "
 
@@ -1012,6 +1012,7 @@ public class AtendimentoDAO {
 				atendimentoBean.getSituacaoAtendimento().setId(rs.getInt("id_situacao_atendimento"));
 				atendimentoBean.getSituacaoAtendimento().setDescricao(rs.getString("descsitatendimento"));
 				atendimentoBean.getSituacaoAtendimento().setAbonoFalta(rs.getBoolean("abono_falta"));
+				atendimentoBean.setAvulso(rs.getBoolean("avulso")); 
 				lista.add(atendimentoBean);
 			}
 

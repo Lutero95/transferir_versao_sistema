@@ -272,6 +272,10 @@
 						<p:column headerText="Sit. Atendimento">
 							<p:outputLabel value="#{atendimento.situacaoAtendimento.descricao}" />
 						</p:column>
+						
+						<p:column headerText="Avulso" width="54">
+							<p:outputLabel value="#{atendimento.avulso == true ? 'SIM' : 'NÃO'}" />
+						</p:column>
 
 						<p:column headerText="Atendimento" width="84">
 							<div align="center">
