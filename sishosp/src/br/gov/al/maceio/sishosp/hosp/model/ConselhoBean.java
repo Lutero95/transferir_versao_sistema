@@ -10,11 +10,8 @@ public class ConselhoBean implements Serializable{
 	private static final long serialVersionUID = 5974309651809465220L;
 	private Integer id;
 	private String descricao;
-	private List<CboBean> listaCbos;
+	private String numero;
 	
-	public ConselhoBean() {
-		this.listaCbos = new ArrayList<>();
-	}
 	
 	public Integer getId() {
 		return id;
@@ -28,10 +25,10 @@ public class ConselhoBean implements Serializable{
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public List<CboBean> getListaCbos() {
-		return listaCbos;
+	public String getNumero() {
+		return numero;
 	}
-	public void setListaCbos(List<CboBean> listaCbos) {
-		this.listaCbos = listaCbos;
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 }

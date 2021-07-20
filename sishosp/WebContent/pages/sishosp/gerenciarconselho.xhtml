@@ -50,28 +50,36 @@
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
 						value="#{conselhoController.listaConselhos}" paginator="true" emptyMessage="Nenhum conselho foi encontrado">
 
-						<p:column headerText="Descrição" width="80%">
+						<p:column headerText="Descrição" width="50%">
 							<h:outputText value="#{tab.descricao}" />
+						</p:column>
+						
+						<p:column headerText="Número" width="30%">
+							<h:outputText value="#{tab.numero}" />
 						</p:column>
 
 						<p:column headerText="Ação">
-							<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
-								size="sm" action="#{conselhoController.redirecionaEdicao()}"
-								class="btn-acao-table acao-editar">
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{conselhoController.conselho}" />
+						
+							<div align="center">
+								<p:commandButton tooltip="Alterar" icon="ui-icon-pencil"
+									size="sm" action="#{conselhoController.redirecionaEdicao()}"
+									class="btn-acao-table acao-editar">
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{conselhoController.conselho}" />
 
-								<f:setPropertyActionListener value="2"
-									target="#{conselhoController.tipo}" />
-							</p:commandButton>
+									<f:setPropertyActionListener value="2"
+										target="#{conselhoController.tipo}" />
+								</p:commandButton>
 
-							<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
-								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-								oncomplete="PF('dialogExclusao').show()">
+								<p:commandButton tooltip="Excluir" icon="ui-icon-trash"
+									size="sm" ajax="true" style="margin-left:10px"
+									class="btn-acao-table acao-excluir"
+									oncomplete="PF('dialogExclusao').show()">
 
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{conselhoController.conselho}" />
-							</p:commandButton>
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{conselhoController.conselho}" />
+								</p:commandButton>
+							</div>
 						</p:column>
 					</p:dataTable>
 				</h:form>

@@ -76,6 +76,7 @@ public class AtendimentoController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
     private Boolean existeAlgumaCargaSigtap;
+    private Boolean podeEditarEvolucaoNestaData;
     private Boolean semCids;
     private CidDAO cidDao;
     private List<CidBean> listaCids;
@@ -337,6 +338,7 @@ public class AtendimentoController implements Serializable {
             this.atendimento.getSituacaoAtendimento().setAtendimentoRealizado(atendimentoRealizado);
             this.funcionario = funcionarioDAO.buscarProfissionalPorId(valor);
             listarTodosTiposProcedimentos();
+            evolucaoFoiRealizadaNaDataAnterior(atendimento);
         }
     }
 
@@ -485,6 +487,7 @@ public class AtendimentoController implements Serializable {
     private boolean evolucaoAtendimentoEhPermitida(AtendimentoBean atendimento) throws ProjetoException {
     	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
     			.getSessionMap().get("obj_usuario");
+    	
     	
     	if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
     			&& !atendimentoDAO.verificaEvolucaoAtendimentoEhPermitida(atendimento)) {
@@ -1095,6 +1098,16 @@ public class AtendimentoController implements Serializable {
         this.listaProcedimentos = procedimentoDAO.listarTodosProcedimentosDoPrograma(this.atendimento);
         if(VerificadorUtil.verificarSeObjetoNuloOuZero(this.atendimento.getCidPrimario().getIdCid()))
         	buscarCidAtendimento(this.listaProcedimentos.get(0).getIdProc(), this.atendimento.getId());
+    }
+    
+    private void evolucaoFoiRealizadaNaDataAnterior(AtendimentoBean atendimento) throws ProjetoException {
+    	if(VerificadorUtil.verificarSeObjetoNulo(atendimento.getDataAtendido()))
+    		podeEditarEvolucaoNestaData = true;
+    	else {
+    		podeEditarEvolucaoNestaData = atendimentoDAO.verificaSePodeEditarEvolucao(atendimento);
+    		if(!podeEditarEvolucaoNestaData)
+    			JSFUtil.adicionarMensagemAdvertencia("Não é possível editar a evolução", "");
+    	}
     }
 
     private void buscarDadosProcedimentoPorId() throws ProjetoException {
@@ -1773,4 +1786,13 @@ public class AtendimentoController implements Serializable {
 	public void setListaEquipe(List<EquipeBean> listaEquipe) {
 		this.listaEquipe = listaEquipe;
 	}
+
+	public Boolean getPodeEditarEvolucaoNestaData() {
+		return podeEditarEvolucaoNestaData;
+	}
+
+	public void setPodeEditarEvolucaoNestaData(Boolean podeEditarEvolucaoNestaData) {
+		this.podeEditarEvolucaoNestaData = podeEditarEvolucaoNestaData;
+	}
+	
 }

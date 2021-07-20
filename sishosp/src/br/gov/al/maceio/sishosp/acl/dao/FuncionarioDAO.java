@@ -22,6 +22,7 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ConselhoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
@@ -1114,8 +1115,8 @@ public class FuncionarioDAO {
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
-				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1161,6 +1162,14 @@ public class FuncionarioDAO {
 			ps.setBoolean(14, profissional.getExcecaoBloqueioHorario());
 			ps.setBoolean(15, profissional.getPermiteAutorizacaoLaudo());
 			ps.setBoolean(16, profissional.getRealizaAuditoria());
+			
+			if(VerificadorUtil.verificarSeObjetoNulo(profissional.getConselho()) 
+					|| VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getConselho().getId())) {
+				ps.setNull(17, Types.NULL);
+			} else {
+				ps.setInt(17, profissional.getConselho().getId());
+			}
+			
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -1740,7 +1749,7 @@ public class FuncionarioDAO {
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
-				+ " datahora_alteracao = CURRENT_TIMESTAMP where id_funcionario = ?";
+				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ? where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1786,7 +1795,14 @@ public class FuncionarioDAO {
 			stmt.setBoolean(13, profissional.getPermiteAutorizacaoLaudo());
 			stmt.setBoolean(14, profissional.getRealizaAuditoria());
 			stmt.setLong(15, user_session.getId());
-			stmt.setLong(16, profissional.getId());
+			
+			if(VerificadorUtil.verificarSeObjetoNulo(profissional.getConselho()) 
+					|| VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getConselho().getId())) {
+				stmt.setNull(16, Types.NULL);
+			} else {
+				stmt.setInt(16, profissional.getConselho().getId());
+			}
+			stmt.setLong(17, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -2022,10 +2038,12 @@ public class FuncionarioDAO {
 	public FuncionarioBean buscarProfissionalPorId(Integer id) throws ProjetoException {
 		FuncionarioBean profissional = null;
 
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo,"
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo, id_conselho, "
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria  "
 				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
+		ConselhoDAO conselhoDAO = new ConselhoDAO();
+		
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -2052,6 +2070,7 @@ public class FuncionarioDAO {
 				profissional.setExcecaoBloqueioHorario(rs.getBoolean("excecao_bloqueio_horario"));
 				profissional.setPermiteAutorizacaoLaudo(rs.getBoolean("permite_autorizacao_laudo"));
 				profissional.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
+				profissional.setConselho(conselhoDAO.buscaConselhoPorId(rs.getInt("id_conselho")));
 			}
 
 		} catch (SQLException sqle) {
