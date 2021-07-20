@@ -339,7 +339,7 @@ public class AlteracaoPacienteDAO {
 												insercao.getEquipe().getCodEquipe(), listaProfissionais.get(j).getId(), conexao);
 								
 								if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
-				            		return false;
+				            		continue;
 								
 								if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
 									idProcedimentoEspecifico = insercao.getPrograma().getProcedimento().getIdProc();

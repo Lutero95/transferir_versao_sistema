@@ -1585,15 +1585,9 @@ public class GerenciarPacienteDAO {
 			if (rs.next()) {
 				existeAfastamento = rs.getBoolean("exists");
 			}
-			if(existeAfastamento) {
-				JSFUtil.adicionarMensagemAdvertencia("Não é possível completar o Agendamento pois o funcionário "
-						+funcionario.getNome()+" está afastado durante este período ou foi desligado da instituição", "");
-				conAuxiliar.rollback();
-			}	
 		} catch (SQLException sqle) {
 			conAuxiliar.rollback();
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
-					sqle);
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
 			conAuxiliar.rollback();
 			throw new ProjetoException(ex, this.getClass().getName());
