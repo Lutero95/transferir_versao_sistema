@@ -364,7 +364,7 @@ public class AlteracaoPacienteDAO {
 								}
 
 								if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercaoParaLaudo.getLaudo().getCid1().getIdCid())
-										&& VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())) {
+										|| (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid())	|| VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid()))) {
 									ps8.setNull(5, Types.NULL);
 								} else if (VerificadorUtil.verificarSeObjetoNuloOuZero(insercao.getCid().getIdCid())){
 									ps8.setInt(5, insercaoParaLaudo.getLaudo().getCid1().getIdCid());
