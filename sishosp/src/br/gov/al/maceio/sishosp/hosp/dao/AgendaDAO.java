@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
@@ -59,9 +60,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
             for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
-            	
-                if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), listaNovosAgendamentos.get(i).getDataAtendimento(), con))
-                	return false;
             	
                 ps = con.prepareStatement(sql);
 
@@ -127,6 +125,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
 
                 for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
+                	
+                    if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), listaNovosAgendamentos.get(i).getDataAtendimento(), con))
+                    	continue;
 
                     Integer idPrograma;
                     if (agenda.getAvaliacao()) {
@@ -259,11 +260,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con = ConnectionFactory.getConnection();
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-            for (FuncionarioBean funcionario : listaProfissionais) {
-            	
-            	if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(funcionario, agenda.getDataAtendimento(), con))
-            		return false;
-            }
+
             
             ps = con.prepareStatement(sql);
 
@@ -322,6 +319,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             for (FuncionarioBean funcionario : listaProfissionais) {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                         + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?) returning id_atendimentos1";
+                
+            	if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(funcionario, agenda.getDataAtendimento(), con))
+            		continue;
 
                 Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda, funcionario, agenda.getPaciente().getId_paciente());
                 if(VerificadorUtil.verificarSeObjetoNuloOuZero(idProcedimentoEspecifico))
@@ -414,8 +414,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
             	
-			if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), agenda.getDataAtendimento(), con))
+			if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), agenda.getDataAtendimento(), con)) {
+				JSFUtil.adicionarMensagemErro("Este funcionário está afastado no período selecionado", "");
 				return false;
+			}
             
             for (PacientesComInformacaoAtendimentoDTO pacienteComInformacaoAtendimentoDTO : listaPacientesComInformacaoAtendimentoDTO) {
 

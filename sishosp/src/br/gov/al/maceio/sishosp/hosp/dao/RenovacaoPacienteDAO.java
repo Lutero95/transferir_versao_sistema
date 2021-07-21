@@ -290,7 +290,7 @@ public class RenovacaoPacienteDAO {
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
 							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
-			            		return false;
+			            		continue;
 							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional,
@@ -533,7 +533,7 @@ public class RenovacaoPacienteDAO {
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
 							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(h), listaAgendamento.get(i).getDataAtendimento(), conexao))
-			            		return false;
+			            		continue;
 							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
 									retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), 
@@ -694,7 +694,7 @@ public class RenovacaoPacienteDAO {
 						funcionarioDAO.listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
 				
 				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), conexao))
-            		return false;
+            		continue;
 				
 				Integer idProcedimentoEspecifico = new AgendaDAO().
 						retornaIdProcedimentoEspecifico(insercao.getPrograma().getIdPrograma(), listaCbosProfissional, 
