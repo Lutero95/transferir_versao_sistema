@@ -192,7 +192,7 @@ public class AtendimentoDAO {
 						&& !listaIdAtendimentosComIncosistenciaLog.contains(atendimento.getId1())) {
 					
 					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(atendimento.getFuncionario(), atendimento.getDataAtendimento(), con))
-	            		return false;
+	            		continue;
 					
 					PreparedStatement stmt2 = con.prepareStatement(sql2);
 					stmt2.setLong(1, atendimento.getFuncionario().getId());

@@ -267,7 +267,7 @@ public class InsercaoPacienteDAO {
 						if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getDataAtendimento()) == lista.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 
 							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(lista.get(j), listaAgendamento.get(i).getDataAtendimento(), con))
-			            		return false;
+			            		continue;
 							
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
@@ -438,7 +438,7 @@ public class InsercaoPacienteDAO {
 								listaAgendamento.get(i).getDataAtendimento()) == listaProfissionais.get(j).getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 							
 							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listaAgendamento.get(i).getDataAtendimento(), con))
-			            		return false;
+			            		continue;
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
@@ -583,7 +583,7 @@ public class InsercaoPacienteDAO {
 				}
 				
 				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), con))
-            		return false;
+            		continue;
 
 				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
@@ -1064,7 +1064,7 @@ public class InsercaoPacienteDAO {
 						profissional.getListaDiasAtendimentoSemana().get(h).getDiaSemana()) {
 					
 					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(profissional, agendamento.getDataAtendimento(), conAuxiliar))
-	            		conAuxiliar.close();
+	            		continue;
 					
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
@@ -1288,7 +1288,7 @@ public class InsercaoPacienteDAO {
 
 		            	
 					if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(profissional, agendamento.getDataAtendimento(), conAuxiliar))
-						conAuxiliar.close();
+						continue;
 		            
 					String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
