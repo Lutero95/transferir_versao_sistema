@@ -382,6 +382,14 @@
 														 actionListener="#{conselhoController.listarConselhos()}" />
 									</p:outputPanel>
 								</b:column>
+								
+								<b:column span="3"
+										  class="label-position new-data-size new-comple1">
+									<b:label value="Nº do conselho" severity="info" />
+
+									<b:inputText value="#{MBFuncionarios.profissional.numeroConselho}"
+										class="form-control" required="false" id="numconselho" />
+								</b:column>	
 							</b:row>
 
 							<b:row rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
@@ -827,13 +835,6 @@
 								Descrição
 							</f:facet>
 							<p:outputLabel value="#{conselho.descricao}" />
-						</h:column>
-						
-						<h:column>
-							<f:facet name="header">
-								Número
-							</f:facet>
-							<p:outputLabel value="#{conselho.numero}" />
 						</h:column>
 
 						<h:column>

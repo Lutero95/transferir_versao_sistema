@@ -1115,8 +1115,8 @@ public class FuncionarioDAO {
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
-				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho, numero_conselho) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1169,6 +1169,8 @@ public class FuncionarioDAO {
 			} else {
 				ps.setInt(17, profissional.getConselho().getId());
 			}
+			
+			ps.setString(18, profissional.getNumeroConselho());
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -1749,7 +1751,7 @@ public class FuncionarioDAO {
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
-				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ? where id_funcionario = ?";
+				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ? where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1802,7 +1804,8 @@ public class FuncionarioDAO {
 			} else {
 				stmt.setInt(16, profissional.getConselho().getId());
 			}
-			stmt.setLong(17, profissional.getId());
+			stmt.setString(17, profissional.getNumeroConselho());
+			stmt.setLong(18, profissional.getId());
 
 			stmt.executeUpdate();
 

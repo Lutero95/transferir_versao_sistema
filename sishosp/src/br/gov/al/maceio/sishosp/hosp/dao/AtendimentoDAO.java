@@ -1157,8 +1157,8 @@ public class AtendimentoDAO {
 
 			atendimento.setListaProcedimentoCid(listarProcedimentosCids(con, atendimento.getId1()));
 			
-			String textoConselho = retornaTextoConselho(con, atendimento.getFuncionario().getId());
 			if(VerificadorUtil.verificarSeObjetoNuloOuVazio(atendimento.getEvolucao())) {
+				String textoConselho = retornaTextoConselho(con, atendimento.getFuncionario().getId());
 				atendimento.setEvolucao(textoConselho);
 			}
 
@@ -1181,7 +1181,7 @@ public class AtendimentoDAO {
 		String textoConselho = "";
 		String quebrasDeLinha = "<br /><br /><br /><br /><br />";
 
-		String sql = "select '<strong>' || f.descfuncionario || ' ' || c.descricao || ' ' || c.numero || '</strong>' as texto "+
+		String sql = "select '<strong>' || f.descfuncionario || ' ' || c.descricao || ' ' || f.numero_conselho || '</strong>' as texto "+
 				"   from hosp.conselho c \r\n" + 
 				"	join acl.funcionarios f on c.id = f.id_conselho \r\n" + 
 				"	and f.id_funcionario = ?;";
