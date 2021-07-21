@@ -775,6 +775,9 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void gravarProfissional() throws ProjetoException {
+		
+		if(!camposConselhoSaoValidos())
+			return;
 
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
@@ -864,6 +867,9 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void alterarProfissional() throws ProjetoException {
+		
+		if(!camposConselhoSaoValidos())
+			return;
 
 		if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
@@ -933,6 +939,24 @@ public class FuncionarioController implements Serializable {
 					JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 				}
 			}
+		}
+	}
+	
+	private boolean camposConselhoSaoValidos() {
+		if(!VerificadorUtil.verificarSeObjetoNulo(profissional.getConselho()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getConselho().getId()) 
+				&& !VerificadorUtil.verificarSeObjetoNuloOuVazio(profissional.getNumeroConselho())) {
+			return true;
+		} 
+		else if ( (VerificadorUtil.verificarSeObjetoNulo(profissional.getConselho()) 
+				|| VerificadorUtil.verificarSeObjetoNuloOuZero(profissional.getConselho().getId())) 
+				&& VerificadorUtil.verificarSeObjetoNuloOuVazio(profissional.getNumeroConselho())) {
+			return true;
+		}
+		
+		else {
+			JSFUtil.adicionarMensagemAdvertencia("Informe todos os campos referentes ao conselho", "Atenção");
+			return false;
 		}
 	}
 	

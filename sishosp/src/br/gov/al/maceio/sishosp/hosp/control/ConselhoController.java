@@ -45,7 +45,7 @@ public class ConselhoController {
 	
     public List<ConselhoBean> listaConselhoAutoComplete(String query)
             throws ProjetoException {
-        List<ConselhoBean> result = conselhoDAO.listarConselhoAutoComplete(query);
+        List<ConselhoBean> result = conselhoDAO.buscaConselhoFiltro(query);
         return result;
     }
 	

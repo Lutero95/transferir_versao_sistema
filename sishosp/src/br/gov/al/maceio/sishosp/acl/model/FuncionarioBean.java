@@ -36,6 +36,7 @@ public class FuncionarioBean implements Serializable {
     private String nomeBancoAcesso;
     private String horarioAtendimento;
     private ConselhoBean conselho;
+    private String numeroConselho;
     
     /* TODO Remover essa propriedade depois que o ajuste de turno por dia da semana for implementado na agenda normal*/
     private ArrayList<String> listDiasSemana;
@@ -542,6 +543,15 @@ public class FuncionarioBean implements Serializable {
 		this.conselho = conselho;
 	}
 
+	public String getNumeroConselho() {
+		return numeroConselho;
+	}
+
+
+	public void setNumeroConselho(String numeroConselho) {
+		this.numeroConselho = numeroConselho;
+	}
+
 
 	@Override
     public boolean equals(Object o) {
@@ -593,7 +603,8 @@ public class FuncionarioBean implements Serializable {
                 Objects.equals(getListaSecreFolha(), that.getListaSecreFolha()) &&
                 Objects.equals(getPermiteAutorizacaoLaudo(), that.getPermiteAutorizacaoLaudo()) &&
                 Objects.equals(getListaCbos(), that.getListaCbos()) && 
-                Objects.equals(getConselho(), that.getConselho());
+                Objects.equals(getConselho(), that.getConselho()) &&
+                Objects.equals(getNumeroConselho(), that.getNumeroConselho());
     }
 
     @Override
@@ -602,7 +613,7 @@ public class FuncionarioBean implements Serializable {
         		getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), 
         		getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), 
         		getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), 
-        		getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos(), getConselho());
+        		getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos(), getConselho(), getNumeroConselho());
     }
 }
 

@@ -50,12 +50,8 @@
 					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
 						value="#{conselhoController.listaConselhos}" paginator="true" emptyMessage="Nenhum conselho foi encontrado">
 
-						<p:column headerText="Descrição" width="50%">
+						<p:column headerText="Descrição" width="80%">
 							<h:outputText value="#{tab.descricao}" />
-						</p:column>
-						
-						<p:column headerText="Número" width="30%">
-							<h:outputText value="#{tab.numero}" />
 						</p:column>
 
 						<p:column headerText="Ação">

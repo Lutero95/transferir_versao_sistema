@@ -21,7 +21,7 @@ public class ConselhoDAO {
 	public List<ConselhoBean> listaConselho() throws ProjetoException {
 
         List<ConselhoBean> lista = new ArrayList<>();
-        String sql = "SELECT id, descricao, numero FROM hosp.conselho; ";
+        String sql = "SELECT id, descricao FROM hosp.conselho; ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -50,7 +50,7 @@ public class ConselhoDAO {
 	public ConselhoBean buscaConselhoPorId(Integer id) throws ProjetoException {
 
 		ConselhoBean conselho = new ConselhoBean();
-        String sql = "SELECT id, descricao, numero FROM hosp.conselho where id = ?; ";
+        String sql = "SELECT id, descricao FROM hosp.conselho where id = ?; ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -74,43 +74,12 @@ public class ConselhoDAO {
         }
         return conselho;
     }
-	
-	public List<ConselhoBean> listarConselhoAutoComplete(String descricao) throws ProjetoException {
-		List<ConselhoBean> lista = new ArrayList<>();
-		
-		String sql = "SELECT id, descricao, numero FROM hosp.conselho where descricao ilike ? ;";
-		
-		
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao + "%");
-			ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				 ConselhoBean conselho = new ConselhoBean();
-	             mapearResultSetConselho(conselho, rs);
-	             lista.add(conselho);
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
-					sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				//comentado walter erro log ex.printStackTrace();
-			}
-		}
-		return lista;
-	}
 
 	public List<ConselhoBean> buscaConselhoFiltro(String valorBusca) throws ProjetoException {
 
         List<ConselhoBean> lista = new ArrayList<>();
-        String sql = "SELECT id, descricao, numero FROM hosp.conselho where descricao ilike ? ";
+        String sql = "SELECT id, descricao FROM hosp.conselho where descricao ilike ? ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -171,19 +140,17 @@ public class ConselhoDAO {
 	private void mapearResultSetConselho(ConselhoBean conselho, ResultSet rs) throws SQLException {
 		conselho.setId(rs.getInt("id"));
 		conselho.setDescricao(rs.getString("descricao"));
-		conselho.setNumero(rs.getString("numero"));
 	}
 	
 	public boolean gravarConselho(ConselhoBean conselho) throws ProjetoException {
 
 		boolean cadastrado = false;
-        String sql = "INSERT INTO hosp.conselho (descricao, numero) VALUES(?, ?); ";
+        String sql = "INSERT INTO hosp.conselho (descricao) VALUES(?); ";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, conselho.getDescricao());
-            ps.setString(2, conselho.getNumero());
             ps.executeUpdate();
             
             //gravarCboConselho(conselho, con);
@@ -207,14 +174,13 @@ public class ConselhoDAO {
 	public boolean alterarConselho(ConselhoBean conselho) throws ProjetoException {
 
 		boolean cadastrado = false;
-        String sql = "UPDATE hosp.conselho SET descricao = ?, numero = ? WHERE id = ?;";
+        String sql = "UPDATE hosp.conselho SET descricao = ? WHERE id = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, conselho.getDescricao());
-            ps.setString(2, conselho.getNumero());
-            ps.setInt(3, conselho.getId());
+            ps.setInt(2, conselho.getId());
             ps.executeUpdate();
             
             //removerCboConselho(conselho.getId(), con);
