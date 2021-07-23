@@ -847,7 +847,7 @@ public class AtendimentoDAO {
 				.getSessionMap().get("obj_funcionario");
 
 		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento,  a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno,a1.codprofissionalatendimento, f.descfuncionario,"
-				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, a.avulso, "
+				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, a.avulso, a1.id_atendimentos1, "
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, sa.abono_falta, sa.descricao descsitatendimento,  "
 
@@ -986,7 +986,7 @@ public class AtendimentoDAO {
 				AtendimentoBean atendimentoBean = new AtendimentoBean();
 				atendimentoBean.setPresenca(rs.getString("presenca"));
 				atendimentoBean.setId(rs.getInt("id_atendimento"));
-				//atendimentoBean.setId1(rs.getInt("id_atendimentos1"));
+				atendimentoBean.setId1(rs.getInt("id_atendimentos1"));
 				atendimentoBean.setDataAtendimentoInicio(rs.getDate("dtaatende"));
 				atendimentoBean.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				atendimentoBean.getPaciente().setNome(rs.getString("nome"));
@@ -2429,10 +2429,10 @@ public class AtendimentoDAO {
 
 		String sql = "select exists (	\r\n" + 
 				"	select a1.id_atendimentos1 from hosp.atendimentos1 a1 \r\n" + 
-				"		where current_date = \r\n" + 
-				"		(extract (year from a1.dtaatendido) ||'-' ||extract (month from a1.dtaatendido) "+
-				"||'-' ||extract (day from a1.dtaatendido))::date \r\n" + 
-				"		and a1.id_atendimentos1 = ?) as pode_editar  ";
+				"		where ( current_date = \r\n" + 
+				"		(extract (year from a1.dtaatendido) ||'-' ||extract (month from a1.dtaatendido) \r\n" + 
+				"||'-' ||extract (day from a1.dtaatendido))::date or a1.id_situacao_atendimento is null )\r\n" + 
+				"		and a1.id_atendimentos1 = ? ) as pode_editar  ";
 
 		boolean ehPermitido = false;
 
