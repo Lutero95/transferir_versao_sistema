@@ -610,6 +610,9 @@
 									 	<p:ajax update="rowEvolucao rowdataEvolucao btnAdicionarProgramaGrupo"
 									 	 listener="#{UnidadeController.limparDataInicioEvolucao()}"/>
 									 </p:selectBooleanCheckbox>
+									 
+									 <p:selectBooleanCheckbox itemLabel="Bloquear Edição Evolução"
+									 	value="#{UnidadeController.unidade.parametro.bloquearEdicaoEvolucao}"/>
 								</b:row>
 
 								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}">

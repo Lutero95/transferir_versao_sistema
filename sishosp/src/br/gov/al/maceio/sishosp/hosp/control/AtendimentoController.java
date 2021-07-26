@@ -488,7 +488,6 @@ public class AtendimentoController implements Serializable {
     	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
     			.getSessionMap().get("obj_usuario");
     	
-    	
     	if(user_session.getUnidade().getParametro().isVerificaPeriodoInicialEvolucaoPrograma() 
     			&& !atendimentoDAO.verificaEvolucaoAtendimentoEhPermitida(atendimento)) {
     		JSFUtil.adicionarMensagemAdvertencia
@@ -1086,12 +1085,12 @@ public class AtendimentoController implements Serializable {
     }
 
     public void adicionarTextoEvolucaoPadraoNoCampoEvolucao() {
-      //  String textoEvolucao = this.atendimento.getEvolucao();
-       // if(VerificadorUtil.verificarSeObjetoNulo(textoEvolucao))
-        String  textoEvolucao = new String();
 
-        textoEvolucao += this.descricaoEvolucaoPadrao;
-        this.atendimento.setEvolucao(textoEvolucao);
+        String  novoTexto = new String();
+        String textoEvolucao = this.atendimento.getEvolucao(); 
+        
+        novoTexto = this.descricaoEvolucaoPadrao += textoEvolucao;
+        this.atendimento.setEvolucao(novoTexto);
     }
 
     private void listarTodosTiposProcedimentos() throws ProjetoException {
@@ -1101,10 +1100,19 @@ public class AtendimentoController implements Serializable {
     }
     
     private void evolucaoFoiRealizadaNaDataAnterior(AtendimentoBean atendimento) throws ProjetoException {
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+        
+        boolean unidadeBloqueiaEditarEvolucao = user_session.getUnidade().getParametro().isBloquearEdicaoEvolucao();
+        
     	if(VerificadorUtil.verificarSeObjetoNulo(atendimento.getDataAtendido()))
     		podeEditarEvolucaoNestaData = true;
     	else {
-    		podeEditarEvolucaoNestaData = atendimentoDAO.verificaSePodeEditarEvolucao(atendimento);
+    		if(!atendimentoDAO.verificaSePodeEditarEvolucao(atendimento) && unidadeBloqueiaEditarEvolucao)
+    			podeEditarEvolucaoNestaData = false;
+    		else
+    			podeEditarEvolucaoNestaData = true;
+    			
     		if(!podeEditarEvolucaoNestaData)
     			JSFUtil.adicionarMensagemAdvertencia("Não é possível editar a evolução", "");
     	}

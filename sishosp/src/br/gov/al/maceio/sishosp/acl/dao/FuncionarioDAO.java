@@ -155,8 +155,8 @@ public class FuncionarioDAO {
 				+ " p.versao_sistema ,coalesce(us.excecao_bloqueio_horario, false) excecao_bloqueio_horario, coalesce(horario_limite_acesso, false) horario_limite_acesso, "
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
 				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, p.valida_dados_laudo_sigtap, "
-				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio, p.cid_agenda_obrigatorio, p.cid_paciente_terapia_obrigatorio, p.bpa_com_laudo_autorizado "
-				+ " from acl.funcionarios us "
+				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio, p.cid_agenda_obrigatorio, p.cid_paciente_terapia_obrigatorio, p.bpa_com_laudo_autorizado, "
+				+ " p.bloquear_edicao_evolucao from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
@@ -224,6 +224,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setCidAgendaObrigatorio(rs.getBoolean("cid_agenda_obrigatorio"));
 				funcionario.getUnidade().getParametro().setCidPacienteTerapiaObrigatorio(rs.getBoolean("cid_paciente_terapia_obrigatorio"));
 				funcionario.getUnidade().getParametro().setBpaComLaudoAutorizado(rs.getBoolean("bpa_com_laudo_autorizado"));
+				funcionario.getUnidade().getParametro().setBloquearEdicaoEvolucao(rs.getBoolean("bloquear_edicao_evolucao"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				// ACL
