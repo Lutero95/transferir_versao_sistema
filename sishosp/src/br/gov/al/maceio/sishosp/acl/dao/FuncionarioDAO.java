@@ -2043,7 +2043,7 @@ public class FuncionarioDAO {
 		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo, id_conselho, "
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria  "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria, numero_conselho "
 				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
 		ConselhoDAO conselhoDAO = new ConselhoDAO();
@@ -2075,6 +2075,7 @@ public class FuncionarioDAO {
 				profissional.setPermiteAutorizacaoLaudo(rs.getBoolean("permite_autorizacao_laudo"));
 				profissional.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				profissional.setConselho(conselhoDAO.buscaConselhoPorId(rs.getInt("id_conselho")));
+				profissional.setNumeroConselho(rs.getString("numero_conselho"));
 			}
 
 		} catch (SQLException sqle) {
