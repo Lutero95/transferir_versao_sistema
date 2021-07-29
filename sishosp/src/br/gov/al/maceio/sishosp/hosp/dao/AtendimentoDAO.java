@@ -1098,7 +1098,7 @@ public class AtendimentoDAO {
 
 		AtendimentoBean atendimento = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a1.dtaatendido, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
-				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, "
+				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, par.bloqueia_por_pendencia_evolucao_anterior, "
 				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
 				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo,cbo.codigo codigocbo,  pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev, con.id id_conselho, con.descricao conselho from hosp.atendimentos a "
 				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
@@ -1110,7 +1110,9 @@ public class AtendimentoDAO {
 				+ "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
 				+ "left join hosp.cid c on c.cod = a1.id_cidprimario "+
 				"left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo  " +
-				"left join hosp.conselho con on cc.id_conselho = con.id  "
+				"left join hosp.conselho con on cc.id_conselho = con.id  "+
+				"left join hosp.unidade u on a.cod_unidade = u.id "+
+				"left join hosp.parametro par on u.id = par.codunidade"
 				+ " left join hosp.cbo  on cbo.id  = a1.cbo "
 				+ "where a.id_atendimento = ? and a1.codprofissionalatendimento=? and coalesce(a.situacao, 'A')<> 'C'	and coalesce(a1.excluido, 'N' )= 'N' ";
 		try {
@@ -1154,6 +1156,7 @@ public class AtendimentoDAO {
 				atendimento.setPresenca(rs.getString("presenca"));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
 				atendimento.getCidPrimario().setDescCidAbrev(rs.getString("desccidabrev"));
+				atendimento.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
 			}
 
 			atendimento.setListaProcedimentoCid(listarProcedimentosCids(con, atendimento.getId1()));

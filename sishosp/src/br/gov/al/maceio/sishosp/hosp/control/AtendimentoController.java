@@ -266,11 +266,18 @@ public class AtendimentoController implements Serializable {
 
     public String redirectAtendimentoProfissional(Boolean atendimentoRealizado) {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atendimento_realizado", atendimentoRealizado);
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_usuario");
+        
         if(!ehAbonoFalta(atendimento)) {
-            if (this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()) {
-                if (quantidadePendenciasEvolucaoAnteriorEhMenorQueUm())
+            if (this.atendimento.getUnidade().getParametro().isBloqueiaPorPendenciaEvolucaoAnterior()
+            		&& !user_session.isExcecaoEvolucaoComPendencia()) {
+            	
+                if (quantidadePendenciasEvolucaoAnteriorEhMenorQueUm()) {
                     return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
                             this.atendimento.getId());
+                }
+                JSFUtil.adicionarMensagemAdvertencia("Acesso bloqueado por pendências de evolução anterior", "");
                 return null;
             } else {
                 return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID,
