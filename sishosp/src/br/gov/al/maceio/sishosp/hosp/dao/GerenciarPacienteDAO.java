@@ -1565,7 +1565,7 @@ public class GerenciarPacienteDAO {
     }
     
 	public boolean funcionarioEstaAfastadoDurantePeriodo(
-			FuncionarioBean funcionario, Date dataAtendimento, Connection conAuxiliar) throws ProjetoException, SQLException {
+			FuncionarioBean funcionario, Date dataAtendimento, Connection conAuxiliar, String turno) throws ProjetoException, SQLException {
 
 		boolean existeAfastamento = false;
 		try {
@@ -1573,13 +1573,15 @@ public class GerenciarPacienteDAO {
 					"	from adm.afastamento_funcionario af \r\n" + 
 					"	where af.id_funcionario_afastado = ? and ( \r\n" + 
 					"		(af.motivo_afastamento = 'DE' and inicio_afastamento < ?) \r\n" + 
-					"		or (? between af.inicio_afastamento and af.fim_afastamento) ) ) ";
+					"		or (? between af.inicio_afastamento and af.fim_afastamento) ) "+
+					"	and (af.turno = ? or af.turno = 'A')	) ";
 
 			ps = null;
 			ps = conAuxiliar.prepareStatement(sql);
 			ps.setLong(1, funcionario.getId());
 			ps.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
 			ps.setDate(3, new java.sql.Date(dataAtendimento.getTime()));
+			ps.setString(4, turno);
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {

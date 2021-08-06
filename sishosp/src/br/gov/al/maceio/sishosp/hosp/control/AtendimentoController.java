@@ -868,7 +868,7 @@ public class AtendimentoController implements Serializable {
 					boolean alterou = atendimentoDAO.realizaAtendimentoEquipe(listAtendimentosEquipe,
 							atendimento.getInsercaoPacienteBean().getLaudo().getId(),
 							atendimento.getGrupoAvaliacao().getIdGrupo(), listAtendimentosEquipeParaExcluir,
-							atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior());
+							atendimento.getId(), atendimento.isValidadoPeloSigtapAnterior(), atendimento.getTurno());
 					if (alterou) {
 						getCarregaGerenciarAtendimentos();
 						JSFUtil.adicionarMensagemSucesso("Atendimento Gravado com sucesso!", "Sucesso");

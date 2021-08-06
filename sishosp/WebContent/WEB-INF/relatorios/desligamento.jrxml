@@ -38,7 +38,8 @@ SELECT DISTINCT p.id_paciente, p.cns, p.nome, pi.codprograma, pr.descprograma,
 	g.id_grupo codgrupo, g.descgrupo, e.nome_principal, e.nome_fantasia, e.logomarca, 
 	e.logomarca2, eq.id_equipe, eq.descequipe, md.motivo, hp.data_desligamento
 FROM hosp.paciente_instituicao pi
-join hosp.pacientes p on (pi.id_paciente = p.id_paciente)
+left join hosp.laudo l on l.id_laudo  = pi.codlaudo 
+left join hosp.pacientes p on (coalesce(l.codpaciente, pi.id_paciente) = p.id_paciente)
 JOIN hosp.programa pr ON (pi.codprograma = pr.id_programa)
 JOIN hosp.grupo g ON (pi.codgrupo = g.id_grupo)
 join hosp.equipe eq on (pi.codequipe = eq.id_equipe)
