@@ -141,7 +141,7 @@ public class AtendimentoDAO {
 		}
 	}
 
-	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao,  List<AtendimentoBean> listaExcluir, Integer idAtendimento, boolean validaSigtapAnterior)
+	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao,  List<AtendimentoBean> listaExcluir, Integer idAtendimento, boolean validaSigtapAnterior, String turno)
 			throws ProjetoException {
 		boolean alterou = false;
 		con = ConnectionFactory.getConnection();
@@ -174,10 +174,10 @@ public class AtendimentoDAO {
 
 			listaIdAtendimentosComIncosistenciaLog.addAll(retornaAtendimentosComInconsistenciaLog(lista.get(0).getId(), con));
 
-			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
-				con.close();
-				return alterou;
-			}
+//			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+//				con.close();
+//				return alterou;
+//			}
 
 
 			List<AtendimentoBean> listaAtendimentosParaUpdate = removeAtendimentosNaoExcluidos(lista,
@@ -191,7 +191,7 @@ public class AtendimentoDAO {
 				if (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getSituacaoAtendimentoAnterior().getId())
 						&& !listaIdAtendimentosComIncosistenciaLog.contains(atendimento.getId1())) {
 					
-					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(atendimento.getFuncionario(), atendimento.getDataAtendimento(), con))
+					if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(atendimento.getFuncionario(), atendimento.getDataAtendimento(), con, turno))
 	            		continue;
 					
 					PreparedStatement stmt2 = con.prepareStatement(sql2);
@@ -1035,7 +1035,7 @@ public class AtendimentoDAO {
 		AtendimentoBean atendimento = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome,a1.codprofissionalatendimento , f.descfuncionario, a1.codprocedimento, pr.codproc, p.dtanascimento, p.sexo, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, "
-				+ "a.codprograma,a1.cbo codcbo, cbo.codigo codigocbo, a1.id_cidprimario "
+				+ "a.codprograma,a1.cbo codcbo, cbo.codigo codigocbo, a1.id_cidprimario, a.turno "
 				+ "from hosp.atendimentos a " + "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
@@ -1078,6 +1078,7 @@ public class AtendimentoDAO {
 				atendimento.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
 				atendimento.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
+				atendimento.setTurno(rs.getString("turno"));
 			}
 
 		} catch (SQLException ex2) {

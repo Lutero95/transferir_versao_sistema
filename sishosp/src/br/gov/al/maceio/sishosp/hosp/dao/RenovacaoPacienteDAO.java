@@ -289,7 +289,7 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?)";
 
-							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao))
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(j), listAgendamentoProfissional.get(i).getDataAtendimento(), conexao, insercao.getTurno()))
 			            		continue;
 							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
@@ -532,7 +532,7 @@ public class RenovacaoPacienteDAO {
 
 							String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?)";
 
-							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(h), listaAgendamento.get(i).getDataAtendimento(), conexao))
+							if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(listaProfissionais.get(h), listaAgendamento.get(i).getDataAtendimento(), conexao, insercao.getTurno()))
 			            		continue;
 							
 							Integer idProcedimentoEspecifico = new AgendaDAO().
@@ -693,7 +693,7 @@ public class RenovacaoPacienteDAO {
 				List<CboBean> listaCbosProfissional = 
 						funcionarioDAO.listaCbosProfissionalComMesmaConexao(insercao.getFuncionario().getId(), conexao);
 				
-				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), conexao))
+				if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(insercao.getFuncionario(), listaAgendamento.get(i).getDataAtendimento(), conexao, insercao.getTurno()))
             		continue;
 				
 				Integer idProcedimentoEspecifico = new AgendaDAO().

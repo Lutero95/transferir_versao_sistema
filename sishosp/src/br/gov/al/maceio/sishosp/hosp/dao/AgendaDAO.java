@@ -126,7 +126,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
                 	
-                    if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), listaNovosAgendamentos.get(i).getDataAtendimento(), con))
+                    if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), listaNovosAgendamentos.get(i).getDataAtendimento(), con, agenda.getTurno().toUpperCase()))
                     	continue;
 
                     Integer idPrograma;
@@ -320,7 +320,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
                         + " cbo, codprocedimento, horario_atendimento, id_cidprimario) VALUES  (?, ?, ?, ?, ?, ?) returning id_atendimentos1";
                 
-            	if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(funcionario, agenda.getDataAtendimento(), con))
+            	if(gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(funcionario, agenda.getDataAtendimento(), con, agenda.getTurno().toUpperCase()))
             		continue;
 
                 Integer idProcedimentoEspecifico = retornaIdProcedimentoDaAgendaOuEspecifico(con, agenda, funcionario, agenda.getPaciente().getId_paciente());
@@ -414,7 +414,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
             	
-			if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), agenda.getDataAtendimento(), con)) {
+			if (gerenciarPacienteDAO.funcionarioEstaAfastadoDurantePeriodo(agenda.getProfissional(), agenda.getDataAtendimento(), con, agenda.getTurno().toUpperCase())) {
 				JSFUtil.adicionarMensagemErro("Este funcionário está afastado no período selecionado", "");
 				return false;
 			}
