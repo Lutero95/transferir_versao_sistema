@@ -1058,6 +1058,7 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void rendermedico() {
+		limparExcecaoEvolucao();
 		if (profissional.getRealizaAtendimento() == true) {
 			profissional.setRealizaAtendimento(true);
 		}
@@ -1256,6 +1257,10 @@ public class FuncionarioController implements Serializable {
 	
 	public void removerCbo(CboBean cboSelecionado) {
 		this.profissional.getListaCbos().remove(cboSelecionado);
+	}
+	
+	private void limparExcecaoEvolucao() {
+		this.profissional.setExcecaoEvolucaoComPendencia(false);
 	}
 
 	public FuncionarioBean getProfissional() {

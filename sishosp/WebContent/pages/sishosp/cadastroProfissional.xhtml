@@ -122,8 +122,8 @@
 								<p:selectBooleanCheckbox label="Realiza Atendimento"
 														 itemLabel="Realiza Atendimento" style="color:#2e84ce;"
 														 value="#{MBFuncionarios.profissional.realizaAtendimento}">
-									<p:ajax listener="#{MBFuncionarios.rendermedico}"
-											update="frmPrincipal:tbv:outAtendimento"></p:ajax>
+									<p:ajax listener="#{MBFuncionarios.rendermedico}" 
+											update="frmPrincipal:tbv:outAtendimento :frmPrincipal:tbv:outpendencias"/>
 								</p:selectBooleanCheckbox>
 							</b:column>
 
@@ -390,6 +390,17 @@
 									<b:inputText value="#{MBFuncionarios.profissional.numeroConselho}"
 										class="form-control" required="false" id="numconselho" />
 								</b:column>	
+								
+								<b:column span="3"
+										  class="label-position new-data-size new-comple1">
+									<p:outputPanel id="outpendencias">
+										<p:selectBooleanCheckbox rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}"
+											label="Exceção Bloqueio de Evolução Por Pendencias"
+											itemLabel="Exceção Bloqueio de Evolução Por Pendencias"
+											style="color:#2e84ce;"
+											value="#{MBFuncionarios.profissional.excecaoEvolucaoComPendencia}" />
+									</p:outputPanel>
+								</b:column>		  
 							</b:row>
 
 							<b:row rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">

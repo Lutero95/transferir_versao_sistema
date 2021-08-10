@@ -37,6 +37,7 @@ public class FuncionarioBean implements Serializable {
     private String horarioAtendimento;
     private ConselhoBean conselho;
     private String numeroConselho;
+    private boolean excecaoEvolucaoComPendencia;
     
     /* TODO Remover essa propriedade depois que o ajuste de turno por dia da semana for implementado na agenda normal*/
     private ArrayList<String> listDiasSemana;
@@ -547,9 +548,17 @@ public class FuncionarioBean implements Serializable {
 		return numeroConselho;
 	}
 
-
 	public void setNumeroConselho(String numeroConselho) {
 		this.numeroConselho = numeroConselho;
+	}
+
+	public boolean isExcecaoEvolucaoComPendencia() {
+		return excecaoEvolucaoComPendencia;
+	}
+
+
+	public void setExcecaoEvolucaoComPendencia(boolean excecaoEvolucaoComPendencia) {
+		this.excecaoEvolucaoComPendencia = excecaoEvolucaoComPendencia;
 	}
 
 
@@ -604,7 +613,8 @@ public class FuncionarioBean implements Serializable {
                 Objects.equals(getPermiteAutorizacaoLaudo(), that.getPermiteAutorizacaoLaudo()) &&
                 Objects.equals(getListaCbos(), that.getListaCbos()) && 
                 Objects.equals(getConselho(), that.getConselho()) &&
-                Objects.equals(getNumeroConselho(), that.getNumeroConselho());
+                Objects.equals(getNumeroConselho(), that.getNumeroConselho()) &&
+                Objects.equals(isExcecaoEvolucaoComPendencia(), that.isExcecaoEvolucaoComPendencia());
     }
 
     @Override
@@ -613,7 +623,8 @@ public class FuncionarioBean implements Serializable {
         		getRealizaLiberacoes(), getRealizaEncaixes(), getCns(), getDiasSemana(), getListaDiasAtendimentoSemana(), getDiaSemana(), getUnidadeExtra(), getNomeBancoAcesso(), 
         		getHorarioAtendimento(), getListDiasSemana(), getCodigoDaUnidadeSelecionada(), getPrograma(), getProgramaNovo(), getGrupo(), getGrupoNovo(), getListaUnidades(), getEspecialidade(), 
         		getProc1(), getProc2(), getProgAdd(), getGrupoAdd(), getProgRmv(), getGrupoRmv(), getPermissao(), getUnidade(), getPerfil(), getId(), isUsuarioAtivo(), getListaIdSistemas(), 
-        		getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos(), getConselho(), getNumeroConselho());
+        		getListaIdMenus(), getListaIdPermissoes(), getExcecaoBloqueioHorario(), getListaSecreFolha(), getPermiteAutorizacaoLaudo(), getListaCbos(), getConselho(), getNumeroConselho(),
+        		isExcecaoEvolucaoComPendencia());
     }
 }
 

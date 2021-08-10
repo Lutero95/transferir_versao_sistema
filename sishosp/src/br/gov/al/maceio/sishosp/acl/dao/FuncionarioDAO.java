@@ -156,7 +156,7 @@ public class FuncionarioDAO {
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
 				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, p.valida_dados_laudo_sigtap, "
 				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio, p.cid_agenda_obrigatorio, p.cid_paciente_terapia_obrigatorio, p.bpa_com_laudo_autorizado, "
-				+ " p.bloquear_edicao_evolucao from acl.funcionarios us "
+				+ " p.bloquear_edicao_evolucao, us.excecao_evolucao_com_pendencia, p.bloqueia_por_pendencia_evolucao_anterior from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
@@ -227,6 +227,8 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setBloquearEdicaoEvolucao(rs.getBoolean("bloquear_edicao_evolucao"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
+				funcionario.setExcecaoEvolucaoComPendencia(rs.getBoolean("excecao_evolucao_com_pendencia"));
+				funcionario.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));
 				// ACL
 				funcionario.setId(rs.getLong("id_funcionario"));
 				funcionario.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
@@ -1116,8 +1118,9 @@ public class FuncionarioDAO {
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
-				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho, numero_conselho) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho, "
+				+ "numero_conselho, excecao_evolucao_com_pendencia) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1172,6 +1175,7 @@ public class FuncionarioDAO {
 			}
 			
 			ps.setString(18, profissional.getNumeroConselho());
+			ps.setBoolean(19, profissional.isExcecaoEvolucaoComPendencia());
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -1752,7 +1756,7 @@ public class FuncionarioDAO {
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
-				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ? where id_funcionario = ?";
+				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ?, excecao_evolucao_com_pendencia = ? where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1806,7 +1810,8 @@ public class FuncionarioDAO {
 				stmt.setInt(16, profissional.getConselho().getId());
 			}
 			stmt.setString(17, profissional.getNumeroConselho());
-			stmt.setLong(18, profissional.getId());
+			stmt.setBoolean(18, profissional.isExcecaoEvolucaoComPendencia());
+			stmt.setLong(19, profissional.getId());
 
 			stmt.executeUpdate();
 
@@ -2042,7 +2047,7 @@ public class FuncionarioDAO {
 	public FuncionarioBean buscarProfissionalPorId(Integer id) throws ProjetoException {
 		FuncionarioBean profissional = null;
 
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo, id_conselho, "
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo, id_conselho, excecao_evolucao_com_pendencia, "
 				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria, numero_conselho "
 				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
@@ -2076,6 +2081,7 @@ public class FuncionarioDAO {
 				profissional.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				profissional.setConselho(conselhoDAO.buscaConselhoPorId(rs.getInt("id_conselho")));
 				profissional.setNumeroConselho(rs.getString("numero_conselho"));
+				profissional.setExcecaoEvolucaoComPendencia(rs.getBoolean("excecao_evolucao_com_pendencia"));
 			}
 
 		} catch (SQLException sqle) {
