@@ -234,7 +234,8 @@
 								id="campoevolucao"  allowStyles="true"
 								value="#{AtendimentoController.atendimento.evolucao}"
 								required="true" requiredMessage="Evolução: Campo obrigatório!">
-
+								<p:ajax event="blur"
+									listener="#{AtendimentoController.atualizaTextoEvolucaoAuxiliar(AtendimentoController.atendimento.evolucao)}"/>
 							</p:textEditor>
 						</b:column>
 					</p:row>

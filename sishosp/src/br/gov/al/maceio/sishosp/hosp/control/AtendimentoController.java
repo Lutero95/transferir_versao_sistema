@@ -96,6 +96,7 @@ public class AtendimentoController implements Serializable {
     private List<CboBean> listaCbos;
     private boolean selecionarTodos;
     private List<EquipeBean> listaEquipe;
+    private String textoEvolucaoAuxiliar;
 
     //CONSTANTES
     private static final String ENDERECO_GERENCIAR_ATENDIMENTOS = "gerenciarAtendimentos?faces-redirect=true";
@@ -1094,10 +1095,16 @@ public class AtendimentoController implements Serializable {
     public void adicionarTextoEvolucaoPadraoNoCampoEvolucao() {
 
         String  novoTexto = new String();
-        String textoEvolucao = this.atendimento.getEvolucao(); 
+        String textoEvolucao = textoEvolucaoAuxiliar; 
         
-        novoTexto = this.descricaoEvolucaoPadrao += textoEvolucao;
-        this.atendimento.setEvolucao(novoTexto);
+        if(!textoEvolucao.contains(this.descricaoEvolucaoPadrao)) {
+        	novoTexto = this.descricaoEvolucaoPadrao += textoEvolucao;
+        	this.atendimento.setEvolucao(novoTexto);
+        }
+    }
+    
+    public void atualizaTextoEvolucaoAuxiliar(String texto) {
+    	textoEvolucaoAuxiliar = texto;
     }
 
     private void listarTodosTiposProcedimentos() throws ProjetoException {
@@ -1808,6 +1815,14 @@ public class AtendimentoController implements Serializable {
 
 	public void setPodeEditarEvolucaoNestaData(Boolean podeEditarEvolucaoNestaData) {
 		this.podeEditarEvolucaoNestaData = podeEditarEvolucaoNestaData;
+	}
+
+	public String getTextoEvolucaoAuxiliar() {
+		return textoEvolucaoAuxiliar;
+	}
+
+	public void setTextoEvolucaoAuxiliar(String textoEvolucaoAuxiliar) {
+		this.textoEvolucaoAuxiliar = textoEvolucaoAuxiliar;
 	}
 	
 }

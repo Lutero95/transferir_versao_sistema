@@ -629,7 +629,7 @@ public class PtsDAO {
                 " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " +
                 " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I'  ) ) ptsmax on " +
                 " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " +
-                "WHERE pi.status = 'A'  AND (case when p.id is not null then p.id=ptsmax.id else 1=1 end)";
+                "WHERE pi.status = 'A'  AND (case when p.id is not null then p.id=ptsmax.id else 1=1 end) AND pi.cod_unidade = ? ";
         if (filtroApenasPacientesSemPTS)
             sql = sql + " and not exists (select id from hosp.pts where ((pts.status='A') or (pts.status='R')) and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))";
 
@@ -674,7 +674,10 @@ public class PtsDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            int i = 1;
+            
+            stmt.setInt(1, this.user_session.getUnidade().getId());
+            
+            int i = 2;
 
 
             if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {

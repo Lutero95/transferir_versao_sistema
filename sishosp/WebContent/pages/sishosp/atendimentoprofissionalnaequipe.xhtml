@@ -240,6 +240,10 @@
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
 						</p:column>
+						
+						<p:column headerText="Prontuário">
+							<p:outputLabel value="#{atendimento.paciente.id_paciente}" />
+						</p:column>
 
 						<p:column headerText="Paciente">
 							<p:outputLabel value="#{atendimento.paciente.nome}" />
