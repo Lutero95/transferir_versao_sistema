@@ -1097,7 +1097,11 @@ public class AtendimentoController implements Serializable {
         String  novoTexto = new String();
         String textoEvolucao = textoEvolucaoAuxiliar; 
         
-        if(!textoEvolucao.contains(this.descricaoEvolucaoPadrao)) {
+        if(VerificadorUtil.verificarSeObjetoNuloOuVazio(textoEvolucao)) {
+        	novoTexto = this.descricaoEvolucaoPadrao + this.atendimento.getEvolucao();
+        	this.atendimento.setEvolucao(novoTexto);
+        }
+        else if(!textoEvolucao.contains(this.descricaoEvolucaoPadrao)) {
         	novoTexto = this.descricaoEvolucaoPadrao += textoEvolucao;
         	this.atendimento.setEvolucao(novoTexto);
         }
