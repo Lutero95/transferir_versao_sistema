@@ -174,10 +174,10 @@ public class AtendimentoDAO {
 
 			listaIdAtendimentosComIncosistenciaLog.addAll(retornaAtendimentosComInconsistenciaLog(lista.get(0).getId(), con));
 
-//			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
-//				con.close();
-//				return alterou;
-//			}
+			if (!gerenciarPacienteDAO.apagarAtendimentosDeUmAtendimento (idAtendimento, con,  listaSubstituicao, listaExcluir, listaProfissionaisInseridosAtendimentoEquipe, listaProfissionaisRemovidosAtendimentoEquipe)) {
+				con.close();
+				return alterou;
+			}
 
 
 			List<AtendimentoBean> listaAtendimentosParaUpdate = removeAtendimentosNaoExcluidos(lista,
