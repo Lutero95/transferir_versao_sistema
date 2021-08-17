@@ -18,7 +18,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="423"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="218"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="775"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="apae"/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -32,11 +32,11 @@
 	<parameter name="idmotivodesligamento" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT ROW_NUMBER () OVER (), id_paciente, cns, nome as nome_paciente, codprograma as cod_programa, descprograma as nome_programa, codgrupo, 
-	descgrupo,  nome_principal, nome_fantasia, id_equipe, descequipe, motivo as motivo_desligamento, data_desligamento
+	descgrupo,  nome_principal, nome_fantasia, id_equipe, descequipe, motivo as motivo_desligamento, data_desligamento,  lower(observacao) as observacao
  FROM (
 SELECT DISTINCT p.id_paciente, p.cns, p.nome, pi.codprograma, pr.descprograma, 
 	g.id_grupo codgrupo, g.descgrupo, e.nome_principal, e.nome_fantasia, e.logomarca, 
-	e.logomarca2, eq.id_equipe, eq.descequipe, md.motivo, hp.data_desligamento
+	e.logomarca2, eq.id_equipe, eq.descequipe, md.motivo, hp.data_desligamento, hp.observacao
 FROM hosp.paciente_instituicao pi
 left join hosp.laudo l on l.id_laudo  = pi.codlaudo 
 left join hosp.pacientes p on (coalesce(l.codpaciente, pi.id_paciente) = p.id_paciente)
@@ -110,6 +110,7 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 		<property name="com.jaspersoft.studio.field.label" value="data_desligamento"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="historico_paciente_instituicao"/>
 	</field>
+	<field name="observacao" class="java.lang.String"/>
 	<variable name="total_desliga_programa" class="java.lang.Integer" resetType="Group" resetGroup="grupoPrograma" calculation="Count">
 		<variableExpression><![CDATA[$F{nome_paciente}]]></variableExpression>
 	</variable>
@@ -166,7 +167,7 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 	<group name="grpgrupo" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{descgrupo}]]></groupExpression>
 		<groupHeader>
-			<band height="46">
+			<band height="49">
 				<textField>
 					<reportElement mode="Opaque" x="0" y="0" width="572" height="20" backcolor="#EDE8E8" uuid="280a9067-fafb-4f39-96d4-4a6d84cc51b2"/>
 					<textElement verticalAlignment="Middle">
@@ -201,11 +202,18 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 					<text><![CDATA[Data	]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="315" y="24" width="101" height="20" uuid="2e68fc7a-9d7e-4b6b-8520-92a40a9791e0"/>
+					<reportElement x="289" y="24" width="101" height="20" uuid="2e68fc7a-9d7e-4b6b-8520-92a40a9791e0"/>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Motivo Desligamento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="402" y="24" width="101" height="20" uuid="3d59cacc-641e-4aa9-b46b-231970d490fa"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observação]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -287,7 +295,7 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 				<textFieldExpression><![CDATA[$F{cns}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="72" y="0" width="241" height="12" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
+				<reportElement x="72" y="0" width="218" height="12" uuid="a5d1ee96-6f6e-44d3-b607-6a450d2661e6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -305,14 +313,23 @@ AND ((  $P{codequipe} IS NOT NULL AND pi.codequipe =  $P{codequipe}  ) OR ((   $
 				</textElement>
 				<textFieldExpression><![CDATA[$F{data_desligamento}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="318" y="0" width="209" height="12" uuid="e843965f-4c94-4708-9fbd-57099546226e">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="292" y="0" width="109" height="12" uuid="e843965f-4c94-4708-9fbd-57099546226e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{motivo_desligamento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="401" y="1" width="109" height="12" uuid="921023f7-ccfa-48e1-918f-0b99d8bcfb62">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
