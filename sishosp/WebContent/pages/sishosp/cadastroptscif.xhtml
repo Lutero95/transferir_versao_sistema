@@ -353,7 +353,21 @@
 					</div>
 				</b:row>
 			</h:form>
-		</p:dialog>	
+		</p:dialog>
+
+		<p:dialog header="PTS Gravado com Sucesso" styleClass="topDialog"
+				  widgetVar="dlgPtsGravado" modal="true" dynamic="true"
+				  closable="false">
+			<h:form id="frmptsgravado">
+
+				<div align="center">
+					<p:commandButton value="Fechar" class="btn-fechar" look="info"
+									 ajax="true" action="#{PtsController.redirectGerPtsCif}"
+									 icon="ui-icon-close" />
+				</div>
+
+			</h:form>
+		</p:dialog>
 	</ui:define>
 
 </ui:composition>

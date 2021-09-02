@@ -42,6 +42,7 @@ public class ProgramaBean implements Serializable {
     private boolean permiteAlteracaoCidNaEvolucao;
     private Integer idClassificacao;
     private Integer idServico;
+    private boolean permiteDuplicarProcedimentoAtendimento;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -263,5 +264,12 @@ public class ProgramaBean implements Serializable {
 	public void setIdServico(Integer idServico) {
 		this.idServico = idServico;
 	}
-	
+
+	public boolean isPermiteDuplicarProcedimentoAtendimento() {
+		return permiteDuplicarProcedimentoAtendimento;
+	}
+
+	public void setPermiteDuplicarProcedimentoAtendimento(boolean permiteDuplicarProcedimentoAtendimento) {
+		this.permiteDuplicarProcedimentoAtendimento = permiteDuplicarProcedimentoAtendimento;
+	}
 }

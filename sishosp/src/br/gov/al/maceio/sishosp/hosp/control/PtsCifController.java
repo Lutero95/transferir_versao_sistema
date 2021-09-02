@@ -155,6 +155,7 @@ public class PtsCifController {
 			if (cadastrou) {
 				ptsCif = new PtsCifBean();
 				JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso", "");
+				JSFUtil.abrirDialog("dlgPtsGravado");
 			} else {
 				JSFUtil.adicionarMensagemErro("Erro ao cadastrar PTS", "");
 			}

@@ -51,6 +51,8 @@ public class PtsController implements Serializable {
     //CONSTANTES
     private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_GERENCIAMENTOPTS = "gerenciamentopts.?faces-redirect=true";
+    private static final String ENDERECO_GERENCIAMENTOPTSCIF = "gerenciamentoptscif.?faces-redirect=true";
+
     private static final String ENDERECO_RENOVACAO = "ptsrenovacao?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String ENDERECO_ID_GER_PAC_INSTITUICAO = "&amp;idgerpaciente=";
@@ -162,6 +164,9 @@ public class PtsController implements Serializable {
 
     public String redirectGerPts() {
         return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_GERENCIAMENTOPTS);
+    }
+    public String redirectGerPtsCif() {
+        return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_GERENCIAMENTOPTSCIF);
     }
 
     public String redirectInsert() {

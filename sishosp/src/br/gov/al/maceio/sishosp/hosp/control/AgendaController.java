@@ -1846,7 +1846,7 @@ public class AgendaController implements Serializable {
     private boolean procedimentoSelecionadoEhIgualAlgumSecundario(ProcedimentoBean procedimentoSelecionado) {
         for (ProcedimentoBean procedimento : this.agenda.getListaProcedimentosSecundarios()) {
             if(procedimentoSelecionado.getIdProc().equals(procedimento.getIdProc())) {
-                JSFUtil.adicionarMensagemErro("Procedimento já foi adicionado como um secudário", "");
+                JSFUtil.adicionarMensagemErro("Procedimento já foi adicionado como um secundário", "");
                 return true;
             }
         }
@@ -1854,15 +1854,16 @@ public class AgendaController implements Serializable {
     }
 
     public void adicionarProcedimentoSecundario(ProcedimentoBean procedimentoSelecionado) {
-
-        if(procedimentoSelecionadoEhIgualPrincipal(procedimentoSelecionado))
+        if ((!this.agenda.getPrograma().isPermiteDuplicarProcedimentoAtendimento()) ) {
+            if (procedimentoSelecionadoEhIgualPrincipal(procedimentoSelecionado))
             return;
-
+        }
         if(this.agenda.getListaProcedimentosSecundarios().isEmpty()) {
             this.agenda.getListaProcedimentosSecundarios().add(procedimentoSelecionado);
             JSFUtil.fecharDialog("dlgConsulProc");
         }
-        else if(!procedimentoSelecionadoEhIgualAlgumSecundario(procedimentoSelecionado)) {
+        else
+            if ((this.agenda.getPrograma().isPermiteDuplicarProcedimentoAtendimento()) || ((!this.agenda.getPrograma().isPermiteDuplicarProcedimentoAtendimento()) && (!procedimentoSelecionadoEhIgualAlgumSecundario(procedimentoSelecionado)))) {
             this.agenda.getListaProcedimentosSecundarios().add(procedimentoSelecionado);
             JSFUtil.fecharDialog("dlgConsulProc");
         }

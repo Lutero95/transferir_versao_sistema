@@ -297,7 +297,7 @@ public class ProgramaDAO {
     public List<ProgramaBean> listarProgramasBuscaUsuario(String descricao,
                                                           Integer tipo) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento  from hosp.programa "
+        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento, coalesce(permite_duplicar_proc_atendimento,false)  permite_duplicar_proc_atendimento from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "left join hosp.proc on proc.id = programa.cod_procedimento "
                 + "where proc.ativo = 'S' and codprofissional = ? and programa.cod_unidade=?";
@@ -320,6 +320,7 @@ public class ProgramaDAO {
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
+                programa.setPermiteDuplicarProcedimentoAtendimento(rs.getBoolean("permite_duplicar_proc_atendimento"));
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
@@ -382,7 +383,7 @@ public class ProgramaDAO {
 
     public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
-        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc  from hosp.programa "
+        String sql = "select distinct id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento,  proc.nome descproc, coalesce(permite_duplicar_proc_atendimento, false) permite_duplicar_proc_atendimento from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma left join hosp.proc on proc.id = programa.cod_procedimento "
                 + "where proc.ativo = 'S' and codprofissional = ? and programa.cod_unidade=? order by descprograma";
 
@@ -404,6 +405,7 @@ public class ProgramaDAO {
                 programa.setDescPrograma(rs.getString("descprograma"));
                 programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
                 programa.getProcedimento().setNomeProc(rs.getString("descproc"));
+                programa.setPermiteDuplicarProcedimentoAtendimento(rs.getBoolean("permite_duplicar_proc_atendimento"));
                 lista.add(programa);
             }
         } catch (SQLException sqle) {
@@ -505,7 +507,7 @@ public class ProgramaDAO {
     public ProgramaBean listarProgramaPorIdParaConverter(int id) throws ProjetoException {
 
         ProgramaBean programa = new ProgramaBean();
-        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo from hosp.programa "
+        String sql = "select id_programa, descprograma, cod_procedimento,  proc.nome descproc, dias_paciente_sem_laudo_ativo, coalesce(permite_duplicar_proc_atendimento,false)  permite_duplicar_proc_atendimento  from hosp.programa "
                 + "join hosp.proc on proc.id = programa.cod_procedimento where programa.id_programa = ? and proc.ativo = 'S'  order by descprograma";
         try {
             con = ConnectionFactory.getConnection();
@@ -519,6 +521,7 @@ public class ProgramaDAO {
                 programa.getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
                 programa.getProcedimento().setNomeProc(rs.getString("descproc"));
                 programa.setDiasPacienteSemLaudoAtivo(rs.getInt("dias_paciente_sem_laudo_ativo"));
+                programa.setPermiteDuplicarProcedimentoAtendimento(rs.getBoolean("permite_duplicar_proc_atendimento"));
             }
 
         } catch (SQLException sqle) {
