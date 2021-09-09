@@ -1062,7 +1062,7 @@ public class GerenciarPacienteDAO {
 
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
         try {
-            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.*, af.inicio_afastamento, af.fim_afastamento "+
+            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.*, af.inicio_afastamento, af.fim_afastamento, af.motivo_afastamento "+
             		" from adm.substituicao_funcionario sf " +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
@@ -1093,6 +1093,7 @@ public class GerenciarPacienteDAO {
                 substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
                 substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
                 substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+                substituicao.getAfastamentoProfissional().setMotivoAfastamento(rs.getString("motivo_afastamento"));
                 lista.add(substituicao);
             }
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.administrativo.enums.MotivoAfastamento;
 import br.gov.al.maceio.sishosp.administrativo.model.SubstituicaoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -1328,12 +1329,18 @@ public class InsercaoPacienteDAO {
 		for (SubstituicaoProfissional substituicao : listaAtendimentoSubstituicao) {
 			if (funcionario.getId().equals(substituicao.getAfastamentoProfissional().getFuncionario().getId())
 					&& agenda.getPaciente().getId_paciente()
-							.equals(substituicao.getAtendimento().getPaciente().getId_paciente())
-					&& DataUtil.dataEstaEntrePeriodoInformado(agenda.getDataAtendimento(),
-							substituicao.getAfastamentoProfissional().getPeriodoInicio(),
-							substituicao.getAfastamentoProfissional().getPeriodoFinal())) {
-				return substituicao.getFuncionario().getId();
-			}
+							.equals(substituicao.getAtendimento().getPaciente().getId_paciente())){
+				
+				if(DataUtil.dataEstaEntrePeriodoInformado(agenda.getDataAtendimento(),
+						substituicao.getAfastamentoProfissional().getPeriodoInicio(),
+						substituicao.getAfastamentoProfissional().getPeriodoFinal())){
+					return substituicao.getFuncionario().getId();
+				} 
+				else if(substituicao.getAfastamentoProfissional().getMotivoAfastamento()
+						.equals(MotivoAfastamento.DESLIGAMENTO.getSigla())) {
+					return substituicao.getFuncionario().getId();
+				}
+			} 
 		}
 
 		return funcionario.getId();
