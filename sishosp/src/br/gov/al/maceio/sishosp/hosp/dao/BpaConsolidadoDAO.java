@@ -47,7 +47,7 @@ public class BpaConsolidadoDAO {
 				"		join sigtap.historico_consumo_sigtap hc on hc.id = pm.id_historico_consumo_sigtap  \r\n" + 
 				"		join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
 				"		join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro \r\n" + 
-				"		cross join hosp.empresa emp  left join hosp.configuracao_producao_bpa cpb on cpb.id = ?  where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+				"		cross join hosp.empresa emp  left join hosp.configuracao_producao_bpa cpb on cpb.id = ?  where coalesce(a.cobranca_descartada,false) is false and  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"		and coalesce(a1.excluido, 'N')= 'N' and \r\n" + 
 				"		a.dtaatende  between ? and ? and ir.nome like '%BPA%' \r\n" + 
 				"		and ir.codigo = ?  and pm.competencia_atual = ?  \r\n" + 
@@ -71,7 +71,7 @@ public class BpaConsolidadoDAO {
 				"		join sigtap.instrumento_registro_procedimento_mensal irpm on irpm.id_procedimento_mensal  = pm.id  \r\n" + 
 				"		join sigtap.instrumento_registro ir on ir.id  = irpm.id_instrumento_registro \r\n" + 
 				"		cross join hosp.empresa emp   \r\n" + 
-				"		left join hosp.configuracao_producao_bpa cpb on cpb.id = ?   where  hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" + 
+				"		left join hosp.configuracao_producao_bpa cpb on cpb.id = ?   where coalesce(a.cobranca_descartada,false) is false and   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"		and coalesce(a1.excluido, 'N')= 'N' and  aps.excluido ='N' and  \r\n" + 
 				"		a.dtaatende  between ? and ? \r\n" + 
 				"		and ir.codigo = ? and ir.nome like '%BPA%'  and pm.competencia_atual = ?  \r\n" + 

@@ -540,12 +540,14 @@ public class GerenciarPacienteDAO {
 
         try {
 
-            String sql = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " +
-                    "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
-                    "WHERE   coalesce(a1.excluido, 'N' )='N' and  a.id_paciente_instituicao = ? AND a.dtaatende >= current_date AND  coalesce(a.presenca, 'N') = 'N' AND " +
-                    "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento and coalesce(aa1.excluido, 'N' )='N') = " +
-                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND aaa1.id_situacao_atendimento IS NULL and coalesce(aaa1.excluido, 'N' )='N') " +
-                    "ORDER BY a1.id_atendimento;";
+            String sql = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 \r\n" + 
+            		"LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) \r\n" + 
+            		"WHERE   coalesce(a1.excluido, 'N' )='N' and  a.id_paciente_instituicao = ? AND a.dtaatende >= current_date AND  coalesce(a.presenca, 'N') = 'N' AND \r\n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento and coalesce(aa1.excluido, 'N' )='N') = \r\n" + 
+            		"(SELECT count(*) FROM hosp.atendimentos1 aaa1  \r\n" + 
+            		"	WHERE aaa1.id_atendimento = a1.id_atendimento AND (aaa1.id_situacao_atendimento IS NULL or \r\n" + 
+            		"		aaa1.id_situacao_atendimento in (select sa.id from hosp.situacao_atendimento sa where sa.falta_profissional is true) ) and coalesce(aaa1.excluido, 'N' )='N') \r\n" + 
+            		"ORDER BY a1.id_atendimento;";
 
 
             ps = null;
@@ -1062,7 +1064,7 @@ public class GerenciarPacienteDAO {
 
         ArrayList<SubstituicaoProfissional> lista = new ArrayList<SubstituicaoProfissional>();
         try {
-            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.*, af.inicio_afastamento, af.fim_afastamento "+
+            String sql = "select a.codpaciente,a.dtaatende, a1.cbo, sf.*, af.inicio_afastamento, af.fim_afastamento, af.motivo_afastamento "+
             		" from adm.substituicao_funcionario sf " +
                     "	join hosp.atendimentos1 a1 on a1.id_atendimentos1 = sf.id_atendimentos1 " +
                     "	join hosp.atendimentos a on a.id_atendimento = a1.id_atendimento " +
@@ -1093,6 +1095,7 @@ public class GerenciarPacienteDAO {
                 substituicao.getFuncionario().setId(rs.getLong("id_funcionario_substituto"));
                 substituicao.getUsuarioAcao().setId(rs.getLong("usuario_acao"));
                 substituicao.setDataHoraAcao(rs.getTimestamp("data_hora_acao"));
+                substituicao.getAfastamentoProfissional().setMotivoAfastamento(rs.getString("motivo_afastamento"));
                 lista.add(substituicao);
             }
 

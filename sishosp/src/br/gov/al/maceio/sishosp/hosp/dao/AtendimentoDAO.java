@@ -1986,7 +1986,7 @@ public class AtendimentoDAO {
 				"\tirpm.id_procedimento_mensal = pm.id\n" +
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\n" +
-				"where  coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
+				"where coalesce(a.cobranca_descartada,false) is false and   coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' \n" +
 				"and a.dtaatende between ? and ? and coalesce(pr.id_instrumento_registro_padrao, ir.id) = ir.id  and ir.nome like '%BPA%'\n" +
 				"and pm.competencia_atual = ? ";
 
@@ -2012,7 +2012,7 @@ public class AtendimentoDAO {
 				"\tirpm.id_procedimento_mensal = pm.id\n" +
 				"join sigtap.instrumento_registro ir on\n" +
 				"\tir.id = irpm.id_instrumento_registro\t\n" +
-				"\twhere     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' and  coalesce(aps.excluido,'N') ='N' \n" +
+				"\twhere coalesce(a.cobranca_descartada,false) is false and     coalesce(a.situacao,'')<>'C' and coalesce(a1.excluido,'N')='N' and hc.status ='A' and  coalesce(aps.excluido,'N') ='N' \n" +
 				"\tand a.dtaatende between ? and ?   and ir.nome like '%BPA%' and pm.competencia_atual = ?";
 
 		String filtroProcedimento = " and a1.codprocedimento = any(?) ";

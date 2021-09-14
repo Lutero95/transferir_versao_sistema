@@ -80,7 +80,7 @@ public class BpaIndividualizadoDAO {
 				"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" +
 				" left join hosp.configuracao_producao_bpa cpb on cpb.id = ? 		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" +
 				"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" +
-				"		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				"		 where coalesce(a.cobranca_descartada,false) is false and   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"   		 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"		 and a.dtaatende  between ?  and ? \r\n" +
 				"		 and ir.codigo = ? and ir.nome like '%BPA%' \r\n" +
@@ -137,7 +137,7 @@ public class BpaIndividualizadoDAO {
 				"		 left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento cross join hosp.empresa emp\r\n" +
 				"		 left join sigtap.servico sm on sm.id = proc.id_servico \r\n" +
 				"		 left join sigtap.classificacao cm on cm.id = proc.id_classificacao \r\n" +
-				" left join hosp.configuracao_producao_bpa cpb on cpb.id = ? 		 where   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
+				" left join hosp.configuracao_producao_bpa cpb on cpb.id = ? 		 where  coalesce(a.cobranca_descartada,false) is false and   hc.status='A' and coalesce(a.situacao, '')<> 'C'\r\n" +
 				"	 	 and coalesce(a1.excluido, 'N')= 'N' \r\n" +
 				"		 and a.dtaatende  between ?  and ?  and  coalesce(aps.excluido,'N') ='N' \r\n" +
 				"		 and ir.codigo = ? and ir.nome like '%BPA%'  \r\n" +
