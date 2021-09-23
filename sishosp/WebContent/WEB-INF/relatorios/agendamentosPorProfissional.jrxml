@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_Maragogi_Nuvem"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="210"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="779"/>
@@ -30,6 +30,7 @@
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="cod_profissional" class="java.lang.Long"/>
+	<parameter name="presenca " class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select  empresa.nome_principal nomeinstituicao,empresa.logomarca,programa.id_programa,programa.descprograma,  
 case when at.avaliacao is true then 0 else g.id_grupo end idgrupo,
@@ -59,6 +60,7 @@ and ((   $P{codprograma}   is not null and at.codprograma=  $P{codprograma}) or 
 and ((   $P{codgrupo}   is not null and at.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 and ((   $P{cod_tipo_atend}   is not null and  t.id = $P{cod_tipo_atend}) or (( $P{cod_tipo_atend} =0 ) OR ( $P{cod_tipo_atend} is null )))
 	AND ((  $P{codunidade}   IS NOT NULL AND at.cod_unidade =   $P{codunidade}   ) OR ((  $P{codunidade}  = 0 ) OR (  $P{codunidade}  is null )))
+AND ((  $P{presenca }   IS NOT NULL AND coalesce(at.presenca, 'N') =   $P{presenca }  ) OR ( $P{presenca }   is null ))	
 order by fun.descfuncionario, programa.descprograma, g.descgrupo,dt_atend, p.nome]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
