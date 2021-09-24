@@ -1414,6 +1414,10 @@ public class RelatoriosController implements Serializable {
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		// limparDados();
 	}
+	
+	public void preparaRelatorioAgendamentosPorProfissional() {
+		this.atributoGenerico1 = "T";
+	}
 
 	public void gerarAgendamentosPorProfissional() throws IOException, ParseException, ProjetoException {
 
@@ -1438,7 +1442,11 @@ public class RelatoriosController implements Serializable {
 			map.put("codprograma", this.programa.getIdPrograma());
 		if ((grupo != null) && (grupo.getIdGrupo() != null))
 			map.put("codgrupo", this.grupo.getIdGrupo());
-
+		
+		if (!atributoGenerico1.equals("T")) {
+			map.put("presenca", atributoGenerico1);
+		}
+		
 		this.executeReport(relatorio, map, "agendamentos_profissional.pdf");
 		// limparDados();
 	}

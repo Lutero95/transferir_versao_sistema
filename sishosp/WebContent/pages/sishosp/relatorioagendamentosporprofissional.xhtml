@@ -12,6 +12,7 @@
 
 	<f:metadata>
 		<f:viewAction action="#{RelatoriosController.preparaRelFrequencia()}" />
+		<f:viewAction action="#{RelatoriosController.preparaRelatorioAgendamentosPorProfissional()}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -44,9 +45,6 @@
 								id="dtagen3" locale="pt" 
 								value="#{RelatoriosController.dataFinal}" />
 						</b:column>
-
-						
-
 					</b:row>
 
 					<b:row>
@@ -72,11 +70,7 @@
 									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
 							</p:outputPanel>
 						</b:column>
-
-					</b:row>
-
-					<b:row>
-
+						
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Grupo" severity="info" />
@@ -105,8 +99,8 @@
 						</b:column>
 					</b:row>
 
-					<b:row>
 
+					<b:row>
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Tipo Atendimento" severity="info" />
@@ -131,10 +125,6 @@
 									update="" onclick="PF('dlgConsuTipoAt').show();" />
 							</p:outputPanel>
 						</b:column>
-
-					</b:row>
-
-					<b:row>
 
 						<b:column span="2"
 							class="label-position new-data-size new-comple1">
@@ -164,6 +154,19 @@
 							</p:outputPanel>
 						</b:column>
 					</b:row>
+
+					
+					<b:row>
+						<b:column span="3" class="btn-radio-table">
+							<p:selectOneRadio
+								value="#{RelatoriosController.atributoGenerico1}">
+								<f:selectItem itemLabel="Todos" itemValue="T" />
+								<f:selectItem itemLabel="Com Presença" itemValue="S" />
+								<f:selectItem itemLabel="Sem Presença" itemValue="N" />
+							</p:selectOneRadio>
+						</b:column>
+					</b:row>
+					
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
