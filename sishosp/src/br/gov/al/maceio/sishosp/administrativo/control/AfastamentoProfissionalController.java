@@ -93,6 +93,12 @@ public class AfastamentoProfissionalController implements Serializable {
     public void listarAfastamentosProfissionais() throws ProjetoException {
         listaAfastamentosProfissionais = aDao.listarAfastamentoProfissionais();
     }
+      
+    public void listarAfastamentosProfissionalFiltro(int id) throws ProjetoException {
+    	if(!VerificadorUtil.verificarSeObjetoNulo(id)){    		
+    		listaAfastamentosProfissionais = aDao.listarAfastamentoFiltroProfissional(id);
+    	}
+    }
 
     public void afastamentoPossuemSituacaoAtendimento() throws ProjetoException {
     	this.tiposDeAfastamentoPossuemSituacaoAtendimento = aDao.tiposDeAfastamentoPossuemSituacaoAtendimento();
