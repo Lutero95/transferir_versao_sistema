@@ -1,7 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="../../template/template.xhtml">
@@ -28,34 +27,6 @@
 						icon="ui-icon-plus" class="btn-addNovo">
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
-					
-					<p:outputPanel id="outProfissional">
-                        <b:row>
-                            <b:column span="3"
-                                      class="label-position new-data-size new-comple1">
-                                <b:label value="Profissional" severity="info"/>
-									
-                                <p:outputPanel id="outProf">
-                                    <p:autoComplete
-                                            value="#{afastamentoProfissionalController.afastamentoProfissional.funcionario}"
-                                            id="autoCompleteProfissional" size="31"
-                                            converter="conFuncionario" required="true"
-                                            requiredMessage="Profissional: Campo obrigatório!"
-                                            class="select-agendaEquipe4"
-                                            completeMethod="#{MBFuncionarios.listaProfissionalAtivoAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.nome}">
-                                    </p:autoComplete>
-
-                                    <p:commandButton id="btBusProf" icon="ui-icon-search"
-                                                     immediate="true"
-                                                     action="#{MBFuncionarios.listarProfissionaisAtivos()}"
-                                                     update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
-                                </p:outputPanel>
-                            </b:column>
-                        </b:row>
-                    </p:outputPanel>
 
 
 					<p:dataTable id="dt" var="tab" paginator="true"
@@ -139,39 +110,6 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		
-		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
-                  dynamic="true" modal="true" responsive="true">
-            <h:form id="formConsuProf">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{MBFuncionarios.listaProfissional}" id="dtProfissional"
-                             var="profi" display="Nenhum Profissional">
-
-                    <h:column>
-                        <f:facet name="header">
-                            Profissional
-                        </f:facet>
-                        <p:outputLabel value="#{profi.nome}"/>
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">
-                            Adicionar
-                        </f:facet>
-                        <p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
-                                         class="new-btn-acao-table acao-editar" update=":frmPrincipal"
-                                         action="#{afastamentoProfissionalController.listarAfastamentosProfissionalFiltro(profi.id)}"
-                                         oncomplete="PF('dlgConsuProf').hide();"
-                                         >
-
-                            <f:setPropertyActionListener value="#{profi}"
-                                                         target="#{afastamentoProfissionalController.afastamentoProfissional.funcionario}"/>
-                        </p:commandButton>
-                    </h:column>
-
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
 
 	</ui:define>
 </ui:composition>

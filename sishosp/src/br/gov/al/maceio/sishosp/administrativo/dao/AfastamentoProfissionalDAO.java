@@ -261,52 +261,6 @@ public class AfastamentoProfissionalDAO {
 		}
 		return lista;
 	}
-	
-	public List<AfastamentoProfissional> listarAfastamentoFiltroProfissional(int idProfissional) throws ProjetoException {
-
-		List<AfastamentoProfissional> lista = new ArrayList<>();
-
-		String sql = "SELECT a.id, a.tipo_afastamento, a.id_funcionario_afastado, f.descfuncionario, "
-				+ "a.inicio_afastamento, a.fim_afastamento, a.motivo_afastamento, a.turno, "
-				+ "CASE WHEN a.motivo_afastamento = 'FE' THEN 'Férias' "
-				+ "WHEN a.motivo_afastamento = 'LM' THEN 'Licença Médica' WHEN a.motivo_afastamento = 'DE' THEN 'Desligamento' WHEN a.motivo_afastamento = 'FA' THEN 'Falta' END AS motivo_afastamento_extenso "
-				+ "FROM adm.afastamento_funcionario a "
-				+ "JOIN acl.funcionarios f ON (a.id_funcionario_afastado = f.id_funcionario) "
-				+ "WHERE (a.id_funcionario_afastado = ?)"
-				+ "ORDER BY a.inicio_afastamento desc";
-
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, idProfissional);
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				AfastamentoProfissional afastamentoProfissional = new AfastamentoProfissional();
-				afastamentoProfissional.setId(rs.getInt("id"));
-				afastamentoProfissional.setTipoAfastamento(rs.getString("tipo_afastamento"));
-				afastamentoProfissional.getFuncionario().setId(rs.getLong("id_funcionario_afastado"));
-				afastamentoProfissional.getFuncionario().setNome(rs.getString("descfuncionario"));
-				afastamentoProfissional.setPeriodoInicio(rs.getDate("inicio_afastamento"));
-				afastamentoProfissional.setPeriodoFinal(rs.getDate("fim_afastamento"));
-				afastamentoProfissional.setMotivoAfastamento(rs.getString("motivo_afastamento"));
-				afastamentoProfissional.setTurno(rs.getString("turno"));
-				afastamentoProfissional.setMotivoAfastamentoPorExtenso(rs.getString("motivo_afastamento_extenso"));
-				lista.add(afastamentoProfissional);
-			}
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				//comentado walter erro log ex.printStackTrace();
-			}
-		}
-		return lista;
-	}
 
 	public boolean verificaSeExisteAfastamentoProfissionalNoPeriodo(AfastamentoProfissional afastamento) throws ProjetoException {
 		boolean existeAfastamentoProfissionalNoPeriodo = false;
