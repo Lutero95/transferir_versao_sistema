@@ -939,6 +939,11 @@ public class AgendaController implements Serializable {
             JSFUtil.adicionarMensagemErro("Informe o(s) Profissional(is) do Agendamento !", "Erro");
             return;
         }
+        
+        if (verificarSeEhFeriadoDataUnica()) {
+            JSFUtil.adicionarMensagemErro("A data selecionada é um feriado!", "Erro");
+            return;
+        }
 
         if (procedimentoValido() && pacienteValido(agenda.getPaciente())) {
 
