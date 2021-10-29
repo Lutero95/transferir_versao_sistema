@@ -63,10 +63,20 @@ public class TolerenciaController implements Serializable {
 		if(alcancouLimiteHorario()) {
 
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(horarioFuncionamento.getHorarioFim());
+			
+			if(VerificadorUtil.verificarSeObjetoNuloOuZero(horarioFuncionamento.getHorarioFim())){			
+				try {
+					buscaHorarioFuncionamento();
+				} catch (ProjetoException e) {/*e.printStackTrace();*/}
+			}
+			
+			try {
+				calendar.setTime(horarioFuncionamento.getHorarioFim());			
+			} catch (NullPointerException e) {/*e.printStackTrace();*/}
+			
 			calendar.set(anoAtual, mesAtual, diaDoMesAtual);
-
 			calendar.add(Calendar.MINUTE, minutosTolerancia);
+			
 			this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
 
 			if(horarioExpirou()) {
@@ -95,11 +105,22 @@ public class TolerenciaController implements Serializable {
 		this.mesAtual = calendar.get(Calendar.MONTH);
 		this.diaDoMesAtual = calendar.get(Calendar.DAY_OF_MONTH);
 
-		calendar.setTime(horarioFuncionamento.getHorarioFim());
+		if(VerificadorUtil.verificarSeObjetoNuloOuZero(horarioFuncionamento.getHorarioFim())){			
+			try {
+				buscaHorarioFuncionamento();
+			} catch (ProjetoException e) {
+				//e.printStackTrace();
+			}
+		}
+		
+		try {
+			calendar.setTime(horarioFuncionamento.getHorarioFim());			
+		} catch (NullPointerException e) {
+			//e.printStackTrace();
+		}
+		
 		calendar.set(anoAtual, mesAtual, diaDoMesAtual);
-
 		this.horarioFinalEmMilisegundos = calendar.getTimeInMillis();
-
 		return horarioExpirou();
 	}
 
