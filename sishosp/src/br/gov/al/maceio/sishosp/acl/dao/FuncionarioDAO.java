@@ -1207,7 +1207,7 @@ public class FuncionarioDAO {
 			
 			ps.setString(18, profissional.getNumeroConselho());
 			ps.setBoolean(19, profissional.isExcecaoEvolucaoComPendencia());
-			ps.setBoolean(20, profissional.getCoordenacao());
+			ps.setBoolean(20, profissional.getRealizaEvolucaoFaltosos());
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -1843,7 +1843,7 @@ public class FuncionarioDAO {
 			}
 			stmt.setString(17, profissional.getNumeroConselho());
 			stmt.setBoolean(18, profissional.isExcecaoEvolucaoComPendencia());
-			stmt.setBoolean(19, profissional.getCoordenacao());
+			stmt.setBoolean(19, profissional.getRealizaEvolucaoFaltosos());
 			stmt.setLong(20, profissional.getId());
 
 			stmt.executeUpdate();
@@ -2081,7 +2081,7 @@ public class FuncionarioDAO {
 		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codprocedimentopadrao, permite_autorizacao_laudo, id_conselho, excecao_evolucao_com_pendencia, "
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria, numero_conselho "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, excecao_bloqueio_horario, realiza_auditoria, numero_conselho, realiza_evolucao_faltosos "
 				+ " from acl.funcionarios where id_funcionario = ?  order by descfuncionario";
 
 		ConselhoDAO conselhoDAO = new ConselhoDAO();
@@ -2115,6 +2115,7 @@ public class FuncionarioDAO {
 				profissional.setConselho(conselhoDAO.buscaConselhoPorId(rs.getInt("id_conselho")));
 				profissional.setNumeroConselho(rs.getString("numero_conselho"));
 				profissional.setExcecaoEvolucaoComPendencia(rs.getBoolean("excecao_evolucao_com_pendencia"));
+				profissional.setRealizaEvolucaoFaltosos(rs.getBoolean("realiza_evolucao_faltosos"));
 			}
 
 		} catch (SQLException sqle) {
@@ -2168,7 +2169,7 @@ public class FuncionarioDAO {
 		FuncionarioBean profissional = null;
 
 		String sql = "select id_funcionario, descfuncionario, codespecialidade, e.descespecialidade , cns, ativo, codprocedimentopadrao, "
-				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
+				+ " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe, realiza_evolucao_faltosos "
 				+ " from acl.funcionarios left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
 				+	" where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
@@ -2194,6 +2195,7 @@ public class FuncionarioDAO {
 				profissional.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
 				profissional.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				profissional.setListaCbos(listarCbosProfissional(profissional.getId(), con));
+				profissional.setExcecaoEvolucaoComPendencia(rs.getBoolean("realiza_evolucao_faltosos"));
 			}
 		} catch (SQLException sqle) {
 			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
