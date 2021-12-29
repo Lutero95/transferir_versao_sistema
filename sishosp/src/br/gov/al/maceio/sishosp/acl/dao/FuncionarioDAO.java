@@ -140,9 +140,9 @@ public class FuncionarioDAO {
 		return lista;
 	}
 	
-	public Boolean validaAcessoCoordenacao(Long id_funcionario) throws ProjetoException {
+	public Boolean verificaSeRealizaEvolucaoFalta(Long id_funcionario) throws ProjetoException {
 
-		String sql = "SELECT count(id_funcionario) as amount FROM acl.funcionarios WHERE id_funcionario = ? AND coalesce(coordenacao, FALSE) IS TRUE;";
+		String sql = "SELECT count(id_funcionario) as amount FROM acl.funcionarios WHERE id_funcionario = ? AND coalesce(realiza_evolucao_faltosos, FALSE) IS TRUE;";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -2420,8 +2420,8 @@ public class FuncionarioDAO {
 		if (tipoValidacao.equals(ValidacaoSenha.ENCAIXE.getSigla())) {
 			sql = sql + " AND permite_encaixe IS TRUE;";
 		}
-		if (tipoValidacao.equals(ValidacaoSenha.COORDENACAO.getSigla())) {
-			sql = sql + " AND coalesce(coordenacao, FALSE) IS TRUE;";
+		if (tipoValidacao.equals(ValidacaoSenha.EVOLUCAO_FALTA.getSigla())) {
+			sql = sql + " AND coalesce(realiza_evolucao_faltosos, FALSE) IS TRUE;";
 		}
 
 		try {

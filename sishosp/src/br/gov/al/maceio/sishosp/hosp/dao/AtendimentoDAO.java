@@ -39,7 +39,8 @@ public class AtendimentoDAO {
 	FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 			.getSessionMap().get("obj_usuario");
 
-	public void adicionarRegistroDeFaltaComoCoordenador(AtendimentoBean atendimento) throws ProjetoException {
+	//Usado para adicionar um novo atendimento com evolução em caso de falta do paciente
+	public void adicionarAtendimentoParaEvolucaoDeFalta(AtendimentoBean atendimento) throws ProjetoException {
 		con = ConnectionFactory.getConnection();
 		try {
 			String sql = "insert into hosp.atendimentos1 "
@@ -67,8 +68,8 @@ public class AtendimentoDAO {
 		}
 	}
 	
-	
-	public void excluirAtendimentoFaltosoComoCoordenador(Integer idAtendimento, Long long1) throws ProjetoException {
+	//Usado para excluir logicamente os atendimentos agendados em caso de falta do paciente
+	public void excluirAtendimentoParaEvolucaoDeFalta(Integer idAtendimento, Long long1) throws ProjetoException {
 		con = ConnectionFactory.getConnection();
 		try {
 			String sql = "update hosp.atendimentos1 set excluido = 'S', usuario_exclusao = ?, "

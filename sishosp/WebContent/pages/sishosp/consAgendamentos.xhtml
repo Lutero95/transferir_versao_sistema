@@ -10,7 +10,7 @@
 	<f:metadata>
 		<f:viewAction action="#{AgendaController.iniciarPaginaConsultarAgendamentos()}" />
 		<f:viewAction action="#{AgendaController.configuraDialogsParaConsultaAtendimentos()}"/>
-		<f:viewAction action="#{AgendaController.listarSituacoesAtendimentoEvolucaoCoordenacao()}"/>	
+		<f:viewAction action="#{AgendaController.listarSituacoesAtendimentoEvolucaoFaltosos()}"/>	
 	</f:metadata>
 
 	<style type="text/css">
@@ -235,14 +235,14 @@
 								</b:column>
 								
 								<b:column span="2"
-									rendered="#{AgendaController.verificaSePerfilEhCoord()}">
-									<p:commandButton value="Evoluir como Coordenador"
+									rendered="#{AgendaController.verificaSePerfilRealizaEvolucaoFalta()}">
+									<p:commandButton value="Evoluir Falta"
 										style="margin-top:5px;width:120px !important" id="btncoordenador"
 										immediate="true"
 										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
 										class="btn-acao-table acao-cancelar btn-new-padding2"
 										update=":formConsAge, :frmSenhaLiberacao, mensagem" icon="ui-icon-close"
-										action="#{AgendaController.abrirDialogCoordenacao()}"
+										action="#{AgendaController.abrirDialogEvolucaoFaltosos()}"
 										/>
 								</b:column>
 
@@ -414,7 +414,7 @@
 			</h:form>
 		</p:dialog>
 		
-		<p:dialog header="Evolução de Atendimento como Coordenador(a)" widgetVar="dlgSenhaCoordenacao"
+		<p:dialog header="Evolução de Falta" widgetVar="dlgEvolucaoFaltosos"
 				  modal="true" styleClass="topDialog" draggable="false" resizable="false"
 				  position="center">
 			<h:form id="frmSenhaLiberacao">
@@ -436,7 +436,7 @@
 					<p:outputLabel value="Status do Atendimento" severity="info" style="font-weight:bold !important; margin-top: 15px; margin-bottom: 5px;" />
 					<p:row span="12">
 						<b:selectOneMenu
-							value="#{AgendaController.situacaoAtendimentoEvolucaoCoordenador.id}"
+							value="#{AgendaController.situacaoAtendimentoEvolucaoFalta.id}"
 							required="true" requiredMessage="Status do atendimento é campo obrigatório">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							<f:selectItems value="#{AgendaController.listaSituacoes}" var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
@@ -448,7 +448,7 @@
 						<p:textEditor
 							id="campoevolucao"
 							allowStyles="true"
-							value="#{AgendaController.evolucaoCoordenador}"
+							value="#{AgendaController.evolucaoFalta}"
 							required="true" requiredMessage="Evolução: Campo obrigatório!">
 							<f:facet name="toolbar">
 					             <span class="ql-formats">
@@ -474,9 +474,9 @@
 				
 				<b:column span="6">
 					<p:row span="12">
-						<p:commandButton value="Liberar" look="success" size="sm"
+						<p:commandButton value="Evoluir falta" look="success" size="sm"
 						style="margin-top:10px" icon="fa fa-fw fa-check"
-						update=":msgPagina" action="#{AgendaController.evoluirComoCoordenacao()}" />
+						update=":msgPagina" action="#{AgendaController.evoluirFalta()}" />
 					</p:row>
 				</b:column>		
 

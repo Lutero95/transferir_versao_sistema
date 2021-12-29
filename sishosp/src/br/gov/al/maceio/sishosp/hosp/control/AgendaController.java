@@ -149,8 +149,8 @@ public class AgendaController implements Serializable {
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
 	private List<SituacaoAtendimentoBean> listaSituacoes;
-	private SituacaoAtendimentoBean situacaoAtendimentoEvolucaoCoordenador;
-	private String evolucaoCoordenador;
+	private SituacaoAtendimentoBean situacaoAtendimentoEvolucaoFalta;
+	private String evolucaoFalta;
 
     private static final String ERRO = "Erro!";
     private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
@@ -206,13 +206,13 @@ public class AgendaController implements Serializable {
                 .getSessionMap().get("obj_funcionario");
         this.listaLiberacoes = new ArrayList<>();
         this.usuarioLiberacao = new FuncionarioBean();
-        this.setEvolucaoCoordenador("<p>Paciente não compareceu à instituição.</p><p><br></p><p><strong><em>Falta registrada por coordenação.</em></strong></p>");
+        this.setEvolucaoFalta("<p>Paciente não compareceu à instituição.</p><p><br></p><p><strong><em>Falta registrada por coordenação.</em></strong></p>");
         this.listaIdFuncionariosComDuplicidadeEspecialidade = new ArrayList<>();
         this.listaCids = new ArrayList<>();
         this.unidadeDAO = new UnidadeDAO();
         verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         this.cidObrigatorio = user_session.getUnidade().getParametro().isCidAgendaObrigatorio();
-        this.setSituacaoAtendimentoEvolucaoCoordenador(new SituacaoAtendimentoBean());
+        this.setSituacaoAtendimentoEvolucaoFalta(new SituacaoAtendimentoBean());
     }
 
     public void limparDados() {
@@ -1120,26 +1120,25 @@ public class AgendaController implements Serializable {
         agenda.setMax(0);
     }
 
-    public void abrirDialogCoordenacao() {
+    public void abrirDialogEvolucaoFaltosos() {
     	usuarioLiberacao = new FuncionarioBean();
-    	JSFUtil.abrirDialog("dlgSenhaCoordenacao"); 
+    	JSFUtil.abrirDialog("dlgEvolucaoFaltosos"); 
     }
     
-    public boolean verificaSePerfilEhCoord(){
-    	boolean isCoord = false;
-    	//(FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("obj_funcionario");
+    public boolean verificaSePerfilRealizaEvolucaoFalta(){
+    	boolean realizaEvolucaoFalta = false;
     	if(user_session != null) {
     		if(user_session.getPerfil() != null){
     			FuncionarioDAO fDAO = new FuncionarioDAO();
     			try {
-					isCoord = fDAO.validaAcessoCoordenacao(user_session.getId());
+    				realizaEvolucaoFalta = fDAO.verificaSeRealizaEvolucaoFalta(user_session.getId());
 				} catch (ProjetoException e) { /*e.printStackTrace();*/ }
     		}
     	}
-    	return isCoord;
+    	return realizaEvolucaoFalta;
     }
     
-    public void listarSituacoesAtendimentoEvolucaoCoordenacao() {
+    public void listarSituacoesAtendimentoEvolucaoFaltosos() {
     	//System.out.println("Listando Evolução");
     	SituacaoAtendimentoDAO situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
     	try {
@@ -1150,8 +1149,8 @@ public class AgendaController implements Serializable {
 		}
     }
     
-    public void evoluirComoCoordenacao() {
-    	JSFUtil.fecharDialog("dlgSenhaCoordenacao");
+    public void evoluirFalta() {
+    	JSFUtil.fecharDialog("dlgEvolucaoFaltosos");
     	AtendimentoDAO atDao = new AtendimentoDAO();
     	AgendaDAO agDao = new AgendaDAO();
     	
@@ -1178,12 +1177,12 @@ public class AgendaController implements Serializable {
 	        atendimentoCoordenador.setProcedimento(atendimentoBase.getProcedimento());
 	        atendimentoCoordenador.setCidPrimario(atendimentoBase.getCidPrimario());
 	        atendimentoCoordenador.setFuncionario(coordenador);
-	        atendimentoCoordenador.setSituacaoAtendimento(situacaoAtendimentoEvolucaoCoordenador);
-	        atendimentoCoordenador.setEvolucao(evolucaoCoordenador);
+	        atendimentoCoordenador.setSituacaoAtendimento(situacaoAtendimentoEvolucaoFalta);
+	        atendimentoCoordenador.setEvolucao(evolucaoFalta);
 
-	        atDao.adicionarRegistroDeFaltaComoCoordenador(atendimentoCoordenador);
+	        atDao.adicionarAtendimentoParaEvolucaoDeFalta(atendimentoCoordenador);
 			for(AtendimentoBean at : atendimentos) {
-				atDao.excluirAtendimentoFaltosoComoCoordenador(at.getId1(), coordenador.getId());
+				atDao.excluirAtendimentoParaEvolucaoDeFalta(at.getId1(), coordenador.getId());
 			}
 			agDao.finalizarAgendamento(agendamento.getIdAgenda());
 			
@@ -1197,7 +1196,7 @@ public class AgendaController implements Serializable {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         FuncionarioBean usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(coordenacao.getCpf(), coordenacao.getSenha(),
-                ValidacaoSenha.COORDENACAO.getSigla());
+                ValidacaoSenha.EVOLUCAO_FALTA.getSigla());
 
         if (usuarioLiberacao != null) {
             JSFUtil.fecharDialog("dlgSenhaCoordenacao");
@@ -2458,19 +2457,19 @@ public class AgendaController implements Serializable {
 		this.listaSituacoes = listaSituacoes;
 	}
 
-	public SituacaoAtendimentoBean getSituacaoAtendimentoEvolucaoCoordenador() {
-		return situacaoAtendimentoEvolucaoCoordenador;
+	public SituacaoAtendimentoBean getSituacaoAtendimentoEvolucaoFalta() {
+		return situacaoAtendimentoEvolucaoFalta;
 	}
 
-	public void setSituacaoAtendimentoEvolucaoCoordenador(SituacaoAtendimentoBean situacaoAtendimentoEvolucaoCoordenador) {
-		this.situacaoAtendimentoEvolucaoCoordenador = situacaoAtendimentoEvolucaoCoordenador;
+	public void setSituacaoAtendimentoEvolucaoFalta(SituacaoAtendimentoBean situacaoAtendimentoEvolucaoFalta) {
+		this.situacaoAtendimentoEvolucaoFalta = situacaoAtendimentoEvolucaoFalta;
 	}
 
-	public String getEvolucaoCoordenador() {
-		return evolucaoCoordenador;
+	public String getEvolucaoFalta() {
+		return evolucaoFalta;
 	}
 
-	public void setEvolucaoCoordenador(String evolucaoCoordenador) {
-		this.evolucaoCoordenador = evolucaoCoordenador;
+	public void setEvolucaoFalta(String evolucaoFalta) {
+		this.evolucaoFalta = evolucaoFalta;
 	}
 }
