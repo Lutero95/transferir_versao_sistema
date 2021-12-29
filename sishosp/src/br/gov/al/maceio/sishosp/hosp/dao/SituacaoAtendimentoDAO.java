@@ -140,6 +140,34 @@ public class SituacaoAtendimentoDAO {
 		}
 		return listaSituacoes;
 	}
+	
+	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFaltaPaciente() throws ProjetoException {
+
+		String sql = "select sa.id, sa.descricao, sa.atendimento_realizado, sa.abono_falta, sa.paciente_faltou  " +
+				"from hosp.situacao_atendimento sa where sa.paciente_faltou = true";
+
+		List<SituacaoAtendimentoBean> listaSituacoes = new ArrayList<SituacaoAtendimentoBean>();
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			ps = conexao.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				mapearResultSetSituacaoAtendimento(listaSituacoes, rs);
+			}
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				//comentado walter erro log ex.printStackTrace();
+			}
+		}
+		return listaSituacoes;
+	}
 
 	public List<SituacaoAtendimentoBean> listarSituacaoAtendimentoFiltro(Boolean atendimentoRealizado) throws ProjetoException {
 

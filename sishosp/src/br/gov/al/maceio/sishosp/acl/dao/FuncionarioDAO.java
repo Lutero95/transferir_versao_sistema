@@ -139,6 +139,37 @@ public class FuncionarioDAO {
 		}
 		return lista;
 	}
+	
+	public Boolean validaAcessoCoordenacao(Long id_funcionario) throws ProjetoException {
+
+		String sql = "SELECT count(id_funcionario) as amount FROM acl.funcionarios WHERE id_funcionario = ? AND coalesce(coordenacao, FALSE) IS TRUE;";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+
+			stmt.setLong(1, id_funcionario);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				if(rs.getLong("amount") > 0) {
+					return true;
+				}
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return false;
+	}
 
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario) throws ProjetoException {
 
@@ -2384,6 +2415,9 @@ public class FuncionarioDAO {
 		}
 		if (tipoValidacao.equals(ValidacaoSenha.ENCAIXE.getSigla())) {
 			sql = sql + " AND permite_encaixe IS TRUE;";
+		}
+		if (tipoValidacao.equals(ValidacaoSenha.COORDENACAO.getSigla())) {
+			sql = sql + " AND coalesce(coordenacao, FALSE) IS TRUE;";
 		}
 
 		try {

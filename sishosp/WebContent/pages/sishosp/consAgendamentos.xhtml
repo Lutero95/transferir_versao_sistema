@@ -9,7 +9,8 @@
 
 	<f:metadata>
 		<f:viewAction action="#{AgendaController.iniciarPaginaConsultarAgendamentos()}" />
-		<f:viewAction action="#{AgendaController.configuraDialogsParaConsultaAtendimentos()}"/>	
+		<f:viewAction action="#{AgendaController.configuraDialogsParaConsultaAtendimentos()}"/>
+		<f:viewAction action="#{AgendaController.listarSituacoesAtendimentoEvolucaoCoordenacao()}"/>	
 	</f:metadata>
 
 	<style type="text/css">
@@ -232,6 +233,18 @@
 										update=":formConsAge, mensagem" icon="ui-icon-close"
 										action="#{AgendaController.verificarSeAtendimentoFoiRealizado()}" />
 								</b:column>
+								
+								<b:column span="2"
+									rendered="#{AgendaController.verificaSePerfilEhCoord()}">
+									<p:commandButton value="Evoluir como Coordenador"
+										style="margin-top:5px;width:120px !important" id="btncoordenador"
+										immediate="true"
+										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
+										class="btn-acao-table acao-cancelar btn-new-padding2"
+										update=":formConsAge, :frmSenhaLiberacao, mensagem" icon="ui-icon-close"
+										action="#{AgendaController.abrirDialogCoordenacao()}"
+										/>
+								</b:column>
 
 							</p:outputPanel>
 
@@ -313,7 +326,6 @@
 							</f:facet>
 							<p:outputLabel value="#{agenda.grupo.descGrupo}" />
 						</p:column>
-
 
 						<p:column width="10%">
 							<f:facet name="header">
@@ -399,6 +411,75 @@
 									 icon="ui-icon-close" class="btn-nao"
 									 style="margin-left:5px;float:right;" />
 				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Evolução de Atendimento como Coordenador(a)" widgetVar="dlgSenhaCoordenacao"
+				  modal="true" styleClass="topDialog" draggable="false" resizable="false"
+				  position="center">
+			<h:form id="frmSenhaLiberacao">
+			
+				<b:column span="12" class="col-next-select-one-menu">
+					<b:row span="12">
+						<b:column span="6">
+							<p:outputLabel value="Paciente" severity="info" style="width:100%; font-weight:bold !important;  margin-bottom: 5px;" />
+							<p:outputLabel value="#{AgendaController.rowBean.paciente.nome}" id="nomePaciente"/>
+						</b:column>
+						<b:column span="6">
+							<p:outputLabel value="Data do Atendimento" severity="info" style="width:100%; font-weight:bold !important;  margin-bottom: 5px;" />
+							<h:outputText value="#{AgendaController.rowBean.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</b:column>
+					</b:row>
+					
+					<p:outputLabel value="Status do Atendimento" severity="info" style="font-weight:bold !important; margin-top: 15px; margin-bottom: 5px;" />
+					<p:row span="12">
+						<b:selectOneMenu
+							value="#{AgendaController.situacaoAtendimentoEvolucaoCoordenador.id}"
+							required="true" requiredMessage="Status do atendimento é campo obrigatório">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{AgendaController.listaSituacoes}" var="sit" itemLabel="#{sit.descricao}" itemValue="#{sit.id}" />
+						</b:selectOneMenu>
+					</p:row>
+					
+					<p:outputLabel value="Evolução" severity="info" style="font-weight:bold !important; margin-top: 15px; margin-bottom: 5px;" />
+					<p:row span="9">
+						<p:textEditor
+							id="campoevolucao"
+							allowStyles="true"
+							value="#{AgendaController.evolucaoCoordenador}"
+							required="true" requiredMessage="Evolução: Campo obrigatório!">
+							<f:facet name="toolbar">
+					             <span class="ql-formats">
+					                <button class="ql-bold"></button>
+					                <button class="ql-italic"></button>
+					                <button class="ql-underline"></button>
+					                <button class="ql-strike"></button>
+					            </span>
+					            <span class="ql-formats">
+					                <select class="ql-font"></select>
+					                <select class="ql-size"></select>
+					            </span>
+					            <span class="ql-formats">
+									<button class="ql-list" value="ordered"></button>
+									<button class="ql-list" value="bullet"></button>
+									<button class="ql-indent" value="-1"></button>
+									<button class="ql-indent" value="+1"></button>
+								</span>
+				            </f:facet>
+						</p:textEditor>
+					</p:row>
+				</b:column>
+				
+				<b:column span="6">
+					<p:row span="12">
+						<p:commandButton value="Liberar" look="success" size="sm"
+						style="margin-top:10px" icon="fa fa-fw fa-check"
+						update=":msgPagina" action="#{AgendaController.evoluirComoCoordenacao()}" />
+					</p:row>
+				</b:column>		
+
 			</h:form>
 		</p:dialog>
 		

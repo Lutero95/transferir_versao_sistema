@@ -32,7 +32,9 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
@@ -42,6 +44,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.SituacaoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
@@ -52,6 +55,8 @@ import br.gov.al.maceio.sishosp.hosp.enums.TipoProcedimentoAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -59,6 +64,7 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.SituacaoAtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 import static br.gov.al.maceio.sishosp.comum.shared.DadosSessao.BUSCA_SESSAO;
@@ -142,6 +148,9 @@ public class AgendaController implements Serializable {
     private List<CidBean> listaCids;
     private UnidadeDAO unidadeDAO;
     private boolean unidadeValidaDadosSigtap;
+	private List<SituacaoAtendimentoBean> listaSituacoes;
+	private SituacaoAtendimentoBean situacaoAtendimentoEvolucaoCoordenador;
+	private String evolucaoCoordenador;
 
     private static final String ERRO = "Erro!";
     private static final String SENHA_ERRADA_OU_SEM_LIBERAÇÃO = "Funcionário com senha errada ou sem liberação!";
@@ -197,11 +206,13 @@ public class AgendaController implements Serializable {
                 .getSessionMap().get("obj_funcionario");
         this.listaLiberacoes = new ArrayList<>();
         this.usuarioLiberacao = new FuncionarioBean();
+        this.setEvolucaoCoordenador("<p>Paciente não compareceu à instituição.</p><p><br></p><p><strong><em>Falta registrada por coordenação.</em></strong></p>");
         this.listaIdFuncionariosComDuplicidadeEspecialidade = new ArrayList<>();
         this.listaCids = new ArrayList<>();
         this.unidadeDAO = new UnidadeDAO();
         verificarUnidadeEstaConfiguradaParaValidarDadosDoSigtap();
         this.cidObrigatorio = user_session.getUnidade().getParametro().isCidAgendaObrigatorio();
+        this.setSituacaoAtendimentoEvolucaoCoordenador(new SituacaoAtendimentoBean());
     }
 
     public void limparDados() {
@@ -1108,6 +1119,95 @@ public class AgendaController implements Serializable {
         agenda.setQtd(0);
         agenda.setMax(0);
     }
+
+    public void abrirDialogCoordenacao() {
+    	usuarioLiberacao = new FuncionarioBean();
+    	JSFUtil.abrirDialog("dlgSenhaCoordenacao"); 
+    }
+    
+    public boolean verificaSePerfilEhCoord(){
+    	boolean isCoord = false;
+    	//(FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("obj_funcionario");
+    	if(user_session != null) {
+    		if(user_session.getPerfil() != null){
+    			FuncionarioDAO fDAO = new FuncionarioDAO();
+    			try {
+					isCoord = fDAO.validaAcessoCoordenacao(user_session.getPerfil().getId());
+				} catch (ProjetoException e) { /*e.printStackTrace();*/ }
+    		}
+    	}
+    	return isCoord;
+    }
+    
+    public void listarSituacoesAtendimentoEvolucaoCoordenacao() {
+    	//System.out.println("Listando Evolução");
+    	SituacaoAtendimentoDAO situacaoAtendimentoDAO = new SituacaoAtendimentoDAO();
+    	try {
+    		List<SituacaoAtendimentoBean> l = situacaoAtendimentoDAO.listarSituacaoAtendimentoFaltaPaciente();
+			this.setListaSituacoes(l);
+		} catch (ProjetoException e) {
+			// e.printStackTrace();
+		}
+    }
+    
+    public void evoluirComoCoordenacao() {
+    	JSFUtil.fecharDialog("dlgSenhaCoordenacao");
+    	AtendimentoDAO atDao = new AtendimentoDAO();
+    	AgendaDAO agDao = new AgendaDAO();
+    	
+    	FuncionarioBean coordenador = user_session;
+    	AgendaBean agendamento = rowBean;
+    	//System.out.println(agendamento.getIdAgenda());
+    	try {
+			List<AtendimentoBean> atendimentos = atDao.listarAtendimentos1PorIdAtendimento(agendamento.getIdAgenda());
+			
+			AtendimentoBean atendimentoBase = atendimentos.get(0);
+			AtendimentoBean atendimentoCoordenador = new AtendimentoBean();
+			atendimentoCoordenador.setId(agendamento.getIdAgenda());
+	        atendimentoCoordenador.setPaciente(agendamento.getPaciente());
+	        if(coordenador.getListaCbos() != null && coordenador.getListaCbos().size() > 0) {	        	
+	        	atendimentoCoordenador.setCbo(coordenador.getListaCbos().get(0));
+	        } else {
+	        	CboDAO cboDao = new CboDAO();
+	        	CboBean cboCoordenadorDefault = cboDao.listarCboPorId(7);
+	        	atendimentoCoordenador.setCbo(cboCoordenadorDefault);
+	        }
+	        atendimentoCoordenador.setDataAtendimento(agendamento.getDataAtendimento());
+	        atendimentoCoordenador.setGrupo(agendamento.getGrupo());
+	        atendimentoCoordenador.setPrograma(agendamento.getPrograma());
+	        atendimentoCoordenador.setProcedimento(atendimentoBase.getProcedimento());
+	        atendimentoCoordenador.setCidPrimario(atendimentoBase.getCidPrimario());
+	        atendimentoCoordenador.setFuncionario(coordenador);
+	        atendimentoCoordenador.setSituacaoAtendimento(situacaoAtendimentoEvolucaoCoordenador);
+	        atendimentoCoordenador.setEvolucao(evolucaoCoordenador);
+
+	        atDao.adicionarRegistroDeFaltaComoCoordenador(atendimentoCoordenador);
+			for(AtendimentoBean at : atendimentos) {
+				atDao.excluirAtendimentoFaltosoComoCoordenador(at.getId1(), coordenador.getId());
+			}
+			agDao.finalizarAgendamento(agendamento.getIdAgenda());
+			
+		} catch (ProjetoException e) {
+			// e.printStackTrace();
+		}
+    }
+    
+    //FUNÇÃO NÃO SERÁ UTILIZADA
+    /*public void validarSenhaCoordenacao() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean usuarioLiberacao = funcionarioDAO.validarCpfIhSenha(coordenacao.getCpf(), coordenacao.getSenha(),
+                ValidacaoSenha.COORDENACAO.getSigla());
+
+        if (usuarioLiberacao != null) {
+            JSFUtil.fecharDialog("dlgSenhaCoordenacao");
+            System.out.println("COORD PERM AUTORIZADA");
+            evoluirComoCoordenacao(usuarioLiberacao);
+        } else {
+            JSFUtil.adicionarMensagemErro(SENHA_COORD_ERRADA, ERRO);
+            System.out.println("COORD PERM NEGADA");
+        }
+    }*/
 
     public void validarSenhaLiberacao() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
@@ -2350,4 +2450,27 @@ public class AgendaController implements Serializable {
         this.listaCids = listaCids;
     }
 
+	public List<SituacaoAtendimentoBean> getListaSituacoes() {
+		return listaSituacoes;
+	}
+
+	public void setListaSituacoes(List<SituacaoAtendimentoBean> listaSituacoes) {
+		this.listaSituacoes = listaSituacoes;
+	}
+
+	public SituacaoAtendimentoBean getSituacaoAtendimentoEvolucaoCoordenador() {
+		return situacaoAtendimentoEvolucaoCoordenador;
+	}
+
+	public void setSituacaoAtendimentoEvolucaoCoordenador(SituacaoAtendimentoBean situacaoAtendimentoEvolucaoCoordenador) {
+		this.situacaoAtendimentoEvolucaoCoordenador = situacaoAtendimentoEvolucaoCoordenador;
+	}
+
+	public String getEvolucaoCoordenador() {
+		return evolucaoCoordenador;
+	}
+
+	public void setEvolucaoCoordenador(String evolucaoCoordenador) {
+		this.evolucaoCoordenador = evolucaoCoordenador;
+	}
 }

@@ -3171,6 +3171,34 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return retorno;
     }
 
+    public boolean finalizarAgendamento(Integer idAgenda) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "update hosp.atendimentos set situacao = ? where id_atendimento = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setString(1, "F");
+            stmt.setInt(2, idAgenda);
+            stmt.execute();
+            con.commit();
+            retorno = true;
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                //comentado walter erro log ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
 
     public Boolean verificarDuplicidadeAgendaAvulsa(AgendaBean agenda) throws ProjetoException {
         Boolean existeAgendaAvulsa = false;

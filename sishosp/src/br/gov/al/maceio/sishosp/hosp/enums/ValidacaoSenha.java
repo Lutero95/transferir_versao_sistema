@@ -7,7 +7,8 @@ public enum ValidacaoSenha {
     LIBERACAO_ALTERAR_DATA_PTS("D"),
     INCLUIR_PTS_VENCIMENTO_ANTERIOR("IV"),
     ENCAIXE("E"),
-    ADICIONAR_AREA_PTS("P");
+    ADICIONAR_AREA_PTS("P"),
+    COORDENACAO("C");
 
     private String sigla;
 
