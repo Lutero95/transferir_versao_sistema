@@ -1150,8 +1150,8 @@ public class FuncionarioDAO {
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
 				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho, "
-				+ "numero_conselho, excecao_evolucao_com_pendencia) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
+				+ "numero_conselho, excecao_evolucao_com_pendencia, coordenacao) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -1207,6 +1207,7 @@ public class FuncionarioDAO {
 			
 			ps.setString(18, profissional.getNumeroConselho());
 			ps.setBoolean(19, profissional.isExcecaoEvolucaoComPendencia());
+			ps.setBoolean(20, profissional.getCoordenacao());
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -1787,7 +1788,7 @@ public class FuncionarioDAO {
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
-				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ?, excecao_evolucao_com_pendencia = ? where id_funcionario = ?";
+				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ?, excecao_evolucao_com_pendencia = ?, coordenacao = ? where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1842,7 +1843,8 @@ public class FuncionarioDAO {
 			}
 			stmt.setString(17, profissional.getNumeroConselho());
 			stmt.setBoolean(18, profissional.isExcecaoEvolucaoComPendencia());
-			stmt.setLong(19, profissional.getId());
+			stmt.setBoolean(19, profissional.getCoordenacao());
+			stmt.setLong(20, profissional.getId());
 
 			stmt.executeUpdate();
 

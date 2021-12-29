@@ -1132,7 +1132,7 @@ public class AgendaController implements Serializable {
     		if(user_session.getPerfil() != null){
     			FuncionarioDAO fDAO = new FuncionarioDAO();
     			try {
-					isCoord = fDAO.validaAcessoCoordenacao(user_session.getPerfil().getId());
+					isCoord = fDAO.validaAcessoCoordenacao(user_session.getId());
 				} catch (ProjetoException e) { /*e.printStackTrace();*/ }
     		}
     	}
