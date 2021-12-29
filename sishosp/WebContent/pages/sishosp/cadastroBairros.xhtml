@@ -46,7 +46,7 @@
 								<f:selectItems
 									value="#{EnderecoController.endereco.listaEstados}" />
 								<p:ajax
-									listener="#{EnderecoController.listarMunicipiosPorEstado()}"
+									listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico()}"
 									update="outMunicipios"></p:ajax>
 							</b:selectOneMenu>
 						</b:column>
@@ -63,7 +63,7 @@
 									value="#{EnderecoController.endereco.codmunicipio}">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItems
-										value="#{EnderecoController.listarMunicipiosPorEstado()}"
+										value="#{EnderecoController.listarMunicipiosPorEstadoGenerico()}"
 										var="sis" itemLabel="#{sis.municipio}"
 										itemValue="#{sis.codmunicipio}" />
 								</b:selectOneMenu>

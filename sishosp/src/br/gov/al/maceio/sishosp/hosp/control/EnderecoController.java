@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -254,6 +255,14 @@ public class EnderecoController implements Serializable {
         listaMunicipios = eDao.listaMunicipiosPorEstado(uF);
         return listaMunicipios;
 
+    }
+    
+    public List<EnderecoBean> listarMunicipiosPorEstadoGenerico()
+            throws ProjetoException {
+    	System.out.println(endereco.getUf());
+        listaMunicipios = eDao.listaMunicipiosPorEstado(endereco.getUf());
+        System.out.println(Arrays.toString(listaMunicipios.toArray()));
+        return listaMunicipios;
     }
 
     public List<EnderecoBean> listarMunicipiosPorEstadoGenerico(String estado)
