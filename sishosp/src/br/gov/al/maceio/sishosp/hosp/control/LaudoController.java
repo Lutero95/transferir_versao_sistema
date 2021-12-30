@@ -190,7 +190,7 @@ public class LaudoController implements Serializable {
 
     public void calcularPeriodoLaudo() {
 
-        limpaDadosCids();
+        //limpaDadosCids(); Limpeza do campo Cid1 removida a pedido da ADEFAL em 29/12/2021
 
         laudo.setMesInicio(null);
         laudo.setMesFinal(null);

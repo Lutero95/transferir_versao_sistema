@@ -691,26 +691,38 @@ public class LaudoDAO {
 
         LaudoBean laudo = new LaudoBean();
 
-        String sql = "select l.codpaciente, p.nome, p.cns, p.cpf,p.cns,  l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
-                + " l.periodo, l.codprocedimento_primario, pr.codproc, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
-                + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
-                + " l.codprocedimento_secundario4, ps4.nome as nome4, "
-                + " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1,  c1.desccidabrev desccidabrev1, l.cid2, c2.desccid as desccid2,  c2.desccidabrev desccidabrev2, "
-                + " l.cid3, c3.desccid as desccid3,  c3.desccidabrev desccidabrev3, l.obs, func.id_funcionario, func.descfuncionario  "
-                + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
-                + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
-                + " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
-                + " left join hosp.proc ps2 on (ps2.id = l.codprocedimento_secundario2) "
-                + " left join hosp.proc ps3 on (ps3.id = l.codprocedimento_secundario3) "
-                + " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
-                + " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
-                + " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-                + " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
+        String sql = "select "
+        		+ "l.codpaciente, p.nome, p.cns, p.cpf, p.cns, l.data_solicitacao, l.mes_inicio, "
+        		+ "l.ano_inicio, l.mes_final, l.ano_final,l.periodo, l.codprocedimento_primario, "
+        		+ "pr.codproc, pr.nome as procedimento, "
+        		+ "l.codprocedimento_secundario1, ps1.nome as nome1, "
+        		+ "l.codprocedimento_secundario2, ps2.nome as nome2, "
+        		+ "l.codprocedimento_secundario3, ps3.nome as nome3, "
+        		+ "l.codprocedimento_secundario4, ps4.nome as nome4, "
+        		+ "l.codprocedimento_secundario5, ps5.nome as nome5, "
+        		+ "l.cid1 as codcid1, c1.desccid as desccid1, c1.desccidabrev desccidabrev1, c1.cid as cid1, "
+        		+ "l.cid2 as codcid2, c2.desccid as desccid2, c2.desccidabrev desccidabrev2, c2.cid as cid2, "
+        		+ "l.cid3 as codcid3, c3.desccid as desccid3, c3.desccidabrev desccidabrev3, c2.cid as cid3, "
+        		+ "l.obs, func.id_funcionario, func.descfuncionario "
+        		+ "from hosp.laudo l "
+        		+ "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
+        		+ "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
+        		+ "left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
+        		+ "left join hosp.proc ps2 on (ps2.id = l.codprocedimento_secundario2) "
+        		+ "left join hosp.proc ps3 on (ps3.id = l.codprocedimento_secundario3) "
+        		+ "left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
+        		+ "left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
+        		+ "left join hosp.cid c1 on (c1.cod = l.cid1) "
+        		+ "left join hosp.cid c2 on (c2.cod = l.cid2) "
+        		+ "left join hosp.cid c3 on (c3.cod = l.cid3) "
+        		+ "left join acl.funcionarios func on func.id_funcionario = l.cod_profissional "
+        		+ "where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setInt(1, id);
+            String SQL_F = stm.toString();
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -719,31 +731,45 @@ public class LaudoDAO {
                 laudo.getPaciente().setNome(rs.getString("nome"));
                 laudo.getPaciente().setCpf(rs.getString("cpf"));
                 laudo.getPaciente().setCns(rs.getString("cns"));
+                
                 laudo.setMesInicio(rs.getInt("mes_final"));
                 laudo.setAnoInicio(rs.getInt("ano_final"));
                 laudo.setPeriodo(rs.getInt("periodo"));
+                
                 laudo.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
                 laudo.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
                 laudo.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                
                 laudo.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
                 laudo.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
+                
                 laudo.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
                 laudo.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
+                
                 laudo.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
                 laudo.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
+                
                 laudo.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
                 laudo.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
+                
                 laudo.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
                 laudo.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
-                laudo.getCid1().setIdCid(rs.getInt("cid1"));
+                
+                laudo.getCid1().setCid(rs.getString("cid1"));
+                laudo.getCid1().setIdCid(rs.getInt("codcid1"));
                 laudo.getCid1().setDescCid(rs.getString("desccid1"));
                 laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev1"));
-                laudo.getCid2().setIdCid(rs.getInt("cid2"));
+                
+                laudo.getCid2().setCid(rs.getString("cid2"));
+                laudo.getCid2().setIdCid(rs.getInt("codcid2"));
                 laudo.getCid2().setDescCid(rs.getString("desccid2"));
-                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev2"));
-                laudo.getCid3().setIdCid(rs.getInt("cid3"));
+                laudo.getCid2().setDescCidAbrev(rs.getString("desccidabrev2"));
+                
+                laudo.getCid3().setCid(rs.getString("cid3"));
+                laudo.getCid3().setIdCid(rs.getInt("codcid3"));
                 laudo.getCid3().setDescCid(rs.getString("desccid3"));
-                laudo.getCid1().setDescCidAbrev(rs.getString("desccidabrev3"));
+                laudo.getCid3().setDescCidAbrev(rs.getString("desccidabrev3"));
+                
                 laudo.setObs(rs.getString("obs"));
                 laudo.setSituacao("P");
                 FuncionarioBean func = new FuncionarioBean();
