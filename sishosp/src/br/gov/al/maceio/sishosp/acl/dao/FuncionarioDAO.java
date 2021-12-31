@@ -1150,7 +1150,7 @@ public class FuncionarioDAO {
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, "
 				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, "
 				+ "permite_liberacao, permite_encaixe, excecao_bloqueio_horario, permite_autorizacao_laudo, realiza_auditoria, id_conselho, "
-				+ "numero_conselho, excecao_evolucao_com_pendencia, coordenacao) "
+				+ "numero_conselho, excecao_evolucao_com_pendencia, realiza_evolucao_faltosos) "
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1788,7 +1788,7 @@ public class FuncionarioDAO {
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, cpf=?, "
 				+ " codunidade=?, excecao_bloqueio_horario=?, permite_autorizacao_laudo=?, realiza_auditoria=?, usuario_alteracao = ?, "
-				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ?, excecao_evolucao_com_pendencia = ?, coordenacao = ? where id_funcionario = ?";
+				+ " datahora_alteracao = CURRENT_TIMESTAMP , id_conselho = ?, numero_conselho = ?, excecao_evolucao_com_pendencia = ?, realiza_evolucao_faltosos = ? where id_funcionario = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
