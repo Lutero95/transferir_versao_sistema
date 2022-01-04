@@ -1,5 +1,7 @@
 package br.gov.al.maceio.sishosp.administrativo.control;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.administrativo.dao.AfastamentoProfissionalDAO;
 import br.gov.al.maceio.sishosp.administrativo.model.AfastamentoProfissional;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -22,6 +24,8 @@ public class AfastamentoProfissionalController implements Serializable {
     private AfastamentoProfissionalDAO aDao = new AfastamentoProfissionalDAO();
     private List<AfastamentoProfissional> listaAfastamentosProfissionais;
     private boolean tiposDeAfastamentoPossuemSituacaoAtendimento;
+    private FuncionarioDAO fDao = new FuncionarioDAO();
+	private List<FuncionarioBean> listaProfissional;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroafastamentoprofissional?faces-redirect=true";
@@ -107,6 +111,15 @@ public class AfastamentoProfissionalController implements Serializable {
     			("Não há Situação de Atendimento Atribuída aos Tipos de Afastamento do Profissional no Cadastro de Empresa", "");
     	}
     }
+    
+    public List<FuncionarioBean> listaProfissionalAtivoAutoComplete(String query) throws ProjetoException {
+		List<FuncionarioBean> result = fDao.listarProfissionalAtivoBusca(query, 1);
+		return result;
+	}
+    
+    public void listarProfissionaisAtivos() throws ProjetoException {
+		setListaProfissional(fDao.listarTodosOsProfissionaisAtivos());
+	}
 
 	public AfastamentoProfissional getAfastamentoProfissional() {
 		return afastamentoProfissional;
@@ -126,6 +139,22 @@ public class AfastamentoProfissionalController implements Serializable {
 
 	public boolean isTiposDeAfastamentoPossuemSituacaoAtendimento() {
 		return tiposDeAfastamentoPossuemSituacaoAtendimento;
+	}
+
+	public FuncionarioDAO getfDao() {
+		return fDao;
+	}
+
+	public void setfDao(FuncionarioDAO fDao) {
+		this.fDao = fDao;
+	}
+
+	public List<FuncionarioBean> getListaProfissional() {
+		return listaProfissional;
+	}
+
+	public void setListaProfissional(List<FuncionarioBean> listaProfissional) {
+		this.listaProfissional = listaProfissional;
 	}
 	
 }

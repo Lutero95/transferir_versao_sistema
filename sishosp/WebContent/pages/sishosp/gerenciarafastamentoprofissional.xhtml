@@ -39,10 +39,9 @@
                                     <p:autoComplete
                                             value="#{afastamentoProfissionalController.afastamentoProfissional.funcionario}"
                                             id="autoCompleteProfissional" size="31"
-                                            converter="conFuncionario" required="true"
-                                            requiredMessage="Profissional: Campo obrigatório!"
+                                            converter="conFuncionario"
                                             class="select-agendaEquipe4"
-                                            completeMethod="#{MBFuncionarios.listaProfissionalAtivoAutoComplete}"
+                                            completeMethod="#{afastamentoProfissionalController.listaProfissionalAtivoAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.nome}">
@@ -50,7 +49,7 @@
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
                                                      immediate="true"
-                                                     action="#{MBFuncionarios.listarProfissionaisAtivos()}"
+                                                     action="#{afastamentoProfissionalController.listarProfissionaisAtivos()}"
                                                      update=":formConsuProf" onclick="PF('dlgConsuProf').show();"/>
                                 </p:outputPanel>
                             </b:column>
@@ -144,7 +143,7 @@
                   dynamic="true" modal="true" responsive="true">
             <h:form id="formConsuProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{MBFuncionarios.listaProfissional}" id="dtProfissional"
+                             value="#{afastamentoProfissionalController.listaProfissional}" id="dtProfissional"
                              var="profi" display="Nenhum Profissional">
 
                     <h:column>
