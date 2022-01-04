@@ -400,15 +400,19 @@ public class ProcedimentoDAO {
 
     public List<ProcedimentoBean> buscarTodosProcedimentos(String campoBusca, String tipo) throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();
+        
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where   ativo = 'S' ";
+                + " from hosp.proc where ativo = 'S' ";
 
-        if(tipo.equals("descricao")){
-            sql = sql + "and nome ilike ? ";
+        if (tipo.equals("codigo")){
+        	sql = sql + "and codproc ilike ? ";
         }
-        else if (tipo.equals("codigo")){
-            sql = sql + "and codproc ilike ? ";
+        else if (tipo.equals("descricao")){
+            sql = sql + "and nome ilike ? ";
+        } 
+        else {
+        	sql = sql + "and nome ilike ? "; // DEFAULT
         }
 
         sql = sql + "order by nome";
@@ -416,8 +420,8 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getUnidade().getId());
-            stm.setString(2, "%" + campoBusca.toUpperCase() + "%");
+            //stm.setInt(1, user_session.getUnidade().getId()); Filtro de unidade removido
+            stm.setString(1, "%" + campoBusca.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
