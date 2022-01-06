@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pts" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="24cc471e-33e0-448f-ae71-d324a5b957fb">
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PESTALOZZI"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -90,9 +90,9 @@ WHERE pi.status = 'A' and  coalesce(laudo.codpaciente, pi.id_paciente)  = p.cod_
 	<group name="areas">
 		<groupExpression><![CDATA[$F{id_pts}]]></groupExpression>
 		<groupFooter>
-			<band height="74">
-				<subreport>
-					<reportElement stretchType="ContainerHeight" x="-17" y="-7" width="590" height="81" uuid="3e6253d9-78dc-422f-a589-993d06e3a43f"/>
+			<band height="281">
+				<subreport isUsingCache="false">
+					<reportElement positionType="Float" stretchType="ContainerHeight" x="-17" y="-7" width="590" height="288" uuid="3e6253d9-78dc-422f-a589-993d06e3a43f"/>
 					<subreportParameter name="idPts">
 						<subreportParameterExpression><![CDATA[$P{id_pts}]]></subreportParameterExpression>
 					</subreportParameter>
