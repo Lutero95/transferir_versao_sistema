@@ -1153,10 +1153,15 @@ public class AgendaController implements Serializable {
     	JSFUtil.fecharDialog("dlgEvolucaoFaltosos");
     	AtendimentoDAO atDao = new AtendimentoDAO();
     	AgendaDAO agDao = new AgendaDAO();
+    	FuncionarioDAO fDao = new FuncionarioDAO();
     	
     	FuncionarioBean coordenador = user_session;
     	AgendaBean agendamento = rowBean;
-    	//System.out.println(agendamento.getIdAgenda());
+    	
+    	try {
+			coordenador.setListaCbos(fDao.buscarCbosFuncionario(Integer.valueOf(coordenador.getId().intValue())));
+		} catch (ProjetoException e1) { } 
+
     	try {
 			List<AtendimentoBean> atendimentos = atDao.listarAtendimentos1PorIdAtendimento(agendamento.getIdAgenda());
 			
