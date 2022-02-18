@@ -451,6 +451,10 @@
 							value="#{AgendaController.evolucaoFalta}"
 							required="true" requiredMessage="Evolução: Campo obrigatório!">
 							<f:facet name="toolbar">
+								<span class="ql-formats">
+					                <select class="ql-font"></select>
+					                <select class="ql-size"></select>
+					            </span>
 					             <span class="ql-formats">
 					                <button class="ql-bold"></button>
 					                <button class="ql-italic"></button>
@@ -458,15 +462,16 @@
 					                <button class="ql-strike"></button>
 					            </span>
 					            <span class="ql-formats">
-					                <select class="ql-font"></select>
-					                <select class="ql-size"></select>
-					            </span>
-					            <span class="ql-formats">
 									<button class="ql-list" value="ordered"></button>
 									<button class="ql-list" value="bullet"></button>
 									<button class="ql-indent" value="-1"></button>
 									<button class="ql-indent" value="+1"></button>
 								</span>
+								<span class="ql-formats">
+						            <button class="ql-link" />
+						            <button class="ql-image" />
+						            <button class="ql-video" />
+						        </span>
 				            </f:facet>
 						</p:textEditor>
 					</p:row>
