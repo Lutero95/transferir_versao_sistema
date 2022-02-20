@@ -92,7 +92,7 @@ public class PtsDAO {
                 "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "LEFT JOIN hosp.programa p ON (p.id_programa = pi.codprograma) " +
                 "LEFT JOIN hosp.grupo g ON (pi.codgrupo = g.id_grupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
+                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = laudo.codpaciente) " +
                 "WHERE pi.id = ? ";
 
         Pts pts = new Pts();
@@ -294,7 +294,7 @@ public class PtsDAO {
 
     public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS, FuncionarioBean usuarioLiberacao) throws ProjetoException {
 
-        Integer retorno = null;
+        Integer retorno;
 
         final Integer SEIS_MESES_VENCIMENTO = 180;
 
@@ -612,24 +612,18 @@ public class PtsDAO {
             throws ProjetoException {
 
         //Inicia com 2, pois é o número mínimo de parametros.
+        String sql = "select p.id,pi.id as id_paciente_instituicao,p.data,p.data_vencimento,g.descgrupo,pr.descprograma, "+
+                "pa.nome,p.status,pi.codgrupo,pi.codprograma,pa.id_paciente codpaciente,pa.cpf,pa.cns,pa.matricula, "+
+                "case when p.status = 'A' then 'Ativo' when p.status = 'C' then 'Cancelado' when p.status = 'R' then 'Renovado' "+
+                "when p.status = 'I' then 'Invalidado' when p.status = 'D' then 'Desligado' end as status_por_extenso "+
+                "from hosp.paciente_instituicao pi "+
+                "left join hosp.laudo on (laudo.id_laudo = pi.codlaudo) "+
+                "left join hosp.pacientes pa on (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) "+
+                "left join hosp.pts p on (p.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente) and (p.cod_grupo = pi.codgrupo) and (p.cod_programa = pi.codprograma)) "+
+                "left join hosp.programa pr on (pr.id_programa = pi.codprograma) "+
+                "left join hosp.grupo g on (g.id_grupo = pi.codgrupo) "+
+                "where pi.status = 'A' and pi.cod_unidade = ? ";
 
-        String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
-                "pi.codgrupo, pi.codprograma, pa.id_paciente codpaciente, pa.cpf, pa.cns, pa.matricula, " +
-                "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
-                "WHEN p.status = 'R' THEN 'Renovado' END AS status_por_extenso " +
-                "FROM hosp.paciente_instituicao pi " +
-                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
-                "LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma) " +
-                "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) " +
-                "LEFT JOIN hosp.pts p ON " +
-                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente =coalesce(laudo.codpaciente, pi.id_paciente)) and  coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' and coalesce(p.status, '')<> 'D' " +
-                " left join (select p2.id, p2.cod_grupo, p2.cod_programa, p2.cod_paciente from hosp.pts p2 where p2.id = " +
-                " (select max(id) from hosp.pts p3 " +
-                " where (p3.cod_grupo = p2.cod_grupo) AND (p3.cod_programa = p2.cod_programa) AND (p3.cod_paciente = p2.cod_paciente) " +
-                " and  coalesce(p3.status,'')<>'C' and coalesce(p3.status,'')<>'I'  ) ) ptsmax on " +
-                " ptsmax.cod_grupo = p.cod_grupo AND ptsmax.cod_programa = p.cod_programa AND ptsmax.cod_paciente = p.cod_paciente " +
-                "WHERE pi.status = 'A'  AND (case when p.id is not null then p.id=ptsmax.id else 1=1 end) AND pi.cod_unidade = ? ";
         if (filtroApenasPacientesSemPTS)
             sql = sql + " and not exists (select id from hosp.pts where ((pts.status='A') or (pts.status='R')) and pts.cod_programa=pi.codprograma and pts.cod_grupo=pi.codgrupo and pts.cod_paciente = coalesce(laudo.codpaciente, pi.id_paciente))";
 
@@ -646,13 +640,13 @@ public class PtsDAO {
             sql = sql + " and pa.id_paciente = ?";
         }
 
-
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VIGENTES.getSigla())) {
-            sql = sql + " AND p.data_vencimento >= current_date";
-        }
-
-        if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VENCIDOS.getSigla())) {
-            sql = sql + " AND p.data_vencimento < current_date";
+            sql = sql + " and coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' and coalesce(p.status, '')<> 'D'";
+        } else if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.RENOVACAO_PENDENTE.getSigla())) {
+            sql = sql + " and coalesce(p.status,'')<>'C' and coalesce(p.status,'')<>'I' and coalesce(p.status, '')<> 'D'";
+            sql = sql + " and p.data_vencimento < current_date";
+        } else if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.ANTERIORES.getSigla())) {
+            sql = sql + " and coalesce(p.status,'')<>'A' and coalesce(p.status,'')<>'R'";
         }
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
@@ -667,7 +661,7 @@ public class PtsDAO {
             sql = sql + " AND pi.turno=? ";
         }
 
-        sql = sql + " ORDER BY p.data ";
+        sql = sql + " order by p.data ";
 
         List<Pts> lista = new ArrayList<>();
 

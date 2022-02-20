@@ -4,7 +4,9 @@ public enum FiltroBuscaVencimentoPTS {
 
     TODOS("T"),
     VIGENTES("VI"),
-    VENCIDOS("VE");
+    VENCIDOS("VE"), //deprecated
+    ANTERIORES("A"),
+    RENOVACAO_PENDENTE("RP");
 
     private String sigla;
 
