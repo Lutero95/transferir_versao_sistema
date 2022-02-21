@@ -24,14 +24,29 @@
 			<div class="panel-body table-body">
 				<h:form id="frm">
 					<b:row>
-						<b:column>
+						<b:column span="3" class="label-position new-comple1">>
+							<b:label value="Tipo de Geração" severity="info" />
+							<br/>
 							<p:selectOneRadio required="true"
-								requiredMessage="Informe o Tipo da Geração" id="console"
-								value="#{RelatoriosController.atributoGenerico1}"
-								unselectable="true">
+											  requiredMessage="Informe o Tipo de Geração" id="console"
+											  value="#{RelatoriosController.atributoGenerico1}"
+											  unselectable="true">
 								<f:selectItem itemLabel="Por Programa" itemValue="P" />
 								<f:selectItem itemLabel="Paciente Ativo" itemValue="I" />
 								<f:selectItem itemLabel="Paciente Avulso" itemValue="A" />
+								<p:ajax update="frm" event="valueChange" />
+							</p:selectOneRadio>
+							<br/>
+							<br/>
+							<br/>
+							<b:label value="Formato" severity="info" />
+							<p:selectOneRadio required="true"
+											  requiredMessage="Selecione o Formato do Relatório" id="type"
+											  value="#{RelatoriosController.tipoRelatorioFrequencia}"
+											  unselectable="true">
+								<f:selectItem itemLabel="Completo" itemValue="C" />
+								<f:selectItem itemLabel="Com data" itemValue="D" />
+								<f:selectItem itemLabel="Somente Assinatura" itemValue="A" />
 								<p:ajax update="frm" event="valueChange" />
 							</p:selectOneRadio>
 							<hr />
