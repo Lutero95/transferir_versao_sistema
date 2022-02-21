@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -38,20 +39,11 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
-import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoFiltroRelatorio;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoRelatorio;
-import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.enums.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.EquipeGrupoProgramaUnidadeDTO;
 import br.gov.al.maceio.sishosp.hosp.model.dto.GrupoProgramaUnidadeDTO;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.primefaces.event.SelectEvent;
 
@@ -123,6 +115,8 @@ public class RelatoriosController implements Serializable {
 	private boolean filtrarPorQuantidade;
 	private String opcaoAtendimento;
 
+	private String tipoRelatorioFrequencia;
+
 	public RelatoriosController() throws ProjetoException {
 		this.programa = new ProgramaBean();
 		agendaController = new AgendaController();
@@ -157,6 +151,7 @@ public class RelatoriosController implements Serializable {
 		this.listaEquipeGruposProgramaUnidadeDTO = new ArrayList<>();
 		this.listaEquipeGruposProgramaUnidadeDTOSelecionados = new ArrayList<>();
 		this.opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
+		this.tipoRelatorioFrequencia = TipoRelatorioFrequencia.COMPLETO.getSigla();
 	}
 
 	public void limparDados() {
@@ -173,6 +168,7 @@ public class RelatoriosController implements Serializable {
 		this.dataDia = new String("DS");
 		this.ano = null;
 		this.mes = null;
+		this.tipoRelatorioFrequencia = TipoRelatorioFrequencia.COMPLETO.getSigla();
 		this.dataEspec = null;
 	}
 
@@ -442,6 +438,26 @@ public class RelatoriosController implements Serializable {
 						map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 
 					map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
+					if(this.tipoRelatorioFrequencia.equals(TipoRelatorioFrequencia.COM_DATA.getSigla())){
+						map.put("tipoDetalhe", "frequencia_detalhe_comdata.jasper");
+					} else if (this.tipoRelatorioFrequencia.equals(TipoRelatorioFrequencia.SOMENTE_ASSINATURA.getSigla())){
+						map.put("tipoDetalhe", "frequencia_detalhe_somenteassinatura.jasper");
+					} else { //Completo
+						map.put("tipoDetalhe", "frequencia_detalhe.jasper");
+					}
+
+					// TODO: BUG DO RELATÓRIO QUANDO SE UTILIZA O TIPO "PACIENTE ATIVO"
+					// QUEBRA UTILIZAÇÃO DO RELATÓRIO EM GERAL...
+
+					// COMPILAR VIA APLICAÇÃO CASO TENHA ALGUM ERRO NO EXTERNO...
+					try {
+						JasperCompileManager.compileReportToFile(
+								this.getServleContext().getRealPath(caminho+File.separator+"evolucao.jrxml"),
+								("/home/taigopedrosa/Desktop/"+"evolucao.jasper"));
+					} catch (JRException e) {
+						System.out.println(e.toString());
+					}
+
 					relatorio = caminho + "frequencia.jasper";
 					this.executeReport(relatorio, map, "relatorio.pdf");
 					rDao.limparTabelaTemporariaFrequencia(randomico);
@@ -1690,11 +1706,14 @@ public class RelatoriosController implements Serializable {
 
 	}
 
-	private void executeReport(String relatorio, Map<String, Object> map, String filename)
+
+	private void 	executeReport(String relatorio, Map<String, Object> map, String filename)
 			throws IOException, ParseException, ProjetoException {
 		FacesContext context = FacesContext.getCurrentInstance();
-		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-		InputStream reportStream = context.getExternalContext().getResourceAsStream(relatorio);
+		ExternalContext externalContext = context.getExternalContext();
+		HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+
+		InputStream reportStream = externalContext.getResourceAsStream(relatorio);
 
 		response.setContentType("application/pdf");
 		response.setHeader("Content-disposition", "attachment;filename=" + filename);
@@ -2341,5 +2360,12 @@ public class RelatoriosController implements Serializable {
 	public void setOpcaoAtendimento(String opcaoAtendimento) {
 		this.opcaoAtendimento = opcaoAtendimento;
 	}
-	
+
+	public String getTipoRelatorioFrequencia() {
+		return tipoRelatorioFrequencia;
+	}
+
+	public void setTipoRelatorioFrequencia(String tipoRelatorioFrequencia) {
+		this.tipoRelatorioFrequencia = tipoRelatorioFrequencia;
+	}
 }
