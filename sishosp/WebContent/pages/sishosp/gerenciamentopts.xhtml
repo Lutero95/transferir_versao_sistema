@@ -198,7 +198,7 @@
 							value="#{PtsController.listaPts}" var="pts" paginator="true"
 							paginatorPosition="bottom" rows="12" selectionMode="single"
 							selection="#{PtsController.rowBean}"
-							rowKey="#{pts.gerenciarPaciente.id}">
+							rowKey="#{pts.id}">
 
 							<p:ajax event="rowSelect"
 								listener="#{PtsController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
