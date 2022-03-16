@@ -449,15 +449,6 @@ public class RelatoriosController implements Serializable {
 					// TODO: BUG DO RELATÓRIO QUANDO SE UTILIZA O TIPO "PACIENTE ATIVO"
 					// QUEBRA UTILIZAÇÃO DO RELATÓRIO EM GERAL...
 
-					// COMPILAR VIA APLICAÇÃO CASO TENHA ALGUM ERRO NO EXTERNO...
-					try {
-						JasperCompileManager.compileReportToFile(
-								this.getServleContext().getRealPath(caminho+File.separator+"evolucao.jrxml"),
-								("/home/taigopedrosa/Desktop/"+"evolucao.jasper"));
-					} catch (JRException e) {
-						System.out.println(e.toString());
-					}
-
 					relatorio = caminho + "frequencia.jasper";
 					this.executeReport(relatorio, map, "relatorio.pdf");
 					rDao.limparTabelaTemporariaFrequencia(randomico);
@@ -1706,6 +1697,15 @@ public class RelatoriosController implements Serializable {
 
 	}
 
+	private void compileReport(String nomeRelatorio){
+		try {
+			JasperCompileManager.compileReportToFile(
+					this.getServleContext().getRealPath(CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jrxml"),
+					this.getServleContext().getRealPath(CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jasper"));
+		} catch (JRException e) {
+			System.out.println(e.toString());
+		}
+	}
 
 	private void 	executeReport(String relatorio, Map<String, Object> map, String filename)
 			throws IOException, ParseException, ProjetoException {
@@ -1867,36 +1867,23 @@ public class RelatoriosController implements Serializable {
 		this.turnoSelecionado = Turno.AMBOS.getSigla();
 	}
 
-	public void gerarRelatorioEvolucao(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo)
+	public void gerarRelatorioEvolucao()
 			throws IOException, ParseException, ProjetoException, NoSuchAlgorithmException {
-
-		pacienteInstituicao.setPrograma(programa);
-		pacienteInstituicao.setGrupo(grupo);
 
 		String caminho = CAMINHO_PRINCIPAL;
 		String relatorio = "";
+		Integer idpaciente = paciente.getId_paciente();
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("dt_inicial", dataInicial);
-		map.put("dt_final", dataFinal);
-		map.put("codunidade", user_session.getUnidade().getId());
-
-		if (!VerificadorUtil.verificarSeObjetoNulo(pacienteInstituicao.getPrograma()))
-			map.put("cod_programa", pacienteInstituicao.getPrograma().getIdPrograma());
-
-		if (!VerificadorUtil.verificarSeObjetoNuloOuZero(paciente))
-			map.put("id_paciente", paciente.getId_paciente());
+		map.put("idpaciente", paciente.getId_paciente());
+		map.put("dataInicial", dataInicial);
+		map.put("dataFinal", dataFinal);
 
 		map.put(SUBREPORT_DIR, this.getServleContext().getRealPath(caminho) + File.separator);
 
-		if (atributoGenerico3.equalsIgnoreCase(TipoFiltroRelatorio.GRUPO.getSigla())) {
-			if (!VerificadorUtil.verificarSeObjetoNuloOuZero(pacienteInstituicao.getGrupo()))
-				map.put("cod_grupo", pacienteInstituicao.getGrupo().getIdGrupo());
-		}
-
-		relatorio = caminho + "evolucaoatendimentos.jasper";
-		this.executeReport(relatorio, map, "relatorio_evolucao_atendimentos.pdf");
+		relatorio = caminho + "evolucao.jasper";
+		this.executeReport(relatorio, map, "evolucoes_"+paciente.getNome().replaceAll(" ", "_")+".pdf");
 	}
 	
 	public void gerarRelatorioDesligamento() throws IOException, ParseException, ProjetoException {

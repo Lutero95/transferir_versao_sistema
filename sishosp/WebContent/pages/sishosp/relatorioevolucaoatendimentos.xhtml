@@ -33,20 +33,31 @@
 			<div class="panel-body table-body">
 				<h:form id="frm">
 					<b:row>
-						<b:column class="label-position new-data-size new-comple1">
-							<b:label value="Agrupar relatório por:" severity="info" />
-							<p:selectOneRadio required="true"
-											  requiredMessage="Informe o Tipo de Agrupamento" id="agrupamento"
-											  value="#{RelatoriosController.atributoGenerico3}"
-											  unselectable="true">
-								<f:selectItem itemLabel="Programa" itemValue="P" />
-								<f:selectItem itemLabel="Grupo" itemValue="G" />
-								
-								<p:ajax update="frm:outGrupo"/>
-							</p:selectOneRadio> 
+						<b:column span="3"
+								  class="label-position new-data-size new-comple1">
+							<b:label value="Paciente" severity="info" />
+
+							<p:outputPanel id="outPa">
+								<p:autoComplete value="#{RelatoriosController.paciente}"
+												size="31" converter="conPaciente"
+												class="select-agendaEquipe4"
+												required="true"
+												requiredMessage="Selecione o paciente para buscar as evoluções"
+												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+												effect="fade" var="theme" forceSelection="true"
+												minQueryLength="1" itemValue="#{theme}"
+												itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect"
+											update="msgPagina :frm:outPa" global="false" />
+
+								</p:autoComplete>
+
+								<p:commandButton id="btBPa" immediate="true"
+												 icon="ui-icon-search" update=":formConsuPac"
+												 oncomplete="PF('dlgConsuPac').show();" />
+							</p:outputPanel>
 						</b:column>
 					</b:row>
-					<hr />
 
 					<b:row>
 						<b:column span="1" class="label-position data-size1">
@@ -71,98 +82,13 @@
 						</b:column>
 					</b:row>
 
-					<b:row>
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Programa:" severity="info" />
-
-							<p:outputPanel id="outProg">
-								<p:autoComplete
-									value="#{RelatoriosController.programa}"
-									size="31" converter="conPrograma" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}"
-										update="outProg,  outGrupo" />
-
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBusPr" immediate="true"
-									disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
-									icon="ui-icon-search"
-									action="#{AgendaController.limparNaBuscaPrograma()}"
-									actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
-							</p:outputPanel>
-						</b:column>
-						
-						<b:column span="3"
-							class="label-position new-data-size new-comple1">
-
-							<p:outputPanel id="outGrupo">
-								<b:label value="Grupo:" severity="info" rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"/>
-								<br />
-								<p:autoComplete
-									value="#{RelatoriosController.pacienteInstituicao.grupo}"
-									size="31" converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
-									completeMethod="#{RelatoriosController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update=" outGrupo" />
-								</p:autoComplete>
-
-								<p:commandButton id="btBusGr" immediate="true"
-									icon="ui-icon-search"
-									disabled="#{RelatoriosController.programa.idPrograma == null}"
-									rendered="#{RelatoriosController.atributoGenerico3 == 'G'}"
-									actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-									action="#{AgendaController.atualizaListaGrupos(RelatoriosController.programa)}"
-									update=":frm formConsuGrop"
-									oncomplete="PF('dlgConsuGrop').show();" />
-							</p:outputPanel>
-						</b:column>
-					</b:row>
-
-					<b:row>
-						<b:column span="3"
-								  class="label-position new-data-size new-comple1">
-							<b:label value="Paciente" severity="info" />
-
-							<p:outputPanel id="outPa">
-								<p:autoComplete value="#{RelatoriosController.paciente}"
-												size="31" converter="conPaciente"
-												class="select-agendaEquipe4"
-												completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-												effect="fade" var="theme" forceSelection="true"
-												minQueryLength="1" itemValue="#{theme}"
-												itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect"
-											update="msgPagina :frm:outPa" global="false" />
-
-								</p:autoComplete>
-
-								<p:commandButton id="btBPa" immediate="true"
-												 icon="ui-icon-search" update=":formConsuPac"
-												 oncomplete="PF('dlgConsuPac').show();" />
-							</p:outputPanel>
-						</b:column>
-					</b:row>
 					<br />
 					<br />
 
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 						target="_blank" style="font-size: 12px;  text-align: right;"
 						update="grw"
-						actionListener="#{RelatoriosController.gerarRelatorioEvolucao(RelatoriosController.pacienteInstituicao, RelatoriosController.programa, RelatoriosController.pacienteInstituicao.grupo)}"
+						actionListener="#{RelatoriosController.gerarRelatorioEvolucao()}"
 						ajax="false" />
 				</h:form>
 			</div>
