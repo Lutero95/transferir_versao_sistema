@@ -210,16 +210,16 @@
         <ui:insert name="content"/>
     </div>
 
-    <div id="foot">
+    <div id="foot" style="#{parametrosTemplate.footerLocalStyle}">
         <div class="connect">
             <a href="#" target="_blank"> <img src="../../imgs/facebook1.png"/></a>
             <a href="#" target="_blank"> <img src="../../imgs/twitter1.png"/></a>
         </div>
         <div class="foot-text">
-            <p>© 2021 EHosp Sistemas Inteligentes. Todos os direitos
+            <p>© <h:outputText  value="#{parametrosTemplate.ano}"/> EHosp Sistemas Inteligentes. Todos os direitos
                 reservados.</p>
             <p>
-				<h:outputText value="#{exibirVersao.versao}"/>
+				<h:outputText value="#{parametrosTemplate.versao}"/>
 			</p>
         </div>
     </div>
