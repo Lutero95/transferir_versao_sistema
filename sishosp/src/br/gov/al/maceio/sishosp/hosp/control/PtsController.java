@@ -63,7 +63,7 @@ public class PtsController implements Serializable {
         ptsAreaAnterior = new PtsArea();
         listaPts = new ArrayList<>();
         listaGrupos = new ArrayList<>();
-        filtroTipoVencimento = FiltroBuscaVencimentoPTS.TODOS.getSigla();
+        filtroTipoVencimento = FiltroBuscaVencimentoPTS.VIGENTES.getSigla();
         rowBean = new Pts();
         renderizarBotaoNovo = false;
         usuarioLiberacao = new FuncionarioBean();

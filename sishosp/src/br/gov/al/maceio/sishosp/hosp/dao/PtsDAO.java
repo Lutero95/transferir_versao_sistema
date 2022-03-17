@@ -661,7 +661,7 @@ public class PtsDAO {
             sql = sql + " AND pi.turno=? ";
         }
 
-        sql = sql + " order by p.data ";
+        sql = sql + " order by p.data desc";
 
         List<Pts> lista = new ArrayList<>();
 
