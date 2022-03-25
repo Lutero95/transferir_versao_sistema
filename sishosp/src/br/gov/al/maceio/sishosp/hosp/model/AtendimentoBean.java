@@ -47,14 +47,6 @@ public class AtendimentoBean implements Serializable {
     private CidBean cidPrimario;
     private List<ProcedimentoCidDTO> listaProcedimentoCid;
 
-    public Date getHorarioPresenca() {
-        return horarioPresenca;
-    }
-
-    public void setHorarioPresenca(Date horarioPresenca) {
-        this.horarioPresenca = horarioPresenca;
-    }
-
     public AtendimentoBean() {
         this.paciente = new PacienteBean();
         this.procedimento = new ProcedimentoBean();
@@ -330,5 +322,9 @@ public class AtendimentoBean implements Serializable {
 	public void setListaProcedimentoCid(List<ProcedimentoCidDTO> listaProcedimentoCid) {
 		this.listaProcedimentoCid = listaProcedimentoCid;
 	}
-	
+
+    public Date getHorarioPresenca() { return horarioPresenca; }
+
+    public void setHorarioPresenca(Date horarioPresenca) { this.horarioPresenca = horarioPresenca; }
+
 }

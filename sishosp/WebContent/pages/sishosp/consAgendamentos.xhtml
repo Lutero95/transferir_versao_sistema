@@ -236,8 +236,8 @@
 								
 								<b:column span="2"
 									rendered="#{AgendaController.verificaSePerfilRealizaEvolucaoFalta()}">
-									<p:commandButton value="Evoluir Falta"
-										style="margin-top:5px;width:120px !important" id="btncoordenador"
+									<p:commandButton value="Evoluir&#10;Falta"
+										style="margin-top:5px; width:120px !important; white-space: pre;" id="btncoordenador"
 										immediate="true"
 										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C' or AgendaController.rowBean.presenca=='S'}"
 										class="btn-acao-table acao-cancelar btn-new-padding2"
