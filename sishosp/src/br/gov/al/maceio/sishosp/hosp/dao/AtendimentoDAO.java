@@ -626,7 +626,7 @@ public class AtendimentoDAO {
 		String sql = "select distinct a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario, " +
 				" a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, p.matricula,  " +
 				" a.codequipe, e.descequipe, a.avaliacao,   " +
-				" case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, coalesce(a.presenca, 'N') presenca, a.avulso,  " +
+				" case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, coalesce(a.presenca, 'N') presenca, horario_presenca, a.avulso,  " +
 				" case when  " +
 				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and a1.id_situacao_atendimento is null and coalesce(a1.excluido,'N')='N') =   " +
 				" (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and coalesce(a1.excluido,'N')='N')  " +
@@ -725,6 +725,7 @@ public class AtendimentoDAO {
 				at.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				at.getEquipe().setDescEquipe(rs.getString("descequipe"));
 				at.setPresenca(rs.getString("presenca"));
+				at.setHorarioPresenca(rs.getTimestamp("horario_presenca"));
 				at.setAvulso(rs.getBoolean("avulso"));
 				at.setEhEquipe(rs.getString("ehEquipe"));
 				at.setAvaliacao(rs.getBoolean("avaliacao"));
@@ -897,7 +898,7 @@ public class AtendimentoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct  coalesce(a.presenca,'N') presenca, a.id_atendimento,  a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno,a1.codprofissionalatendimento, f.descfuncionario,"
+		String sql = "select distinct  coalesce(a.presenca,'N') presenca, horario_presenca, a.id_atendimento,  a.dtaatende, a.codpaciente, p.nome, p.cns,p.cpf,  a.turno,a1.codprofissionalatendimento, f.descfuncionario,"
 				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento, a.avulso, a1.id_atendimentos1, "
 				+ " a.codequipe, e.descequipe, a.codgrupo, g.descgrupo, a.avaliacao, parm.bloqueia_por_pendencia_evolucao_anterior, "
 				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe, a.cod_unidade, a1.id_situacao_atendimento, sa.abono_falta, sa.descricao descsitatendimento,  "
@@ -1036,6 +1037,7 @@ public class AtendimentoDAO {
 			while (rs.next()) {
 				AtendimentoBean atendimentoBean = new AtendimentoBean();
 				atendimentoBean.setPresenca(rs.getString("presenca"));
+				atendimentoBean.setHorarioPresenca(rs.getTimestamp("horario_presenca"));
 				atendimentoBean.setId(rs.getInt("id_atendimento"));
 				atendimentoBean.setId1(rs.getInt("id_atendimentos1"));
 				atendimentoBean.setDataAtendimentoInicio(rs.getDate("dtaatende"));
@@ -1222,7 +1224,7 @@ public class AtendimentoDAO {
 		AtendimentoBean atendimento = new AtendimentoBean();
 		String sql = "select a.id_atendimento, a1.dtaatendido, a1.id_atendimentos1, a.dtaatende, a.codpaciente, p.nome, a1.codprofissionalatendimento, f.descfuncionario, "
 				+ "pr.nome as procedimento, a1.id_situacao_atendimento, sa.descricao, sa.atendimento_realizado, a1.evolucao, a.avaliacao, par.bloqueia_por_pendencia_evolucao_anterior, "
-				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
+				+ "a.cod_laudo, a.grupo_avaliacao, a.codprograma, pro.descprograma, coalesce(a.presenca,'N') presenca, horario_presenca, pr.codproc codigo_procedimento, pr.id id_proc, p.dtanascimento, p.sexo, "
 				+ " a.codgrupo, g.descgrupo, a1.cbo codcbo,cbo.codigo codigocbo,  pro.permite_alteracao_cid_evolucao, a1.id_cidprimario, c.desccidabrev, con.id id_conselho, con.descricao conselho from hosp.atendimentos a "
 				+ "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento "
 				+ "left join hosp.situacao_atendimento sa on sa.id = a1.id_situacao_atendimento "
@@ -1277,6 +1279,7 @@ public class AtendimentoDAO {
 				atendimento.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
 				atendimento.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
 				atendimento.setPresenca(rs.getString("presenca"));
+				atendimento.setHorarioPresenca(rs.getTimestamp("horario_presenca"));
 				atendimento.getCidPrimario().setIdCid(rs.getInt("id_cidprimario"));
 				atendimento.getCidPrimario().setDescCidAbrev(rs.getString("desccidabrev"));
 				atendimento.getUnidade().getParametro().setBloqueiaPorPendenciaEvolucaoAnterior(rs.getBoolean("bloqueia_por_pendencia_evolucao_anterior"));

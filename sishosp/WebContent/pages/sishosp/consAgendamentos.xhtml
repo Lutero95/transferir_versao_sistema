@@ -239,7 +239,7 @@
 									<p:commandButton value="Evoluir Falta"
 										style="margin-top:5px;width:120px !important" id="btncoordenador"
 										immediate="true"
-										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C'}"
+										disabled="#{AgendaController.rowBean.idAgenda == null or AgendaController.rowBean.situacao == 'C' or AgendaController.rowBean.presenca=='S'}"
 										class="btn-acao-table acao-cancelar btn-new-padding2"
 										update=":formConsAge, :frmSenhaLiberacao, mensagem" icon="ui-icon-close"
 										action="#{AgendaController.abrirDialogEvolucaoFaltosos()}"
@@ -275,6 +275,24 @@
 							<h:outputText value="NÃO" rendered="#{agenda.presenca=='N'}" />
 						</p:column>
 
+						<p:column width="85" style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Horário (Presença)" />
+							</f:facet>
+							<h:outputText value="#{agenda.horarioPresenca}" rendered="#{agenda.presenca=='S' and agenda.horarioPresenca!=null}">
+								<f:convertDateTime pattern="HH:mm:ss"/>
+							</h:outputText>
+							<h:panelGroup rendered="#{agenda.presenca=='S' and agenda.horarioPresenca!=null and agenda.horarioPresenca.date != agenda.dataAtendimento.date}">
+								<br/>
+								<h:outputText value="#{agenda.horarioPresenca}">
+									<f:convertDateTime pattern="(dd/MM/yyyy)"  />
+								</h:outputText>
+								<br/>
+							</h:panelGroup>
+							<h:outputText value="?" rendered="#{agenda.presenca=='S' and agenda.horarioPresenca==null}" />
+							<h:outputText value="-" rendered="#{agenda.presenca=='N'}" />
+						</p:column>
+
 						<p:column width="70">
 							<f:facet name="header">
 								<h:outputText style="font-size: 12px;" value="Data" />
@@ -299,7 +317,7 @@
 							<h:outputText value="#{agenda.paciente.id_paciente}"></h:outputText>
 						</p:column>	
 						
-						<p:column width="6%">
+						<p:column width="5%">
 							<f:facet name="header">
 								<h:outputText style="font-size: 12px;" value="Matrícula" />
 							</f:facet>
@@ -327,7 +345,7 @@
 							<p:outputLabel value="#{agenda.grupo.descGrupo}" />
 						</p:column>
 
-						<p:column width="10%">
+						<p:column width="8%">
 							<f:facet name="header">
 								<h:outputText style="font-size: 12px;"
 									value="Tipo de Atendimento" />
@@ -349,7 +367,7 @@
 							<h:outputText value="#{agenda.profissional.nome}"></h:outputText>
 						</p:column>
 
-						<p:column width="5%">
+						<p:column width="3.5%">
 							<f:facet name="header">
 								<h:outputText style="font-size: 12px;" value="Avulso" />
 							</f:facet>

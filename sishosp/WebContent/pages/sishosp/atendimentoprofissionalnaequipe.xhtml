@@ -15,7 +15,6 @@
 
 	<ui:define name="content">
 	<style type="text/css">
-		
 		.row-evoluido{
    			background: #{MBFuncionarios.corEvoluido};
    			color: #000000 !important;
@@ -232,7 +231,24 @@
 							<h:outputText value="SIM" rendered="#{atendimento.presenca=='S'}" />
 							<h:outputText value="NÃO" rendered="#{atendimento.presenca=='N'}" />
 
+						</p:column>
 
+						<p:column width="85" style="text-align: center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 12px;" value="Horário (Presença)" />
+							</f:facet>
+							<h:outputText value="#{atendimento.horarioPresenca}" rendered="#{atendimento.presenca=='S' and atendimento.horarioPresenca!=null}">
+								<f:convertDateTime pattern="HH:mm:ss"/>
+							</h:outputText>
+							<!--h:panelGroup rendered="#{atendimento.presenca=='S' and atendimento.horarioPresenca!=null and atendimento.horarioPresenca.date != atendimento.dataAtendimentoInicio.date}">
+								<br/>
+								<h:outputText value="#{atendimento.horarioPresenca}">
+									<f:convertDateTime pattern="(dd/MM/yyyy)"  />
+								</h:outputText>
+								<br/>
+							</h:panelGroup-->
+							<h:outputText value="?" rendered="#{atendimento.presenca=='S' and atendimento.horarioPresenca==null}" />
+							<h:outputText value="-" rendered="#{atendimento.presenca=='N'}" />
 						</p:column>
 
 						<p:column headerText="Data" width="80">

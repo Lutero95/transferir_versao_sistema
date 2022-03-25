@@ -27,6 +27,7 @@ public class AgendaBean implements Serializable {
     private Integer qtdAtendimentosTarde[];
     private Boolean encaixe;
     private String presenca;
+    private Date horarioPresenca;
     private Boolean avaliacao;
     private Boolean avulso;
     private String situacaoAtendimentoInformado;
@@ -62,6 +63,7 @@ public class AgendaBean implements Serializable {
         this.dataAtendimento = null;
         this.dataAtendimentoFinal = null;
         this.dataMarcacao = null;
+        this.horarioPresenca = null;
         this.qtd = null;
         this.max = null;
         this.idAgenda = null;
@@ -325,4 +327,8 @@ public class AgendaBean implements Serializable {
 	public void setCid(CidBean cid) {
 		this.cid = cid;
 	}
+
+    public Date getHorarioPresenca() { return horarioPresenca; }
+
+    public void setHorarioPresenca(Date horarioPresenca) { this.horarioPresenca = horarioPresenca; }
 }

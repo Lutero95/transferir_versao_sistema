@@ -601,7 +601,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public boolean mudaStatusPresenca(AgendaBean agenda) throws ProjetoException {
         Boolean retorno = false;
-        String sql = "update hosp.atendimentos set presenca=? where id_atendimento = ?";
+        String sql = "update hosp.atendimentos set presenca=?, horario_presenca=current_timestamp where id_atendimento = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -2024,7 +2024,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "SELECT distinct a.id_atendimento, a.codpaciente, p.nome,p.matricula, p.cns, a.codmedico, m.descfuncionario, a.situacao, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, a.avulso,  "
-                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, prog.id_programa, prog.descprograma, "
+                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca, horario_presenca, prog.id_programa, prog.descprograma, "
                 + " gr.id_grupo, gr.descgrupo, "
 
                 + " case when "
@@ -2139,6 +2139,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agendaDoBanco.setTurno(rs.getString("turno"));
                 agendaDoBanco.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 agendaDoBanco.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                agendaDoBanco.setHorarioPresenca(rs.getTimestamp("horario_presenca"));
                 agendaDoBanco.setPresenca(rs.getString("presenca"));
                 agendaDoBanco.setSituacao(rs.getString("situacao"));
                 agendaDoBanco.setAvulso(rs.getBoolean("avulso"));
