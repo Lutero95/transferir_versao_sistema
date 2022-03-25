@@ -29,6 +29,7 @@ public class FuncionarioBean implements Serializable {
     private Boolean realizaEncaixes;
     private Boolean permiteAutorizacaoLaudo;
     private Boolean realizaEvolucaoFaltosos;
+    private Boolean realizaAlteracaoLaudo;
     private String cns;
     private String diasSemana;
     private ArrayList<HorarioAtendimento> listaDiasAtendimentoSemana;
@@ -94,6 +95,7 @@ public class FuncionarioBean implements Serializable {
         this.realizaAtendimento = false;
         this.realizaLiberacoes = false;
         this.setRealizaEvolucaoFaltosos(false);
+        this.setRealizaAlteracaoLaudo(false);
         listaUnidades = new ArrayList<>();
         unidadeExtra = new UnidadeBean();
         senha = "";
@@ -638,5 +640,13 @@ public class FuncionarioBean implements Serializable {
 	public void setRealizaEvolucaoFaltosos(Boolean realiza) {
 		this.realizaEvolucaoFaltosos = realiza;
 	}
+
+    public Boolean getRealizaAlteracaoLaudo() {
+        return realizaAlteracaoLaudo;
+    }
+
+    public void setRealizaAlteracaoLaudo(Boolean realizaAlteracaoLaudo) {
+        this.realizaAlteracaoLaudo = realizaAlteracaoLaudo;
+    }
 }
 

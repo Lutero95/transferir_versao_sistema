@@ -53,6 +53,7 @@ public class LaudoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private LaudoBean laudo;
+    private Date dataInicialBloqueioAlteracao;
     private String cabecalho;
     private String cabecalhoLaudoEmLote;
     private Integer tipo;
@@ -154,6 +155,7 @@ public class LaudoController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
             if (tipo == 2)
                 this.laudo = lDao.buscarLaudosPorId(id);
+                this.dataInicialBloqueioAlteracao = laudo.getDataSolicitacao();
             if (tipo == 3) {
                 carregaLaudoParaRenovacao(id);
             }
@@ -441,12 +443,59 @@ public class LaudoController implements Serializable {
         return false;
     }
 
+    public boolean verificaSeFuncionarioAlteraLaudo(FuncionarioBean funcionario){
+        boolean altera = false;
+        if(funcionario != null) {
+            FuncionarioDAO fDAO = new FuncionarioDAO();
+            try {
+                altera = fDAO.verificaSeRealizaAlteracaoLaudo(funcionario.getId());
+            } catch (ProjetoException e) { /*e.printStackTrace();*/ }
+        }
+        return altera;
+    }
+
+    public void abrirDialogLiberacaoAlterarLaudo() {
+        usuarioLiberacao = new FuncionarioBean();
+        JSFUtil.abrirDialog("dlgSenhaLiberacaoAlterarLaudo");
+    }
+
+    public void validarSenhaLiberacaoAlterarLaudo() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        FuncionarioBean funcionario = funcionarioDAO.validarCpfIhSenha(usuarioLiberacao.getCpf(),
+                usuarioLiberacao.getSenha(), ValidacaoSenha.ALTERACAO_LAUDO.getSigla());
+
+        if (funcionario!=null) {
+            usuarioLiberacao.setId(funcionario.getId());
+            usuarioLiberacao.getUnidade().setId(funcionario.getUnidade().getId());
+            JSFUtil.fecharDialog("dlgSenhaLiberacaoAlterarLaudo");
+            alterarLaudoHelper();
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou Sem Permissão para liberação!", "Erro!");
+        }
+    }
+
+
     public void alterarLaudo() throws ProjetoException {
 
         //  if(verificarSeLaudoAssociadoPacienteTerapia()) {
 
         verificaSeCid1FoiInserido(this.laudo.getCid1());
         validarDadosSigtap(this.laudo.getPaciente(), this.laudo.getCid1());
+
+        if(verificaSeFuncionarioAlteraLaudo(this.user_session)){
+            alterarLaudoHelper(); // Já adiciona mensagem...
+        } else {
+            if(dataInicialBloqueioAlteracao != null && laudo.getDataSolicitacao().equals(dataInicialBloqueioAlteracao)){
+                alterarLaudoHelper();
+            } else {
+                abrirDialogLiberacaoAlterarLaudo();
+            }
+        }
+        //   }
+    }
+
+    private boolean alterarLaudoHelper() throws ProjetoException {
         boolean alterou = lDao.alterarLaudo(laudo);
 
         if (alterou == true) {
@@ -455,7 +504,8 @@ public class LaudoController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
-        //   }
+
+        return alterou;
     }
 
     public void verificaSeUnidadeEstaConfiguradaParaValidarDadosDoSigtap() throws ProjetoException {

@@ -1063,5 +1063,39 @@
                 </b:dataTable>
             </h:form>
         </p:dialog>
+
+        <p:dialog header="Digite a senha para a liberação" widgetVar="dlgSenhaLiberacaoAlterarLaudo"
+                  modal="true" styleClass="topDialog" draggable="false" resizable="false"
+                  position="center">
+            <h:form id="frmSenhaLiberacao">
+
+                <p:growl id="grwSenhaLiberacao" />
+                <div align="center">
+                    <h:panelGrid columns="1" cellpadding="2">
+
+                        <b:inputText mask="999-999-999-99" style="padding:10px;"
+                                     required="true" value="#{LaudoController.usuarioLiberacao.cpf}"
+                                     placeholder="Digite o CPF" render-label="true"
+                                     requiredMessage="CPF obrigatório" />
+                        <b:message for="@previous" />
+
+                        <b:inputSecret style="padding:10px;margin-top:10px"
+                                       required="true" placeholder="Digite a Senha"
+                                       requiredMessage="Senha obrigatório"
+                                       value="#{LaudoController.usuarioLiberacao.senha}"></b:inputSecret>
+                        <b:message for="@previous" />
+
+                    </h:panelGrid>
+                </div>
+
+                <div align="center">
+                    <p:commandButton value="Liberar" look="success" size="sm"
+                                     style="margin-top:10px" icon="fa fa-fw fa-check"
+                                     update=":dlgexcluir, :msgPagina"
+                                     action="#{LaudoController.validarSenhaLiberacaoAlterarLaudo()}" />
+                </div>
+
+            </h:form>
+        </p:dialog>
     </ui:define>
 </ui:composition>
