@@ -1371,7 +1371,7 @@ public class GerenciarPacienteDAO {
                 RemocaoProfissionalEquipe remocao = new RemocaoProfissionalEquipe();
                 remocao.setDataAtendimento(rs.getDate("dtaatende"));
                 remocao.setIdAtendimentos1(rs.getInt("id_atendimentos1"));
-                remocao.setId(rs.getInt("id_insercao_profissional_equipe_atendimento"));
+                remocao.setId(rs.getInt("id_remocao_profissional_equipe_atendimento"));
                 remocao.getFuncionario().setId(rs.getLong("id_profissional"));
                 remocao.getAtendimentoBean().getCbo().setCodCbo(rs.getInt("codcbo"));
                 remocao.getPrograma().setIdPrograma(rs.getInt("codprograma"));
