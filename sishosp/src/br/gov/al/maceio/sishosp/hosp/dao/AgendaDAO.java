@@ -35,6 +35,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.dto.PacientesComInformacaoAtendimentoDTO;
 
 public class AgendaDAO extends VetorDiaSemanaAbstract {
+    //TODO: verificar usos de static e final
     private static final String NAO = "N";
 
     private static final String SIM = "S";

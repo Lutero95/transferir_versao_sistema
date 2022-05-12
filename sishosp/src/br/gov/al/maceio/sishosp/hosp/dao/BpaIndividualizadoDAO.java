@@ -22,7 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class BpaIndividualizadoDAO {
-
+	//TODO: verificar usos de static e final
 	private static final String CODIGO_BPA_INDIVIDUALIZADO =  "02";
 
 	/* ESTAS CONSTANTES SERAM SUBSTITUÍDAS DEPOIS POR DADOS DO BANCO */

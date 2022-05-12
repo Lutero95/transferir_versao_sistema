@@ -18,7 +18,7 @@ import br.gov.al.maceio.sishosp.hosp.model.BpaConsolidadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 public class BpaConsolidadoDAO {
-
+	//TODO: verificar usos de static e final
 	private static final String CODIGO_BPA_CONSOLIDADO = "01";
 
 	/* ESTA CONSTANTE SERÁ SUBSTITUÍDA DEPOIS POR DADOS DO BANCO */

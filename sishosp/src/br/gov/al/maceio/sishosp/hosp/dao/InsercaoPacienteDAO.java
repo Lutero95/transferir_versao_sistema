@@ -24,7 +24,8 @@ import br.gov.al.maceio.sishosp.hosp.model.dto.ProcedimentoCidDTO;
 import javax.faces.context.FacesContext;
 
 public class InsercaoPacienteDAO {
-	
+
+	//TODO: verificar usos de static e final
 	private static final String SQL_INSERCAO_ATENDIMENTO = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
 			+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, codatendente, dtamarcacao, codprograma, codgrupo)"
 			+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
