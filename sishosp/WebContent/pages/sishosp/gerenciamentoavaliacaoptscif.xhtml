@@ -25,10 +25,10 @@
 							styleClass="table cz" id="dtNovosAg"
 							value="#{ptsCifController.listaPtsCif}" var="pts" paginator="true"
 							paginatorPosition="bottom" rows="12" selectionMode="single"
-							selection="#{ptsCifController.ptsCifSelecionado}"
+							selection="#{ptsCifController.ptsCif}"
 							rowKey="#{pts.gerenciarPaciente.id}">
 
-							<p:column headerText="Paciente">
+							<p:column headerText="Paciente" width="35%">
 								<h:outputText value="#{pts.paciente.nome}"/>
 							</p:column>
 
@@ -48,16 +48,8 @@
 								<h:outputText value="#{pts.gerenciarPaciente.grupo.descGrupo}"/>
 							</p:column>
 							
-							<p:column headerText="Data de Avaliação">
-								<h:outputText value="#{pts.dataAvaliacao}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</h:outputText>
-							</p:column>
-							
-							<p:column headerText="Data de Vencimento">
-								<h:outputText value="#{pts.dataVencimento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</h:outputText>
+							<p:column headerText="Competência">
+								<h:outputText value="#{pts.competencia.descricao}" />
 							</p:column>
 							
 							<p:column headerText="Ação">
@@ -65,11 +57,9 @@
 
 									<p:commandButton title="Validar PTS CIF"
 										icon="ui-icon-check" style="margin-left:4px;"
-										action="#{ptsCifController.redirecionaEdicaoOuVisualizacao}">
+										action="#{ptsCifController.redirecionaValidacao}">
 										<f:setPropertyActionListener value="#{pts}"
-											target="#{ptsCifController.ptsCifSelecionado}" />
-										<f:setPropertyActionListener value="5"
-											target="#{ptsCifController.tipo}" />
+											target="#{ptsCifController.ptsCif}" />
 									</p:commandButton>
 								</div>	
 							</p:column>							

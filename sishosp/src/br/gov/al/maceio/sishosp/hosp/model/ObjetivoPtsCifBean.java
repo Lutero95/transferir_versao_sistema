@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class ObjetivoPtsCifBean {
+import java.io.Serializable;
+
+public class ObjetivoPtsCifBean implements Serializable {
 	
 	private Integer id;
 	private String objetivo;

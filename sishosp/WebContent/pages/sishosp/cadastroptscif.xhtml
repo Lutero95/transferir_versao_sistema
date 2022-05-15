@@ -1,373 +1,505 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<f:metadata>
-		<f:viewAction action="#{ptsCifController.carregarPts()}"/>
-		<f:viewAction action="#{MBFuncionarios.ListarTodosProfissionais()}"/>
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{ptsCifController.carregarPts()}"/>
+        <f:viewAction action="#{ptsCifController.atualizarDisplayCompetencia('cadastro')}"/>
+        <f:viewAction action="#{MBFuncionarios.ListarTodosProfissionais()}"/>
+    </f:metadata>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h:outputText value="#{ptsCifController.cabecalho}" class="panel-title"/>
-			</div>
+        <div class="panel panel-primary top-primary">
 
-			<div class="panel-body table-body sub-table-body">
+            <div class="panel-heading top-heading">
+                <h:outputText value="#{ptsCifController.cabecalho}" class="panel-title"/>
+            </div>
 
-				<h:form id="formPts">
+            <div class="panel-body table-body sub-table-body">
+                <h:form id="formPts">
 
-					<p:fieldset legend="Dados Paciente">
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Nome" class="fire-label" severity="info" />
+                    <p:fieldset legend="Dados do Paciente">
+                        <br/>
 
-							<h:outputLabel value="#{ptsCifController.ptsCif.paciente.nome}"
-								class="campo-laudoDig3" />
-						</b:column>
+                        <b:row>
+                            <b:column span="4">
+                                <h:outputLabel value="Nome" class="form-label label-info"/>
+                                <h:outputLabel value="#{ptsCifController.ptsCif.paciente.nome}"
+                                               class="form-displaytext"/>
+                            </b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Idade:" class="fire-label" severity="info" />
+                            <b:column span="2">
+                                <h:outputLabel value="Nascimento" class="form-label label-info"/>
+                                <h:outputLabel value="#{ptsCifController.ptsCif.paciente.dtanascimento}"
+                                               class="form-displaytext">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputLabel>
+                            </b:column>
+                        </b:row>
 
-							<h:outputLabel value="#{ptsCifController.ptsCif.idadePaciente}"
-								class="campo-laudoDig3" />
-						</b:column>
-					</p:fieldset>
+                        <br/>
 
-					<br />
-					<br />
+                        <b:row>
+                            <b:column span="2">
+                                <h:outputLabel value="CPF" class="form-label label-info"/>
+                                <h:outputLabel value="#{ptsCifController.ptsCif.paciente.cpf}"
+                                               class="form-displaytext" />
+                            </b:column>
 
-					<p:fieldset legend="Outras Informações">
+                            <b:column span="2">
+                                <h:outputLabel value="CNS" class="form-label label-info"/>
+                                <h:outputLabel value="#{ptsCifController.ptsCif.paciente.cns}"
+                                               class="form-displaytext"/>
+                            </b:column>
+                        </b:row>
 
-						<b:column span="5">
-							<b:label value="Queixa Principal:" severity="info"
-								class="fire-label" />
+                        <br/>
 
-							<h:inputTextarea style="height:200px;width:410px"
-								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-								requiredMessage="Queixa principal: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.queixaPrincipal}" />
-						</b:column>
+                        <b:row>
+                            <b:column span="3">
+                                <h:outputLabel value="Grupo (Programa)" class="form-label label-info"/>
 
-						<b:column span="5">
-							<b:label value="Condição (ões) de Saúde:" severity="info"
-								class="fire-label" />
+                                <b:selectOneMenu style="" value="#{ptsCifController.ptsCif.gerenciarPaciente}">
 
-							<h:inputTextarea style="height:200px;width:410px" required="true"
-								class="campo-laudoDig3" scrollHeight="100" rows="20" cols="89"
-								requiredMessage="Condição (ões) de saúde: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.condicoesSaude}" 
-								disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"/>
-						</b:column>
-						<br />
-						<br />
+                                    <f:selectItems value="#{ptsCifController.listaTerapiasPaciente}"
+                                                   var="terapia"
+                                                   itemLabel="#{terapia.grupo.descGrupo} (#{terapia.programa.descPrograma})"
+                                                   itemValue="#{terapia}"/>
+                                </b:selectOneMenu>
+                            </b:column>
 
-						<b:column span="5">
-							<b:label value="Função e Estrutura do Corpo:" severity="info"
-								class="fire-label" />
+                            <b:column span="2">
+                                <h:outputLabel value="Competência" class="form-label label-info"/>
 
-							<h:inputTextarea style="height:200px;width:410px"
-								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-								requiredMessage="Função e Estrutura do Corpo: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.funcaoIhEstruturaCorpo}" />
-						</b:column>
+                                <b:selectOneMenu style=""
+                                                 value="#{ptsCifController.ptsCif.competencia}"
+                                                 process="@this"
+                                                 update="formPts :msgPagina">
 
-						<b:column span="5">
-							<b:label value="Atividade e Participação:" severity="info"
-								class="fire-label" />
+                                    <f:selectItems value="#{ptsCifController.listaDisplayCompetenciasPtsCif}"
+                                                   var="competencia" itemLabel="#{competencia.descricao}"
+                                                   itemValue="#{competencia}"/>
+                                </b:selectOneMenu>
 
-							<h:inputTextarea style="height:200px;width:410px"
-								class="campo-laudoDig3" scrollHeight="100" rows="20" cols="89"
-								requiredMessage="Atividade e Participação: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.atividadeIhParticipacao}" 
-								disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"/>
-						</b:column>
-						<br />
-						<br />
+                            </b:column>
+                        </b:row>
 
-						<b:column span="5">
-							<b:label value="Fatores Pessoais:" severity="info"
-								class="fire-label" />
+                        <br/>
 
-							<h:inputTextarea style="height:200px;width:410px"
-								class="campo-laudoDig3" scrollHeight="100" required="true"
-								rows="20" cols="89" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-								requiredMessage="Fatores Pessoais: Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.fatoresPessoais}" />
-						</b:column>
-					</p:fieldset>
+                    </p:fieldset>
+                    <br/> <br/> <br/>
 
-					<br />
-					<br />
-					<br />
-					<p:fieldset legend="Fatores Ambientais">
-						<b:column span="5">
-							<b:label value="Facilitador(es):" severity="info"
-								class="fire-label" />
+                    <p:fieldset legend="Informações do PTS" id="infoPts">
+                        <br/>
 
-							<h:inputTextarea
-								style="height:200px;width:410px"
-								class="campo-laudoDig3" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-								scrollHeight="100" required="true" rows="20" cols="89"
-								requiredMessage="Facilitador(es): Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.fatoresAmbientais.facilitador}" />
-						</b:column>
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Queixa Principal:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Queixa principal: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.queixaPrincipal}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-						<b:column span="5">
-							<b:label value="Barreira(s):" severity="info" class="fire-label" />
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Condição (ões) de Saúde:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Condição (ões) de saúde: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.condicoesSaude}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-							<h:inputTextarea
-								style="height:200px;width:410px"
-								class="campo-laudoDig3" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-								scrollHeight="100" required="true" rows="20" cols="89"
-								requiredMessage="Barreira(s): Campo obrigatório!"
-								value="#{ptsCifController.ptsCif.fatoresAmbientais.barreira}" />
-						</b:column>
-					</p:fieldset>
-					
-					<br />
-					<p:fieldset legend="Avaliadores">
-						<p:commandButton
-							icon="ui-icon-plus" size="sm"
-							title="Adicionar Registro"
-							update=":msgPagina"
-							class="btn-acao-table acao-editar"
-							process="@this" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-							oncomplete="PF('dlgConsuProf').show();"/>
-					
-						<p:dataTable id="dtavaliadores"
-							value="#{ptsCifController.ptsCif.listaAvaliadores}" var="ava"
-							emptyMessage="Sem registros.">
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Função e Estrutura do Corpo:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Função e Estrutura do Corpo: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.funcaoEstruturaCorpo}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-							<p:column headerText="Profissional">
-								<h:outputLabel value="#{ava.avaliador.nome}"/>
-							</p:column>
-							
-							<p:column headerText="CNS" width="20%">
-								<div align="center">
-									<h:outputLabel value="#{ava.avaliador.cns}"/>
-								</div>
-							</p:column>
-							
-							<p:column headerText="Status" rendered="#{ptsCifController.tipo != 1}">
-								<div align="center">
-									<h:outputLabel value="${ava.validado == true ? 'Validado' : 'Pendente'}"/>
-								</div>
-							</p:column>
-							
-							<p:column headerText="Data Validação" rendered="#{ptsCifController.tipo != 1}">
-								<div align="center">
-									<h:outputLabel value="#{ava.data}">
-										<f:convertDateTime pattern="dd/MM/yyyy" />
-									</h:outputLabel>
-								</div>
-							</p:column>
-							
-							<p:column headerText="Ação" width="10%">
-								<div align="center">
-									<p:commandButton process="@this"
-										disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-										class="new-btn-acao-table acao-excluir"
-										action="#{ptsCifController.removerAvaliador(ava)}"
-										icon="ui-icon-trash" update="dtavaliadores"/>
-								</div>
-							</p:column>
-						</p:dataTable>
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Atividade e Participação:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Atividade e Participação: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.atividadeParticipacao}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-						<b:row>
-							<b:column span="8">
-								<b:label value="Data de Avaliação:" id="datapts" severity="info"
-									class="fire-label" />
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Fatores Pessoais:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Fatores Pessoais: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.fatoresPessoais}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-								<p:calendar style="margin-left: -4%; margin-top: 2%;"
-									value="#{ptsCifController.ptsCif.dataAvaliacao}" locale="pt"
-									mask="true" required="true" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-									requiredMessage="Data de Avaliação: Campo obrigatório!"
-									showOn="button" pattern="dd/MM/yyyy" size="10" />
-							</b:column>
-						</b:row>
-					</p:fieldset>
-					
-					<br />
-					<p:fieldset legend="Objetivos">
-						<p:commandButton
-							icon="ui-icon-plus" size="sm"
-							title="Adicionar Registro"
-							update=":formObjetivo :msgPagina"
-							class="btn-acao-table acao-editar"
-							process="@this" disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-							action="#{ptsCifController.limparObjetivoSelecionado()}"/>
-							
-						<p:dataTable id="dtobjetivos"
-							value="#{ptsCifController.ptsCif.listaObjetivos}" var="obj"
-							emptyMessage="Sem registros.">
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Fatores Contextuais:" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Fatores Pessoais: Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.fatoresContextuais}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateInfo" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
 
-							<p:column headerText="Objetivos orientados a Funcionalidade
+                        <b:row id="updateInfo">
+                            <b:column span="12" rendered="#{ptsCifController.tipo == 2 and
+                            ptsCifController.verificaAlteracaoInformacoesPts() == true}">
+                                <p:commandButton value="Alterar Informações do PTS" look="success" size="sm" id="alterarOI"
+                                                 icon="ui-icon-check" update="formPts :msgPagina"
+                                                 class="btn-acao-table acao-gravar"
+                                                 action="#{ptsCifController.alterarInformacoesPtsCif()}"/>
+                            </b:column>
+                        </b:row>
+                        <br/>
+                    </p:fieldset>
+                    <br/> <br/> <br/>
+
+                    <p:fieldset legend="Fatores Ambientais" id="fatores">
+                        <br/>
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Facilitador(es):" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Facilitador(es): Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.facilitador}">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateFatores" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="12">
+                                <h:outputLabel value="Barreira(s):" class="form-label label-info"/>
+                                <h:inputTextarea required="true" class="form-displaytext" scrollHeight="100" rows="4"
+                                                 disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
+                                                 requiredMessage="Barreira(s): Campo obrigatório!"
+                                                 value="#{ptsCifController.ptsCif.barreira}" onkeyup="">
+                                    <p:ajax disabled="#{ptsCifController.tipo != 2}" delay="500" event="keyup"
+                                            update="formPts:updateFatores" />
+                                </h:inputTextarea>
+                                <br/> <br/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row id="updateFatores">
+                            <b:column span="12" rendered="#{ptsCifController.tipo == 2 and
+                                ptsCifController.verificaAlteracaoFatoresAmbientais()}">
+                                <p:commandButton value="Alterar Fatores Ambientais" look="success" size="sm"
+                                                 id="alterarFA" icon="ui-icon-check"
+                                                 update="formPts :msgPagina" class="btn-acao-table acao-gravar"
+                                                 action="#{ptsCifController.alterarFatoresAmbientaisPtsCif}"/>
+                            </b:column>
+                        </b:row>
+                        <br/>
+                    </p:fieldset>
+                    <br/> <br/> <br/>
+
+                    <p:fieldset legend="Avaliadores">
+                        <br/>
+                        <p:commandButton icon="ui-icon-plus" size="sm" value="Adicionar Avaliador"
+                                         update="formPts :msgPagina rowUpdateAvaliadores"
+                                         class="btn-acao-table acao-editar"
+                                         rendered="#{ptsCifController.tipo != 4 and ptsCifController.tipo != 5}"
+                                         oncomplete="PF('dlgConsuProf').show();"/>
+
+                        <br/> <br/>
+
+                        <p:dataTable id="dtavaliadores"
+                                     value="#{ptsCifController.ptsCif.listaAvaliadores}" var="ava"
+                                     emptyMessage="Sem registros.">
+
+                            <p:column headerText="Profissional" width="30%">
+                                <h:outputLabel value="#{ava.avaliador.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="CNS" width="20%">
+                                <div align="center">
+                                    <h:outputLabel value="#{ava.avaliador.cns}"/>
+                                </div>
+                            </p:column>
+
+                            <p:column headerText="Status" rendered="#{ptsCifController.tipo != 1 and
+                            ptsCifController.tipo != 4}">
+                                <div align="center">
+                                    <h:outputLabel value="${ava.validado == true ? 'Validado' : 'Pendente'}"/>
+                                </div>
+                            </p:column>
+
+                            <p:column headerText="Data Validação" rendered="#{ptsCifController.tipo != 4}">
+                                <div align="center">
+                                    <h:outputLabel value="#{ava.data}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputLabel>
+                                </div>
+                            </p:column>
+
+                            <p:column headerText="Ação" width="20%" rendered="#{ptsCifController.tipo != 4}">
+                                <div align="center">
+                                    <p:commandButton process="@this"
+                                                     class="new-btn-acao-table acao-excluir"
+                                                     action="#{ptsCifController.removerAvaliador(ava)}"
+                                                     icon="ui-icon-trash" update="formPts dtavaliadores"/>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
+
+                        <br/> <br/>
+
+                        <b:row id="rowUpdateAvaliadores" rendered="#{ptsCifController.tipo == 2 and
+                        !ptsCifController.ptsCif.listaAvaliadores.equals(ptsCifController.ptsCifOriginal.listaAvaliadores)}">
+                            <b:column span="12">
+                                <p:commandButton value="Gravar Alterações em Avaliadores" look="success" size="sm"
+                                                 id="alterarAvaliadores"
+                                                 icon="ui-icon-check" update="formPts :msgPagina"
+                                                 class="btn-acao-table acao-gravar"
+                                                 action="#{ptsCifController.alterarAvaliadoresPtsCif()}"/>
+                            </b:column>
+                        </b:row>
+
+                        <br/>
+                    </p:fieldset>
+                    <br/> <br/> <br/>
+
+                    <p:fieldset legend="Objetivos">
+                        <br/>
+                        <p:commandButton
+                                icon="ui-icon-plus" size="sm"
+                                value="Adicionar Objetivo"
+                                update="formPts :formObjetivo :msgPagina"
+                                class="btn-acao-table acao-editar"
+                                process="@this" rendered="#{ptsCifController.tipo != 4}"
+                                action="#{ptsCifController.limparObjetivoSelecionado()}"/>
+                        <br/> <br/>
+                        <p:dataTable id="dtobjetivos"
+                                     value="#{ptsCifController.ptsCif.listaObjetivos}" var="obj"
+                                     emptyMessage="Sem registros.">
+
+                            <p:column headerText="Objetivos orientados a Funcionalidade
 												 (numerar e identificar o componente do
 												modelo Biopsicossocial)" width="150">
-								<h:outputLabel value="#{obj.objetivo}">
-								</h:outputLabel>
-							</p:column>
+                                <h:outputLabel value="#{obj.objetivo}">
+                                </h:outputLabel>
+                            </p:column>
 
-							<p:column headerText="Intervenção a ser realizada" width="150">
-								<h:outputLabel value="#{obj.intervencao}">
-								</h:outputLabel>
-							</p:column>
+                            <p:column headerText="Intervenção a ser realizada" width="150">
+                                <h:outputLabel value="#{obj.intervencao}">
+                                </h:outputLabel>
+                            </p:column>
 
-							<p:column headerText="Forma de avaliação" width="10%">
-								<h:outputLabel value="#{obj.formaAvaliacao}" />
-							</p:column>
+                            <p:column headerText="Forma de avaliação" width="10%">
+                                <h:outputLabel value="#{obj.formaAvaliacao}"/>
+                            </p:column>
 
-							<p:column headerText="Ação" width="10%">
-								<div align="center">
-									<p:commandButton process="@this"
-										disabled="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-										class="new-btn-acao-table acao-excluir"
-										action="#{ptsCifController.removerObjetivo(obj)}"
-										icon="ui-icon-trash" update="dtobjetivos"/>
-								</div>
-							</p:column>
-						</p:dataTable>
-					</p:fieldset>
-					
-					<br />
-					<p:fieldset legend="Validar PTS CIF" rendered="#{ptsCifController.tipo == 5}">
-						<p:selectBooleanCheckbox itemLabel="Confirmar dados" 
-							value="#{ptsCifController.ptsValidadoAvaliador}"/>
-					</p:fieldset>
-					
-					<br />
-					<br />
+                            <p:column headerText="Ação" width="10%" rendered="#{ptsCifController.tipo!=4}">
+                                <div align="center">
+                                    <!--TODO: trocar para Alterar, limitar em 24h-->
+                                    <p:commandButton process="@this"
+                                                     class="new-btn-acao-table acao-editar"
+                                                     action="#{ptsCifController.editarObjetivo(obj)}"
+                                                     icon="ui-icon-pencil" update="formPts dtobjetivos :formObjetivo"/>
+                                    <p:commandButton process="@this"
+                                                     rendered="#{ptsCifController.tipo == 1}"
+                                                     class="new-btn-acao-table acao-excluir"
+                                                     action="#{ptsCifController.removerObjetivo(obj)}"
+                                                     icon="ui-icon-trash" update="formPts dtobjetivos :formObjetivo"/>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
 
-					<div align="center">
-						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
-										 rendered="#{ptsCifController.tipo == 1}"
-							icon="ui-icon-check" update=":msgPagina formPts"
-							class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}" />
+                        <br/> <br/>
 
-						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
-										 rendered="#{ptsCifController.tipo == 2}"
-										 icon="ui-icon-check" update="formPts :msgPagina"
-										 class="btn-incluir" action="#{ptsCifController.alterarPtsCif()}" />
+                        <b:row rendered="#{ptsCifController.tipo == 2 and
+                        !ptsCifController.ptsCif.listaObjetivos.equals(ptsCifController.ptsCifOriginal.listaObjetivos)}">
+                            <b:column span="12">
+                                <p:commandButton value="Gravar Alterações em Objetivos" look="success" size="sm"
+                                                 id="alterarObjetivos"
+                                                 icon="ui-icon-check" update="formPts :msgPagina"
+                                                 class="btn-acao-table acao-gravar"
+                                                 action="#{ptsCifController.alterarObjetivosPtsCif()}"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+                    <br/> <br/> <br/>
 
-						<p:commandButton value="Gravar" look="success" size="sm" id="b3"
-							rendered="#{ptsCifController.tipo == 5}" icon="ui-icon-check"
-							update="formPts :msgPagina" class="btn-incluir"
-							action="#{ptsCifController.gravarValidacaoAvaliador()}" />
+                    <p:fieldset id="validar" legend="Validar PTS CIF" rendered="#{ptsCifController.tipo == 4}">
+                        <p:selectBooleanCheckbox itemLabel="Confirmar dados" value="#{ptsCifController.ptsValidado}">
+                            <p:ajax update="formPts"/>
+                        </p:selectBooleanCheckbox>
+                    </p:fieldset>
+                    <h:panelGroup rendered="#{ptsCifController.tipo == 4}"> <br/> <br/> <br/> </h:panelGroup>
 
-						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
-							size="sm" immediate="true" look="info" class="btn-voltar"
-							rendered="#{ptsCifController.tipo == 1 or ptsCifController.tipo == 2}"
-							action="/pages/sishosp/gerenciamentoptscif.xhtml?faces-redirect=true"/>
-							
-						<p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
-							size="sm" immediate="true" look="info" class="btn-voltar"
-							rendered="#{ptsCifController.tipo == 4 or ptsCifController.tipo == 5}"
-							action="/pages/sishosp/gerenciamentoavaliacaoptscif.xhtml?faces-redirect=true"/>						
-					</div>
-				</h:form>
-			</div>
-		</div>
-		
-		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
-			modal="true" responsive="true">
-			<h:form id="formConsuProf">
+                    <h:panelGroup rendered="#{ptsCifController.tipo == 1}">
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="ui-icon-check" update=":msgPagina formPts"
+                                         class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}"/>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{MBFuncionarios.listaProfissional}" id="dtTipoAt"
-					var="profi">
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoptscif.xhtml?faces-redirect=true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{ptsCifController.tipo == 2}">
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoptscif.xhtml?faces-redirect=true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{ptsCifController.tipo == 3}">
+                        <p:commandButton value="Gravar Renovação" look="success" size="sm" id="b2"
+                                         icon="ui-icon-check" update=":msgPagina formPts"
+                                         class="btn-incluir" action="#{ptsCifController.cadastrarPtsCif()}"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{ptsCifController.tipo == 4}">
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b3"
+                                         icon="ui-icon-check" update="formPts :msgPagina"
+                                         disabled="#{!ptsCifController.ptsValidado}"
+                                         class="btn-incluir" action="#{ptsCifController.gravarValidacaoAvaliador()}"/>
 
-					<h:column>
-						<f:facet name="header">
+                        <p:commandButton value="Voltar" icon="ui-icon-arrowthick-1-w"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoavaliacaoptscif.xhtml?faces-redirect=true"/>
+                    </h:panelGroup>
+
+
+                    <br/> <br/> <br/>
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+                  modal="true" responsive="true">
+            <h:form id="formConsuProf">
+
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{MBFuncionarios.listaProfissional}" id="dtTipoAt"
+                             var="profi">
+
+                    <h:column>
+                        <f:facet name="header">
                             Profissional
                         </f:facet>
-						<p:outputLabel value="#{profi.nome}" />
-					</h:column>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
+                    <h:column>
+                        <f:facet name="header">
                             Especialidade
                         </f:facet>
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</h:column>
+                        <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
+                    <h:column>
+                        <f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton process="@this"
-							class="new-btn-acao-table acao-editar"
-							update=":formPts:dtavaliadores :msgPagina"
-							icon="fa fa-fw fa-check" title="Selecionar"
-							action="#{ptsCifController.adicionarAvaliador(profi)}"/>
-					</h:column>
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-		
-		<p:dialog header="Adicione um Objetivo" widgetVar="dlgObjetivo"
-			modal="true" responsive="true" width="550">
-			<h:form id="formObjetivo">
-				<b:row>
-					<b:column span="5" class="label-position inserPacient">
-						<b:label value="Objetivo:" severity="info"
-							class="fire-label" />
+                        <p:commandButton process="@this"
+                                         class="new-btn-acao-table acao-editar"
+                                         update=":formPts :msgPagina"
+                                         icon="fa fa-fw fa-check" title="Selecionar"
+                                         action="#{ptsCifController.adicionarAvaliador(profi)}"/>
+                    </h:column>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
 
-						<b:inputTextarea value="#{ptsCifController.objetivoPtsCif.objetivo}"
-							class="campo-laudoDig3" required="true" 
-							requiredMessage="Objetivo: Campo obrigatório!"/>
-					</b:column>
-					
-					<b:column span="5" class="label-position inserPacient">
-						<b:label value="Intervenção:" severity="info" 
-							class="fire-label" />
+        <p:dialog header="#{ptsCifController.dialogObjetivoTipo.concat(' Objetivo')}" widgetVar="dlgObjetivo"
+                  modal="true" responsive="true" width="550">
+            <h:form id="formObjetivo">
+                <b:row>
+                    <b:column span="12" class="label-position inserPacient">
+                        <b:label value="Objetivo:" severity="info"
+                                 class="fire-label"/>
 
-						<b:inputTextarea value="#{ptsCifController.objetivoPtsCif.intervencao}"
-							class="campo-laudoDig3" required="true" 
-							requiredMessage="Intervenção: Campo obrigatório!"/>
-					</b:column>
-					
-					<b:column span="5" class="label-position inserPacient">
-						<b:label value="Forma de avaliação:" severity="info"
-							class="fire-label" />
+                        <b:inputTextarea value="#{ptsCifController.objetivoPtsCif.objetivo}"
+                                         class="campo-laudoDig3" required="true"
+                                         requiredMessage="Objetivo: Campo obrigatório!"/>
+                    </b:column>
 
-						<b:inputTextarea value="#{ptsCifController.objetivoPtsCif.formaAvaliacao}"
-							class="campo-laudoDig3" required="true" 
-							requiredMessage="Forma de avaliação: Campo obrigatório!"/>
-					</b:column>				
-				</b:row>
-				
-				<b:row>
-					<br />
-					<br />
-					<div align="center">
-						<p:commandButton
-							value="Adicionar" update=":formPts:dtobjetivos :msgPagina"
-							action="#{ptsCifController.adicionarObjetivo(ptsCifController.objetivoPtsCif)}" />
-					</div>
-				</b:row>
-			</h:form>
-		</p:dialog>
+                    <b:column span="12" class="label-position inserPacient">
+                        <b:label value="Intervenção:" severity="info"
+                                 class="fire-label"/>
 
-		<p:dialog header="PTS Gravado com Sucesso" styleClass="topDialog"
-				  widgetVar="dlgPtsGravado" modal="true" dynamic="true"
-				  closable="false">
-			<h:form id="frmptsgravado">
+                        <b:inputTextarea value="#{ptsCifController.objetivoPtsCif.intervencao}"
+                                         class="campo-laudoDig3" required="true"
+                                         requiredMessage="Intervenção: Campo obrigatório!"/>
+                    </b:column>
 
-				<div align="center">
-					<p:commandButton value="Fechar" class="btn-fechar" look="info"
-									 ajax="true" action="#{PtsController.redirectGerPtsCif}"
-									 icon="ui-icon-close" />
-				</div>
+                    <b:column span="12" class="label-position inserPacient">
+                        <b:label value="Forma de avaliação:" severity="info"
+                                 class="fire-label"/>
 
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                        <b:inputTextarea value="#{ptsCifController.objetivoPtsCif.formaAvaliacao}"
+                                         class="campo-laudoDig3" required="true"
+                                         requiredMessage="Forma de avaliação: Campo obrigatório!"/>
+                    </b:column>
+                </b:row>
+
+                <b:row>
+                    <br/>
+                    <br/>
+                    <div align="center">
+                        <p:commandButton
+                                value="#{ptsCifController.dialogObjetivoTipo}" update=":formPts :msgPagina"
+                                action="#{ptsCifController.adicionarObjetivo(ptsCifController.objetivoPtsCif)}"/>
+                    </div>
+                </b:row>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="PTS Gravado com Sucesso" styleClass="topDialog"
+                  widgetVar="dlgPtsGravado" modal="true" dynamic="true"
+                  closable="false">
+            <h:form id="frmptsgravado">
+
+                <div align="center">
+                    <p:commandButton value="Fechar" class="btn-fechar" look="info"
+                                     ajax="true" action="#{PtsController.redirectGerPtsCif}"
+                                     icon="ui-icon-close"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+    </ui:define>
 
 </ui:composition>
