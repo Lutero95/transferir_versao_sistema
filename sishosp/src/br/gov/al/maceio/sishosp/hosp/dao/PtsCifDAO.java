@@ -322,7 +322,7 @@ public class PtsCifDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 
-			sql = "select id_ptscif from hosp.avaliador_ptscif where id_avaliador = ? and id_ptscif = ? and excluido = true";
+			sql = "select id_ptscif from hosp.avaliador_ptscif where id_avaliador = ? and id_ptscif = ?";
 			PreparedStatement ps = conexao.prepareStatement(sql);
 			ps.setInt(1, avaliador.getAvaliador().getId().intValue());
 			ps.setInt(2, idPtsCif);
@@ -337,8 +337,8 @@ public class PtsCifDAO {
 			}
 
 			PreparedStatement ps2 = conexao.prepareStatement(sql);
-			ps.setInt(1, avaliador.getAvaliador().getId().intValue());
-			ps.setInt(2, idPtsCif);
+			ps2.setInt(1, avaliador.getAvaliador().getId().intValue());
+			ps2.setInt(2, idPtsCif);
 			retorno = ps2.executeUpdate() != 0;
 
 			conexao.commit();

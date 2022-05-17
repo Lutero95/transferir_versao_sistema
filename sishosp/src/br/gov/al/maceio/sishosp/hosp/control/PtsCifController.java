@@ -180,8 +180,6 @@ public class PtsCifController {
 		return RedirecionarUtil.redirectEdit(ENDERECO_PTS, ENDERECO_ID, this.ptsCif.getId(), ENDERECO_TIPO, 4);
 	}
 
-
-
 	public void carregarPts() throws ProjetoException {
 		GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 		GerenciarPacienteBean buscaGP = new GerenciarPacienteBean();
@@ -206,6 +204,19 @@ public class PtsCifController {
 			listaTerapiasPaciente = gerenciarPacienteDAO.carregarPacientesInstituicaoBusca(buscaGP, "", "");
 
 			carregarCompetencias();
+
+			if(tipo == 3){
+				ArrayList<AvaliadorPtsCifBean> avaliadores = new ArrayList<>();
+
+				for(AvaliadorPtsCifBean a : ptsCif.getListaAvaliadores()){
+					AvaliadorPtsCifBean novo = new AvaliadorPtsCifBean();
+					novo.setAvaliador(a.getAvaliador());
+					avaliadores.add(novo);
+				}
+
+				ptsCif.setListaAvaliadores(avaliadores);
+			}
+
 		} else {
         	cabecalho = CABECALHO_INCLUSAO;
         	ptsCif = (PtsCifBean) SessionUtil.resgatarDaSessao(PTSCIF_);
@@ -363,6 +374,7 @@ public class PtsCifController {
 
 		if (alterou) {
 			JSFUtil.adicionarMensagemSucesso("Avaliadores alterados com sucesso", "");
+			ptsCifOriginal.setListaAvaliadores(new ArrayList<>(ptsCif.getListaAvaliadores()));
 		} else {
 			JSFUtil.adicionarMensagemErro("Erro ao alterar Avaliadores do PTS Cif", "");
 		}
@@ -371,15 +383,22 @@ public class PtsCifController {
 	public void alterarObjetivosPtsCif() throws ProjetoException {
 		boolean alterou = true;
 
+		//todo: deeper checks on logic here...
 		for ( ObjetivoPtsCifBean objetivo : ptsCif.getListaObjetivos()) {
-			alterou = ptsCifDAO.alterarObjetivoPtsCif(objetivo);
+			if(ptsCifOriginal.getListaObjetivos().stream().anyMatch(o -> o.getId() == objetivo.getId())){
+				alterou = ptsCifDAO.alterarObjetivoPtsCif(objetivo);
+			} else {
+				objetivo.setId(ptsCifDAO.cadastrarObjetivoPtsCif(objetivo, ptsCif));
+				alterou = true;
+			}
 			if(!alterou) break;
 		}
 
 		if (alterou) {
-			JSFUtil.adicionarMensagemSucesso("Avaliadores alterados com sucesso", "");
+			JSFUtil.adicionarMensagemSucesso("Objetivos alterados com sucesso", "");
+			ptsCifOriginal.setListaObjetivos(new ArrayList<>(ptsCif.getListaObjetivos()));
 		} else {
-			JSFUtil.adicionarMensagemErro("Erro ao alterar Avaliadores do PTS Cif", "");
+			JSFUtil.adicionarMensagemErro("Erro ao alterar Objetivos do PTS Cif", "");
 		}
 	}
     
