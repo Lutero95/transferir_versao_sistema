@@ -8,6 +8,7 @@
 
 	<f:metadata>
 		<f:viewAction action="#{ptsCifController.buscarPtsCif()}" />
+		<f:viewAction action="#{ptsCifController.atualizarDisplayCompetencia('gerenciamento')}"/>
 	</f:metadata>
 
 	<ui:define name="content">
@@ -20,295 +21,216 @@
 			<div class="panel-body table-body">
 
 				<h:form id="formGerenPaci">
-					<b:row>
-						<b:column span="1" class="new-data-size3"
-							style="width:100px !important">
+					<br />
 
-							<p:outputLabel value="Situação:"
-								style="margin-top: 8px;color:#2e84ce;">
+					<b:row style="display: flex; align-items: center;">
+						<b:column span="3" style="width: max-content; padding-right: 0px;">
+							<p:outputLabel value="Buscar Pacientes Sem PTS:"
+										   style="margin-top: 8px;color:#2e84ce;">
+
 							</p:outputLabel>
-
 						</b:column>
-
-						<b:column span="3" class="btn-radio-table2 width-radio">
-							<p:selectOneRadio required="false" style="margin-top: 10px"
-								requiredMessage="Escolha a situação!"
-								value="#{PtsController.filtroTipoVencimento}">
-								<f:selectItem itemLabel="Todos" itemValue="T" />
-								<f:selectItem itemLabel="Vigentes" itemValue="VI" />
-								<f:selectItem itemLabel="Vencidos" itemValue="VE" />
-							</p:selectOneRadio>
-						</b:column>
-
-						<b:column span="1" class="new-data-size3">
-							<p:outputLabel value="Validade:"
-								style="margin-top: 8px;color:#2e84ce;" />
-						</b:column>
-
-						<b:column span="1" style="width: 63px;margin-top: 6px;">
-							<p:outputLabel value="Mês" style="margin-top: 8px;color:#2e84ce;" />
-						</b:column>
-						
-						<b:column span="1" style="width: 83px;margin-top: 6px;">
-							<b:inputText style="padding:10px;" required="false"
-								value="#{ptsCifController.filtroMesVencimento}" render-label="true" />
-						</b:column>
-
-						<b:column span="1" style="width: 61px;margin-top: 6px;">
-							<p:outputLabel value="Ano" style="margin-top: 8px;color:#2e84ce;" />
-						</b:column>
-						
-						<b:column span="1" style="width: 83px;margin-top: 6px;">
-							<b:inputText style="padding:10px;" required="false"
-								value="#{ptsCifController.filtroAnoVencimento}" render-label="true" />
-						</b:column>
-					</b:row>
-
-					<b:row>
-						<b:column span="3">
-							<p:selectBooleanCheckbox
-								value="#{ptsCifController.filtrarSemPts}"
-								itemLabel="Apenas Pacientes Sem PTS" />
-						</b:column>
-						
-						<b:column span="2" rendered="#{MBFuncionarios.usuarioLogado.unidade.parametro.opcaoAtendimento.equals('T')}">
-							<p:outputLabel value="Turno"
-								style="margin-top: 8px;color:#2e84ce;">
-							</p:outputLabel>
-							<b:selectOneMenu style="margin-top: -20px; margin-left: 35px;"
-								value="#{ptsCifController.filtroTurno}">
-								<f:selectItem itemLabel="Ambos" itemValue="A" />
-								<f:selectItem itemLabel="Manhã" itemValue="M" />
-								<f:selectItem itemLabel="Tarde" itemValue="T" />
-							</b:selectOneMenu>
+						<b:column span="1">
+							<p:toggleSwitch value="#{ptsCifController.buscarPacientesSemPts}">
+								<p:ajax listener="#{ptsCifController.buscarPtsCif()}"
+										update=":formGerenPaci, :msgPagina, :frmTabela"/>
+							</p:toggleSwitch>
 						</b:column>
 					</b:row>
 
 					<br />
+					<ui:fragment rendered="#{!ptsCifController.buscarPacientesSemPts}">
+						<b:row>
+							<b:column span="2" style="margin-top: 6px; width: max-content; padding-right: 0px;">
+								<p:outputLabel value="Situação:"
+											   style="margin-top: 8px;color:#2e84ce;">
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="8" style="color: #4682B4; margin-bottom: 10px;">
+								<p:selectOneRadio required="false" style="margin-top: 10px"
+												  requiredMessage="Escolha a situação!"
+												  value="#{ptsCifController.formatoBusca}">
+									<f:selectItem itemLabel="Todos" itemValue="T" />
+									<f:selectItem itemLabel="Somente Atuais" itemValue="SA" />
+									<f:selectItem itemLabel="Somente Anteriores" itemValue="A" />
+									<f:selectItem itemLabel="Renovação Pendente" itemValue="RP" />
+									<p:ajax update=":formGerenPaci, :msgPagina"
+											listener="#{ptsCifController.atualizarDisplayCompetencia('gerenciamento')}" />
+								</p:selectOneRadio>
+							</b:column>
+						</b:row>
+
+						<br />
+
+						<b:row rendered='#{!ptsCifController.formatoBusca.equals("RP")}'>
+							<b:column span="2" style="width: max-content; padding-right: 0px;">
+								<p:outputLabel value="Competência:"
+											   style="margin-top: 8px;color:#2e84ce;">
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
+								<b:selectOneMenu style=""
+												 value="#{ptsCifController.filtroIdCompetenciaPtsCif}">
+									<f:selectItems value="#{ptsCifController.listaDisplayCompetenciasPtsCif}"
+												   var="competencia"
+                                                   itemLabel="#{competencia.descricao}"
+                                                   itemValue="#{competencia.id}"/>
+									<f:convertNumber integerOnly="true" />
+								</b:selectOneMenu>
+							</b:column>
+						</b:row>
+						<b:row rendered='#{!ptsCifController.formatoBusca.equals("RP")}'>
+							<br />
+						</b:row>
+					</ui:fragment>
+
 					<br />
-					
 					<b:row>
-						<b:column span="1" style="width: 155px;">
-							<p:selectOneMenu value="#{ptsCifController.tipoBusca}"
-								style="margin-top: -13px">
-								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
-								<f:selectItem itemLabel="Protuário Paciente"
-									itemValue="prontpaciente" />
-								<f:selectItem itemLabel="Matrícula Paciente"
-									itemValue="matpaciente" />
+						<b:column span="2" style="width: max-content; padding-right: 0px;">
+							<p:outputLabel value="Paciente:"
+										   style="margin-bottom: 3px;color:#2e84ce;">
+							</p:outputLabel>
+						</b:column>
+						<b:column span="2" style="width:max-content; padding-right: 0px;">
+							<p:selectOneMenu value="#{ptsCifController.parametroBuscaPaciente}"
+											 style="margin-top: -13px">
+								<f:selectItem itemLabel="Nome" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário" itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula" itemValue="matpaciente" />
 							</p:selectOneMenu>
 						</b:column>
-						<b:column span="4" style="margin-top:-17px !important">
-							<p:inputText value="#{ptsCifController.campoBusca}"
-								placeholder="Digite aqui o que deseja buscar"
-								style="width:300px" />
+						<b:column span="3" style="margin-top:-17px !important">
+							<p:inputText value="#{ptsCifController.buscaPaciente}"
+										 placeholder="Digite aqui o que deseja buscar"
+										 style="width:300px" />
 						</b:column>
+					</b:row>
 
+					<br />
+					<br />
+					<br />
 
-						<b:column span="1">
+					<b:row>
+						<b:column style="width:max-content; padding-right: 0px;">
 							<p:commandButton value="Buscar" icon="ui-icon-search"
-								style="margin-top:-11px" class="btn-acao-table acao-buscar"
-								id="btnBusca" action="#{ptsCifController.buscarPtsCif()}"
-								update=":msgPagina, :frmTabela:dtNovosAg, btnInserir"/>
+											 style="margin-top:-11px" class="btn-acao-table acao-buscar"
+											 id="btnBusca" action="#{ptsCifController.buscarPtsCif()}"
+											 update=":msgPagina, :frmTabela:dtNovosAg, btnInserir"/>
 						</b:column>
 
-						<b:column span="1">
+						<b:column style="width:max-content; padding-right: 0px;">
 							<p:commandButton value="Limpar" icon="ui-icon-trash"
-								style="margin-top:-11px" class="btn-acao-table acao-limpar2"
-								action="#{ptsCifController.limparBusca()}"
-								update=":msgPagina, :frmTabela:dtNovosAg"/>
+											 style="margin-top:-11px" class="btn-acao-table acao-limpar2"
+											 action="#{ptsCifController.limparBusca()}"
+											 update=":msgPagina, :frmTabela:dtNovosAg"/>
 						</b:column>
 					</b:row>
+
 					<br />
 					<br />
 
-					<b:row class="table-border">
-						<div align="center">
-							<b:column span="2" class="new-span2"></b:column>
+					<b:row styleClass="table-border-2" style="margin: 0px;">
+						<b:column span="4"/>
+						<b:column span="1" rendered="#{ptsCifController.buscarPacientesSemPts}"/>
 
-							<b:column span="2" class="new-span2">
-								<p:commandButton value="Novo" style="margin-top:5px;"
-									id="btnInserir" immediate="true" 
-									disabled="#{ptsCifController.renderizarBotaoNovo == false}"
-									class="btn-acao-table acao-confirmar btn-new-padding2"
-									update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
-									action="#{ptsCifController.redirecionaInsercao}">
-									<f:setPropertyActionListener value="1"
-										target="#{ptsCifController.tipo}" />
-								</p:commandButton>
-							</b:column>
+						<b:column span="2" class="center-on-column" rendered="#{ptsCifController.buscarPacientesSemPts}">
+							<p:commandButton value="Inserir" style="margin-top:5px;"
+											 id="btnInserir" immediate="true"
+											 class="btn-acao-table acao-confirmar btn-new-padding2"
+											 update=":formGerenPaci, :msgPagina" icon="ui-icon-plus"
+											 disabled="#{ptsCifController.ptsCif.paciente == null or
+											 ptsCifController.ptsCif.paciente.id_paciente == null or
+											 ptsCifController.ptsCif.paciente.id_paciente == 0}"
+											 action="#{ptsCifController.redirecionaInsercao}">
+							</p:commandButton>
+						</b:column>
 
-							<b:column span="2" class="new-span2">
-								<p:commandButton  value="Alterar" style="margin-top:5px;"
-									disabled="#{ptsCifController.ptsCifSelecionado.id == null
-									or ptsCifController.ptsCifSelecionado.id == 0 
-									or ptsCifController.ptsCifSelecionado.ptsVencido == true}"
-									id="btnAlterar" immediate="true"
-									class="btn-acao-table acao-altera2 btn-new-padding2"
-									update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil" 
-									action="#{ptsCifController.redirecionaEdicaoOuVisualizacao}">
-									<f:setPropertyActionListener value="2"
-										target="#{ptsCifController.tipo}" />
-								</p:commandButton>
-							</b:column>
+						<b:column span="2" class="center-on-column">
+							<p:commandButton  value="Alterar" style="margin-top:5px;"
+											  rendered="#{!ptsCifController.buscarPacientesSemPts}"
+											  disabled="#{ptsCifController.ptsCif.id == null
+							or ptsCifController.ptsCif.bloqueado == true}"
+											  id="btnAlterar" immediate="true"
+											  class="btn-acao-table acao-altera2 btn-new-padding2"
+											  update=":formGerenPaci, :msgPagina" icon="ui-icon-pencil"
+											  action="#{ptsCifController.redirecionaEdicao}">
+							</p:commandButton>
+						</b:column>
 
-							<b:column span="2" class="new-span2">
-								<p:commandButton value="Renovar" style="margin-top:5px;"
-									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
-									id="btnRenovar" immediate="true"
-									class="btn-acao-table acao-limpar btn-new-padding2"
-									update=":formGerenPaci, :msgPagina"
-									icon="ui-icon-refresh"
-									action="#{PtsController.redirectRenovacao()}" />
-							</b:column>
-
-							<b:column span="2" class="new-span2">
-								<p:commandButton value="Alta" style="margin-top:5px;"
-												 disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
-												 id="btnDesligar" immediate="true"
-												 class="btn-acao-table acao-desligar btn-new-padding2"
-												 update=":formGerenPaci, :msgPagina"
-												 icon="ui-icon-power"
-												 action="#{PtsController.abrirDialogDesligarPts()}" />
-							</b:column>
-
-							<b:column span="2" class="new-span2">
-								<p:commandButton value="Cancelar" style="margin-top:5px;"
-								rendered="false"
-									disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
-									id="btnExcluir" immediate="true"
-									class="btn-acao-table acao-desligar btn-new-padding2"
-									update=":formGerenPaci, :msgPagina"
-									icon="ui-icon-close"
-									action="#{PtsController.abrirDialogCancelarPts()}" />
-							</b:column>
-						</div>
+						<b:column span="2" class="center-on-column">
+							<p:commandButton value="Renovar" style="margin-top:5px;"
+											 rendered="#{!ptsCifController.buscarPacientesSemPts}"
+											 disabled="#{ptsCifController.ptsCif.id == null
+											 or ptsCifController.ptsCif.id == 0}"
+											 id="btnRenovar" immediate="true"
+											 class="btn-acao-table acao-limpar btn-new-padding2"
+											 update=":formGerenPaci, :msgPagina"
+											 icon="ui-icon-refresh"
+											 action="#{ptsCifController.redirecionaRenovacao()}" />
+						</b:column>
 					</b:row>
+
 				</h:form>
-
 				<h:form id="frmTabela">
-					<b:column span="12" class="label-position1">
-						<p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
-							styleClass="table cz" id="dtNovosAg"
-							value="#{ptsCifController.listaPtsCif}" var="pts" paginator="true"
-							paginatorPosition="bottom" rows="12" selectionMode="single"
-							selection="#{ptsCifController.ptsCifSelecionado}"
-							rowKey="#{pts.gerenciarPaciente.id}">
+					<b:row>
+						<b:column span="12" class="label-position1">
+							<p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
+										 styleClass="table cz" id="dtNovosAg"
+										 value="#{ptsCifController.listaPtsCif}" var="pts" paginator="true"
+										 paginatorPosition="bottom" rows="12" selectionMode="single"
+										 selection="#{ptsCifController.ptsCif}"
+										 rowKey="#{ptsCifController.buscarPacientesSemPts ? pts.paciente.id_paciente :
+										 pts.id}">
 
-							<p:ajax event="rowSelect"
-								listener="#{ptsCifController.verificarSeExistePtsParaPaciente()}"
-								update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar, :formGerenPaci:btnDesligar" />
+								<p:ajax event="rowSelect"
+										update=":formGerenPaci frmTabela" />
 
-							<p:column headerText="Paciente">
-								<h:outputText value="#{pts.paciente.nome}"/>
-							</p:column>
+								<p:column headerText="Paciente">
+									<h:outputText value="#{pts.paciente.nome}"/>
+								</p:column>
 
-							<p:column headerText="Prontuário">
-								<h:outputText value="#{pts.paciente.id_paciente}"/>
-							</p:column>
+								<p:column headerText="Prontuário">
+									<h:outputText value="#{pts.paciente.id_paciente}"/>
+								</p:column>
 
-							<p:column headerText="Matrícula">
-								<h:outputText value="#{pts.paciente.matricula}"/>
-							</p:column>
-							
-							<p:column headerText="Programa">
-								<h:outputText value="#{pts.gerenciarPaciente.programa.descPrograma}"/>
-							</p:column>
+								<p:column headerText="Matrícula">
+									<h:outputText value="#{pts.paciente.matricula}"/>
+								</p:column>
 
-							<p:column headerText="Grupo">
-								<h:outputText value="#{pts.gerenciarPaciente.grupo.descGrupo}"/>
-							</p:column>
-							
-							<p:column headerText="Data de Avaliação">
-								<h:outputText value="#{pts.dataAvaliacao}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</h:outputText>
-							</p:column>
-							
-							<p:column headerText="Data de Vencimento">
-								<h:outputText value="#{pts.dataVencimento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</h:outputText>
-							</p:column>							
-						</p:dataTable>
-					</b:column>
+								<p:column headerText="CPF" rendered="#{ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.paciente.cpf}"/>
+								</p:column>
+
+								<p:column headerText="CNS" rendered="#{ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.paciente.cns}"/>
+								</p:column>
+
+								<p:column headerText="Programa" rendered="#{!ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.gerenciarPaciente.programa.descPrograma}"/>
+								</p:column>
+
+								<p:column headerText="Grupo" rendered="#{!ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.gerenciarPaciente.grupo.descGrupo}"/>
+								</p:column>
+
+								<p:column headerText="Competência" rendered="#{!ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.competencia.descricao}"/>
+								</p:column>
+
+								<p:column headerText="Ultima Modificação" rendered="#{!ptsCifController.buscarPacientesSemPts}">
+									<h:outputText value="#{pts.ultimaModificacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+									</h:outputText>
+								</p:column>
+							</p:dataTable>
+						</b:column>
+					</b:row>
 					<br />
 				</h:form>
 			</div>
 		</div>
-		
-
-		<p:dialog header="Cancelar Pts" widgetVar="dlgCancelarPts" width="400"
-			height="auto" modal="true" responsive="true">
-
-			<h:form id="formCancelarPts">
-
-				<div class="alert alert-warning" role="alert">Deseja cancelar
-					este PTS?</div>
-				<div align="center">
-					<p:separator />
-
-					<p:commandButton look="success" value="Sim" style="float:left;"
-						action="#{PtsController.cancelarPts}" ajax="true" class="btn-sim"
-						icon="ui-icon-check"
-						update=":formGerenPaci, :frmTabela, :msgPagina" />
-
-					<p:commandButton value="Não"
-						oncomplete="PF('dlgCancelarPts').hide();" look="info" ajax="true"
-						icon="ui-icon-close" class="btn-nao"
-						style="margin-left:5px;float:right;" />
-				</div>
-
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Desligar Pts" widgetVar="dlgDesligarPts" width="400"
-				  height="auto" modal="true" responsive="true">
-
-			<h:form id="formDesligarPts">
-
-				<b:row>
-
-					<b:column span="11" class="label-position">
-						<b:label for="obs" value="Conduta Alta" severity="info" />
-
-						<b:inputTextarea id="conduta" rows="4" class="select-agendaEquipe2" required="true"
-										 value="#{PtsController.pts.condutaAlta}" autoResize="false" />
-					</b:column>
-
-				</b:row>
-
-				<b:row>
-
-					<b:column span="3" class="label-position data-size new-comple1">
-						<b:label value="Data Desligamento" severity="info" />
-						<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="9" class="select-agendaEquipe2"
-									required="true" requiredMessage="Data Desligamento: Campo obrigatório!"
-									value="#{PtsController.pts.dataDesligamento}" id="dtagen"
-									locale="pt" style="margin-left:10px;">
-						</p:calendar>
-
-					</b:column>
-
-				</b:row>
-
-				<div align="center">
-					<p:separator />
-
-					<p:commandButton look="success" value="Sim" style="float:left;"
-									 action="#{PtsController.desligarPts}" ajax="true" class="btn-sim"
-									 icon="ui-icon-check"
-									 update=":formGerenPaci, :frmTabela, :msgPagina" />
-
-					<p:commandButton value="Não"
-									 oncomplete="PF('dlgDesligarPts').hide();" look="info" ajax="true"
-									 icon="ui-icon-close" class="btn-nao"
-									 style="margin-left:5px;float:right;" />
-				</div>
-
-			</h:form>
-		</p:dialog>
 
 	</ui:define>
 

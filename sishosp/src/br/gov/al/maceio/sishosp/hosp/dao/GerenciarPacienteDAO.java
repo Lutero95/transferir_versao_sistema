@@ -70,6 +70,10 @@ public class GerenciarPacienteDAO {
             sql = sql + " and  p.codequipe = ?";
         }
 
+        if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getId())){
+            sql = sql + " and  p.id = ?";
+        }
+
         if ((tipoBusca.equals("paciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
             sql = sql + " and pa.nome ilike ?";
         }
@@ -116,9 +120,12 @@ public class GerenciarPacienteDAO {
             if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getEquipe()) 
             		&& !VerificadorUtil.verificarSeObjetoNuloOuZero(gerenciar.getEquipe().getCodEquipe())) {
             	stmt.setInt(i, gerenciar.getEquipe().getCodEquipe());
-            	i++;
+
             }
-            
+            if (!VerificadorUtil.verificarSeObjetoNulo(gerenciar.getId())){
+                stmt.setInt(i, gerenciar.getId());
+                i++;
+            }
             if ((tipoBusca.equals("paciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca))) {
                 stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
                 i++;

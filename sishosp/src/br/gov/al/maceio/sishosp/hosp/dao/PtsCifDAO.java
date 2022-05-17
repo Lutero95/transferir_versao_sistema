@@ -1,10 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,133 +8,43 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.model.CompetenciaPtsCifBean;
 import br.gov.al.maceio.sishosp.hosp.model.ObjetivoPtsCifBean;
 import br.gov.al.maceio.sishosp.hosp.model.PtsCifBean;
-import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliadorPtsCifDTO;
+import br.gov.al.maceio.sishosp.hosp.model.AvaliadorPtsCifBean;
 
 
 public class PtsCifDAO {
 
 	private final Integer SEIS_MESES_VENCIMENTO = 180;
-	
-	public List<PtsCifBean> buscarPtsPacientesAtivos(String tipoFiltroVencimento,
-			Integer filtroMesVencimento, Integer filtroAnoVencimento, String campoBusca, 
-			String tipoBusca, String filtroTurno, boolean filtroApenasPacientesSemPTS) throws ProjetoException {
 
+	public ArrayList<CompetenciaPtsCifBean> listarCompetencias() throws ProjetoException{
+		String sql = "select c.id, c.descricao, c.data_inicial, c.data_final, c.ativa from hosp.competencia_ptscif c";
 
-		String sql = "SELECT p.id, pi.id as id_paciente_instituicao, pa.nome, extract (year from age(pa.dtanascimento)) idade, \r\n" + 
-				"pa.id_paciente codpaciente, pa.cpf, pa.cns, pa.matricula, pr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo, \r\n" + 
-				"p.data_vencimento, p.data_avaliacao, "+
-				"case when p.data_vencimento is null " + 
-				"		then false " + 
-				"	when p.data_vencimento < current_date " + 
-				"		then true " + 
-				"	else " + 
-				"		false " + 
-				"	end pts_vencido "+
-				"FROM hosp.paciente_instituicao pi  \r\n" + 
-				"LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo)   \r\n" + 
-				"LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) \r\n" + 
-				"LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma)  \r\n" + 
-				"LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo)  \r\n" + 
-				"LEFT JOIN hosp.pts_cif p ON (p.id_paciente_instituicao = pi.id)  \r\n" + 
-				" left join (select p2.id, p2.id_paciente_instituicao from hosp.pts_cif p2 where p2.id = (select max(id) from hosp.pts_cif p3  \r\n" + 
-				" where (p3.id_paciente_instituicao = p2.id_paciente_instituicao)) ) ptsmax on  \r\n" + 
-				"  ptsmax.id_paciente_instituicao = p.id_paciente_instituicao \r\n" + 
-				"WHERE pi.status = 'A' and (case when p.id is not null then p.id=ptsmax.id else 1=1 end) \r\n";
-
-
-		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca) 
-				&& (tipoBusca.equals("paciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) )) {
-			sql = sql + " and pa.nome ilike ?";
-		}
-
-		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca) 
-				&& (tipoBusca.equals("matpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) )) {
-			sql = sql + " and pa.matricula = ?";
-		}
-
-		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca)
-				&& (tipoBusca.equals("prontpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) )) {
-			sql = sql + " and pa.id_paciente = ?";
-		}
-
-
-		if (!filtroTurno.equals(Turno.AMBOS.getSigla())) {
-			sql = sql + " AND pi.turno=? ";
-		}
-		
-		if(filtroApenasPacientesSemPTS) {
-			sql += " and not exists (select pc.id from hosp.pts_cif pc where pc.id_paciente_instituicao = pi.id) ";
-		}
-		
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
-            sql = sql + " AND EXTRACT(month FROM p.data_vencimento) = ? ";
-        }
-
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
-            sql = sql + " AND EXTRACT(year FROM p.data_vencimento) = ? ";
-        }
-		
-		sql += " ORDER BY pa.nome ";
-
-		List<PtsCifBean> lista = new ArrayList<>();
+		ArrayList<CompetenciaPtsCifBean> lista = new ArrayList<>();
 
 		Connection conexao = null;
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement ps = conexao.prepareStatement(sql);
 
-			int i = 1;
-
-			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca)
-					&& ((tipoBusca.equals("paciente")) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) )) {
-				ps.setString(i, "%" + campoBusca.toUpperCase() + "%");
-				i++;
-			}
-
-			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca)
-					&& (tipoBusca.equals("matpaciente")) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) ) {
-				ps.setString(i, campoBusca.toUpperCase());
-				i++;
-			}
-
-			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBusca)
-					&& (tipoBusca.equals("prontpaciente") && !VerificadorUtil.verificarSeObjetoNuloOuVazio(campoBusca) )) {
-				ps.setInt(i, Integer.valueOf(campoBusca));
-				i++;
-			}
-
-			if (!filtroTurno.equals(Turno.AMBOS.getSigla())) {
-				ps.setString(i, filtroTurno);
-				i++;
-			}
-			
-	        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
-	            ps.setInt(i, filtroMesVencimento);
-	            i++;
-	        }
-
-	        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
-	            ps.setInt(i, filtroAnoVencimento);
-	            i++;
-	        }
 
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				PtsCifBean pts = new PtsCifBean();
-				mapearResultSetPtsCif(rs, pts);
-				lista.add(pts);
+				CompetenciaPtsCifBean competencia = new CompetenciaPtsCifBean();
+				competencia.setId(rs.getInt("id"));
+				competencia.setDescricao(rs.getString("descricao"));
+				competencia.setDataInicial(rs.getTimestamp("data_inicial"));
+				competencia.setDataFinal(rs.getTimestamp("data_final"));
+				competencia.setAtiva(rs.getBoolean("ativa"));
+				lista.add(competencia);
 			}
 
 		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(),
-					sqle);
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
 		} catch (Exception ex) {
 			throw new ProjetoException(ex, this.getClass().getName());
 		} finally {
@@ -150,236 +56,714 @@ public class PtsCifDAO {
 		}
 		return lista;
 	}
-	
-    public Boolean verificarSeExistePtsPaciente(PtsCifBean pts) throws ProjetoException {
 
-        Boolean retorno = false;
-
-        String sql = "SELECT id FROM hosp.pts_cif WHERE id_paciente_instituicao = ? ";
-        Connection conexao = null;
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, pts.getGerenciarPaciente().getId());
-
-            ResultSet rs = stm.executeQuery();
-
-            if (rs.next())
-                retorno = true;
-
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return retorno;
-    }
-    
-    public Boolean cadastrarPtsCif(PtsCifBean pts, Integer tipo) throws ProjetoException {
-
-        Boolean retorno = false;
-
-        String sql = "INSERT INTO hosp.pts_cif " + 
-        		"(id_paciente_instituicao, queixa_principal, condicoes_saude, funcao_estrutura_corpo, " +
-        		"atividade_participacao,  id_fator_ambiental, fatores_pessoais, "+
-        		" data_avaliacao, data_vencimento) " + 
-        		"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) returning id; ";
-        
-        Connection conexao = null;
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            
-            pts.getFatoresAmbientais().setId(cadastrarFatoresAmbientais(pts, conexao));
-            
-            mapearPreparedStatementPtsCif(pts, ps);
-            
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next())
-                pts.setId(rs.getInt("id"));
-
-            cadastrarObjetivoPtsCif(pts, conexao);
-            cadastrarAvaliadoresPts(pts, tipo, conexao);
-            retorno = true;
-            conexao.commit();
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return retorno;
-    }
-    
-    public Boolean alterarPtsCif(PtsCifBean pts, List<AvaliadorPtsCifDTO> listaAvaliadoresExcluidos, Long idUsuario, Integer tipo) 
-    		throws ProjetoException {
-
-        Boolean retorno = false;
-
-        String sql = "UPDATE hosp.pts_cif " + 
-        		"SET id_paciente_instituicao = ?, queixa_principal = ?, condicoes_saude = ?, "
-        		+ "funcao_estrutura_corpo = ?, atividade_participacao = ?,  "
-        		+ "id_fator_ambiental = ?, fatores_pessoais = ?, data_avaliacao = ?, data_vencimento = ? " + 
-        		"WHERE id = ?";
-        
-        Connection conexao = null;
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            
-            alterarFatoresAmbientais(pts, conexao);
-            
-            mapearPreparedStatementPtsCif(pts, ps);
-            ps.setInt(10, pts.getId());
-            ps.executeUpdate();
-
-            excluirObjetivoPtsCif(pts, conexao);
-            cadastrarObjetivoPtsCif(pts, conexao);
-            excluirAvaliadoresPts(listaAvaliadoresExcluidos, pts.getId(), idUsuario, conexao);
-            cadastrarAvaliadoresPts(pts, tipo, conexao);
-            retorno = true;
-            conexao.commit();
-        } catch (SQLException sqle) {
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-            throw new ProjetoException(ex, this.getClass().getName());
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return retorno;
-    }
-
-	private void mapearPreparedStatementPtsCif(PtsCifBean pts, PreparedStatement ps) throws SQLException {
+	private void preencherStatementPtsCompleto(PtsCifBean pts, Integer idUsuario, PreparedStatement ps) throws SQLException {
 		ps.setInt(1, pts.getGerenciarPaciente().getId());
-		ps.setString(2, pts.getQueixaPrincipal());
-		ps.setString(3, pts.getCondicoesSaude());
-		ps.setString(4, pts.getFuncaoIhEstruturaCorpo());
-		ps.setString(5, pts.getAtividadeIhParticipacao());
-		ps.setInt(6, pts.getFatoresAmbientais().getId());
-		ps.setString(7, pts.getFatoresPessoais());
-		ps.setDate(8, new Date(pts.getDataAvaliacao().getTime()));
-		ps.setDate(9, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getDataAvaliacao(), SEIS_MESES_VENCIMENTO)));
+		ps.setInt(2, pts.getPaciente().getId_paciente());
+		ps.setString(3, pts.getQueixaPrincipal());
+		ps.setString(4, pts.getCondicoesSaude());
+		ps.setString(5, pts.getFuncaoEstruturaCorpo());
+		ps.setString(6, pts.getAtividadeParticipacao());
+		ps.setString(7, pts.getFatoresContextuais());
+		ps.setString(8, pts.getFatoresPessoais());
+		ps.setString(9, pts.getFacilitador());
+		ps.setString(10, pts.getBarreira());
+		ps.setInt(11, pts.getCompetencia().getId());
+		ps.setInt(12, idUsuario);
 	}
-    
-    private void cadastrarObjetivoPtsCif(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
 
-        
-        String sql = "INSERT INTO hosp.objetivos_pts_cif " + 
-        		"(id_pts_cif, objetivo, intervencao, forma_avaliacao) " + 
-        		"VALUES(?, ?, ?, ?); ";
-        
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
+	public Boolean cadastrarPtsCif(PtsCifBean pts, FuncionarioBean usuario) throws ProjetoException {
 
-            for (ObjetivoPtsCifBean objetivo : pts.getListaObjetivos()) {
-            	ps.setInt(1, pts.getId());
-            	ps.setString(2, objetivo.getObjetivo());
-            	ps.setString(3, objetivo.getIntervencao());
-            	ps.setString(4, objetivo.getFormaAvaliacao());
-            	ps.executeUpdate();
-            }
+		Boolean retorno = false;
 
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-    }
-    
-    private void excluirObjetivoPtsCif(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
+		String sql = "INSERT INTO hosp.ptscif "
+				+ " (id_paciente_instituicao, codpaciente, queixa_principal, condicoes_saude, "
+				+ " funcao_estrutura_corpo, atividade_participacao, fatores_contextuais, "
+				+ " fatores_pessoais, facilitador, barreira, id_competencia, ultima_modificacao, usuario_modificacao)"
+				+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,current_timestamp,?) returning id; ";
 
-        String sql = "DELETE FROM hosp.objetivos_pts_cif WHERE id_pts_cif = ? ; ";
-        
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
-            ps.setInt(1, pts.getId());
-            ps.executeUpdate();
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-    }
-    
-    private Integer cadastrarFatoresAmbientais(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
 
-        String sql = "INSERT INTO hosp.fator_ambiental " + 
-        		"(facilitador, barreira) VALUES(?, ?) returning id; ";
-        
-        Integer idFatorAmbiental = null;
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
+			preencherStatementPtsCompleto(pts, usuario.getId().intValue(), ps);
 
-            ps.setString(1, pts.getFatoresAmbientais().getFacilitador());
-            ps.setString(2, pts.getFatoresAmbientais().getBarreira());
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-            	idFatorAmbiental = rs.getInt("id");
-            }
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return idFatorAmbiental;
-    }
-    
-    private void alterarFatoresAmbientais(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
+			ResultSet rs = ps.executeQuery();
 
-        String sql = "UPDATE hosp.fator_ambiental SET facilitador = ?, barreira = ? WHERE id = ?; ";
-        
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
+			if (rs.next()){
+				pts.setId(rs.getInt("id"));
+			}
 
-            ps.setString(1, pts.getFatoresAmbientais().getFacilitador());
-            ps.setString(2, pts.getFatoresAmbientais().getBarreira());
-            ps.setInt(3, pts.getFatoresAmbientais().getId());
-            ps.executeUpdate();
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-    }
+			retorno = true;
+			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Integer cadastrarObjetivoPtsCif(ObjetivoPtsCifBean objetivo, PtsCifBean pts) throws ProjetoException {
+		Integer id = null;
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			String sql = "insert into hosp.objetivos_ptscif (id_ptscif, forma_avaliacao, intervencao, objetivo) values (?,?,?,?) returning id; ";
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setInt(1, pts.getId());
+			ps.setString(2, objetivo.getFormaAvaliacao());
+			ps.setString(3, objetivo.getIntervencao());
+			ps.setString(4, objetivo.getObjetivo());
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()){
+				id = rs.getInt("id");
+			}
+
+			conexao.commit();
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return id;
+	}
+
+	public void cadastrarAvaliadorPtsCif(AvaliadorPtsCifBean avaliador, PtsCifBean pts) throws ProjetoException{
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			String sql = "insert into hosp.avaliador_ptscif (id_avaliador, id_ptscif) values (?,?)";
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setInt(1, avaliador.getAvaliador().getId().intValue());
+			ps.setInt(2, pts.getId());
+
+			ps.executeUpdate();
+			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public Boolean alterarInformacoesPtsCif(PtsCifBean pts) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql = "UPDATE hosp.ptscif SET queixa_principal = ?, condicoes_saude = ?, funcao_estrutura_corpo = ?, "
+				+" atividade_participacao = ?, fatores_pessoais = ?, fatores_contextuais = ?, id_competencia=? WHERE id = ?";
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+
+			ps.setString(1, pts.getQueixaPrincipal());
+			ps.setString(2, pts.getCondicoesSaude());
+			ps.setString(3, pts.getFuncaoEstruturaCorpo());
+			ps.setString(4, pts.getAtividadeParticipacao());
+			ps.setString(5, pts.getFatoresPessoais());
+			ps.setString(6, pts.getFatoresContextuais());
+			ps.setInt(7, pts.getCompetencia().getId());
+			ps.setInt(8, pts.getId());
+			ps.executeUpdate();
+
+			conexao.commit();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean alterarFatoresAmbientaisPtsCif(PtsCifBean pts) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql = "UPDATE hosp.ptscif SET facilitador = ?, barreira = ? WHERE id = ?";
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setString(1, pts.getFacilitador());
+			ps.setString(2, pts.getBarreira());
+			ps.setInt(3, pts.getId());
+			ps.executeUpdate();
+
+			conexao.commit();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean alterarObjetivoPtsCif(ObjetivoPtsCifBean objetivo) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql;// = "UPDATE hosp.objetivos_ptscif  SET forma_avaliacao = ?, intervencao = ?, objetivo = ? where id = ?";
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			sql = "update hosp.objetivos_ptscif set forma_avaliacao = ?, intervencao = ?, objetivo = ? where id = ?";
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setString(1, objetivo.getFormaAvaliacao());
+			ps.setString(2, objetivo.getIntervencao());
+			ps.setString(3, objetivo.getObjetivo());
+			ps.setInt(4, objetivo.getId());
+
+			ps.executeUpdate();
+
+			conexao.commit();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean excluirObjetivoPtsCif(ObjetivoPtsCifBean objetivo, Integer id_usuario) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql;// = "UPDATE hosp.objetivos_ptscif  SET forma_avaliacao = ?, intervencao = ?, objetivo = ? where id = ?";
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			sql = "update hosp.objetivos_ptscif set excluido = true, usuario_exclusao = ?, datahora_exclusao = current_timestamp where id = ?";
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setInt(1, id_usuario);
+			ps.setInt(2, objetivo.getId());
+
+			ps.executeUpdate();
+
+			conexao.commit();
+			retorno = true;
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean adicionarAvaliadorPtsCif(Integer idPtsCif, AvaliadorPtsCifBean avaliador) throws ProjetoException {
+		Boolean retorno = false;
+		String sql;
+		Connection conexao = null;
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			sql = "select id_ptscif from hosp.avaliador_ptscif where id_avaliador = ? and id_ptscif = ?";
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setInt(1, avaliador.getAvaliador().getId().intValue());
+			ps.setInt(2, idPtsCif);
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()){
+				sql = "update hosp.avaliador_ptscif set excluido = false, usuario_exclusao = null, datahora_exclusao = null " +
+						"where id_avaliador = ? and id_ptscif = ?";
+			} else {
+				sql = "insert into hosp.avaliador_ptscif (id_avaliador, id_ptscif, data_validacao, usuario_exclusao, datahora_exclusao) " +
+						"values (?, ?, null, null, null)";
+			}
+
+			PreparedStatement ps2 = conexao.prepareStatement(sql);
+			ps2.setInt(1, avaliador.getAvaliador().getId().intValue());
+			ps2.setInt(2, idPtsCif);
+			retorno = ps2.executeUpdate() != 0;
+
+			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean removerAvaliadorPtsCif(Integer idPtsCif, AvaliadorPtsCifBean avaliador, FuncionarioBean usuario) throws ProjetoException {
+		Boolean retorno;
+
+		String sql = "update hosp.avaliador_ptscif set excluido = true, usuario_exclusao = ?, datahora_exclusao = current_timestamp " +
+				"where id_avaliador = ? and id_ptscif = ?";
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setInt(1, usuario.getId().intValue());
+			ps.setInt(2, avaliador.getAvaliador().getId().intValue());
+			ps.setInt(3, idPtsCif);
+			retorno = ps.executeUpdate() != 0;
+
+			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public Boolean alterarPtsCif(PtsCifBean pts, FuncionarioBean usuario) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql = "UPDATE hosp.ptscif SET id_paciente_instituicao = ?, codpaciente = ?, queixa_principal = ?, "
+				+ " condicoes_saude = ?, funcao_estrutura_corpo = ?, atividade_participacao = ?, fatores_contextuais = ?, "
+				+ " fatores_pessoais = ?, facilitador = ?, barreira = ?, id_competencia = ?, "
+				+ " ultima_modificacao = current_timestamp, usuario_modificacao = ?"
+				+ "WHERE id = ?";
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			preencherStatementPtsCompleto(pts, usuario.getId().intValue(), ps);
+			ps.setInt(13, pts.getId());
+
+			ps.executeUpdate();
+			retorno = true;
+
+			conexao.commit();
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
+	public PtsCifBean buscarPtsCifPorId(Integer idPts) throws ProjetoException {
+
+		String sql = "select cif.id, pi2.id as id_paciente_instituicao, cif.*, c.descricao as desc_competencia, p.nome, p.cpf, p.cns, p.matricula, " +
+				"\textract (year from age(p.dtanascimento)) as idade, p.id_paciente codpaciente, " +
+				"\tpr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo " +
+				"from hosp.ptscif cif " +
+				"left join hosp.competencia_ptscif c on (cif.id_competencia = c.id) " +
+				"left join hosp.paciente_instituicao pi2 on (pi2.id = cif.id_paciente_instituicao) " +
+				"left join hosp.laudo l on (pi2.codlaudo = l.id_laudo) " +
+				"left join hosp.programa pr on (pi2.codprograma = pr.id_programa) "+
+				"left join hosp.grupo g on (pi2.codgrupo = g.id_grupo) " +
+				"left join hosp.pacientes p on (p.id_paciente = cif.codpaciente) " +
+				"where cif.id = ?";
+
+		Connection conexao = null;
+		PtsCifBean pts = new PtsCifBean();
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+			ps.setInt(1, idPts);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				pts.setId(rs.getInt("id"));
+				mapearResultSetPtsCif(rs, pts);
+				pts.setQueixaPrincipal(rs.getString("queixa_principal"));
+				pts.setCondicoesSaude(rs.getString("condicoes_saude"));
+				pts.setFuncaoEstruturaCorpo(rs.getString("funcao_estrutura_corpo"));
+				pts.setAtividadeParticipacao(rs.getString("atividade_participacao"));
+				pts.setFatoresPessoais(rs.getString("fatores_pessoais"));
+				pts.setFatoresContextuais(rs.getString("fatores_contextuais"));
+				pts.setFacilitador(rs.getString("facilitador"));
+				pts.setBarreira(rs.getString("barreira"));
+				pts.setBloqueado(rs.getBoolean("bloqueado"));
+				pts.setListaAvaliadores(buscaAvaliadoresPtsCif(pts, conexao));
+				pts.setListaObjetivos(buscaObjetivosPtsCif(pts, conexao));
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return pts;
+	}
+
+	private List<AvaliadorPtsCifBean> buscaAvaliadoresPtsCif(PtsCifBean pts, Connection conexaoAux)
+			throws ProjetoException, SQLException {
+
+		String sql = "select f.id_funcionario, f.descfuncionario, f.cns, apc.data_validacao, apc.validado "+
+				"	from acl.funcionarios f \r\n" +
+				"	join hosp.avaliador_ptscif apc on f.id_funcionario = apc.id_avaliador \r\n" +
+				"	join hosp.ptscif pc on apc.id_ptscif = pc.id \r\n" +
+				"	where pc.id = ? and apc.excluido is false";
+
+		List<AvaliadorPtsCifBean> listaAvaliadores = new ArrayList<>();
+		try {
+			PreparedStatement ps = conexaoAux.prepareStatement(sql);
+			ps.setInt(1, pts.getId());
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				AvaliadorPtsCifBean avaliador = new AvaliadorPtsCifBean();
+				avaliador.getAvaliador().setId(rs.getLong("id_funcionario"));
+				avaliador.getAvaliador().setNome(rs.getString("descfuncionario"));
+				avaliador.getAvaliador().setCns(rs.getString("cns"));
+				avaliador.setData(rs.getDate("data_validacao"));
+				avaliador.setValidado(rs.getBoolean("validado"));
+				listaAvaliadores.add(avaliador);
+			}
+		} catch (SQLException sqle) {
+			conexaoAux.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAux.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaAvaliadores;
+	}
+
+	private List<ObjetivoPtsCifBean> buscaObjetivosPtsCif(PtsCifBean pts, Connection conexaoAux)
+			throws ProjetoException, SQLException {
+
+		String sql = "select opc.id, opc.objetivo, opc.forma_avaliacao, opc.intervencao from hosp.objetivos_ptscif opc \r\n" +
+				"	join hosp.ptscif pc on opc.id_ptscif = pc.id \r\n" +
+				"	where pc.id = ?	";
+
+		List<ObjetivoPtsCifBean> listaObjetivos = new ArrayList<>();
+		try {
+			PreparedStatement ps = conexaoAux.prepareStatement(sql);
+			ps.setInt(1, pts.getId());
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ObjetivoPtsCifBean objetivo = new ObjetivoPtsCifBean();
+				objetivo.setId(rs.getInt("id"));
+				objetivo.setObjetivo(rs.getString("objetivo"));
+				objetivo.setFormaAvaliacao(rs.getString("forma_avaliacao"));
+				objetivo.setIntervencao(rs.getString("intervencao"));
+				listaObjetivos.add(objetivo);
+			}
+		} catch (SQLException sqle) {
+			conexaoAux.rollback();
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			conexaoAux.rollback();
+			throw new ProjetoException(ex, this.getClass().getName());
+		}
+		return listaObjetivos;
+	}
+
+	public ArrayList<PtsCifBean> buscarPtsPorCompetencia(String buscaPaciente, String tipoBuscaPaciente, Integer competencia) throws ProjetoException {
+		String sql = "select cif.id, pi2.id as id_paciente_instituicao, cif.id_competencia, c.descricao as desc_competencia, p.nome, p.cpf, p.cns, p.matricula, " +
+				"\textract (year from age(p.dtanascimento)) as idade, p.id_paciente codpaciente,  cif.ultima_modificacao, " +
+				"\tpr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo " +
+				"from hosp.ptscif cif " +
+				"left join hosp.competencia_ptscif c on (cif.id_competencia = c.id) " +
+				"left join hosp.paciente_instituicao pi2 on (pi2.id = cif.id_paciente_instituicao) " +
+				"left join hosp.laudo l on (pi2.codlaudo = l.id_laudo) " +
+				"left join hosp.programa pr on (pi2.codprograma = pr.id_programa) "+
+				"left join hosp.grupo g on (pi2.codgrupo = g.id_grupo) " +
+				"left join hosp.pacientes p on (p.id_paciente = cif.codpaciente) " +
+				"where pi2.status = 'A' and cif.id_competencia = ?";
+
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+			if(tipoBuscaPaciente.equals("paciente")){
+				sql = sql + " and p.nome ilike ?";
+			} else if (tipoBuscaPaciente.equals("matpaciente")){
+				sql = sql + " and p.matricula = ?";
+			} else if (tipoBuscaPaciente.equals("prontpaciente")){
+				sql = sql + " and p.id_paciente = ?";
+			}
+		}
+
+		sql += " ORDER BY p.nome ";
+
+		ArrayList<PtsCifBean> lista = new ArrayList<>();
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			ps.setInt(1, competencia);
+
+			int i = 2;
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+				if(tipoBuscaPaciente.equals("paciente")){
+					ps.setString(i, "%" + buscaPaciente.toUpperCase() + "%");
+				} else if (tipoBuscaPaciente.equals("matpaciente")){
+					ps.setString(i, buscaPaciente.toUpperCase());
+				} else if (tipoBuscaPaciente.equals("prontpaciente")){
+					ps.setInt(i, Integer.parseInt(buscaPaciente));
+				} else {
+					i--; //tipoBuscaPaciente desconhecido, retornar i para o valor inicial
+				}
+				i++;
+			}
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				PtsCifBean pts = new PtsCifBean();
+				mapearResultSetPtsCif(rs, pts);
+				lista.add(pts);
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public ArrayList<PtsCifBean> buscarTodosOsPts(String buscaPaciente, String tipoBuscaPaciente, String formatoBusca) throws ProjetoException {
+		String sql = (!(!VerificadorUtil.verificarSeObjetoNuloOuVazio(formatoBusca) && formatoBusca.equals("RP")) ? "select " : "select max");
+		sql = sql+"(cif.id), pi2.id as id_paciente_instituicao, cif.id_competencia, c.descricao as desc_competencia, p.nome, p.cpf, p.cns, p.matricula, " +
+				"extract (year from age(p.dtanascimento)) as idade, p.id_paciente codpaciente, cif.ultima_modificacao, " +
+				"pr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo " +
+				"from hosp.ptscif cif " +
+				"left join hosp.competencia_ptscif c on (cif.id_competencia = c.id) " +
+				"left join hosp.paciente_instituicao pi2 on (pi2.id = cif.id_paciente_instituicao) " +
+				"left join hosp.laudo l on (pi2.codlaudo = l.id_laudo) " +
+				"left join hosp.programa pr on (pi2.codprograma = pr.id_programa) "+
+				"left join hosp.grupo g on (pi2.codgrupo = g.id_grupo) " +
+				"left join hosp.pacientes p on (p.id_paciente = cif.codpaciente) " +
+				"where 1=1 ";
+
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+			if(tipoBuscaPaciente.equals("paciente")){
+				sql = sql + " and p.nome ilike ?";
+			} else if (tipoBuscaPaciente.equals("matpaciente")){
+				sql = sql + " and p.matricula = ?";
+			} else if (tipoBuscaPaciente.equals("prontpaciente")){
+				sql = sql + " and p.id_paciente = ?";
+			}
+		}
+
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(formatoBusca)){
+			if(formatoBusca.equals("SA")){
+				sql = sql + " and c.ativa = True";
+			} else if(formatoBusca.equals("A")){
+				sql = sql + " and c.ativa = False";
+			} else if (formatoBusca.equals("RP")){
+				sql = sql + " and pi2.status = 'A' and c.ativa = False group by 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ";
+			}
+		}
+
+		sql += " ORDER BY p.nome ";
+
+		ArrayList<PtsCifBean> lista = new ArrayList<>();
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			int i = 1;
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+				if(tipoBuscaPaciente.equals("paciente")){
+					ps.setString(i, "%" + buscaPaciente.toUpperCase() + "%");
+				} else if (tipoBuscaPaciente.equals("matpaciente")){
+					ps.setString(i, buscaPaciente.toUpperCase());
+				} else if (tipoBuscaPaciente.equals("prontpaciente")){
+					ps.setInt(i, Integer.parseInt(buscaPaciente));
+				} else {
+					i--; //tipoBuscaPaciente desconhecido, retornar i para o valor inicial
+				}
+				i++;
+			}
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				PtsCifBean pts = new PtsCifBean();
+				mapearResultSetPtsCif(rs, pts);
+				lista.add(pts);
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public ArrayList<PtsCifBean> buscarPacientesSemPts(String buscaPaciente, String tipoBuscaPaciente) throws ProjetoException {
+		String sqlPaciente = "";
+		if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+			if(tipoBuscaPaciente.equals("paciente")){
+				sqlPaciente = " and p.nome ilike ?";
+			} else if (tipoBuscaPaciente.equals("matpaciente")){
+				sqlPaciente = " and p.matricula = ?";
+			} else if (tipoBuscaPaciente.equals("prontpaciente")){
+				sqlPaciente = " and p.id_paciente = ?";
+			}
+		}
+
+		String sql = "select distinct(p.id_paciente) as codpaciente, p.nome, p.cpf, p.cns, p.matricula, extract (year from age(p.dtanascimento)) as idade, max(cif.id)" +
+				"from hosp.paciente_instituicao pi2 " +
+				"left join hosp.laudo l on (pi2.codlaudo = l.id_laudo) "+
+				"left join hosp.pacientes p on (p.id_paciente = coalesce(l.codpaciente, pi2.id_paciente)) "+
+				"left join hosp.ptscif cif on (pi2.id = cif.id_paciente_instituicao) " +
+				"where pi2.status='A' and cif.id is null "+sqlPaciente+"group by 1,2,3,4,5,6 ORDER BY 2";
+
+		ArrayList<PtsCifBean> lista = new ArrayList<>();
+
+		Connection conexao = null;
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement ps = conexao.prepareStatement(sql);
+
+			int i = 1;
+			if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(tipoBuscaPaciente) && !VerificadorUtil.verificarSeObjetoNuloOuVazio(buscaPaciente)){
+				if(tipoBuscaPaciente.equals("paciente")){
+					ps.setString(i, "%" + buscaPaciente.toUpperCase() + "%");
+				} else if (tipoBuscaPaciente.equals("matpaciente")){
+					ps.setString(i, buscaPaciente.toUpperCase());
+				} else if (tipoBuscaPaciente.equals("prontpaciente")){
+					ps.setInt(i, Integer.parseInt(buscaPaciente));
+				} else {
+					i--; //tipoBuscaPaciente desconhecido, retornar i para o valor inicial
+				}
+				i++;
+			}
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				PtsCifBean pts = new PtsCifBean();
+				pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				pts.getPaciente().setNome(rs.getString("nome"));
+				pts.getPaciente().setCns(rs.getString("cns"));
+				pts.getPaciente().setCpf(rs.getString("cpf"));
+				pts.getPaciente().setMatricula(rs.getString("matricula"));
+				lista.add(pts);
+			}
+
+		} catch (SQLException sqle) {
+			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
+		} catch (Exception ex) {
+			throw new ProjetoException(ex, this.getClass().getName());
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+
     
     private void cadastrarAvaliadoresPts(PtsCifBean pts, Integer tipo, Connection conexaoAux) 
     		throws ProjetoException, SQLException {
 
-        String sql = "INSERT INTO hosp.avaliador_pts_cif " + 
-        		" (id_avaliador, id_pts_cif) VALUES (?, ?); ";
+        String sql = "INSERT INTO hosp.avaliador_ptscif " +
+        		" (id_avaliador, id_ptscif) VALUES (?, ?); ";
         
         try {
             PreparedStatement ps = conexaoAux.prepareStatement(sql);
             
-            for (AvaliadorPtsCifDTO avaliadorDTO : pts.getListaAvaliadores()) {
+            for (AvaliadorPtsCifBean avaliadorDTO : pts.getListaAvaliadores()) {
             	
             	if(tipo.equals(TipoCabecalho.INCLUSAO.getSigla()) || !avaliadorJaExisteNoPts(avaliadorDTO, pts.getId(), conexaoAux)) {
             		ps.setLong(1, avaliadorDTO.getAvaliador().getId());
@@ -398,11 +782,11 @@ public class PtsCifDAO {
         }
     }
     
-    private boolean avaliadorJaExisteNoPts(AvaliadorPtsCifDTO avaliadorDTO, Integer idPts, Connection conexaoAux) 
+    private boolean avaliadorJaExisteNoPts(AvaliadorPtsCifBean avaliadorDTO, Integer idPts, Connection conexaoAux)
     		throws SQLException, ProjetoException {
     	
-    	String sql = "SELECT EXISTS (SELECT id_avaliador FROM hosp.avaliador_pts_cif " + 
-        		"WHERE id_avaliador = ? AND id_pts_cif = ?) existe_cadastrado ;";
+    	String sql = "SELECT EXISTS (SELECT id_avaliador FROM hosp.avaliador_ptscif " +
+        		"WHERE id_avaliador = ? AND id_ptscif = ?) existe_cadastrado ;";
         
     	boolean existe = false;
     	
@@ -426,11 +810,11 @@ public class PtsCifDAO {
         return existe;
     }
     
-    private void atualizaPossivelAvaliadorExcluido(AvaliadorPtsCifDTO avaliadorDTO, Integer idPts, Connection conexaoAux) 
+    private void atualizaPossivelAvaliadorExcluido(AvaliadorPtsCifBean avaliadorDTO, Integer idPts, Connection conexaoAux)
     		throws SQLException, ProjetoException {
     	
-    	String sql = "UPDATE hosp.avaliador_pts_cif SET excluido = false, data_validacao = null "
-    			+ " WHERE id_avaliador = ? AND id_pts_cif = ? and excluido is true";
+    	String sql = "UPDATE hosp.avaliador_ptscif SET excluido = false, data_validacao = null "
+    			+ " WHERE id_avaliador = ? AND id_ptscif = ? and excluido is true";
         
         try {
             PreparedStatement ps = conexaoAux.prepareStatement(sql);
@@ -449,15 +833,15 @@ public class PtsCifDAO {
     }
     
     private void excluirAvaliadoresPts
-    	(List<AvaliadorPtsCifDTO> listaAvaliadoresExcluidos, Integer idPts, Long idUsuario, Connection conexaoAux) 
+    	(List<AvaliadorPtsCifBean> listaAvaliadoresExcluidos, Integer idPts, Long idUsuario, Connection conexaoAux)
     		throws ProjetoException, SQLException {
 
-        String sql = "UPDATE hosp.avaliador_pts_cif SET excluido = true, usuario_exclusao = ?, datahora_exclusao = CURRENT_TIMESTAMP "+
-        		" WHERE id_pts_cif = ? and id_avaliador = ?";
+        String sql = "UPDATE hosp.avaliador_ptscif SET excluido = true, usuario_exclusao = ?, datahora_exclusao = CURRENT_TIMESTAMP "+
+        		" WHERE id_ptscif = ? and id_avaliador = ?";
         
         try {
             PreparedStatement ps = conexaoAux.prepareStatement(sql);
-            for (AvaliadorPtsCifDTO avaliador : listaAvaliadoresExcluidos) {
+            for (AvaliadorPtsCifBean avaliador : listaAvaliadoresExcluidos) {
             	ps.setLong(1, idUsuario);
             	ps.setInt(2, idPts);
             	ps.setLong(3, avaliador.getAvaliador().getId());
@@ -472,157 +856,19 @@ public class PtsCifDAO {
         }
     }
     
-	public PtsCifBean buscarPtsCifPorId(Integer idPts) throws ProjetoException {
-
-
-		String sql = "SELECT p.id, pi.id as id_paciente_instituicao, pa.nome, extract (year from age(pa.dtanascimento)) idade, \r\n" + 
-				"pa.id_paciente codpaciente, p.queixa_principal, p.condicoes_saude, p.funcao_estrutura_corpo, p.atividade_participacao,\r\n" + 
-				" p.fatores_pessoais, fa.id id_fator_ambiental, fa.facilitador, fa.barreira, \r\n" +
-				"p.data_vencimento, p.data_avaliacao, \r\n" + 
-				"case when p.data_vencimento is null \r\n" + 
-				"		then false \r\n" + 
-				"	when p.data_vencimento < current_date \r\n" + 
-				"		then true \r\n" + 
-				"	else \r\n" + 
-				"		false \r\n" + 
-				"	end pts_vencido \r\n" + 
-				"FROM hosp.paciente_instituicao pi  \r\n" + 
-				"LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo)   \r\n" + 
-				"LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) \r\n" + 
-				"JOIN hosp.pts_cif p ON (p.id_paciente_instituicao = pi.id)  \r\n" + 
-				"join hosp.fator_ambiental fa on p.id_fator_ambiental = fa.id \r\n" + 
-				"WHERE p.id = ?";
-
-		Connection conexao = null;
-		PtsCifBean pts = new PtsCifBean();
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement ps = conexao.prepareStatement(sql);
-			ps.setInt(1, idPts);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				pts.setId(rs.getInt("id"));
-				pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
-				pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-				pts.getPaciente().setNome(rs.getString("nome"));
-				pts.setIdadePaciente(rs.getInt("idade"));
-				pts.setDataAvaliacao(rs.getDate("data_avaliacao"));
-				pts.setDataVencimento(rs.getDate("data_vencimento"));
-				pts.setPtsVencido(rs.getBoolean("pts_vencido"));
-				pts.setQueixaPrincipal(rs.getString("queixa_principal"));
-				pts.setCondicoesSaude(rs.getString("condicoes_saude"));
-				pts.setFuncaoIhEstruturaCorpo(rs.getString("funcao_estrutura_corpo"));
-				pts.setAtividadeIhParticipacao(rs.getString("atividade_participacao"));
-				pts.setFatoresPessoais(rs.getString("fatores_pessoais"));
-				pts.getFatoresAmbientais().setId(rs.getInt("id_fator_ambiental"));
-				pts.getFatoresAmbientais().setFacilitador(rs.getString("facilitador"));
-				pts.getFatoresAmbientais().setBarreira(rs.getString("barreira"));
-				pts.setListaAvaliadores(buscaAvaliadoresPtsCif(pts, conexao));
-				pts.setListaObjetivos(buscaObjetivosPtsCif(pts, conexao));
-			}
-
-		} catch (SQLException sqle) {
-			throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-		} catch (Exception ex) {
-			throw new ProjetoException(ex, this.getClass().getName());
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return pts;
-	}
-
-    private List<AvaliadorPtsCifDTO> buscaAvaliadoresPtsCif(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
-
-        String sql = "select f.id_funcionario, f.descfuncionario, f.cns, apc.data_validacao, apc.validado "+
-        		"	from acl.funcionarios f \r\n" + 
-        		"	join hosp.avaliador_pts_cif apc on f.id_funcionario = apc.id_avaliador \r\n" + 
-        		"	join hosp.pts_cif pc on apc.id_pts_cif = pc.id \r\n" + 
-        		"	where pc.id = ? and apc.excluido is false";
-        
-        List<AvaliadorPtsCifDTO> listaAvaliadores = new ArrayList<>(); 
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
-            ps.setInt(1, pts.getId());
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	AvaliadorPtsCifDTO avaliador = new AvaliadorPtsCifDTO();
-            	avaliador.getAvaliador().setId(rs.getLong("id_funcionario"));
-            	avaliador.getAvaliador().setNome(rs.getString("descfuncionario"));
-            	avaliador.getAvaliador().setCns(rs.getString("cns"));
-            	avaliador.setData(rs.getDate("data_validacao"));
-            	avaliador.setValidado(rs.getBoolean("validado"));
-            	listaAvaliadores.add(avaliador);
-            }
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return listaAvaliadores;
-    }
-    
-    private List<ObjetivoPtsCifBean> buscaObjetivosPtsCif(PtsCifBean pts, Connection conexaoAux) 
-    		throws ProjetoException, SQLException {
-
-        String sql = "select opc.id, opc.objetivo, opc.forma_avaliacao, opc.intervencao from hosp.objetivos_pts_cif opc \r\n" + 
-        		"	join hosp.pts_cif pc on opc.id_pts_cif = pc.id \r\n" + 
-        		"	where pc.id = ?	";
-        
-        List<ObjetivoPtsCifBean> listaObjetivos = new ArrayList<>(); 
-        try {
-            PreparedStatement ps = conexaoAux.prepareStatement(sql);
-            ps.setInt(1, pts.getId());
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-            	ObjetivoPtsCifBean objetivo = new ObjetivoPtsCifBean();
-            	objetivo.setId(rs.getInt("id"));
-            	objetivo.setObjetivo(rs.getString("objetivo"));
-            	objetivo.setFormaAvaliacao(rs.getString("forma_avaliacao"));
-            	objetivo.setIntervencao(rs.getString("intervencao"));
-            	listaObjetivos.add(objetivo);
-            }
-        } catch (SQLException sqle) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(sqle), this.getClass().getName(), sqle);
-        } catch (Exception ex) {
-        	conexaoAux.rollback();
-            throw new ProjetoException(ex, this.getClass().getName());
-        }
-        return listaObjetivos;
-    }
-    
 	public List<PtsCifBean> buscarPtsAvaliador(Long idAvaliador) throws ProjetoException {
 
-		String sql = "SELECT p.id, pi.id as id_paciente_instituicao, pa.nome, extract (year from age(pa.dtanascimento)) idade, \r\n" + 
-				"pa.id_paciente codpaciente, pa.cpf, pa.cns, pa.matricula, pr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo, \r\n" + 
-				"p.data_vencimento, p.data_avaliacao, \r\n" + 
-				"case when p.data_vencimento is null \r\n" + 
-				"		then false \r\n" + 
-				"	when p.data_vencimento < current_date \r\n" + 
-				"		then true \r\n" + 
-				"	else \r\n" + 
-				"		false \r\n" + 
-				"	end pts_vencido \r\n" + 
-				"FROM hosp.paciente_instituicao pi  \r\n" + 
-				"LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo)   \r\n" + 
-				"LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = coalesce(laudo.codpaciente, pi.id_paciente) ) \r\n" + 
-				"LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma)  \r\n" + 
-				"LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo)  \r\n" + 
-				"JOIN hosp.pts_cif p ON (p.id_paciente_instituicao = pi.id)  \r\n" + 
-				"JOIN hosp.avaliador_pts_cif apc on (p.id = apc.id_pts_cif)\r\n" + 
-				" left join (select p2.id, p2.id_paciente_instituicao from hosp.pts_cif p2 where p2.id = (select max(id) from hosp.pts_cif p3  \r\n" + 
-				" where (p3.id_paciente_instituicao = p2.id_paciente_instituicao)) ) ptsmax on  \r\n" + 
-				"  ptsmax.id_paciente_instituicao = p.id_paciente_instituicao \r\n" + 
-				"WHERE pi.status = 'A' and (case when p.id is not null then p.id=ptsmax.id else 1=1 end) \r\n" + 
-				"and apc.id_avaliador = ? and apc.validado is false";
+		String sql = "select cif.*, pi2.id as id_paciente_instituicao, c.descricao as desc_competencia, p.nome, p.cpf, p.cns, p.matricula, " +
+				"extract (year from age(p.dtanascimento)) as idade, p.id_paciente codpaciente, pr.id_programa, pr.descprograma, g.id_grupo, g.descgrupo " +
+				"from hosp.ptscif cif " +
+				"left join hosp.competencia_ptscif c on (cif.id_competencia = c.id) " +
+				"left join hosp.paciente_instituicao pi2 on (pi2.id = cif.id_paciente_instituicao) " +
+				"left join hosp.laudo l on (pi2.codlaudo = l.id_laudo) " +
+				"left join hosp.programa pr on (pi2.codprograma = pr.id_programa) " +
+				"left join hosp.grupo g on (pi2.codgrupo = g.id_grupo) " +
+				"left join hosp.pacientes p on (cif.codpaciente = p.id_paciente)"+
+				"left join hosp.avaliador_ptscif ap on (cif.id = ap.id_ptscif)" +
+				"where ap.id_avaliador = ? and ap.validado is false";
 
 
 		List<PtsCifBean> lista = new ArrayList<>();
@@ -657,29 +903,28 @@ public class PtsCifDAO {
 
 	private void mapearResultSetPtsCif(ResultSet rs, PtsCifBean pts) throws SQLException {
 		pts.setId(rs.getInt("id"));
+		pts.setUltimaModificacao(rs.getTimestamp("ultima_modificacao"));
 		pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
 		pts.getGerenciarPaciente().getPrograma().setIdPrograma(rs.getInt("id_programa"));
 		pts.getGerenciarPaciente().getPrograma().setDescPrograma(rs.getString("descprograma"));
 		pts.getGerenciarPaciente().getGrupo().setIdGrupo(rs.getInt("id_grupo"));
 		pts.getGerenciarPaciente().getGrupo().setDescGrupo(rs.getString("descgrupo"));
+		pts.getCompetencia().setId(rs.getInt("id_competencia"));
+		pts.getCompetencia().setDescricao(rs.getString("desc_competencia"));
 		pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 		pts.getPaciente().setNome(rs.getString("nome"));
 		pts.getPaciente().setCns(rs.getString("cns"));
 		pts.getPaciente().setCpf(rs.getString("cpf"));
 		pts.getPaciente().setMatricula(rs.getString("matricula"));
-		pts.setIdadePaciente(rs.getInt("idade"));
-		pts.setDataAvaliacao(rs.getDate("data_avaliacao"));
-		pts.setDataVencimento(rs.getDate("data_vencimento"));
-		pts.setPtsVencido(rs.getBoolean("pts_vencido"));
 	}
 	
     public Boolean gravarValidacaoAvaliador(Long idAvaliador, Integer idPts) throws ProjetoException {
 
         Boolean retorno = false;
 
-        String sql = "UPDATE hosp.avaliador_pts_cif " + 
+        String sql = "UPDATE hosp.avaliador_ptscif " +
         		"SET data_validacao = CURRENT_TIMESTAMP, validado = TRUE " + 
-        		"WHERE id_avaliador = ? AND id_pts_cif = ?; ";
+        		"WHERE id_avaliador = ? AND id_ptscif = ?; ";
         
         Connection conexao = null;
         try {
