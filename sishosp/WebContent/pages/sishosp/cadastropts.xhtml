@@ -75,8 +75,8 @@
 
 							<p:commandButton icon="ui-icon-calendar" style="margin-top: 10px;margin-left: 10px"
 											 value="Permitir Alterar Data" immediate="true"
-											 rendered="#{(PtsController.existePts==true)}" 
-											 disabled="#{(PtsController.existePts==false)}" 
+											 rendered="#{(PtsController.existePts and PtsController.permiteAlterar)}"
+											 disabled="#{(!PtsController.existePts)}"
 											 class="btn-acao-table acao-confirmar"
 											 update=":frmSenhaLiberacaoPts"
 											 actionListener="#{PtsController.abrirDialogLiberacaoPts()}" />
@@ -96,7 +96,7 @@
 							<b:label value="Incapacidades Funcionais:"
 								id="incapacidadesFuncionais" severity="info" class="fire-label" />
 
-							<h:inputTextarea
+							<h:inputTextarea disabled="#{!PtsController.permiteAlterar}"
 								style="margin-top: 10px;height:200px;width:410px"
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
@@ -108,7 +108,7 @@
 							<b:label value="Capacidades Funcionais:"
 								id="capacidadesFuncionais" severity="info" class="fire-label" />
 
-							<h:inputTextarea
+							<h:inputTextarea disabled="#{!PtsController.permiteAlterar}"
 								style="margin-top: 10px;height:200px;width:410px"
 								scrollHeight="100" required="#{MBFuncionarios.usuarioLogado.unidade.parametro.capacidadesFuncionaisPTSObrigatorio}"
 								rows="20" cols="89"
@@ -126,6 +126,7 @@
 								class="fire-label" />
 
 							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+											 disabled="#{!PtsController.permiteAlterar}"
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Análise Dos Resultados dos Objetivos Gerais: Campo obrigatório!"
 								value="#{PtsController.pts.analiseDosResultadosDosObjetivosGerias}"></h:inputTextarea>
@@ -139,7 +140,7 @@
 								id="objetivosFamiliarPaciente" severity="info"
 								class="fire-label" />
 
-							<h:inputTextarea
+							<h:inputTextarea disabled="#{!PtsController.permiteAlterar}"
 								style="margin-top: 10px;height:200px;width:410px"
 								scrollHeight="100" required="true" rows="20" cols="89"
 								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
@@ -153,7 +154,7 @@
 								id="objetivosGeraisMultidisciplinar" severity="info"
 								class="fire-label" />
 
-							<h:inputTextarea
+							<h:inputTextarea  disabled="#{!PtsController.permiteAlterar}"
 								style="margin-top: 10px;height:200px;width:410px"
 								scrollHeight="100" required="#{MBFuncionarios.usuarioLogado.unidade.parametro.objetivosGeraisPTSObrigatorio}"
 								rows="20" cols="89"
@@ -171,6 +172,7 @@
 								class="fire-label" />
 
 							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+											 disabled="#{!PtsController.permiteAlterar}"
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
@@ -182,6 +184,7 @@
 								class="fire-label" />
 
 							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+											 disabled="#{!PtsController.permiteAlterar}"
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
@@ -193,6 +196,7 @@
 								class="fire-label" />
 
 							<h:inputTextarea style="margin-top: 10px;height:200px;width:100%"
+											 disabled="#{!PtsController.permiteAlterar}"
 								scrollHeight="100" required="false" rows="20" cols="89"
 								requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
 								value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
@@ -207,7 +211,7 @@
 					</b:row>
 
 					<b:row>
-						<p:commandButton icon="ui-icon-plus" style="margin-top: 10px"
+						<p:commandButton icon="ui-icon-plus" style="margin-top: 10px" disabled="#{!PtsController.permiteAlterar}"
 							value="Incluir Área" immediate="true"
 							class="btn-acao-table acao-confirmar"
 							update=":frmInclusaoAreaPts"
@@ -257,22 +261,23 @@
 
 							<p:column headerText="Ação" width="9%">
 								<div align="center">
-									<p:commandButton process="@this"
-										class="new-btn-acao-table acao-excluir"
-										action="#{PtsController.removerPtsDaLista(pts)}"
-										icon="ui-icon-trash" update="dtPtsAdicionados">
+									<p:commandButton rendered="#{PtsController.permiteAlterar}" process="@this"
+													 class="new-btn-acao-table acao-excluir"
+													 action="#{PtsController.removerPtsDaLista(pts)}"
+													 icon="ui-icon-trash" update="dtPtsAdicionados">
 										<f:setPropertyActionListener value="#{pts}"
 											target="#{PtsController.pts.ptsArea}" />
 
-										<p:commandButton icon="ui-icon-pencil" process="@this"
-											action="#{PtsController.abrirDialogEdicaoPts(pts)}"
-											class="new-btn-acao-table2 acao-editar"
-											update=":frmInclusaoAreaPts">
-											<f:setPropertyActionListener value="#{pts}"
-												target="#{PtsController.ptsAreaAnterior}" />
-											<f:setPropertyActionListener value="#{pts}"
-												target="#{PtsController.ptsAreaAtual}" />
-										</p:commandButton>
+									</p:commandButton>
+									<p:commandButton disabled="#{!PtsController.alteracaoPorArea.get(pts.id)}"
+											         icon="ui-icon-pencil" process="@this"
+													 action="#{PtsController.abrirDialogEdicaoPts(pts)}"
+													 class="new-btn-acao-table2 acao-editar"
+													 update=":frmInclusaoAreaPts">
+										<f:setPropertyActionListener value="#{pts}"
+																	 target="#{PtsController.ptsAreaAnterior}" />
+										<f:setPropertyActionListener value="#{pts}"
+																	 target="#{PtsController.ptsAreaAtual}" />
 									</p:commandButton>
 								</div>
 							</p:column>
@@ -284,12 +289,14 @@
 					<div align="center">
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b1"
-										 rendered="#{PtsController.existePts==false}"
+										 rendered="#{!PtsController.existePts}"
 							icon="ui-icon-check" update=":msgPagina"
 							class="btn-incluir" action="#{PtsController.gravarPts()}" />
 
 						<p:commandButton value="Gravar" look="success" size="sm" id="b2"
 										 rendered="#{PtsController.existePts}"
+										 disabled="#{!PtsController.permiteAlterar and
+										 !PtsController.permitirGravarAlteracaoDeArea}"
 										 icon="ui-icon-check" update=":msgPagina"
 										 class="btn-incluir" action="#{PtsController.gravarAlteracaoPts()}" />
 

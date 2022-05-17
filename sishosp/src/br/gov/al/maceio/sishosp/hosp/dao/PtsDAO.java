@@ -9,6 +9,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
+import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.Pts;
 import br.gov.al.maceio.sishosp.hosp.model.PtsArea;
 
@@ -947,5 +948,74 @@ public class PtsDAO {
             }
         }
         return retorno;
+    }
+
+    public boolean verificaSePodeEditarPTS(Pts pts) throws ProjetoException {
+        Connection conexao = null;
+        String sql = "select current_timestamp, data_hora_operacao from hosp.pts where id = ?";
+
+        boolean ehPermitido = false;
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+
+            ps.setInt(1, pts.getId());
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                Timestamp current = rs.getTimestamp(1);
+                Timestamp alterLimit = new Timestamp(rs.getTimestamp(2).getTime() + 86400000) ; //1000 * 60 * 60 * 24 => 86400000 (24h)
+                ehPermitido = current.before(alterLimit);
+            } else {
+                ehPermitido = false;
+            }
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                //comentado walter erro log ex.printStackTrace();
+            }
+        }
+        return ehPermitido;
+    }
+
+    public boolean verificaSePodeEditarAreaPTS(PtsArea ptsArea, FuncionarioBean profissional) throws ProjetoException {
+        Connection conexao = null;
+        String sql = "select current_timestamp, data_hora_operacao from hosp.pts_area where id = ? and id_funcionario = ?";
+
+        boolean ehPermitido = false;
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement ps = conexao.prepareStatement(sql);
+
+            ps.setInt(1, ptsArea.getId());
+            ps.setInt(2, profissional.getId().intValue());
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                Timestamp current = rs.getTimestamp(1);
+                Timestamp alterLimit = new Timestamp(rs.getTimestamp(2).getTime() + 86400000) ; //1000 * 60 * 60 * 24 => 86400000 (24h)
+                ehPermitido = current.before(alterLimit);
+            } else {
+                ehPermitido = false;
+            }
+        } catch (SQLException ex2) {
+            throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(ex2), this.getClass().getName(), ex2);
+        } catch (Exception ex) {
+            throw new ProjetoException(ex, this.getClass().getName());
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                //comentado walter erro log ex.printStackTrace();
+            }
+        }
+        return ehPermitido;
     }
 }

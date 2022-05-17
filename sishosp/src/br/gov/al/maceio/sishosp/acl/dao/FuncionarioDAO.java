@@ -217,7 +217,7 @@ public class FuncionarioDAO {
 				+ " coalesce(p.permite_agendamento_duplicidade, false) permite_agendamento_duplicidade, p.agenda_avulsa_valida_paciente_ativo , e.restringir_laudo_unidade, p.cpf_paciente_obrigatorio,  "
 				+ " p.verifica_periodo_inicial_evolucao_programa, p.inicio_evolucao_unidade, us.realiza_auditoria, p.busca_automatica_cep_paciente, p.valida_dados_laudo_sigtap, "
 				+ " p.capacidades_funcionais_pts_obrigatorio, p.objetivos_gerais_pts_obrigatorio, p.cid_agenda_obrigatorio, p.cid_paciente_terapia_obrigatorio, p.bpa_com_laudo_autorizado, "
-				+ " p.bloquear_edicao_evolucao, us.excecao_evolucao_com_pendencia, p.bloqueia_por_pendencia_evolucao_anterior from acl.funcionarios us "
+				+ " p.bloquear_edicao_evolucao, p.bloquear_edicao_pts, us.excecao_evolucao_com_pendencia, p.bloqueia_por_pendencia_evolucao_anterior from acl.funcionarios us "
 				+ " join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
 				+ " join hosp.unidade u on u.id = us.codunidade "
@@ -286,6 +286,7 @@ public class FuncionarioDAO {
 				funcionario.getUnidade().getParametro().setCidPacienteTerapiaObrigatorio(rs.getBoolean("cid_paciente_terapia_obrigatorio"));
 				funcionario.getUnidade().getParametro().setBpaComLaudoAutorizado(rs.getBoolean("bpa_com_laudo_autorizado"));
 				funcionario.getUnidade().getParametro().setBloquearEdicaoEvolucao(rs.getBoolean("bloquear_edicao_evolucao"));
+				funcionario.getUnidade().getParametro().setBloquearEdicaoPTS(rs.getBoolean("bloquear_edicao_pts"));
 				funcionario.getUnidade().setRestringirLaudoPorUnidade(rs.getBoolean("restringir_laudo_unidade"));
 				funcionario.setRealizaAuditoria(rs.getBoolean("realiza_auditoria"));
 				funcionario.setExcecaoEvolucaoComPendencia(rs.getBoolean("excecao_evolucao_com_pendencia"));
@@ -605,7 +606,7 @@ public class FuncionarioDAO {
 
 	public Boolean alterar(FuncionarioBean usuario) throws ProjetoException {
 		boolean retorno = false;
-		String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
+		String sql = "update acl.funcionarios set descfuncionario = ?, cpf = ?, email = ?, "
 				+ "senha = ?, id_perfil = ?, ativo = ?, codunidade = ? where id_funcionario = ?";
 		try {
 			con = ConnectionFactory.getConnection();

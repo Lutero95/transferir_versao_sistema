@@ -109,7 +109,7 @@ public class UnidadeDAO {
                 codUnidade = rs.getInt("id");
             }
 
-            sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
+            sql = "INSERT INTO hosp.parametro (motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
                     "qtd_simultanea_atendimento_equipe, codunidade, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
                     "programa_ortese_protese, grupo_ortese_protese, almoco_inicio, almoco_final, necessita_presenca_para_evolucao, " +
                     "pts_mostra_obs_gerais_curto , pts_mostra_obs_gerais_medio, pts_mostra_obs_gerais_longo, " +
@@ -121,9 +121,9 @@ public class UnidadeDAO {
                     "atribuir_cor_tabela_tela_evolucao_profissional,cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, "+
                     "verifica_periodo_inicial_evolucao_programa, inicio_evolucao_unidade, busca_automatica_cep_paciente,  "+
                     "capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, cid_paciente_terapia_obrigatorio, "+
-                    "bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento, bloquear_edicao_evolucao ) "+
+                    "bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento, bloquear_edicao_evolucao, bloquear_edicao_pts) "+
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "+
-                    "?, ?, ?, ?, ?, ?, ? )";
+                    "?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -268,6 +268,7 @@ public class UnidadeDAO {
             ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
             ps.setBoolean(50, unidade.getParametro().isBloquearAcessoEmAfastamento());
             ps.setBoolean(51, unidade.getParametro().isBloquearEdicaoEvolucao());
+            ps.setBoolean(52, unidade.getParametro().isBloquearEdicaoPTS());
             ps.execute();
 
 
@@ -361,7 +362,7 @@ public class UnidadeDAO {
 
     public Boolean alterarUnidade(UnidadeBean unidade) throws ProjetoException {
 
-        Boolean retorno = false;
+        boolean retorno;
         String sql = "UPDATE hosp.unidade SET   rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
                 " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome=?,  cod_empresa=? " +
@@ -436,7 +437,7 @@ public class UnidadeDAO {
                     "agenda_avulsa_valida_paciente_ativo = ?, atribuir_cor_tabela_tela_evolucao_profissional = ?, cpf_paciente_obrigatorio = ?, dias_paciente_ativo_sem_evolucao = ?, "+
                     "verifica_periodo_inicial_evolucao_programa = ?, inicio_evolucao_unidade = ?, busca_automatica_cep_paciente = ?,  "+
                     "capacidades_funcionais_pts_obrigatorio = ?, objetivos_gerais_pts_obrigatorio = ?, cid_agenda_obrigatorio = ?, cid_paciente_terapia_obrigatorio=?, "+
-                    "bpa_com_laudo_autorizado = ?, bloquear_acesso_em_afastamento = ?, bloquear_edicao_evolucao = ? WHERE codunidade = ?";
+                    "bpa_com_laudo_autorizado = ?, bloquear_acesso_em_afastamento = ?, bloquear_edicao_evolucao = ?, bloquear_edicao_pts = ? WHERE codunidade = ?";
 
             ps = con.prepareStatement(sql);
 
@@ -547,7 +548,8 @@ public class UnidadeDAO {
             ps.setBoolean(49, unidade.getParametro().isBpaComLaudoAutorizado());
             ps.setBoolean(50, unidade.getParametro().isBloquearAcessoEmAfastamento());
             ps.setBoolean(51, unidade.getParametro().isBloquearEdicaoEvolucao());
-            ps.setInt(52, unidade.getId());
+            ps.setBoolean(52, unidade.getParametro().isBloquearEdicaoPTS());
+            ps.setInt(53, unidade.getId());
 
             ps.executeUpdate();
 
@@ -690,7 +692,7 @@ public class UnidadeDAO {
                 "acesso_permitido_quarta, acesso_permitido_quinta, acesso_permitido_sexta, acesso_permitido_sabado, permite_agendamento_duplicidade, agenda_avulsa_valida_paciente_ativo, "+
                 "atribuir_cor_tabela_tela_evolucao_profissional, cpf_paciente_obrigatorio, dias_paciente_ativo_sem_evolucao, verifica_periodo_inicial_evolucao_programa, "+
                 "inicio_evolucao_unidade, busca_automatica_cep_paciente, capacidades_funcionais_pts_obrigatorio, objetivos_gerais_pts_obrigatorio, cid_agenda_obrigatorio, "+
-                "cid_paciente_terapia_obrigatorio, bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento, bloquear_edicao_evolucao  "+
+                "cid_paciente_terapia_obrigatorio, bpa_com_laudo_autorizado, bloquear_acesso_em_afastamento, bloquear_edicao_evolucao, bloquear_edicao_pts  "+
                 " FROM hosp.parametro where codunidade = ?;";
 
         try {
@@ -762,6 +764,7 @@ public class UnidadeDAO {
                 parametro.setBpaComLaudoAutorizado(rs.getBoolean("bpa_com_laudo_autorizado"));
                 parametro.setBloquearAcessoEmAfastamento(rs.getBoolean("bloquear_acesso_em_afastamento"));
                 parametro.setBloquearEdicaoEvolucao(rs.getBoolean("bloquear_edicao_evolucao"));
+                parametro.setBloquearEdicaoPTS(rs.getBoolean("bloquear_edicao_pts"));
             }
         } catch (SQLException sqle) {
             conAuxiliar.rollback();

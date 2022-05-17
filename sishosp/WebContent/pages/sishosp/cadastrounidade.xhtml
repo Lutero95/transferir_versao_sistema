@@ -605,98 +605,147 @@
 
 							<p:outputPanel id="rowEvolucao">
 								<b:row>
-									<p:selectBooleanCheckbox itemLabel="Verifica Período Inicial da Evolução por Programa"
-									 value="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma}">
-									 	<p:ajax update="rowEvolucao rowdataEvolucao btnAdicionarProgramaGrupo"
-									 	 listener="#{UnidadeController.limparDataInicioEvolucao()}"/>
-									 </p:selectBooleanCheckbox>
-									 
-									 <p:selectBooleanCheckbox itemLabel="Bloquear Edição Evolução"
-									 	value="#{UnidadeController.unidade.parametro.bloquearEdicaoEvolucao}"/>
+									<b:column span="5">
+										<p:selectBooleanCheckbox
+												itemLabel="Verifica Período Inicial da Evolução por Programa"
+												value="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma}">
+
+											<p:ajax update="rowEvolucao rowdataEvolucao btnAdicionarProgramaGrupo"
+													listener="#{UnidadeController.limparDataInicioEvolucao()}"/>
+										</p:selectBooleanCheckbox>
+									</b:column>
+
+									<b:column span="3">
+										<p:selectBooleanCheckbox itemLabel="Bloquear Edição Evolução"
+																 value="#{UnidadeController.unidade.parametro.bloquearEdicaoEvolucao}"/>
+									</b:column>
+
+									<b:column span="3">
+										<p:selectBooleanCheckbox itemLabel="Bloquear Edição PTS"
+																 value="#{UnidadeController.unidade.parametro.bloquearEdicaoPTS}"/>
+									</b:column>
+
 								</b:row>
 
 								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}">
-									<b:column span="2" class="label-position data-size">
+									<b:column span="3">
 										<br />
-										<b:label value="Data de Início da Evolução:" severity="info" />
-										<p:calendar id="dataEvolucaoUnidade" locale="pt" required="true" size="15"
-											class="select-agendaEquipe2"
-											requiredMessage="Data de Início da Evolução: Campo obrigatório"
-											value="#{UnidadeController.unidade.parametro.inicioEvolucaoUnidade}" mask="true"
-											pattern="dd/MM/yyyy" pages="1" showOn="button"/>
+										<b:row>
+											<b:column span="12">
+												<b:label value="Data de Início da Evolução:" severity="info" />
+											</b:column>
+										</b:row>
+										<b:row>
+											<b:column span="12">
+												<p:calendar id="dataEvolucaoUnidade" locale="pt" required="true" size="15"
+															class="select-agendaEquipe2"
+															requiredMessage="Data de Início da Evolução: Campo obrigatório"
+															value="#{UnidadeController.unidade.parametro.inicioEvolucaoUnidade}" mask="true"
+															pattern="dd/MM/yyyy" pages="1" showOn="button"/>
+											</b:column>
+										</b:row>
+										<br />
 									</b:column>
 								</b:row>
 
 								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == true}">
-									<b:column span="3"
-										class="label-position new-data-size new-comple1">
-									 <br />
-										<b:label value="Programa:" severity="info" />
+									<b:column span="5">
+										<br />
+										<b:row>
+											<b:column span="12">
+												<b:label value="Programa:" severity="info"
+														 style="margin: 0px;"/>
+											</b:column>
+										</b:row>
+										<b:row>
+											<b:column span="12">
+												<p:outputPanel id="outProg">
+													<p:autoComplete id="programaEvolucao"
+																	value="#{UnidadeController.evolucaoAux.programa}"
+																	size="30"
+																	converter="conPrograma" class="select-agendaEquipe4"
+																	completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+																	effect="fade" var="theme" forceSelection="true"
+																	minQueryLength="1" itemValue="#{theme}"
+																	itemLabel="#{theme.descPrograma}">
+														<p:ajax event="itemSelect" update="grupoEvolucao" listener="#{UnidadeController.limparGrupoNaBuscaEvolucao}" />
 
-										<p:outputPanel id="outProg">
-											<p:autoComplete id="programaEvolucao"
-												value="#{UnidadeController.evolucaoAux.programa}" size="31"
-												converter="conPrograma" class="select-agendaEquipe4"
-												completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-												effect="fade" var="theme" forceSelection="true"
-												minQueryLength="1" itemValue="#{theme}"
-												itemLabel="#{theme.descPrograma}">
-												<p:ajax event="itemSelect" update="grupoEvolucao" listener="#{UnidadeController.limparGrupoNaBuscaEvolucao}" />
+													</p:autoComplete>
 
-											</p:autoComplete>
+													<p:commandButton id="btBusPr2" immediate="true"
+																	 style="margin-left: 5px" icon="ui-icon-search"
+																	 actionListener="#{ProgramaController.carregaListaProgramas()}"
+																	 update=":formConsuProg2"
+																	 oncomplete="PF('dlgConsultProg').show();"
+																	 disabled="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}" />
 
-											<p:commandButton id="btBusPr2" immediate="true"
-												style="margin-left: 5px" icon="ui-icon-search"
-												actionListener="#{ProgramaController.carregaListaProgramas()}"
-												update=":formConsuProg2"
-												oncomplete="PF('dlgConsultProg').show();"
-												disabled="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == false}" />
-
-										</p:outputPanel>
+												</p:outputPanel>
+											</b:column>
+										</b:row>
+										<br />
 									</b:column>
 
-									<b:column span="3"
-										class="label-position new-data-size new-comple1">
+									<b:column span="5">
 										<br />
-										<b:label value="Grupo:" severity="info" />
+										<b:row>
+											<b:column span="12">
+												<b:label value="Grupo:" severity="info"
+														 style="margin: 0px;"/>
+											</b:column>
+										</b:row>
+										<b:row>
+											<b:column span="12">
+												<p:outputPanel id="outGrupo">
+													<p:autoComplete
+															value="#{UnidadeController.evolucaoAux.grupo}"
+															size="30" id="grupoEvolucao" converter="conGrupo"
+															class="select-agendaEquipe4"
+															disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
+															completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaEvolucao}"
+															effect="fade" var="theme" forceSelection="true"
+															minQueryLength="1" itemValue="#{theme}"
+															itemLabel="#{theme.descGrupo}">
+														<p:ajax event="itemSelect" />
 
-										<p:outputPanel id="outGrupo">
-											<p:autoComplete
-												value="#{UnidadeController.evolucaoAux.grupo}"
-												size="31" id="grupoEvolucao" converter="conGrupo"
-												class="select-agendaEquipe4"
-												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
-												completeMethod="#{UnidadeController.listaGrupoAutoCompleteComProgramaEvolucao}"
-												effect="fade" var="theme" forceSelection="true"
-												minQueryLength="1" itemValue="#{theme}"
-												itemLabel="#{theme.descGrupo}">
-												<p:ajax event="itemSelect" />
+													</p:autoComplete>
 
-											</p:autoComplete>
+													<p:commandButton id="btBusGr2" immediate="true"
+																	 style="margin-left: 5px" icon="ui-icon-search"
+																	 disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
+																	 actionListener="#{UnidadeController.limparGrupoNaBuscaEvolucao}"
+																	 action="#{UnidadeController.listaGrupoPorProgramaEvolucao(UnidadeController.evolucaoAux.programa.idPrograma)}"
+																	 update=":formConsuGropEvo"
+																	 onclick="PF('dlgConsultGropEvo').show();" />
 
-											<p:commandButton id="btBusGr2" immediate="true"
-												style="margin-left: 5px" icon="ui-icon-search"
-												disabled="#{UnidadeController.evolucaoAux.programa.idPrograma==null}"
-												actionListener="#{UnidadeController.limparGrupoNaBuscaEvolucao}"
-												action="#{UnidadeController.listaGrupoPorProgramaEvolucao(UnidadeController.evolucaoAux.programa.idPrograma)}"
-												update=":formConsuGropEvo"
-												onclick="PF('dlgConsultGropEvo').show();" />
-
-										</p:outputPanel>
+												</p:outputPanel>
+											</b:column>
+										</b:row>
+										<br />
 									</b:column>
 								</b:row>
 
 							</p:outputPanel>
 
 							<p:outputPanel id="rowdataEvolucao">
-								<b:row rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == true}">
-									<b:column span="2" class="label-position">
-										<b:label value="Data de Início da Evolução" severity="info" />
-
-										<p:calendar class="select-agendaEquipe2" mask="99/99/9999" showOn="button"
-											size="5" value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
-											id="inicioevolucao" required="false" pattern="dd/MM/yyyy"
-											requiredMessage="Informe o início da evolução"/>
+								<b:row
+										rendered="#{UnidadeController.unidade.parametro.verificaPeriodoInicialEvolucaoPrograma == true}">
+									<b:column span="3">
+										<br />
+										<b:row>
+											<b:column span="12">
+												<b:label value="Data de Início da Evolução:" severity="info"
+														 style="margin: 0px;"/>
+											</b:column>
+										</b:row>
+										<b:row>
+											<b:column span="12">
+												<p:calendar class="select-agendaEquipe2" mask="99/99/9999" showOn="button"
+															size="5" value="#{UnidadeController.evolucaoAux.dataInicioEvolucao}"
+															id="inicioevolucao" required="false" pattern="dd/MM/yyyy"
+															requiredMessage="Informe o início da evolução"/>
+											</b:column>
+										</b:row>
+										<br />
 									</b:column>
 								</b:row>
 							</p:outputPanel>
@@ -1023,10 +1072,10 @@
 		<p:dialog header="Atenção!" widgetVar="dlgEvolucao" minHeight="40" modal="true" width="600">
 			<h:outputText
 				value="A Unidade não está configurada para verificar o Período de Evolução por Programa, 
-					   marque a opção: "/>  <STRONG>'Verifica Período Inicial da Evolução por Programa'</STRONG> 
-			<h:outputText value=" na Aba "/> <STRONG>'Evolução'</STRONG> 
-			<h:outputText value=" para liberar esta ação ou remova os itens presentes na lista da Aba "/> 
-										   <STRONG>'Evolução'.</STRONG>
+					   marque a opção: "/>  <strong>'Verifica Período Inicial da Evolução por Programa'</strong>
+			<h:outputText value=" na Aba "/> <strong>'Evolução'</strong>
+			<h:outputText value=" para liberar esta ação ou remova os itens presentes na lista da Aba "/>
+										   <strong>'Evolução'.</strong>
 				
 			<div align="center">
 				<br />
