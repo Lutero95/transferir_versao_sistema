@@ -10,8 +10,7 @@
 
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
-		<f:viewAction
-				action="#{RelatoriosController.preparaRelPendenciasEvolucao()}" />
+		<f:viewAction action="#{RelatoriosController.preparaRelPendenciasEvolucao()}" />
 		<f:viewAction action="#{RelatoriosController.adicionaDiasDaSemanaPadrao()}" />
 		<f:viewAction action="#{MBFuncionarios.limparDados()}" />
 	</f:metadata>
@@ -57,7 +56,7 @@
 						</b:column>
 					</b:row>
 
-					<p:fieldset legend="Filtrar por Programa/Grupo">
+					<p:fieldset legend="Filtrar por Programa/Grupo" rendered="#{RelatoriosController.atributoGenerico1.equals('PG')}">
 						<p:outputPanel id="outProgramaGrupo">
 
 							<b:row>
@@ -110,6 +109,37 @@
 					</p:fieldset>
 					<br />
 
+					<b:row>
+						<b:column span="2"
+								  class="label-position new-data-size new-comple1"
+								  rendered="#{RelatoriosController.atributoGenerico1.equals('PR')}">
+							<p:outputPanel id="outProf">
+
+								<b:label value="Profissional" severity="info" />
+								<p:outputPanel>
+									<p:autoComplete
+											value="#{RelatoriosController.prof}"
+											id="autoCompleteProfissional" size="31"
+											converter="conFuncionario" required="false"
+											requiredMessage="Profissional: Campo obrigatório!"
+											class="select-agendaEquipe4"
+											completeMethod="#{insercaoProfissionalEquipeController.listaProfissionalAutoComplete}"
+											effect="fade" var="theme" forceSelection="true"
+											minQueryLength="1"
+											itemLabel="#{theme.nome}">
+									</p:autoComplete>
+
+									<p:commandButton id="btBusProf" icon="ui-icon-search"
+													 immediate="true"
+													 action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+													 process="@this" update="formConsultProf"
+													 oncomplete="PF('dlgConsultaProf').show();" />
+								</p:outputPanel>
+
+							</p:outputPanel>
+						</b:column>
+					</b:row>
+
 					<p:commandButton icon="ui-icon-print" value="Imprimir"
 									 target="_blank" style="font-size: 12px;  text-align: right;"
 									 update="grw"
@@ -146,7 +176,7 @@
 						<h:column>
 							<f:facet name="header">
 								Adicionar
-							</f:facet>
+							</f:facet>"
 							<div align="center">
 								<p:commandButton
 									rendered="#{MBFuncionarios.programaGrupoFoiClicadoNoDialog(programa) == false}"
@@ -172,6 +202,37 @@
 						onclick="PF('dlgConsuGrupos').hide();"
 						action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}" />
 				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultaProf"
+				  dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsultProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							 value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+							 var="profi" display="Nenhum Profissional">
+
+					<h:column>
+						<f:facet name="header">
+							Profissional
+						</f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							Adicionar
+						</f:facet>
+						<p:commandButton icon="fa fa-fw fa-check" title="Selecionar"
+										 class="new-btn-acao-table acao-editar"
+										 update=":frm:outProf :msgPagina"
+										 onclick="PF('dlgConsultaProf').hide();">
+
+							<f:setPropertyActionListener value="#{profi}"
+														 target="#{RelatoriosController.prof}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 	</ui:define>

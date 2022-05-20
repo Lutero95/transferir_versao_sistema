@@ -227,6 +227,7 @@ public class RelatoriosController implements Serializable {
 
 	public void preparaRelPendenciasEvolucao() {
 		atributoGenerico1 = "PG";
+		prof = new FuncionarioBean();
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
@@ -1201,8 +1202,10 @@ public class RelatoriosController implements Serializable {
 
 		map.put("codgrupolista", listaProgramas);
 		map.put("codgrupolista", listaGrupos);
+		if(prof != null && prof.getId() != null && atributoGenerico1.equals("PR")){
+			map.put("id_profissional", prof.getId().intValue());
+		}
 		this.executeReport(relatorio, map, retornaNomeDoRelatorioPendenciasEvolucaoPeloTipo());
-
 	}
 
 	private String retornaTipoDoRelatorioPendenciasEvolucao(String caminho) {
@@ -1218,7 +1221,7 @@ public class RelatoriosController implements Serializable {
 		if(atributoGenerico1.equalsIgnoreCase("PG"))
 			nomeRelatorio = "relatorio_pendencias_evolucao_por_progama.pdf";
 		else
-			nomeRelatorio = "relatorio_pendencias_evolucao_por_profissional_progama.pdf";
+			nomeRelatorio = "relatorio_pendencias_evolucao_por_profissional.pdf";
 		return nomeRelatorio;
 	}
 
@@ -1699,9 +1702,11 @@ public class RelatoriosController implements Serializable {
 
 	private void compileReport(String nomeRelatorio){
 		try {
+			String pathJR = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jrxml";
+			String pathJasper = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jasper";
 			JasperCompileManager.compileReportToFile(
-					this.getServleContext().getRealPath(CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jrxml"),
-					this.getServleContext().getRealPath(CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jasper"));
+					this.getServleContext().getRealPath(pathJR),
+					this.getServleContext().getRealPath(pathJasper));
 		} catch (JRException e) {
 			System.out.println(e.toString());
 		}
