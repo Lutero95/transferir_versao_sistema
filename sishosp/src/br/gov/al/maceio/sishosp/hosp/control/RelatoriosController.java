@@ -1192,8 +1192,8 @@ public class RelatoriosController implements Serializable {
 		ArrayList<Integer> listaGrupos = new ArrayList<>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("codunidade", user_session.getUnidade().getId());
-		map.put("data_inicio_atendimento", this.dataInicial);
-		map.put("data_fim_atendimento", this.dataFinal);
+		map.put("data_inicio_atendimento", new java.sql.Date(dataInicial.getTime()));
+		map.put("data_fim_atendimento", new java.sql.Date(dataFinal.getTime()));
 		for (ProgramaBean programaGrupo : listaProgramasGrupos) {
 			listaProgramas.add(programaGrupo.getIdPrograma());
 			listaGrupos.add(programaGrupo.getGrupoBean().getIdGrupo());
@@ -1203,7 +1203,7 @@ public class RelatoriosController implements Serializable {
 		map.put("codgrupolista", listaProgramas);
 		map.put("codgrupolista", listaGrupos);
 		if(prof != null && prof.getId() != null && atributoGenerico1.equals("PR")){
-			map.put("id_profissional", prof.getId().intValue());
+			map.put("id_funcionario", prof.getId().intValue());
 		}
 		this.executeReport(relatorio, map, retornaNomeDoRelatorioPendenciasEvolucaoPeloTipo());
 	}
@@ -1701,14 +1701,16 @@ public class RelatoriosController implements Serializable {
 	}
 
 	private void compileReport(String nomeRelatorio){
+		String pathJR = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jrxml";
+		String pathJasper = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jasper";
+		compileReport(this.getServleContext().getRealPath(pathJR), this.getServleContext().getRealPath(pathJasper));
+	}
+
+	private void compileReport(String source, String destination){
 		try {
-			String pathJR = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jrxml";
-			String pathJasper = CAMINHO_PRINCIPAL+File.separator+nomeRelatorio+".jasper";
-			JasperCompileManager.compileReportToFile(
-					this.getServleContext().getRealPath(pathJR),
-					this.getServleContext().getRealPath(pathJasper));
+			JasperCompileManager.compileReportToFile(source, destination);
 		} catch (JRException e) {
-			System.out.println(e.toString());
+			e.printStackTrace();
 		}
 	}
 
@@ -1733,9 +1735,9 @@ public class RelatoriosController implements Serializable {
 			if (connection != null)
 				connection.close();
 		} catch (JRException e) {
-			//comentado walter erro log ex.printStackTrace();
+			e.printStackTrace();
 		} catch (SQLException e) {
-			//comentado walter erro log ex.printStackTrace();
+			e.printStackTrace();
 		}
 		this.getFacesContext().responseComplete();
 		servletOutputStream.flush();
