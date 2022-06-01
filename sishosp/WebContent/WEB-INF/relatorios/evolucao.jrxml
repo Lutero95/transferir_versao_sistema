@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PacientesAtivos" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6efaaf42-bd9c-4003-aabb-2ab7b356d7be">
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="APAE"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PacientesAtivos" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="6efaaf42-bd9c-4003-aabb-2ab7b356d7be">
+	<property name="com.jaspersoft.studio.data.sql.tables">
+		<![CDATA[aG9zcC5hdGVuZGltZW50b3MgLDUzMiwxNDc3LDU2OTAyYzcwLTQwOWItNGYyZS04YjY5LWQ0YWVh
+YmFjMTg2ZTthY2wuZnVuY2lvbmFyaW9zICw3NTQsMTUsOTgxMmI3YTUtNjhjNS00YTcyLTk0NmUt
+ZmFjZmQzNjZlMTYxO2hvc3AuZ3J1cG8gLDI3MiwxODEwLDI5YzJlOTE4LTZhNjQtNDA3NS1iMzli
+LWUxZjNlZjUyOGNkMTtob3NwLnByb2MgLDEwMDUsMTYyNywxNmQwZjAyYy0zN2Q0LTQwMWQtYWJj
+NS1iMTgzMzY0NjIyMmI7aG9zcC5jYm8gLDE1LDM2NTgsYmZmMjI5OGMtMTcwMi00NDM2LTliOTYt
+MDBmNDlmNzZhOTY1O2hvc3AuY29uc2VsaG8gLDUzMiwxMjE3LGFlNTNkOGNjLWFiMjAtNDRhZC1h
+MjM4LWYzZTBhNmRkZmEzZTtob3NwLmVtcHJlc2EgLDc1NCw5NDQsODNiMTA5M2ItYWU0Yy00MGJh
+LTg0ODctMmMyMGExOThmY2E2O2hvc3Auc2l0dWFjYW9fYXRlbmRpbWVudG8gLDEwMDUsMTMzNSxl
+OGQ2YWU5Zi00NTEyLTQ1ZGYtODY2My1iYzhkNDNjMWVkMzA7aG9zcC5wYWNpZW50ZXMgLDc1NCwx
+NjI3LDFiZDM0MTlhLTY1OTctNGM3Yy1iNDBhLTc0NTVlNjc3MmM3YTtob3NwLmF0ZW5kaW1lbnRv
+czEgLDEyMzgsMTMyNCw2ZjIxYjE4Zi0wYzM3LTQyYWEtOTVmNC1mOGNhZjBhYzlhYmY7aG9zcC50
+aXBvYXRlbmRpbWVudG8gLDI3MiwyNTI0LGY5MWY0Mjg1LWMxMGMtNDY0My1iNjY1LTMzYzk1NzU0
+ODFhNTtob3NwLnByb2dyYW1hICwxNSwxOTA2LGIyMzgyNmIxLTA5NWQtNDY2NC1iZmIxLWMxZTQz
+YzlkYjZhMjs=]]>
+	</property>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Style_Cores_alternadas" mode="Opaque" backcolor="#FFFFFF">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT}% 2 == 0]]></conditionExpression>
@@ -15,7 +39,7 @@
 	<queryString language="SQL">
 		<![CDATA[SELECT a1.evolucao, a.dtaatende, f.descfuncionario,f.cns, p.nome, ta.desctipoatendimento, programa.descprograma,
 g.descgrupo, sa.descricao  situacaoatendimento, c.codigo codcbo, c.id idcbo, c.descricao desccbo,
-pa.id_paciente, pa.nome as nome_paciente,  con.id id_conselho, con.descricao conselho, e.nome_principal, e.nome_fantasia, e.cnpj, e.logomarca, e.cidade, e.estado
+pa.id_paciente, pa.nome as nome_paciente, concat(con.descricao, ' ', f.numero_conselho) as conselho, e.nome_principal, e.nome_fantasia, e.cnpj, e.logomarca, e.cidade, e.estado
 FROM hosp.atendimentos1 a1
 LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento)
 left join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento
@@ -26,8 +50,7 @@ left join hosp.grupo g on g.id_grupo = a.codgrupo
 LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento)
 LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento)
 left join hosp.cbo c on c.id  = a1.cbo
-left join hosp.cbo_conselho cc on a1.cbo = cc.id_cbo
-left join hosp.conselho con on cc.id_conselho = con.id
+left join hosp.conselho con on (con.id = f.id_conselho)
 left join hosp.empresa e on (1=1)
 WHERE a1.evolucao IS NOT NULL and coalesce(a.situacao,'') <> 'C' and coalesce(a1.excluido,'N') = 'N'
 and p.ativo = 'S'
@@ -105,11 +128,6 @@ ORDER BY pa.nome, a.dtaatende]]>
 		<property name="com.jaspersoft.studio.field.label" value="nome_paciente"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="id_conselho" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.name" value="id_conselho"/>
-		<property name="com.jaspersoft.studio.field.label" value="id_conselho"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="conselho"/>
-	</field>
 	<field name="conselho" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="conselho"/>
 		<property name="com.jaspersoft.studio.field.label" value="conselho"/>
@@ -160,29 +178,33 @@ ORDER BY pa.nome, a.dtaatende]]>
 	<pageHeader>
 		<band height="70" splitType="Stretch">
 			<textField>
-				<reportElement x="140" y="0" width="340" height="20" uuid="39c97488-8a06-416d-8031-4da268c76b54"/>
+				<reportElement x="130" y="0" width="350" height="20" uuid="39c97488-8a06-416d-8031-4da268c76b54"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_principal}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="480" y="0" width="90" height="20" uuid="09ce9f0e-e497-4555-8286-49e3320df384"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_fantasia}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="20" width="100" height="20" uuid="0c027a8e-bc19-4fcb-a683-e2ae9bff4444"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="180" y="20" width="120" height="20" uuid="0c027a8e-bc19-4fcb-a683-e2ae9bff4444"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{cnpj}.substring( 0, 2 )+"."+$F{cnpj}.substring( 2, 5 )+"."+$F{cnpj}.substring( 5, 8 )+"/"+$F{cnpj}.substring( 8,12 )+"-"+$F{cnpj}.substring( 12,14 )]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="140" y="20" width="60" height="20" uuid="c9397789-9c51-429a-81cb-8a087b7a5932"/>
+				<reportElement x="130" y="20" width="50" height="20" uuid="c9397789-9c51-429a-81cb-8a087b7a5932"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[C.N.P.J.:]]></text>
 			</staticText>
 			<image>
-				<reportElement x="0" y="0" width="140" height="30" uuid="ff06fa1f-7e78-492a-8b9e-dde231a90f43"/>
+				<reportElement x="0" y="0" width="130" height="30" uuid="ff06fa1f-7e78-492a-8b9e-dde231a90f43"/>
 				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
 			</image>
 			<staticText>
@@ -194,12 +216,16 @@ ORDER BY pa.nome, a.dtaatende]]>
 			</staticText>
 			<textField>
 				<reportElement x="300" y="20" width="120" height="20" uuid="a879a13f-e403-4e0e-8abc-14be34068f00"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{cidade}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="442" y="20" width="23" height="20" uuid="826ad621-4882-4154-84a0-34dcfd869050"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -213,7 +239,9 @@ ORDER BY pa.nome, a.dtaatende]]>
 			</staticText>
 			<textField pattern="dd/MM/ yyyy">
 				<reportElement x="479" y="20" width="90" height="20" uuid="2186053c-5dfb-4f66-8238-03d14e1f220d"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
@@ -237,7 +265,7 @@ ORDER BY pa.nome, a.dtaatende]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="183" splitType="Stretch">
+		<band height="162" splitType="Stretch">
 			<textField pattern="dd/M/yyyy">
 				<reportElement x="100" y="0" width="150" height="20" uuid="cba9d730-3e5a-4786-8f7d-28a37681332d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="12b4ab11-78a9-4267-8b73-452b8f71959f"/>
@@ -281,33 +309,33 @@ ORDER BY pa.nome, a.dtaatende]]>
 				<text><![CDATA[CNS:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="101" width="570" height="30" uuid="451721cd-ac96-4e25-abe3-a20e0561f90d">
+				<reportElement x="0" y="91" width="570" height="30" uuid="451721cd-ac96-4e25-abe3-a20e0561f90d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="825c5163-9f9c-4efc-a06f-cde335976760"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle" markup="html"/>
 				<textFieldExpression><![CDATA[$F{evolucao}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="82" width="100" height="20" uuid="627f2321-a85e-4ec4-86b9-5dc6185cad67">
+				<reportElement x="0" y="73" width="100" height="17" uuid="627f2321-a85e-4ec4-86b9-5dc6185cad67">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="825c5163-9f9c-4efc-a06f-cde335976760"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Evolução:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="160" width="573" height="15" uuid="6f0b2838-d1c3-41ee-90ee-b1f566553a78"/>
+				<reportElement x="0" y="147" width="573" height="15" uuid="6f0b2838-d1c3-41ee-90ee-b1f566553a78"/>
 				<textElement verticalAlignment="Top"/>
 				<text><![CDATA[_______________________________________________________________________________________________________]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="131" width="467" height="20" uuid="4ed8c894-08de-44ef-a7c0-e68b641b5aee">
+				<reportElement x="100" y="122" width="467" height="20" uuid="4ed8c894-08de-44ef-a7c0-e68b641b5aee">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c1059bb8-6ddf-4977-9410-9f6f642789fa"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{descfuncionario}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="131" width="100" height="20" uuid="b14c697d-4a77-4333-9f08-5e62c618678d">
+				<reportElement x="0" y="122" width="100" height="20" uuid="b14c697d-4a77-4333-9f08-5e62c618678d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c1059bb8-6ddf-4977-9410-9f6f642789fa"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
@@ -320,38 +348,38 @@ ORDER BY pa.nome, a.dtaatende]]>
 				<textFieldExpression><![CDATA[$F{desccbo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="61" width="100" height="20" uuid="7c53685c-abd3-4a01-b660-32c06b388ef2">
+				<reportElement x="0" y="61" width="100" height="17" uuid="7c53685c-abd3-4a01-b660-32c06b388ef2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7ac57e5c-6893-4cdc-8903-09a540c10810"/>
 				</reportElement>
 				<text><![CDATA[CBO:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="150" width="221" height="15" uuid="753d7ffb-c763-4bcd-8816-0dabc1271446">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="812f9d7c-74c5-4270-a483-aceb7783f4d0"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{conselho}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="0" y="150" width="100" height="15" uuid="35771d50-0e78-4db8-bdab-0279100d5490">
+				<reportElement x="0" y="141" width="100" height="15" uuid="35771d50-0e78-4db8-bdab-0279100d5490">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="812f9d7c-74c5-4270-a483-aceb7783f4d0"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Conselho :]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="141" width="100" height="13" uuid="45a3d9dd-2ea4-4114-a62e-77ce0845eea1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f5ae9c7a-e27f-4520-9395-743eb595901b"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{conselho}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="34" splitType="Stretch">
+		<band height="28" splitType="Stretch">
 			<textField>
-				<reportElement x="176" y="4" width="100" height="30" uuid="f9158b1b-724a-44b2-ade1-7077c568e88b">
+				<reportElement x="176" y="-2" width="100" height="30" uuid="f9158b1b-724a-44b2-ade1-7077c568e88b">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Página : " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="282" y="4" width="100" height="30" uuid="cdf04b88-7181-48b5-9e69-6da40c509a2f">
+				<reportElement x="282" y="-2" width="100" height="30" uuid="cdf04b88-7181-48b5-9e69-6da40c509a2f">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
@@ -360,18 +388,18 @@ ORDER BY pa.nome, a.dtaatende]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="53" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<textField pattern="#,##0.###;#,##0.###-">
-				<reportElement x="246" y="20" width="30" height="14" uuid="e180b599-04da-4606-bf73-6f366f7622fd"/>
+				<reportElement x="246" y="2" width="30" height="14" uuid="e180b599-04da-4606-bf73-6f366f7622fd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{id_paciente1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="210" y="20" width="30" height="14" uuid="326e7f34-276b-4072-8747-c3e3cb08ec04"/>
+				<reportElement x="210" y="2" width="30" height="14" uuid="326e7f34-276b-4072-8747-c3e3cb08ec04"/>
 				<text><![CDATA[Total :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="281" y="20" width="49" height="14" uuid="7ba5e187-dc96-4aa5-b297-67945b94ff64"/>
+				<reportElement x="281" y="2" width="40" height="14" uuid="7ba5e187-dc96-4aa5-b297-67945b94ff64"/>
 				<textElement textAlignment="Left"/>
 				<text><![CDATA[Registros]]></text>
 			</staticText>

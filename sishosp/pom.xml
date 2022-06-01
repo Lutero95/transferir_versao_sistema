@@ -161,6 +161,7 @@
 			<artifactId>jackson-xc</artifactId>
 			<version>1.9.2</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
@@ -307,10 +308,20 @@
 
 	<repositories>
 		<repository>
-			<id>prime-repo</id>
-			<name>PrimeFaces Maven Repository</name>
-			<url>http://repository.primefaces.org</url>
+			<id>mvn-repo</id>
+			<name>Central Repository</name>
+			<url>https://repo1.maven.org/maven2/</url>
 			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>prime-repo</id>
+			<name>Primefaces Maven Repository</name>
+			<url>https://repository.primefaces.org/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id> jaspersoft-repo</id>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
 		</repository>
 	</repositories>
 
